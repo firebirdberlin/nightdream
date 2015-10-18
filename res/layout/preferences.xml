@@ -34,12 +34,6 @@
                     android:max="10"
                     android:title="@string/noise_sensitivity"/>
             </PreferenceCategory>
-
-            <SwitchPreference
-                android:key="handle_power"
-                android:title="@string/handle_power"
-                android:defaultValue="false" />
-
     </PreferenceScreen>
 
     <PreferenceScreen
