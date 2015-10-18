@@ -1,0 +1,185 @@
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+	<ImageView
+		android:id="@+id/background_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:scaleType="centerCrop"
+		android:src = "@drawable/background_gradient" />
+
+	<include  layout="@layout/background" android:id="@+id/Histogram"  />
+
+<!--
+	date and time
+-->
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/clockLayout"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:translationX="0sp"
+		android:translationY="0sp"
+		android:layout_gravity="center"
+		android:background="#44000000"
+		>
+<!--
+		time
+-->
+		<TextClock
+			android:id="@+id/clock"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:translationX="0sp"
+			android:translationY="0sp"
+			android:layout_gravity="center"
+			android:fontFamily="sans-serif"
+			android:format12Hour="h:mm a"
+			android:format24Hour="kk:mm"
+			android:textColor="#C2C2C2"
+			android:textSize="50sp" />
+<!--
+		divider
+-->
+		<View
+			android:id="@+id/divider"
+			android:layout_width="fill_parent"
+			android:layout_height="2dip"
+			android:background="#C2C2C2" />
+<!--
+		Date
+-->
+		<TextClock
+			android:id="@+id/date"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:translationX="0sp"
+			android:translationY="0sp"
+			android:layout_gravity="center"
+			android:fontFamily="sans-serif"
+			android:textStyle="bold"
+			android:format12Hour="dd. MMMM yyyy"
+			android:format24Hour="dd. MMMM yyyy"
+			android:textColor="#C2C2C2"
+			android:textSize="30sp"
+			android:paddingTop="5sp" />
+
+	</LinearLayout>
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" >
+
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/notificationbar"
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		>
+			<LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left">
+				<TextView
+				android:id="@+id/battery"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="left"
+				android:fontFamily="monospace"
+				android:textColor="#C2C2C2"
+				android:text="battery"
+				android:textSize="30sp"
+				/>
+			</LinearLayout>
+			<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:gravity="right">
+			  <ImageView
+				android:id="@+id/call_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:contentDescription="phonecalls"
+				android:paddingTop="15sp"
+				android:paddingLeft="15sp"
+				android:src="@drawable/ic_incomingcall" />
+			 <ImageView
+				android:id="@+id/gmail_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:contentDescription="gmail"
+				android:paddingTop="15sp"
+				android:paddingLeft="15sp"
+				android:src="@drawable/ic_gmail" />
+			<TextView
+				android:id="@+id/gmail_number"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:fontFamily="monospace"
+				android:textStyle="bold"
+				android:textColor="#C2C2C2"
+				android:text="1"
+				android:textSize="15sp"
+				android:paddingTop="12.5sp"/>
+			 <ImageView
+				android:id="@+id/whatsapp_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:contentDescription="whatsapp"
+				android:paddingTop="15sp"
+				android:paddingLeft="15sp"
+				android:src="@drawable/ic_whatsapp" />
+			<TextView
+				android:id="@+id/whatsapp_number"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:fontFamily="monospace"
+				android:textStyle="bold"
+				android:textColor="#C2C2C2"
+				android:text="1"
+				android:textSize="15sp"
+				android:paddingTop="12.5sp"/>
+			<ImageView
+				android:id="@+id/twitter_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:contentDescription="twitter"
+				android:paddingTop="15sp"
+				android:paddingLeft="15sp"
+				android:src="@drawable/ic_twitter" />
+			<TextView
+				android:id="@+id/twitter_number"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:fontFamily="monospace"
+				android:textStyle="bold"
+				android:textColor="#C2C2C2"
+				android:text="1"
+				android:textSize="15sp"
+				android:paddingTop="12.5sp"/>
+			</LinearLayout>
+		</LinearLayout>
+
+		<TextView
+		    android:id="@+id/current"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:fontFamily="monospace"
+		    android:textColor="#C2C2C2"
+			android:textSize="20sp"
+	    />
+
+	</LinearLayout>
+
+
+</FrameLayout>

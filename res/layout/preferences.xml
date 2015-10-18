@@ -1,0 +1,110 @@
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:key="main_screen">
+
+    <PreferenceScreen
+        android:title="@string/night_mode"
+        android:key="night_mode_screen"
+        android:icon="@drawable/ic_nightmode">
+
+            <PreferenceCategory android:title="@string/night_mode">
+                <SwitchPreference
+                    android:key="handle_power"
+                    android:title="@string/handle_power"
+                    android:defaultValue="false" />
+
+                <CheckBoxPreference
+                    android:key="Night.muteRinger"
+                    android:title="@string/mute_ringer"
+                    android:defaultValue="true" />
+
+                <SwitchPreference
+                    android:key="ambientNoiseDetection"
+                    android:title="@string/ambient_noise"
+                    android:defaultValue="false" />
+
+                <SwitchPreference
+                    android:key="allow_screen_off"
+                    android:title="@string/allow_screen_off"
+                    android:defaultValue="false" />
+
+                <firebirdberlin.com.nightdream.SeekBarPreference
+                    android:key="NoiseSensitivity"
+                    android:defaultValue="4"
+                    android:max="10"
+                    android:title="@string/noise_sensitivity"/>
+            </PreferenceCategory>
+
+            <SwitchPreference
+                android:key="handle_power"
+                android:title="@string/handle_power"
+                android:defaultValue="false" />
+
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:title="@string/appearance"
+        android:key="colors_screen"
+        android:icon="@drawable/ic_appearance">
+
+        <SwitchPreference
+            android:key="showDate"
+            android:title="@string/show_date"
+            android:defaultValue="true" />
+
+        <yuku.ambilwarna.widget.AmbilWarnaPreference
+            android:key="clockColor"
+            android:defaultValue="0xff33B5E5"
+            android:title="@string/choose_color_dialog"/>
+
+        <PreferenceCategory android:title="@string/background">
+            <ListPreference
+                android:title="@string/background"
+                android:key="backgroundMode"
+                android:defaultValue="1"
+                android:entries="@array/backgroundModes"
+                android:entryValues="@array/backgroundModeValues"/>
+
+            <Preference
+                android:key="chooseBackgroundImage"
+                android:title="@string/background_image"/>
+
+        </PreferenceCategory>
+
+    </PreferenceScreen>
+    <Preference
+        android:key="startNotificationService"
+        android:title="@string/buttonAccessibilitySettings"
+        android:icon="@drawable/ic_menu"/>
+
+    <Preference
+        android:icon="@drawable/ic_github"
+        android:title="@string/contribute">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="https://github.com/firebirdberlin/nightdream"/>
+
+    </Preference>
+
+    <PreferenceScreen
+            android:key="about_screen"
+            android:icon="@drawable/ic_about"
+            android:title="@string/about">
+
+            <Preference
+                android:key="credits"
+                android:selectable="false"
+                android:enabled="true"
+                android:title="@string/credits"
+                android:summary="Stafen Fruhner (2015)"/>
+
+            <Preference
+                android:icon="@drawable/ic_icons8"
+                android:key="about_icons8"
+                android:title="Icons"
+                android:summary="icons8" >
+                <intent android:action="android.intent.action.VIEW"
+                    android:data="https://icons8.com"/>
+
+            </Preference>
+        </PreferenceScreen>
+</PreferenceScreen>

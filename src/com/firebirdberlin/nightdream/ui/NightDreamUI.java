@@ -1,0 +1,542 @@
+package com.firebirdberlin.nightdream;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.Point;
+import android.os.Build;
+import android.os.Handler;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.animation.AlphaAnimation;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextClock;
+import android.widget.TextView;
+import android.widget.Toast;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.Random;
+import static android.text.format.DateFormat.getBestDateTimePattern;
+
+public class NightDreamUI {
+    private static String TAG ="NightDreamActivity";
+
+    boolean isDebuggable;
+    private int mode = 2;
+    private BatteryStats battery;
+    private Context mContext;
+    private Drawable bgshape;
+    private Drawable bgblack;
+    private Handler handler;
+    private Histogram histogram;
+    private ImageView background_image;
+    private LightSensorEventListener lightSensorEventListener = null;
+    private LinearLayout clockLayout;
+    private LinearLayout notificationbar;
+    private Settings settings = null;
+    private SoundMeter soundmeter;
+    private TextView batteryView;
+    private TextView clock, date;
+    private Utility utility;
+    private View divider;
+    private View rootView;
+    private mAudioManager AudioManage;
+
+	private int dim_offset_init_x = 0;
+	private int dim_offset_curr_x = 0;
+	public boolean setDimOffset = false;
+
+    public NightDreamUI(Context context, Window window) {
+        mContext = context;
+        rootView = window.getDecorView().findViewById(android.R.id.content);
+        background_image = (ImageView) rootView.findViewById(R.id.background_view);
+        clockLayout = (LinearLayout) rootView.findViewById(R.id.clockLayout);
+        clock = (TextView) rootView.findViewById(R.id.clock);
+        date = (TextView) rootView.findViewById(R.id.date);
+        divider = (View) rootView.findViewById(R.id.divider);
+        batteryView = (TextView) rootView.findViewById(R.id.battery);
+        notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
+        histogram = (Histogram) rootView.findViewById(R.id.Histogram);
+
+        // prepare zoom-in effect
+        // API level 11
+        if (Build.VERSION.SDK_INT >= 12){
+            clockLayout.setScaleX(.1f);
+            clockLayout.setScaleY(.1f);
+        }
+
+        utility = new Utility(context);
+        battery = new BatteryStats(context);
+        handler = new Handler();
+        settings = new Settings(context);
+        AudioManage  = new mAudioManager(context);
+
+        batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+        batteryView.setVisibility(View.VISIBLE);
+        isDebuggable = utility.isDebuggable();
+    }
+
+    public void onStart() {
+        lightSensorEventListener = new LightSensorEventListener(mContext);
+        lightSensorEventListener.register();
+
+        if (Build.VERSION.SDK_INT >= 12){
+            handler.postDelayed(zoomIn, 500);
+        }
+        handler.postDelayed(moveAround, 30000);
+    }
+
+    public void onResume() {
+        hideSoftButtons();
+        utility.getSystemBrightnessMode();
+        settings.reload();
+        if (settings.showDate){
+            showDate();
+        } else {
+            hideDate();
+        }
+
+        if (settings.whiteClock) {
+            clock.setTextColor(Color.parseColor("#C2C2C2"));
+        } else {
+            clock.setTextColor(settings.clockColor);
+            histogram.setCustomColor(settings.clockColor);
+        }
+
+        bgblack = new ColorDrawable(Color.parseColor("#000000"));
+        bgshape = bgblack;
+        switch (settings.background_mode){
+            case NightDreamSettingsActivity.BACKGROUND_BLACK: {
+                bgshape = bgblack;
+                break;
+            }
+            case NightDreamSettingsActivity.BACKGROUND_GRADIENT: {
+                bgshape = mContext.getResources().getDrawable(R.drawable.background_gradient);
+                break;
+            }
+            case NightDreamSettingsActivity.BACKGROUND_IMAGE: {
+                bgshape = loadBackGroundImage();
+                break;
+            }
+        }
+
+        background_image.setImageDrawable(bgshape);
+
+        if (settings.ambientNoiseDetection == true){
+            soundmeter = new SoundMeter(isDebuggable);
+        } else {
+            soundmeter = null;
+        }
+    }
+
+    public void onPause() {
+        utility.restoreSystemBrightnessMode();
+    }
+
+    public void onStop() {
+        lightSensorEventListener.unregister();
+        handler.removeCallbacks(moveAround);
+        handler.removeCallbacks(zoomIn);
+        handler.removeCallbacks(ClickOut);
+        if (soundmeter != null){
+            soundmeter.stopMeasurement();
+            soundmeter = null;
+        }
+
+    }
+
+    public void onDestroy() {
+        handler = null;
+    }
+
+    public void onConfigurationChanged() {
+        Point d = utility.getDisplaySize();
+        setDesiredClockWidth((int)(0.6 * d.x));
+        handler.removeCallbacks(moveAround);
+        handler.postDelayed(moveAround, 2000);
+    }
+
+    private void hideSoftButtons() {
+		if (Build.VERSION.SDK_INT >= 14){ // hide soft buttons
+			clockLayout.setSystemUiVisibility(View. SYSTEM_UI_FLAG_LOW_PROFILE);
+		}
+	}
+
+    public void showDate() {
+        clockLayout.setBackgroundColor(Color.parseColor("#44000000"));
+        date.setVisibility(View.VISIBLE);
+        divider.setVisibility(View.VISIBLE);
+
+        if (Build.VERSION.SDK_INT >= 17){
+            // note that format string kk is implemented incorrectly in API <= 17
+            // from API level 18 on, we can set the system default
+            TextClock tclock = (TextClock) rootView.findViewById(R.id.clock);
+            TextClock tdate  = (TextClock) rootView.findViewById(R.id.date);
+            if (Build.VERSION.SDK_INT >= 18){
+                String tlocalPattern24 = getBestDateTimePattern(Locale.getDefault(), "HH:mm");
+                String tlocalPattern12 = getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
+                String localPatternDate = getBestDateTimePattern(Locale.getDefault(), "EEEEddLLLL");
+
+                tclock.setFormat12Hour(tlocalPattern12);
+                tclock.setFormat24Hour(tlocalPattern24);
+                tdate.setFormat12Hour(localPatternDate);
+                tdate.setFormat24Hour(localPatternDate);
+            } else {
+                DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+                String pattern       = ((SimpleDateFormat)formatter).toPattern();
+                String localPattern  = ((SimpleDateFormat)formatter).toLocalizedPattern();
+                tdate.setFormat12Hour(localPattern);
+                tdate.setFormat24Hour(localPattern);
+            }
+        }
+    }
+    public void hideDate() {
+        date.setVisibility(View.INVISIBLE);
+        divider.setVisibility(View.INVISIBLE);
+        clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
+    }
+
+	public void setDesiredClockWidth(int desiredWidth){
+		String text = clock.getText().toString();
+		clock.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
+		int size = 1;
+		do{
+            float textWidth = clock.getPaint().measureText(text);
+
+            if (textWidth < desiredWidth) {
+                clock.setTextSize(++size);
+            } else {
+                clock.setTextSize(--size);
+                break;
+            }
+		} while(true);
+	}
+
+    public void updateBatteryView() {
+        if (battery.isCharging()) {
+            if (battery.getPercentage() < 99.){
+                long est = battery.getEstimateMillis()/1000; // estimated seconds
+                if (est > 0){
+                    long h = est / 3600;
+                    long m  = ( est % 3600 ) / 60;
+                    batteryView.setText(String.format("%02d %% -- %02d:%02d",
+                                (int) battery.getPercentage(),
+                                (int) h, (int) m));
+                } else {
+                    batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+                }
+            }  else if (battery.getPercentage() < 100.) {
+                batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+            } else {
+                batteryView.setText(""); // nothing, if fully charged
+            }
+        } else { // not charging
+            long est = battery.getDischargingEstimateMillis()/1000; // estimated seconds
+            if (est > 0){
+                long h = est / 3600;
+                long m  = ( est % 3600 ) / 60;
+                batteryView.setText(String.format("%02d %% -- %02d:%02d",
+                            (int) battery.getPercentage(),
+                            (int)h, (int) m));
+            } else {
+                batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+            }
+        }
+    }
+
+    public void updateClockPosition() {
+        Random random = new Random();
+        Point size = utility.getDisplaySize();
+        int w = size.x;
+        int h = size.y;
+        if (Build.VERSION.SDK_INT < 12) {
+            // make back panel fully transparent
+            clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
+            // random x position
+            int rxpos = (w - clockLayout.getWidth())/2; // API level
+            int rypos = (h - clockLayout.getHeight())/2; // -150-90; // API level 1
+            int i1 = 0;
+
+            if (rxpos < 0) rxpos = 0;
+            i1 = random.nextInt(2*rxpos);
+
+            // random y position
+            // the lower 150 px is reserved for alarm clockLayout
+            // the upper 90 px is for attery stats
+            int i2 = 90;
+            if (rypos < 0) rypos = 0;
+            i2 = random.nextInt(2*rypos);
+
+            clockLayout.setPadding(i1,i2,0,0);
+            clockLayout.invalidate();
+            if (isDebuggable) {
+                Log.d(TAG,"layout("+String.valueOf(i1)+","+String.valueOf(i2)+","+
+                        String.valueOf(i1+clockLayout.getWidth()) +","+
+                        String.valueOf(i2+clockLayout.getHeight()));
+            }
+        } else {
+            // random x position
+            int rxpos = w - (int) (clockLayout.getWidth() * clockLayout.getScaleX()); // API level 11
+            int i1 = 0;
+            if (rxpos > 0) i1 = random.nextInt(rxpos);
+
+            // random y position
+            int rypos = h - (int) (clockLayout.getHeight() * clockLayout.getScaleY())-150-90; // API level 11
+            // lower 150 px is reserved for alarm clockLayout
+            // upper 90 px is for attery stats
+            int i2 = 90;
+            if (rypos > 0)
+                i2 = 90 + random.nextInt(rypos);
+
+            clockLayout.animate().setDuration(10000).x(i1).y(i2); // api level 12
+        }
+    }
+
+    public void dimScreen(int millis, float ambient_mean_curr, float add_brightness){
+
+        float v = 0.3f + add_brightness + (ambient_mean_curr - 4.2f)/(40.f - 4.2f);
+        if (v > 1.) v = 1.f;
+        if (v < 0.) v = 0.f;
+        Log.w(TAG, "Brightness : " + String.valueOf(v));
+        if (millis >= 0){
+            setAlpha(clockLayout, v, millis);
+            setAlpha(histogram, v, millis);
+            if (ambient_mean_curr < 4.2)
+                setAlpha(notificationbar, 0.0f, millis);
+            else {
+                setAlpha(notificationbar, v, millis);
+            }
+        } else{
+            setAlpha(clockLayout, v, 0);
+        }
+    }
+
+    public int determineScreenMode(int current_mode, float light_value, double last_ambient_noise){
+
+        double ambient_noise_threshold = settings.NOISE_AMPLITUDE_SLEEP;
+        if (current_mode == 0){
+            ambient_noise_threshold = settings.NOISE_AMPLITUDE_WAKE;
+        }
+
+        if (light_value < 4.2
+                && ( (settings.ambientNoiseDetection == false)
+                    || last_ambient_noise < ambient_noise_threshold)){
+            return 0;
+        } else if (light_value < 20.) { // night shift, desk light on
+            return 1;
+        } else if (light_value < 40.) { // night shift, desk light on
+            return 2;
+        }
+        // day mode
+        return 3;
+    }
+
+    public void switchModes(float light_value, double last_ambient_noise){
+        int current_mode = mode;
+        mode = determineScreenMode(current_mode, light_value, last_ambient_noise);
+
+        if ((mode == 0) && (current_mode != 0)){
+            if (settings.muteRinger) AudioManage.setRingerModeSilent();
+            histogram.hide();
+            background_image.setImageDrawable(bgblack);
+        } else
+        if ((mode != 0) && (current_mode == 0)){
+            if (settings.muteRinger) AudioManage.restoreRingerMode();
+            histogram.show();
+            background_image.setImageDrawable(bgshape);
+        }
+        if (current_mode != mode) {
+            if (mode <=2){
+                utility.setAutoBrightnessMode();
+            } else {
+                utility.restoreSystemBrightnessMode();
+            }
+        }
+
+        float dim_offset = settings.dim_offset;
+        if ((mode == 1) && (current_mode == 0)) {
+            dim_offset += 0.1f;
+        }
+        dimScreen(3000, light_value, dim_offset);
+
+        if (soundmeter != null){
+            if (mode == 0 && soundmeter.isRunning() == false) {
+                soundmeter.startMeasurement(3000);
+            } else if (mode == 1 && soundmeter.isRunning() == false){
+                soundmeter.startMeasurement(60000);
+            } else if (mode > 1) {
+                soundmeter.stopMeasurement();
+            }
+        }
+    }
+
+    public void setAlpha(View v, float alpha, int millis){
+        if (v == null) return;
+
+        if (Build.VERSION.SDK_INT < 14) {
+             final AlphaAnimation animation = new AlphaAnimation(alpha, alpha);
+             animation.setDuration(millis);
+             animation.setFillAfter(true);
+             v.startAnimation(animation);
+        } else { // should work from 12 on but had a bug report for 13 !?!
+            v.animate().setDuration(millis).alpha(alpha);
+        }
+    }
+
+    // only called for apilevel >= 12
+    private Runnable zoomIn = new Runnable() {
+        @Override
+        public void run() {
+            handler.post(zoomToFit);
+            clockLayout.animate().setDuration(1000).scaleX(1.f).scaleY(1.f);
+       }
+    };
+
+    // only called for apilevel >= 12
+    private Runnable zoomToFit = new Runnable() {
+        @Override
+        public void run() {
+            Point d = utility.getDisplaySize();
+            setDesiredClockWidth((int) (0.6 * d.x));
+       }
+    };
+
+    // move the clock randomly around
+    private Runnable moveAround = new Runnable() {
+       @Override
+       public void run() {
+           hideSoftButtons();
+           updateBatteryView();
+           updateClockPosition();
+
+           handler.postDelayed(this, 60000);
+       }
+    };
+
+    // in only called for api level >= 12
+    private Runnable ClickOut = new Runnable() {
+       @Override
+       public void run() {
+            if (Build.VERSION.SDK_INT >= 12){
+               clockLayout.animate().setDuration(1000).scaleX(1.f).scaleY(1.f);
+            }
+       }
+    };
+
+    public void onClockClicked() {
+        if (Build.VERSION.SDK_INT >= 12){
+            clockLayout.animate().setDuration(100).scaleXBy(-0.15f).scaleYBy(-0.15f);
+            handler.postDelayed(ClickOut, 100);
+        }
+    }
+
+
+	public boolean onTouch(View view, MotionEvent e, float last_ambient) {
+        if (utility == null) return false;
+
+		Point click = new Point((int) e.getX(),(int) e.getY());
+		Point size = utility.getDisplaySize();
+
+		Point ll = new Point(0,size.y);
+		Point lr = new Point(size.x,size.y);
+
+		// set dim factor
+		if (click.y < size.y - histogram.touch_zone_radius) {// everything except the alarm zone
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    setDimOffset = true;
+                    dim_offset_init_x = click.x;
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    if (setDimOffset == false) return false;
+                    dim_offset_curr_x = click.x;
+
+                    float dx = 0.005f;
+                    if (dim_offset_curr_x > dim_offset_init_x){
+                        if ( settings.dim_offset + dx < .25) settings.dim_offset += dx;
+                    } else {
+                        if ( settings.dim_offset + dx > -.25) settings.dim_offset -= dx;
+                    }
+
+                    dimScreen(0, last_ambient, settings.dim_offset);
+
+                    int c = (int) ( (settings.dim_offset + 0.25f) / 0.5f * 11.f);
+                    String s = "";
+                    for (int i = 0; i < c; i++) s +="|";
+
+                    batteryView.setText(s);
+
+                    dim_offset_init_x = click.x;
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (setDimOffset == true){
+                        SharedPreferences set = mContext.getSharedPreferences(NightDreamSettingsActivity.PREFS_KEY, 0);
+                        SharedPreferences.Editor prefEditor = set.edit();
+                        prefEditor.putFloat("dimOffset", settings.dim_offset);
+                        prefEditor.commit();
+                        setDimOffset = false;
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
+	}
+
+    public Drawable loadBackGroundImage() {
+        if (settings.bgpath != ""){
+            Point display = utility.getDisplaySize();
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(settings.bgpath, options);
+
+            // Calculate inSampleSize
+            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            Bitmap bgimage = (BitmapFactory.decodeFile(settings.bgpath, options));
+
+            try{
+                int nw = bgimage.getWidth();
+                int nh = bgimage.getHeight();
+                boolean scaling_needed =false;
+                if ( bgimage.getHeight() > display.y ){
+                    nw = (int) ((display.y /(float) bgimage.getHeight()) * bgimage.getWidth());
+                    nh = display.y;
+                    scaling_needed = true;
+                }
+
+                if ( nw > display.x ){
+                    nh = (int) ((display.x / (float) bgimage.getWidth()) * bgimage.getHeight());
+                    nw = display.x;
+                    scaling_needed = true;
+                }
+                if (scaling_needed){
+                    bgimage = Bitmap.createScaledBitmap(bgimage,nw, nh, false);
+                }
+
+                return new BitmapDrawable(mContext.getResources(), bgimage);
+            } catch (OutOfMemoryError e){
+                Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
+                        Toast.LENGTH_LONG).show();
+                return new ColorDrawable(Color.parseColor("#000000"));
+            }
+            catch (Exception e) {
+                return new ColorDrawable(Color.parseColor("#000000"));
+            }
+        }
+        return new ColorDrawable(Color.parseColor("#000000"));
+    }
+}

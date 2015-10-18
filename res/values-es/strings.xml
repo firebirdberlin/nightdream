@@ -1,0 +1,17 @@
+<resources>
+	<string name="app_name">NightDream</string>
+	<string name="handle_power">Auto inicio con adaptador</string>
+	<string name="allow_screen_off">pantalla apagada durante la noche</string>
+	<string name="show_date">mostrar fecha</string>
+	<string name="ambient_noise">detección de ruido ambiental</string>
+	<string name="noise_sensitivity">sensibilidad del micrófono</string>
+	<string name="white_clock">Reloj blanco simple</string>
+	<string name="choose_color">... o selecciona otro color.</string>
+	<string name="choose_color_btn">selecciona color</string>
+	<string name="choose_color_dialog">Selecciona un color.</string>
+	<string name="background">fondo de pantalla</string>
+	<string name="background_black">negro</string>
+	<string name="background_gradient">gradiente</string>
+	<string name="background_image">imágen</string>
+	<string name="buttonAccessibilitySettings"> iniciar escucha de notificaciones</string>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">NightDream</string>
+	<string name="handle_power">Автоматический запуск</string>
+	<string name="allow_screen_off">screen off during night</string>
+	<string name="show_date">число</string>
+	<string name="ambient_noise">измерить уровень окружающего шума</string>
+	<string name="noise_sensitivity">microphone sensitivity</string>
+	<string name="white_clock">Простые белые часы.</string>
+	<string name="choose_color">... или выберите другой цвет.</string>
+	<string name="choose_color_btn">выбрать</string>
+	<string name="choose_color_dialog">Выберите цвет.</string>
+	<string name="background">фон</string>
+	<string name="background_black">черный</string>
+	<string name="background_gradient">градиент</string>
+	<string name="background_image">изображение</string>
+	<string name="buttonAccessibilitySettings"> start notification listener</string>
+</resources>
