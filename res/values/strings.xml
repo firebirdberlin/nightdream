@@ -7,6 +7,7 @@
 	<string name="about">About</string>
 	<string name="credits">Credits</string>
 	<string name="mute_ringer">mute ringer</string>
+	<string name="auto_brightness">Auto brightness</string>
 	<string name="handle_power">start/stop on AC</string>
 	<string name="allow_screen_off">screen off</string>
 	<string name="show_date">show date</string>

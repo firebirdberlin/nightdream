@@ -17,6 +17,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
@@ -50,14 +51,16 @@ public class NightDreamUI {
     private Utility utility;
     private View divider;
     private View rootView;
+    private Window window;
     private mAudioManager AudioManage;
 
-	private int dim_offset_init_x = 0;
-	private int dim_offset_curr_x = 0;
-	public boolean setDimOffset = false;
+    private int dim_offset_init_x = 0;
+    private int dim_offset_curr_x = 0;
+    public boolean setDimOffset = false;
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
+        this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         clockLayout = (LinearLayout) rootView.findViewById(R.id.clockLayout);
@@ -79,7 +82,7 @@ public class NightDreamUI {
         battery = new BatteryStats(context);
         handler = new Handler();
         settings = new Settings(context);
-        AudioManage  = new mAudioManager(context);
+        AudioManage = new mAudioManager(context);
 
         batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
         batteryView.setVisibility(View.VISIBLE);
@@ -97,8 +100,6 @@ public class NightDreamUI {
     }
 
     public void onResume() {
-        hideSoftButtons();
-        utility.getSystemBrightnessMode();
         settings.reload();
         if (settings.showDate){
             showDate();
@@ -140,7 +141,7 @@ public class NightDreamUI {
     }
 
     public void onPause() {
-        utility.restoreSystemBrightnessMode();
+
     }
 
     public void onStop() {
@@ -165,12 +166,6 @@ public class NightDreamUI {
         handler.removeCallbacks(moveAround);
         handler.postDelayed(moveAround, 2000);
     }
-
-    private void hideSoftButtons() {
-		if (Build.VERSION.SDK_INT >= 14){ // hide soft buttons
-			clockLayout.setSystemUiVisibility(View. SYSTEM_UI_FLAG_LOW_PROFILE);
-		}
-	}
 
     public void showDate() {
         clockLayout.setBackgroundColor(Color.parseColor("#44000000"));
@@ -206,11 +201,11 @@ public class NightDreamUI {
         clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
     }
 
-	public void setDesiredClockWidth(int desiredWidth){
-		String text = clock.getText().toString();
-		clock.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
-		int size = 1;
-		do{
+    public void setDesiredClockWidth(int desiredWidth){
+        String text = clock.getText().toString();
+        clock.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
+        int size = 1;
+        do{
             float textWidth = clock.getPaint().measureText(text);
 
             if (textWidth < desiredWidth) {
@@ -219,12 +214,12 @@ public class NightDreamUI {
                 clock.setTextSize(--size);
                 break;
             }
-		} while(true);
-	}
+        } while(true);
+    }
 
     public void updateBatteryView() {
         if (battery.isCharging()) {
-            if (battery.getPercentage() < 99.){
+            if (battery.getPercentage() < 98.){
                 long est = battery.getEstimateMillis()/1000; // estimated seconds
                 if (est > 0){
                     long h = est / 3600;
@@ -302,22 +297,71 @@ public class NightDreamUI {
         }
     }
 
-    public void dimScreen(int millis, float ambient_mean_curr, float add_brightness){
+    private float LIGHT_VALUE_DARK = 4.2f;
+    private float LIGHT_VALUE_BRIGHT = 40.0f;
+    private float LIGHT_VALUE_DAYLIGHT = 5000.0f;
 
-        float v = 0.3f + add_brightness + (ambient_mean_curr - 4.2f)/(40.f - 4.2f);
-        if (v > 1.) v = 1.f;
-        if (v < 0.) v = 0.f;
-        Log.w(TAG, "Brightness : " + String.valueOf(v));
-        if (millis >= 0){
-            setAlpha(clockLayout, v, millis);
-            setAlpha(histogram, v, millis);
-            if (ambient_mean_curr < 4.2)
-                setAlpha(notificationbar, 0.0f, millis);
-            else {
-                setAlpha(notificationbar, v, millis);
+    private float to_range(float value, float min, float max){
+        if (value > max) return max;
+        if (value < min) return min;
+        return value;
+    }
+
+    public void dimScreen(int millis, float light_value, float add_brightness){
+        LIGHT_VALUE_DARK = settings.minIlluminance;
+        float v = 0.f;
+        float brightness = 0.f;
+        if (settings.autoBrightness) {
+            float luminance_offset = 40 * add_brightness;
+            if (light_value > LIGHT_VALUE_BRIGHT && add_brightness > 0.f) {
+                luminance_offset = 5000 * add_brightness;
             }
-        } else{
-            setAlpha(clockLayout, v, 0);
+            v = (light_value + luminance_offset - LIGHT_VALUE_DARK)/(LIGHT_VALUE_BRIGHT - LIGHT_VALUE_DARK);
+            v = 0.3f + 0.7f * v;
+
+            brightness = (light_value + luminance_offset - LIGHT_VALUE_BRIGHT)/(LIGHT_VALUE_DAYLIGHT - LIGHT_VALUE_BRIGHT);
+        } else {
+            v = 1.f + add_brightness;
+            brightness = add_brightness;
+        }
+
+        v = to_range(v, 0.05f, 1.f);
+        brightness = to_range(brightness, 0.01f, 1.f);
+        // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark. Therefore a minimum
+        // value must be set to preserve the visibility of the clock
+
+        Log.d(TAG, "light value : " + String.valueOf(light_value));
+        Log.d(TAG, "a : " + String.valueOf(v) + " | b : " + String.valueOf(brightness));
+
+        setBrightness(brightness);
+
+        setAlpha(clockLayout, v, millis);
+        setAlpha(histogram, v, millis);
+        if (light_value < LIGHT_VALUE_DARK) {
+            setAlpha(notificationbar, 0.0f, millis);
+            setAlpha(batteryView, 0.0f, millis);
+        } else {
+            setAlpha(notificationbar, v, millis);
+            setAlpha(batteryView, v, millis);
+        }
+
+        if ( light_value + 0.2f < settings.minIlluminance ) {
+            settings.setMinIlluminance(light_value + 0.2f);
+        }
+    }
+
+    private void setBrightness(float value) {
+        LayoutParams layout = window.getAttributes();
+        layout.flags |= LayoutParams.FLAG_KEEP_SCREEN_ON;
+        layout.screenBrightness = value;
+        layout.buttonBrightness = 0.f;
+        window.setAttributes(layout);
+        hideSoftButtons();
+    }
+
+    private void hideSoftButtons() {
+        if (Build.VERSION.SDK_INT >= 14){
+            clockLayout.setSystemUiVisibility(View. SYSTEM_UI_FLAG_LOW_PROFILE);
         }
     }
 
@@ -328,13 +372,13 @@ public class NightDreamUI {
             ambient_noise_threshold = settings.NOISE_AMPLITUDE_WAKE;
         }
 
-        if (light_value < 4.2
+        if (light_value < LIGHT_VALUE_DARK
                 && ( (settings.ambientNoiseDetection == false)
                     || last_ambient_noise < ambient_noise_threshold)){
             return 0;
-        } else if (light_value < 20.) { // night shift, desk light on
+        } else if (light_value < LIGHT_VALUE_BRIGHT/2.f) { // night shift, desk light on
             return 1;
-        } else if (light_value < 40.) { // night shift, desk light on
+        } else if (light_value < LIGHT_VALUE_BRIGHT) { // night shift, desk light on
             return 2;
         }
         // day mode
@@ -354,13 +398,6 @@ public class NightDreamUI {
             if (settings.muteRinger) AudioManage.restoreRingerMode();
             histogram.show();
             background_image.setImageDrawable(bgshape);
-        }
-        if (current_mode != mode) {
-            if (mode <=2){
-                utility.setAutoBrightnessMode();
-            } else {
-                utility.restoreSystemBrightnessMode();
-            }
         }
 
         float dim_offset = settings.dim_offset;
@@ -415,11 +452,26 @@ public class NightDreamUI {
     private Runnable moveAround = new Runnable() {
        @Override
        public void run() {
-           hideSoftButtons();
+           handler.removeCallbacks(hideBrightnessLevel);
            updateBatteryView();
            updateClockPosition();
 
            handler.postDelayed(this, 60000);
+       }
+    };
+
+    private Runnable hideBrightnessLevel = new Runnable() {
+       @Override
+       public void run() {
+           setAlpha(batteryView, 0.f, 2000);
+           handler.postDelayed(hideBrightnessText, 2100);
+       }
+    };
+
+    private Runnable hideBrightnessText = new Runnable() {
+       @Override
+       public void run() {
+           batteryView.setText("");
        }
     };
 
@@ -440,20 +492,17 @@ public class NightDreamUI {
         }
     }
 
-
-	public boolean onTouch(View view, MotionEvent e, float last_ambient) {
+    public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (utility == null) return false;
 
-		Point click = new Point((int) e.getX(),(int) e.getY());
-		Point size = utility.getDisplaySize();
+        Point click = new Point((int) e.getX(),(int) e.getY());
+        Point size = utility.getDisplaySize();
 
-		Point ll = new Point(0,size.y);
-		Point lr = new Point(size.x,size.y);
-
-		// set dim factor
-		if (click.y < size.y - histogram.touch_zone_radius) {// everything except the alarm zone
+        // set dim factor
+        if (click.y < size.y - histogram.touch_zone_radius) {// everything except the alarm zone
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    handler.removeCallbacks(hideBrightnessLevel);
                     setDimOffset = true;
                     dim_offset_init_x = click.x;
                     return true;
@@ -461,54 +510,53 @@ public class NightDreamUI {
                     if (setDimOffset == false) return false;
                     dim_offset_curr_x = click.x;
 
-                    float dx = 0.005f;
-                    if (dim_offset_curr_x > dim_offset_init_x){
-                        if ( settings.dim_offset + dx < .25) settings.dim_offset += dx;
-                    } else {
-                        if ( settings.dim_offset + dx > -.25) settings.dim_offset -= dx;
-                    }
+                    float dx = 2.f * (dim_offset_curr_x - dim_offset_init_x) / size.x;
+                    settings.dim_offset += dx;
+                    settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
 
                     dimScreen(0, last_ambient, settings.dim_offset);
 
-                    int c = (int) ( (settings.dim_offset + 0.25f) / 0.5f * 11.f);
+                    int c = (int) ( (settings.dim_offset + 1.f) / 2.f * 11.f);
                     String s = "";
                     for (int i = 0; i < c; i++) s +="|";
 
+                    setAlpha(batteryView, 1.f, 0);
                     batteryView.setText(s);
+                    setAlpha(notificationbar, 1.f, 0);
+                    handler.removeCallbacks(hideBrightnessLevel);
 
                     dim_offset_init_x = click.x;
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (setDimOffset == true){
-                        SharedPreferences set = mContext.getSharedPreferences(NightDreamSettingsActivity.PREFS_KEY, 0);
-                        SharedPreferences.Editor prefEditor = set.edit();
-                        prefEditor.putFloat("dimOffset", settings.dim_offset);
-                        prefEditor.commit();
                         setDimOffset = false;
+                        settings.setBrightnessOffset(settings.dim_offset);
+                        handler.postDelayed(hideBrightnessLevel, 1000);
+                        //dimScreen(10000, last_ambient, settings.dim_offset);
                         return true;
                     }
                     break;
             }
         }
         return false;
-	}
+    }
 
     public Drawable loadBackGroundImage() {
         if (settings.bgpath != ""){
-            Point display = utility.getDisplaySize();
-
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(settings.bgpath, options);
-
-            // Calculate inSampleSize
-            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
-
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            Bitmap bgimage = (BitmapFactory.decodeFile(settings.bgpath, options));
-
             try{
+                Point display = utility.getDisplaySize();
+
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(settings.bgpath, options);
+
+                // Calculate inSampleSize
+                options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+
+                // Decode bitmap with inSampleSize set
+                options.inJustDecodeBounds = false;
+                Bitmap bgimage = (BitmapFactory.decodeFile(settings.bgpath, options));
+
                 int nw = bgimage.getWidth();
                 int nh = bgimage.getHeight();
                 boolean scaling_needed =false;
@@ -530,10 +578,9 @@ public class NightDreamUI {
                 return new BitmapDrawable(mContext.getResources(), bgimage);
             } catch (OutOfMemoryError e){
                 Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
-                        Toast.LENGTH_LONG).show();
+                               Toast.LENGTH_LONG).show();
                 return new ColorDrawable(Color.parseColor("#000000"));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return new ColorDrawable(Color.parseColor("#000000"));
             }
         }

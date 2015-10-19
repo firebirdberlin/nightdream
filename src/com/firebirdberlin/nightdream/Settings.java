@@ -10,12 +10,13 @@ public class Settings {
     SharedPreferences settings;
 
     public boolean allow_screen_off = false;
-    public boolean autoBrightness = false;
     public boolean ambientNoiseDetection;
+    public boolean autoBrightness = false;
     public boolean muteRinger = true;
     public boolean showDate = true;
     public boolean whiteClock = false;
     public float dim_offset = 0.f;
+    public float minIlluminance = 15.f; // lux
     public int background_mode = 1;
     public int clockColor;
     public int sensitivity = 1;
@@ -38,6 +39,7 @@ public class Settings {
         bgpath = settings.getString("BackgroundImage", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", 0.f);
+        minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", true);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
@@ -51,5 +53,19 @@ public class Settings {
         } else {
             background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         }
+    }
+
+    public void setBrightnessOffset(float value){
+        dim_offset = value;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("dimOffset", value);
+        prefEditor.commit();
+    }
+
+    public void setMinIlluminance(float value) {
+        minIlluminance = value;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("minIlluminance", value);
+        prefEditor.commit();
     }
 }

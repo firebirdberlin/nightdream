@@ -2,15 +2,16 @@
 <resources>
     <string name="app_name">NightDream</string>
     <string name="night_mode">Nachtmodus</string>
-	<string name="appearance">Aussehen</string>
-	<string name="contribute">Beitragen</string>
-	<string name="about">Über</string>
-	<string name="mute_ringer">lautlos</string>
+    <string name="appearance">Aussehen</string>
+    <string name="contribute">Beitragen</string>
+    <string name="about">Über</string>
+    <string name="mute_ringer">lautlos</string>
+    <string name="auto_brightness">Auto Helligkeit</string>
     <string name="handle_power">Autostart</string>
     <string name="allow_screen_off">Bildschirm aus</string>
     <string name="show_date">Datum</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
-   	<string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
+    <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
     <string name="white_clock">Einfache weiße Uhr.</string>
     <string name="choose_color">... oder andere Farbe wählen.</string>
     <string name="choose_color_btn">wählen</string>

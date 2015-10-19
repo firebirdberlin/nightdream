@@ -30,8 +30,8 @@ public class NightDreamService extends DreamService implements View.OnClickListe
     int mode;
     boolean isDebuggable;
 
-    private float   last_ambient;
-    private double  last_ambient_noise = 32000.;
+    private float last_ambient;
+    private double last_ambient_noise = 32000.;
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver;
@@ -110,7 +110,10 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         nightDreamUI.onPause();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-        unregisterReceiver(nReceiver);
+        if (nReceiver != null) {
+            unregisterReceiver(nReceiver);
+            nReceiver = null;
+        }
 
         //if (utility.AlarmRunning() == true) histogram.stopAlarm();
         // set Alarm

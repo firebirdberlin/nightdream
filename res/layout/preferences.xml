@@ -42,6 +42,11 @@
         android:icon="@drawable/ic_appearance">
 
         <SwitchPreference
+            android:key="autoBrightness"
+            android:title="@string/auto_brightness"
+            android:defaultValue="false" />
+
+        <SwitchPreference
             android:key="showDate"
             android:title="@string/show_date"
             android:defaultValue="true" />

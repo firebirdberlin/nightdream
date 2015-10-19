@@ -50,7 +50,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private NotificationReceiver nReceiver;
     private NotificationReceiverPower pwrReceiver;
     private PowerManager pm;
-    private PowerManager.WakeLock wakelock;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -67,6 +66,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI = new NightDreamUI(this, window);
         utility = new Utility(this);
         handler = new Handler();
+        AudioManage  = new mAudioManager(this);
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         isDebuggable = utility.isDebuggable();
 
         // allow the app to be displayed above the keyguard
@@ -83,9 +84,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         histogram = (Histogram)findViewById(R.id.Histogram);
         histogram.setUtility(utility);
         //histogram.restoreData();
-
-        AudioManage  = new mAudioManager(this);
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -200,7 +198,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     protected void onStop() {
         super.onStop();
 
-        releaseWakelock();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
 
@@ -226,10 +223,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     private NotificationReceiver registerNotificationReceiver(){
-		NotificationReceiver receiver = new NotificationReceiver(getWindow());
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
-		registerReceiver(receiver,filter);
+        NotificationReceiver receiver = new NotificationReceiver(getWindow());
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
+        registerReceiver(receiver,filter);
         return receiver;
     }
 
@@ -241,11 +238,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return pwrReceiver;
     }
 
-
     public boolean onTouch(View view, MotionEvent e) {
         return nightDreamUI.onTouch(view, e, last_ambient);
     }
-
 
     public void onClick(View v) {
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
@@ -370,13 +365,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public void setKeepScreenOn(boolean keepScreenOn) {
         if( keepScreenOn ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            releaseWakelock();
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-    }
-
-    public void releaseWakelock(){
-        if ( wakelock != null && wakelock.isHeld() ) wakelock.release();
     }
 }
