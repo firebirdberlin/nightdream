@@ -221,15 +221,8 @@ public class NightDreamUI {
         if (battery.isCharging()) {
             if (battery.getPercentage() < 98.){
                 long est = battery.getEstimateMillis()/1000; // estimated seconds
-                if (est > 0){
-                    long h = est / 3600;
-                    long m  = ( est % 3600 ) / 60;
-                    batteryView.setText(String.format("%02d %% -- %02d:%02d",
-                                (int) battery.getPercentage(),
-                                (int) h, (int) m));
-                } else {
-                    batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
-                }
+
+                formatBatteryEstimate(est);
             }  else if (battery.getPercentage() < 100.) {
                 batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
             } else {
@@ -237,15 +230,18 @@ public class NightDreamUI {
             }
         } else { // not charging
             long est = battery.getDischargingEstimateMillis()/1000; // estimated seconds
-            if (est > 0){
-                long h = est / 3600;
-                long m  = ( est % 3600 ) / 60;
-                batteryView.setText(String.format("%02d %% -- %02d:%02d",
-                            (int) battery.getPercentage(),
-                            (int)h, (int) m));
-            } else {
-                batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
-            }
+            formatBatteryEstimate(est);
+        }
+    }
+
+    private void formatBatteryEstimate(long est) {
+        if (est > 0){
+            long h = est / 3600;
+            long m  = ( est % 3600 ) / 60;
+            batteryView.setText(String.format("%02d %% -- %02d:%02d",
+                                              (int) battery.getPercentage(), (int) h, (int) m));
+        } else {
+            batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
         }
     }
 
