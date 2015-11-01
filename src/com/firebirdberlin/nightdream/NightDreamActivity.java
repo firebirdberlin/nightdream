@@ -92,7 +92,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                 String mode = extras.getString("mode");
                 if (mode.equals("night")) {
                     mySettings = new Settings(this);
-                    last_ambient = 4.2f;
+                    last_ambient = mySettings.minIlluminance;
                     last_ambient_noise = 32000; // something loud
                     nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
                 }
@@ -267,7 +267,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                     SwitchModes(50.f, last_ambient_noise);
                     break;
                 case 3:
-                    SwitchModes(4.0f, last_ambient_noise);
+                    SwitchModes(mySettings.minIlluminance - 0.2f, last_ambient_noise);
                     break;
             }
         }

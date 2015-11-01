@@ -348,7 +348,6 @@ public class NightDreamUI {
 
     private void setBrightness(float value) {
         LayoutParams layout = window.getAttributes();
-        layout.flags |= LayoutParams.FLAG_KEEP_SCREEN_ON;
         layout.screenBrightness = value;
         layout.buttonBrightness = 0.f;
         window.setAttributes(layout);
@@ -363,6 +362,7 @@ public class NightDreamUI {
 
     public int determineScreenMode(int current_mode, float light_value, double last_ambient_noise){
 
+        LIGHT_VALUE_DARK = settings.minIlluminance;
         double ambient_noise_threshold = settings.NOISE_AMPLITUDE_SLEEP;
         if (current_mode == 0){
             ambient_noise_threshold = settings.NOISE_AMPLITUDE_WAKE;
