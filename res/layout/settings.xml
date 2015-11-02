@@ -48,14 +48,6 @@
                 android:textAppearance="?android:attr/textAppearance" />
         </LinearLayout>
 
-        <Switch
-            android:id="@+id/switch_white_clock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:minHeight="32dp"
-            android:minWidth="32dp" />
-
         <TextView
             android:id="@+id/config_text"
             android:layout_width="wrap_content"

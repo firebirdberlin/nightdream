@@ -12,8 +12,7 @@
     <string name="show_date">Datum</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
-    <string name="white_clock">Einfache weiße Uhr.</string>
-    <string name="choose_color">... oder andere Farbe wählen.</string>
+    <string name="choose_color">Farbe wählen</string>
     <string name="choose_color_btn">wählen</string>
     <string name="choose_color_dialog">Wählen Sie eine Farbe.</string>
     <string name="background">Hintergrund</string>

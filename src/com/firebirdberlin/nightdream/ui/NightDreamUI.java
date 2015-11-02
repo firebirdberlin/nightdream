@@ -107,12 +107,8 @@ public class NightDreamUI {
             hideDate();
         }
 
-        if (settings.whiteClock) {
-            clock.setTextColor(Color.parseColor("#C2C2C2"));
-        } else {
-            clock.setTextColor(settings.clockColor);
-            histogram.setCustomColor(settings.clockColor);
-        }
+        clock.setTextColor(settings.clockColor);
+        histogram.setCustomColor(settings.clockColor);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;

@@ -14,7 +14,6 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean muteRinger = true;
     public boolean showDate = true;
-    public boolean whiteClock = false;
     public float dim_offset = 0.f;
     public float minIlluminance = 15.f; // lux
     public int background_mode = 1;
@@ -43,7 +42,6 @@ public class Settings {
         muteRinger = settings.getBoolean("Night.muteRinger", true);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
-        whiteClock = settings.getBoolean("whiteClock", false);
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;

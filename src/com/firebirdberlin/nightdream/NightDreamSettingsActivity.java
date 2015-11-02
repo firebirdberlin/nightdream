@@ -52,7 +52,6 @@ public class NightDreamSettingsActivity extends Activity {
 
         settings = getSharedPreferences(PREFS_KEY, 0);
         boolean animate = settings.getBoolean("showDate", true);
-        boolean whiteClock = settings.getBoolean("whiteClock", true);
         boolean handle_power = settings.getBoolean("handle_power", false);
         boolean allow_screen_off = settings.getBoolean("allow_screen_off", false);
         boolean ambientNoise = settings.getBoolean("ambientNoiseDetection", false);
@@ -65,7 +64,7 @@ public class NightDreamSettingsActivity extends Activity {
 
         final CheckBox cbSilence = (CheckBox) findViewById(R.id.checkbox_mute_ringer);
         cbSilence.setChecked(settings.getBoolean("Night.muteRinger", true));
-        cbSilence.setOnCheckedChangeListener(new OnCheckedChangeListener()    {
+        cbSilence.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
@@ -77,12 +76,11 @@ public class NightDreamSettingsActivity extends Activity {
             });
 
         if (startedByActivity == false){
-            final View switch_handle_power     = (View) findViewById(R.id.llHandlePower);
+            final View switch_handle_power = (View) findViewById(R.id.llHandlePower);
             switch_handle_power.setVisibility(View.GONE);
-            final View switch_allow_screen_off     = (View) findViewById(R.id.llAllowScreenOff);
+            final View switch_allow_screen_off = (View) findViewById(R.id.llAllowScreenOff);
             switch_allow_screen_off.setVisibility(View.GONE);
-        }
-        else {
+        } else {
 
             final CompoundButton switch_handle_power     = (CompoundButton) findViewById(R.id.switch_handle_power);
             switch_handle_power.setChecked(handle_power);
@@ -132,20 +130,6 @@ public class NightDreamSettingsActivity extends Activity {
                 public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
 
                 }
-        });
-
-
-
-        final     CompoundButton switch_white_clock     = (CompoundButton) findViewById(R.id.switch_white_clock);
-        switch_white_clock.setChecked(whiteClock);
-        switch_white_clock.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(final CompoundButton buttonView,
-                    final boolean isChecked) {
-                SharedPreferences.Editor prefEditor = settings.edit();
-                prefEditor.putBoolean("whiteClock", isChecked);
-                prefEditor.commit();
-            }
         });
 
         final CompoundButton switch_ambient_noise = (CompoundButton) findViewById(R.id.switch_ambient_noise);
