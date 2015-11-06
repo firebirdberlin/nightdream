@@ -37,8 +37,8 @@ public class PreferencesActivity extends PreferenceActivity {
                     startActivityForResult(intent, 0);
                 }
                 return true;
-            }   
-        }); 
+            }
+        });
 
         Preference chooseImage = (Preference) findPreference("chooseBackgroundImage");
         chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -46,34 +46,34 @@ public class PreferencesActivity extends PreferenceActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, RESULT_LOAD_IMAGE);
                 return true;
-            }   
-        }); 
+            }
+        });
     }
 
-	// an image was selected
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    // an image was selected
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
 
-		if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data){
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data){
 
-			Uri selectedImage = data.getData();
-			String[] filePathColumn = { MediaStore.Images.Media.DATA };
-			Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
-			cursor.moveToFirst();
-			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			String picturePath = cursor.getString(columnIndex);
-			cursor.close();
-			if (picturePath != null){
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            if (picturePath != null){
                 SharedPreferences settings = getSharedPreferences(PREFS_KEY, 0);
-				SharedPreferences.Editor prefEditor = settings.edit();
-				prefEditor.putString("BackgroundImage", picturePath);
-				prefEditor.commit();
-			} else {
-				Toast.makeText(this, "Could locate image !", Toast.LENGTH_LONG).show();
-			}
-		}
-	}
+                SharedPreferences.Editor prefEditor = settings.edit();
+                prefEditor.putString("BackgroundImage", picturePath);
+                prefEditor.commit();
+            } else {
+                Toast.makeText(this, "Could locate image !", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
 
 

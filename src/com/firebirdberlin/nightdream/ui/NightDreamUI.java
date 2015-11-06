@@ -215,11 +215,11 @@ public class NightDreamUI {
 
     public void updateBatteryView() {
         if (battery.isCharging()) {
-            if (battery.getPercentage() < 98.){
+            if (battery.getPercentage() < 95.){
                 long est = battery.getEstimateMillis()/1000; // estimated seconds
 
                 formatBatteryEstimate(est);
-            }  else if (battery.getPercentage() < 100.) {
+            }  else if (battery.getPercentage() < 98.) {
                 batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
             } else {
                 batteryView.setText(""); // nothing, if fully charged

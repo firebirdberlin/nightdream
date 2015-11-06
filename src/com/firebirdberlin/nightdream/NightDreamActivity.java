@@ -36,7 +36,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     Sensor lightSensor;
     int mode = 2;
     int currentRingerMode;
-    mAudioManager AudioManage;
+    mAudioManager AudioManage = null;
     boolean isDebuggable;
     private Thread exitOp ;
 
@@ -66,7 +66,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI = new NightDreamUI(this, window);
         utility = new Utility(this);
         handler = new Handler();
-        AudioManage  = new mAudioManager(this);
+        AudioManage = new mAudioManager(this);
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         isDebuggable = utility.isDebuggable();
 

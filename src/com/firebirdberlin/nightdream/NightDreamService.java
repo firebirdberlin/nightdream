@@ -42,7 +42,7 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setContentView(R.layout.clock);
+        setContentView(R.layout.main);
 
         nightDreamUI = new NightDreamUI(this, getWindow());
         mySettings = new Settings(this);
@@ -78,6 +78,10 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         background_image = (ImageView)findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
+    }
+
+    // ignore click on the settings icon
+    public void onSettingsClick(View v) {
     }
 
     @Override
