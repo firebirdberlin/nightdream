@@ -48,16 +48,6 @@
                 android:textAppearance="?android:attr/textAppearance" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/config_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/white_clock"
-            android:layout_weight="1"
-            android:scrollHorizontally="false"
-            android:singleLine="false"
-            android:textAppearance="?android:attr/textAppearance" />
-
         <Button
             android:id="@+id/btn_choose_color"
              android:layout_height="wrap_content"

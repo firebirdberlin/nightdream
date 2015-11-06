@@ -333,6 +333,8 @@ public class NightDreamUI {
             setAlpha(notificationbar, 0.0f, millis);
             setAlpha(batteryView, 0.0f, millis);
         } else {
+            // increase minimum alpha value for the notification bar
+            v = to_range(v, 0.6f, 1.f);
             setAlpha(notificationbar, v, millis);
             setAlpha(batteryView, v, millis);
         }

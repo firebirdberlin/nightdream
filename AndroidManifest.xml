@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.firebirdberlin.nightdream"
-      android:versionCode="37"
-      android:versionName="1.7.1">
+    package="com.firebirdberlin.nightdream"
+    android:versionCode="38"
+    android:versionName="1.7.2">
+
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
@@ -10,24 +11,26 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-sdk  android:minSdkVersion="9"
-                android:targetSdkVersion="18"/>
-    <application
-    android:label="NightDream"
-    android:icon="@drawable/ic_nightdream">
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="18"/>
 
-    <service
-      android:name=".NightDreamService"
-      android:label="NightDream"
-      android:exported="true"
-      android:configChanges="orientation|keyboard">
-      <intent-filter>
-        <action android:name="android.service.dreams.DreamService" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-      <meta-data android:name="android.service.dream"
-           android:resource="@xml/nightdream" />
-    </service>
+    <application
+        android:label="NightDream"
+        android:icon="@drawable/ic_nightdream">
+
+        <service
+            android:name=".NightDreamService"
+            android:label="NightDream"
+            android:exported="true"
+            android:configChanges="orientation|keyboard">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data android:name="android.service.dream"
+                android:resource="@xml/nightdream" />
+        </service>
 
     <service android:name="com.firebirdberlin.nightdream.mNotificationListener"
         android:label="NightDream"
@@ -42,9 +45,9 @@
         android:name="com.firebirdberlin.nightdream.accNotificationListener"
         android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
         android:enabled="@bool/use_AccessibilityService">
-     <intent-filter>
-         <action android:name="android.accessibilityservice.AccessibilityService" />
-     </intent-filter>
+        <intent-filter>
+            <action android:name="android.accessibilityservice.AccessibilityService" />
+        </intent-filter>
     </service>
 
     <service android:enabled="true" android:name=".NightModeListener" />
@@ -68,29 +71,29 @@
     <receiver
         android:name=".PowerConnectionReceiver"
         android:enabled="true">
-          <intent-filter>
-             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
-          </intent-filter>
+        <intent-filter>
+            <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+        </intent-filter>
     </receiver>
 
     <receiver
         android:name=".PowerDisconnectionReceiver"
         android:enabled="true">
-          <intent-filter>
-             <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
-          </intent-filter>
+        <intent-filter>
+            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+        </intent-filter>
     </receiver>
 
     <receiver android:name=".WakeUpReceiver">
-          <intent-filter>
-             <action android:name="com.firebirdberlin.nightdream.WAKEUP"/>
-          </intent-filter>
+        <intent-filter>
+            <action android:name="com.firebirdberlin.nightdream.WAKEUP"/>
+        </intent-filter>
     </receiver>
 
     <receiver android:name=".AlarmReceiver">
-    <intent-filter>
-        <action android:name="android.intent.action.ALARM_CHANGED"></action>
-    </intent-filter>
+        <intent-filter>
+            <action android:name="android.intent.action.ALARM_CHANGED"></action>
+        </intent-filter>
     </receiver>
-  </application>
+</application>
 </manifest>
