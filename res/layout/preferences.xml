@@ -2,21 +2,25 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="main_screen">
 
-    <PreferenceScreen
-        android:title="@string/night_mode"
-        android:key="night_mode_screen"
-        android:icon="@drawable/ic_nightmode">
+        <SwitchPreference
+            android:key="handle_power"
+            android:icon="@drawable/ic_power"
+            android:title="@string/handle_power"
+            android:defaultValue="false" />
 
-            <PreferenceCategory android:title="@string/night_mode">
-                <SwitchPreference
-                    android:key="handle_power"
-                    android:title="@string/handle_power"
-                    android:defaultValue="false" />
+        <PreferenceScreen
+            android:title="@string/night_mode"
+            android:key="night_mode_screen"
+            android:icon="@drawable/ic_nightmode">
+
+            <PreferenceCategory
+                android:title="@string/night_mode"
+                key="category_night_mode">
 
                 <CheckBoxPreference
                     android:key="Night.muteRinger"
                     android:title="@string/mute_ringer"
-                    android:defaultValue="true" />
+                    android:defaultValue="false" />
 
                 <SwitchPreference
                     android:key="ambientNoiseDetection"
@@ -34,57 +38,57 @@
                     android:max="10"
                     android:title="@string/noise_sensitivity"/>
             </PreferenceCategory>
-    </PreferenceScreen>
+        </PreferenceScreen>
 
-    <PreferenceScreen
-        android:title="@string/appearance"
-        android:key="colors_screen"
-        android:icon="@drawable/ic_appearance">
+        <PreferenceScreen
+            android:title="@string/appearance"
+            android:key="colors_screen"
+            android:icon="@drawable/ic_appearance">
 
-        <SwitchPreference
-            android:key="autoBrightness"
-            android:title="@string/auto_brightness"
-            android:defaultValue="false" />
+            <SwitchPreference
+                android:key="autoBrightness"
+                android:title="@string/auto_brightness"
+                android:defaultValue="false" />
 
-        <SwitchPreference
-            android:key="showDate"
-            android:title="@string/show_date"
-            android:defaultValue="true" />
+            <SwitchPreference
+                android:key="showDate"
+                android:title="@string/show_date"
+                android:defaultValue="true" />
 
-        <yuku.ambilwarna.widget.AmbilWarnaPreference
-            android:key="clockColor"
-            android:defaultValue="0xff33B5E5"
-            android:title="@string/choose_color_dialog"/>
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:key="clockColor"
+                android:defaultValue="0xff33B5E5"
+                android:title="@string/choose_color_dialog"/>
 
-        <PreferenceCategory android:title="@string/background">
-            <ListPreference
-                android:title="@string/background"
-                android:key="backgroundMode"
-                android:defaultValue="1"
-                android:entries="@array/backgroundModes"
-                android:entryValues="@array/backgroundModeValues"/>
+            <PreferenceCategory android:title="@string/background">
+                <ListPreference
+                    android:title="@string/background"
+                    android:key="backgroundMode"
+                    android:defaultValue="1"
+                    android:entries="@array/backgroundModes"
+                    android:entryValues="@array/backgroundModeValues"/>
 
-            <Preference
-                android:key="chooseBackgroundImage"
-                android:title="@string/background_image"/>
+                <Preference
+                    android:key="chooseBackgroundImage"
+                    android:title="@string/background_image"/>
 
-        </PreferenceCategory>
+            </PreferenceCategory>
 
-    </PreferenceScreen>
-    <Preference
-        android:key="startNotificationService"
-        android:title="@string/buttonAccessibilitySettings"
-        android:icon="@drawable/ic_menu"/>
+        </PreferenceScreen>
+        <Preference
+            android:key="startNotificationService"
+            android:title="@string/buttonAccessibilitySettings"
+            android:icon="@drawable/ic_menu"/>
 
-    <Preference
-        android:icon="@drawable/ic_github"
-        android:title="@string/contribute">
-        <intent android:action="android.intent.action.VIEW"
-            android:data="https://github.com/firebirdberlin/nightdream"/>
+        <Preference
+            android:icon="@drawable/ic_github"
+            android:title="@string/contribute">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://github.com/firebirdberlin/nightdream"/>
 
-    </Preference>
+        </Preference>
 
-    <PreferenceScreen
+        <PreferenceScreen
             android:key="about_screen"
             android:icon="@drawable/ic_about"
             android:title="@string/about">
@@ -106,4 +110,4 @@
 
             </Preference>
         </PreferenceScreen>
-</PreferenceScreen>
+    </PreferenceScreen>

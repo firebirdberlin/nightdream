@@ -57,6 +57,7 @@ public class NightDreamUI {
     private int dim_offset_init_x = 0;
     private int dim_offset_curr_x = 0;
     public boolean setDimOffset = false;
+    private boolean daydreamMode = false;
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
@@ -87,6 +88,11 @@ public class NightDreamUI {
         batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
         batteryView.setVisibility(View.VISIBLE);
         isDebuggable = utility.isDebuggable();
+    }
+
+    public NightDreamUI(Context context, Window window, boolean daydreamMode) {
+        this(context, window);
+        this.daydreamMode = daydreamMode;
     }
 
     public void onStart() {
@@ -304,9 +310,9 @@ public class NightDreamUI {
         float v = 0.f;
         float brightness = 0.f;
         if (settings.autoBrightness) {
-            float luminance_offset = 40 * add_brightness;
+            float luminance_offset = LIGHT_VALUE_BRIGHT * add_brightness;
             if (light_value > LIGHT_VALUE_BRIGHT && add_brightness > 0.f) {
-                luminance_offset = 5000 * add_brightness;
+                luminance_offset = LIGHT_VALUE_DAYLIGHT * add_brightness;
             }
             v = (light_value + luminance_offset - LIGHT_VALUE_DARK)/(LIGHT_VALUE_BRIGHT - LIGHT_VALUE_DARK);
             v = 0.3f + 0.7f * v;
@@ -315,6 +321,11 @@ public class NightDreamUI {
         } else {
             v = 1.f + add_brightness;
             brightness = add_brightness;
+
+            if ( daydreamMode ) {
+                v *= 0.5f;
+                brightness = 0.f;
+            }
         }
 
         v = to_range(v, 0.05f, 1.f);
@@ -329,7 +340,8 @@ public class NightDreamUI {
 
         setAlpha(clockLayout, v, millis);
         setAlpha(histogram, v, millis);
-        if (light_value < LIGHT_VALUE_DARK) {
+
+        if ( mode == 0 ) {
             setAlpha(notificationbar, 0.0f, millis);
             setAlpha(batteryView, 0.0f, millis);
         } else {

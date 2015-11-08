@@ -70,7 +70,7 @@
 
     <receiver
         android:name=".PowerConnectionReceiver"
-        android:enabled="true">
+        android:enabled="false">
         <intent-filter>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
         </intent-filter>
@@ -78,7 +78,7 @@
 
     <receiver
         android:name=".PowerDisconnectionReceiver"
-        android:enabled="true">
+        android:enabled="false">
         <intent-filter>
             <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
         </intent-filter>

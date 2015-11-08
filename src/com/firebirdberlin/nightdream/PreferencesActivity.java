@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 
 public class PreferencesActivity extends PreferenceActivity {
-	public static final String PREFS_KEY = "NightDream preferences";
-	private static int RESULT_LOAD_IMAGE = 1;
+    public static final String PREFS_KEY = "NightDream preferences";
+    private static int RESULT_LOAD_IMAGE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,22 @@ public class PreferencesActivity extends PreferenceActivity {
                 return true;
             }
         });
+
+        Preference prefHandlePower = (Preference) findPreference("handle_power");
+        Preference prefAllowScreenOff = (Preference) findPreference("allow_screen_off");
+
+        boolean enabled = Utility.isDaydreamEnabled(this);
+        final Context context = this;
+        prefAllowScreenOff.setEnabled( ! enabled );
+        prefHandlePower.setEnabled( ! enabled );
+        prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference preference, Object new_value) {
+                boolean on = Boolean.parseBoolean(new_value.toString());
+                Utility.toggleComponentState(context, PowerConnectionReceiver.class, on);
+                Utility.toggleComponentState(context, PowerDisconnectionReceiver.class, on);
+                return true;
+            }
+        });
     }
 
     // an image was selected
@@ -74,8 +90,6 @@ public class PreferencesActivity extends PreferenceActivity {
             }
         }
     }
-
-
 
     public static void start(Context context) {
         Intent myIntent = new Intent(context, PreferencesActivity.class);

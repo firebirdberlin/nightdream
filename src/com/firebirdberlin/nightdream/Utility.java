@@ -1,8 +1,10 @@
 package com.firebirdberlin.nightdream;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.media.AudioManager;
@@ -23,7 +25,9 @@ import java.lang.Thread;
 
 
 public class Utility{
-    Context mContext;
+    private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
+
+    private Context mContext;
     int system_brightness_mode = Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     MediaPlayer mMediaPlayer;
 
@@ -191,7 +195,17 @@ public class Utility{
                 system_brightness_mode);
     }
 
+    public static boolean isDaydreamEnabled(final Context c) {
+        return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1);
+    }
 
+    static public void toggleComponentState(Context context, Class component, boolean on){
+        ComponentName receiver = new ComponentName(context, component);
+        PackageManager pm = context.getPackageManager();
+        int new_state = (on) ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                            : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+        pm.setComponentEnabledSetting(receiver, new_state, PackageManager.DONT_KILL_APP);
+    }
 }
 
     /**

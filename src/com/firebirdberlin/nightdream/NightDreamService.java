@@ -44,7 +44,7 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         super.onAttachedToWindow();
         setContentView(R.layout.main);
 
-        nightDreamUI = new NightDreamUI(this, getWindow());
+        nightDreamUI = new NightDreamUI(this, getWindow(), true);
         mySettings = new Settings(this);
         utility = new Utility(this);
         isDebuggable = utility.isDebuggable();
@@ -197,12 +197,7 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         nightDreamUI.switchModes(light_value, last_ambient_noise);
 
-        if ((mode <= 1) && (current_mode != mode)) {
-            setScreenBright(false);
-        } else
-        if ((mode >= 2) && (current_mode != mode)) {
-            setScreenBright(true);
-        }
+        setScreenBright(mode >= 2);
     }
 
     public void onEvent(OnNewLightSensorValue event){
