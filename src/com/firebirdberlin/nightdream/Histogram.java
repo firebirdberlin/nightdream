@@ -9,8 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -41,7 +44,8 @@ class Histogram extends View{
       private PendingIntent PendingAlarmIntent;
       private static AlarmManager am = null;
       private Handler handler;
-      private int customcolor;
+      private int customcolor = Color.parseColor("#33B5E5");
+      private int customSecondaryColor = Color.parseColor("#C2C2C2");
       private Utility utility;
       private boolean DayDreamMode;
       public int touch_zone_radius;
@@ -52,7 +56,7 @@ class Histogram extends View{
       public Histogram(Context context, AttributeSet attrs) {
           super(context, attrs);
           ctx = context;
-          customcolor = Color.parseColor("#33B5E5");
+
           enabled = true;
           AlarmSet = false;
           AlarmTime = 0;
@@ -69,7 +73,12 @@ class Histogram extends View{
       }
 
       public void setUtility(Utility u) {utility = u;}
-      public void setCustomColor(int c) {customcolor = c;}
+
+      public void setCustomColor(int primary, int secondary) {
+          customcolor = primary;
+          customSecondaryColor = secondary;
+      }
+
       public void setDaydreamMode(boolean onoff) {DayDreamMode = onoff;}
 
       public void setNextAlarmString(String s){
@@ -184,6 +193,9 @@ class Histogram extends View{
       @Override
       protected void onDraw(Canvas canvas){
         Point size = utility.getDisplaySize();
+        ColorFilter customColorFilter = new LightingColorFilter(customcolor, 1);
+        ColorFilter secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
+        paint.setColorFilter(customColorFilter);
 
         //int sb = utility.getStatusBarHeight();
         int w = size.x;
@@ -200,7 +212,7 @@ class Histogram extends View{
             int tzr3 = touch_zone_radius- (int) (0.14 *touch_zone_radius);
 
             // left corner
-            paint.setColor(customcolor);
+            paint.setColor(Color.WHITE);
             if (FingerDown == true) paint.setAlpha(255);
             else paint.setAlpha(153);
 
@@ -210,7 +222,7 @@ class Histogram extends View{
             //paint.setAlpha(102);
             canvas.drawCircle(0, h, tzr2, paint);
 
-            paint.setColor(customcolor);
+            paint.setColor(Color.WHITE);
             if (FingerDown == true) paint.setAlpha(153);
             else paint.setAlpha(102);
 
@@ -218,7 +230,7 @@ class Histogram extends View{
 
             // right corner
             if (AlarmSet == true || FingerDown){
-                paint.setColor(customcolor);
+                paint.setColor(Color.WHITE);
                 if (FingerDownDeleteAlarm == true) paint.setAlpha(255);
                 else paint.setAlpha(153);
                 canvas.drawCircle(w, h, touch_zone_radius, paint);
@@ -226,7 +238,7 @@ class Histogram extends View{
                 paint.setColor(Color.BLACK);
                 canvas.drawCircle(w, h, tzr2, paint);
 
-                paint.setColor(customcolor);
+                paint.setColor(Color.WHITE);
                 if (FingerDownDeleteAlarm == true) paint.setAlpha(153);
                 else paint.setAlpha(102);
 
@@ -254,11 +266,13 @@ class Histogram extends View{
             }
 
         }
+
+        Resources res = getResources();
+        Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
+        paint.setColorFilter(secondaryColorFilter);
+
         if (nextAlarmFormatted.isEmpty() == true){
             if (FingerDown == true || AlarmSet == true){
-                Resources res = getResources();
-                Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
-
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY, hour);
                 calendar.set(Calendar.MINUTE, min);
@@ -278,7 +292,7 @@ class Histogram extends View{
                     canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
                 }
                 else if (AlarmSet == true){
-                    paint.setColor(customcolor);
+                    paint.setColor(Color.WHITE);
                     canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
                 }
 
@@ -288,12 +302,10 @@ class Histogram extends View{
                 }
             }
         } else { // next upcoming alarm is set
-            Resources res = getResources();
-            Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
             float lw = paint.measureText(nextAlarmFormatted);
             float cw = touch_zone_radius-60;
             paint.setTextSize(touch_zone_radius*.6f);
-            paint.setColor(customcolor);
+            paint.setColor(Color.WHITE);
             canvas.drawText(nextAlarmFormatted, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
             if ((touch_zone_radius) > 100){ // no image on on small screens
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, touch_zone_radius-60, touch_zone_radius-60, false);

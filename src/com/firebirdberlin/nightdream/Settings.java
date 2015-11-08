@@ -18,6 +18,7 @@ public class Settings {
     public float minIlluminance = 15.f; // lux
     public int background_mode = 1;
     public int clockColor;
+    public int secondaryColor;
     public int sensitivity = 1;
     public String bgpath = "";
 
@@ -40,6 +41,7 @@ public class Settings {
         dim_offset = settings.getFloat("dimOffset", 0.f);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", true);
+        secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
 

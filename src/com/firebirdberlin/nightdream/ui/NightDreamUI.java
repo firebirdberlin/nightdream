@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -41,6 +42,8 @@ public class NightDreamUI {
     private Handler handler;
     private Histogram histogram;
     private ImageView background_image;
+    private ImageView settingsIcon;
+    private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
     private LinearLayout clockLayout;
     private LinearLayout notificationbar;
@@ -48,6 +51,7 @@ public class NightDreamUI {
     private SoundMeter soundmeter;
     private TextView batteryView;
     private TextView clock, date;
+    private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility;
     private View divider;
     private View rootView;
@@ -64,13 +68,23 @@ public class NightDreamUI {
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
+        batteryView = (TextView) rootView.findViewById(R.id.battery);
         clockLayout = (LinearLayout) rootView.findViewById(R.id.clockLayout);
         clock = (TextView) rootView.findViewById(R.id.clock);
         date = (TextView) rootView.findViewById(R.id.date);
         divider = (View) rootView.findViewById(R.id.divider);
-        batteryView = (TextView) rootView.findViewById(R.id.battery);
-        notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         histogram = (Histogram) rootView.findViewById(R.id.Histogram);
+        notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
+        settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
+
+        callIcon = (ImageView) rootView.findViewById(R.id.call_icon);
+        gmailIcon = (ImageView) rootView.findViewById(R.id.gmail_icon);
+        whatsappIcon = (ImageView) rootView.findViewById(R.id.whatsapp_icon);
+        twitterIcon = (ImageView) rootView.findViewById(R.id.twitter_icon);
+
+        gmailNumber = (TextView) rootView.findViewById(R.id.gmail_number);
+        whatsappNumber = (TextView) rootView.findViewById(R.id.whatsapp_number);
+        twitterNumber = (TextView) rootView.findViewById(R.id.twitter_number);
 
         // prepare zoom-in effect
         // API level 11
@@ -114,7 +128,19 @@ public class NightDreamUI {
         }
 
         clock.setTextColor(settings.clockColor);
-        histogram.setCustomColor(settings.clockColor);
+
+        date.setTextColor(settings.secondaryColor);
+        batteryView.setTextColor(settings.secondaryColor);
+        gmailNumber.setTextColor(settings.secondaryColor);
+        twitterNumber.setTextColor(settings.secondaryColor);
+        whatsappNumber.setTextColor(settings.secondaryColor);
+        settingsIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
+        callIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
+        gmailIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
+        twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
+        whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
+
+        histogram.setCustomColor(settings.clockColor, settings.secondaryColor);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -256,27 +282,22 @@ public class NightDreamUI {
             // make back panel fully transparent
             clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
             // random x position
-            int rxpos = (w - clockLayout.getWidth())/2; // API level
-            int rypos = (h - clockLayout.getHeight())/2; // -150-90; // API level 1
+            int rxpos = (w - clockLayout.getWidth()) / 2;
+            int rypos = (h - clockLayout.getHeight()) / 2; // API level 1
             int i1 = 0;
 
             if (rxpos < 0) rxpos = 0;
-            i1 = random.nextInt(2*rxpos);
+            i1 = random.nextInt(2 * rxpos);
 
             // random y position
             // the lower 150 px is reserved for alarm clockLayout
             // the upper 90 px is for attery stats
             int i2 = 90;
             if (rypos < 0) rypos = 0;
-            i2 = random.nextInt(2*rypos);
+            i2 = random.nextInt(2 * rypos);
 
-            clockLayout.setPadding(i1,i2,0,0);
+            clockLayout.setPadding(i1, i2, 0, 0);
             clockLayout.invalidate();
-            if (isDebuggable) {
-                Log.d(TAG,"layout("+String.valueOf(i1)+","+String.valueOf(i2)+","+
-                        String.valueOf(i1+clockLayout.getWidth()) +","+
-                        String.valueOf(i2+clockLayout.getHeight()));
-            }
         } else {
             // random x position
             int rxpos = w - (int) (clockLayout.getWidth() * clockLayout.getScaleX()); // API level 11

@@ -14,6 +14,7 @@
     <string name="ambient_noise">ambient noise detection</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="choose_color">Clock color</string>
+    <string name="choose_secondary_color">Secondary color</string>
     <string name="choose_color_btn">pick color</string>
     <string name="choose_color_dialog">Pick a color.</string>
     <string name="background">background</string>
