@@ -64,6 +64,16 @@ public class PreferencesActivity extends PreferenceActivity {
                 return true;
             }
         });
+
+
+        Preference goToDonation = (Preference) findPreference("openDonationPage");
+        goToDonation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                openDonationPage();
+                return true;
+            }
+        });
+
     }
 
     // an image was selected
@@ -89,6 +99,12 @@ public class PreferencesActivity extends PreferenceActivity {
                 Toast.makeText(this, "Could locate image !", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void openDonationPage() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5PX9XVHHE6XP8"));
+        startActivity(browserIntent);
     }
 
     public static void start(Context context) {

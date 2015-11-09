@@ -127,8 +127,17 @@ public class NightDreamUI {
             hideDate();
         }
 
-        clock.setTextColor(settings.clockColor);
+        setColor();
 
+        if (settings.ambientNoiseDetection == true){
+            soundmeter = new SoundMeter(isDebuggable);
+        } else {
+            soundmeter = null;
+        }
+    }
+
+    void setColor() {
+        clock.setTextColor(settings.clockColor);
         date.setTextColor(settings.secondaryColor);
         batteryView.setTextColor(settings.secondaryColor);
         gmailNumber.setTextColor(settings.secondaryColor);
@@ -139,7 +148,6 @@ public class NightDreamUI {
         gmailIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-
         histogram.setCustomColor(settings.clockColor, settings.secondaryColor);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
@@ -161,11 +169,6 @@ public class NightDreamUI {
 
         background_image.setImageDrawable(bgshape);
 
-        if (settings.ambientNoiseDetection == true){
-            soundmeter = new SoundMeter(isDebuggable);
-        } else {
-            soundmeter = null;
-        }
     }
 
     public void onPause() {
@@ -249,7 +252,6 @@ public class NightDreamUI {
         if (battery.isCharging()) {
             if (battery.getPercentage() < 95.){
                 long est = battery.getEstimateMillis()/1000; // estimated seconds
-
                 formatBatteryEstimate(est);
             }  else if (battery.getPercentage() < 98.) {
                 batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
@@ -263,6 +265,7 @@ public class NightDreamUI {
     }
 
     private void formatBatteryEstimate(long est) {
+        Log.i(TAG, String.valueOf(est));
         if (est > 0){
             long h = est / 3600;
             long m  = ( est % 3600 ) / 60;
@@ -284,17 +287,13 @@ public class NightDreamUI {
             // random x position
             int rxpos = (w - clockLayout.getWidth()) / 2;
             int rypos = (h - clockLayout.getHeight()) / 2; // API level 1
-            int i1 = 0;
 
-            if (rxpos < 0) rxpos = 0;
-            i1 = random.nextInt(2 * rxpos);
+            rxpos = to_range(rxpos, 1, w);
+            int i1 = random.nextInt(2 * rxpos);
 
             // random y position
-            // the lower 150 px is reserved for alarm clockLayout
-            // the upper 90 px is for attery stats
-            int i2 = 90;
-            if (rypos < 0) rypos = 0;
-            i2 = random.nextInt(2 * rypos);
+            rypos = to_range(rypos, 1, h);
+            int i2 = 90 + random.nextInt(2 * rypos);
 
             clockLayout.setPadding(i1, i2, 0, 0);
             clockLayout.invalidate();
@@ -307,10 +306,9 @@ public class NightDreamUI {
             // random y position
             int rypos = h - (int) (clockLayout.getHeight() * clockLayout.getScaleY())-150-90; // API level 11
             // lower 150 px is reserved for alarm clockLayout
-            // upper 90 px is for attery stats
+            // upper 90 px is for battery stats
             int i2 = 90;
-            if (rypos > 0)
-                i2 = 90 + random.nextInt(rypos);
+            if (rypos > 0) i2 = 90 + random.nextInt(rypos);
 
             clockLayout.animate().setDuration(10000).x(i1).y(i2); // api level 12
         }
@@ -319,6 +317,12 @@ public class NightDreamUI {
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
     private float LIGHT_VALUE_DAYLIGHT = 5000.0f;
+
+    private int to_range(int value, int min, int max){
+        if (value > max) return max;
+        if (value < min) return min;
+        return value;
+    }
 
     private float to_range(float value, float min, float max){
         if (value > max) return max;

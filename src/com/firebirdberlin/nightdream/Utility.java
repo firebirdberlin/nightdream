@@ -107,7 +107,7 @@ public class Utility{
 
     public Point getDisplaySize(){
         Point size = new Point();
-        if(Build.VERSION.SDK_INT < 10) {
+        if(Build.VERSION.SDK_INT < 13) {
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
             Display display = windowManager.getDefaultDisplay();
             size.x = display.getWidth();

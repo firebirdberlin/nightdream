@@ -28,19 +28,19 @@
         time
 -->
         <TextClock
-            android:id="@+id/clock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:translationX="0sp"
-            android:translationY="0sp"
-            android:layout_gravity="center"
+            android:clickable="true"
             android:fontFamily="sans-serif"
             android:format12Hour="h:mm a"
             android:format24Hour="kk:mm"
+            android:id="@+id/clock"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="onClick"
             android:textColor="#C2C2C2"
             android:textSize="50sp"
-            android:onClick="onClick"
-            android:clickable="true"
+            android:translationX="0sp"
+            android:translationY="0sp"
             />
 <!--
         divider

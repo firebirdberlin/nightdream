@@ -93,6 +93,11 @@
 
         </Preference>
 
+        <Preference
+            android:key="openDonationPage"
+            android:icon="@drawable/ic_paypal"
+            android:title="@string/donate"/>
+
         <PreferenceScreen
             android:key="about_screen"
             android:icon="@drawable/ic_about"
