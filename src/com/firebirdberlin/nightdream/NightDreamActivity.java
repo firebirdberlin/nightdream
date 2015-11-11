@@ -275,11 +275,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     // click on the settings icon
     public void onSettingsClick(View v) {
-        if (Build.VERSION.SDK_INT < 14){
-            NightDreamSettingsActivity.start(this);
-        } else {
-            PreferencesActivity.start(this);
-        }
+        PreferencesActivity.start(this);
     }
 
     private Runnable fadeOutSettings = new Runnable() {
