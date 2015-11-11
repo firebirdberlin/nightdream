@@ -28,3 +28,6 @@ proguard/
 
 # release keys
 *.keystore
+
+# temporary files
+*.sw*
