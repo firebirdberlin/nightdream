@@ -85,39 +85,47 @@
             android:title="@string/buttonAccessibilitySettings"
             android:icon="@drawable/ic_menu"/>
 
-        <Preference
-            android:icon="@drawable/ic_github"
-            android:title="@string/contribute">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="https://github.com/firebirdberlin/nightdream"/>
-
-        </Preference>
-
-        <Preference
-            android:key="openDonationPage"
-            android:icon="@drawable/ic_paypal"
-            android:title="@string/donate"/>
-
         <PreferenceScreen
             android:key="about_screen"
             android:icon="@drawable/ic_about"
             android:title="@string/about">
 
-            <Preference
-                android:key="credits"
+            <com.firebirdberlin.nightdream.VersionPreference
+                android:icon="@drawable/ic_clock"
+                android:key="version"
                 android:selectable="false"
-                android:enabled="true"
-                android:title="@string/credits"
-                android:summary="Stafen Fruhner (2015)"/>
+                />
 
             <Preference
-                android:icon="@drawable/ic_icons8"
-                android:key="about_icons8"
-                android:title="Icons"
-                android:summary="icons8" >
+                android:icon="@drawable/ic_github"
+                android:title="@string/contribute">
                 <intent android:action="android.intent.action.VIEW"
-                    android:data="https://icons8.com"/>
+                    android:data="https://github.com/firebirdberlin/nightdream"/>
 
             </Preference>
+
+            <Preference
+                android:key="openDonationPage"
+                android:icon="@drawable/ic_paypal"
+                android:title="@string/donate"/>
+
+            <PreferenceCategory android:title="@string/credits">
+                <Preference
+                    android:key="credits"
+                    android:selectable="false"
+                    android:enabled="true"
+                    android:title="Stefan Fruhner (2015)"
+                    android:summary="stefan.fruhner@googlemail.com"/>
+
+                <Preference
+                    android:icon="@drawable/ic_icons8"
+                    android:key="about_icons8"
+                    android:title="Icons"
+                    android:summary="icons8" >
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="https://icons8.com"/>
+
+                </Preference>
+            </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceScreen>
