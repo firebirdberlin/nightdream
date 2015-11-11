@@ -122,7 +122,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                 histogram.setNextAlarmString(nextAlarm);
         }
 
-        nightDreamUI.setAlpha(SettingsIcon, .2f, 3000);
+        nightDreamUI.setAlpha(SettingsIcon, .5f, 3000);
         nightDreamUI.onStart();
         handler.postDelayed(fadeOutSettings, 20000);
 
