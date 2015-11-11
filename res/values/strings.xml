@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NightDream</string>
-    <string name="night_mode">Night mode</string>
-    <string name="appearance">Appearance</string>
-    <string name="contribute">Contribute</string>
     <string name="about">About</string>
-    <string name="credits">Credits</string>
-    <string name="donate">Donate</string>
-    <string name="mute_ringer">mute ringer</string>
-    <string name="auto_brightness">Auto brightness</string>
-    <string name="handle_power">start/stop on AC</string>
     <string name="allow_screen_off">screen off</string>
-    <string name="show_date">show date</string>
     <string name="ambient_noise">ambient noise detection</string>
-    <string name="noise_sensitivity">Microphone sensitivity</string>
-    <string name="choose_color">Clock color</string>
-    <string name="choose_secondary_color">Secondary color</string>
-    <string name="choose_color_btn">pick color</string>
-    <string name="choose_color_dialog">Pick a color.</string>
+    <string name="appearance">Appearance</string>
+    <string name="app_name">NightDream</string>
+    <string name="auto_brightness">Auto brightness</string>
     <string name="background">background</string>
     <string name="background_black">black</string>
     <string name="background_gradient">gradient</string>
     <string name="background_image">image</string>
     <string name="buttonAccessibilitySettings">start notification listener</string>
+    <string name="choose_color_btn">pick color</string>
+    <string name="choose_color">Clock color</string>
+    <string name="choose_color_dialog">Pick a color.</string>
+    <string name="choose_secondary_color">Secondary color</string>
+    <string name="contribute">Contribute</string>
+    <string name="credits">Credits</string>
+    <string name="donate">Donate</string>
+    <string name="handle_power">start/stop on AC</string>
+    <string name="mute_ringer">mute ringer</string>
+    <string name="night_mode">Night mode</string>
+    <string name="noise_sensitivity">Microphone sensitivity</string>
+    <string name="show_date">show date</string>
 </resources>
 
 
