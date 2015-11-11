@@ -52,16 +52,14 @@
 
     <service android:enabled="true" android:name=".NightModeListener" />
 
-    <activity android:name="NightDreamSettingsActivity"></activity>
-    <activity android:name="PreferencesActivity"></activity>
-
-    <activity
-        android:name=".NightDreamActivity"
+    <activity android:name=".PreferencesActivity"></activity>
+    <activity android:name=".NightDreamActivity"
         android:enabled="true"
         android:label="@CONFIG.APPNAME@"
         android:icon="@drawable/ic_nightdream"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:configChanges="orientation|keyboard|screenSize">
+
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />

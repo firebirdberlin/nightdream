@@ -13,7 +13,7 @@ public class PowerDisconnectionReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if ( Utility.isDaydreamEnabled(context) ) return;
 
-        SharedPreferences settings = context.getSharedPreferences(NightDreamSettingsActivity.PREFS_KEY, 0);
+        SharedPreferences settings = context.getSharedPreferences(Settings.PREFS_KEY, 0);
         boolean handle_power = settings.getBoolean("handle_power", false);
 
         if (handle_power == true){

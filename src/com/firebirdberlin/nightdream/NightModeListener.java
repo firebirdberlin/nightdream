@@ -39,7 +39,7 @@ public class NightModeListener extends Service {
 
         handler = new Handler();
 
-        SharedPreferences settings = getSharedPreferences(NightDreamSettingsActivity.PREFS_KEY, 0);
+        SharedPreferences settings = getSharedPreferences(Settings.PREFS_KEY, 0);
         int sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
         maxAmplitude *= sensitivity;
 

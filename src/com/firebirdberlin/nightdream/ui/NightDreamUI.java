@@ -153,15 +153,15 @@ public class NightDreamUI {
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
         switch (settings.background_mode){
-            case NightDreamSettingsActivity.BACKGROUND_BLACK: {
+            case Settings.BACKGROUND_BLACK: {
                 bgshape = bgblack;
                 break;
             }
-            case NightDreamSettingsActivity.BACKGROUND_GRADIENT: {
+            case Settings.BACKGROUND_GRADIENT: {
                 bgshape = mContext.getResources().getDrawable(R.drawable.background_gradient);
                 break;
             }
-            case NightDreamSettingsActivity.BACKGROUND_IMAGE: {
+            case Settings.BACKGROUND_IMAGE: {
                 bgshape = loadBackGroundImage();
                 break;
             }

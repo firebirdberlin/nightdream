@@ -6,6 +6,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 
 public class Settings {
+    public static final String PREFS_KEY = "NightDream preferences";
+    public final static int BACKGROUND_BLACK = 1;
+    public final static int BACKGROUND_GRADIENT = 2;
+    public final static int BACKGROUND_IMAGE = 3;
+
     Context mContext;
     SharedPreferences settings;
 
@@ -28,7 +33,7 @@ public class Settings {
 
     public Settings(Context context){
         this.mContext = context;
-        settings = context.getSharedPreferences(NightDreamSettingsActivity.PREFS_KEY, 0);
+        settings = context.getSharedPreferences(PREFS_KEY, 0);
         reload();
     }
 
@@ -49,7 +54,7 @@ public class Settings {
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
 
         if (Build.VERSION.SDK_INT < 14){
-            background_mode = settings.getInt("BackgroundMode", NightDreamSettingsActivity.BACKGROUND_BLACK);
+            background_mode = settings.getInt("BackgroundMode", BACKGROUND_BLACK);
         } else {
             background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         }
