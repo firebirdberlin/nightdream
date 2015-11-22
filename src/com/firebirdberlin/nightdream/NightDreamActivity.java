@@ -44,7 +44,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private double last_ambient_noise = 32000; // something loud
     private boolean stock_alarm_present;
 
-    private Handler handler;
+    final private Handler handler = new Handler();
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver;
@@ -65,7 +65,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI = new NightDreamUI(this, window);
         utility = new Utility(this);
-        handler = new Handler();
         AudioManage = new mAudioManager(this);
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         isDebuggable = utility.isDebuggable();
@@ -200,10 +199,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-
-        if (handler != null){
-            handler.removeCallbacks(fadeOutSettings);
-        }
+        removeCallbacks(fadeOutSettings);
 
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
     }
@@ -219,7 +215,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         utility     = null;
         pwrReceiver = null;
         nReceiver   = null;
-        handler     = null;
     }
 
     private NotificationReceiver registerNotificationReceiver(){
@@ -246,10 +241,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
 
         nightDreamUI.setAlpha(SettingsIcon, 1.f,3000);
-        if (handler != null){
-            handler.removeCallbacks(fadeOutSettings);
-            handler.postDelayed(fadeOutSettings, 20000);
-        }
+        removeCallbacks(fadeOutSettings);
+        handler.postDelayed(fadeOutSettings, 20000);
 
         if (v instanceof TextView){
             nightDreamUI.onClockClicked();
@@ -364,5 +357,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+    }
+
+    private void removeCallbacks(Runnable runnable) {
+        if (handler == null) return;
+        if (runnable == null) return;
+
+        handler.removeCallbacks(runnable);
     }
 }

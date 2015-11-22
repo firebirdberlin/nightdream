@@ -199,6 +199,14 @@ public class Utility{
         return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1);
     }
 
+    public static boolean isDaydreamEnabledOnDock(final Context c) {
+        return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), "screensaver_activate_on_dock", -1);
+    }
+
+    public static boolean isDaydreamEnabledOnSleep(final Context c) {
+        return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), "screensaver_activate_on_sleep", -1);
+    }
+
     static public void toggleComponentState(Context context, Class component, boolean on){
         ComponentName receiver = new ComponentName(context, component);
         PackageManager pm = context.getPackageManager();

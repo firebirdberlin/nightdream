@@ -33,13 +33,13 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 public class NightDreamUI {
     private static String TAG ="NightDreamActivity";
 
-    boolean isDebuggable;
+    final private Handler handler = new Handler();
     private int mode = 2;
     private BatteryStats battery;
+    private boolean isDebuggable;
     private Context mContext;
     private Drawable bgshape;
     private Drawable bgblack;
-    private Handler handler;
     private Histogram histogram;
     private ImageView background_image;
     private ImageView settingsIcon;
@@ -95,7 +95,6 @@ public class NightDreamUI {
 
         utility = new Utility(context);
         battery = new BatteryStats(context);
-        handler = new Handler();
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
@@ -177,9 +176,9 @@ public class NightDreamUI {
 
     public void onStop() {
         lightSensorEventListener.unregister();
-        handler.removeCallbacks(moveAround);
-        handler.removeCallbacks(zoomIn);
-        handler.removeCallbacks(ClickOut);
+        removeCallbacks(moveAround);
+        removeCallbacks(zoomIn);
+        removeCallbacks(ClickOut);
         if (soundmeter != null){
             soundmeter.stopMeasurement();
             soundmeter = null;
@@ -188,13 +187,20 @@ public class NightDreamUI {
     }
 
     public void onDestroy() {
-        handler = null;
     }
+
+    private void removeCallbacks(Runnable runnable) {
+        if (handler == null) return;
+        if (runnable == null) return;
+
+        handler.removeCallbacks(runnable);
+    }
+
 
     public void onConfigurationChanged() {
         Point d = utility.getDisplaySize();
         setDesiredClockWidth((int)(0.6 * d.x));
-        handler.removeCallbacks(moveAround);
+        removeCallbacks(moveAround);
         handler.postDelayed(moveAround, 2000);
     }
 
@@ -437,7 +443,7 @@ public class NightDreamUI {
         }
         dimScreen(3000, light_value, dim_offset);
 
-        if (soundmeter != null){
+        if (soundmeter != null) {
             if (mode == 0 && soundmeter.isRunning() == false) {
                 soundmeter.startMeasurement(3000);
             } else if (mode == 1 && soundmeter.isRunning() == false){
@@ -483,7 +489,7 @@ public class NightDreamUI {
     private Runnable moveAround = new Runnable() {
        @Override
        public void run() {
-           handler.removeCallbacks(hideBrightnessLevel);
+           removeCallbacks(hideBrightnessLevel);
            updateBatteryView();
            updateClockPosition();
 
@@ -533,7 +539,7 @@ public class NightDreamUI {
         if (click.y < size.y - histogram.touch_zone_radius) {// everything except the alarm zone
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    handler.removeCallbacks(hideBrightnessLevel);
+                    removeCallbacks(hideBrightnessLevel);
                     setDimOffset = true;
                     dim_offset_init_x = click.x;
                     return true;
@@ -554,7 +560,7 @@ public class NightDreamUI {
                     setAlpha(batteryView, 1.f, 0);
                     batteryView.setText(s);
                     setAlpha(notificationbar, 1.f, 0);
-                    handler.removeCallbacks(hideBrightnessLevel);
+                    removeCallbacks(hideBrightnessLevel);
 
                     dim_offset_init_x = click.x;
                     return true;

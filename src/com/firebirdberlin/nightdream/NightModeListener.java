@@ -15,7 +15,7 @@ import android.util.Log;
 
 public class NightModeListener extends Service {
     private static String TAG = "NightDream.NightModeListener";
-    private Handler handler;
+    final private Handler handler = new Handler();
     private SoundMeter soundmeter;
 
     private boolean running = false;
@@ -36,8 +36,6 @@ public class NightModeListener extends Service {
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
         wakelock.acquire();
-
-        handler = new Handler();
 
         SharedPreferences settings = getSharedPreferences(Settings.PREFS_KEY, 0);
         int sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);

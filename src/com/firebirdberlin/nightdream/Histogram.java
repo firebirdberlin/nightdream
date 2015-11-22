@@ -30,26 +30,26 @@ import java.util.Calendar;
 import java.util.Locale;
 
 class Histogram extends View{
-      private Paint paint = new Paint();
-      private int w;
-      private int h;
-      private float tX, tY;
-      private Context ctx;
-      private boolean enabled;
+      final private Handler handler = new Handler();
+      private boolean AlarmSet = false;
+      private boolean DayDreamMode = false;
+      private boolean enabled = true;
       private boolean FingerDown;
       private boolean FingerDownDeleteAlarm;
-      private boolean AlarmSet;
-      private int hour, min;
-      private long AlarmTime;
-      private PendingIntent PendingAlarmIntent;
-      private static AlarmManager am = null;
-      private Handler handler;
+      private Context ctx;
+      private float tX, tY;
       private int customcolor = Color.parseColor("#33B5E5");
       private int customSecondaryColor = Color.parseColor("#C2C2C2");
+      private int h;
+      private int hour, min;
+      private int w;
+      private long AlarmTime = 0;
+      private Paint paint = new Paint();
+      private PendingIntent PendingAlarmIntent = null;
+      private static AlarmManager am = null;
+      private String nextAlarmFormatted = "";
       private Utility utility;
-      private boolean DayDreamMode;
-      public int touch_zone_radius;
-      private String nextAlarmFormatted;
+      public int touch_zone_radius = 150;
 
       long[] hist = new long[24];
 
@@ -57,19 +57,11 @@ class Histogram extends View{
           super(context, attrs);
           ctx = context;
 
-          enabled = true;
-          AlarmSet = false;
-          AlarmTime = 0;
-          DayDreamMode = false;
-          PendingAlarmIntent = null;
-          if (am == null)
+          if (am == null) {
               am = (AlarmManager)(ctx.getSystemService( Context.ALARM_SERVICE ));
-          handler = new Handler();
-          for (int i = 0; i < 24; i++)    hist[i] = 0;
+          }
 
-          touch_zone_radius = 150;
-
-          nextAlarmFormatted = "";
+          for (int i = 0; i < 24; i++) hist[i] = 0;
       }
 
       public void setUtility(Utility u) {utility = u;}
@@ -372,8 +364,10 @@ class Histogram extends View{
       }
 
       public void removeAlarm(){
-          if (DayDreamMode == true){
-              handler.removeCallbacks(setAlarmWhileRunning);
+          if (DayDreamMode == true) {
+              if (setAlarmWhileRunning != null) {
+                  handler.removeCallbacks(setAlarmWhileRunning);
+              }
           } else {
               if (PendingAlarmIntent !=null){
                   am.cancel(PendingAlarmIntent);
