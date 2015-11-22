@@ -18,7 +18,7 @@ public class PowerDisconnectionReceiver extends BroadcastReceiver {
 
         if (handle_power == true){
             Intent i = new Intent("com.firebirdberlin.nightdream.POWER_LISTENER");
-            i.putExtra("charging","disconnected");
+            i.putExtra("charging", "disconnected");
             context.sendBroadcast(i);
         }
     }

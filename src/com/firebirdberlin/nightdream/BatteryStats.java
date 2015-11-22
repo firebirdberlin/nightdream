@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.os.Build;
 
 
 public class BatteryStats{
@@ -73,6 +74,22 @@ public class BatteryStats{
         return (status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL);
     }
+
+    public boolean isChargingAC() {
+        return (getChargingMethod() == BatteryManager.BATTERY_PLUGGED_AC);
+    }
+
+    public boolean isChargingUSB() {
+        return (getChargingMethod() == BatteryManager.BATTERY_PLUGGED_USB);
+    }
+
+    public boolean isChargingWireless() {
+        if (Build.VERSION.SDK_INT >= 17){
+            return (getChargingMethod() == BatteryManager.BATTERY_PLUGGED_WIRELESS);
+        }
+        return false;
+    }
+
     // How are we charging?
     public int getChargingMethod(){
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -82,6 +99,38 @@ public class BatteryStats{
         //boolean acWireless = chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS;
         return chargePlug;
     }
+
+    public boolean isUndocked() {
+        int dockState = getDockState();
+        return (dockState == Intent.EXTRA_DOCK_STATE_UNDOCKED);
+    }
+
+    public boolean isDockedCar() {
+        int dockState = getDockState();
+        return (dockState == Intent.EXTRA_DOCK_STATE_CAR);
+    }
+
+    public boolean isDockedDesk() {
+        int dockState = getDockState();
+        if (Build.VERSION.SDK_INT >= 11){
+            return (dockState == Intent.EXTRA_DOCK_STATE_DESK ||
+                    dockState == Intent.EXTRA_DOCK_STATE_LE_DESK ||
+                    dockState == Intent.EXTRA_DOCK_STATE_HE_DESK);
+        }
+        return (dockState == Intent.EXTRA_DOCK_STATE_DESK);
+    }
+
+    private int getDockState() {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_DOCK_EVENT);
+        Intent dockStatus = mContext.registerReceiver(null, ifilter);
+
+        if (dockStatus == null) {
+            return Intent.EXTRA_DOCK_STATE_UNDOCKED;
+        }
+
+        return dockStatus.getIntExtra(Intent.EXTRA_DOCK_STATE, -1);
+    }
+
 
     private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver(){
         @Override

@@ -229,7 +229,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         NotificationReceiverPower pwrReceiver = new NotificationReceiverPower();
         IntentFilter pwrFilter = new IntentFilter();
         pwrFilter.addAction("com.firebirdberlin.nightdream.POWER_LISTENER");
-        registerReceiver(pwrReceiver,pwrFilter);
+        registerReceiver(pwrReceiver, pwrFilter);
         return pwrReceiver;
     }
 
@@ -343,11 +343,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
-            try{
-                if (intent.getStringExtra("charging").equals("disconnected")){
-                    finish();
-                }
-            } catch (Exception e) {};
+            // TODO works
+            finish();
+
+            if (intent.getStringExtra("charging").equals("disconnected")){
+                // TODO doesn't work
+                finish();
+            }
         }
     }
 
@@ -364,5 +366,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if (runnable == null) return;
 
         handler.removeCallbacks(runnable);
+    }
+
+    static public void start(Context context) {
+        Intent myIntent = new Intent();
+        myIntent.setClassName("com.firebirdberlin.nightdream",
+                              "com.firebirdberlin.nightdream.NightDreamActivity");
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(myIntent);
     }
 }

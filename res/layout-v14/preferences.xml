@@ -2,11 +2,42 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="main_screen">
 
-        <SwitchPreference
-            android:key="handle_power"
-            android:icon="@drawable/ic_power"
+        <PreferenceScreen
             android:title="@string/handle_power"
-            android:defaultValue="false" />
+            android:icon="@drawable/ic_power"
+            android:key="autostart">
+
+            <SwitchPreference
+                android:key="handle_power"
+                android:title="@string/handle_power"
+                android:defaultValue="false" />
+
+            <SwitchPreference
+                android:key="handle_power_ac"
+                android:title="@string/handle_power_ac"
+                android:defaultValue="false" />
+
+            <SwitchPreference
+                android:key="handle_power_usb"
+                android:title="@string/handle_power_usb"
+                android:defaultValue="false" />
+
+            <SwitchPreference
+                android:key="handle_power_wireless"
+                android:title="@string/handle_power_wireless"
+                android:defaultValue="false" />
+
+            <SwitchPreference
+                android:key="handle_power_desk"
+                android:title="@string/handle_power_desk"
+                android:defaultValue="false" />
+
+            <SwitchPreference
+                android:key="handle_power_car"
+                android:title="@string/handle_power_car"
+                android:defaultValue="false" />
+
+        </PreferenceScreen>
 
         <PreferenceScreen
             android:title="@string/night_mode"
