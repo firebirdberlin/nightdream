@@ -48,7 +48,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver;
-    private NotificationReceiverPower pwrReceiver;
+    private ReceiverPowerDisconnected pwrReceiver;
     private PowerManager pm;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -139,7 +139,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onResume();
 
         nightDreamUI.onResume();
-        pwrReceiver = registerPowerReceiver();
+        pwrReceiver = registerPowerDisconnectionReceiver();
         nReceiver = registerNotificationReceiver();
 
         if (Build.VERSION.SDK_INT >= 18){
@@ -225,10 +225,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return receiver;
     }
 
-    private NotificationReceiverPower registerPowerReceiver(){
-        NotificationReceiverPower pwrReceiver = new NotificationReceiverPower();
+    private ReceiverPowerDisconnected registerPowerDisconnectionReceiver(){
+        ReceiverPowerDisconnected pwrReceiver = new ReceiverPowerDisconnected();
         IntentFilter pwrFilter = new IntentFilter();
-        pwrFilter.addAction("com.firebirdberlin.nightdream.POWER_LISTENER");
+        pwrFilter.addAction("android.intent.action.ACTION_POWER_DISCONNECTED");
         registerReceiver(pwrReceiver, pwrFilter);
         return pwrReceiver;
     }
@@ -339,17 +339,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         SwitchModes(last_ambient, last_ambient_noise);
     }
 
-    class NotificationReceiverPower extends BroadcastReceiver{
+    class ReceiverPowerDisconnected extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
-            // TODO works
             finish();
-
-            if (intent.getStringExtra("charging").equals("disconnected")){
-                // TODO doesn't work
-                finish();
-            }
         }
     }
 

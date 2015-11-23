@@ -60,7 +60,6 @@ public class PreferencesActivity extends PreferenceActivity {
             public boolean onPreferenceChange(Preference preference, Object new_value) {
                 boolean on = Boolean.parseBoolean(new_value.toString());
                 Utility.toggleComponentState(context, PowerConnectionReceiver.class, on);
-                Utility.toggleComponentState(context, PowerDisconnectionReceiver.class, on);
                 return true;
             }
         });

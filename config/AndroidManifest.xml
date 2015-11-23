@@ -74,14 +74,6 @@
         </intent-filter>
     </receiver>
 
-    <receiver
-        android:name=".PowerDisconnectionReceiver"
-        android:enabled="false">
-        <intent-filter>
-            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
-        </intent-filter>
-    </receiver>
-
     <receiver android:name=".WakeUpReceiver">
         <intent-filter>
             <action android:name="com.firebirdberlin.nightdream.WAKEUP"/>
