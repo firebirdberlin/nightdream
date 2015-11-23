@@ -28,7 +28,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         boolean handle_power_usb = settings.getBoolean("handle_power_usb", false);
         boolean handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
 
-        BatteryStats battery = new BatteryStats(context);
+        BatteryStats battery = new BatteryStats(context.getApplicationContext());
         if ( battery.isUndocked() ) {
 
             if ((handle_power_ac && battery.isChargingAC()) ||
