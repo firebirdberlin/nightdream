@@ -11,8 +11,6 @@ import android.widget.Toast;
 public class PowerDisconnectionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if ( Utility.isDaydreamEnabled(context) ) return;
-
         SharedPreferences settings = context.getSharedPreferences(Settings.PREFS_KEY, 0);
         boolean handle_power = settings.getBoolean("handle_power", false);
 

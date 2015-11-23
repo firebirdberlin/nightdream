@@ -53,9 +53,9 @@ public class PreferencesActivity extends PreferenceActivity {
         Preference prefAllowScreenOff = (Preference) findPreference("allow_screen_off");
 
         boolean enabled = Utility.isDaydreamEnabled(this);
-        final Context context = this;
         prefAllowScreenOff.setEnabled( ! enabled );
-        prefHandlePower.setEnabled( ! enabled );
+
+        final Context context = this;
         prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object new_value) {
                 boolean on = Boolean.parseBoolean(new_value.toString());
