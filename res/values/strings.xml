@@ -18,7 +18,13 @@
     <string name="contribute">Contribute</string>
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
-    <string name="handle_power">start/stop on AC</string>
+    <string name="category_handle_power">Start when connected to</string>
+    <string name="handle_power">Autostart</string>
+    <string name="handle_power_ac">AC</string>
+    <string name="handle_power_usb">USB</string>
+    <string name="handle_power_wireless">wireless charger</string>
+    <string name="handle_power_desk">desk dock</string>
+    <string name="handle_power_car">car dock</string>
     <string name="mute_ringer">mute ringer</string>
     <string name="night_mode">Night mode</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>

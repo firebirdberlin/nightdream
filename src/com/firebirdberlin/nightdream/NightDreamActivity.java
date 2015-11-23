@@ -44,11 +44,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private double last_ambient_noise = 32000; // something loud
     private boolean stock_alarm_present;
 
-    private Handler handler;
+    final private Handler handler = new Handler();
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver;
-    private NotificationReceiverPower pwrReceiver;
+    private ReceiverPowerDisconnected pwrReceiver;
     private PowerManager pm;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -65,7 +65,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI = new NightDreamUI(this, window);
         utility = new Utility(this);
-        handler = new Handler();
         AudioManage = new mAudioManager(this);
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         isDebuggable = utility.isDebuggable();
@@ -140,7 +139,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onResume();
 
         nightDreamUI.onResume();
-        pwrReceiver = registerPowerReceiver();
+        pwrReceiver = registerPowerDisconnectionReceiver();
         nReceiver = registerNotificationReceiver();
 
         if (Build.VERSION.SDK_INT >= 18){
@@ -200,10 +199,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-
-        if (handler != null){
-            handler.removeCallbacks(fadeOutSettings);
-        }
+        removeCallbacks(fadeOutSettings);
 
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
     }
@@ -219,7 +215,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         utility     = null;
         pwrReceiver = null;
         nReceiver   = null;
-        handler     = null;
     }
 
     private NotificationReceiver registerNotificationReceiver(){
@@ -230,11 +225,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return receiver;
     }
 
-    private NotificationReceiverPower registerPowerReceiver(){
-        NotificationReceiverPower pwrReceiver = new NotificationReceiverPower();
+    private ReceiverPowerDisconnected registerPowerDisconnectionReceiver(){
+        ReceiverPowerDisconnected pwrReceiver = new ReceiverPowerDisconnected();
         IntentFilter pwrFilter = new IntentFilter();
-        pwrFilter.addAction("com.firebirdberlin.nightdream.POWER_LISTENER");
-        registerReceiver(pwrReceiver,pwrFilter);
+        pwrFilter.addAction("android.intent.action.ACTION_POWER_DISCONNECTED");
+        registerReceiver(pwrReceiver, pwrFilter);
         return pwrReceiver;
     }
 
@@ -246,10 +241,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
 
         nightDreamUI.setAlpha(SettingsIcon, 1.f,3000);
-        if (handler != null){
-            handler.removeCallbacks(fadeOutSettings);
-            handler.postDelayed(fadeOutSettings, 20000);
-        }
+        removeCallbacks(fadeOutSettings);
+        handler.postDelayed(fadeOutSettings, 20000);
 
         if (v instanceof TextView){
             nightDreamUI.onClockClicked();
@@ -346,15 +339,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         SwitchModes(last_ambient, last_ambient_noise);
     }
 
-    class NotificationReceiverPower extends BroadcastReceiver{
+    class ReceiverPowerDisconnected extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
-            try{
-                if (intent.getStringExtra("charging").equals("disconnected")){
-                    finish();
-                }
-            } catch (Exception e) {};
+            finish();
         }
     }
 
@@ -364,5 +353,20 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+    }
+
+    private void removeCallbacks(Runnable runnable) {
+        if (handler == null) return;
+        if (runnable == null) return;
+
+        handler.removeCallbacks(runnable);
+    }
+
+    static public void start(Context context) {
+        Intent myIntent = new Intent();
+        myIntent.setClassName("com.firebirdberlin.nightdream",
+                              "com.firebirdberlin.nightdream.NightDreamActivity");
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(myIntent);
     }
 }

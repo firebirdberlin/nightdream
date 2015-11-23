@@ -10,21 +10,20 @@ import de.greenrobot.event.EventBus;
 
 public class LightSensorEventListener implements SensorEventListener {
 
-    public int count = 0;
+    final private Handler handler = new Handler();
     private boolean pending = false;
-    private float ambient_mean = 4.0f;
-    private float last_value = 4.0f;
-    private float last_mean_value = 4.0f;
-    private SensorManager mSensorManager;
-    private Sensor lightSensor = null;
-    private Handler handler;
     private EventBus bus;
+    private float ambient_mean = 4.0f;
+    private float last_mean_value = 4.0f;
+    private float last_value = 4.0f;
+    private Sensor lightSensor = null;
+    private SensorManager mSensorManager;
+    public int count = 0;
 
 
     public LightSensorEventListener(Context context){
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        handler = new Handler();
         bus = EventBus.getDefault();
     }
 
@@ -39,7 +38,7 @@ public class LightSensorEventListener implements SensorEventListener {
                 handler.postDelayed(calculateMeanValue, 10000);
 
             // triggers handler if no change occurs within the next 15s
-            handler.removeCallbacks(sensorTimeout); // stop other instances
+            removeCallbacks(sensorTimeout); // stop other instances
             handler.postDelayed(sensorTimeout, 15000);// start timer
 
             pending = true;
@@ -56,16 +55,23 @@ public class LightSensorEventListener implements SensorEventListener {
     }
 
     public void unregister(){
-        handler.removeCallbacks(sensorTimeout); // stop other instances
-        handler.removeCallbacks(calculateMeanValue);
+        removeCallbacks(sensorTimeout); // stop other instances
+        removeCallbacks(calculateMeanValue);
         mSensorManager.unregisterListener(this);
+    }
+
+    private void removeCallbacks(Runnable runnable) {
+        if (handler == null) return;
+        if (runnable == null) return;
+
+        handler.removeCallbacks(runnable);
     }
 
     private Runnable calculateMeanValue = new Runnable() {
         @Override
         public void run() {
             pending = false;
-            if (count == 0) return; 
+            if (count == 0) return;
             ambient_mean /= (float) count;
             last_mean_value = ambient_mean;
             bus.post(new OnNewLightSensorValue(last_mean_value, count));

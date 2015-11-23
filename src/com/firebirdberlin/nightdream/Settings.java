@@ -17,7 +17,7 @@ public class Settings {
     public boolean allow_screen_off = false;
     public boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
-    public boolean muteRinger = true;
+    public boolean muteRinger = false;
     public boolean showDate = true;
     public float dim_offset = 0.f;
     public float minIlluminance = 15.f; // lux
@@ -45,7 +45,7 @@ public class Settings {
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", 0.f);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
-        muteRinger = settings.getBoolean("Night.muteRinger", true);
+        muteRinger = settings.getBoolean("Night.muteRinger", false);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);

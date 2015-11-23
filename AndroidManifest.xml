@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="40"
-    android:versionName="1.8">
+    android:versionCode="41"
+    android:versionName="1.9">
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -71,14 +71,6 @@
         android:enabled="false">
         <intent-filter>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
-        </intent-filter>
-    </receiver>
-
-    <receiver
-        android:name=".PowerDisconnectionReceiver"
-        android:enabled="false">
-        <intent-filter>
-            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
         </intent-filter>
     </receiver>
 

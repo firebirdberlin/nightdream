@@ -17,7 +17,13 @@
     <string name="choose_secondary_color">Sekundäre Farbe</string>
     <string name="contribute">Beitragen</string>
     <string name="donate">Spenden</string>
+    <string name="category_handle_power">Starte, wenn verbunden mit</string>
     <string name="handle_power">Autostart</string>
+    <string name="handle_power_ac">einem Ladegerät</string>
+    <string name="handle_power_usb">USB</string>
+    <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
+    <string name="handle_power_desk">Dock (Schreibtisch)</string>
+    <string name="handle_power_car">Dock (Auto)</string>
     <string name="mute_ringer">lautlos</string>
     <string name="night_mode">Nachtmodus</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>

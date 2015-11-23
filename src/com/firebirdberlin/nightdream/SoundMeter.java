@@ -30,15 +30,13 @@ public class SoundMeter {
     private MediaRecorder mRecorder = null;
     private double mEMA = 0.0;
     private boolean debug;
-    private Handler handler;
+    final private Handler handler = new Handler();
     private int interval = 60000;
     private boolean running = false;
 
 
     public SoundMeter(boolean debuggable){
         debug = debuggable;
-        mRecorder = null;
-        handler = new Handler();
         if (debug) Log.d(TAG,"SoundMeter()");
     }
 
@@ -104,7 +102,7 @@ public class SoundMeter {
     }
 
     public void release() {
-        handler.removeCallbacks(listenToAmbientNoise);
+        removeCallbacks(listenToAmbientNoise);
         stop();
         if (mRecorder != null) {
             mRecorder.reset();
@@ -151,7 +149,7 @@ public class SoundMeter {
     }
 
     public void stopMeasurement() {
-        handler.removeCallbacks(listenToAmbientNoise);
+        removeCallbacks(listenToAmbientNoise);
         stop();
     }
 
@@ -168,5 +166,11 @@ public class SoundMeter {
             EventBus.getDefault().post(new OnNewAmbientNoiseValue(amp));
        }
     };
-}
 
+    private void removeCallbacks(Runnable runnable) {
+        if (handler == null) return;
+        if (runnable == null) return;
+
+        handler.removeCallbacks(runnable);
+    }
+}
