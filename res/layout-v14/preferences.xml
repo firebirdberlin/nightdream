@@ -12,31 +12,37 @@
                 android:title="@string/handle_power"
                 android:defaultValue="false" />
 
-            <SwitchPreference
-                android:key="handle_power_ac"
-                android:title="@string/handle_power_ac"
-                android:defaultValue="false" />
+            <PreferenceCategory
+                android:title="@string/category_handle_power"
+                android:dependency="handle_power"
+                key="category_handle_power">
 
-            <SwitchPreference
-                android:key="handle_power_usb"
-                android:title="@string/handle_power_usb"
-                android:defaultValue="false" />
+                <SwitchPreference
+                    android:key="handle_power_ac"
+                    android:title="@string/handle_power_ac"
+                    android:defaultValue="true" />
 
-            <SwitchPreference
-                android:key="handle_power_wireless"
-                android:title="@string/handle_power_wireless"
-                android:defaultValue="false" />
+                <SwitchPreference
+                    android:key="handle_power_usb"
+                    android:title="@string/handle_power_usb"
+                    android:defaultValue="false" />
 
-            <SwitchPreference
-                android:key="handle_power_desk"
-                android:title="@string/handle_power_desk"
-                android:defaultValue="false" />
+                <SwitchPreference
+                    android:key="handle_power_wireless"
+                    android:title="@string/handle_power_wireless"
+                    android:defaultValue="false" />
 
-            <SwitchPreference
-                android:key="handle_power_car"
-                android:title="@string/handle_power_car"
-                android:defaultValue="false" />
+                <SwitchPreference
+                    android:key="handle_power_desk"
+                    android:title="@string/handle_power_desk"
+                    android:defaultValue="true" />
 
+                <SwitchPreference
+                    android:key="handle_power_car"
+                    android:title="@string/handle_power_car"
+                    android:defaultValue="false" />
+
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <PreferenceScreen
