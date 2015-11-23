@@ -12,6 +12,8 @@ public class BatteryStats{
     Context mContext;
     public int reference_level;
     public long reference_time;
+    public int chargingMethod = -1;
+    public int dockState = -1;
 
     // constructor
     public BatteryStats(Context context){
@@ -71,21 +73,25 @@ public class BatteryStats{
     public boolean isCharging(){
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        chargingMethod = batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         return (status == BatteryManager.BATTERY_STATUS_CHARGING ||
                 status == BatteryManager.BATTERY_STATUS_FULL);
     }
 
     public boolean isChargingAC() {
-        return (getChargingMethod() == BatteryManager.BATTERY_PLUGGED_AC);
+        if (chargingMethod == -1) getChargingMethod();
+        return (chargingMethod == BatteryManager.BATTERY_PLUGGED_AC);
     }
 
     public boolean isChargingUSB() {
-        return (getChargingMethod() == BatteryManager.BATTERY_PLUGGED_USB);
+        if (chargingMethod == -1) getChargingMethod();
+        return (chargingMethod == BatteryManager.BATTERY_PLUGGED_USB);
     }
 
     public boolean isChargingWireless() {
         if (Build.VERSION.SDK_INT >= 17){
-            return (getChargingMethod() == BatteryManager.BATTERY_PLUGGED_WIRELESS);
+            if (chargingMethod == -1) getChargingMethod();
+            return (chargingMethod == BatteryManager.BATTERY_PLUGGED_WIRELESS);
         }
         return false;
     }
@@ -93,25 +99,25 @@ public class BatteryStats{
     // How are we charging?
     public int getChargingMethod(){
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int chargePlug = batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+        chargingMethod = batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         //boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
         //boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
         //boolean acWireless = chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-        return chargePlug;
+        return chargingMethod;
     }
 
     public boolean isUndocked() {
-        int dockState = getDockState();
+        if (dockState == -1) getDockState();
         return (dockState == Intent.EXTRA_DOCK_STATE_UNDOCKED);
     }
 
     public boolean isDockedCar() {
-        int dockState = getDockState();
+        if (dockState == -1) getDockState();
         return (dockState == Intent.EXTRA_DOCK_STATE_CAR);
     }
 
     public boolean isDockedDesk() {
-        int dockState = getDockState();
+        if (dockState == -1) getDockState();
         if (Build.VERSION.SDK_INT >= 11){
             return (dockState == Intent.EXTRA_DOCK_STATE_DESK ||
                     dockState == Intent.EXTRA_DOCK_STATE_LE_DESK ||
@@ -125,12 +131,18 @@ public class BatteryStats{
         Intent dockStatus = mContext.registerReceiver(null, ifilter);
 
         if (dockStatus == null) {
-            return Intent.EXTRA_DOCK_STATE_UNDOCKED;
+            dockState = Intent.EXTRA_DOCK_STATE_UNDOCKED;
+            return dockState;
         }
 
-        return dockStatus.getIntExtra(Intent.EXTRA_DOCK_STATE, -1);
+        dockState = dockStatus.getIntExtra(Intent.EXTRA_DOCK_STATE, -1);
+        return dockState;
     }
 
+    public void reset() {
+        chargingMethod = -1;
+        dockState = -1;
+    }
 
     private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver(){
         @Override
