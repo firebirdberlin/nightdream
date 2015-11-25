@@ -69,11 +69,16 @@
                     android:title="@string/allow_screen_off"
                     android:defaultValue="false" />
 
-                <firebirdberlin.com.nightdream.SeekBarPreference
+                <com.firebirdberlin.nightdream.InlineSeekBarPreference
+                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                     android:key="NoiseSensitivity"
-                    android:defaultValue="4"
+                    android:title="@string/noise_sensitivity"
+                    android:defaultValue="5"
                     android:max="10"
-                    android:title="@string/noise_sensitivity"/>
+                    seekbar:min="0"
+                    seekbar:interval="1"
+                    seekbar:unitsLeft=""
+                    seekbar:unitsRight=""/>
             </PreferenceCategory>
         </PreferenceScreen>
 
