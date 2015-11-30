@@ -74,6 +74,7 @@ public class SoundMeter {
             return false;
         }
 
+        running = true;
         return true;
     }
 
@@ -114,10 +115,11 @@ public class SoundMeter {
     }
 
     public double getAmplitude() {
-        if (mRecorder != null)
+        if (mRecorder != null){
             return  (mRecorder.getMaxAmplitude());
-        else
+        } else {
             return -1.0;
+        }
     }
 
     public double getAmplitudeEMA() {
@@ -143,7 +145,6 @@ public class SoundMeter {
     public void startMeasurement(int interval_millis) {
         this.interval = interval_millis;
         stopMeasurement();
-        running = true;
         start();
         handler.postDelayed(listenToAmbientNoise, interval_millis);
     }
