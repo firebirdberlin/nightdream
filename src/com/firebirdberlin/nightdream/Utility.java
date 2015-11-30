@@ -48,6 +48,14 @@ public class Utility{
         mContext.startActivity(NewAlarmIntent);
     }
 
+    public void openAlarmConfig(){
+        if(Build.VERSION.SDK_INT > 18) {
+            Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+        }
+    }
+
     public long TimeToLong(int hour, int min){
         return (long) hour * 60 * 60 * 1000 + min * 60 * 1000;
     }

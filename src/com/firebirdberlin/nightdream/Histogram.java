@@ -14,6 +14,7 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -82,50 +83,56 @@ class Histogram extends View{
           return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
       }
 
+      private Point getClickedPoint(MotionEvent e) {
+          return new Point((int) e.getX(), (int) e.getY());
+      }
+
       public boolean onTouchEvent(MotionEvent e) {
-          if (nextAlarmFormatted.isEmpty() == false) return false;
           if (utility.AlarmRunning()) utility.AlarmStop();
 
+          if (nextAlarmFormatted.isEmpty() == false) {
+                return handleClickForStockAlarm(e);
+          }
+
+          boolean eventCancelAlarm = handleAlarmCancelling(e);
+          if (eventCancelAlarm) return true;
+
+          boolean eventAlarmSet = handleAlarmSetEvents(e);
+          if (eventAlarmSet) return true;
+          return false;
+      }
+
+      private boolean handleAlarmSetEvents(MotionEvent e) {
           tX = e.getX();
           tY = e.getY();
-          Point click = new Point((int)tX,(int) tY);
+
+          Point click = getClickedPoint(e);
           Point size = utility.getDisplaySize();
 
-          Point ll = new Point(0,size.y);
-          Point lr = new Point(size.x,size.y);
+          Point ll = new Point(0, size.y); // lower left corner
 
           // set alarm clock
           switch (e.getAction()) {
               case MotionEvent.ACTION_DOWN:
                   // Allow start only in the top left corner
-
-                  if (distance(click,ll) < touch_zone_radius){
+                  if (distance(click, ll) < touch_zone_radius) { // left corner
                       FingerDown = true;
                       AlarmSet = false;
                       removeAlarm();
                       XYtotime(tX,tY);
                       this.invalidate();
-                  }else
-                      if (distance(click,lr) < touch_zone_radius){
-                          AlarmSet = false;
-                          removeAlarm();
-                          FingerDownDeleteAlarm = true;
-                          this.invalidate();
-                      }
-                      else return false;
-                  break;
+                      return true;
+                  }
+                  return false;
               case MotionEvent.ACTION_MOVE:
                   if (FingerDown == false) return false;
                   XYtotime(tX,tY);
                   this.invalidate();
                   break;
               case MotionEvent.ACTION_UP:
-                  if (FingerDownDeleteAlarm == true) {
-                      FingerDownDeleteAlarm = false;
-                      this.invalidate();
-                  }
                   if (FingerDown == false) return false;
                   FingerDown = false;
+
                   XYtotime(tX,tY);
 
                   Calendar calendar = Calendar.getInstance();
@@ -152,7 +159,62 @@ class Histogram extends View{
                   this.invalidate();
                   break;
           }
-          return true;
+          return false;
+      }
+
+      private boolean handleClickForStockAlarm(MotionEvent e) {
+          if(Build.VERSION.SDK_INT < 19) return false;
+
+          Point click = getClickedPoint(e);
+          Point size = utility.getDisplaySize();
+          Point lc = new Point(size.x/2, size.y); // lower center
+
+          switch (e.getAction()) {
+              case MotionEvent.ACTION_DOWN:
+                  if (distance(click, lc) < touch_zone_radius) { // bottom center
+                      FingerDown = true;
+                      this.invalidate();
+                      return true;
+                  }
+                  break;
+              case MotionEvent.ACTION_UP:
+                  FingerDown = false;
+                  this.invalidate();
+                  if (distance(click, lc) < touch_zone_radius) { // bottom center
+                      utility.openAlarmConfig();
+                      return true;
+                  }
+                  break;
+          }
+          FingerDown = false;
+          return false;
+      }
+
+      private boolean handleAlarmCancelling(MotionEvent e){
+          Point click = getClickedPoint(e);
+          Point size = utility.getDisplaySize();
+          Point lr = new Point(size.x, size.y); // lower right corner
+
+          // set alarm clock
+          switch (e.getAction()) {
+              case MotionEvent.ACTION_DOWN:
+                  if (distance(click, lr) < touch_zone_radius) { // right corner
+                      FingerDownDeleteAlarm = true;
+                      this.invalidate();
+                      return true;
+                  }
+                  return false;
+              case MotionEvent.ACTION_UP:
+                  if (FingerDownDeleteAlarm == true) {
+                      AlarmSet = false;
+                      FingerDownDeleteAlarm = false;
+                      removeAlarm();
+                      this.invalidate();
+                      return true;
+                  }
+                  return false;
+          }
+          return false;
       }
 
       public void show(){
@@ -189,10 +251,9 @@ class Histogram extends View{
         ColorFilter secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
         paint.setColorFilter(customColorFilter);
 
-        //int sb = utility.getStatusBarHeight();
         int w = size.x;
-        int h = size.y;// - sb;
-        if (enabled == true && nextAlarmFormatted.isEmpty() == true){
+        int h = size.y;
+        if ( enabled && nextAlarmFormatted.isEmpty() ){
             // touch zones
 
             // set size of the touch zone
@@ -263,7 +324,7 @@ class Histogram extends View{
         Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
         paint.setColorFilter(secondaryColorFilter);
 
-        if (nextAlarmFormatted.isEmpty() == true){
+        if ( nextAlarmFormatted.isEmpty() ){
             if (FingerDown == true || AlarmSet == true){
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY, hour);
@@ -295,10 +356,11 @@ class Histogram extends View{
             }
         } else { // next upcoming alarm is set
             float lw = paint.measureText(nextAlarmFormatted);
-            float cw = touch_zone_radius-60;
+            float cw = touch_zone_radius - 60;
             paint.setTextSize(touch_zone_radius*.6f);
             paint.setColor(Color.WHITE);
-            canvas.drawText(nextAlarmFormatted, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
+            paint.setAlpha((FingerDown) ? 103 : 153);
+            canvas.drawText(nextAlarmFormatted, w/2 - (lw + cw)/2 + cw, h - touch_zone_radius/3, paint );
             if ((touch_zone_radius) > 100){ // no image on on small screens
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, touch_zone_radius-60, touch_zone_radius-60, false);
                 canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-120, paint);
