@@ -42,7 +42,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
-    private boolean stock_alarm_present;
+    private boolean stock_alarm_present = false;
 
     final private Handler handler = new Handler();
     private NightDreamUI nightDreamUI = null;
@@ -115,10 +115,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             stock_alarm_present = false;
         } else {
             stock_alarm_present = true;
-            if (nextAlarm.isEmpty())
+            if (nextAlarm.isEmpty()) {
                 histogram.setNextAlarmString("");
-            else
+            } else {
                 histogram.setNextAlarmString(nextAlarm);
+            }
         }
 
         nightDreamUI.setAlpha(SettingsIcon, .5f, 3000);
@@ -166,20 +167,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         unregisterReceiver(nReceiver);
 
         // use this to start and trigger a service
-        if (histogram.isAlarmSet()){
+        if (histogram.isAlarmSet()) {
             long now = Calendar.getInstance().getTimeInMillis();
-            if (isDebuggable){
-                Log.w(TAG, String.valueOf(now) + " <? "
-                        + String.valueOf(histogram.getAlarmTimeMillis()) + " "  +
-                        String.valueOf(now < histogram.getAlarmTimeMillis()));
-            }
-            if ( (stock_alarm_present==true) && (now < histogram.getAlarmTimeMillis() ) ){
-                Intent NewAlarmIntent = new Intent(AlarmClock.ACTION_SET_ALARM);
-                NewAlarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                NewAlarmIntent.putExtra(AlarmClock.EXTRA_HOUR, histogram.getAlarmHour());
-                NewAlarmIntent.putExtra(AlarmClock.EXTRA_MINUTES, histogram.getAlarmMinutes());
-                NewAlarmIntent.putExtra(AlarmClock.EXTRA_SKIP_UI,true);
-                startActivity(NewAlarmIntent);
+            if ( stock_alarm_present && (now < histogram.getAlarmTimeMillis() ) ){
+                utility.setAlarm(histogram.getAlarmHour(), histogram.getAlarmMinutes());
             }
             histogram.removeAlarm();
         }
