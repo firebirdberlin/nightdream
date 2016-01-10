@@ -6,13 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
+    Settings settings = null;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences settings = context.getSharedPreferences(Settings.PREFS_KEY, 0);
-        boolean handle_power = settings.getBoolean("handle_power", false);
-        if (handle_power == true){
+        settings = new Settings(context);
+        if (settings.handle_power == true){
             if (shallAutostart(context)) {
                 NightDreamActivity.start(context);
             }
@@ -20,13 +23,25 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     }
 
     boolean shallAutostart(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(Settings.PREFS_KEY, 0);
-        boolean handle_power = settings.getBoolean("handle_power", false);
-        boolean handle_power_desk = settings.getBoolean("handle_power_desk", false);
-        boolean handle_power_car = settings.getBoolean("handle_power_car", false);
-        boolean handle_power_ac = settings.getBoolean("handle_power_ac", false);
-        boolean handle_power_usb = settings.getBoolean("handle_power_usb", false);
-        boolean handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
+        Calendar now = new GregorianCalendar();
+        SimpleTime startMillis = new SimpleTime(settings.autostartTimeRangeStart);
+        SimpleTime endMillis = new SimpleTime(settings.autostartTimeRangeEnd);
+
+        Calendar start = startMillis.getCalendar();
+        Calendar end = endMillis.getCalendar();
+        boolean is_within_range = false;
+        if (end.before(start)){
+            is_within_range = ( now.after(start) || now.before(end) );
+        } else if (! start.equals(end)) {
+            is_within_range = ( now.after(start) && now.before(end) );
+        }
+        if (! is_within_range) return false;
+
+        boolean handle_power_desk = settings.handle_power_desk;
+        boolean handle_power_car = settings.handle_power_car;
+        boolean handle_power_ac = settings.handle_power_ac;
+        boolean handle_power_usb = settings.handle_power_usb;
+        boolean handle_power_wireless = settings.handle_power_wireless;
 
         BatteryStats battery = new BatteryStats(context.getApplicationContext());
         if ( battery.isUndocked() ) {
