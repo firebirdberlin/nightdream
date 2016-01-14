@@ -13,6 +13,20 @@
                 android:defaultValue="false" />
 
             <PreferenceCategory
+                android:title="@string/category_handle_power_autostart_time"
+                android:dependency="handle_power"
+                key="category_handle_power_autostart_time">
+
+                <com.firebirdberlin.nightdream.TimeRangePreference
+                    xmlns:timerange="timerange"
+                    android:key="autostart_time_range"
+                    android:dependency="handle_power"
+                    android:defaultValue="0"
+                    timerange:key_suffix_start="_start"
+                    timerange:key_suffix_end="_end" />
+            </PreferenceCategory>
+
+            <PreferenceCategory
                 android:title="@string/category_handle_power"
                 android:dependency="handle_power"
                 key="category_handle_power">
@@ -156,7 +170,7 @@
                     android:key="credits"
                     android:selectable="false"
                     android:enabled="true"
-                    android:title="Stefan Fruhner (2015)"
+                    android:title="Stefan Fruhner (2016)"
                     android:summary="stefan.fruhner@googlemail.com"/>
 
                 <Preference

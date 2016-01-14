@@ -17,6 +17,12 @@ public class Settings {
     public boolean allow_screen_off = false;
     public boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
+    public boolean handle_power = false;
+    public boolean handle_power_desk = false;
+    public boolean handle_power_car = false;
+    public boolean handle_power_ac = false;
+    public boolean handle_power_usb = false;
+    public boolean handle_power_wireless = false;
     public boolean muteRinger = false;
     public boolean showDate = true;
     public float dim_offset = 0.f;
@@ -25,6 +31,8 @@ public class Settings {
     public int clockColor;
     public int secondaryColor;
     public int sensitivity = 1;
+    public long autostartTimeRangeStart = 0L;
+    public long autostartTimeRangeEnd = 0L;
     public String bgpath = "";
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -41,6 +49,14 @@ public class Settings {
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
+        autostartTimeRangeStart = settings.getLong("autostart_time_range_start", 0L);
+        autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", 0L);
+        handle_power = settings.getBoolean("handle_power", false);
+        handle_power_desk = settings.getBoolean("handle_power_desk", false);
+        handle_power_car = settings.getBoolean("handle_power_car", false);
+        handle_power_ac = settings.getBoolean("handle_power_ac", false);
+        handle_power_usb = settings.getBoolean("handle_power_usb", false);
+        handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
         bgpath = settings.getString("BackgroundImage", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", 0.f);
@@ -71,6 +87,15 @@ public class Settings {
         minIlluminance = value;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("minIlluminance", value);
+        prefEditor.commit();
+    }
+
+    public void setAutoStartTime(long start, long end) {
+        autostartTimeRangeStart = start;
+        autostartTimeRangeEnd = end;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("autostart_time_range_start", start);
+        prefEditor.putLong("autostart_time_range_end", end);
         prefEditor.commit();
     }
 }

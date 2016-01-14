@@ -6,6 +6,8 @@
     <string name="appearance">Appearance</string>
     <string name="app_name">NightDream</string>
     <string name="auto_brightness">Auto brightness</string>
+    <string name="autostart_timerange_label_start">Start time</string>
+    <string name="autostart_timerange_label_end">End time</string>
     <string name="background">background</string>
     <string name="background_black">black</string>
     <string name="background_gradient">gradient</string>
@@ -18,7 +20,8 @@
     <string name="contribute">Contribute</string>
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
-    <string name="category_handle_power">Start when connected to</string>
+    <string name="category_handle_power_autostart_time">Start within the time range</string>
+    <string name="category_handle_power">... and when connected to</string>
     <string name="handle_power">Autostart</string>
     <string name="handle_power_ac">AC</string>
     <string name="handle_power_usb">USB</string>

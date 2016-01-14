@@ -103,6 +103,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                     AudioManage.restoreRingerMode(mode);
             }
         }
+
+        pwrReceiver = registerPowerDisconnectionReceiver();
     }
 
     @Override
@@ -140,7 +142,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onResume();
 
         nightDreamUI.onResume();
-        pwrReceiver = registerPowerDisconnectionReceiver();
         nReceiver = registerNotificationReceiver();
 
         if (Build.VERSION.SDK_INT >= 18){
@@ -163,7 +164,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if (isDebuggable)
             Log.d("NightDreamActivity","onPause() called.");
 
-        unregisterReceiver(pwrReceiver);
         unregisterReceiver(nReceiver);
 
         // use this to start and trigger a service
@@ -203,6 +203,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         // after the dream has ended
         //audiomanage.setRingerMode(currentRingerMode);
 
+        unregisterReceiver(pwrReceiver);
         utility     = null;
         pwrReceiver = null;
         nReceiver   = null;
