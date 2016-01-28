@@ -29,13 +29,13 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
         Calendar start = startMillis.getCalendar();
         Calendar end = endMillis.getCalendar();
-        boolean is_within_range = false;
+        boolean shall_auto_start = true;
         if (end.before(start)){
-            is_within_range = ( now.after(start) || now.before(end) );
+            shall_auto_start = ( now.after(start) || now.before(end) );
         } else if (! start.equals(end)) {
-            is_within_range = ( now.after(start) && now.before(end) );
+            shall_auto_start = ( now.after(start) && now.before(end) );
         }
-        if (! is_within_range) return false;
+        if (! shall_auto_start) return false;
 
         boolean handle_power_desk = settings.handle_power_desk;
         boolean handle_power_car = settings.handle_power_car;
