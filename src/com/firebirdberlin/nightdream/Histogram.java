@@ -30,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-class Histogram extends View{
+class Histogram extends View {
       final private Handler handler = new Handler();
       private boolean AlarmSet = false;
       private boolean DayDreamMode = false;
@@ -259,10 +259,10 @@ class Histogram extends View{
             // set size of the touch zone
             if (size.x < size.y) touch_zone_radius = size.x/5;
             else touch_zone_radius = size.y/5;
-            touch_zone_radius = (touch_zone_radius > 150) ? 150 : touch_zone_radius;
+            touch_zone_radius = (touch_zone_radius > 180) ? 180 : touch_zone_radius;
 
-            int tzr2 = touch_zone_radius- (int) (0.07 *touch_zone_radius);
-            int tzr3 = touch_zone_radius- (int) (0.14 *touch_zone_radius);
+            int tzr2 = touch_zone_radius - (int) (0.07 * touch_zone_radius);
+            int tzr3 = touch_zone_radius - (int) (0.14 * touch_zone_radius);
 
             // left corner
             paint.setColor(Color.WHITE);
@@ -298,7 +298,7 @@ class Histogram extends View{
                 canvas.drawCircle(w, h, tzr3, paint);
             }
 
-            if (utility.isDebuggable()==true){
+            if (utility.isDebuggable()){
                 // histogram
                 long max = hist[0];
                 for (int i = 0; i < 24; i++){
@@ -336,22 +336,18 @@ class Histogram extends View{
                 SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
                 String l = hourDateFormat.format(calendar.getTime());
 
-                paint.setTextSize(touch_zone_radius*.6f);
+                paint.setTextSize(touch_zone_radius * .6f);
                 float lw = paint.measureText(l);
                 float cw = touch_zone_radius-60;
                 if ((touch_zone_radius) <= 100)  cw = 0;
-                if (FingerDown == true){
-                    paint.setColor(Color.WHITE);
-                    canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
-                }
-                else if (AlarmSet == true){
+                if (FingerDown || AlarmSet){
                     paint.setColor(Color.WHITE);
                     canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
                 }
 
                 if ((touch_zone_radius) > 100){ // no image on on small screens
                     Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, touch_zone_radius-60, touch_zone_radius-60, false);
-                    canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-120, paint);
+                    canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
                 }
             }
         } else { // next upcoming alarm is set
@@ -363,7 +359,7 @@ class Histogram extends View{
             canvas.drawText(nextAlarmFormatted, w/2 - (lw + cw)/2 + cw, h - touch_zone_radius/3, paint );
             if ((touch_zone_radius) > 100){ // no image on on small screens
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, touch_zone_radius-60, touch_zone_radius-60, false);
-                canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-120, paint);
+                canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
             }
         }
       }

@@ -31,20 +31,18 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     TextView current;
     Histogram histogram;
     ImageView background_image;
-    ImageView SettingsIcon;
 
     Sensor lightSensor;
     int mode = 2;
     int currentRingerMode;
     mAudioManager AudioManage = null;
-    boolean isDebuggable;
+    boolean isDebuggable = false;
     private Thread exitOp ;
 
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
     private boolean stock_alarm_present = false;
 
-    final private Handler handler = new Handler();
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver;
@@ -79,7 +77,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         background_image.setOnTouchListener(this);
 
         current = (TextView) findViewById(R.id.current);
-        SettingsIcon = (ImageView)findViewById(R.id.settings_icon);
         histogram = (Histogram)findViewById(R.id.Histogram);
         histogram.setUtility(utility);
         //histogram.restoreData();
@@ -124,9 +121,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             }
         }
 
-        nightDreamUI.setAlpha(SettingsIcon, .5f, 3000);
         nightDreamUI.onStart();
-        handler.postDelayed(fadeOutSettings, 20000);
 
         SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -169,7 +164,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         // use this to start and trigger a service
         if (histogram.isAlarmSet()) {
             long now = Calendar.getInstance().getTimeInMillis();
-            if ( stock_alarm_present && (now < histogram.getAlarmTimeMillis() ) ){
+            if ( now < histogram.getAlarmTimeMillis() ) {
                 utility.setAlarm(histogram.getAlarmHour(), histogram.getAlarmMinutes());
             }
             histogram.removeAlarm();
@@ -190,7 +185,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-        removeCallbacks(fadeOutSettings);
 
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
     }
@@ -232,12 +226,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public void onClick(View v) {
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
 
-        nightDreamUI.setAlpha(SettingsIcon, 1.f,3000);
-        removeCallbacks(fadeOutSettings);
-        handler.postDelayed(fadeOutSettings, 20000);
-
         if (v instanceof TextView){
-            nightDreamUI.onClockClicked();
+            nightDreamUI.onClockClicked(last_ambient);
         }
 
         if (lightSensor == null){
@@ -262,14 +252,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public void onSettingsClick(View v) {
         PreferencesActivity.start(this);
     }
-
-    private Runnable fadeOutSettings = new Runnable() {
-        @Override
-        public void run() {
-            nightDreamUI.setAlpha(SettingsIcon, 0.f, 3000);
-        }
-    };
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig){
@@ -345,13 +327,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-    }
-
-    private void removeCallbacks(Runnable runnable) {
-        if (handler == null) return;
-        if (runnable == null) return;
-
-        handler.removeCallbacks(runnable);
     }
 
     static public void start(Context context) {

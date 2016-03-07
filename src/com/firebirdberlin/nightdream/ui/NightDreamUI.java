@@ -98,8 +98,6 @@ public class NightDreamUI {
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
-        batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
-        batteryView.setVisibility(View.VISIBLE);
         isDebuggable = utility.isDebuggable();
     }
 
@@ -112,10 +110,13 @@ public class NightDreamUI {
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
+        if (! daydreamMode) setAlpha(settingsIcon, .5f, 100);
+        updateBatteryView();
         if (Build.VERSION.SDK_INT >= 12){
             handler.postDelayed(zoomIn, 500);
         }
         handler.postDelayed(moveAround, 30000);
+        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public void onResume() {
@@ -177,6 +178,7 @@ public class NightDreamUI {
     public void onStop() {
         lightSensorEventListener.unregister();
         removeCallbacks(moveAround);
+        removeCallbacks(hideAlarmClock);
         removeCallbacks(zoomIn);
         removeCallbacks(ClickOut);
         if (soundmeter != null){
@@ -361,8 +363,8 @@ public class NightDreamUI {
 
         v = to_range(v, 0.05f, 1.f);
         brightness = to_range(brightness, 0.01f, 1.f);
-        // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark. Therefore a minimum
-        // value must be set to preserve the visibility of the clock
+        // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
+        // Therefore a minimum value must be set to preserve the visibility of the clock.
 
         Log.d(TAG, "light value : " + String.valueOf(light_value));
         Log.d(TAG, "a : " + String.valueOf(v) + " | b : " + String.valueOf(brightness));
@@ -370,16 +372,19 @@ public class NightDreamUI {
         setBrightness(brightness);
 
         setAlpha(clockLayout, v, millis);
-        setAlpha(histogram, v, millis);
+        if ( histogram.isClickable() ) {
+            setAlpha(histogram, v, millis);
+            v = to_range(v, 0.6f, 1.f);
+            setAlpha(batteryView, v, millis);
+            if (! daydreamMode) setAlpha(settingsIcon, v, millis);
+        }
 
         if ( mode == 0 ) {
             setAlpha(notificationbar, 0.0f, millis);
-            setAlpha(batteryView, 0.0f, millis);
         } else {
             // increase minimum alpha value for the notification bar
             v = to_range(v, 0.6f, 1.f);
             setAlpha(notificationbar, v, millis);
-            setAlpha(batteryView, v, millis);
         }
 
         if ( light_value + 0.2f < settings.minIlluminance ) {
@@ -428,12 +433,10 @@ public class NightDreamUI {
 
         if ((mode == 0) && (current_mode != 0)){
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
-            histogram.hide();
             background_image.setImageDrawable(bgblack);
         } else
         if ((mode != 0) && (current_mode == 0)){
             if (settings.muteRinger) AudioManage.restoreRingerMode();
-            histogram.show();
             background_image.setImageDrawable(bgshape);
         }
 
@@ -505,10 +508,21 @@ public class NightDreamUI {
        }
     };
 
+    private Runnable hideAlarmClock = new Runnable() {
+       @Override
+       public void run() {
+           setAlpha(batteryView, 0.f, 2000);
+           if (! daydreamMode) setAlpha(settingsIcon, 0.f, 2000);
+           setAlpha(histogram, 0.f, 2000);
+           histogram.setClickable(false);
+       }
+    };
+
     private Runnable hideBrightnessText = new Runnable() {
        @Override
        public void run() {
-           batteryView.setText("");
+           updateBatteryView();
+           setAlpha(batteryView, 1.f, 100);
        }
     };
 
@@ -522,21 +536,39 @@ public class NightDreamUI {
        }
     };
 
-    public void onClockClicked() {
+    public void onClockClicked(float last_ambient) {
         if (Build.VERSION.SDK_INT >= 12){
             clockLayout.animate().setDuration(100).scaleXBy(-0.15f).scaleYBy(-0.15f);
             handler.postDelayed(ClickOut, 100);
         }
+        removeCallbacks(hideAlarmClock);
+        histogram.setClickable(true);
+        dimScreen(0, last_ambient, settings.dim_offset);
+        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (utility == null) return false;
-
+        boolean event_consumed = false;
         Point click = new Point((int) e.getX(),(int) e.getY());
         Point size = utility.getDisplaySize();
 
-        // set dim factor
-        if (click.y < size.y - histogram.touch_zone_radius) {// everything except the alarm zone
+        // handle the visibility of the alarm clock
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                removeCallbacks(hideAlarmClock);
+                histogram.setClickable(true);
+                dimScreen(0, last_ambient, settings.dim_offset);
+                event_consumed = true;
+                break;
+            case MotionEvent.ACTION_UP:
+                handler.postDelayed(hideAlarmClock, 20000);
+                event_consumed = true;
+                break;
+        }
+
+        // set the screen brightness factor
+        if (click.y < 0.2 * size.y) {// everything except the alarm zone
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     removeCallbacks(hideBrightnessLevel);
@@ -551,18 +583,18 @@ public class NightDreamUI {
                     settings.dim_offset += dx;
                     settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
 
-                    dimScreen(0, last_ambient, settings.dim_offset);
-
                     int c = (int) ( (settings.dim_offset + 1.f) / 2.f * 11.f);
                     String s = "";
                     for (int i = 0; i < c; i++) s +="|";
 
-                    setAlpha(batteryView, 1.f, 0);
                     batteryView.setText(s);
-                    setAlpha(notificationbar, 1.f, 0);
+                    setAlpha(batteryView, 1.f, 200);
+                    setAlpha(notificationbar, 1.f, 200);
                     removeCallbacks(hideBrightnessLevel);
 
                     dim_offset_init_x = click.x;
+
+                    dimScreen(0, last_ambient, settings.dim_offset);
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (setDimOffset == true){
@@ -575,7 +607,7 @@ public class NightDreamUI {
                     break;
             }
         }
-        return false;
+        return event_consumed;
     }
 
     public Drawable loadBackGroundImage() {

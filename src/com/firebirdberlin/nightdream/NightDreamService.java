@@ -164,7 +164,7 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         if (utility.AlarmRunning() == true) histogram.stopAlarm();
 
         if (v instanceof TextView){
-            nightDreamUI.onClockClicked();
+            nightDreamUI.onClockClicked(last_ambient);
         }
 
         if (lightSensor == null){ // in the emulator
