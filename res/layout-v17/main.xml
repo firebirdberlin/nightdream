@@ -29,7 +29,7 @@
 -->
         <TextClock
             android:clickable="true"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-thin"
             android:format12Hour="h:mm a"
             android:format24Hour="kk:mm"
             android:id="@+id/clock"
@@ -60,7 +60,7 @@
             android:translationX="0sp"
             android:translationY="0sp"
             android:layout_gravity="center"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-light"
             android:textStyle="bold"
             android:format12Hour="dd. MMMM yyyy"
             android:format24Hour="dd. MMMM yyyy"
