@@ -30,6 +30,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.text.format.DateFormat.getBestDateTimePattern;
+import static android.text.format.DateFormat.is24HourFormat;
+
 class Histogram extends View {
       final private Handler handler = new Handler();
       private boolean AlarmSet = false;
@@ -331,10 +334,7 @@ class Histogram extends View {
                 calendar.set(Calendar.MINUTE, min);
                 calendar.set(Calendar.SECOND, 0);
 
-                DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-                String localPattern  = ((SimpleDateFormat)formatter).toLocalizedPattern();
-                SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
-                String l = hourDateFormat.format(calendar.getTime());
+                String l = getTimeFormatted(calendar);
 
                 paint.setTextSize(touch_zone_radius * .6f);
                 float lw = paint.measureText(l);
@@ -364,6 +364,22 @@ class Histogram extends View {
         }
       }
 
+      private String getTimeFormatted(Calendar calendar) {
+          String localPattern  = "";
+          if (Build.VERSION.SDK_INT >= 18){
+              if (is24HourFormat(ctx)) {
+                  localPattern = getBestDateTimePattern(Locale.getDefault(), "HH:mm");
+              } else {
+                  localPattern = getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
+              }
+          } else {
+              DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+              localPattern  = ((SimpleDateFormat)formatter).toLocalizedPattern();
+          }
+
+          SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
+          return hourDateFormat.format(calendar.getTime());
+      }
 
       public void storeData() {
           RandomAccessFile out = null;
