@@ -13,9 +13,10 @@ public class SimpleTime {
     }
 
     SimpleTime(long millis){
-        int minutes = (int) (millis / 60000);
-        hour = minutes / 60;
-        min = minutes % 60;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        min = calendar.get(Calendar.MINUTE);
     }
 
     SimpleTime(int hour, int min){
@@ -23,8 +24,8 @@ public class SimpleTime {
         this.min = min;
     }
 
-    long getMillis(){
-        return  hour * 60 * 60 * 1000L + min * 60 * 1000L;
+    long getMillis() {
+        return getCalendar().getTimeInMillis();
     }
 
     public Calendar getCalendar() {

@@ -55,6 +55,7 @@
     <activity android:name=".PreferencesActivity"></activity>
     <activity android:name=".NightDreamActivity"
         android:enabled="true"
+        android:launchMode="singleTop"
         android:label="NightDream"
         android:icon="@drawable/ic_nightdream"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"

@@ -117,10 +117,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 } else if (intent.getStringExtra("action").equals("removed")){
                     CallIcon.setVisibility(View.INVISIBLE);
                 }
-            } else if (intent.getStringExtra("what").equals("alarm")) {
-                if (intent.getStringExtra("action").equals("start")){
-                    histogram.startAlarm();
-                }
             }
         } catch (Exception e) {};
     }

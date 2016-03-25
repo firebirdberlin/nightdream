@@ -68,6 +68,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI = new NightDreamUI(this, window);
         utility = new Utility(this);
         AudioManage = new mAudioManager(this);
+        mySettings = new Settings(this);
+
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         isDebuggable = utility.isDebuggable();
 
@@ -83,6 +85,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         current = (TextView) findViewById(R.id.current);
         histogram = (Histogram)findViewById(R.id.Histogram);
         histogram.setUtility(utility);
+        histogram.setSettings(mySettings);
         //histogram.restoreData();
 
         Intent intent = getIntent();
@@ -91,7 +94,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             if (intent.hasExtra("mode") ){
                 String mode = extras.getString("mode");
                 if (mode.equals("night")) {
-                    mySettings = new Settings(this);
                     last_ambient = mySettings.minIlluminance;
                     last_ambient_noise = 32000; // something loud
                     nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
@@ -139,6 +141,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     protected void onResume() {
         super.onResume();
 
+        Log.i(TAG, "onResume()");
         mySettings = new Settings(this);
         scheduleShutdown();
         nightDreamUI.onResume();
@@ -154,29 +157,28 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         NOISE_AMPLITUDE_SLEEP *= mySettings.sensitivity;
         NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null && extras.getString("what", "").equals("alarm")) {
+            if (extras.getString("action", "none").equals("start")){
+                Log.i(TAG, "alarm goes off");
+                histogram.startAlarm();
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Another activity is taking focus (this activity is about to be "paused").
         nightDreamUI.onPause();
-        if (isDebuggable)
-            Log.d("NightDreamActivity","onPause() called.");
+
+        Log.d("NightDreamActivity","onPause() called.");
 
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         unregisterReceiver(nReceiver);
         unregisterReceiver(pwrReceiver);
-
-        // use this to start and trigger a service
-        if (histogram.isAlarmSet()) {
-            long now = Calendar.getInstance().getTimeInMillis();
-            if ( now < histogram.getAlarmTimeMillis() ) {
-                utility.setAlarm(histogram.getAlarmHour(), histogram.getAlarmMinutes());
-            }
-            histogram.removeAlarm();
-        }
 
         if (mySettings.allow_screen_off && mode == 0 && pm.isScreenOn() == false){ // screen off in night mode
             startBackgroundListener();
@@ -334,13 +336,28 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        Log.i(TAG, "new intent received");
+        //now getIntent() should always return the last received intent
+    }
 
     static public void start(Context context) {
-        Intent myIntent = new Intent();
-        myIntent.setClassName("com.firebirdberlin.nightdream",
+        NightDreamActivity.start(context, null);
+    }
+
+    static public void start(Context context, Bundle extras) {
+        Intent intent = new Intent();
+        intent.setClassName("com.firebirdberlin.nightdream",
                               "com.firebirdberlin.nightdream.NightDreamActivity");
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(myIntent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
+        context.startActivity(intent);
     }
 
     private PendingIntent getShutdownIntent() {

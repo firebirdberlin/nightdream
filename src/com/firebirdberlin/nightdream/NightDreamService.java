@@ -58,9 +58,9 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         current = (TextView) findViewById(R.id.current);
 
-        histogram = (Histogram)findViewById(R.id.Histogram);
+        histogram = (Histogram) findViewById(R.id.Histogram);
         histogram.setUtility(utility);
-        histogram.setDaydreamMode(true);
+        histogram.setSettings(mySettings);
         histogram.restoreData();
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
@@ -117,13 +117,6 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         if (nReceiver != null) {
             unregisterReceiver(nReceiver);
             nReceiver = null;
-        }
-
-        //if (utility.AlarmRunning() == true) histogram.stopAlarm();
-        // set Alarm
-        if (histogram.isAlarmSet()){
-            histogram.stopAlarm();
-            utility.setAlarm(histogram.getAlarmHour(), histogram.getAlarmMinutes());
         }
 
         //stop notification listener service

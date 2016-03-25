@@ -35,8 +35,6 @@ import static android.text.format.DateFormat.is24HourFormat;
 
 class Histogram extends View {
       final private Handler handler = new Handler();
-      private boolean AlarmSet = false;
-      private boolean DayDreamMode = false;
       private boolean enabled = true;
       private boolean FingerDown;
       private boolean FingerDownDeleteAlarm;
@@ -47,11 +45,10 @@ class Histogram extends View {
       private int h;
       private int hour, min;
       private int w;
-      private long AlarmTime = 0;
       private Paint paint = new Paint();
-      private PendingIntent PendingAlarmIntent = null;
       private static AlarmManager am = null;
       private String nextAlarmFormatted = "";
+      private Settings settings = null;
       private Utility utility;
       public int touch_zone_radius = 150;
 
@@ -59,7 +56,7 @@ class Histogram extends View {
 
       public Histogram(Context context, AttributeSet attrs) {
           super(context, attrs);
-          ctx = context;
+          this.ctx = context;
 
           if (am == null) {
               am = (AlarmManager)(ctx.getSystemService( Context.ALARM_SERVICE ));
@@ -69,13 +66,17 @@ class Histogram extends View {
       }
 
       public void setUtility(Utility u) {utility = u;}
+      public void setSettings(Settings s) {
+          settings = s;
+          SimpleTime time = new SimpleTime(s.nextAlarmTime);
+          hour = time.hour;
+          min = time.min;
+      }
 
       public void setCustomColor(int primary, int secondary) {
           customcolor = primary;
           customSecondaryColor = secondary;
       }
-
-      public void setDaydreamMode(boolean onoff) {DayDreamMode = onoff;}
 
       public void setNextAlarmString(String s){
           nextAlarmFormatted = s;
@@ -120,7 +121,6 @@ class Histogram extends View {
                   // Allow start only in the top left corner
                   if (distance(click, ll) < touch_zone_radius) { // left corner
                       FingerDown = true;
-                      AlarmSet = false;
                       removeAlarm();
                       XYtotime(tX,tY);
                       this.invalidate();
@@ -137,28 +137,8 @@ class Histogram extends View {
                   FingerDown = false;
 
                   XYtotime(tX,tY);
+                  setAlarm();
 
-                  Calendar calendar = Calendar.getInstance();
-                  long currentTimestamp = calendar.getTimeInMillis();
-                  calendar.set(Calendar.HOUR_OF_DAY, hour);
-                  calendar.set(Calendar.MINUTE, min);
-                  calendar.set(Calendar.SECOND, 0);
-                  AlarmTime = calendar.getTimeInMillis();
-                  if (AlarmTime < currentTimestamp) AlarmTime += 86400000;
-                  if (DayDreamMode == true){
-                      long diffTimestamp = calendar.getTimeInMillis() - currentTimestamp;
-                      //86400000 is a day
-                      long myDelay = (diffTimestamp < 0 ? diffTimestamp + 86400000: diffTimestamp);
-                      handler.postDelayed(setAlarmWhileRunning, myDelay);
-                  } else{ // alarm is for the stand-alone app
-                      // trigger alarm
-                      removeAlarm();
-                      Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
-                      intent.putExtra("cmd", "start alarm");
-                      PendingAlarmIntent = PendingIntent.getBroadcast( ctx, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                      am.set(AlarmManager.RTC_WAKEUP, AlarmTime, PendingAlarmIntent );
-                  }
-                  AlarmSet = true;
                   this.invalidate();
                   break;
           }
@@ -209,7 +189,6 @@ class Histogram extends View {
                   return false;
               case MotionEvent.ACTION_UP:
                   if (FingerDownDeleteAlarm == true) {
-                      AlarmSet = false;
                       FingerDownDeleteAlarm = false;
                       removeAlarm();
                       this.invalidate();
@@ -256,7 +235,7 @@ class Histogram extends View {
 
         int w = size.x;
         int h = size.y;
-        if ( enabled && nextAlarmFormatted.isEmpty() ){
+        if ( enabled ){
             // touch zones
 
             // set size of the touch zone
@@ -285,7 +264,7 @@ class Histogram extends View {
             canvas.drawCircle(0, h, tzr3, paint);
 
             // right corner
-            if (AlarmSet == true || FingerDown){
+            if (isAlarmSet() || FingerDown){
                 paint.setColor(Color.WHITE);
                 if (FingerDownDeleteAlarm == true) paint.setAlpha(255);
                 else paint.setAlpha(153);
@@ -300,63 +279,25 @@ class Histogram extends View {
 
                 canvas.drawCircle(w, h, tzr3, paint);
             }
-
-            if (utility.isDebuggable()){
-                // histogram
-                long max = hist[0];
-                for (int i = 0; i < 24; i++){
-                    if (hist[i] > max ) max = hist[i];
-                }
-                // prevent divide by zero
-                if (max > 0){
-
-                    int mw = (w-48)/23;
-                    paint.setColor(Color.parseColor("#AA004666"));
-                    paint.setStrokeWidth(1);
-
-                    long sc = h/2/max;
-                    for (int i = 0; i < 24 ; i++){
-                        canvas.drawRect(1+i*mw, h-sc*hist[i], 1+ (i+1)*mw - 1, h, paint);
-                    }
-                }
-            }
-
         }
 
         Resources res = getResources();
         Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
         paint.setColorFilter(secondaryColorFilter);
 
-        if ( nextAlarmFormatted.isEmpty() ){
-            if (FingerDown == true || AlarmSet == true){
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE, min);
-                calendar.set(Calendar.SECOND, 0);
+        if (FingerDown == true || isAlarmSet()){
+            Calendar calendar = new SimpleTime(hour, min).getCalendar();
+            String l = getTimeFormatted(calendar);
 
-                String l = getTimeFormatted(calendar);
-
-                paint.setTextSize(touch_zone_radius * .6f);
-                float lw = paint.measureText(l);
-                float cw = touch_zone_radius-60;
-                if ((touch_zone_radius) <= 100)  cw = 0;
-                if (FingerDown || AlarmSet){
-                    paint.setColor(Color.WHITE);
-                    canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
-                }
-
-                if ((touch_zone_radius) > 100){ // no image on on small screens
-                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, touch_zone_radius-60, touch_zone_radius-60, false);
-                    canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
-                }
+            paint.setTextSize(touch_zone_radius * .6f);
+            float lw = paint.measureText(l);
+            float cw = touch_zone_radius-60;
+            if ((touch_zone_radius) <= 100)  cw = 0;
+            if (FingerDown || isAlarmSet()){
+                paint.setColor(Color.WHITE);
+                canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
             }
-        } else { // next upcoming alarm is set
-            float lw = paint.measureText(nextAlarmFormatted);
-            float cw = touch_zone_radius - 60;
-            paint.setTextSize(touch_zone_radius*.6f);
-            paint.setColor(Color.WHITE);
-            paint.setAlpha((FingerDown) ? 103 : 153);
-            canvas.drawText(nextAlarmFormatted, w/2 - (lw + cw)/2 + cw, h - touch_zone_radius/3, paint );
+
             if ((touch_zone_radius) > 100){ // no image on on small screens
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, touch_zone_radius-60, touch_zone_radius-60, false);
                 canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
@@ -425,11 +366,9 @@ class Histogram extends View {
       public int getAlarmHour(){return hour;}
       public int getAlarmMinutes(){return min;}
 
-      public boolean isAlarmSet(){return AlarmSet;}
-      public long getAlarmTimeMillis(){return AlarmTime;}
+      public boolean isAlarmSet(){return (settings.nextAlarmTime > 0L);}
 
       public void startAlarm(){
-          AlarmSet = true; // because we want to fire it now !
           handler.post(setAlarmWhileRunning);
       }
 
@@ -437,28 +376,34 @@ class Histogram extends View {
           handler.post(stopRunningAlarm);
       }
 
+      public void setAlarm() {
+          SimpleTime alarmTime = new SimpleTime(hour, min);
+          removeAlarm();
+          PendingIntent pI = getPendingAlarmIntent();
+          am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pI );
+          settings.setAlarmTime(alarmTime.getMillis());
+      }
+
       public void removeAlarm(){
-          if (DayDreamMode == true) {
-              if (setAlarmWhileRunning != null) {
-                  handler.removeCallbacks(setAlarmWhileRunning);
-              }
-          } else {
-              if (PendingAlarmIntent !=null){
-                  am.cancel(PendingAlarmIntent);
-                  PendingAlarmIntent = null;
-              }
-          }
-          AlarmSet = false;
+          settings.setAlarmTime(0L);
+          PendingIntent pI = getPendingAlarmIntent();
+          am.cancel(pI);
+      }
+
+      private PendingIntent getPendingAlarmIntent() {
+          Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
+          intent.putExtra("cmd", "start alarm");
+          return PendingIntent.getBroadcast( ctx, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
       }
 
       private Runnable setAlarmWhileRunning = new Runnable() {
           @Override
           public void run() {
-              if (isAlarmSet()){
-                  try{
+              if ( isAlarmSet() ){
+                  try {
                       utility.AlarmPlay();
-                  } catch (Exception e){}
-                  AlarmSet = false;
+                  } catch (Exception e) {}
+                  removeAlarm();
                   handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
               }
           }
@@ -468,7 +413,7 @@ class Histogram extends View {
           @Override
           public void run() {
               utility.AlarmStop();
-              AlarmSet = false;
+              removeAlarm();
               invalidate();
           }
       };
