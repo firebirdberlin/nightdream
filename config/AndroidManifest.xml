@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="@CONFIG.PACKAGENAME@"
-    android:versionCode="48"
-    android:versionName="1.9.7">
+    android:versionCode="50"
+    android:versionName="1.9.9">
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -83,6 +83,11 @@
     <receiver android:name=".AlarmReceiver">
         <intent-filter>
             <action android:name="android.intent.action.ALARM_CHANGED"></action>
+        </intent-filter>
+    </receiver>
+    <receiver android:name=".BootReceiver">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
         </intent-filter>
     </receiver>
 </application>

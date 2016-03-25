@@ -12,13 +12,13 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-		Bundle extras = intent.getExtras();
-		String cmd = "";
-		if (extras != null) cmd = extras.getString("cmd");
+        Bundle extras = intent.getExtras();
+        String cmd = "";
+        if (extras != null) cmd = extras.getString("cmd");
 
-		Intent i = new Intent("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
-		i.putExtra("what","alarm");
-		i.putExtra("action","start");
-		context.sendBroadcast(i);
+        Intent i = new Intent("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
+        i.putExtra("what", "alarm");
+        i.putExtra("action", "start");
+        context.sendBroadcast(i);
     }
 }

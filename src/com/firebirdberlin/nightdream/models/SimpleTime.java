@@ -33,6 +33,12 @@ public class SimpleTime {
         cal.set(Calendar.MINUTE, min);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
+
+        Calendar now = Calendar.getInstance();
+        if ( cal.before(now) ) {
+            cal.add(Calendar.DATE, 1);
+        }
+
         return cal;
     }
 }

@@ -1,6 +1,8 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,10 @@ import java.util.Calendar;
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
     private static String TAG ="NightDreamActivity";
+    private static int PENDING_INTENT_STOP_APP = 1;
+    private static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
+    private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
+    private static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
     TextView current;
     Histogram histogram;
     ImageView background_image;
@@ -43,8 +49,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
-    private NotificationReceiver nReceiver;
-    private ReceiverPowerDisconnected pwrReceiver;
+    private NotificationReceiver nReceiver = null;
+    private ReceiverPowerDisconnected pwrReceiver = null;
     private PowerManager pm;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -99,7 +105,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             }
         }
 
-        pwrReceiver = registerPowerDisconnectionReceiver();
     }
 
     @Override
@@ -134,16 +139,18 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     protected void onResume() {
         super.onResume();
 
+        mySettings = new Settings(this);
+        scheduleShutdown();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
+        pwrReceiver = registerPowerDisconnectionReceiver();
 
         if (Build.VERSION.SDK_INT >= 18){
             // ask for active notifications
-            Intent i = new Intent("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
-            i.putExtra("command","list");
+            Intent i = new Intent(ACTION_NOTIFICATION_LISTENER);
+            i.putExtra("command", "list");
             sendBroadcast(i);
         }
-        mySettings = new Settings(this);
 
         NOISE_AMPLITUDE_SLEEP *= mySettings.sensitivity;
         NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
@@ -157,7 +164,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if (isDebuggable)
             Log.d("NightDreamActivity","onPause() called.");
 
+        PowerConnectionReceiver.schedule(this);
+        cancelShutdown();
         unregisterReceiver(nReceiver);
+        unregisterReceiver(pwrReceiver);
 
         // use this to start and trigger a service
         if (histogram.isAlarmSet()) {
@@ -195,24 +205,22 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         // after the dream has ended
         //audiomanage.setRingerMode(currentRingerMode);
 
-        unregisterReceiver(pwrReceiver);
-        utility     = null;
+        utility  = null;
         pwrReceiver = null;
-        nReceiver   = null;
+        nReceiver  = null;
     }
 
     private NotificationReceiver registerNotificationReceiver(){
         NotificationReceiver receiver = new NotificationReceiver(getWindow());
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
-        registerReceiver(receiver,filter);
+        IntentFilter filter = new IntentFilter(ACTION_NOTIFICATION_LISTENER);
+        registerReceiver(receiver, filter);
         return receiver;
     }
 
     private ReceiverPowerDisconnected registerPowerDisconnectionReceiver(){
         ReceiverPowerDisconnected pwrReceiver = new ReceiverPowerDisconnected();
-        IntentFilter pwrFilter = new IntentFilter();
-        pwrFilter.addAction("android.intent.action.ACTION_POWER_DISCONNECTED");
+        IntentFilter pwrFilter = new IntentFilter(ACTION_POWER_DISCONNECTED);
+        pwrFilter.addAction(ACTION_SHUT_DOWN);
         registerReceiver(pwrReceiver, pwrFilter);
         return pwrReceiver;
     }
@@ -333,5 +341,32 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                               "com.firebirdberlin.nightdream.NightDreamActivity");
         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(myIntent);
+    }
+
+    private PendingIntent getShutdownIntent() {
+        Intent alarmIntent = new Intent(ACTION_SHUT_DOWN);
+        return PendingIntent.getBroadcast(this,
+                                          PENDING_INTENT_STOP_APP,
+                                          alarmIntent,
+                                          PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void scheduleShutdown() {
+        if (mySettings == null) return;
+
+        if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
+            PendingIntent pendingIntent = getShutdownIntent();
+            Calendar calendar = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            cancelShutdown();
+        }
+
+    }
+
+    private void cancelShutdown() {
+        PendingIntent pendingIntent = getShutdownIntent();
+        pendingIntent.cancel();
     }
 }
