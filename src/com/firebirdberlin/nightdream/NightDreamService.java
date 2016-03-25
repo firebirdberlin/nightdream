@@ -61,7 +61,6 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         histogram = (Histogram) findViewById(R.id.Histogram);
         histogram.setUtility(utility);
         histogram.setSettings(mySettings);
-        histogram.restoreData();
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -93,9 +92,6 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         EventBus.getDefault().register(this);
 
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        histogram.count(hour);
-
         // ask for active notifications
         if (Build.VERSION.SDK_INT >= 18){
             Intent i = new Intent("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
@@ -108,8 +104,6 @@ public class NightDreamService extends DreamService implements View.OnClickListe
     public void onDreamingStopped() {
         super.onDreamingStopped();
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-
-        histogram.count(hour);
 
         nightDreamUI.onPause();
         nightDreamUI.onStop();

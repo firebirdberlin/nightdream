@@ -47,12 +47,9 @@ class Histogram extends View {
       private int w;
       private Paint paint = new Paint();
       private static AlarmManager am = null;
-      private String nextAlarmFormatted = "";
       private Settings settings = null;
       private Utility utility;
       public int touch_zone_radius = 150;
-
-      long[] hist = new long[24];
 
       public Histogram(Context context, AttributeSet attrs) {
           super(context, attrs);
@@ -61,8 +58,6 @@ class Histogram extends View {
           if (am == null) {
               am = (AlarmManager)(ctx.getSystemService( Context.ALARM_SERVICE ));
           }
-
-          for (int i = 0; i < 24; i++) hist[i] = 0;
       }
 
       public void setUtility(Utility u) {utility = u;}
@@ -78,11 +73,6 @@ class Histogram extends View {
           customSecondaryColor = secondary;
       }
 
-      public void setNextAlarmString(String s){
-          nextAlarmFormatted = s;
-          this.invalidate();
-      }
-
       private float distance(Point a, Point b){
           return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
       }
@@ -93,10 +83,6 @@ class Histogram extends View {
 
       public boolean onTouchEvent(MotionEvent e) {
           if (utility.AlarmRunning()) utility.AlarmStop();
-
-          if (nextAlarmFormatted.isEmpty() == false) {
-                return handleClickForStockAlarm(e);
-          }
 
           boolean eventCancelAlarm = handleAlarmCancelling(e);
           if (eventCancelAlarm) return true;
@@ -145,34 +131,6 @@ class Histogram extends View {
           return false;
       }
 
-      private boolean handleClickForStockAlarm(MotionEvent e) {
-          if(Build.VERSION.SDK_INT < 19) return false;
-
-          Point click = getClickedPoint(e);
-          Point size = utility.getDisplaySize();
-          Point lc = new Point(size.x/2, size.y); // lower center
-
-          switch (e.getAction()) {
-              case MotionEvent.ACTION_DOWN:
-                  if (distance(click, lc) < touch_zone_radius) { // bottom center
-                      FingerDown = true;
-                      this.invalidate();
-                      return true;
-                  }
-                  break;
-              case MotionEvent.ACTION_UP:
-                  FingerDown = false;
-                  this.invalidate();
-                  if (distance(click, lc) < touch_zone_radius) { // bottom center
-                      utility.openAlarmConfig();
-                      return true;
-                  }
-                  break;
-          }
-          FingerDown = false;
-          return false;
-      }
-
       private boolean handleAlarmCancelling(MotionEvent e){
           Point click = getClickedPoint(e);
           Point size = utility.getDisplaySize();
@@ -207,13 +165,6 @@ class Histogram extends View {
       public void hide(){
           enabled = false;
           this.invalidate();
-      }
-
-      public void count(int hour){
-          if (hour >= 0 && hour < 24) {
-              hist[hour]++;
-              this.invalidate(); // force a redraw
-          }
       }
 
       private void XYtotime(float x, float y) {
@@ -322,46 +273,6 @@ class Histogram extends View {
           return hourDateFormat.format(calendar.getTime());
       }
 
-      public void storeData() {
-          RandomAccessFile out = null;
-
-          String filePath = ctx.getFilesDir().getPath().toString() + "/usage.dat";
-          try {
-              out = new RandomAccessFile(filePath, "rw");
-              FileChannel file = out.getChannel();
-              ByteBuffer buf = file.map(FileChannel.MapMode.READ_WRITE, 0, Long.SIZE * hist.length);
-              for (long i : hist) {
-                  buf.putLong(i);
-              }
-              file.close();
-              out.close();
-          } catch (IOException e) {
-              throw new RuntimeException(e);
-          } finally {
-
-          }
-      }
-
-      public void restoreData() {
-          RandomAccessFile in = null;
-          String filePath = ctx.getFilesDir().getPath().toString() + "/usage.dat";
-          try {
-              in = new RandomAccessFile(filePath, "rw");
-              FileChannel file = in.getChannel();
-              ByteBuffer buf = file.map(FileChannel.MapMode.READ_WRITE, 0, Long.SIZE * hist.length);
-              for (int i = 0; i < hist.length; i++){
-                  hist[i] = buf.getLong();
-              }
-              file.close();
-              in.close();
-          } catch (FileNotFoundException e) {
-              // ignore if file not found
-          } catch (IOException e) {
-              throw new RuntimeException(e);
-          } finally {
-
-          }
-      }
 
       public int getAlarmHour(){return hour;}
       public int getAlarmMinutes(){return min;}

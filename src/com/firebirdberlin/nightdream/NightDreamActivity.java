@@ -45,7 +45,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
-    private boolean stock_alarm_present = false;
 
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
@@ -86,7 +85,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         histogram = (Histogram)findViewById(R.id.Histogram);
         histogram.setUtility(utility);
         histogram.setSettings(mySettings);
-        //histogram.restoreData();
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -114,17 +112,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onStart();
         setKeepScreenOn(true);
         EventBus.getDefault().register(this);
-        String nextAlarm = utility.getNextAlarmFormatted();
-        if (nextAlarm == null){ // no stock Alarm present
-            stock_alarm_present = false;
-        } else {
-            stock_alarm_present = true;
-            if (nextAlarm.isEmpty()) {
-                histogram.setNextAlarmString("");
-            } else {
-                histogram.setNextAlarmString(nextAlarm);
-            }
-        }
 
         nightDreamUI.onStart();
 

@@ -13,7 +13,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.AlarmClock;
 import android.provider.Settings;
 import android.provider.Settings.System;
 import android.util.DisplayMetrics;
@@ -36,28 +35,6 @@ public class Utility{
         this.mContext = context;
         mMediaPlayer = null;
         getSystemBrightnessMode();
-    }
-
-    public void setAlarm(int hour, int min){
-        // alarms cannot be deleted !!!
-        Intent NewAlarmIntent = new Intent(AlarmClock.ACTION_SET_ALARM);
-        NewAlarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        NewAlarmIntent.putExtra(AlarmClock.EXTRA_HOUR, hour);
-        NewAlarmIntent.putExtra(AlarmClock.EXTRA_MINUTES, min);
-        NewAlarmIntent.putExtra(AlarmClock.EXTRA_SKIP_UI,true);
-        mContext.startActivity(NewAlarmIntent);
-    }
-
-    public void openAlarmConfig(){
-        if(Build.VERSION.SDK_INT > 18) {
-            Intent intent = new Intent(AlarmClock.ACTION_SHOW_ALARMS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-        }
-    }
-
-    public long TimeToLong(int hour, int min){
-        return (long) hour * 60 * 60 * 1000 + min * 60 * 1000;
     }
 
     public void PlayNotification(){
@@ -173,13 +150,6 @@ public class Utility{
 
         return inSampleSize;
     }
-
-
-    public String getNextAlarmFormatted(){
-        return Settings.System.getString(mContext.getContentResolver(),
-                Settings.System.NEXT_ALARM_FORMATTED);
-    }
-
 
     public void getSystemBrightnessMode(){
         system_brightness_mode = Settings.System.getInt(mContext.getContentResolver(),
