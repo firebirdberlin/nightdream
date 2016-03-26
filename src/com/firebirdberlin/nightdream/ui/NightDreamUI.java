@@ -40,7 +40,7 @@ public class NightDreamUI {
     private Context mContext;
     private Drawable bgshape;
     private Drawable bgblack;
-    private AlarmClock histogram;
+    private AlarmClock alarmClock;
     private ImageView background_image;
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
@@ -73,7 +73,7 @@ public class NightDreamUI {
         clock = (TextView) rootView.findViewById(R.id.clock);
         date = (TextView) rootView.findViewById(R.id.date);
         divider = (View) rootView.findViewById(R.id.divider);
-        histogram = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
+        alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
 
@@ -148,7 +148,7 @@ public class NightDreamUI {
         gmailIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        histogram.setCustomColor(settings.clockColor, settings.secondaryColor);
+        alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -372,8 +372,8 @@ public class NightDreamUI {
         setBrightness(brightness);
 
         setAlpha(clockLayout, v, millis);
-        if ( histogram.isClickable() ) {
-            setAlpha(histogram, v, millis);
+        if ( alarmClock.isClickable() ) {
+            setAlpha(alarmClock, v, millis);
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
             if (! daydreamMode) setAlpha(settingsIcon, v, millis);
@@ -513,8 +513,8 @@ public class NightDreamUI {
        public void run() {
            setAlpha(batteryView, 0.f, 2000);
            if (! daydreamMode) setAlpha(settingsIcon, 0.f, 2000);
-           setAlpha(histogram, 0.f, 2000);
-           histogram.setClickable(false);
+           setAlpha(alarmClock, 0.f, 2000);
+           alarmClock.setClickable(false);
        }
     };
 
@@ -542,7 +542,7 @@ public class NightDreamUI {
             handler.postDelayed(ClickOut, 100);
         }
         removeCallbacks(hideAlarmClock);
-        histogram.setClickable(true);
+        alarmClock.setClickable(true);
         dimScreen(0, last_ambient, settings.dim_offset);
         handler.postDelayed(hideAlarmClock, 20000);
     }
@@ -557,7 +557,7 @@ public class NightDreamUI {
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 removeCallbacks(hideAlarmClock);
-                histogram.setClickable(true);
+                alarmClock.setClickable(true);
                 dimScreen(0, last_ambient, settings.dim_offset);
                 event_consumed = true;
                 break;

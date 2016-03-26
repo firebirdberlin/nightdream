@@ -33,7 +33,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     private static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
     TextView current;
-    AlarmClock histogram;
+    AlarmClock alarmClock;
     ImageView background_image;
 
     Sensor lightSensor;
@@ -82,9 +82,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         background_image.setOnTouchListener(this);
 
         current = (TextView) findViewById(R.id.current);
-        histogram = (AlarmClock) findViewById(R.id.AlarmClock);
-        histogram.setUtility(utility);
-        histogram.setSettings(mySettings);
+        alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
+        alarmClock.setUtility(utility);
+        alarmClock.setSettings(mySettings);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -150,7 +150,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if (extras != null && extras.getString("what", "").equals("alarm")) {
             if (extras.getString("action", "none").equals("start")){
                 Log.i(TAG, "alarm goes off");
-                histogram.startAlarm();
+                alarmClock.startAlarm();
             }
         }
     }
@@ -183,7 +183,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
 
-        if (utility.AlarmRunning() == true) histogram.stopAlarm();
+        if (utility.AlarmRunning() == true) alarmClock.stopAlarm();
     }
 
     @Override
@@ -219,7 +219,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onClick(View v) {
-        if (utility.AlarmRunning() == true) histogram.stopAlarm();
+        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
             nightDreamUI.onClockClicked(last_ambient);

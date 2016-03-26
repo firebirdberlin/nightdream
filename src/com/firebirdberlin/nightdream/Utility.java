@@ -72,7 +72,6 @@ public class Utility{
             }
     }
 
-
     public void AlarmStop(){
         if (mMediaPlayer != null){
             if(mMediaPlayer.isPlaying()){
@@ -83,12 +82,10 @@ public class Utility{
         }
     }
 
-
     public boolean AlarmRunning(){
         if (mMediaPlayer == null) return false;
         return mMediaPlayer.isPlaying();
     }
-
 
     public Point getDisplaySize(){
         Point size = new Point();

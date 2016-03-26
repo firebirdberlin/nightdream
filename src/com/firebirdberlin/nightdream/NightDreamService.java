@@ -22,7 +22,7 @@ import java.util.Calendar;
 public class NightDreamService extends DreamService implements View.OnClickListener, View.OnTouchListener {
 
     TextView current;
-    AlarmClock histogram;
+    AlarmClock alarmClock;
     ImageView background_image;
 
     SensorManager sensorManager;
@@ -58,9 +58,9 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         current = (TextView) findViewById(R.id.current);
 
-        histogram = (AlarmClock) findViewById(R.id.AlarmClock);
-        histogram.setUtility(utility);
-        histogram.setSettings(mySettings);
+        alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
+        alarmClock.setUtility(utility);
+        alarmClock.setSettings(mySettings);
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -148,7 +148,7 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (utility.AlarmRunning() == true) histogram.stopAlarm();
+        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
             nightDreamUI.onClockClicked(last_ambient);

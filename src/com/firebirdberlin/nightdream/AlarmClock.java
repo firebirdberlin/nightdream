@@ -13,7 +13,6 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -196,7 +195,6 @@ class AlarmClock extends View {
         canvas.drawCircle(0, h, touch_zone_radius, paint);
 
         paint.setColor(Color.BLACK);
-        //paint.setAlpha(102);
         canvas.drawCircle(0, h, tzr2, paint);
 
         paint.setColor(Color.WHITE);
@@ -220,13 +218,11 @@ class AlarmClock extends View {
             else paint.setAlpha(102);
 
             canvas.drawCircle(w, h, tzr3, paint);
-        }
 
-        Resources res = getResources();
-        Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
-        paint.setColorFilter(secondaryColorFilter);
+            Resources res = getResources();
+            Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
+            paint.setColorFilter(secondaryColorFilter);
 
-        if (FingerDown == true || isAlarmSet()){
             Calendar calendar = new SimpleTime(hour, min).getCalendar();
             String l = getTimeFormatted(calendar);
 
