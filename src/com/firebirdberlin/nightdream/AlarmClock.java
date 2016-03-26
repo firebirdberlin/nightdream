@@ -291,7 +291,8 @@ class AlarmClock extends View {
           Settings settings = new Settings(context);
           if (settings.nextAlarmTime == 0L) return;
           PendingIntent pI = getPendingAlarmIntent(context);
-          am.setExact(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
+          AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+          alarmManager.setExact(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
       }
 
       private static PendingIntent getPendingAlarmIntent(Context context) {
