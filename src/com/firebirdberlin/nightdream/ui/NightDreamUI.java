@@ -568,7 +568,7 @@ public class NightDreamUI {
         }
 
         // set the screen brightness factor
-        if (click.y < 0.2 * size.y) {// everything except the alarm zone
+        if (click.y < 0.2 * size.y) {// upper 20% of the screen
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     removeCallbacks(hideBrightnessLevel);

@@ -35,7 +35,6 @@ import static android.text.format.DateFormat.is24HourFormat;
 
 class Histogram extends View {
       final private Handler handler = new Handler();
-      private boolean enabled = true;
       private boolean FingerDown;
       private boolean FingerDownDeleteAlarm;
       private Context ctx;
@@ -83,6 +82,9 @@ class Histogram extends View {
 
       public boolean onTouchEvent(MotionEvent e) {
           if (utility.AlarmRunning()) utility.AlarmStop();
+
+          // the view should be visible before the user interacts with it
+          if (getAlpha() < 0.05f) return false;
 
           boolean eventCancelAlarm = handleAlarmCancelling(e);
           if (eventCancelAlarm) return true;
@@ -157,16 +159,6 @@ class Histogram extends View {
           return false;
       }
 
-      public void show(){
-          enabled = true;
-          this.invalidate();
-      }
-
-      public void hide(){
-          enabled = false;
-          this.invalidate();
-      }
-
       private void XYtotime(float x, float y) {
           Point size = utility.getDisplaySize();
           int w = size.x;
@@ -186,50 +178,48 @@ class Histogram extends View {
 
         int w = size.x;
         int h = size.y;
-        if ( enabled ){
-            // touch zones
+        // touch zones
 
-            // set size of the touch zone
-            if (size.x < size.y) touch_zone_radius = size.x/5;
-            else touch_zone_radius = size.y/5;
-            touch_zone_radius = (touch_zone_radius > 180) ? 180 : touch_zone_radius;
+        // set size of the touch zone
+        if (size.x < size.y) touch_zone_radius = size.x/5;
+        else touch_zone_radius = size.y/5;
+        touch_zone_radius = (touch_zone_radius > 180) ? 180 : touch_zone_radius;
 
-            int tzr2 = touch_zone_radius - (int) (0.07 * touch_zone_radius);
-            int tzr3 = touch_zone_radius - (int) (0.14 * touch_zone_radius);
+        int tzr2 = touch_zone_radius - (int) (0.07 * touch_zone_radius);
+        int tzr3 = touch_zone_radius - (int) (0.14 * touch_zone_radius);
 
-            // left corner
+        // left corner
+        paint.setColor(Color.WHITE);
+        if (FingerDown == true) paint.setAlpha(255);
+        else paint.setAlpha(153);
+
+        canvas.drawCircle(0, h, touch_zone_radius, paint);
+
+        paint.setColor(Color.BLACK);
+        //paint.setAlpha(102);
+        canvas.drawCircle(0, h, tzr2, paint);
+
+        paint.setColor(Color.WHITE);
+        if (FingerDown == true) paint.setAlpha(153);
+        else paint.setAlpha(102);
+
+        canvas.drawCircle(0, h, tzr3, paint);
+
+        // right corner
+        if (isAlarmSet() || FingerDown){
             paint.setColor(Color.WHITE);
-            if (FingerDown == true) paint.setAlpha(255);
+            if (FingerDownDeleteAlarm == true) paint.setAlpha(255);
             else paint.setAlpha(153);
-
-            canvas.drawCircle(0, h, touch_zone_radius, paint);
+            canvas.drawCircle(w, h, touch_zone_radius, paint);
 
             paint.setColor(Color.BLACK);
-            //paint.setAlpha(102);
-            canvas.drawCircle(0, h, tzr2, paint);
+            canvas.drawCircle(w, h, tzr2, paint);
 
             paint.setColor(Color.WHITE);
-            if (FingerDown == true) paint.setAlpha(153);
+            if (FingerDownDeleteAlarm == true) paint.setAlpha(153);
             else paint.setAlpha(102);
 
-            canvas.drawCircle(0, h, tzr3, paint);
-
-            // right corner
-            if (isAlarmSet() || FingerDown){
-                paint.setColor(Color.WHITE);
-                if (FingerDownDeleteAlarm == true) paint.setAlpha(255);
-                else paint.setAlpha(153);
-                canvas.drawCircle(w, h, touch_zone_radius, paint);
-
-                paint.setColor(Color.BLACK);
-                canvas.drawCircle(w, h, tzr2, paint);
-
-                paint.setColor(Color.WHITE);
-                if (FingerDownDeleteAlarm == true) paint.setAlpha(153);
-                else paint.setAlpha(102);
-
-                canvas.drawCircle(w, h, tzr3, paint);
-            }
+            canvas.drawCircle(w, h, tzr3, paint);
         }
 
         Resources res = getResources();
