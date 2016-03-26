@@ -22,7 +22,7 @@ import java.util.Calendar;
 public class NightDreamService extends DreamService implements View.OnClickListener, View.OnTouchListener {
 
     TextView current;
-    Histogram histogram;
+    AlarmClock histogram;
     ImageView background_image;
 
     SensorManager sensorManager;
@@ -58,7 +58,7 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         current = (TextView) findViewById(R.id.current);
 
-        histogram = (Histogram) findViewById(R.id.Histogram);
+        histogram = (AlarmClock) findViewById(R.id.AlarmClock);
         histogram.setUtility(utility);
         histogram.setSettings(mySettings);
 

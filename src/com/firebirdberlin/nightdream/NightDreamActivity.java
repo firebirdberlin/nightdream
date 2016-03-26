@@ -33,7 +33,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     private static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
     TextView current;
-    Histogram histogram;
+    AlarmClock histogram;
     ImageView background_image;
 
     Sensor lightSensor;
@@ -82,7 +82,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         background_image.setOnTouchListener(this);
 
         current = (TextView) findViewById(R.id.current);
-        histogram = (Histogram)findViewById(R.id.Histogram);
+        histogram = (AlarmClock) findViewById(R.id.AlarmClock);
         histogram.setUtility(utility);
         histogram.setSettings(mySettings);
 

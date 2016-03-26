@@ -24,7 +24,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     TextView EmailNumber;
     TextView TwitterNumber;
     TextView WhatsappNumber;
-    private Histogram histogram;
 
     private int EmailCount;
     private int TwitterCount;
@@ -39,7 +38,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         TwitterNumber = (TextView) v.findViewById(R.id.twitter_number);
         WhatsappIcon = (ImageView) v.findViewById(R.id.whatsapp_icon);
         WhatsappNumber = (TextView) v.findViewById(R.id.whatsapp_number);
-        histogram = (Histogram) v.findViewById(R.id.Histogram);
 
         CallIcon.setVisibility(View.INVISIBLE);
         EmailIcon.setVisibility(View.INVISIBLE);

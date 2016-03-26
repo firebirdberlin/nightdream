@@ -147,12 +147,8 @@ public class BatteryStats{
     private BroadcastReceiver mBatteryInfoReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context arg0, Intent intent) {
-            //int level = intent.getIntExtra("level", 0);
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-
-            //histogram.setBatteryPercentage(((float)level / (float)scale) * 100.0f);
-            //contentTxt.setText(String.valueOf(level) + "%");
         }
     };
 }

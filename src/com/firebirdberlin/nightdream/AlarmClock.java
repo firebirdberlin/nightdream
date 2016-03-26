@@ -33,7 +33,7 @@ import java.util.Locale;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
 
-class Histogram extends View {
+class AlarmClock extends View {
       final private Handler handler = new Handler();
       private boolean FingerDown;
       private boolean FingerDownDeleteAlarm;
@@ -50,7 +50,7 @@ class Histogram extends View {
       private Utility utility;
       public int touch_zone_radius = 150;
 
-      public Histogram(Context context, AttributeSet attrs) {
+      public AlarmClock(Context context, AttributeSet attrs) {
           super(context, attrs);
           this.ctx = context;
 

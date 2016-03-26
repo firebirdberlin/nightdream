@@ -40,7 +40,7 @@ public class NightDreamUI {
     private Context mContext;
     private Drawable bgshape;
     private Drawable bgblack;
-    private Histogram histogram;
+    private AlarmClock histogram;
     private ImageView background_image;
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
@@ -73,7 +73,7 @@ public class NightDreamUI {
         clock = (TextView) rootView.findViewById(R.id.clock);
         date = (TextView) rootView.findViewById(R.id.date);
         divider = (View) rootView.findViewById(R.id.divider);
-        histogram = (Histogram) rootView.findViewById(R.id.Histogram);
+        histogram = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
 
