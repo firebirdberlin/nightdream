@@ -9,5 +9,6 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         PowerConnectionReceiver.schedule(context);
+        Histogram.schedule(context);
     }
 }

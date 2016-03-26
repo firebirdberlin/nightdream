@@ -263,10 +263,6 @@ class Histogram extends View {
           return hourDateFormat.format(calendar.getTime());
       }
 
-
-      public int getAlarmHour(){return hour;}
-      public int getAlarmMinutes(){return min;}
-
       public boolean isAlarmSet(){return (settings.nextAlarmTime > 0L);}
 
       public void startAlarm(){
@@ -277,24 +273,31 @@ class Histogram extends View {
           handler.post(stopRunningAlarm);
       }
 
-      public void setAlarm() {
-          SimpleTime alarmTime = new SimpleTime(hour, min);
+      private void setAlarm() {
           removeAlarm();
-          PendingIntent pI = getPendingAlarmIntent();
+          SimpleTime alarmTime = new SimpleTime(hour, min);
+          PendingIntent pI = getPendingAlarmIntent(ctx);
           am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pI );
           settings.setAlarmTime(alarmTime.getMillis());
       }
 
-      public void removeAlarm(){
+      private void removeAlarm(){
           settings.setAlarmTime(0L);
-          PendingIntent pI = getPendingAlarmIntent();
+          PendingIntent pI = getPendingAlarmIntent(ctx);
           am.cancel(pI);
       }
 
-      private PendingIntent getPendingAlarmIntent() {
+      public static void schedule(Context context) {
+          Settings settings = new Settings(context);
+          if (settings.nextAlarmTime == 0L) return;
+          PendingIntent pI = getPendingAlarmIntent(context);
+          am.setExact(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
+      }
+
+      private static PendingIntent getPendingAlarmIntent(Context context) {
           Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
           intent.putExtra("cmd", "start alarm");
-          return PendingIntent.getBroadcast( ctx, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+          return PendingIntent.getBroadcast( context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
       }
 
       private Runnable setAlarmWhileRunning = new Runnable() {
