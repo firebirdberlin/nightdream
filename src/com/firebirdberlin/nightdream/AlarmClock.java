@@ -54,7 +54,7 @@ class AlarmClock extends View {
           this.ctx = context;
 
           if (am == null) {
-              am = (AlarmManager)(ctx.getSystemService( Context.ALARM_SERVICE ));
+              am = (AlarmManager) (ctx.getSystemService( Context.ALARM_SERVICE ));
           }
       }
 
@@ -69,6 +69,10 @@ class AlarmClock extends View {
       public void setCustomColor(int primary, int secondary) {
           customcolor = primary;
           customSecondaryColor = secondary;
+      }
+
+      public boolean isInteractive() {
+          return (FingerDown || FingerDownDeleteAlarm);
       }
 
       private float distance(Point a, Point b){

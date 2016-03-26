@@ -511,6 +511,10 @@ public class NightDreamUI {
     private Runnable hideAlarmClock = new Runnable() {
        @Override
        public void run() {
+           if ( alarmClock.isInteractive()) {
+               handler.postDelayed(this, 20000);
+               return;
+           }
            setAlpha(batteryView, 0.f, 2000);
            if (! daydreamMode) setAlpha(settingsIcon, 0.f, 2000);
            setAlpha(alarmClock, 0.f, 2000);
