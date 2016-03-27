@@ -234,6 +234,7 @@ public class NightDreamUI {
             }
         }
     }
+
     public void hideDate() {
         date.setVisibility(View.INVISIBLE);
         divider.setVisibility(View.INVISIBLE);
@@ -257,31 +258,36 @@ public class NightDreamUI {
     }
 
     public void updateBatteryView() {
+        float percentage = battery.getPercentage();
         if (battery.isCharging()) {
-            if (battery.getPercentage() < 95.){
+            if (percentage < 95.){
                 long est = battery.getEstimateMillis()/1000; // estimated seconds
-                formatBatteryEstimate(est);
-            }  else if (battery.getPercentage() < 98.) {
-                batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+                formatBatteryEstimate(percentage, est);
+            }  else if (percentage < 98.) {
+                batteryView.setText(String.format("%02d %%", (int) percentage));
             } else {
                 batteryView.setText(""); // nothing, if fully charged
             }
         } else { // not charging
             long est = battery.getDischargingEstimateMillis()/1000; // estimated seconds
-            formatBatteryEstimate(est);
+            formatBatteryEstimate(percentage, est);
         }
     }
 
-    private void formatBatteryEstimate(long est) {
+    private void formatBatteryEstimate(float percentage, long est) {
         Log.i(TAG, String.valueOf(est));
         if (est > 0){
             long h = est / 3600;
             long m  = ( est % 3600 ) / 60;
             batteryView.setText(String.format("%02d %% -- %02d:%02d",
-                                              (int) battery.getPercentage(), (int) h, (int) m));
+                                              (int) percentage, (int) h, (int) m));
         } else {
-            batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+            batteryView.setText(String.format("%02d %%", (int) percentage));
         }
+    }
+
+    public void powerConnected() {
+        battery = new BatteryStats(mContext);
     }
 
     public void updateClockPosition() {

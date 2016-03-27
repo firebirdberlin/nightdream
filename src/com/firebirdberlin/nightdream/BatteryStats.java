@@ -9,18 +9,25 @@ import android.os.Build;
 
 
 public class BatteryStats{
+    class BatteryValue {
+        public int level = 0;
+        public long time = 0L;
+
+        public BatteryValue(int level) {
+            this.level = level;
+            this.time = System.currentTimeMillis();
+        }
+    }
+
     Context mContext;
-    public int reference_level;
-    public long reference_time;
+    private BatteryValue reference = null;
     public int chargingMethod = -1;
     public int dockState = -1;
 
     // constructor
     public BatteryStats(Context context){
         this.mContext = context;
-        reference_level = getLevel();
-        reference_time = System.currentTimeMillis();
-
+        reference = new BatteryValue(getLevel());
     }
 
     public int getLevel() {
@@ -38,6 +45,10 @@ public class BatteryStats{
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
+        long now = System.currentTimeMillis();
+        if (now - reference.time > 30 * 60 * 1000) {
+            reference = new BatteryValue(level);
+        }
         return (((float)level / (float)scale) * 100.0f);
     }
 
@@ -46,8 +57,8 @@ public class BatteryStats{
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-        int dL = level - reference_level;
-        long dt = System.currentTimeMillis() - reference_time;
+        int dL = level - reference.level;
+        long dt = System.currentTimeMillis() - reference.time;
 
         if ((dL == 0) || (dt == 0.)) return 0;
         //double scale = dL/dt * te + L0
@@ -60,8 +71,8 @@ public class BatteryStats{
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-        int dL = level - reference_level;
-        long dt = System.currentTimeMillis() - reference_time;
+        int dL = level - reference.level;
+        long dt = System.currentTimeMillis() - reference.time;
         if ((dL == 0) || (dt == 0.)) return 0;
         //double scale = dL/dt * te + L0
         // te = (scale - L0) * dt /dL

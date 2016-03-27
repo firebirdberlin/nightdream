@@ -147,10 +147,15 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        if (extras != null && extras.getString("what", "").equals("alarm")) {
-            if (extras.getString("action", "none").equals("start")){
-                Log.i(TAG, "alarm goes off");
-                alarmClock.startAlarm();
+        if (extras != null) {
+            if ( extras.getString("what", "").equals("alarm")) {
+                if (extras.getString("action", "none").equals("start")){
+                    Log.i(TAG, "alarm goes off");
+                    alarmClock.startAlarm();
+                }
+            }
+            if (extras.getString("action", "none").equals("power connected")){
+                nightDreamUI.powerConnected();
             }
         }
     }
@@ -160,7 +165,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onPause();
         nightDreamUI.onPause();
 
-        Log.d("NightDreamActivity","onPause() called.");
+        Log.d("NightDreamActivity","onPause()");
 
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();

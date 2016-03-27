@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -20,7 +21,9 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         settings = new Settings(context);
         if (shallAutostart(context, settings)) {
-            NightDreamActivity.start(context);
+            Bundle extras = new Bundle();
+            extras.putString("action", "power connected");
+            NightDreamActivity.start(context, extras);
         }
     }
 
