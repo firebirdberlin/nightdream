@@ -1,6 +1,10 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
@@ -26,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 import static android.text.format.DateFormat.getBestDateTimePattern;
@@ -98,6 +104,7 @@ public class NightDreamUI {
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
+        checkForReviewRequest();
         isDebuggable = utility.isDebuggable();
     }
 
@@ -664,5 +671,52 @@ public class NightDreamUI {
             }
         }
         return new ColorDrawable(Color.parseColor("#000000"));
+    }
+
+    private void checkForReviewRequest() {
+        // ask only once
+        if (settings.lastReviewRequestTime != 0L) return;
+
+        long firstInstallTime = utility.getFirstInstallTime(mContext);
+        Log.i(TAG, "First install time: " + String.valueOf(firstInstallTime));
+        Calendar install_time = Calendar.getInstance();
+        install_time.setTimeInMillis(firstInstallTime);
+
+        Calendar two_months_ago = Calendar.getInstance();
+        two_months_ago.add(Calendar.DATE, -60);
+
+        if (install_time.before(two_months_ago)) {
+            sendReviewRequest();
+            settings.setLastReviewRequestTime(Calendar.getInstance().getTimeInMillis());
+        }
+    }
+
+    private void sendReviewRequest() {
+
+        final Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
+        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
+            PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+
+            // build notification
+            Notification n = new Notification.Builder(mContext)
+                .setContentTitle(mContext.getString(R.string.app_name))
+                .setContentText(mContext.getString(R.string.review_request))
+                .setSmallIcon(R.drawable.ic_clock)
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .build();
+
+            n.defaults |= Notification.DEFAULT_SOUND;
+            n.defaults |= Notification.DEFAULT_ALL;
+            NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(0, n);
+
+        }
+        else {
+            /* handle your error case: the device has no way to handle market urls */
+        }
     }
 }
