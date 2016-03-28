@@ -295,6 +295,7 @@ public class NightDreamUI {
 
     public void powerConnected() {
         battery = new BatteryStats(mContext);
+        updateClockPosition();
     }
 
     public void updateClockPosition() {
