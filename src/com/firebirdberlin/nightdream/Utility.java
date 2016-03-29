@@ -17,6 +17,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.provider.Settings.System;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.lang.Thread;
 
 public class Utility{
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
+    private static String TAG ="NightDreamActivity";
 
     private Context mContext;
     int system_brightness_mode = Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
@@ -56,26 +58,27 @@ public class Utility{
         } catch (Exception e) {}
     }
 
-    public void AlarmPlay() throws IllegalArgumentException, SecurityException, IllegalStateException,
-            IOException{
+    public void AlarmPlay() throws IllegalArgumentException, SecurityException,
+                                   IllegalStateException, IOException{
 
-            AlarmStop();
-            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            if (mMediaPlayer == null)
+        AlarmStop();
+        Log.i(TAG, "AlarmPlay()");
+        if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setDataSource(mContext, soundUri);
-            final AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-                mMediaPlayer.setLooping(true);
-                mMediaPlayer.prepare();
-                mMediaPlayer.start();
-            }
+        }
+
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        mMediaPlayer.setDataSource(mContext, soundUri);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        mMediaPlayer.setLooping(true);
+        mMediaPlayer.prepare();
+        mMediaPlayer.start();
     }
 
     public void AlarmStop(){
         if (mMediaPlayer != null){
-            if(mMediaPlayer.isPlaying()){
+            if(mMediaPlayer.isPlaying()) {
+                Log.i(TAG, "AlarmStop()");
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
             }

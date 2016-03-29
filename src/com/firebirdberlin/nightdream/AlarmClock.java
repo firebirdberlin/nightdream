@@ -87,6 +87,7 @@ class AlarmClock extends View {
       public boolean onTouchEvent(MotionEvent e) {
           if (utility.AlarmRunning()) utility.AlarmStop();
 
+          this.invalidate();
           // the view should be visible before the user interacts with it
           if (! isVisible ) return false;
 
