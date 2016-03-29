@@ -13,8 +13,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle alarm = new Bundle();
-        alarm.putString("what", "alarm");
-        alarm.putString("action", "start");
+        alarm.putString("action", "start alarm");
         NightDreamActivity.start(context, alarm);
     }
 }

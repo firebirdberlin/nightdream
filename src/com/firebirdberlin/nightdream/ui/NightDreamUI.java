@@ -525,14 +525,15 @@ public class NightDreamUI {
     private Runnable hideAlarmClock = new Runnable() {
        @Override
        public void run() {
-           if ( alarmClock.isInteractive()) {
+           if ( alarmClock.isInteractive() || utility.AlarmRunning()) {
                handler.postDelayed(this, 20000);
                return;
            }
            setAlpha(batteryView, 0.f, 2000);
            if (! daydreamMode) setAlpha(settingsIcon, 0.f, 2000);
-           setAlpha(alarmClock, 0.f, 2000);
+           alarmClock.isVisible = false;
            alarmClock.setClickable(false);
+           setAlpha(alarmClock, 0.f, 2000);
        }
     };
 
@@ -559,10 +560,15 @@ public class NightDreamUI {
             clockLayout.animate().setDuration(100).scaleXBy(-0.15f).scaleYBy(-0.15f);
             handler.postDelayed(ClickOut, 100);
         }
+        showAlarmClock(last_ambient);
+        handler.postDelayed(hideAlarmClock, 20000);
+    }
+
+    public void showAlarmClock(float last_ambient) {
         removeCallbacks(hideAlarmClock);
+        alarmClock.isVisible = true;
         alarmClock.setClickable(true);
         dimScreen(0, last_ambient, settings.dim_offset);
-        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
@@ -574,9 +580,7 @@ public class NightDreamUI {
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                removeCallbacks(hideAlarmClock);
-                alarmClock.setClickable(true);
-                dimScreen(0, last_ambient, settings.dim_offset);
+                showAlarmClock(last_ambient);
                 event_consumed = true;
                 break;
             case MotionEvent.ACTION_UP:
@@ -675,6 +679,8 @@ public class NightDreamUI {
     }
 
     private void checkForReviewRequest() {
+        if (Build.VERSION.SDK_INT < 11) return;
+
         // ask only once
         if (settings.lastReviewRequestTime != 0L) return;
 

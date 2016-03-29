@@ -148,14 +148,19 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if ( extras.getString("what", "").equals("alarm")) {
-                if (extras.getString("action", "none").equals("start")){
+            String action = extras.getString("action");
+
+            if (action != null) {
+                Log.i(TAG, action);
+                if (action.equals("start alarm")) {
                     Log.i(TAG, "alarm goes off");
                     alarmClock.startAlarm();
+                    nightDreamUI.showAlarmClock(last_ambient);
                 }
-            }
-            if (extras.getString("action", "none").equals("power connected")){
-                nightDreamUI.powerConnected();
+
+                if (action.equals("power connected")) {
+                    nightDreamUI.powerConnected();
+                }
             }
         }
     }

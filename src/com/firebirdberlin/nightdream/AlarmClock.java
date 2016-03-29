@@ -34,6 +34,7 @@ import static android.text.format.DateFormat.is24HourFormat;
 
 class AlarmClock extends View {
       final private Handler handler = new Handler();
+      public boolean isVisible = false;
       private boolean FingerDown;
       private boolean FingerDownDeleteAlarm;
       private Context ctx;
@@ -87,7 +88,7 @@ class AlarmClock extends View {
           if (utility.AlarmRunning()) utility.AlarmStop();
 
           // the view should be visible before the user interacts with it
-          if (getAlpha() < 0.05f) return false;
+          if (! isVisible ) return false;
 
           boolean eventCancelAlarm = handleAlarmCancelling(e);
           if (eventCancelAlarm) return true;
