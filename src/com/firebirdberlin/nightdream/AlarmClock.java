@@ -189,27 +189,38 @@ class AlarmClock extends View {
         else touch_zone_radius = size.y/5;
         touch_zone_radius = (touch_zone_radius > 180) ? 180 : touch_zone_radius;
 
-        int tzr2 = touch_zone_radius - (int) (0.07 * touch_zone_radius);
-        int tzr3 = touch_zone_radius - (int) (0.14 * touch_zone_radius);
+        int tzr2 = (int) (0.93 * touch_zone_radius);
+        int tzr3 = (int) (0.86 * touch_zone_radius);
+        int tzr4 = (int) (0.6  * touch_zone_radius);
 
+        Resources res = getResources();
         // left corner
-        paint.setColor(Color.WHITE);
-        if (FingerDown == true) paint.setAlpha(255);
-        else paint.setAlpha(153);
+        {
+            paint.setColor(Color.WHITE);
+            if (FingerDown == true) paint.setAlpha(255);
+            else paint.setAlpha(153);
 
-        canvas.drawCircle(0, h, touch_zone_radius, paint);
+            canvas.drawCircle(0, h, touch_zone_radius, paint);
 
-        paint.setColor(Color.BLACK);
-        canvas.drawCircle(0, h, tzr2, paint);
+            paint.setColor(Color.BLACK);
+            canvas.drawCircle(0, h, tzr2, paint);
 
-        paint.setColor(Color.WHITE);
-        if (FingerDown == true) paint.setAlpha(153);
-        else paint.setAlpha(102);
+            paint.setColor(Color.WHITE);
+            if (FingerDown == true) paint.setAlpha(153);
+            else paint.setAlpha(102);
 
-        canvas.drawCircle(0, h, tzr3, paint);
+            canvas.drawCircle(0, h, tzr3, paint);
+
+            Bitmap ic_audio = BitmapFactory.decodeResource(res, R.drawable.ic_audio);
+            Bitmap resizedIcon = Bitmap.createScaledBitmap(ic_audio, tzr4, tzr4, false);
+            canvas.drawBitmap(resizedIcon, 5, h - tzr4 - 5, paint);
+        }
 
         // right corner
         if (isAlarmSet() || FingerDown){
+            Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
+            Bitmap ic_no_audio = BitmapFactory.decodeResource(res, R.drawable.ic_no_audio);
+
             paint.setColor(Color.WHITE);
             if (FingerDownDeleteAlarm == true) paint.setAlpha(255);
             else paint.setAlpha(153);
@@ -224,8 +235,9 @@ class AlarmClock extends View {
 
             canvas.drawCircle(w, h, tzr3, paint);
 
-            Resources res = getResources();
-            Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
+            Bitmap resizedIcon = Bitmap.createScaledBitmap(ic_no_audio, tzr4, tzr4, false);
+            canvas.drawBitmap(resizedIcon, w - tzr4 - 5, h - tzr4 - 5, paint);
+
             paint.setColorFilter(secondaryColorFilter);
 
             Calendar calendar = new SimpleTime(hour, min).getCalendar();
@@ -241,7 +253,7 @@ class AlarmClock extends View {
             }
 
             if ((touch_zone_radius) > 100){ // no image on on small screens
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, touch_zone_radius-60, touch_zone_radius-60, false);
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(ic_alarmclock, touch_zone_radius-60, touch_zone_radius-60, false);
                 canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
             }
         }
