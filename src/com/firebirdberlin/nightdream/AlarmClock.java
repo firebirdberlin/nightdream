@@ -277,7 +277,11 @@ class AlarmClock extends View {
           removeAlarm();
           SimpleTime alarmTime = new SimpleTime(hour, min);
           PendingIntent pI = getPendingAlarmIntent(ctx);
-          am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pI );
+          if (Build.VERSION.SDK_INT >= 19){
+              am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pI );
+          } else {
+              am.set(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pI );
+          }
           settings.setAlarmTime(alarmTime.getMillis());
       }
 
@@ -292,7 +296,11 @@ class AlarmClock extends View {
           if (settings.nextAlarmTime == 0L) return;
           PendingIntent pI = getPendingAlarmIntent(context);
           AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-          alarmManager.setExact(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
+          if (Build.VERSION.SDK_INT >= 19){
+              alarmManager.setExact(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
+          } else {
+              alarmManager.set(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
+          }
       }
 
       private static PendingIntent getPendingAlarmIntent(Context context) {

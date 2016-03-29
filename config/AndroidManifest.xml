@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="@CONFIG.PACKAGENAME@"
-    android:versionCode="51"
+    android:versionCode="52"
     android:versionName="2.0">
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
