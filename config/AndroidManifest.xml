@@ -4,14 +4,13 @@
     android:versionCode="52"
     android:versionName="2.0">
 
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -83,11 +82,6 @@
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".AlarmReceiver">
-        <intent-filter>
-            <action android:name="android.intent.action.ALARM_CHANGED"></action>
-        </intent-filter>
-    </receiver>
     <receiver android:name=".BootReceiver">
         <intent-filter>
             <action android:name="android.intent.action.BOOT_COMPLETED"></action>
