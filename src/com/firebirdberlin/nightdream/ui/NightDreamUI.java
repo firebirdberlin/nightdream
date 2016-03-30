@@ -337,7 +337,7 @@ public class NightDreamUI {
 
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
-    private float LIGHT_VALUE_DAYLIGHT = 5000.0f;
+    private float LIGHT_VALUE_DAYLIGHT = 300.0f;
 
     private int to_range(int value, int min, int max){
         if (value > max) return max;
