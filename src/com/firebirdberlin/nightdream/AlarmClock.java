@@ -85,9 +85,8 @@ class AlarmClock extends View {
       }
 
       public boolean onTouchEvent(MotionEvent e) {
-          if (utility.AlarmRunning()) utility.AlarmStop();
+          if ( utility.AlarmRunning() ) stopAlarm();
 
-          this.invalidate();
           // the view should be visible before the user interacts with it
           if (! isVisible ) return false;
 
@@ -280,12 +279,26 @@ class AlarmClock extends View {
       public boolean isAlarmSet(){return (settings.nextAlarmTime > 0L);}
 
       public void startAlarm(){
-          handler.post(setAlarmWhileRunning);
+          if ( isAlarmSet() ) {
+              try {
+                  utility.AlarmPlay();
+              } catch (Exception e) {}
+              handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
+          }
       }
 
       public void stopAlarm(){
           handler.post(stopRunningAlarm);
       }
+
+      private Runnable stopRunningAlarm = new Runnable() {
+          @Override
+          public void run() {
+              utility.AlarmStop();
+              removeAlarm();
+              invalidate();
+          }
+      };
 
       private void setAlarm() {
           removeAlarm();
@@ -322,27 +335,4 @@ class AlarmClock extends View {
           intent.putExtra("cmd", "start alarm");
           return PendingIntent.getBroadcast( context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
       }
-
-      private Runnable setAlarmWhileRunning = new Runnable() {
-          @Override
-          public void run() {
-              if ( isAlarmSet() ){
-                  try {
-                      utility.AlarmPlay();
-                  } catch (Exception e) {}
-                  removeAlarm();
-                  handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
-              }
-          }
-      };
-
-      private Runnable stopRunningAlarm = new Runnable() {
-          @Override
-          public void run() {
-              utility.AlarmStop();
-              removeAlarm();
-              invalidate();
-          }
-      };
-
 }

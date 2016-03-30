@@ -189,11 +189,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     protected void onStop() {
         super.onStop();
+        Log.i(TAG, "onStop()");
 
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
 
-        if (utility.AlarmRunning() == true) alarmClock.stopAlarm();
+        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
     }
 
     @Override
@@ -229,6 +230,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onClick(View v) {
+        Log.i(TAG, "onClick()");
         if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
