@@ -32,6 +32,7 @@
     <string name="night_mode">Night mode</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="show_date">show date</string>
+    <string name="review_request">Please rate this application. Thanks !</string>
 </resources>
 
 

@@ -4,7 +4,7 @@
     <string name="allow_screen_off">Bildschirm aus</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
     <string name="appearance">Aussehen</string>
-    <string name="app_name">NightDream</string>
+    <string name="app_name">Nachtuhr</string>
     <string name="auto_brightness">Auto Helligkeit</string>
     <string name="autostart_timerange_label_start">Startzeit</string>
     <string name="autostart_timerange_label_end">Endzeit</string>
@@ -31,6 +31,7 @@
     <string name="night_mode">Nachtmodus</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
     <string name="show_date">Datum</string>
+    <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
 </resources>
 
 

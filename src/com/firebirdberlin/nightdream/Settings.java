@@ -33,6 +33,8 @@ public class Settings {
     public int sensitivity = 1;
     public long autostartTimeRangeStart = 0L;
     public long autostartTimeRangeEnd = 0L;
+    public long nextAlarmTime = 0L;
+    public long lastReviewRequestTime = 0L;
     public String bgpath = "";
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -62,6 +64,8 @@ public class Settings {
         dim_offset = settings.getFloat("dimOffset", 0.f);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
+        nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
+        lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
@@ -96,6 +100,20 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("autostart_time_range_start", start);
         prefEditor.putLong("autostart_time_range_end", end);
+        prefEditor.commit();
+    }
+
+    public void setAlarmTime(long alarmTime) {
+        nextAlarmTime = alarmTime;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("nextAlarmTime", alarmTime);
+        prefEditor.commit();
+    }
+
+    public void setLastReviewRequestTime(long reviewRequestTime) {
+        lastReviewRequestTime = reviewRequestTime;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
         prefEditor.commit();
     }
 }

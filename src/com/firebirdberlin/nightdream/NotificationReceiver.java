@@ -24,7 +24,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     TextView EmailNumber;
     TextView TwitterNumber;
     TextView WhatsappNumber;
-    private Histogram histogram;
 
     private int EmailCount;
     private int TwitterCount;
@@ -39,7 +38,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         TwitterNumber = (TextView) v.findViewById(R.id.twitter_number);
         WhatsappIcon = (ImageView) v.findViewById(R.id.whatsapp_icon);
         WhatsappNumber = (TextView) v.findViewById(R.id.whatsapp_number);
-        histogram = (Histogram) v.findViewById(R.id.Histogram);
 
         CallIcon.setVisibility(View.INVISIBLE);
         EmailIcon.setVisibility(View.INVISIBLE);
@@ -66,7 +64,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             if (intent.getStringExtra("what").equals("whatsapp")){
                 if (intent.getStringExtra("action").equals("added")){
                     String temp = intent.getStringExtra("tickertext");
-                    int num 	= intent.getIntExtra("number", 1);
+                    int num = intent.getIntExtra("number", 1);
                     WhatsappIcon.setVisibility(View.VISIBLE);
                     WhatsappCount++;
                     if (Build.VERSION.SDK_INT >= 18 && num > 0) WhatsappNumber.setText(String.valueOf(num));
@@ -80,7 +78,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             }else if (intent.getStringExtra("what").equals("twitter")){
                 if (intent.getStringExtra("action").equals("added")){
                     String temp = intent.getStringExtra("tickertext");
-                    int num 	= intent.getIntExtra("number", 1);
+                    int num = intent.getIntExtra("number", 1);
 
                     TwitterIcon.setVisibility(View.VISIBLE);
                     TwitterCount++;
@@ -96,13 +94,13 @@ public class NotificationReceiver extends BroadcastReceiver {
             }else if (intent.getStringExtra("what").equals("gmail")){
                 if (intent.getStringExtra("action").equals("added")){
                     String temp = intent.getStringExtra("tickertext");
-                    int num 	= intent.getIntExtra("number", 1);
+                    int num = intent.getIntExtra("number", 1);
 
                     EmailIcon.setVisibility(View.VISIBLE);
                     EmailCount++;
-                    if (Build.VERSION.SDK_INT >= 18 && num > 0) 
+                    if (Build.VERSION.SDK_INT >= 18 && num > 0)
                         EmailNumber.setText(String.valueOf(num));
-                    else 
+                    else
                         EmailNumber.setText(String.valueOf(EmailCount));
                     EmailNumber.setVisibility(View.VISIBLE);
                 } else if (intent.getStringExtra("action").equals("removed")){
@@ -117,10 +115,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 } else if (intent.getStringExtra("action").equals("removed")){
                     CallIcon.setVisibility(View.INVISIBLE);
                 }
-            } else if (intent.getStringExtra("what").equals("alarm")) {
-                if (intent.getStringExtra("action").equals("start")){
-                    histogram.startAlarm();
-                }
             }
         } catch (Exception e) {};
     }
@@ -132,7 +126,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         for (String key : bundle.keySet()) {
             Object value = bundle.get(key);
             if (value != null) {
-                Log.d(TAG, String.format("%s %s (%s)", key, 
+                Log.d(TAG, String.format("%s %s (%s)", key,
                             value.toString(), value.getClass().getName()));
             }
         }

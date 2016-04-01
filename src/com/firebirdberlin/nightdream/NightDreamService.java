@@ -22,7 +22,7 @@ import java.util.Calendar;
 public class NightDreamService extends DreamService implements View.OnClickListener, View.OnTouchListener {
 
     TextView current;
-    Histogram histogram;
+    AlarmClock alarmClock;
     ImageView background_image;
 
     SensorManager sensorManager;
@@ -58,10 +58,9 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         current = (TextView) findViewById(R.id.current);
 
-        histogram = (Histogram)findViewById(R.id.Histogram);
-        histogram.setUtility(utility);
-        histogram.setDaydreamMode(true);
-        histogram.restoreData();
+        alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
+        alarmClock.setUtility(utility);
+        alarmClock.setSettings(mySettings);
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -93,9 +92,6 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
         EventBus.getDefault().register(this);
 
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        histogram.count(hour);
-
         // ask for active notifications
         if (Build.VERSION.SDK_INT >= 18){
             Intent i = new Intent("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
@@ -109,21 +105,12 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         super.onDreamingStopped();
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
-        histogram.count(hour);
-
         nightDreamUI.onPause();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
         if (nReceiver != null) {
             unregisterReceiver(nReceiver);
             nReceiver = null;
-        }
-
-        //if (utility.AlarmRunning() == true) histogram.stopAlarm();
-        // set Alarm
-        if (histogram.isAlarmSet()){
-            histogram.stopAlarm();
-            utility.setAlarm(histogram.getAlarmHour(), histogram.getAlarmMinutes());
         }
 
         //stop notification listener service
@@ -161,10 +148,10 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (utility.AlarmRunning() == true) histogram.stopAlarm();
+        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
-            nightDreamUI.onClockClicked();
+            nightDreamUI.onClockClicked(last_ambient);
         }
 
         if (lightSensor == null){ // in the emulator

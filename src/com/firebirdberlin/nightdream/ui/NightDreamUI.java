@@ -1,6 +1,10 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
@@ -26,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 import static android.text.format.DateFormat.getBestDateTimePattern;
@@ -40,7 +46,7 @@ public class NightDreamUI {
     private Context mContext;
     private Drawable bgshape;
     private Drawable bgblack;
-    private Histogram histogram;
+    private AlarmClock alarmClock;
     private ImageView background_image;
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
@@ -73,7 +79,7 @@ public class NightDreamUI {
         clock = (TextView) rootView.findViewById(R.id.clock);
         date = (TextView) rootView.findViewById(R.id.date);
         divider = (View) rootView.findViewById(R.id.divider);
-        histogram = (Histogram) rootView.findViewById(R.id.Histogram);
+        alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
 
@@ -98,8 +104,7 @@ public class NightDreamUI {
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
-        batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
-        batteryView.setVisibility(View.VISIBLE);
+        checkForReviewRequest();
         isDebuggable = utility.isDebuggable();
     }
 
@@ -112,10 +117,13 @@ public class NightDreamUI {
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
+        if (! daydreamMode) setAlpha(settingsIcon, .5f, 100);
+        updateBatteryView();
         if (Build.VERSION.SDK_INT >= 12){
             handler.postDelayed(zoomIn, 500);
         }
         handler.postDelayed(moveAround, 30000);
+        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public void onResume() {
@@ -147,7 +155,7 @@ public class NightDreamUI {
         gmailIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        histogram.setCustomColor(settings.clockColor, settings.secondaryColor);
+        alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -177,6 +185,7 @@ public class NightDreamUI {
     public void onStop() {
         lightSensorEventListener.unregister();
         removeCallbacks(moveAround);
+        removeCallbacks(hideAlarmClock);
         removeCallbacks(zoomIn);
         removeCallbacks(ClickOut);
         if (soundmeter != null){
@@ -232,6 +241,7 @@ public class NightDreamUI {
             }
         }
     }
+
     public void hideDate() {
         date.setVisibility(View.INVISIBLE);
         divider.setVisibility(View.INVISIBLE);
@@ -255,31 +265,36 @@ public class NightDreamUI {
     }
 
     public void updateBatteryView() {
+        float percentage = battery.getPercentage();
         if (battery.isCharging()) {
-            if (battery.getPercentage() < 95.){
+            if (percentage < 95.){
                 long est = battery.getEstimateMillis()/1000; // estimated seconds
-                formatBatteryEstimate(est);
-            }  else if (battery.getPercentage() < 98.) {
-                batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+                formatBatteryEstimate(percentage, est);
+            }  else if (percentage < 98.) {
+                batteryView.setText(String.format("%02d %%", (int) percentage));
             } else {
                 batteryView.setText(""); // nothing, if fully charged
             }
         } else { // not charging
             long est = battery.getDischargingEstimateMillis()/1000; // estimated seconds
-            formatBatteryEstimate(est);
+            formatBatteryEstimate(percentage, est);
         }
     }
 
-    private void formatBatteryEstimate(long est) {
+    private void formatBatteryEstimate(float percentage, long est) {
         Log.i(TAG, String.valueOf(est));
         if (est > 0){
             long h = est / 3600;
             long m  = ( est % 3600 ) / 60;
             batteryView.setText(String.format("%02d %% -- %02d:%02d",
-                                              (int) battery.getPercentage(), (int) h, (int) m));
+                                              (int) percentage, (int) h, (int) m));
         } else {
-            batteryView.setText(String.format("%02d %%", (int) battery.getPercentage()));
+            batteryView.setText(String.format("%02d %%", (int) percentage));
         }
+    }
+
+    public void powerConnected() {
+        battery = new BatteryStats(mContext);
     }
 
     public void updateClockPosition() {
@@ -322,7 +337,7 @@ public class NightDreamUI {
 
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
-    private float LIGHT_VALUE_DAYLIGHT = 5000.0f;
+    private float LIGHT_VALUE_DAYLIGHT = 300.0f;
 
     private int to_range(int value, int min, int max){
         if (value > max) return max;
@@ -361,8 +376,8 @@ public class NightDreamUI {
 
         v = to_range(v, 0.05f, 1.f);
         brightness = to_range(brightness, 0.01f, 1.f);
-        // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark. Therefore a minimum
-        // value must be set to preserve the visibility of the clock
+        // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
+        // Therefore a minimum value must be set to preserve the visibility of the clock.
 
         Log.d(TAG, "light value : " + String.valueOf(light_value));
         Log.d(TAG, "a : " + String.valueOf(v) + " | b : " + String.valueOf(brightness));
@@ -370,16 +385,19 @@ public class NightDreamUI {
         setBrightness(brightness);
 
         setAlpha(clockLayout, v, millis);
-        setAlpha(histogram, v, millis);
+        if ( alarmClock.isClickable() ) {
+            setAlpha(alarmClock, v, millis);
+            v = to_range(v, 0.6f, 1.f);
+            setAlpha(batteryView, v, millis);
+            if (! daydreamMode) setAlpha(settingsIcon, v, millis);
+        }
 
         if ( mode == 0 ) {
             setAlpha(notificationbar, 0.0f, millis);
-            setAlpha(batteryView, 0.0f, millis);
         } else {
             // increase minimum alpha value for the notification bar
             v = to_range(v, 0.6f, 1.f);
             setAlpha(notificationbar, v, millis);
-            setAlpha(batteryView, v, millis);
         }
 
         if ( light_value + 0.2f < settings.minIlluminance ) {
@@ -428,12 +446,10 @@ public class NightDreamUI {
 
         if ((mode == 0) && (current_mode != 0)){
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
-            histogram.hide();
             background_image.setImageDrawable(bgblack);
         } else
         if ((mode != 0) && (current_mode == 0)){
             if (settings.muteRinger) AudioManage.restoreRingerMode();
-            histogram.show();
             background_image.setImageDrawable(bgshape);
         }
 
@@ -505,10 +521,26 @@ public class NightDreamUI {
        }
     };
 
+    private Runnable hideAlarmClock = new Runnable() {
+       @Override
+       public void run() {
+           if ( alarmClock.isInteractive() || utility.AlarmRunning()) {
+               handler.postDelayed(this, 20000);
+               return;
+           }
+           setAlpha(batteryView, 0.f, 2000);
+           if (! daydreamMode) setAlpha(settingsIcon, 0.f, 2000);
+           alarmClock.isVisible = false;
+           alarmClock.setClickable(false);
+           setAlpha(alarmClock, 0.f, 2000);
+       }
+    };
+
     private Runnable hideBrightnessText = new Runnable() {
        @Override
        public void run() {
-           batteryView.setText("");
+           updateBatteryView();
+           setAlpha(batteryView, 1.f, 100);
        }
     };
 
@@ -522,21 +554,42 @@ public class NightDreamUI {
        }
     };
 
-    public void onClockClicked() {
+    public void onClockClicked(float last_ambient) {
         if (Build.VERSION.SDK_INT >= 12){
             clockLayout.animate().setDuration(100).scaleXBy(-0.15f).scaleYBy(-0.15f);
             handler.postDelayed(ClickOut, 100);
         }
+        showAlarmClock(last_ambient);
+        handler.postDelayed(hideAlarmClock, 20000);
+    }
+
+    public void showAlarmClock(float last_ambient) {
+        removeCallbacks(hideAlarmClock);
+        alarmClock.isVisible = true;
+        alarmClock.setClickable(true);
+        dimScreen(0, last_ambient, settings.dim_offset);
     }
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (utility == null) return false;
-
+        boolean event_consumed = false;
         Point click = new Point((int) e.getX(),(int) e.getY());
         Point size = utility.getDisplaySize();
 
-        // set dim factor
-        if (click.y < size.y - histogram.touch_zone_radius) {// everything except the alarm zone
+        // handle the visibility of the alarm clock
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                showAlarmClock(last_ambient);
+                event_consumed = true;
+                break;
+            case MotionEvent.ACTION_UP:
+                handler.postDelayed(hideAlarmClock, 20000);
+                event_consumed = true;
+                break;
+        }
+
+        // set the screen brightness factor
+        if (click.y < 0.2 * size.y) {// upper 20% of the screen
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     removeCallbacks(hideBrightnessLevel);
@@ -551,18 +604,18 @@ public class NightDreamUI {
                     settings.dim_offset += dx;
                     settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
 
-                    dimScreen(0, last_ambient, settings.dim_offset);
-
                     int c = (int) ( (settings.dim_offset + 1.f) / 2.f * 11.f);
                     String s = "";
                     for (int i = 0; i < c; i++) s +="|";
 
-                    setAlpha(batteryView, 1.f, 0);
                     batteryView.setText(s);
-                    setAlpha(notificationbar, 1.f, 0);
+                    setAlpha(batteryView, 1.f, 200);
+                    setAlpha(notificationbar, 1.f, 200);
                     removeCallbacks(hideBrightnessLevel);
 
                     dim_offset_init_x = click.x;
+
+                    dimScreen(0, last_ambient, settings.dim_offset);
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (setDimOffset == true){
@@ -575,7 +628,7 @@ public class NightDreamUI {
                     break;
             }
         }
-        return false;
+        return event_consumed;
     }
 
     public Drawable loadBackGroundImage() {
@@ -622,5 +675,54 @@ public class NightDreamUI {
             }
         }
         return new ColorDrawable(Color.parseColor("#000000"));
+    }
+
+    private void checkForReviewRequest() {
+        if (Build.VERSION.SDK_INT < 11) return;
+
+        // ask only once
+        if (settings.lastReviewRequestTime != 0L) return;
+
+        long firstInstallTime = utility.getFirstInstallTime(mContext);
+        Log.i(TAG, "First install time: " + String.valueOf(firstInstallTime));
+        Calendar install_time = Calendar.getInstance();
+        install_time.setTimeInMillis(firstInstallTime);
+
+        Calendar two_months_ago = Calendar.getInstance();
+        two_months_ago.add(Calendar.DATE, -60);
+
+        if (install_time.before(two_months_ago)) {
+            sendReviewRequest();
+            settings.setLastReviewRequestTime(Calendar.getInstance().getTimeInMillis());
+        }
+    }
+
+    private void sendReviewRequest() {
+
+        final Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
+        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
+            PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+
+            // build notification
+            Notification n = new Notification.Builder(mContext)
+                .setContentTitle(mContext.getString(R.string.app_name))
+                .setContentText(mContext.getString(R.string.review_request))
+                .setSmallIcon(R.drawable.ic_clock)
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .build();
+
+            n.defaults |= Notification.DEFAULT_SOUND;
+            n.defaults |= Notification.DEFAULT_ALL;
+            NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(0, n);
+
+        }
+        else {
+            /* handle your error case: the device has no way to handle market urls */
+        }
     }
 }
