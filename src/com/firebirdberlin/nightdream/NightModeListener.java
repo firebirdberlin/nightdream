@@ -29,7 +29,7 @@ public class NightModeListener extends Service {
 
     private int SYSTEM_RINGER_MODE = -1;
 
-    private boolean debug = false;
+    private boolean debug = true;
 
     @Override
     public void onCreate(){
@@ -134,7 +134,7 @@ public class NightModeListener extends Service {
                 return;
             }
 
-            handler.postDelayed(getAmplitude,measurementMillis);
+            handler.postDelayed(getAmplitude, measurementMillis);
         }
     };
 
@@ -143,17 +143,14 @@ public class NightModeListener extends Service {
         soundmeter = null;
 
         startApp();
+        stopForeground(false); // bool: true = remove Notification
         stopSelf();
     }
 
     private void startApp(){
-        stopForeground(false); // bool: true = remove Notification
-
-        Intent myIntent = new Intent();
-        myIntent.setClassName("com.firebirdberlin.nightdream", "com.firebirdberlin.nightdream.NightDreamActivity");
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        myIntent.putExtra("mode","night");
-        myIntent.putExtra("SYSTEM_RINGER_MODE", SYSTEM_RINGER_MODE);
-        startActivity(myIntent);
+        Bundle bundle = new Bundle();
+        bundle.putString("action", "start night mode");
+        bundle.putInt("SYSTEM_RINGER_MODE", SYSTEM_RINGER_MODE);
+        NightDreamActivity.start(this, bundle);
     }
 }

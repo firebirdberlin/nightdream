@@ -62,6 +62,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        Log.i(TAG, "onCreate()");
         Window window = getWindow();
 
         nightDreamUI = new NightDreamUI(this, window);
@@ -85,32 +86,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
         alarmClock.setUtility(utility);
         alarmClock.setSettings(mySettings);
-
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            if (intent.hasExtra("mode") ){
-                String mode = extras.getString("mode");
-                if (mode.equals("night")) {
-                    last_ambient = mySettings.minIlluminance;
-                    last_ambient_noise = 32000; // something loud
-                    nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
-                }
-            }
-
-            if (intent.hasExtra("SYSTEM_RINGER_MODE") ){
-                int mode = extras.getInt("SYSTEM_RINGER_MODE",-1);
-                if (AudioManage != null)
-                    AudioManage.restoreRingerMode(mode);
-            }
-        }
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         setKeepScreenOn(true);
+        Log.i(TAG, "onStart()");
         EventBus.getDefault().register(this);
 
         nightDreamUI.onStart();
@@ -128,6 +110,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     protected void onResume() {
         super.onResume();
 
+        setKeepScreenOn(true);
         Log.i(TAG, "onResume()");
         mySettings = new Settings(this);
         scheduleShutdown();
@@ -161,6 +144,19 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                 if (action.equals("power connected")) {
                     nightDreamUI.powerConnected();
                 }
+
+                if (action.equals("start night mode")) {
+                    last_ambient = mySettings.minIlluminance;
+                    last_ambient_noise = 32000; // something loud
+                    nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
+                }
+            }
+
+            if (intent.hasExtra("SYSTEM_RINGER_MODE") ){
+                int mode = extras.getInt("SYSTEM_RINGER_MODE",-1);
+                if (AudioManage != null) {
+                    AudioManage.restoreRingerMode(mode);
+                }
             }
         }
     }
@@ -168,9 +164,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     protected void onPause() {
         super.onPause();
-        nightDreamUI.onPause();
+        Log.d(TAG ,"onPause()");
 
-        Log.d("NightDreamActivity","onPause()");
+        nightDreamUI.onPause();
 
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
@@ -179,11 +175,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         if (mySettings.allow_screen_off && mode == 0 && pm.isScreenOn() == false){ // screen off in night mode
             startBackgroundListener();
-            finish();
         }
-
-        //finish();
-        //Release();
     }
 
     @Override
@@ -200,6 +192,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i(TAG, "onDestroy()");
 
         // do not restore ringer mode, otherwise calls will ring
         // after the dream has ended

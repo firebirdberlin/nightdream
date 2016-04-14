@@ -16,6 +16,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import java.io.FileNotFoundException;
@@ -33,6 +34,7 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
 
 class AlarmClock extends View {
+    private static String TAG ="NightDream.AlarmClock";
       final private Handler handler = new Handler();
       public boolean isVisible = false;
       private boolean FingerDown;
@@ -294,6 +296,7 @@ class AlarmClock extends View {
       private Runnable stopRunningAlarm = new Runnable() {
           @Override
           public void run() {
+              handler.removeCallbacks(stopRunningAlarm);
               utility.AlarmStop();
               removeAlarm();
               invalidate();
