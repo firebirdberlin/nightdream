@@ -73,6 +73,7 @@
         android:enabled="false">
         <intent-filter>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
         </intent-filter>
     </receiver>
 
