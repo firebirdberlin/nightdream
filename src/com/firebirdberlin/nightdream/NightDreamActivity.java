@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,6 +32,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     private static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
+    final private Handler handler = new Handler();
     TextView current;
     AlarmClock alarmClock;
     ImageView background_image;
@@ -96,11 +98,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onStart();
 
-        lightSensor = utility.getLightSensor();
+        lightSensor = Utility.getLightSensor(this);
         if (lightSensor == null){
-            Toast.makeText(this, "No Light Sensor!", Toast.LENGTH_LONG).show();
-            mode = 2;
-            last_ambient = 30.0f;
+            Toast.makeText(this, "No Light Sensor!", Toast.LENGTH_SHORT).show();
+            last_ambient = 400.0f;
         }
     }
 
@@ -145,8 +146,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
                 if (action.equals("start night mode")) {
                     last_ambient = mySettings.minIlluminance;
-                    last_ambient_noise = 32000; // something loud
+                    last_ambient_noise = 0;
                     nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
+                    if (lightSensor == null) {
+                        handler.postDelayed(setScreenOff, 20000);
+                    }
                 }
             }
 
@@ -162,7 +166,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG ,"onPause()");
+        Log.i(TAG ,"onPause()");
 
         nightDreamUI.onPause();
 
@@ -229,20 +233,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
 
         if (lightSensor == null){
-            switch (mode){
-                case 0:
-                    SwitchModes(18.f, last_ambient_noise);
-                    break;
-                case 1:
-                    SwitchModes(39.f, last_ambient_noise);
-                    break;
-                case 2:
-                    SwitchModes(50.f, last_ambient_noise);
-                    break;
-                case 3:
-                    SwitchModes(mySettings.minIlluminance - 0.2f, last_ambient_noise);
-                    break;
-            }
+            last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
+            SwitchModes(last_ambient, 0);
+            String msg = (mode == 0) ? "night mode enabled" : "day mode enabled";
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -278,6 +272,20 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     }
 
+    private Runnable setScreenOff = new Runnable() {
+       @Override
+       public void run() {
+            handler.removeCallbacks(setScreenOff);
+            SwitchModes(last_ambient, last_ambient_noise);
+            //mode = 0;
+            //if (mySettings.allow_screen_off){
+                //setKeepScreenOn(false); // allow the screen to go off
+            //} else {
+                //setKeepScreenOn(true);
+            //}
+       }
+    };
+
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
         if (AudioManage != null) {
@@ -289,18 +297,20 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnNewLightSensorValue event){
-        if (isDebuggable)
+        if (isDebuggable) {
             current.setText(String.valueOf(event.value) + " lux, n=" +
                             String.valueOf(event.n));
+        }
         last_ambient = event.value;
-        SwitchModes(event.value, last_ambient_noise);
+        SwitchModes(last_ambient, last_ambient_noise);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
-        if (isDebuggable)
+        if (isDebuggable) {
             current.setText("Static for 15s: " + String.valueOf(event.value) + " lux.");
+        }
         last_ambient = event.value;
-        SwitchModes(event.value, last_ambient_noise);
+        SwitchModes(last_ambient, last_ambient_noise);
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {

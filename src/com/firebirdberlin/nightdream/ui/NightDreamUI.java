@@ -355,7 +355,7 @@ public class NightDreamUI {
         LIGHT_VALUE_DARK = settings.minIlluminance;
         float v = 0.f;
         float brightness = 0.f;
-        if (settings.autoBrightness) {
+        if (settings.autoBrightness && Utility.getLightSensor(mContext) != null) {
             float luminance_offset = LIGHT_VALUE_BRIGHT * add_brightness;
             if (light_value > LIGHT_VALUE_BRIGHT && add_brightness > 0.f) {
                 luminance_offset = LIGHT_VALUE_DAYLIGHT * add_brightness;
@@ -427,7 +427,7 @@ public class NightDreamUI {
             ambient_noise_threshold = settings.NOISE_AMPLITUDE_WAKE;
         }
 
-        if (light_value < LIGHT_VALUE_DARK
+        if (light_value <= LIGHT_VALUE_DARK
                 && ( (settings.ambientNoiseDetection == false)
                     || last_ambient_noise < ambient_noise_threshold)){
             return 0;

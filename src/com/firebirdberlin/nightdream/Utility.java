@@ -93,8 +93,8 @@ public class Utility{
         return mMediaPlayer.isPlaying();
     }
 
-    public Sensor getLightSensor() {
-        SensorManager sensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
+    static public Sensor getLightSensor(Context context) {
+        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
     }
 

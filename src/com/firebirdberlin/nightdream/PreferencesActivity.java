@@ -57,13 +57,9 @@ public class PreferencesActivity extends PreferenceActivity {
         boolean enabled = Utility.isDaydreamEnabled(this);
         prefAllowScreenOff.setEnabled( ! enabled );
 
-        Utility utility = new Utility(this);
-        if ( utility.getLightSensor() == null ) {
-            PreferenceScreen mainScreen = (PreferenceScreen) findPreference("main_screen");
+        if ( Utility.getLightSensor(this) == null ) {
             PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
-            PreferenceScreen nightModeScreen = (PreferenceScreen) findPreference("night_mode_screen");
             Preference autoBrightness = (Preference) findPreference("autoBrightness");
-            mainScreen.removePreference(nightModeScreen);
             colorScreen.removePreference(autoBrightness);
         }
 
