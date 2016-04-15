@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -36,7 +35,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     AlarmClock alarmClock;
     ImageView background_image;
 
-    Sensor lightSensor;
+    Sensor lightSensor = null;
     int mode = 2;
     int currentRingerMode;
     mAudioManager AudioManage = null;
@@ -97,8 +96,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onStart();
 
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        lightSensor = utility.getLightSensor();
         if (lightSensor == null){
             Toast.makeText(this, "No Light Sensor!", Toast.LENGTH_LONG).show();
             mode = 2;

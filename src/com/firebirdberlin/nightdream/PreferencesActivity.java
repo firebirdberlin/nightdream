@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.MediaStore;
 import android.widget.Toast;
@@ -54,6 +56,16 @@ public class PreferencesActivity extends PreferenceActivity {
 
         boolean enabled = Utility.isDaydreamEnabled(this);
         prefAllowScreenOff.setEnabled( ! enabled );
+
+        Utility utility = new Utility(this);
+        if ( utility.getLightSensor() == null ) {
+            PreferenceScreen mainScreen = (PreferenceScreen) findPreference("main_screen");
+            PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
+            PreferenceScreen nightModeScreen = (PreferenceScreen) findPreference("night_mode_screen");
+            Preference autoBrightness = (Preference) findPreference("autoBrightness");
+            mainScreen.removePreference(nightModeScreen);
+            colorScreen.removePreference(autoBrightness);
+        }
 
         final Context context = this;
         prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

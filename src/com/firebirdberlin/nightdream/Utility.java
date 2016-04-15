@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
@@ -89,6 +91,11 @@ public class Utility{
     public boolean AlarmRunning(){
         if (mMediaPlayer == null) return false;
         return mMediaPlayer.isPlaying();
+    }
+
+    public Sensor getLightSensor() {
+        SensorManager sensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
+        return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
     }
 
     public Point getDisplaySize(){
