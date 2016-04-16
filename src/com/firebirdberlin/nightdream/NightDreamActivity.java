@@ -112,6 +112,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         setKeepScreenOn(true);
         Log.i(TAG, "onResume()");
         mySettings = new Settings(this);
+        alarmClock.setSettings(mySettings);
+
         scheduleShutdown();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
@@ -259,11 +261,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI.switchModes(light_value, last_ambient_noise);
 
         if ((mode == 0) && (current_mode != 0)){
-            if (mySettings.allow_screen_off){
-                setKeepScreenOn(false); // allow the screen to go off
-            } else {
-                setKeepScreenOn(true);
-            }
+            boolean on = shallKeepScreenOn(mode);
+            setKeepScreenOn(on); // allow the screen to go off
             nightDreamUI.setAlpha(current, .0f, 3000);
         } else if ((mode > 0) && (current_mode != mode)) {
             setKeepScreenOn(true);
@@ -272,17 +271,26 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     }
 
+    private boolean shallKeepScreenOn(int mode) {
+        if (mode > 0
+                || ! mySettings.allow_screen_off) return true;
+
+        long now = Calendar.getInstance().getTimeInMillis();
+        if ( (0 < mySettings.nextAlarmTime - now
+                && mySettings.nextAlarmTime - now < 600000)
+                || utility.AlarmRunning() ) {
+            Log.d(TAG, "shallKeepScreenOn() true");
+            return true;
+        }
+        Log.d(TAG, "shallKeepScreenOn() false");
+        return false;
+    }
+
     private Runnable setScreenOff = new Runnable() {
        @Override
        public void run() {
             handler.removeCallbacks(setScreenOff);
             SwitchModes(last_ambient, last_ambient_noise);
-            //mode = 0;
-            //if (mySettings.allow_screen_off){
-                //setKeepScreenOn(false); // allow the screen to go off
-            //} else {
-                //setKeepScreenOn(true);
-            //}
        }
     };
 
@@ -349,9 +357,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     static public void start(Context context, Bundle extras) {
-        Intent intent = new Intent();
-        intent.setClassName("com.firebirdberlin.nightdream",
-                              "com.firebirdberlin.nightdream.NightDreamActivity");
+        Intent intent = new Intent(context, NightDreamActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if (extras != null) {

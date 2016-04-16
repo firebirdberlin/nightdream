@@ -34,7 +34,7 @@ public class NightModeListener extends Service {
     @Override
     public void onCreate(){
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
+        wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
 
         SharedPreferences settings = getSharedPreferences(Settings.PREFS_KEY, 0);
@@ -139,11 +139,12 @@ public class NightModeListener extends Service {
     };
 
     private void stopService() {
+        Log.i(TAG, "stopService()");
         soundmeter.release();
         soundmeter = null;
 
-        startApp();
         stopForeground(false); // bool: true = remove Notification
+        startApp();
         stopSelf();
     }
 
