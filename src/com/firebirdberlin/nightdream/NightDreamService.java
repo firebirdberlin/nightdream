@@ -148,7 +148,7 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
+        if (AlarmService.isRunning) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
             nightDreamUI.onClockClicked(last_ambient);

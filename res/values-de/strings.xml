@@ -29,6 +29,7 @@
     <string name="handle_power_car">Dock (Auto)</string>
     <string name="mute_ringer">lautlos</string>
     <string name="night_mode">Nachtmodus</string>
+    <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
     <string name="show_date">Datum</string>
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>

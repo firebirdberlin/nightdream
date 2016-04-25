@@ -137,9 +137,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             if (action != null) {
                 Log.i(TAG, action);
                 if (action.equals("start alarm")) {
-                    Log.i(TAG, "alarm goes off");
                     alarmClock.startAlarm();
                     nightDreamUI.showAlarmClock(last_ambient);
+                }
+
+                if (action.equals("stop alarm")) {
+                    alarmClock.stopAlarm();
                 }
 
                 if (action.equals("power connected")) {
@@ -148,7 +151,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
                 if (action.equals("start night mode")) {
                     last_ambient = mySettings.minIlluminance;
-                    last_ambient_noise = 0;
+                    last_ambient_noise = 32000;
                     nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
                     if (lightSensor == null) {
                         handler.postDelayed(setScreenOff, 20000);
@@ -189,8 +192,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-
-        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
     }
 
     @Override
@@ -228,7 +229,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     public void onClick(View v) {
         Log.i(TAG, "onClick()");
-        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
+        if (AlarmService.isRunning) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
             nightDreamUI.onClockClicked(last_ambient);
@@ -278,7 +279,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         long now = Calendar.getInstance().getTimeInMillis();
         if ( (0 < mySettings.nextAlarmTime - now
                 && mySettings.nextAlarmTime - now < 600000)
-                || utility.AlarmRunning() ) {
+                || AlarmService.isRunning ) {
             Log.d(TAG, "shallKeepScreenOn() true");
             return true;
         }

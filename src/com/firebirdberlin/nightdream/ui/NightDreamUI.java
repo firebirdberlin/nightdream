@@ -524,7 +524,7 @@ public class NightDreamUI {
     private Runnable hideAlarmClock = new Runnable() {
        @Override
        public void run() {
-           if ( alarmClock.isInteractive() || utility.AlarmRunning()) {
+           if ( alarmClock.isInteractive() || AlarmService.isRunning) {
                handler.postDelayed(this, 20000);
                return;
            }

@@ -30,6 +30,7 @@
     <string name="handle_power_car">car dock</string>
     <string name="mute_ringer">mute ringer</string>
     <string name="night_mode">Night mode</string>
+    <string name="notification_alarm">Click to stop the alarm.</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="show_date">show date</string>
     <string name="review_request">Please rate this application. Thanks !</string>
