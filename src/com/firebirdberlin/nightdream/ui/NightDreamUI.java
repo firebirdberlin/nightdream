@@ -156,6 +156,7 @@ public class NightDreamUI {
         twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
+        alarmClock.setClickable(true);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
