@@ -12,6 +12,7 @@
     <string name="background_black">black</string>
     <string name="background_gradient">gradient</string>
     <string name="background_image">image</string>
+    <string name="background_image_select">Select image</string>
     <string name="buttonAccessibilitySettings">start notification listener</string>
     <string name="choose_color_btn">pick color</string>
     <string name="choose_color">Clock color</string>

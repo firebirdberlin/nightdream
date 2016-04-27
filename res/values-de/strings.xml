@@ -12,6 +12,7 @@
     <string name="background_black">schwarz</string>
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Bild</string>
+    <string name="background_image_select">Bild auswählen</string>
     <string name="buttonAccessibilitySettings">Benachrichtigungsservice starten</string>
     <string name="choose_color_btn">wählen</string>
     <string name="choose_color">Farbe wählen</string>
