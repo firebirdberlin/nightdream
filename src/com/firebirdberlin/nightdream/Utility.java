@@ -2,32 +2,19 @@ package com.firebirdberlin.nightdream;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings.System;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-import java.io.File;
-import java.io.IOException;
-import java.lang.Exception;
-import java.lang.Thread;
 
 
 public class Utility{
@@ -35,95 +22,12 @@ public class Utility{
     private static String TAG ="NightDreamActivity";
 
     private Context mContext;
-    private Settings settings = null;
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
-    MediaPlayer mMediaPlayer;
 
     // constructor
     public Utility(Context context){
         this.mContext = context;
-        settings = new Settings(context);
-        mMediaPlayer = null;
         getSystemBrightnessMode();
-    }
-
-    public void PlayNotification(){
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(mContext, notification);
-            r.play();
-            //Thread.sleep(300);
-            //r.stop();
-        } catch (Exception e) {}
-    }
-
-    public Uri getAlarmToneUri() {
-        Uri uri = null;
-        Log.i(TAG, settings.AlarmToneUri);
-        try {
-            uri = Uri.parse(settings.AlarmToneUri);
-        } catch (IllegalArgumentException e) {
-            Log.i(TAG, "IllegalArgumentException");
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        }
-
-        if (uri == null) {
-            Log.i(TAG, "Using the default alarm tone Uri");
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        }
-
-        // check if the content really exists
-        String path = getPath(uri);
-        Log.d(TAG, "path: " + path);
-        if ( ! new File(path).exists() ) {
-            Log.w(TAG, "file does not exist");
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        }
-        return uri;
-    }
-
-    public String getPath(Uri uri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        CursorLoader loader = new CursorLoader(mContext, uri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_index);
-        cursor.close();
-        return result;
-    }
-
-    public void AlarmPlay() throws IllegalArgumentException, SecurityException,
-                                   IllegalStateException, IOException{
-
-        AlarmStop();
-        Log.i(TAG, "AlarmPlay()");
-        if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-        }
-
-        Uri soundUri = getAlarmToneUri();
-        mMediaPlayer.setDataSource(mContext, soundUri);
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-        mMediaPlayer.setLooping(true);
-        mMediaPlayer.prepare();
-        mMediaPlayer.start();
-    }
-
-    public void AlarmStop(){
-        if (mMediaPlayer != null){
-            if(mMediaPlayer.isPlaying()) {
-                Log.i(TAG, "AlarmStop()");
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-            }
-            mMediaPlayer = null;
-        }
-    }
-
-    public boolean AlarmRunning(){
-        if (mMediaPlayer == null) return false;
-        return mMediaPlayer.isPlaying();
     }
 
     static public Sensor getLightSensor(Context context) {
