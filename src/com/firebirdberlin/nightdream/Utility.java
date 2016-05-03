@@ -102,6 +102,10 @@ public class Utility{
                                                         System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
     }
 
+    public int getScreenOffTimeout(){
+        return System.getInt(mContext.getContentResolver(), System.SCREEN_OFF_TIMEOUT, -1);
+    }
+
     public void setManualBrightnessMode(){
         System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
                 System.SCREEN_BRIGHTNESS_MODE_MANUAL);

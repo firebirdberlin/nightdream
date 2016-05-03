@@ -175,6 +175,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onPause();
 
+        handler.removeCallbacks(finishApp);
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         unregisterReceiver(nReceiver);
@@ -295,6 +296,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
        }
     };
 
+    private Runnable finishApp = new Runnable() {
+       @Override
+       public void run() {
+           finish();
+       }
+    };
+
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
         if (AudioManage != null) {
@@ -339,10 +347,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void setKeepScreenOn(boolean keepScreenOn) {
+        handler.removeCallbacks(finishApp);
         if( keepScreenOn ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            int screenOffTimeout = utility.getScreenOffTimeout();
+            handler.postDelayed(finishApp, screenOffTimeout + 1000);
         }
     }
     @Override
