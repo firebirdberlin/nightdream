@@ -526,7 +526,7 @@ public class NightDreamUI {
        @Override
        public void run() {
            if ( alarmClock.isInteractive() || AlarmService.isRunning) {
-               handler.postDelayed(this, 20000);
+               handler.postDelayed(hideAlarmClock, 20000);
                return;
            }
            setAlpha(batteryView, 0.f, 2000);
@@ -561,11 +561,11 @@ public class NightDreamUI {
             handler.postDelayed(ClickOut, 100);
         }
         showAlarmClock(last_ambient);
-        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public void showAlarmClock(float last_ambient) {
         removeCallbacks(hideAlarmClock);
+        handler.postDelayed(hideAlarmClock, 20000);
         alarmClock.isVisible = true;
         alarmClock.setClickable(true);
         dimScreen(0, last_ambient, settings.dim_offset);
@@ -584,6 +584,7 @@ public class NightDreamUI {
                 event_consumed = true;
                 break;
             case MotionEvent.ACTION_UP:
+                removeCallbacks(hideAlarmClock);
                 handler.postDelayed(hideAlarmClock, 20000);
                 event_consumed = true;
                 break;
