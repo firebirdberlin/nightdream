@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about">Über</string>
+    <string name="alarm">Wecker</string>
     <string name="allow_screen_off">Bildschirm aus</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
     <string name="appearance">Aussehen</string>
@@ -14,6 +15,7 @@
     <string name="background_image">Bild</string>
     <string name="background_image_select">Bild auswählen</string>
     <string name="buttonAccessibilitySettings">Benachrichtigungsservice starten</string>
+    <string name="choose_alarm_sound">Weckton</string>
     <string name="choose_color_btn">wählen</string>
     <string name="choose_color">Farbe wählen</string>
     <string name="choose_color_dialog">Wählen Sie eine Farbe.</string>
@@ -32,6 +34,7 @@
     <string name="night_mode">Nachtmodus</string>
     <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
+    <string name="select_alarm_sound">Weckton auswählen</string>
     <string name="show_date">Datum</string>
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
 </resources>
