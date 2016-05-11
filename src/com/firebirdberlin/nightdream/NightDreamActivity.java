@@ -225,11 +225,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public boolean onTouch(View view, MotionEvent e) {
+        refreshScreenTimeout();
         return nightDreamUI.onTouch(view, e, last_ambient);
     }
 
     public void onClick(View v) {
         Log.i(TAG, "onClick()");
+        refreshScreenTimeout();
         if (AlarmService.isRunning) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
@@ -347,15 +349,28 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void setKeepScreenOn(boolean keepScreenOn) {
-        handler.removeCallbacks(finishApp);
         if( keepScreenOn ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        refreshScreenTimeout();
+    }
+
+    private void refreshScreenTimeout() {
+        handler.removeCallbacks(finishApp);
+        if ( ! isKeepScreenOn() ) {
             int screenOffTimeout = utility.getScreenOffTimeout();
             handler.postDelayed(finishApp, screenOffTimeout + 1000);
         }
     }
+
+    private boolean isKeepScreenOn() {
+        int flags = getWindow().getAttributes().flags;
+
+        return ((flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0);
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
