@@ -3,8 +3,10 @@ package com.firebirdberlin.nightdream;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,8 +17,10 @@ import android.util.Log;
 
 public class NightModeListener extends Service {
     private static String TAG = "NightDream.NightModeListener";
+    private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     final private Handler handler = new Handler();
     private SoundMeter soundmeter;
+    private ReceiverPowerDisconnected pwrReceiver = null;
 
     private boolean running = false;
     private boolean error_on_microphone = false;
@@ -29,12 +33,12 @@ public class NightModeListener extends Service {
 
     private int SYSTEM_RINGER_MODE = -1;
 
-    private boolean debug = false;
+    private boolean debug = true;
 
     @Override
     public void onCreate(){
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
+        wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
 
         SharedPreferences settings = getSharedPreferences(Settings.PREFS_KEY, 0);
@@ -54,6 +58,7 @@ public class NightModeListener extends Service {
 
         running = true;
 
+        pwrReceiver = registerPowerDisconnectionReceiver();
         Notification note = new Notification(R.drawable.ic_nightdream,
                                              "NightDream night mode listener active.",
                                              System.currentTimeMillis());
@@ -90,6 +95,8 @@ public class NightModeListener extends Service {
         if (debug){
             Log.d(TAG,"onDestroy() called.");
         }
+
+        unregisterReceiver(pwrReceiver);
 
         if (soundmeter != null){
             soundmeter.release();
@@ -134,26 +141,41 @@ public class NightModeListener extends Service {
                 return;
             }
 
-            handler.postDelayed(getAmplitude,measurementMillis);
+            handler.postDelayed(getAmplitude, measurementMillis);
         }
     };
 
     private void stopService() {
+        Log.i(TAG, "stopService()");
         soundmeter.release();
         soundmeter = null;
 
+        stopForeground(false); // bool: true = remove Notification
         startApp();
         stopSelf();
     }
 
     private void startApp(){
-        stopForeground(false); // bool: true = remove Notification
-
-        Intent myIntent = new Intent();
-        myIntent.setClassName("com.firebirdberlin.nightdream", "com.firebirdberlin.nightdream.NightDreamActivity");
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        myIntent.putExtra("mode","night");
-        myIntent.putExtra("SYSTEM_RINGER_MODE", SYSTEM_RINGER_MODE);
-        startActivity(myIntent);
+        Bundle bundle = new Bundle();
+        bundle.putString("action", "start night mode");
+        bundle.putInt("SYSTEM_RINGER_MODE", SYSTEM_RINGER_MODE);
+        NightDreamActivity.start(this, bundle);
     }
+
+    class ReceiverPowerDisconnected extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null) return;
+            Log.d(TAG,"Power was disconnected ... stopSelf();");
+            stopSelf();
+        }
+    }
+
+    private ReceiverPowerDisconnected registerPowerDisconnectionReceiver(){
+        ReceiverPowerDisconnected pwrReceiver = new ReceiverPowerDisconnected();
+        IntentFilter pwrFilter = new IntentFilter(ACTION_POWER_DISCONNECTED);
+        registerReceiver(pwrReceiver, pwrFilter);
+        return pwrReceiver;
+    }
+
 }

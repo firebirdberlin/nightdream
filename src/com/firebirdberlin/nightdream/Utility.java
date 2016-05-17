@@ -2,27 +2,19 @@ package com.firebirdberlin.nightdream;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Build;
-import android.provider.Settings;
 import android.provider.Settings.System;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-import java.io.IOException;
-import java.lang.Exception;
-import java.lang.Thread;
 
 
 public class Utility{
@@ -30,65 +22,17 @@ public class Utility{
     private static String TAG ="NightDreamActivity";
 
     private Context mContext;
-    int system_brightness_mode = Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
-    MediaPlayer mMediaPlayer;
+    int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
 
     // constructor
     public Utility(Context context){
         this.mContext = context;
-        mMediaPlayer = null;
         getSystemBrightnessMode();
     }
 
-    public void PlayNotification(){
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(mContext, notification);
-            r.play();
-            //Thread.sleep(300);
-            //r.stop();
-        } catch (Exception e) {}
-    }
-
-    public void PlayAlarmSound() {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            Ringtone r = RingtoneManager.getRingtone(mContext, notification);
-            r.play();
-        } catch (Exception e) {}
-    }
-
-    public void AlarmPlay() throws IllegalArgumentException, SecurityException,
-                                   IllegalStateException, IOException{
-
-        AlarmStop();
-        Log.i(TAG, "AlarmPlay()");
-        if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-        }
-
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        mMediaPlayer.setDataSource(mContext, soundUri);
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-        mMediaPlayer.setLooping(true);
-        mMediaPlayer.prepare();
-        mMediaPlayer.start();
-    }
-
-    public void AlarmStop(){
-        if (mMediaPlayer != null){
-            if(mMediaPlayer.isPlaying()) {
-                Log.i(TAG, "AlarmStop()");
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-            }
-            mMediaPlayer = null;
-        }
-    }
-
-    public boolean AlarmRunning(){
-        if (mMediaPlayer == null) return false;
-        return mMediaPlayer.isPlaying();
+    static public Sensor getLightSensor(Context context) {
+        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
     }
 
     public Point getDisplaySize(){
@@ -153,24 +97,28 @@ public class Utility{
     }
 
     public void getSystemBrightnessMode(){
-        system_brightness_mode = Settings.System.getInt(mContext.getContentResolver(),
-                                                        Settings.System.SCREEN_BRIGHTNESS_MODE,
-                                                        Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+        system_brightness_mode = System.getInt(mContext.getContentResolver(),
+                                                        System.SCREEN_BRIGHTNESS_MODE,
+                                                        System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+    }
+
+    public int getScreenOffTimeout(){
+        return System.getInt(mContext.getContentResolver(), System.SCREEN_OFF_TIMEOUT, -1);
     }
 
     public void setManualBrightnessMode(){
-        Settings.System.putInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE,
-                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_MANUAL);
     }
 
     public void setAutoBrightnessMode(){
-        Settings.System.putInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE,
-                Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
     }
 
 
     public void restoreSystemBrightnessMode(){
-        Settings.System.putInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE,
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
                 system_brightness_mode);
     }
 

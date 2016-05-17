@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about">About</string>
+    <string name="alarm">Alarm</string>
     <string name="allow_screen_off">screen off</string>
     <string name="ambient_noise">ambient noise detection</string>
     <string name="appearance">Appearance</string>
@@ -12,7 +13,9 @@
     <string name="background_black">black</string>
     <string name="background_gradient">gradient</string>
     <string name="background_image">image</string>
+    <string name="background_image_select">Select image</string>
     <string name="buttonAccessibilitySettings">start notification listener</string>
+    <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_color_btn">pick color</string>
     <string name="choose_color">Clock color</string>
     <string name="choose_color_dialog">Pick a color.</string>
@@ -30,7 +33,9 @@
     <string name="handle_power_car">car dock</string>
     <string name="mute_ringer">mute ringer</string>
     <string name="night_mode">Night mode</string>
+    <string name="notification_alarm">Click to stop the alarm.</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
+    <string name="select_alarm_sound">Select alarm sound</string>
     <string name="show_date">show date</string>
     <string name="review_request">Please rate this application. Thanks !</string>
 </resources>

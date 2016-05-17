@@ -17,13 +17,13 @@ public class LightSensorEventListener implements SensorEventListener {
     private float last_mean_value = 4.0f;
     private float last_value = 4.0f;
     private Sensor lightSensor = null;
-    private SensorManager mSensorManager;
+    private SensorManager mSensorManager = null;
     public int count = 0;
 
 
     public LightSensorEventListener(Context context){
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        lightSensor = Utility.getLightSensor(context);
         bus = EventBus.getDefault();
     }
 

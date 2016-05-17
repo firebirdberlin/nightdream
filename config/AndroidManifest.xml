@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="@CONFIG.PACKAGENAME@"
-    android:versionCode="54"
-    android:versionName="2.0">
+    android:versionCode="57"
+    android:versionName="2.0.3">
 
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -52,6 +52,7 @@
     </service>
 
     <service android:enabled="true" android:name=".NightModeListener" />
+    <service android:enabled="true" android:name=".AlarmService" />
 
     <activity android:name=".PreferencesActivity"></activity>
     <activity android:name=".NightDreamActivity"
@@ -73,6 +74,7 @@
         android:enabled="false">
         <intent-filter>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
         </intent-filter>
     </receiver>
 

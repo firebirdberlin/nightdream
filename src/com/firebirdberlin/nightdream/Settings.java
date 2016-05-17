@@ -35,6 +35,7 @@ public class Settings {
     public long autostartTimeRangeEnd = 0L;
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
+    public String AlarmToneUri = "";
     public String bgpath = "";
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -48,6 +49,7 @@ public class Settings {
     }
 
     public void reload() {
+        AlarmToneUri = settings.getString("AlarmToneUri", "");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
@@ -107,6 +109,20 @@ public class Settings {
         nextAlarmTime = alarmTime;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlarmTime", alarmTime);
+        prefEditor.commit();
+    }
+
+    public void setAlarmToneUri(String uri) {
+        AlarmToneUri = uri;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString("AlarmToneUri", uri);
+        prefEditor.commit();
+    }
+
+    public void setBackgroundImage(String uri) {
+        bgpath = uri;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString("BackgroundImage", uri);
         prefEditor.commit();
     }
 

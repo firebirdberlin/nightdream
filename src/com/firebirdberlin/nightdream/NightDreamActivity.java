@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,11 +32,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     private static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
+    final private Handler handler = new Handler();
     TextView current;
     AlarmClock alarmClock;
     ImageView background_image;
 
-    Sensor lightSensor;
+    Sensor lightSensor = null;
     int mode = 2;
     int currentRingerMode;
     mAudioManager AudioManage = null;
@@ -62,6 +63,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        Log.i(TAG, "onCreate()");
         Window window = getWindow();
 
         nightDreamUI = new NightDreamUI(this, window);
@@ -85,42 +87,21 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
         alarmClock.setUtility(utility);
         alarmClock.setSettings(mySettings);
-
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            if (intent.hasExtra("mode") ){
-                String mode = extras.getString("mode");
-                if (mode.equals("night")) {
-                    last_ambient = mySettings.minIlluminance;
-                    last_ambient_noise = 32000; // something loud
-                    nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
-                }
-            }
-
-            if (intent.hasExtra("SYSTEM_RINGER_MODE") ){
-                int mode = extras.getInt("SYSTEM_RINGER_MODE",-1);
-                if (AudioManage != null)
-                    AudioManage.restoreRingerMode(mode);
-            }
-        }
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         setKeepScreenOn(true);
+        Log.i(TAG, "onStart()");
         EventBus.getDefault().register(this);
 
         nightDreamUI.onStart();
 
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        lightSensor = Utility.getLightSensor(this);
         if (lightSensor == null){
-            Toast.makeText(this, "No Light Sensor!", Toast.LENGTH_LONG).show();
-            mode = 2;
-            last_ambient = 30.0f;
+            Toast.makeText(this, "No Light Sensor!", Toast.LENGTH_SHORT).show();
+            last_ambient = 400.0f;
         }
     }
 
@@ -128,8 +109,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     protected void onResume() {
         super.onResume();
 
+        setKeepScreenOn(true);
         Log.i(TAG, "onResume()");
         mySettings = new Settings(this);
+        alarmClock.setSettings(mySettings);
+
         scheduleShutdown();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
@@ -153,13 +137,32 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             if (action != null) {
                 Log.i(TAG, action);
                 if (action.equals("start alarm")) {
-                    Log.i(TAG, "alarm goes off");
                     alarmClock.startAlarm();
                     nightDreamUI.showAlarmClock(last_ambient);
                 }
 
+                if (action.equals("stop alarm")) {
+                    alarmClock.stopAlarm();
+                }
+
                 if (action.equals("power connected")) {
                     nightDreamUI.powerConnected();
+                }
+
+                if (action.equals("start night mode")) {
+                    last_ambient = mySettings.minIlluminance;
+                    last_ambient_noise = 32000;
+                    nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
+                    if (lightSensor == null) {
+                        handler.postDelayed(setScreenOff, 20000);
+                    }
+                }
+            }
+
+            if (intent.hasExtra("SYSTEM_RINGER_MODE") ){
+                int mode = extras.getInt("SYSTEM_RINGER_MODE",-1);
+                if (AudioManage != null) {
+                    AudioManage.restoreRingerMode(mode);
                 }
             }
         }
@@ -168,10 +171,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i(TAG ,"onPause()");
+
         nightDreamUI.onPause();
 
-        Log.d("NightDreamActivity","onPause()");
-
+        handler.removeCallbacks(finishApp);
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         unregisterReceiver(nReceiver);
@@ -179,11 +183,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         if (mySettings.allow_screen_off && mode == 0 && pm.isScreenOn() == false){ // screen off in night mode
             startBackgroundListener();
-            finish();
         }
-
-        //finish();
-        //Release();
     }
 
     @Override
@@ -193,13 +193,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-
-        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i(TAG, "onDestroy()");
 
         // do not restore ringer mode, otherwise calls will ring
         // after the dream has ended
@@ -226,32 +225,24 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public boolean onTouch(View view, MotionEvent e) {
+        refreshScreenTimeout();
         return nightDreamUI.onTouch(view, e, last_ambient);
     }
 
     public void onClick(View v) {
         Log.i(TAG, "onClick()");
-        if ( utility.AlarmRunning() ) alarmClock.stopAlarm();
+        refreshScreenTimeout();
+        if (AlarmService.isRunning) alarmClock.stopAlarm();
 
         if (v instanceof TextView){
             nightDreamUI.onClockClicked(last_ambient);
         }
 
         if (lightSensor == null){
-            switch (mode){
-                case 0:
-                    SwitchModes(18.f, last_ambient_noise);
-                    break;
-                case 1:
-                    SwitchModes(39.f, last_ambient_noise);
-                    break;
-                case 2:
-                    SwitchModes(50.f, last_ambient_noise);
-                    break;
-                case 3:
-                    SwitchModes(mySettings.minIlluminance - 0.2f, last_ambient_noise);
-                    break;
-            }
+            last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
+            SwitchModes(last_ambient, 0);
+            String msg = (mode == 0) ? "night mode enabled" : "day mode enabled";
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -274,11 +265,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI.switchModes(light_value, last_ambient_noise);
 
         if ((mode == 0) && (current_mode != 0)){
-            if (mySettings.allow_screen_off){
-                setKeepScreenOn(false); // allow the screen to go off
-            } else {
-                setKeepScreenOn(true);
-            }
+            boolean on = shallKeepScreenOn(mode);
+            setKeepScreenOn(on); // allow the screen to go off
             nightDreamUI.setAlpha(current, .0f, 3000);
         } else if ((mode > 0) && (current_mode != mode)) {
             setKeepScreenOn(true);
@@ -286,6 +274,36 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
 
     }
+
+    private boolean shallKeepScreenOn(int mode) {
+        if (mode > 0
+                || ! mySettings.allow_screen_off) return true;
+
+        long now = Calendar.getInstance().getTimeInMillis();
+        if ( (0 < mySettings.nextAlarmTime - now
+                && mySettings.nextAlarmTime - now < 600000)
+                || AlarmService.isRunning ) {
+            Log.d(TAG, "shallKeepScreenOn() true");
+            return true;
+        }
+        Log.d(TAG, "shallKeepScreenOn() false");
+        return false;
+    }
+
+    private Runnable setScreenOff = new Runnable() {
+       @Override
+       public void run() {
+            handler.removeCallbacks(setScreenOff);
+            SwitchModes(last_ambient, last_ambient_noise);
+       }
+    };
+
+    private Runnable finishApp = new Runnable() {
+       @Override
+       public void run() {
+           finish();
+       }
+    };
 
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
@@ -298,18 +316,20 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnNewLightSensorValue event){
-        if (isDebuggable)
+        if (isDebuggable) {
             current.setText(String.valueOf(event.value) + " lux, n=" +
                             String.valueOf(event.n));
+        }
         last_ambient = event.value;
-        SwitchModes(event.value, last_ambient_noise);
+        SwitchModes(last_ambient, last_ambient_noise);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
-        if (isDebuggable)
+        if (isDebuggable) {
             current.setText("Static for 15s: " + String.valueOf(event.value) + " lux.");
+        }
         last_ambient = event.value;
-        SwitchModes(event.value, last_ambient_noise);
+        SwitchModes(last_ambient, last_ambient_noise);
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {
@@ -334,7 +354,23 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+        refreshScreenTimeout();
     }
+
+    private void refreshScreenTimeout() {
+        handler.removeCallbacks(finishApp);
+        if ( ! isKeepScreenOn() ) {
+            int screenOffTimeout = utility.getScreenOffTimeout();
+            handler.postDelayed(finishApp, screenOffTimeout + 1000);
+        }
+    }
+
+    private boolean isKeepScreenOn() {
+        int flags = getWindow().getAttributes().flags;
+
+        return ((flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0);
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -348,9 +384,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     static public void start(Context context, Bundle extras) {
-        Intent intent = new Intent();
-        intent.setClassName("com.firebirdberlin.nightdream",
-                              "com.firebirdberlin.nightdream.NightDreamActivity");
+        Intent intent = new Intent(context, NightDreamActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if (extras != null) {

@@ -156,6 +156,7 @@ public class NightDreamUI {
         twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
+        alarmClock.setClickable(true);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -355,7 +356,7 @@ public class NightDreamUI {
         LIGHT_VALUE_DARK = settings.minIlluminance;
         float v = 0.f;
         float brightness = 0.f;
-        if (settings.autoBrightness) {
+        if (settings.autoBrightness && Utility.getLightSensor(mContext) != null) {
             float luminance_offset = LIGHT_VALUE_BRIGHT * add_brightness;
             if (light_value > LIGHT_VALUE_BRIGHT && add_brightness > 0.f) {
                 luminance_offset = LIGHT_VALUE_DAYLIGHT * add_brightness;
@@ -427,7 +428,7 @@ public class NightDreamUI {
             ambient_noise_threshold = settings.NOISE_AMPLITUDE_WAKE;
         }
 
-        if (light_value < LIGHT_VALUE_DARK
+        if (light_value <= LIGHT_VALUE_DARK
                 && ( (settings.ambientNoiseDetection == false)
                     || last_ambient_noise < ambient_noise_threshold)){
             return 0;
@@ -524,8 +525,8 @@ public class NightDreamUI {
     private Runnable hideAlarmClock = new Runnable() {
        @Override
        public void run() {
-           if ( alarmClock.isInteractive() || utility.AlarmRunning()) {
-               handler.postDelayed(this, 20000);
+           if ( alarmClock.isInteractive() || AlarmService.isRunning) {
+               handler.postDelayed(hideAlarmClock, 20000);
                return;
            }
            setAlpha(batteryView, 0.f, 2000);
@@ -560,11 +561,11 @@ public class NightDreamUI {
             handler.postDelayed(ClickOut, 100);
         }
         showAlarmClock(last_ambient);
-        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public void showAlarmClock(float last_ambient) {
         removeCallbacks(hideAlarmClock);
+        handler.postDelayed(hideAlarmClock, 20000);
         alarmClock.isVisible = true;
         alarmClock.setClickable(true);
         dimScreen(0, last_ambient, settings.dim_offset);
@@ -583,6 +584,7 @@ public class NightDreamUI {
                 event_consumed = true;
                 break;
             case MotionEvent.ACTION_UP:
+                removeCallbacks(hideAlarmClock);
                 handler.postDelayed(hideAlarmClock, 20000);
                 event_consumed = true;
                 break;
