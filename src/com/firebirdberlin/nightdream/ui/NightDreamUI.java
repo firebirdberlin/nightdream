@@ -713,10 +713,9 @@ public class NightDreamUI {
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
+                .setDefaults(0)
                 .build();
 
-            n.defaults |= Notification.DEFAULT_SOUND;
-            n.defaults |= Notification.DEFAULT_ALL;
             NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
 
