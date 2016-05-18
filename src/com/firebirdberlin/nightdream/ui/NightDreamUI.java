@@ -582,15 +582,15 @@ public class NightDreamUI {
        }
     };
 
-    public void onClockClicked(float last_ambient) {
+    public void onClockClicked() {
         if (Build.VERSION.SDK_INT >= 12){
             clockLayout.animate().setDuration(100).scaleXBy(-0.15f).scaleYBy(-0.15f);
             handler.postDelayed(ClickOut, 100);
         }
-        showAlarmClock(last_ambient);
+        showAlarmClock();
     }
 
-    public void showAlarmClock(float last_ambient) {
+    public void showAlarmClock() {
         removeCallbacks(hideAlarmClock);
         handler.postDelayed(hideAlarmClock, 20000);
         alarmClock.isVisible = true;
@@ -602,9 +602,6 @@ public class NightDreamUI {
     OnTouchListener mOnTouchListener = new OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            Log.i(TAG, "onTouch() for v = " + v.toString());
-            Log.i(TAG, String.valueOf(event.getPointerCount()));
-            Log.i(TAG, MotionEvent.actionToString(event.getAction()));
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     multi_finger_gesture = false;
@@ -614,7 +611,8 @@ public class NightDreamUI {
                     return true;
                 case MotionEvent.ACTION_UP:
                     if (multi_finger_gesture == false) {
-                        ((NightDreamActivity) mContext).onClick(v);
+                        EventBus.getDefault().post(new OnClockClicked());
+                        onClockClicked();
                         return true;
                     }
                     multi_finger_gesture = false;
@@ -633,7 +631,7 @@ public class NightDreamUI {
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                showAlarmClock(last_ambient);
+                showAlarmClock();
                 event_consumed = true;
                 break;
             case MotionEvent.ACTION_UP:
