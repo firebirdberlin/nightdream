@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,7 +22,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.animation.AlphaAnimation;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
@@ -51,7 +55,7 @@ public class NightDreamUI {
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
-    private LinearLayout clockLayout;
+    private ClockLayout clockLayout;
     private LinearLayout notificationbar;
     private Settings settings = null;
     private SoundMeter soundmeter;
@@ -63,6 +67,7 @@ public class NightDreamUI {
     private View rootView;
     private Window window;
     private mAudioManager AudioManage;
+    private ScaleGestureDetector mScaleDetector = null;
 
     private int dim_offset_init_x = 0;
     private int dim_offset_curr_x = 0;
@@ -71,11 +76,28 @@ public class NightDreamUI {
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
+        mScaleDetector = new ScaleGestureDetector(mContext, new OnScaleGestureListener() {
+            @Override
+            public void onScaleEnd(ScaleGestureDetector detector) {
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                return true;
+            }
+
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                Log.d(TAG, "zoom ongoing, scale: " + detector.getScaleFactor());
+                return false;
+            }
+        });
+
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         batteryView = (TextView) rootView.findViewById(R.id.battery);
-        clockLayout = (LinearLayout) rootView.findViewById(R.id.clockLayout);
+        clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         clock = (TextView) rootView.findViewById(R.id.clock);
         date = (TextView) rootView.findViewById(R.id.date);
         divider = (View) rootView.findViewById(R.id.divider);
@@ -97,6 +119,7 @@ public class NightDreamUI {
         if (Build.VERSION.SDK_INT >= 12){
             clockLayout.setScaleX(.1f);
             clockLayout.setScaleY(.1f);
+            clockLayout.setOnTouchListener(mOnTouchListener);
         }
 
         utility = new Utility(context);
@@ -570,6 +593,32 @@ public class NightDreamUI {
         alarmClock.setClickable(true);
         dimScreen(0, last_ambient, settings.dim_offset);
     }
+
+    private boolean multi_finger_gesture = false;
+    OnTouchListener mOnTouchListener = new OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            Log.i(TAG, "onTouch() for v = " + v.toString());
+            Log.i(TAG, String.valueOf(event.getPointerCount()));
+            Log.i(TAG, MotionEvent.actionToString(event.getAction()));
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    multi_finger_gesture = false;
+                    return true;
+                case MotionEvent.ACTION_POINTER_UP:
+                    multi_finger_gesture = true;
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (multi_finger_gesture == false) {
+                        ((NightDreamActivity) mContext).onClick(v);
+                        return true;
+                    }
+                    multi_finger_gesture = false;
+                default:
+                    return mScaleDetector.onTouchEvent(event);
+            }
+        }
+    };
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (utility == null) return false;

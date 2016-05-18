@@ -234,7 +234,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         refreshScreenTimeout();
         if (AlarmService.isRunning) alarmClock.stopAlarm();
 
-        if (v instanceof TextView){
+        if (v instanceof ClockLayout){
             nightDreamUI.onClockClicked(last_ambient);
         }
 

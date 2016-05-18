@@ -9,66 +9,7 @@
         android:scaleType="centerCrop"
         android:src = "@drawable/background_gradient" />
 
-    <include  layout="@layout/background" android:id="@+id/AlarmClock" />
-
-<!--
-    date and time
--->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/clockLayout"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationX="0sp"
-        android:translationY="0sp"
-        android:layout_gravity="center"
-        android:background="#44000000"
-        >
-<!--
-        time
--->
-        <TextClock
-            android:clickable="true"
-            android:fontFamily="sans-serif-thin"
-            android:format12Hour="h:mm a"
-            android:format24Hour="kk:mm"
-            android:id="@+id/clock"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:onClick="onClick"
-            android:textColor="#C2C2C2"
-            android:textSize="50sp"
-            android:translationX="0sp"
-            android:translationY="0sp"
-            />
-<!--
-        divider
--->
-        <View
-            android:id="@+id/divider"
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:background="#C2C2C2" />
-<!--
-        Date
--->
-        <TextClock
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:translationX="0sp"
-            android:translationY="0sp"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-light"
-            android:textStyle="bold"
-            android:format12Hour="dd. MMMM yyyy"
-            android:format24Hour="dd. MMMM yyyy"
-            android:textColor="#C2C2C2"
-            android:textSize="30sp"
-            android:paddingTop="5sp" />
-
-    </LinearLayout>
+    <include layout="@layout/background" android:id="@+id/AlarmClock" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
@@ -195,5 +136,62 @@
 
     </LinearLayout>
 
+<!--
+    date and time
+-->
+    <com.firebirdberlin.nightdream.ClockLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/clockLayout"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="0sp"
+        android:translationY="0sp"
+        android:layout_gravity="center"
+        android:background="#44000000"
+        >
+<!--
+        time
+-->
+        <TextClock
+            android:clickable="true"
+            android:fontFamily="sans-serif-thin"
+            android:format12Hour="h:mm a"
+            android:format24Hour="kk:mm"
+            android:id="@+id/clock"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="#C2C2C2"
+            android:textSize="50sp"
+            android:translationX="0sp"
+            android:translationY="0sp"
+            />
+<!--
+        divider
+-->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:background="#C2C2C2" />
+<!--
+        Date
+-->
+        <TextClock
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationX="0sp"
+            android:translationY="0sp"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="bold"
+            android:format12Hour="dd. MMMM yyyy"
+            android:format24Hour="dd. MMMM yyyy"
+            android:textColor="#C2C2C2"
+            android:textSize="30sp"
+            android:paddingTop="5sp" />
 
+    </com.firebirdberlin.nightdream.ClockLayout>
 </FrameLayout>
