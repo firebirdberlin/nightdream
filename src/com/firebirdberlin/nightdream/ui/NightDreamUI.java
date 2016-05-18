@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.greenrobot.event.EventBus;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -73,6 +74,7 @@ public class NightDreamUI {
     private int dim_offset_curr_x = 0;
     public boolean setDimOffset = false;
     private boolean daydreamMode = false;
+    private float last_ambient = 4.0f;
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
@@ -137,6 +139,7 @@ public class NightDreamUI {
     }
 
     public void onStart() {
+        EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
@@ -207,6 +210,7 @@ public class NightDreamUI {
     }
 
     public void onStop() {
+        EventBus.getDefault().unregister(this);
         lightSensorEventListener.unregister();
         removeCallbacks(moveAround);
         removeCallbacks(hideAlarmClock);
@@ -774,5 +778,13 @@ public class NightDreamUI {
         else {
             /* handle your error case: the device has no way to handle market urls */
         }
+    }
+
+    public void onEvent(OnNewLightSensorValue event){
+        last_ambient = event.value;
+    }
+
+    public void onEvent(OnLightSensorValueTimeout event){
+        last_ambient = event.value;
     }
 }
