@@ -215,7 +215,6 @@ public class NightDreamUI {
         removeCallbacks(moveAround);
         removeCallbacks(hideAlarmClock);
         removeCallbacks(zoomIn);
-        removeCallbacks(ClickOut);
         if (soundmeter != null){
             soundmeter.stopMeasurement();
             soundmeter = null;
@@ -572,21 +571,7 @@ public class NightDreamUI {
        }
     };
 
-    // in only called for api level >= 12
-    private Runnable ClickOut = new Runnable() {
-       @Override
-       public void run() {
-            if (Build.VERSION.SDK_INT >= 12){
-               clockLayout.animate().setDuration(1000).scaleX(1.f).scaleY(1.f);
-            }
-       }
-    };
-
     public void onClockClicked() {
-        if (Build.VERSION.SDK_INT >= 12){
-            clockLayout.animate().setDuration(100).scaleXBy(-0.15f).scaleYBy(-0.15f);
-            handler.postDelayed(ClickOut, 100);
-        }
         showAlarmClock();
     }
 
