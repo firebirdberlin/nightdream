@@ -90,7 +90,19 @@ public class NightDreamUI {
 
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
-                Log.d(TAG, "zoom ongoing, scale: " + detector.getScaleFactor());
+                Point size = utility.getDisplaySize();
+                int screen_width = size.x;
+                float s = detector.getScaleFactor();
+                Log.d(TAG, "zoom ongoing, scale: " + s);
+                //clockLayout.animate().setDuration(10).scaleXBy(s).scaleYBy(s);
+                s *= clockLayout.getScaleX();
+                int new_width = (int) (clockLayout.getWidth() * s);
+                if (s > 0.5f && new_width <= screen_width) {
+                    clockLayout.setScaleX(s);
+                    clockLayout.setScaleY(s);
+                    clockLayout.invalidate();
+                }
+                Log.i(TAG, String.valueOf(clockLayout.getWidth() * s) );
                 return false;
             }
         });
@@ -337,27 +349,27 @@ public class NightDreamUI {
             int rypos = (h - clockLayout.getHeight()) / 2; // API level 1
 
             rxpos = to_range(rxpos, 1, w);
-            int i1 = random.nextInt(2 * rxpos);
-
-            // random y position
             rypos = to_range(rypos, 1, h);
+
+            int i1 = random.nextInt(2 * rxpos);
             int i2 = 90 + random.nextInt(2 * rypos);
 
             clockLayout.setPadding(i1, i2, 0, 0);
             clockLayout.invalidate();
         } else {
-            // random x position
-            int rxpos = w - (int) (clockLayout.getWidth() * clockLayout.getScaleX()); // API level 11
-            int i1 = 0;
-            if (rxpos > 0) i1 = random.nextInt(rxpos);
-
-            // random y position
-            int rypos = h - (int) (clockLayout.getHeight() * clockLayout.getScaleY())-150-90; // API level 11
+            // determine a randowm position
             // lower 150 px is reserved for alarm clockLayout
-            // upper 90 px is for battery stats
-            int i2 = 90;
-            if (rypos > 0) i2 = 90 + random.nextInt(rypos);
+            // upper 90 px is for the battery stats
+            int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());
+            int scaled_height = (int) (clockLayout.getHeight() * clockLayout.getScaleY());
+            int rxpos = w - scaled_width ; // API level 11
+            int rypos = h - scaled_height - 150 - 90; // API level 11
 
+            int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
+            int i2 = (rypos > 0) ? 90 + random.nextInt(rypos) : 90;
+
+            i1 -= (clockLayout.getWidth() - scaled_width) / 2;
+            i2 -= (clockLayout.getHeight() - scaled_height) / 2;
             clockLayout.animate().setDuration(10000).x(i1).y(i2); // api level 12
         }
     }
