@@ -38,6 +38,7 @@
     <string name="select_alarm_sound">Weckton auswählen</string>
     <string name="show_date">Datum</string>
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
+    <string name="typeface">Schriftart</string>
 </resources>
 
 

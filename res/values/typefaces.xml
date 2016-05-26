@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="typeFaceValues">
+          <item>1</item>
+     </string-array>
+
+
+    <string-array name="typeFaces">
+        <item>@string/typeface_roboto_regular</item>
+    </string-array>
+</resources>

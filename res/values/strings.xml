@@ -39,6 +39,12 @@
     <string name="select_alarm_sound">Select alarm sound</string>
     <string name="show_date">show date</string>
     <string name="review_request">Please rate this application. Thanks !</string>
+    <string name="typeface">Typeface</string>
+    <string name="typeface_roboto_regular">Roboto regular</string>
+    <string name="typeface_roboto_light">Roboto light</string>
+    <string name="typeface_roboto_condensed">Roboto condensed</string>
+    <string name="typeface_roboto_thin">Roboto thin</string>
+    <string name="typeface_roboto_medium">Roboto medium</string>
 </resources>
 
 

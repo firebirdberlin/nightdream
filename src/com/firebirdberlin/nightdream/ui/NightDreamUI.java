@@ -158,6 +158,7 @@ public class NightDreamUI {
     }
 
     void setColor() {
+        clock.setTypeface(settings.typeface);
         clock.setTextColor(settings.clockColor);
         date.setTextColor(settings.secondaryColor);
         divider.setBackgroundColor(settings.tertiaryColor);

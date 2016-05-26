@@ -4,6 +4,7 @@ import android.os.Build;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
@@ -39,6 +40,7 @@ public class Settings {
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
     public String bgpath = "";
+    public Typeface typeface;
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -83,6 +85,27 @@ public class Settings {
             background_mode = settings.getInt("BackgroundMode", BACKGROUND_BLACK);
         } else {
             background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
+        }
+        typeface = loadTypeface();
+    }
+
+    private Typeface loadTypeface() {
+        int typeface = 0;
+        if (Build.VERSION.SDK_INT >= 14){
+            typeface = Integer.parseInt(settings.getString("typeface", "1"));
+        }
+        String typefaceName = mapIntToTypefaceName(typeface);
+        return Typeface.create(typefaceName, Typeface.NORMAL);
+    }
+
+    private String mapIntToTypefaceName(int typeface) {
+        switch (typeface) {
+            case 1: return "sans-serif";
+            case 2: return "sans-serif-light";
+            case 3: return "sans-serif-condensed";
+            case 4: return "sans-serif-thin";
+            case 5: return "sans-serif-medium";
+            default: return null;
         }
     }
 

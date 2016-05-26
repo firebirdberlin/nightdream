@@ -106,6 +106,13 @@
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />
 
+            <ListPreference
+                android:title="@string/typeface"
+                android:key="typeface"
+                android:defaultValue="1"
+                android:entries="@array/typeFaces"
+                android:entryValues="@array/typeFaceValues"/>
+
             <SwitchPreference
                 android:key="showDate"
                 android:title="@string/show_date"
