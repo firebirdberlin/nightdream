@@ -106,17 +106,17 @@
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />
 
+            <SwitchPreference
+                android:key="showDate"
+                android:title="@string/show_date"
+                android:defaultValue="true" />
+
             <ListPreference
                 android:title="@string/typeface"
                 android:key="typeface"
                 android:defaultValue="1"
                 android:entries="@array/typeFaces"
                 android:entryValues="@array/typeFaceValues"/>
-
-            <SwitchPreference
-                android:key="showDate"
-                android:title="@string/show_date"
-                android:defaultValue="true" />
 
             <yuku.ambilwarna.widget.AmbilWarnaPreference
                 android:key="clockColor"
