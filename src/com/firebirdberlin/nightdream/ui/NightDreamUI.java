@@ -502,17 +502,10 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            handler.post(zoomToFit);
-            clockLayout.animate().setDuration(1000).scaleX(1.f).scaleY(1.f);
-       }
-    };
-
-    // only called for apilevel >= 12
-    private Runnable zoomToFit = new Runnable() {
-        @Override
-        public void run() {
             Point d = utility.getDisplaySize();
             setDesiredClockWidth((int) (0.6 * d.x));
+            float s = settings.scaleClock;
+            clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
        }
     };
 
@@ -598,6 +591,8 @@ public class NightDreamUI {
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
+            float s = clockLayout.getScaleX();
+            settings.setScaleClock(s);
         }
 
         @Override

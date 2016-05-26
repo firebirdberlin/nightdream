@@ -27,6 +27,7 @@ public class Settings {
     public boolean showDate = true;
     public float dim_offset = 0.f;
     public float minIlluminance = 15.f; // lux
+    public float scaleClock = 1.f;
     public int background_mode = 1;
     public int clockColor;
     public int secondaryColor;
@@ -69,6 +70,7 @@ public class Settings {
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
+        scaleClock = settings.getFloat("scaleClock", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
 
@@ -130,6 +132,13 @@ public class Settings {
         lastReviewRequestTime = reviewRequestTime;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
+        prefEditor.commit();
+    }
+
+    public void setScaleClock(float factor) {
+        scaleClock = factor;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("scaleClock", scaleClock);
         prefEditor.commit();
     }
 }
