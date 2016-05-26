@@ -121,6 +121,11 @@
                 android:defaultValue="0xffc2c2c2"
                 android:title="@string/choose_secondary_color"/>
 
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:key="tertiaryColor"
+                android:defaultValue="0xffc2c2c2"
+                android:title="@string/choose_tertiary_color"/>
+
             <PreferenceCategory android:title="@string/background">
                 <ListPreference
                     android:title="@string/background"

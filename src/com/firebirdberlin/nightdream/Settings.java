@@ -32,6 +32,7 @@ public class Settings {
     public int clockColor;
     public int secondaryColor;
     public int sensitivity = 1;
+    public int tertiaryColor;
     public long autostartTimeRangeStart = 0L;
     public long autostartTimeRangeEnd = 0L;
     public long nextAlarmTime = 0L;
@@ -73,6 +74,7 @@ public class Settings {
         scaleClock = settings.getFloat("scaleClock", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
+        tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;

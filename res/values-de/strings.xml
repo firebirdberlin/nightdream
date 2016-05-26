@@ -20,6 +20,7 @@
     <string name="choose_color">Farbe wählen</string>
     <string name="choose_color_dialog">Wählen Sie eine Farbe.</string>
     <string name="choose_secondary_color">Sekundäre Farbe</string>
+    <string name="choose_tertiary_color">Tertiäre Farbe</string>
     <string name="contribute">Beitragen</string>
     <string name="donate">Spenden</string>
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>

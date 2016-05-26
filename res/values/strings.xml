@@ -20,6 +20,7 @@
     <string name="choose_color">Clock color</string>
     <string name="choose_color_dialog">Pick a color.</string>
     <string name="choose_secondary_color">Secondary color</string>
+    <string name="choose_tertiary_color">Tertiary color</string>
     <string name="contribute">Contribute</string>
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>

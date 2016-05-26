@@ -64,11 +64,11 @@ public class NightDreamUI {
     private TextView batteryView;
     private TextView clock, date;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
-    private Utility utility;
-    private View divider;
-    private View rootView;
-    private Window window;
-    private mAudioManager AudioManage;
+    private Utility utility = null;
+    private View divider = null;
+    private View rootView = null;
+    private Window window = null;
+    private mAudioManager AudioManage = null;
     private ScaleGestureDetector mScaleDetector = null;
 
     private int dim_offset_init_x = 0;
@@ -160,6 +160,7 @@ public class NightDreamUI {
     void setColor() {
         clock.setTextColor(settings.clockColor);
         date.setTextColor(settings.secondaryColor);
+        divider.setBackgroundColor(settings.tertiaryColor);
         batteryView.setTextColor(settings.secondaryColor);
         gmailNumber.setTextColor(settings.secondaryColor);
         twitterNumber.setTextColor(settings.secondaryColor);
