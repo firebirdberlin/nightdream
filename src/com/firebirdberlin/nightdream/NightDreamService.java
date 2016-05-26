@@ -120,7 +120,9 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
     @Override
     public void onDestroy(){
-        nightDreamUI.onDestroy();
+        if (nightDreamUI != null) {
+            nightDreamUI.onDestroy();
+        }
     }
 
     @Override
