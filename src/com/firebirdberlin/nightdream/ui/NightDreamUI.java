@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
@@ -78,34 +79,7 @@ public class NightDreamUI {
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
-        mScaleDetector = new ScaleGestureDetector(mContext, new OnScaleGestureListener() {
-            @Override
-            public void onScaleEnd(ScaleGestureDetector detector) {
-            }
-
-            @Override
-            public boolean onScaleBegin(ScaleGestureDetector detector) {
-                return true;
-            }
-
-            @Override
-            public boolean onScale(ScaleGestureDetector detector) {
-                Point size = utility.getDisplaySize();
-                int screen_width = size.x;
-                float s = detector.getScaleFactor();
-                Log.d(TAG, "zoom ongoing, scale: " + s);
-                //clockLayout.animate().setDuration(10).scaleXBy(s).scaleYBy(s);
-                s *= clockLayout.getScaleX();
-                int new_width = (int) (clockLayout.getWidth() * s);
-                if (s > 0.5f && new_width <= screen_width) {
-                    clockLayout.setScaleX(s);
-                    clockLayout.setScaleY(s);
-                    clockLayout.invalidate();
-                }
-                Log.i(TAG, String.valueOf(clockLayout.getWidth() * s) );
-                return false;
-            }
-        });
+        mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
 
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
@@ -134,6 +108,8 @@ public class NightDreamUI {
             clockLayout.setScaleX(.1f);
             clockLayout.setScaleY(.1f);
             clockLayout.setOnTouchListener(mOnTouchListener);
+        } else {
+            clockLayout.setOnClickListener(mOnClickListener);
         }
 
         utility = new Utility(context);
@@ -619,6 +595,38 @@ public class NightDreamUI {
         }
     };
 
+    OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return true;
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            Point size = utility.getDisplaySize();
+            int screen_width = size.x;
+            float s = detector.getScaleFactor();
+            s *= clockLayout.getScaleX();
+            int new_width = (int) (clockLayout.getWidth() * s);
+            if (s > 0.5f && new_width <= screen_width) {
+                clockLayout.setScaleX(s);
+                clockLayout.setScaleY(s);
+                clockLayout.invalidate();
+            }
+            return false;
+        }
+    };
+
+    OnClickListener mOnClickListener = new OnClickListener() {
+        public void onClick(View v) {
+            onClockClicked();
+        }
+    };
+
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (utility == null) return false;
         boolean event_consumed = false;
@@ -777,9 +785,11 @@ public class NightDreamUI {
 
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
+        dimScreen(3000, last_ambient, settings.dim_offset);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = event.value;
+        dimScreen(3000, last_ambient, settings.dim_offset);
     }
 }
