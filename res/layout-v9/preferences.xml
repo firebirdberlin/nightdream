@@ -116,6 +116,17 @@
             </PreferenceCategory>
 
         </PreferenceScreen>
+
+        <PreferenceScreen
+            android:title="@string/alarm"
+            android:key="alarm_screen"
+            android:icon="@drawable/ic_clock">
+            <Preference
+                android:key="chooseAlarmSound"
+                android:title="@string/choose_alarm_sound"/>
+
+        </PreferenceScreen>
+
         <Preference
             android:key="startNotificationService"
             android:title="@string/buttonAccessibilitySettings"

@@ -133,7 +133,6 @@ public class PreferencesActivity extends PreferenceActivity {
             Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             String uri_string = (uri == null) ? "" : uri.toString();
             settings.setAlarmToneUri(uri_string);
-            Toast.makeText(this, uri_string, Toast.LENGTH_LONG).show();
         }
     }
 
