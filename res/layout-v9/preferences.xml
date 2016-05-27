@@ -97,6 +97,11 @@
                 android:title="@string/choose_color_dialog"/>
 
             <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:key="secondaryColor"
+                android:defaultValue="0xffc2c2c2"
+                android:title="@string/choose_secondary_color"/>
+
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
                 android:key="tertiaryColor"
                 android:defaultValue="0xffc2c2c2"
                 android:title="@string/choose_tertiary_color"/>
