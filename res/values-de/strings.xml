@@ -31,6 +31,7 @@
     <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
     <string name="handle_power_desk">Dock (Schreibtisch)</string>
     <string name="handle_power_car">Dock (Auto)</string>
+    <string name="force_auto_rotation">Erzwinge automatische Ausrichtung im DayDream</string>
     <string name="mute_ringer">lautlos</string>
     <string name="night_mode">Nachtmodus</string>
     <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>

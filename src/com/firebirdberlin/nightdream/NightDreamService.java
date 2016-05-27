@@ -49,6 +49,11 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         utility = new Utility(this);
         isDebuggable = utility.isDebuggable();
 
+        if (mySettings.force_auto_rotation ) {
+            NightDreamActivity.start(this);
+            finish();
+        }
+
         setInteractive(true);
         setFullscreen(true);
         setScreenBright(true);

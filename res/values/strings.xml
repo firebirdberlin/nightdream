@@ -32,6 +32,7 @@
     <string name="handle_power_wireless">wireless charger</string>
     <string name="handle_power_desk">desk dock</string>
     <string name="handle_power_car">car dock</string>
+    <string name="force_auto_rotation">Force auto rotation in DayDream</string>
     <string name="mute_ringer">mute ringer</string>
     <string name="night_mode">Night mode</string>
     <string name="notification_alarm">Click to stop the alarm.</string>

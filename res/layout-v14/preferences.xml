@@ -147,6 +147,11 @@
 
             </PreferenceCategory>
 
+            <SwitchPreference
+                android:key="force_auto_rotation"
+                android:title="@string/force_auto_rotation"
+                android:defaultValue="false" />
+
         </PreferenceScreen>
 
         <PreferenceScreen

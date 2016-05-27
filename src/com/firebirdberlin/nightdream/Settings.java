@@ -18,6 +18,7 @@ public class Settings {
     public boolean allow_screen_off = false;
     public boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
+    public boolean force_auto_rotation = false;
     public boolean handle_power = false;
     public boolean handle_power_desk = false;
     public boolean handle_power_car = false;
@@ -59,6 +60,7 @@ public class Settings {
         autoBrightness = settings.getBoolean("autoBrightness", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", 0L);
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", 0L);
+        force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
         handle_power_car = settings.getBoolean("handle_power_car", false);
