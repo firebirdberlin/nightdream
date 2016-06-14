@@ -43,7 +43,7 @@ import java.util.Random;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class NightDreamUI {
-    private static String TAG ="NightDreamActivity";
+    private static String TAG ="NightDreamUI";
 
     final private Handler handler = new Handler();
     private int mode = 2;
@@ -53,6 +53,7 @@ public class NightDreamUI {
     private Drawable bgshape;
     private Drawable bgblack;
     private AlarmClock alarmClock;
+    private TextView alarmTime = null;
     private ImageView background_image;
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
@@ -90,6 +91,7 @@ public class NightDreamUI {
         date = (TextView) rootView.findViewById(R.id.date);
         divider = (View) rootView.findViewById(R.id.divider);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
+        alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
 
@@ -172,7 +174,8 @@ public class NightDreamUI {
         twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
-        alarmClock.setClickable(true);
+
+        setupAlarmClock();
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -194,6 +197,29 @@ public class NightDreamUI {
         background_image.setImageDrawable(bgshape);
 
     }
+
+    private void setupAlarmClock() {
+        if ( ! settings.useInternalAlarm ) {
+            String nextAlarm = android.provider.Settings.System.getString(
+                                    mContext.getContentResolver(),
+                                    android.provider.Settings.System.NEXT_ALARM_FORMATTED);
+
+            if ( nextAlarm.isEmpty() && Build.VERSION.SDK_INT >= 19) {
+                nextAlarm = mContext.getString(R.string.set_alarm);
+            }
+            alarmTime.setText(nextAlarm);
+            alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
+            alarmClock.removeAlarm();
+        } else {
+            alarmTime.setOnClickListener(null);
+        }
+
+        int visibility = settings.useInternalAlarm ? View.INVISIBLE : View.VISIBLE;
+        alarmTime.setVisibility(visibility);
+        alarmClock.isVisible = settings.useInternalAlarm;
+        alarmClock.setClickable(true);
+    }
+
 
     public void onPause() {
 
@@ -404,6 +430,7 @@ public class NightDreamUI {
         setAlpha(clockLayout, v, millis);
         if ( alarmClock.isClickable() ) {
             setAlpha(alarmClock, v, millis);
+            setAlpha(alarmTime, v, millis);
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
             if (! daydreamMode) setAlpha(settingsIcon, v, millis);
@@ -543,6 +570,7 @@ public class NightDreamUI {
            alarmClock.isVisible = false;
            alarmClock.setClickable(false);
            setAlpha(alarmClock, 0.f, 2000);
+           setAlpha(alarmTime, 0.f, 2000);
        }
     };
 
@@ -561,8 +589,9 @@ public class NightDreamUI {
     public void showAlarmClock() {
         removeCallbacks(hideAlarmClock);
         handler.postDelayed(hideAlarmClock, 20000);
-        alarmClock.isVisible = true;
-        alarmClock.setClickable(true);
+
+        setupAlarmClock();
+
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
@@ -621,6 +650,17 @@ public class NightDreamUI {
     OnClickListener mOnClickListener = new OnClickListener() {
         public void onClick(View v) {
             onClockClicked();
+        }
+    };
+
+    OnClickListener onStockAlarmTimeClickListener = new OnClickListener() {
+        public void onClick(View v) {
+            Log.i(TAG, "ACTION_SHOW_ALARMS");
+            if (Build.VERSION.SDK_INT < 19) return;
+
+            Intent mClockIntent = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS);
+            mClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(mClockIntent);
         }
     };
 

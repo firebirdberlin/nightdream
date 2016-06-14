@@ -27,6 +27,7 @@ public class Settings {
     public boolean handle_power_wireless = false;
     public boolean muteRinger = false;
     public boolean showDate = true;
+    public boolean useInternalAlarm = true;
     public float dim_offset = 0.f;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
@@ -79,6 +80,7 @@ public class Settings {
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
+        useInternalAlarm = settings.getBoolean("useInternalAlarm", true);
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;

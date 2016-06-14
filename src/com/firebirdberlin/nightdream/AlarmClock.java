@@ -177,6 +177,7 @@ class AlarmClock extends View {
 
     @Override
     protected void onDraw(Canvas canvas){
+        if ( !isVisible ) return;
         Point size = utility.getDisplaySize();
         ColorFilter customColorFilter = new LightingColorFilter(customcolor, 1);
         ColorFilter secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
@@ -322,7 +323,7 @@ class AlarmClock extends View {
         settings.setAlarmTime(alarmTime.getMillis());
     }
 
-    private void removeAlarm(){
+    public void removeAlarm(){
         settings.setAlarmTime(0L);
         PendingIntent pI = getPendingAlarmIntent(ctx);
         am.cancel(pI);

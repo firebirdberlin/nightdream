@@ -9,7 +9,7 @@
         android:scaleType="centerCrop"
         android:src = "@drawable/background_gradient" />
 
-    <include layout="@layout/background" android:id="@+id/AlarmClock" />
+    <include layout="@layout/background" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
@@ -194,4 +194,5 @@
             android:paddingTop="5sp" />
 
     </com.firebirdberlin.nightdream.ClockLayout>
+
 </FrameLayout>

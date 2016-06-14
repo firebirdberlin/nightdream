@@ -42,7 +42,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     int currentRingerMode;
     mAudioManager AudioManage = null;
     boolean isDebuggable = false;
-    private Thread exitOp ;
 
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
@@ -311,6 +310,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnNewLightSensorValue event){
+        Log.i(TAG, String.valueOf(event.value) + " lux, n=" + String.valueOf(event.n));
         if (isDebuggable) {
             current.setText(String.valueOf(event.value) + " lux, n=" +
                             String.valueOf(event.n));
@@ -320,6 +320,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
+        Log.i(TAG, "Static for 15s: " + String.valueOf(event.value) + " lux.");
         if (isDebuggable) {
             current.setText("Static for 15s: " + String.valueOf(event.value) + " lux.");
         }
