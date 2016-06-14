@@ -20,6 +20,7 @@
     <string name="choose_color">Clock color</string>
     <string name="choose_color_dialog">Pick a color.</string>
     <string name="choose_secondary_color">Secondary color</string>
+    <string name="choose_tertiary_color">Tertiary color</string>
     <string name="contribute">Contribute</string>
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
@@ -31,6 +32,7 @@
     <string name="handle_power_wireless">wireless charger</string>
     <string name="handle_power_desk">desk dock</string>
     <string name="handle_power_car">car dock</string>
+    <string name="force_auto_rotation">Force auto rotation in DayDream</string>
     <string name="mute_ringer">mute ringer</string>
     <string name="night_mode">Night mode</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
@@ -38,6 +40,12 @@
     <string name="select_alarm_sound">Select alarm sound</string>
     <string name="show_date">show date</string>
     <string name="review_request">Please rate this application. Thanks !</string>
+    <string name="typeface">Typeface</string>
+    <string name="typeface_roboto_regular">Roboto regular</string>
+    <string name="typeface_roboto_light">Roboto light</string>
+    <string name="typeface_roboto_condensed">Roboto condensed</string>
+    <string name="typeface_roboto_thin">Roboto thin</string>
+    <string name="typeface_roboto_medium">Roboto medium</string>
 </resources>
 
 

@@ -138,7 +138,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                 Log.i(TAG, action);
                 if (action.equals("start alarm")) {
                     alarmClock.startAlarm();
-                    nightDreamUI.showAlarmClock(last_ambient);
+                    nightDreamUI.showAlarmClock();
                 }
 
                 if (action.equals("stop alarm")) {
@@ -229,23 +229,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return nightDreamUI.onTouch(view, e, last_ambient);
     }
 
-    public void onClick(View v) {
-        Log.i(TAG, "onClick()");
-        refreshScreenTimeout();
-        if (AlarmService.isRunning) alarmClock.stopAlarm();
-
-        if (v instanceof TextView){
-            nightDreamUI.onClockClicked(last_ambient);
-        }
-
-        if (lightSensor == null){
-            last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
-            SwitchModes(last_ambient, 0);
-            String msg = (mode == 0) ? "night mode enabled" : "day mode enabled";
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     // click on the settings icon
     public void onSettingsClick(View v) {
         PreferencesActivity.start(this);
@@ -313,6 +296,18 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         startService(i);
 
         finish();
+    }
+
+    public void onEvent(OnClockClicked event){
+        refreshScreenTimeout();
+        if (AlarmService.isRunning) alarmClock.stopAlarm();
+
+        if (lightSensor == null){
+            last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
+            SwitchModes(last_ambient, 0);
+            String msg = (mode == 0) ? "night mode enabled" : "day mode enabled";
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onEvent(OnNewLightSensorValue event){

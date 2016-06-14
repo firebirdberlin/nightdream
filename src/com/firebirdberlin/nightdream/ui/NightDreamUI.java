@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,7 +22,11 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.animation.AlphaAnimation;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
@@ -29,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.greenrobot.event.EventBus;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,31 +57,35 @@ public class NightDreamUI {
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
-    private LinearLayout clockLayout;
+    private ClockLayout clockLayout;
     private LinearLayout notificationbar;
     private Settings settings = null;
     private SoundMeter soundmeter;
     private TextView batteryView;
     private TextView clock, date;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
-    private Utility utility;
-    private View divider;
-    private View rootView;
-    private Window window;
-    private mAudioManager AudioManage;
+    private Utility utility = null;
+    private View divider = null;
+    private View rootView = null;
+    private Window window = null;
+    private mAudioManager AudioManage = null;
+    private ScaleGestureDetector mScaleDetector = null;
 
     private int dim_offset_init_x = 0;
     private int dim_offset_curr_x = 0;
     public boolean setDimOffset = false;
     private boolean daydreamMode = false;
+    private float last_ambient = 4.0f;
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
+        mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
+
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         batteryView = (TextView) rootView.findViewById(R.id.battery);
-        clockLayout = (LinearLayout) rootView.findViewById(R.id.clockLayout);
+        clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         clock = (TextView) rootView.findViewById(R.id.clock);
         date = (TextView) rootView.findViewById(R.id.date);
         divider = (View) rootView.findViewById(R.id.divider);
@@ -97,6 +107,9 @@ public class NightDreamUI {
         if (Build.VERSION.SDK_INT >= 12){
             clockLayout.setScaleX(.1f);
             clockLayout.setScaleY(.1f);
+            clockLayout.setOnTouchListener(mOnTouchListener);
+        } else {
+            clockLayout.setOnClickListener(mOnClickListener);
         }
 
         utility = new Utility(context);
@@ -114,6 +127,7 @@ public class NightDreamUI {
     }
 
     public void onStart() {
+        EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
@@ -144,8 +158,10 @@ public class NightDreamUI {
     }
 
     void setColor() {
+        clock.setTypeface(settings.typeface);
         clock.setTextColor(settings.clockColor);
         date.setTextColor(settings.secondaryColor);
+        divider.setBackgroundColor(settings.tertiaryColor);
         batteryView.setTextColor(settings.secondaryColor);
         gmailNumber.setTextColor(settings.secondaryColor);
         twitterNumber.setTextColor(settings.secondaryColor);
@@ -184,11 +200,11 @@ public class NightDreamUI {
     }
 
     public void onStop() {
+        EventBus.getDefault().unregister(this);
         lightSensorEventListener.unregister();
         removeCallbacks(moveAround);
         removeCallbacks(hideAlarmClock);
         removeCallbacks(zoomIn);
-        removeCallbacks(ClickOut);
         if (soundmeter != null){
             soundmeter.stopMeasurement();
             soundmeter = null;
@@ -311,27 +327,27 @@ public class NightDreamUI {
             int rypos = (h - clockLayout.getHeight()) / 2; // API level 1
 
             rxpos = to_range(rxpos, 1, w);
-            int i1 = random.nextInt(2 * rxpos);
-
-            // random y position
             rypos = to_range(rypos, 1, h);
+
+            int i1 = random.nextInt(2 * rxpos);
             int i2 = 90 + random.nextInt(2 * rypos);
 
             clockLayout.setPadding(i1, i2, 0, 0);
             clockLayout.invalidate();
         } else {
-            // random x position
-            int rxpos = w - (int) (clockLayout.getWidth() * clockLayout.getScaleX()); // API level 11
-            int i1 = 0;
-            if (rxpos > 0) i1 = random.nextInt(rxpos);
-
-            // random y position
-            int rypos = h - (int) (clockLayout.getHeight() * clockLayout.getScaleY())-150-90; // API level 11
+            // determine a randowm position
             // lower 150 px is reserved for alarm clockLayout
-            // upper 90 px is for battery stats
-            int i2 = 90;
-            if (rypos > 0) i2 = 90 + random.nextInt(rypos);
+            // upper 90 px is for the battery stats
+            int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());
+            int scaled_height = (int) (clockLayout.getHeight() * clockLayout.getScaleY());
+            int rxpos = w - scaled_width ; // API level 11
+            int rypos = h - scaled_height - 150 - 90; // API level 11
 
+            int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
+            int i2 = (rypos > 0) ? 90 + random.nextInt(rypos) : 90;
+
+            i1 -= (clockLayout.getWidth() - scaled_width) / 2;
+            i2 -= (clockLayout.getHeight() - scaled_height) / 2;
             clockLayout.animate().setDuration(10000).x(i1).y(i2); // api level 12
         }
     }
@@ -488,17 +504,10 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            handler.post(zoomToFit);
-            clockLayout.animate().setDuration(1000).scaleX(1.f).scaleY(1.f);
-       }
-    };
-
-    // only called for apilevel >= 12
-    private Runnable zoomToFit = new Runnable() {
-        @Override
-        public void run() {
             Point d = utility.getDisplaySize();
             setDesiredClockWidth((int) (0.6 * d.x));
+            float s = settings.scaleClock;
+            clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
        }
     };
 
@@ -545,31 +554,75 @@ public class NightDreamUI {
        }
     };
 
-    // in only called for api level >= 12
-    private Runnable ClickOut = new Runnable() {
-       @Override
-       public void run() {
-            if (Build.VERSION.SDK_INT >= 12){
-               clockLayout.animate().setDuration(1000).scaleX(1.f).scaleY(1.f);
-            }
-       }
-    };
-
-    public void onClockClicked(float last_ambient) {
-        if (Build.VERSION.SDK_INT >= 12){
-            clockLayout.animate().setDuration(100).scaleXBy(-0.15f).scaleYBy(-0.15f);
-            handler.postDelayed(ClickOut, 100);
-        }
-        showAlarmClock(last_ambient);
+    public void onClockClicked() {
+        showAlarmClock();
     }
 
-    public void showAlarmClock(float last_ambient) {
+    public void showAlarmClock() {
         removeCallbacks(hideAlarmClock);
         handler.postDelayed(hideAlarmClock, 20000);
         alarmClock.isVisible = true;
         alarmClock.setClickable(true);
         dimScreen(0, last_ambient, settings.dim_offset);
     }
+
+    private boolean multi_finger_gesture = false;
+    OnTouchListener mOnTouchListener = new OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    multi_finger_gesture = false;
+                    return true;
+                case MotionEvent.ACTION_POINTER_UP:
+                    multi_finger_gesture = true;
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    if (multi_finger_gesture == false) {
+                        EventBus.getDefault().post(new OnClockClicked());
+                        onClockClicked();
+                        return true;
+                    }
+                    multi_finger_gesture = false;
+                default:
+                    return mScaleDetector.onTouchEvent(event);
+            }
+        }
+    };
+
+    OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            float s = clockLayout.getScaleX();
+            settings.setScaleClock(s);
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return true;
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            Point size = utility.getDisplaySize();
+            int screen_width = size.x;
+            float s = detector.getScaleFactor();
+            s *= clockLayout.getScaleX();
+            int new_width = (int) (clockLayout.getWidth() * s);
+            if (s > 0.5f && new_width <= screen_width) {
+                clockLayout.setScaleX(s);
+                clockLayout.setScaleY(s);
+                clockLayout.invalidate();
+            }
+            return false;
+        }
+    };
+
+    OnClickListener mOnClickListener = new OnClickListener() {
+        public void onClick(View v) {
+            onClockClicked();
+        }
+    };
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (utility == null) return false;
@@ -580,7 +633,7 @@ public class NightDreamUI {
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                showAlarmClock(last_ambient);
+                showAlarmClock();
                 event_consumed = true;
                 break;
             case MotionEvent.ACTION_UP:
@@ -725,5 +778,15 @@ public class NightDreamUI {
         else {
             /* handle your error case: the device has no way to handle market urls */
         }
+    }
+
+    public void onEvent(OnNewLightSensorValue event){
+        last_ambient = event.value;
+        dimScreen(3000, last_ambient, settings.dim_offset);
+    }
+
+    public void onEvent(OnLightSensorValueTimeout event){
+        last_ambient = event.value;
+        dimScreen(3000, last_ambient, settings.dim_offset);
     }
 }

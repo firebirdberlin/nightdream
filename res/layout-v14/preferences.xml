@@ -111,6 +111,13 @@
                 android:title="@string/show_date"
                 android:defaultValue="true" />
 
+            <ListPreference
+                android:title="@string/typeface"
+                android:key="typeface"
+                android:defaultValue="1"
+                android:entries="@array/typeFaces"
+                android:entryValues="@array/typeFaceValues"/>
+
             <yuku.ambilwarna.widget.AmbilWarnaPreference
                 android:key="clockColor"
                 android:defaultValue="0xff33B5E5"
@@ -120,6 +127,11 @@
                 android:key="secondaryColor"
                 android:defaultValue="0xffc2c2c2"
                 android:title="@string/choose_secondary_color"/>
+
+            <yuku.ambilwarna.widget.AmbilWarnaPreference
+                android:key="tertiaryColor"
+                android:defaultValue="0xffc2c2c2"
+                android:title="@string/choose_tertiary_color"/>
 
             <PreferenceCategory android:title="@string/background">
                 <ListPreference
@@ -134,6 +146,11 @@
                     android:title="@string/background_image"/>
 
             </PreferenceCategory>
+
+            <SwitchPreference
+                android:key="force_auto_rotation"
+                android:title="@string/force_auto_rotation"
+                android:defaultValue="false" />
 
         </PreferenceScreen>
 

@@ -123,6 +123,7 @@ public class Utility{
     }
 
     public static boolean isDaydreamEnabled(final Context c) {
+        if(Build.VERSION.SDK_INT < 17) return false;
         return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1);
     }
 

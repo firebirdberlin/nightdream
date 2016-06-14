@@ -19,7 +19,7 @@ import de.greenrobot.event.EventBus;
 import java.util.Calendar;
 
 
-public class NightDreamService extends DreamService implements View.OnClickListener, View.OnTouchListener {
+public class NightDreamService extends DreamService implements View.OnTouchListener {
 
     TextView current;
     AlarmClock alarmClock;
@@ -49,6 +49,11 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         utility = new Utility(this);
         isDebuggable = utility.isDebuggable();
 
+        if (mySettings.force_auto_rotation ) {
+            NightDreamActivity.start(this);
+            finish();
+        }
+
         setInteractive(true);
         setFullscreen(true);
         setScreenBright(true);
@@ -71,9 +76,6 @@ public class NightDreamService extends DreamService implements View.OnClickListe
         }
 
         nReceiver = registerNotificationReceiver();
-
-        TextClock clock = (TextClock)findViewById(R.id.clock);
-        clock.setOnClickListener(this);
 
         background_image = (ImageView)findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
@@ -123,7 +125,9 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
     @Override
     public void onDestroy(){
-        nightDreamUI.onDestroy();
+        if (nightDreamUI != null) {
+            nightDreamUI.onDestroy();
+        }
     }
 
     @Override
@@ -147,12 +151,22 @@ public class NightDreamService extends DreamService implements View.OnClickListe
 
 
     @Override
-    public void onClick(View v) {
-        if (AlarmService.isRunning) alarmClock.stopAlarm();
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+        nightDreamUI.onConfigurationChanged();
+    }
 
-        if (v instanceof TextView){
-            nightDreamUI.onClockClicked(last_ambient);
-        }
+    private void SwitchModes(float light_value){
+        int current_mode = mode;
+        mode = nightDreamUI.determineScreenMode(current_mode, light_value, last_ambient_noise);
+
+        nightDreamUI.switchModes(light_value, last_ambient_noise);
+
+        setScreenBright(mode >= 2);
+    }
+
+    public void onEvent(OnClockClicked event) {
+        if (AlarmService.isRunning) alarmClock.stopAlarm();
 
         if (lightSensor == null){ // in the emulator
             switch (mode){
@@ -170,21 +184,6 @@ public class NightDreamService extends DreamService implements View.OnClickListe
                     break;
             }
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig){
-        super.onConfigurationChanged(newConfig);
-        nightDreamUI.onConfigurationChanged();
-    }
-
-    private void SwitchModes(float light_value){
-        int current_mode = mode;
-        mode = nightDreamUI.determineScreenMode(current_mode, light_value, last_ambient_noise);
-
-        nightDreamUI.switchModes(light_value, last_ambient_noise);
-
-        setScreenBright(mode >= 2);
     }
 
     public void onEvent(OnNewLightSensorValue event){

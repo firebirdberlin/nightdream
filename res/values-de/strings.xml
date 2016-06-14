@@ -20,6 +20,7 @@
     <string name="choose_color">Farbe wählen</string>
     <string name="choose_color_dialog">Wählen Sie eine Farbe.</string>
     <string name="choose_secondary_color">Sekundäre Farbe</string>
+    <string name="choose_tertiary_color">Tertiäre Farbe</string>
     <string name="contribute">Beitragen</string>
     <string name="donate">Spenden</string>
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
@@ -30,6 +31,7 @@
     <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
     <string name="handle_power_desk">Dock (Schreibtisch)</string>
     <string name="handle_power_car">Dock (Auto)</string>
+    <string name="force_auto_rotation">Erzwinge automatische Ausrichtung im DayDream</string>
     <string name="mute_ringer">lautlos</string>
     <string name="night_mode">Nachtmodus</string>
     <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
@@ -37,6 +39,7 @@
     <string name="select_alarm_sound">Weckton auswählen</string>
     <string name="show_date">Datum</string>
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
+    <string name="typeface">Schriftart</string>
 </resources>
 
 

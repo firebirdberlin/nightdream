@@ -22,7 +22,8 @@ android:background="#000000"
 <!--
     date and time
 -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.firebirdberlin.nightdream.ClockLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/clockLayout"
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -47,7 +48,6 @@ android:background="#000000"
         android:fontFamily="sans-serif"
         android:textColor="#C2C2C2"
         android:textSize="50sp"
-        android:onClick="onClick"
         android:clickable="true"
         custom:format12Hr="h:mm a"
         custom:format24Hr="kk:mm"/>
@@ -77,7 +77,7 @@ android:background="#000000"
         custom:format12Hr="dd. MMMM yyyy"
         custom:format24Hr="dd. MMMM yyyy" />
 
-</LinearLayout>
+</com.firebirdberlin.nightdream.ClockLayout>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"

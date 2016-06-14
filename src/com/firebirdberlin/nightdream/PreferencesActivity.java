@@ -83,6 +83,15 @@ public class PreferencesActivity extends PreferenceActivity {
         boolean enabled = Utility.isDaydreamEnabled(this);
         prefAllowScreenOff.setEnabled( ! enabled );
 
+        if (  Build.VERSION.SDK_INT >= 14) {
+            if ( ! enabled || Build.VERSION.SDK_INT < 17) {
+                PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
+                Preference prefForceAutoRotation = (Preference) findPreference("force_auto_rotation");
+                colorScreen.removePreference(prefForceAutoRotation);
+
+            }
+        }
+
         if ( Utility.getLightSensor(this) == null ) {
             PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
             Preference autoBrightness = (Preference) findPreference("autoBrightness");
@@ -133,7 +142,6 @@ public class PreferencesActivity extends PreferenceActivity {
             Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             String uri_string = (uri == null) ? "" : uri.toString();
             settings.setAlarmToneUri(uri_string);
-            Toast.makeText(this, uri_string, Toast.LENGTH_LONG).show();
         }
     }
 

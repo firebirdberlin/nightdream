@@ -4,6 +4,7 @@ import android.os.Build;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
@@ -17,6 +18,7 @@ public class Settings {
     public boolean allow_screen_off = false;
     public boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
+    public boolean force_auto_rotation = false;
     public boolean handle_power = false;
     public boolean handle_power_desk = false;
     public boolean handle_power_car = false;
@@ -27,16 +29,19 @@ public class Settings {
     public boolean showDate = true;
     public float dim_offset = 0.f;
     public float minIlluminance = 15.f; // lux
+    public float scaleClock = 1.f;
     public int background_mode = 1;
     public int clockColor;
     public int secondaryColor;
     public int sensitivity = 1;
+    public int tertiaryColor;
     public long autostartTimeRangeStart = 0L;
     public long autostartTimeRangeEnd = 0L;
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
     public String bgpath = "";
+    public Typeface typeface;
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -55,6 +60,7 @@ public class Settings {
         autoBrightness = settings.getBoolean("autoBrightness", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", 0L);
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", 0L);
+        force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
         handle_power_car = settings.getBoolean("handle_power_car", false);
@@ -69,8 +75,10 @@ public class Settings {
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
+        scaleClock = settings.getFloat("scaleClock", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
+        tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
@@ -79,6 +87,27 @@ public class Settings {
             background_mode = settings.getInt("BackgroundMode", BACKGROUND_BLACK);
         } else {
             background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
+        }
+        typeface = loadTypeface();
+    }
+
+    private Typeface loadTypeface() {
+        int typeface = 0;
+        if (Build.VERSION.SDK_INT >= 14){
+            typeface = Integer.parseInt(settings.getString("typeface", "1"));
+        }
+        String typefaceName = mapIntToTypefaceName(typeface);
+        return Typeface.create(typefaceName, Typeface.NORMAL);
+    }
+
+    private String mapIntToTypefaceName(int typeface) {
+        switch (typeface) {
+            case 1: return "sans-serif";
+            case 2: return "sans-serif-light";
+            case 3: return "sans-serif-condensed";
+            case 4: return "sans-serif-thin";
+            case 5: return "sans-serif-medium";
+            default: return null;
         }
     }
 
@@ -130,6 +159,13 @@ public class Settings {
         lastReviewRequestTime = reviewRequestTime;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
+        prefEditor.commit();
+    }
+
+    public void setScaleClock(float factor) {
+        scaleClock = factor;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("scaleClock", scaleClock);
         prefEditor.commit();
     }
 }
