@@ -129,10 +129,6 @@ public class NightDreamUI {
     }
 
     public void onStart() {
-        EventBus.getDefault().register(this);
-        lightSensorEventListener = new LightSensorEventListener(mContext);
-        lightSensorEventListener.register();
-
         if (! daydreamMode) setAlpha(settingsIcon, .5f, 100);
         updateBatteryView();
         if (Build.VERSION.SDK_INT >= 12){
@@ -143,6 +139,10 @@ public class NightDreamUI {
     }
 
     public void onResume() {
+        EventBus.getDefault().register(this);
+        lightSensorEventListener = new LightSensorEventListener(mContext);
+        lightSensorEventListener.register();
+
         settings.reload();
         if (settings.showDate){
             showDate();
@@ -222,12 +222,11 @@ public class NightDreamUI {
 
 
     public void onPause() {
-
+        EventBus.getDefault().unregister(this);
+        lightSensorEventListener.unregister();
     }
 
     public void onStop() {
-        EventBus.getDefault().unregister(this);
-        lightSensorEventListener.unregister();
         removeCallbacks(moveAround);
         removeCallbacks(hideAlarmClock);
         removeCallbacks(zoomIn);
