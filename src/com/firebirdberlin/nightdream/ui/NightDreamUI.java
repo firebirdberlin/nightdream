@@ -204,7 +204,9 @@ public class NightDreamUI {
                                     mContext.getContentResolver(),
                                     android.provider.Settings.System.NEXT_ALARM_FORMATTED);
 
-            if ( nextAlarm.isEmpty() && Build.VERSION.SDK_INT >= 19) {
+            if ( Build.VERSION.SDK_INT >= 19
+                    && nextAlarm != null
+                    && nextAlarm.isEmpty() ) {
                 nextAlarm = mContext.getString(R.string.set_alarm);
             }
             alarmTime.setText(nextAlarm);
