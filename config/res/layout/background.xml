@@ -18,6 +18,6 @@
         android:text="00:00"
         android:paddingBottom="10sp"
         android:textSize="34sp"
-        android:visibility="invisible"
+        android:visibility="gone"
         />
 </RelativeLayout>

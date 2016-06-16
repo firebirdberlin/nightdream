@@ -214,7 +214,7 @@ public class NightDreamUI {
             alarmTime.setOnClickListener(null);
         }
 
-        int visibility = settings.useInternalAlarm ? View.INVISIBLE : View.VISIBLE;
+        int visibility = settings.useInternalAlarm ? View.GONE : View.VISIBLE;
         alarmTime.setVisibility(visibility);
         alarmClock.isVisible = settings.useInternalAlarm;
         alarmClock.setClickable(true);

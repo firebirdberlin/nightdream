@@ -14,7 +14,7 @@
         android:scaleType="centerCrop"
         android:src = "@drawable/background_gradient" />
 
-    <include  layout="@layout/background" android:id="@+id/AlarmClock" />
+    <include  layout="@layout/background" />
 
 <!--
 android:background="#000000"
