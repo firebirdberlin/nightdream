@@ -160,6 +160,7 @@ public class NightDreamUI {
     }
 
     void setColor() {
+        alarmTime.setTextColor(settings.secondaryColor);
         clock.setTypeface(settings.typeface);
         clock.setTextColor(settings.clockColor);
         date.setTextColor(settings.secondaryColor);
