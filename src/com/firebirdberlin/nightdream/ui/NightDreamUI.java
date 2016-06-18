@@ -212,9 +212,11 @@ public class NightDreamUI {
             }
             alarmTime.setText(nextAlarm);
             alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
+            alarmTime.setClickable(true);
             alarmClock.removeAlarm();
         } else {
             alarmTime.setOnClickListener(null);
+            alarmTime.setClickable(false);
         }
 
         int visibility = settings.useInternalAlarm ? View.GONE : View.VISIBLE;
@@ -571,6 +573,7 @@ public class NightDreamUI {
            if (! daydreamMode) setAlpha(settingsIcon, 0.f, 2000);
            alarmClock.isVisible = false;
            alarmClock.setClickable(false);
+           alarmTime.setClickable(false);
            setAlpha(alarmClock, 0.f, 2000);
            setAlpha(alarmTime, 0.f, 2000);
        }

@@ -47,7 +47,7 @@
     <string name="typeface_roboto_condensed">Roboto condensed</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface_roboto_medium">Roboto medium</string>
-    <string name="use_internal_alarm">Use the internal alarm clock</string>
+    <string name="use_internal_alarm">Quick alarms</string>
 </resources>
 
 
