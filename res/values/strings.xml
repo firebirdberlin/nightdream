@@ -38,6 +38,7 @@
     <string name="notification_alarm">Click to stop the alarm.</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="select_alarm_sound">Select alarm sound</string>
+    <string name="set_alarm">set alarm</string>
     <string name="show_date">show date</string>
     <string name="review_request">Please rate this application. Thanks !</string>
     <string name="typeface">Typeface</string>
@@ -46,6 +47,7 @@
     <string name="typeface_roboto_condensed">Roboto condensed</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface_roboto_medium">Roboto medium</string>
+    <string name="use_internal_alarm">Quick alarms</string>
 </resources>
 
 

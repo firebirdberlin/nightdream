@@ -158,8 +158,15 @@
             android:title="@string/alarm"
             android:key="alarm_screen"
             android:icon="@drawable/ic_clock">
+
+            <SwitchPreference
+                android:key="useInternalAlarm"
+                android:title="@string/use_internal_alarm"
+                android:defaultValue="true" />
+
             <Preference
                 android:key="chooseAlarmSound"
+                android:dependency="useInternalAlarm"
                 android:title="@string/choose_alarm_sound"/>
 
         </PreferenceScreen>

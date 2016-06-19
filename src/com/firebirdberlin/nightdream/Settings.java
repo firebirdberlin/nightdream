@@ -1,10 +1,13 @@
 package com.firebirdberlin.nightdream;
 
-import android.os.Build;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
+import java.util.Calendar;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
@@ -27,6 +30,7 @@ public class Settings {
     public boolean handle_power_wireless = false;
     public boolean muteRinger = false;
     public boolean showDate = true;
+    public boolean useInternalAlarm = true;
     public float dim_offset = 0.f;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
@@ -50,6 +54,12 @@ public class Settings {
     public Settings(Context context){
         this.mContext = context;
         settings = context.getSharedPreferences(PREFS_KEY, 0);
+
+        if ( !settings.contains("useInternalAlarm") ) {
+            boolean on = getUseInternalAlarmDefault();
+            setUseInternalAlarm(on);
+        }
+
         reload();
     }
 
@@ -79,6 +89,7 @@ public class Settings {
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
+        useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
@@ -89,6 +100,26 @@ public class Settings {
             background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         }
         typeface = loadTypeface();
+    }
+
+    private boolean getUseInternalAlarmDefault() {
+        try {
+            long installed = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).firstInstallTime;
+            if (installed < getDateAsLong(2016, 6, 17)) {
+                return true;
+            }
+        }
+        catch (NameNotFoundException e ) {
+        }
+        return false;
+    }
+
+    public long getDateAsLong(int year, int month, int day) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            calendar.set(Calendar.MONTH, month - 1);
+            calendar.set(Calendar.YEAR, year);
+            return calendar.getTimeInMillis();
     }
 
     private Typeface loadTypeface() {
@@ -109,6 +140,13 @@ public class Settings {
             case 5: return "sans-serif-medium";
             default: return null;
         }
+    }
+
+    public void setUseInternalAlarm(boolean on) {
+        useInternalAlarm = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("useInternalAlarm", on);
+        prefEditor.commit();
     }
 
     public void setBrightnessOffset(float value){

@@ -33,9 +33,10 @@ public class LightSensorEventListener implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if( event.sensor.getType() == Sensor.TYPE_LIGHT ){
-            if (! pending)
+        if( event.sensor.getType() == Sensor.TYPE_LIGHT ) {
+            if (! pending) {
                 handler.postDelayed(calculateMeanValue, 10000);
+            }
 
             // triggers handler if no change occurs within the next 15s
             removeCallbacks(sensorTimeout); // stop other instances
@@ -52,6 +53,7 @@ public class LightSensorEventListener implements SensorEventListener {
         if (lightSensor == null) return;
         mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         handler.postDelayed(calculateMeanValue, 1000);
+        handler.postDelayed(sensorTimeout, 15000);// start timer
     }
 
     public void unregister(){
