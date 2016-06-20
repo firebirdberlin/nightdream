@@ -44,6 +44,7 @@
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
     <string name="typeface">Schriftart</string>
     <string name="use_internal_alarm">Schnellalarm</string>
+    <string name="reset_to_defaults">Einstellungen resetten</string>
 </resources>
 
 

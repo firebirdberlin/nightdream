@@ -207,4 +207,12 @@ public class Settings {
         prefEditor.putFloat("scaleClock", scaleClock);
         prefEditor.commit();
     }
+
+    public void clear() {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.clear();
+        prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
+        prefEditor.putFloat("minIlluminance", minIlluminance);
+        prefEditor.commit();
+    }
 }

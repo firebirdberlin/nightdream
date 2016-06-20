@@ -122,6 +122,16 @@ public class PreferencesActivity extends PreferenceActivity {
             }
         });
 
+        Preference resetToDefaults = (Preference) findPreference("reset_to_defaults");
+        resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                settings.clear();
+                finish();
+                start(context);
+                return true;
+            }
+        });
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

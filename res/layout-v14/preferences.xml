@@ -187,6 +187,11 @@
             android:title="@string/buttonAccessibilitySettings"
             android:icon="@drawable/ic_menu"/>
 
+        <Preference
+            android:key="reset_to_defaults"
+            android:icon="@drawable/ic_undo"
+            android:title="@string/reset_to_defaults"/>
+
         <PreferenceScreen
             android:key="about_screen"
             android:icon="@drawable/ic_about"
