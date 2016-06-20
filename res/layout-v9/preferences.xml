@@ -41,38 +41,7 @@
                     android:key="handle_power_car"
                     android:title="@string/handle_power_car"
                     android:defaultValue="false" />
-            </PreferenceCategory>
-        </PreferenceScreen>
 
-        <PreferenceScreen
-            android:title="@string/night_mode"
-            android:key="night_mode_screen"
-            android:icon="@drawable/ic_nightmode">
-
-            <PreferenceCategory
-                android:title="@string/night_mode"
-                key="category_night_mode">
-
-                <CheckBoxPreference
-                    android:key="Night.muteRinger"
-                    android:title="@string/mute_ringer"
-                    android:defaultValue="false" />
-
-                <CheckBoxPreference
-                    android:key="ambientNoiseDetection"
-                    android:title="@string/ambient_noise"
-                    android:defaultValue="false" />
-
-                <CheckBoxPreference
-                    android:key="allow_screen_off"
-                    android:title="@string/allow_screen_off"
-                    android:defaultValue="false" />
-
-                <firebirdberlin.com.nightdream.SeekBarPreference
-                    android:key="NoiseSensitivity"
-                    android:defaultValue="4"
-                    android:max="10"
-                    android:title="@string/noise_sensitivity"/>
             </PreferenceCategory>
         </PreferenceScreen>
 
@@ -85,6 +54,17 @@
                 android:key="autoBrightness"
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />
+
+            <com.firebirdberlin.nightdream.InlineSeekBarPreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:key="brightness_offset"
+                android:title="@string/brightness_offset"
+                android:defaultValue="0"
+                android:max="100"
+                seekbar:min="-100"
+                seekbar:interval="1"
+                seekbar:unitsLeft=""
+                seekbar:unitsRight=""/>
 
             <CheckBoxPreference
                 android:key="showDate"
@@ -123,6 +103,38 @@
         </PreferenceScreen>
 
         <PreferenceScreen
+            android:title="@string/night_mode"
+            android:key="night_mode_screen"
+            android:icon="@drawable/ic_nightmode">
+
+            <PreferenceCategory
+                android:title="@string/night_mode"
+                key="category_night_mode">
+
+                <CheckBoxPreference
+                    android:key="Night.muteRinger"
+                    android:title="@string/mute_ringer"
+                    android:defaultValue="false" />
+
+                <CheckBoxPreference
+                    android:key="ambientNoiseDetection"
+                    android:title="@string/ambient_noise"
+                    android:defaultValue="false" />
+
+                <CheckBoxPreference
+                    android:key="allow_screen_off"
+                    android:title="@string/allow_screen_off"
+                    android:defaultValue="false" />
+
+                <firebirdberlin.com.nightdream.SeekBarPreference
+                    android:key="NoiseSensitivity"
+                    android:defaultValue="4"
+                    android:max="10"
+                    android:title="@string/noise_sensitivity"/>
+            </PreferenceCategory>
+        </PreferenceScreen>
+
+        <PreferenceScreen
             android:title="@string/alarm"
             android:key="alarm_screen"
             android:icon="@drawable/ic_clock">
@@ -143,6 +155,11 @@
             android:key="startNotificationService"
             android:title="@string/buttonAccessibilitySettings"
             android:icon="@drawable/ic_menu"/>
+
+        <Preference
+            android:key="reset_to_defaults"
+            android:icon="@drawable/ic_undo"
+            android:title="@string/reset_to_defaults"/>
 
         <PreferenceScreen
             android:key="about_screen"
@@ -173,7 +190,7 @@
                     android:key="credits"
                     android:selectable="false"
                     android:enabled="true"
-                    android:title="Stefan Fruhner (2015)"
+                    android:title="Stefan Fruhner (2016)"
                     android:summary="stefan.fruhner@googlemail.com"/>
 
                 <Preference
