@@ -60,43 +60,6 @@
         </PreferenceScreen>
 
         <PreferenceScreen
-            android:title="@string/night_mode"
-            android:key="night_mode_screen"
-            android:icon="@drawable/ic_nightmode">
-
-            <PreferenceCategory
-                android:title="@string/night_mode"
-                key="category_night_mode">
-
-                <CheckBoxPreference
-                    android:key="Night.muteRinger"
-                    android:title="@string/mute_ringer"
-                    android:defaultValue="false" />
-
-                <SwitchPreference
-                    android:key="ambientNoiseDetection"
-                    android:title="@string/ambient_noise"
-                    android:defaultValue="false" />
-
-                <SwitchPreference
-                    android:key="allow_screen_off"
-                    android:title="@string/allow_screen_off"
-                    android:defaultValue="false" />
-
-                <com.firebirdberlin.nightdream.InlineSeekBarPreference
-                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                    android:key="NoiseSensitivity"
-                    android:title="@string/noise_sensitivity"
-                    android:defaultValue="5"
-                    android:max="10"
-                    seekbar:min="0"
-                    seekbar:interval="1"
-                    seekbar:unitsLeft=""
-                    seekbar:unitsRight=""/>
-            </PreferenceCategory>
-        </PreferenceScreen>
-
-        <PreferenceScreen
             android:title="@string/appearance"
             android:key="colors_screen"
             android:icon="@drawable/ic_appearance">
@@ -105,6 +68,17 @@
                 android:key="autoBrightness"
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />
+
+            <com.firebirdberlin.nightdream.InlineSeekBarPreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:key="brightness_offset"
+                android:title="@string/brightness_offset"
+                android:defaultValue="0"
+                android:max="100"
+                seekbar:min="-100"
+                seekbar:interval="1"
+                seekbar:unitsLeft=""
+                seekbar:unitsRight=""/>
 
             <SwitchPreference
                 android:key="showDate"
@@ -152,6 +126,43 @@
                 android:title="@string/force_auto_rotation"
                 android:defaultValue="false" />
 
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:title="@string/night_mode"
+            android:key="night_mode_screen"
+            android:icon="@drawable/ic_nightmode">
+
+            <PreferenceCategory
+                android:title="@string/night_mode"
+                key="category_night_mode">
+
+                <CheckBoxPreference
+                    android:key="Night.muteRinger"
+                    android:title="@string/mute_ringer"
+                    android:defaultValue="false" />
+
+                <SwitchPreference
+                    android:key="ambientNoiseDetection"
+                    android:title="@string/ambient_noise"
+                    android:defaultValue="false" />
+
+                <SwitchPreference
+                    android:key="allow_screen_off"
+                    android:title="@string/allow_screen_off"
+                    android:defaultValue="false" />
+
+                <com.firebirdberlin.nightdream.InlineSeekBarPreference
+                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                    android:key="NoiseSensitivity"
+                    android:title="@string/noise_sensitivity"
+                    android:defaultValue="5"
+                    android:max="10"
+                    seekbar:min="0"
+                    seekbar:interval="1"
+                    seekbar:unitsLeft=""
+                    seekbar:unitsRight=""/>
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <PreferenceScreen

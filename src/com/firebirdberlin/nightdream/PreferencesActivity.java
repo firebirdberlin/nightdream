@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -32,6 +33,11 @@ public class PreferencesActivity extends PreferenceActivity {
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
 
         addPreferencesFromResource(R.layout.preferences);
+
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+
+        setupBrightnessControls(prefs);
 
         Preference goToSettings = (Preference) findPreference("startNotificationService");
         goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -155,4 +161,30 @@ public class PreferencesActivity extends PreferenceActivity {
         Intent myIntent = new Intent(context, PreferencesActivity.class);
         context.startActivity(myIntent);
     }
+
+    private void setupBrightnessControls(SharedPreferences prefs) {
+        Preference brightnessOffset = (Preference) findPreference("brightness_offset");
+        boolean on = prefs.getBoolean("autoBrightness", false);
+        String title = getString(R.string.brightness);
+        if (on) {
+            title = getString(R.string.brightness_offset);
+        }
+        brightnessOffset.setTitle(title);
+        settings.setBrightnessOffset(0.f);
+        getListView().invalidate();
+    }
+
+    SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
+        new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals("brightness_offset")) {
+                    int offsetInt = sharedPreferences.getInt("brightness_offset", 0);
+                    settings.setBrightnessOffset(offsetInt/100.f);
+                } else
+                if (key.equals("autoBrightness")) {
+                    setupBrightnessControls(sharedPreferences);
+                }
+            }
+        };
 }

@@ -6,7 +6,9 @@
     <string name="ambient_noise">Umgebungslautstärke messen</string>
     <string name="appearance">Aussehen</string>
     <string name="app_name">Nachtuhr</string>
-    <string name="auto_brightness">Auto Helligkeit</string>
+    <string name="auto_brightness">Automatische Helligkeit</string>
+    <string name="brightness_offset">Richtwert</string>
+    <string name="brightness">Helligkeit</string>
     <string name="autostart_timerange_label_start">Startzeit</string>
     <string name="autostart_timerange_label_end">Endzeit</string>
     <string name="background">Hintergrund</string>

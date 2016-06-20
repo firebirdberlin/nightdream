@@ -153,6 +153,7 @@ public class Settings {
         dim_offset = value;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("dimOffset", value);
+        prefEditor.putInt("brightness_offset", (int) (value * 100));
         prefEditor.commit();
     }
 

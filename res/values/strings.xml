@@ -7,6 +7,8 @@
     <string name="appearance">Appearance</string>
     <string name="app_name">NightDream</string>
     <string name="auto_brightness">Auto brightness</string>
+    <string name="brightness_offset">Brightness offset</string>
+    <string name="brightness">Brightness</string>
     <string name="autostart_timerange_label_start">Start time</string>
     <string name="autostart_timerange_label_end">End time</string>
     <string name="background">background</string>
