@@ -437,7 +437,10 @@ public class NightDreamUI {
             setAlpha(alarmTime, v, millis);
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
-            if (! daydreamMode) setAlpha(settingsIcon, v, millis);
+            if (! daydreamMode) {
+                float settingsAlpha = to_range(v, 0.8f, 1.f);
+                setAlpha(settingsIcon, settingsAlpha, millis);
+            }
         }
 
         if ( mode == 0 ) {
