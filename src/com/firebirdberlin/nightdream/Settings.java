@@ -70,6 +70,7 @@ public class Settings {
         autoBrightness = settings.getBoolean("autoBrightness", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", 0L);
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", 0L);
+        background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
@@ -94,11 +95,6 @@ public class Settings {
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
 
-        if (Build.VERSION.SDK_INT < 14){
-            background_mode = settings.getInt("BackgroundMode", BACKGROUND_BLACK);
-        } else {
-            background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
-        }
         typeface = loadTypeface();
     }
 

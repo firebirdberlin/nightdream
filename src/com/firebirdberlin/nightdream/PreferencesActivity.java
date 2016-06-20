@@ -56,16 +56,7 @@ public class PreferencesActivity extends PreferenceActivity {
         Preference chooseImage = (Preference) findPreference("chooseBackgroundImage");
         chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                getIntent.setType("image/*");
-
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickIntent.setType("image/*");
-                String msg = getString(R.string.background_image_select);
-                Intent chooserIntent = Intent.createChooser(getIntent, msg);
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-
-                startActivityForResult(chooserIntent, RESULT_LOAD_IMAGE);
+                selectBackgroundImage();
                 return true;
             }
         });
@@ -159,6 +150,19 @@ public class PreferencesActivity extends PreferenceActivity {
             String uri_string = (uri == null) ? "" : uri.toString();
             settings.setAlarmToneUri(uri_string);
         }
+    }
+
+    private void selectBackgroundImage() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        String msg = getString(R.string.background_image_select);
+        Intent chooserIntent = Intent.createChooser(getIntent, msg);
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, RESULT_LOAD_IMAGE);
     }
 
     private void openDonationPage() {
