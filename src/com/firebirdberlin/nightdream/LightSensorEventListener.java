@@ -13,9 +13,8 @@ public class LightSensorEventListener implements SensorEventListener {
     final private Handler handler = new Handler();
     private boolean pending = false;
     private EventBus bus;
-    private float ambient_mean = 4.0f;
-    private float last_mean_value = 4.0f;
-    private float last_value = 4.0f;
+    private float ambient_mean = 0.f;
+    private float last_value = -1.f;
     private Sensor lightSensor = null;
     private SensorManager mSensorManager = null;
     public int count = 0;
@@ -75,8 +74,7 @@ public class LightSensorEventListener implements SensorEventListener {
             pending = false;
             if (count == 0) return;
             ambient_mean /= (float) count;
-            last_mean_value = ambient_mean;
-            bus.post(new OnNewLightSensorValue(last_mean_value, count));
+            bus.post(new OnNewLightSensorValue(ambient_mean, count));
             count = 0;
             ambient_mean = 0.f;
         }

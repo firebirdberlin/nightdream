@@ -320,11 +320,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
-        Log.i(TAG, "Static for 15s: " + String.valueOf(event.value) + " lux.");
+        last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
+        Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         if (isDebuggable) {
-            current.setText("Static for 15s: " + String.valueOf(event.value) + " lux.");
+            current.setText("Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         }
-        last_ambient = event.value;
         SwitchModes(last_ambient, last_ambient_noise);
     }
 

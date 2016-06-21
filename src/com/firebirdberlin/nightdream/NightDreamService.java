@@ -194,10 +194,10 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
+        last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         if (isDebuggable)
-            current.setText("Static for 15s: " + String.valueOf(event.value) + " lux.");
-        last_ambient = event.value;
-        SwitchModes(event.value);
+            current.setText("Static for 15s: " + String.valueOf(last_ambient) + " lux.");
+        SwitchModes(last_ambient);
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {

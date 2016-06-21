@@ -208,7 +208,6 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.clear();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
-        prefEditor.putFloat("minIlluminance", minIlluminance);
         prefEditor.commit();
     }
 }

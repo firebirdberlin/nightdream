@@ -834,7 +834,7 @@ public class NightDreamUI {
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
-        last_ambient = event.value;
+        last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(3000, last_ambient, settings.dim_offset);
     }
 }
