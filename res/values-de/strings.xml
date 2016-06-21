@@ -3,7 +3,11 @@
     <string name="about">Über</string>
     <string name="alarm">Wecker</string>
     <string name="allow_screen_off">Bildschirm aus</string>
+    <string name="reactivate_screen_on_noise">Einschalten bei Geräuschen</string>
+    <string name="reactivate_on_ambient_light_value">Beleuchtungsschwellwert</string>
+    <string name="reactivate_on_ambient_light_value_summary">Der Bildschirm wird eingeschaltet, wenn dieser Wert der Beleuchtungstärke überschritten wird.</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
+    <string name="ambient_noise_summary">Verhindert das Abschalten bei Umgebungsgeräuschen.</string>
     <string name="appearance">Aussehen</string>
     <string name="app_name">Nachtuhr</string>
     <string name="auto_brightness">Automatische Helligkeit</string>

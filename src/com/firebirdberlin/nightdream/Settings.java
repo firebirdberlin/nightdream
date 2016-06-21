@@ -19,6 +19,7 @@ public class Settings {
     SharedPreferences settings;
 
     public boolean allow_screen_off = false;
+    public boolean reactivate_screen_on_noise = false;
     public boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
     public boolean force_auto_rotation = false;
@@ -66,6 +67,7 @@ public class Settings {
     public void reload() {
         AlarmToneUri = settings.getString("AlarmToneUri", "");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
+        reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", 0L);

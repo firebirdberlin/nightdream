@@ -145,11 +145,31 @@
                 <SwitchPreference
                     android:key="ambientNoiseDetection"
                     android:title="@string/ambient_noise"
+                    android:summary="@string/ambient_noise_summary"
                     android:defaultValue="false" />
 
                 <SwitchPreference
                     android:key="allow_screen_off"
                     android:title="@string/allow_screen_off"
+                    android:defaultValue="false" />
+
+                <com.firebirdberlin.nightdream.InlineSeekBarPreference
+                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                    android:key="reactivate_on_ambient_light_value"
+                    android:dependency="allow_screen_off"
+                    android:title="@string/reactivate_on_ambient_light_value"
+                    android:summary="@string/reactivate_on_ambient_light_value_summary"
+                    android:defaultValue="20"
+                    android:max="30"
+                    seekbar:min="5"
+                    seekbar:interval="1"
+                    seekbar:unitsLeft=""
+                    seekbar:unitsRight="lux"/>
+
+                <CheckBoxPreference
+                    android:key="reactivate_screen_on_noise"
+                    android:title="@string/reactivate_screen_on_noise"
+                    android:dependency="allow_screen_off"
                     android:defaultValue="false" />
 
                 <com.firebirdberlin.nightdream.InlineSeekBarPreference
