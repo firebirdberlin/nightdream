@@ -113,6 +113,14 @@ public class PreferencesActivity extends PreferenceActivity {
             }
         });
 
+        Preference recommendApp = (Preference) findPreference("recommendApp");
+        recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                recommendApp();
+                return true;
+            }
+        });
+
         Preference resetToDefaults = (Preference) findPreference("reset_to_defaults");
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -169,6 +177,17 @@ public class PreferencesActivity extends PreferenceActivity {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5PX9XVHHE6XP8"));
         startActivity(browserIntent);
+    }
+
+    private void recommendApp() {
+        String body = "https://play.google.com/store/apps/details?id=com.firebirdberlin.tinytimetracker";
+        String subject = getResources().getString(R.string.recommend_app_subject);
+        String description = getResources().getString(R.string.recommend_app_desc);
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+        startActivity(Intent.createChooser(sharingIntent, description));
     }
 
     public static void start(Context context) {

@@ -32,6 +32,9 @@
     <string name="contribute">Contribute</string>
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
+    <string name="recommend">Recommend app</string>
+    <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
+    <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
     <string name="force_auto_rotation">Force auto rotation in DayDream</string>
     <string name="handle_power_ac">AC</string>
     <string name="handle_power">Autostart</string>

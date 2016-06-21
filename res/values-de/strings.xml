@@ -31,6 +31,9 @@
     <string name="choose_tertiary_color">Tertiäre Farbe</string>
     <string name="contribute">Beitragen</string>
     <string name="donate">Spenden</string>
+    <string name="recommend">Weiterempfehlen</string>
+    <string name="recommend_app_subject">Ich möchte diese Nachtuhr empfehlen.</string>
+    <string name="recommend_app_desc">Wählen Sie eine App aus, mit der Sie Ihre Empfehlung posten möchten.</string>
     <string name="force_auto_rotation">Erzwinge automatische Ausrichtung im DayDream</string>
     <string name="handle_power_ac">einem Ladegerät</string>
     <string name="handle_power">Autostart</string>

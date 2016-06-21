@@ -206,6 +206,11 @@
                 android:icon="@drawable/ic_paypal"
                 android:title="@string/donate"/>
 
+            <Preference
+                android:key="recommendApp"
+                android:icon="@drawable/ic_share"
+                android:title="@string/recommend"/>
+
             <PreferenceCategory android:title="@string/credits">
                 <Preference
                     android:key="credits"
