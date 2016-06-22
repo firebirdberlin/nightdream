@@ -30,6 +30,7 @@ public class Settings {
     public boolean handle_power_usb = false;
     public boolean handle_power_wireless = false;
     public boolean muteRinger = false;
+    public boolean restless_mode = true;
     public boolean showDate = true;
     public boolean useInternalAlarm = true;
     public float dim_offset = 0.f;
@@ -87,6 +88,7 @@ public class Settings {
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
+        restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);

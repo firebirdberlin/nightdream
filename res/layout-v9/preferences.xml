@@ -51,6 +51,11 @@
             android:icon="@drawable/ic_appearance">
 
             <CheckBoxPreference
+                android:key="restlessMode"
+                android:title="@string/restless_mode"
+                android:defaultValue="true" />
+
+            <CheckBoxPreference
                 android:key="autoBrightness"
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />

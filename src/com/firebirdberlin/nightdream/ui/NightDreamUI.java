@@ -150,6 +150,10 @@ public class NightDreamUI {
             hideDate();
         }
 
+        if ( !settings.restless_mode ) {
+            centerClockLayout();
+        }
+
         setColor();
 
         if (settings.ambientNoiseDetection == true){
@@ -344,7 +348,20 @@ public class NightDreamUI {
         battery = new BatteryStats(mContext);
     }
 
+    private void centerClockLayout() {
+        if (Build.VERSION.SDK_INT >= 11) {
+            clockLayout.setTranslationX(0);
+            clockLayout.setTranslationY(0);
+        } else {
+            clockLayout.setPadding(0, 0, 0, 0);
+        }
+        clockLayout.invalidate();
+    }
+
     public void updateClockPosition() {
+        if ( !settings.restless_mode) {
+            return;
+        }
         Random random = new Random();
         Point size = utility.getDisplaySize();
         int w = size.x;

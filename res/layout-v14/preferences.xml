@@ -65,6 +65,11 @@
             android:icon="@drawable/ic_appearance">
 
             <SwitchPreference
+                android:key="restlessMode"
+                android:title="@string/restless_mode"
+                android:defaultValue="true" />
+
+            <SwitchPreference
                 android:key="autoBrightness"
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />
