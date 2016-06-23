@@ -180,7 +180,7 @@ public class PreferencesActivity extends PreferenceActivity {
     }
 
     private void recommendApp() {
-        String body = "https://play.google.com/store/apps/details?id=com.firebirdberlin.tinytimetracker";
+        String body = "https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream";
         String subject = getResources().getString(R.string.recommend_app_subject);
         String description = getResources().getString(R.string.recommend_app_desc);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
