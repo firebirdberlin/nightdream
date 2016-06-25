@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import java.util.Date;
 
+import com.firebirdberlin.nightdream.models.SimpleTime;
+
 
 public class TimeRangePreference extends DialogPreference {
     private static final String TIMERANGE = "timerange";

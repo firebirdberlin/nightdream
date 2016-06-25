@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -24,6 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import java.util.Calendar;
+
+import com.firebirdberlin.nightdream.events.OnClockClicked;
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
+import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
@@ -397,7 +405,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                                           PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private void scheduleShutdown() {
+    @SuppressLint("NewApi")
+	private void scheduleShutdown() {
         if (mySettings == null) return;
 
         if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
