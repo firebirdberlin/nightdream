@@ -7,7 +7,7 @@
  * - save the value on positive button click, not on seekbar change
  * - handle @string/... values in xml file
  */
-package firebirdberlin.com.nightdream;
+package com.firebirdberlin.nightdream;
 
 import android.app.AlertDialog;
 import android.content.Context;

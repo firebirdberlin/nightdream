@@ -1,5 +1,8 @@
 package com.firebirdberlin.nightdream;
 
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

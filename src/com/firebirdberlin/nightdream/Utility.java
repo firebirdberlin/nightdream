@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -35,6 +36,7 @@ public class Utility{
         return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
     }
 
+    @SuppressLint("NewApi")
     public Point getDisplaySize(){
         Point size = new Point();
         if(Build.VERSION.SDK_INT < 13) {
@@ -143,7 +145,7 @@ public class Utility{
         pm.setComponentEnabledSetting(receiver, new_state, PackageManager.DONT_KILL_APP);
     }
 
-    static long getFirstInstallTime(Context context) {
+    public static long getFirstInstallTime(Context context) {
         if(Build.VERSION.SDK_INT < 9) return 0L;
         try {
             return context.getPackageManager()
