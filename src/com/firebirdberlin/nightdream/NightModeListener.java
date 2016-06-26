@@ -16,6 +16,8 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import de.greenrobot.event.EventBus;
 
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+
 public class NightModeListener extends Service {
     private static String TAG = "NightDream.NightModeListener";
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
