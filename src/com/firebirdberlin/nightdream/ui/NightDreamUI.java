@@ -1,26 +1,46 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.ui;
 
-import android.app.Activity;
+import static android.text.format.DateFormat.getBestDateTimePattern;
+
+import android.annotation.SuppressLint;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Random;
+
+import com.firebirdberlin.nightdream.AlarmClock;
+import com.firebirdberlin.nightdream.AlarmService;
+import com.firebirdberlin.nightdream.BatteryStats;
+import com.firebirdberlin.nightdream.ClockLayout;
+import com.firebirdberlin.nightdream.LightSensorEventListener;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.SoundMeter;
+import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.events.OnClockClicked;
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.animation.AlphaAnimation;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -29,19 +49,15 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Random;
-import static android.text.format.DateFormat.getBestDateTimePattern;
 
+@SuppressLint("NewApi")
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
 
@@ -148,6 +164,10 @@ public class NightDreamUI {
             showDate();
         } else {
             hideDate();
+        }
+
+        if ( !settings.restless_mode ) {
+            centerClockLayout();
         }
 
         setColor();
@@ -344,7 +364,20 @@ public class NightDreamUI {
         battery = new BatteryStats(mContext);
     }
 
+    private void centerClockLayout() {
+        if (Build.VERSION.SDK_INT >= 11) {
+            clockLayout.setTranslationX(0);
+            clockLayout.setTranslationY(0);
+        } else {
+            clockLayout.setPadding(0, 0, 0, 0);
+        }
+        clockLayout.invalidate();
+    }
+
     public void updateClockPosition() {
+        if ( !settings.restless_mode) {
+            return;
+        }
         Random random = new Random();
         Point size = utility.getDisplaySize();
         int w = size.x;
@@ -437,7 +470,10 @@ public class NightDreamUI {
             setAlpha(alarmTime, v, millis);
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
-            if (! daydreamMode) setAlpha(settingsIcon, v, millis);
+            if (! daydreamMode) {
+                float settingsAlpha = to_range(v, 0.8f, 1.f);
+                setAlpha(settingsIcon, settingsAlpha, millis);
+            }
         }
 
         if ( mode == 0 ) {
@@ -831,7 +867,7 @@ public class NightDreamUI {
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
-        last_ambient = event.value;
+        last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(3000, last_ambient, settings.dim_offset);
     }
 }

@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.events;
 
 public class OnLightSensorValueTimeout {
 

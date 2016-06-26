@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -24,6 +25,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import java.util.Calendar;
+
+import com.firebirdberlin.nightdream.events.OnClockClicked;
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
+import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
@@ -320,11 +328,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
-        Log.i(TAG, "Static for 15s: " + String.valueOf(event.value) + " lux.");
+        last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
+        Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         if (isDebuggable) {
-            current.setText("Static for 15s: " + String.valueOf(event.value) + " lux.");
+            current.setText("Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         }
-        last_ambient = event.value;
         SwitchModes(last_ambient, last_ambient_noise);
     }
 
@@ -397,7 +405,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                                           PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private void scheduleShutdown() {
+    @SuppressLint("NewApi")
+	private void scheduleShutdown() {
         if (mySettings == null) return;
 
         if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {

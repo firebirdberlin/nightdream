@@ -19,6 +19,7 @@ public class Settings {
     SharedPreferences settings;
 
     public boolean allow_screen_off = false;
+    public boolean reactivate_screen_on_noise = false;
     public boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
     public boolean force_auto_rotation = false;
@@ -29,6 +30,7 @@ public class Settings {
     public boolean handle_power_usb = false;
     public boolean handle_power_wireless = false;
     public boolean muteRinger = false;
+    public boolean restless_mode = true;
     public boolean showDate = true;
     public boolean useInternalAlarm = true;
     public float dim_offset = 0.f;
@@ -66,10 +68,12 @@ public class Settings {
     public void reload() {
         AlarmToneUri = settings.getString("AlarmToneUri", "");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
+        reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", 0L);
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", 0L);
+        background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
@@ -84,6 +88,7 @@ public class Settings {
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
+        restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
@@ -94,11 +99,6 @@ public class Settings {
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
 
-        if (Build.VERSION.SDK_INT < 14){
-            background_mode = settings.getInt("BackgroundMode", BACKGROUND_BLACK);
-        } else {
-            background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
-        }
         typeface = loadTypeface();
     }
 
@@ -153,6 +153,7 @@ public class Settings {
         dim_offset = value;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("dimOffset", value);
+        prefEditor.putInt("brightness_offset", (int) (value * 100));
         prefEditor.commit();
     }
 
@@ -204,6 +205,13 @@ public class Settings {
         scaleClock = factor;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("scaleClock", scaleClock);
+        prefEditor.commit();
+    }
+
+    public void clear() {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.clear();
+        prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
         prefEditor.commit();
     }
 }

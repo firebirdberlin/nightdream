@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.models;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -8,23 +8,23 @@ public class SimpleTime {
     public int hour = 0;
     public int min = 0;
 
-    SimpleTime() {
+    public SimpleTime() {
 
     }
 
-    SimpleTime(long millis){
+    public SimpleTime(long millis){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         min = calendar.get(Calendar.MINUTE);
     }
 
-    SimpleTime(int hour, int min){
+    public SimpleTime(int hour, int min){
         this.hour = hour;
         this.min = min;
     }
 
-    long getMillis() {
+    public long getMillis() {
         return getCalendar().getTimeInMillis();
     }
 

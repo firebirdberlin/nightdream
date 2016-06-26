@@ -6,7 +6,7 @@ debug:
 	ant -f Pro_build.xml debug
 
 install:
-	adb -d install -r bin/Pro/NightDream-release.apk
+	adb $(OPT) install -r bin/Pro/NightDream-release.apk
 
 installemulator:
 	adb -e install -r bin/Pro/NightDream-release.apk

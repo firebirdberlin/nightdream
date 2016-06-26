@@ -23,6 +23,8 @@ import de.greenrobot.event.EventBus;
 import java.io.IOException;
 import java.lang.RuntimeException;
 
+import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
+
 
 public class SoundMeter {
     static final private double EMA_FILTER = 0.6;

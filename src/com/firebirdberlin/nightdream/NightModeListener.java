@@ -14,6 +14,9 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+import de.greenrobot.event.EventBus;
+
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 
 public class NightModeListener extends Service {
     private static String TAG = "NightDream.NightModeListener";
@@ -21,11 +24,14 @@ public class NightModeListener extends Service {
     final private Handler handler = new Handler();
     private SoundMeter soundmeter;
     private ReceiverPowerDisconnected pwrReceiver = null;
+    private LightSensorEventListener lightSensorEventListener = null;
+    private boolean reactivate_on_noise = false;
+    private int reactivate_on_ambient_light_value = 30;
 
     private boolean running = false;
     private boolean error_on_microphone = false;
     PowerManager.WakeLock wakelock;
-    private PowerManager pm;
+    private PowerManager pm = null;
 
 
     private double maxAmplitude = Config.NOISE_AMPLITUDE_WAKE;
@@ -44,7 +50,8 @@ public class NightModeListener extends Service {
         SharedPreferences settings = getSharedPreferences(Settings.PREFS_KEY, 0);
         int sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
         maxAmplitude *= sensitivity;
-
+        reactivate_on_noise = settings.getBoolean("reactivate_screen_on_noise", reactivate_on_noise);
+        reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         if (debug){
             Log.d(TAG,"onCreate() called.");
         }
@@ -72,7 +79,6 @@ public class NightModeListener extends Service {
         note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
         startForeground(1337, note);
 
-
         Bundle extras = intent.getExtras();
         if (extras != null) {
             if ( intent.hasExtra("SYSTEM_RINGER_MODE") ){
@@ -80,7 +86,13 @@ public class NightModeListener extends Service {
             }
         }
 
-        handler.postDelayed(startRecording, 1000);
+        if (reactivate_on_noise ) {
+            handler.postDelayed(startRecording, 1000);
+        }
+
+        EventBus.getDefault().register(this);
+        lightSensorEventListener = new LightSensorEventListener(this);
+        lightSensorEventListener.register();
 
         return Service.START_REDELIVER_INTENT;
     }
@@ -96,12 +108,14 @@ public class NightModeListener extends Service {
             Log.d(TAG,"onDestroy() called.");
         }
 
-        unregisterReceiver(pwrReceiver);
-
         if (soundmeter != null){
             soundmeter.release();
             soundmeter = null;
         }
+
+        unregisterReceiver(pwrReceiver);
+        EventBus.getDefault().unregister(this);
+        lightSensorEventListener.unregister();
 
         if (wakelock.isHeld()){
             wakelock.release();
@@ -147,8 +161,6 @@ public class NightModeListener extends Service {
 
     private void stopService() {
         Log.i(TAG, "stopService()");
-        soundmeter.release();
-        soundmeter = null;
 
         stopForeground(false); // bool: true = remove Notification
         startApp();
@@ -176,6 +188,13 @@ public class NightModeListener extends Service {
         IntentFilter pwrFilter = new IntentFilter(ACTION_POWER_DISCONNECTED);
         registerReceiver(pwrReceiver, pwrFilter);
         return pwrReceiver;
+    }
+
+    public void onEvent(OnNewLightSensorValue event){
+        if (event.value > (float) reactivate_on_ambient_light_value) {
+            Log.d(TAG,"It's getting bright ... stopSelf();");
+            stopService();
+        }
     }
 
 }

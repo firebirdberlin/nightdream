@@ -31,3 +31,12 @@ proguard/
 
 # temporary files
 *.sw*
+
+# Android Studio project files generated from gradle config
+/.idea
+*.iml
+.DS_Store 
+# Eclipse ADT
+.classpath
+.project
+.settings/
