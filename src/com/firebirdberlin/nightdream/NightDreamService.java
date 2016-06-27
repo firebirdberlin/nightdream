@@ -89,10 +89,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         background_image.setOnTouchListener(this);
     }
 
-    // ignore click on the settings icon
-    public void onSettingsClick(View v) {
-    }
-
     @Override
     public void onDreamingStarted() {
         super.onDreamingStarted();
@@ -157,6 +153,13 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         return nightDreamUI.onTouch(view, e, last_ambient);
     }
 
+    // click on the settings icon
+    public void onSettingsClick(View v) {
+        Intent intent = new Intent(this, PreferencesActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig){
