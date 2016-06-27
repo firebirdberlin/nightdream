@@ -203,7 +203,6 @@ public class PreferencesActivity extends PreferenceActivity {
             title = getString(R.string.brightness_offset);
         }
         brightnessOffset.setTitle(title);
-        settings.setBrightnessOffset(0.f);
         getListView().invalidate();
     }
 
@@ -216,6 +215,10 @@ public class PreferencesActivity extends PreferenceActivity {
                     settings.setBrightnessOffset(offsetInt/100.f);
                 } else
                 if (key.equals("autoBrightness")) {
+                    InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
+                    // reset the brightness level
+                    settings.setBrightnessOffset(0.8f);
+                    pref.setProgress(80);
                     setupBrightnessControls(sharedPreferences);
                 }
             }

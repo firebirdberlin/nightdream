@@ -64,7 +64,7 @@
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                 android:key="brightness_offset"
                 android:title="@string/brightness_offset"
-                android:defaultValue="0"
+                android:defaultValue="80"
                 android:max="100"
                 seekbar:min="-100"
                 seekbar:interval="1"

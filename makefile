@@ -23,3 +23,6 @@ uninstall:
 clean:
 	ant -f Pro_build.xml clean
 	find . -name "*.sw*" -exec rm {} \;
+
+clear-data:
+	adb $(OPT) shell pm clear com.firebirdberlin.nightdream
