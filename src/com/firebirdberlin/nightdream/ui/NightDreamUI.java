@@ -2,27 +2,14 @@ package com.firebirdberlin.nightdream.ui;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
-import android.annotation.SuppressLint;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 
-import com.firebirdberlin.nightdream.AlarmClock;
-import com.firebirdberlin.nightdream.AlarmService;
-import com.firebirdberlin.nightdream.BatteryStats;
-import com.firebirdberlin.nightdream.ClockLayout;
-import com.firebirdberlin.nightdream.LightSensorEventListener;
-import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.SoundMeter;
-import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.mAudioManager;
-import com.firebirdberlin.nightdream.events.OnClockClicked;
-import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
-import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -57,6 +44,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
+import com.firebirdberlin.nightdream.AlarmClock;
+import com.firebirdberlin.nightdream.AlarmService;
+import com.firebirdberlin.nightdream.BatteryStats;
+import com.firebirdberlin.nightdream.ClockLayout;
+import com.firebirdberlin.nightdream.LightSensorEventListener;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.SoundMeter;
+import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.events.OnClockClicked;
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+
 @SuppressLint("NewApi")
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
@@ -87,6 +93,7 @@ public class NightDreamUI {
     private Window window = null;
     private mAudioManager AudioManage = null;
     private ScaleGestureDetector mScaleDetector = null;
+    private ShowcaseView sw = null;
 
     private int dim_offset_init_x = 0;
     private int dim_offset_curr_x = 0;
@@ -155,11 +162,12 @@ public class NightDreamUI {
     }
 
     public void onResume() {
+        settings.reload();
+
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
-        settings.reload();
         if (settings.showDate){
             showDate();
         } else {
@@ -177,6 +185,8 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
+
+        showShowcase();
     }
 
     void setColor() {
@@ -867,4 +877,49 @@ public class NightDreamUI {
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(3000, last_ambient, settings.dim_offset);
     }
+
+    static int showcaseCounter = 0;
+
+    private void showShowcase() {
+        showcaseCounter = 0;
+        removeCallbacks(moveAround);
+        removeCallbacks(hideAlarmClock);
+        sw = new ShowcaseView.Builder((Activity) mContext)
+                .withMaterialShowcase()
+                .blockAllTouches()
+                .setContentTitle("NightDream")
+                .setContentText("Welcome to your new night clock!")
+                .setOnClickListener(showCaseOnClickListener)
+                .singleShot(1)
+                .build();
+
+        //sw.setShouldCentreText(true);
+        sw.show();
+    }
+
+    View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch(showcaseCounter) {
+                case 0:
+                    sw.setShowcase(new ViewTarget(settingsIcon), true);
+                    sw.setContentTitle("Preferences");
+                    sw.setContentText("Open the preferences here !");
+                    sw.setBlockAllTouches(true);
+                    break;
+                case 1:
+                    Point size = utility.getDisplaySize();
+                    sw.setShowcase(new PointTarget(size.x/2, 20), true);
+                    sw.setBlockAllTouches(false);
+                    sw.setContentTitle("Screen Brightness");
+                    sw.setContentText("Click and slide for changing the creen brightness");
+                    break;
+                default:
+                    sw.hide();
+                    handler.postDelayed(moveAround, 30000);
+                    handler.postDelayed(hideAlarmClock, 20000);
+            }
+            showcaseCounter++;
+        }
+    };
 }
