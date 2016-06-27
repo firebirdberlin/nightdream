@@ -145,7 +145,7 @@ public class NightDreamUI {
     }
 
     public void onStart() {
-        if (! daydreamMode) setAlpha(settingsIcon, .5f, 100);
+        setAlpha(settingsIcon, .5f, 100);
         updateBatteryView();
         if (Build.VERSION.SDK_INT >= 12){
             handler.postDelayed(zoomIn, 500);
@@ -470,10 +470,7 @@ public class NightDreamUI {
             setAlpha(alarmTime, v, millis);
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
-            if (! daydreamMode) {
-                float settingsAlpha = to_range(v, 0.8f, 1.f);
-                setAlpha(settingsIcon, settingsAlpha, millis);
-            }
+            setAlpha(settingsIcon, v, millis);
         }
 
         if ( mode == 0 ) {
@@ -606,7 +603,7 @@ public class NightDreamUI {
                return;
            }
            setAlpha(batteryView, 0.f, 2000);
-           if (! daydreamMode) setAlpha(settingsIcon, 0.f, 2000);
+           setAlpha(settingsIcon, 0.f, 2000);
            alarmClock.isVisible = false;
            alarmClock.setClickable(false);
            alarmTime.setClickable(false);
