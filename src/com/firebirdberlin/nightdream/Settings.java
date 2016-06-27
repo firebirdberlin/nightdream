@@ -33,7 +33,7 @@ public class Settings {
     public boolean restless_mode = true;
     public boolean showDate = true;
     public boolean useInternalAlarm = true;
-    public float dim_offset = 0.f;
+    public float dim_offset = 0.8f;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
     public int background_mode = 1;
@@ -83,7 +83,7 @@ public class Settings {
         handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
         bgpath = settings.getString("BackgroundImage", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
-        dim_offset = settings.getFloat("dimOffset", 0.f);
+        dim_offset = settings.getFloat("dimOffset", dim_offset);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
