@@ -340,6 +340,9 @@ public class ShowcaseView extends RelativeLayout
 
     @Override
     public void show() {
+        if ( hasShot() || isShowing ) {
+            return;
+        }
         isShowing = true;
         if (canUpdateBitmap()) {
             updateBitmap();
