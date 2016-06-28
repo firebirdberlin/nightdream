@@ -902,8 +902,6 @@ public class NightDreamUI {
         }
 
         showcaseCounter = 0;
-        removeCallbacks(moveAround);
-        removeCallbacks(hideAlarmClock);
         sw = new ShowcaseView.Builder((Activity) mContext)
                 .withMaterialShowcase()
                 .blockAllTouches()
@@ -913,6 +911,10 @@ public class NightDreamUI {
                 .singleShot(1)
                 .build();
         sw.show();
+        if (sw.isShowing()) {
+            removeCallbacks(moveAround);
+            removeCallbacks(hideAlarmClock);
+        }
     }
 
     View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
@@ -942,6 +944,7 @@ public class NightDreamUI {
                     sw.hide();
                     handler.postDelayed(moveAround, 30000);
                     handler.postDelayed(hideAlarmClock, 20000);
+                    break;
             }
             showcaseCounter++;
         }
