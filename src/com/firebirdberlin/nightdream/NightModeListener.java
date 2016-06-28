@@ -16,7 +16,9 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import de.greenrobot.event.EventBus;
 
+import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnScreenOn;
 
 public class NightModeListener extends Service {
     private static String TAG = "NightDream.NightModeListener";
@@ -25,6 +27,7 @@ public class NightModeListener extends Service {
     private SoundMeter soundmeter;
     private ReceiverPowerDisconnected pwrReceiver = null;
     private LightSensorEventListener lightSensorEventListener = null;
+    private ScreenReceiver screenReceiver = null;
     private boolean reactivate_on_noise = false;
     private int reactivate_on_ambient_light_value = 30;
 
@@ -93,6 +96,7 @@ public class NightModeListener extends Service {
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(this);
         lightSensorEventListener.register();
+        screenReceiver = ScreenReceiver.register(this);
 
         return Service.START_REDELIVER_INTENT;
     }
@@ -113,8 +117,9 @@ public class NightModeListener extends Service {
             soundmeter = null;
         }
 
-        unregisterReceiver(pwrReceiver);
         EventBus.getDefault().unregister(this);
+        unregisterReceiver(pwrReceiver);
+        unregisterReceiver(screenReceiver);
         lightSensorEventListener.unregister();
 
         if (wakelock.isHeld()){
@@ -136,12 +141,6 @@ public class NightModeListener extends Service {
     private Runnable getAmplitude = new Runnable() {
         @Override
         public void run() {
-            if (pm.isScreenOn()) { // screen was turned on
-                Log.i(TAG,"screen turned ON: stopSelf()");
-                stopSelf();
-                return;
-            }
-
             if (error_on_microphone || soundmeter == null) {
                 Log.w(TAG,"mic reported error!");
                 stopService();
@@ -195,6 +194,11 @@ public class NightModeListener extends Service {
             Log.d(TAG,"It's getting bright ... stopSelf();");
             stopService();
         }
+    }
+
+    public void onEvent(OnScreenOn event){
+        Log.d(TAG,"Screen turned on ... stopSelf();");
+        stopService();
     }
 
 }

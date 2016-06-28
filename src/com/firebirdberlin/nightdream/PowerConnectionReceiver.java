@@ -71,7 +71,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     }
 
     @SuppressLint("NewApi")
-	static public void schedule(Context context) {
+    static public void schedule(Context context) {
         Intent alarmIntent = new Intent(context, PowerConnectionReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, PENDING_INTENT_START_APP,
                                                                  alarmIntent,

@@ -100,6 +100,9 @@ public class InlineSeekBarPreference extends Preference implements OnSeekBarChan
     }
 
     public void setProgress(int progress) {
+        if (seekBar == null) {
+            return;
+        }
         if (progress >= minValue && progress <= maxValue) {
             seekBar.setProgress(progress - minValue);
             notifyChanged();
