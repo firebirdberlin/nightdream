@@ -881,19 +881,37 @@ public class NightDreamUI {
     static int showcaseCounter = 0;
 
     private void showShowcase() {
+        if ( sw != null ) {
+            return;
+        }
+
+        long firstInstallTime = utility.getFirstInstallTime(mContext);
+        Calendar install_time = Calendar.getInstance();
+        install_time.setTimeInMillis(firstInstallTime);
+
+        Calendar start_date = Calendar.getInstance();
+        start_date.set(Calendar.YEAR, 2016);
+        start_date.set(Calendar.MONTH, Calendar.JUNE);
+        start_date.set(Calendar.DAY_OF_MONTH, 27);
+        start_date.set(Calendar.SECOND, 0);
+        start_date.set(Calendar.MINUTE, 0);
+        start_date.set(Calendar.HOUR_OF_DAY, 0);
+
+        if (install_time.before(start_date)) {
+            return;
+        }
+
         showcaseCounter = 0;
         removeCallbacks(moveAround);
         removeCallbacks(hideAlarmClock);
         sw = new ShowcaseView.Builder((Activity) mContext)
                 .withMaterialShowcase()
                 .blockAllTouches()
-                .setContentTitle("NightDream")
-                .setContentText("Welcome to your new night clock!")
+                .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
+                .setContentText(mContext.getString(R.string.welcome_screen_text1))
                 .setOnClickListener(showCaseOnClickListener)
                 .singleShot(1)
                 .build();
-
-        //sw.setShouldCentreText(true);
         sw.show();
     }
 
@@ -903,16 +921,22 @@ public class NightDreamUI {
             switch(showcaseCounter) {
                 case 0:
                     sw.setShowcase(new ViewTarget(settingsIcon), true);
-                    sw.setContentTitle("Preferences");
-                    sw.setContentText("Open the preferences here !");
+                    sw.setContentTitle(mContext.getString(R.string.welcome_screen_title2));
+                    sw.setContentText(mContext.getString(R.string.welcome_screen_text2));
                     sw.setBlockAllTouches(true);
                     break;
                 case 1:
                     Point size = utility.getDisplaySize();
                     sw.setShowcase(new PointTarget(size.x/2, 20), true);
                     sw.setBlockAllTouches(false);
-                    sw.setContentTitle("Screen Brightness");
-                    sw.setContentText("Click and slide for changing the creen brightness");
+                    sw.setContentTitle(mContext.getString(R.string.welcome_screen_title3));
+                    sw.setContentText(mContext.getString(R.string.welcome_screen_text3));
+                    break;
+                case 2:
+                    sw.setShowcase(new ViewTarget(clockLayout), true);
+                    sw.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
+                    sw.setContentText(mContext.getString(R.string.welcome_screen_text4));
+                    sw.setBlockAllTouches(true);
                     break;
                 default:
                     sw.hide();
