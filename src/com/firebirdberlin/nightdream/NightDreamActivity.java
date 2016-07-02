@@ -254,7 +254,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         nightDreamUI.switchModes(light_value, last_ambient_noise);
 
-        if ( mode == 0 ) {
+        if ((mode == 0) && (current_mode != 0)){
             boolean on = shallKeepScreenOn(mode);
             setKeepScreenOn(on); // allow the screen to go off
             nightDreamUI.setAlpha(current, .0f, 3000);
