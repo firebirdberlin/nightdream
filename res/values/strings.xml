@@ -59,6 +59,14 @@
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
     <string name="use_internal_alarm">Quick alarms</string>
+    <string name="welcome_screen_title1">NightDream</string>
+    <string name="welcome_screen_title2">Preferences</string>
+    <string name="welcome_screen_title3">Screen brightness</string>
+    <string name="welcome_screen_title4">Clock size</string>
+    <string name="welcome_screen_text1">Welcome to your new night clock ! This app shows the current time while charging your mobile.</string>
+    <string name="welcome_screen_text2">Open the preferences here !</string>
+    <string name="welcome_screen_text3">Click and slide for changing the screen brightness. Try it now !</string>
+    <string name="welcome_screen_text4">Resize the clock using a two-finger zoom.</string>
 </resources>
 
 

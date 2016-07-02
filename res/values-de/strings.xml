@@ -53,6 +53,14 @@
     <string name="show_date">Datum</string>
     <string name="typeface">Schriftart</string>
     <string name="use_internal_alarm">Schnellalarm</string>
+    <string name="welcome_screen_title1">Nachtuhr</string>
+    <string name="welcome_screen_title2">Einstellungen</string>
+    <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
+    <string name="welcome_screen_title4">Größe</string>
+    <string name="welcome_screen_text1">Willkommen zu Ihrer neuen Nachtuhr! Diese App zeigt die Uhrzeit an während Ihr Telefon geladen wird - auf Wunsch auch mit Autostart.</string>
+    <string name="welcome_screen_text2">Öffnen Sie die Einstellungen hier.</string>
+    <string name="welcome_screen_text3">Zum Ändern der Helligkeit hier berühren und den Finger verschieben. Probieren Sie es aus !</string>
+    <string name="welcome_screen_text4">Mit einer Zoom-Geste verändern Sie die Größe der Uhr.</string>
 </resources>
 
 

@@ -2,27 +2,14 @@ package com.firebirdberlin.nightdream.ui;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
-import android.annotation.SuppressLint;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 
-import com.firebirdberlin.nightdream.AlarmClock;
-import com.firebirdberlin.nightdream.AlarmService;
-import com.firebirdberlin.nightdream.BatteryStats;
-import com.firebirdberlin.nightdream.ClockLayout;
-import com.firebirdberlin.nightdream.LightSensorEventListener;
-import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.SoundMeter;
-import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.mAudioManager;
-import com.firebirdberlin.nightdream.events.OnClockClicked;
-import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
-import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -57,6 +44,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
+import com.firebirdberlin.nightdream.AlarmClock;
+import com.firebirdberlin.nightdream.AlarmService;
+import com.firebirdberlin.nightdream.BatteryStats;
+import com.firebirdberlin.nightdream.ClockLayout;
+import com.firebirdberlin.nightdream.LightSensorEventListener;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.SoundMeter;
+import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.events.OnClockClicked;
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+
 @SuppressLint("NewApi")
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
@@ -87,6 +93,7 @@ public class NightDreamUI {
     private Window window = null;
     private mAudioManager AudioManage = null;
     private ScaleGestureDetector mScaleDetector = null;
+    private ShowcaseView showcaseView = null;
 
     private int dim_offset_init_x = 0;
     private int dim_offset_curr_x = 0;
@@ -155,11 +162,12 @@ public class NightDreamUI {
     }
 
     public void onResume() {
+        settings.reload();
+
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
-        settings.reload();
         if (settings.showDate){
             showDate();
         } else {
@@ -177,6 +185,8 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
+
+        showShowcase();
     }
 
     void setColor() {
@@ -277,7 +287,11 @@ public class NightDreamUI {
         Point d = utility.getDisplaySize();
         setDesiredClockWidth((int)(0.6 * d.x));
         removeCallbacks(moveAround);
-        handler.postDelayed(moveAround, 2000);
+        if ( showcaseView != null ) {
+            setupShowcaseView();
+        } else {
+            handler.postDelayed(moveAround, 2000);
+        }
     }
 
     public void showDate() {
@@ -866,5 +880,92 @@ public class NightDreamUI {
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(3000, last_ambient, settings.dim_offset);
+    }
+
+    static int showcaseCounter = 0;
+
+    private void showShowcase() {
+        if ( showcaseView != null ) {
+            return;
+        }
+
+        long firstInstallTime = utility.getFirstInstallTime(mContext);
+        Calendar install_time = Calendar.getInstance();
+        install_time.setTimeInMillis(firstInstallTime);
+
+        Calendar start_date = Calendar.getInstance();
+        start_date.set(Calendar.YEAR, 2016);
+        start_date.set(Calendar.MONTH, Calendar.JULY);
+        start_date.set(Calendar.DAY_OF_MONTH, 3);
+        start_date.set(Calendar.SECOND, 0);
+        start_date.set(Calendar.MINUTE, 0);
+        start_date.set(Calendar.HOUR_OF_DAY, 0);
+
+        if (install_time.before(start_date)) {
+            return;
+        }
+
+        showcaseCounter = 0;
+        showcaseView = new ShowcaseView.Builder((Activity) mContext)
+            .withMaterialShowcase()
+            .blockAllTouches()
+            .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
+            .setContentText(mContext.getString(R.string.welcome_screen_text1))
+            .setOnClickListener(showCaseOnClickListener)
+            .singleShot(1)
+            .build();
+
+        showcaseView.show();
+
+        if (showcaseView.isShowing()) {
+            removeCallbacks(moveAround);
+            removeCallbacks(hideAlarmClock);
+        } else {
+            showcaseView = null;
+        }
+    }
+
+    View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showcaseCounter++;
+            setupShowcaseView();
+        }
+    };
+
+    void setupShowcaseView() {
+        switch(showcaseCounter) {
+            case 0:
+                showcaseView.setShowcase(Target.NONE, true);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title1));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text1));
+                showcaseView.setBlockAllTouches(true);
+                break;
+            case 1:
+                showcaseView.setShowcase(new ViewTarget(settingsIcon), true);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title2));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text2));
+                showcaseView.setBlockAllTouches(true);
+                break;
+            case 2:
+                Point size = utility.getDisplaySize();
+                showcaseView.setShowcase(new PointTarget(size.x/2, 20), true);
+                showcaseView.setBlockAllTouches(false);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title3));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text3));
+                break;
+            case 3:
+                showcaseView.setShowcase(new ViewTarget(clockLayout), true);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text4));
+                showcaseView.setBlockAllTouches(true);
+                break;
+            default:
+                showcaseView.hide();
+                showcaseView = null;
+                handler.postDelayed(moveAround, 30000);
+                handler.postDelayed(hideAlarmClock, 20000);
+                break;
+        }
     }
 }

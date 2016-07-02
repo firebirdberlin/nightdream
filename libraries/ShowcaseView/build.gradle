@@ -6,15 +6,14 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.1.2'
     }
 }
-apply plugin: 'com.android.application'
+apply plugin: 'android-library'
 
 dependencies {
-    compile project(':libraries:ShowcaseView')
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 18
     buildToolsVersion "24.0.0"
 
     sourceSets {

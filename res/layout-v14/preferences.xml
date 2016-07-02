@@ -265,6 +265,15 @@
                         android:data="https://icons8.com"/>
 
                 </Preference>
+
+                <Preference
+                    android:key="about_showcaseview"
+                    android:title="ShowcaseView library"
+                    android:summary="by Alex Curran" >
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="https://github.com/amlcurran/ShowcaseView"/>
+
+                </Preference>
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceScreen>
