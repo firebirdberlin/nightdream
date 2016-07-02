@@ -93,7 +93,7 @@ public class NightDreamUI {
     private Window window = null;
     private mAudioManager AudioManage = null;
     private ScaleGestureDetector mScaleDetector = null;
-    private ShowcaseView sw = null;
+    private ShowcaseView showcaseView = null;
 
     private int dim_offset_init_x = 0;
     private int dim_offset_curr_x = 0;
@@ -287,7 +287,11 @@ public class NightDreamUI {
         Point d = utility.getDisplaySize();
         setDesiredClockWidth((int)(0.6 * d.x));
         removeCallbacks(moveAround);
-        handler.postDelayed(moveAround, 2000);
+        if ( showcaseView != null ) {
+            setupShowcaseView();
+        } else {
+            handler.postDelayed(moveAround, 2000);
+        }
     }
 
     public void showDate() {
@@ -881,7 +885,7 @@ public class NightDreamUI {
     static int showcaseCounter = 0;
 
     private void showShowcase() {
-        if ( sw != null ) {
+        if ( showcaseView != null ) {
             return;
         }
 
@@ -891,8 +895,8 @@ public class NightDreamUI {
 
         Calendar start_date = Calendar.getInstance();
         start_date.set(Calendar.YEAR, 2016);
-        start_date.set(Calendar.MONTH, Calendar.JUNE);
-        start_date.set(Calendar.DAY_OF_MONTH, 27);
+        start_date.set(Calendar.MONTH, Calendar.JULY);
+        start_date.set(Calendar.DAY_OF_MONTH, 3);
         start_date.set(Calendar.SECOND, 0);
         start_date.set(Calendar.MINUTE, 0);
         start_date.set(Calendar.HOUR_OF_DAY, 0);
@@ -902,51 +906,66 @@ public class NightDreamUI {
         }
 
         showcaseCounter = 0;
-        sw = new ShowcaseView.Builder((Activity) mContext)
-                .withMaterialShowcase()
-                .blockAllTouches()
-                .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
-                .setContentText(mContext.getString(R.string.welcome_screen_text1))
-                .setOnClickListener(showCaseOnClickListener)
-                .singleShot(1)
-                .build();
-        sw.show();
-        if (sw.isShowing()) {
+        showcaseView = new ShowcaseView.Builder((Activity) mContext)
+            .withMaterialShowcase()
+            .blockAllTouches()
+            .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
+            .setContentText(mContext.getString(R.string.welcome_screen_text1))
+            .setOnClickListener(showCaseOnClickListener)
+            .singleShot(1)
+            .build();
+
+        showcaseView.show();
+
+        if (showcaseView.isShowing()) {
             removeCallbacks(moveAround);
             removeCallbacks(hideAlarmClock);
+        } else {
+            showcaseView = null;
         }
     }
 
     View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch(showcaseCounter) {
-                case 0:
-                    sw.setShowcase(new ViewTarget(settingsIcon), true);
-                    sw.setContentTitle(mContext.getString(R.string.welcome_screen_title2));
-                    sw.setContentText(mContext.getString(R.string.welcome_screen_text2));
-                    sw.setBlockAllTouches(true);
-                    break;
-                case 1:
-                    Point size = utility.getDisplaySize();
-                    sw.setShowcase(new PointTarget(size.x/2, 20), true);
-                    sw.setBlockAllTouches(false);
-                    sw.setContentTitle(mContext.getString(R.string.welcome_screen_title3));
-                    sw.setContentText(mContext.getString(R.string.welcome_screen_text3));
-                    break;
-                case 2:
-                    sw.setShowcase(new ViewTarget(clockLayout), true);
-                    sw.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
-                    sw.setContentText(mContext.getString(R.string.welcome_screen_text4));
-                    sw.setBlockAllTouches(true);
-                    break;
-                default:
-                    sw.hide();
-                    handler.postDelayed(moveAround, 30000);
-                    handler.postDelayed(hideAlarmClock, 20000);
-                    break;
-            }
             showcaseCounter++;
+            setupShowcaseView();
         }
     };
+
+    void setupShowcaseView() {
+        switch(showcaseCounter) {
+            case 0:
+                showcaseView.setShowcase(Target.NONE, true);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title1));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text1));
+                showcaseView.setBlockAllTouches(true);
+                break;
+            case 1:
+                showcaseView.setShowcase(new ViewTarget(settingsIcon), true);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title2));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text2));
+                showcaseView.setBlockAllTouches(true);
+                break;
+            case 2:
+                Point size = utility.getDisplaySize();
+                showcaseView.setShowcase(new PointTarget(size.x/2, 20), true);
+                showcaseView.setBlockAllTouches(false);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title3));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text3));
+                break;
+            case 3:
+                showcaseView.setShowcase(new ViewTarget(clockLayout), true);
+                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
+                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text4));
+                showcaseView.setBlockAllTouches(true);
+                break;
+            default:
+                showcaseView.hide();
+                showcaseView = null;
+                handler.postDelayed(moveAround, 30000);
+                handler.postDelayed(hideAlarmClock, 20000);
+                break;
+        }
+    }
 }
