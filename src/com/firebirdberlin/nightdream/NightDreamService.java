@@ -115,9 +115,12 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nightDreamUI.onPause();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-        if (nReceiver != null) {
-            unregisterReceiver(nReceiver);
-            nReceiver = null;
+        try {
+            if (nReceiver != null) {
+                unregisterReceiver(nReceiver);
+                nReceiver = null;
+            }
+        } catch (IllegalArgumentException e) {
         }
 
         //stop notification listener service
