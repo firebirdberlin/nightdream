@@ -885,7 +885,8 @@ public class NightDreamUI {
     static int showcaseCounter = 0;
 
     private void showShowcase() {
-        if ( showcaseView != null ) {
+        // daydreams cannot be cast to an activity
+        if ( showcaseView != null  || daydreamMode) {
             return;
         }
 
