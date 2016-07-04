@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream;
 
+import java.util.Calendar;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -13,11 +15,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import de.greenrobot.event.EventBus;
-import java.util.Calendar;
 
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
@@ -114,9 +115,12 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nightDreamUI.onPause();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-        if (nReceiver != null) {
-            unregisterReceiver(nReceiver);
-            nReceiver = null;
+        try {
+            if (nReceiver != null) {
+                unregisterReceiver(nReceiver);
+                nReceiver = null;
+            }
+        } catch (IllegalArgumentException e) {
         }
 
         //stop notification listener service
