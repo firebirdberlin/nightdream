@@ -14,7 +14,7 @@ import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.MediaStore;
 import android.widget.Toast;
-
+import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 public class PreferencesActivity extends PreferenceActivity {
     public static final String PREFS_KEY = "NightDream preferences";

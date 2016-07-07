@@ -60,7 +60,7 @@
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />
 
-            <com.firebirdberlin.nightdream.InlineSeekBarPreference
+            <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                 android:key="brightness_offset"
                 android:title="@string/brightness_offset"
@@ -132,7 +132,7 @@
                     android:title="@string/allow_screen_off"
                     android:defaultValue="false" />
 
-                <com.firebirdberlin.nightdream.InlineSeekBarPreference
+                <de.firebirdberlin.preference.InlineSeekBarPreference
                     xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                     android:key="reactivate_on_ambient_light_value"
                     android:dependency="allow_screen_off"
