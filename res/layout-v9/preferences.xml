@@ -195,11 +195,14 @@
             android:icon="@drawable/ic_about"
             android:title="@string/about">
 
-            <com.firebirdberlin.nightdream.VersionPreference
-                android:key="version"
+            <de.firebirdberlin.preference.VersionPreference
+                android:title="NightDream"
                 android:icon="@drawable/ic_clock"
-                android:selectable="false"
-                />
+                android:key="version"
+                android:selectable="true">
+                <intent android:action="android.intent.action.VIEW"
+                    android:data="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream"/>
+            </de.firebirdberlin.preference.VersionPreference>
 
             <Preference
                 android:icon="@drawable/ic_github"
