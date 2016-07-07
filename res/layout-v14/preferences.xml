@@ -200,10 +200,13 @@
                 android:title="@string/use_internal_alarm"
                 android:defaultValue="true" />
 
-            <Preference
-                android:key="chooseAlarmSound"
+            <RingtonePreference
+                android:key="AlarmToneUri"
+                android:title="@string/choose_alarm_sound"
                 android:dependency="useInternalAlarm"
-                android:title="@string/choose_alarm_sound"/>
+                android:ringtoneType="alarm"
+                android:showDefault="false"
+                android:showSilent="false"/>
 
         </PreferenceScreen>
 
