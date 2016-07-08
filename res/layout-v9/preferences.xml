@@ -152,7 +152,7 @@
                     android:defaultValue="false" />
 
 
-                <firebirdberlin.com.nightdream.SeekBarPreference
+                <de.firebirdberlin.preference.InlineSeekBarPreference
                     android:key="NoiseSensitivity"
                     android:defaultValue="4"
                     android:max="10"
