@@ -60,7 +60,7 @@
                 android:title="@string/auto_brightness"
                 android:defaultValue="false" />
 
-            <com.firebirdberlin.nightdream.InlineSeekBarPreference
+            <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                 android:key="brightness_offset"
                 android:title="@string/brightness_offset"
@@ -132,7 +132,7 @@
                     android:title="@string/allow_screen_off"
                     android:defaultValue="false" />
 
-                <com.firebirdberlin.nightdream.InlineSeekBarPreference
+                <de.firebirdberlin.preference.InlineSeekBarPreference
                     xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                     android:key="reactivate_on_ambient_light_value"
                     android:dependency="allow_screen_off"
@@ -152,7 +152,7 @@
                     android:defaultValue="false" />
 
 
-                <firebirdberlin.com.nightdream.SeekBarPreference
+                <de.firebirdberlin.preference.InlineSeekBarPreference
                     android:key="NoiseSensitivity"
                     android:defaultValue="4"
                     android:max="10"
@@ -170,10 +170,13 @@
                 android:title="@string/use_internal_alarm"
                 android:defaultValue="true" />
 
-            <Preference
-                android:key="chooseAlarmSound"
+            <RingtonePreference
+                android:key="AlarmToneUri"
+                android:title="@string/choose_alarm_sound"
                 android:dependency="useInternalAlarm"
-                android:title="@string/choose_alarm_sound"/>
+                android:ringtoneType="alarm"
+                android:showDefault="false"
+                android:showSilent="false"/>
 
         </PreferenceScreen>
 
@@ -192,11 +195,14 @@
             android:icon="@drawable/ic_about"
             android:title="@string/about">
 
-            <com.firebirdberlin.nightdream.VersionPreference
-                android:key="version"
+            <de.firebirdberlin.preference.VersionPreference
+                android:title="NightDream"
                 android:icon="@drawable/ic_clock"
-                android:selectable="false"
-                />
+                android:key="version"
+                android:selectable="true">
+                <intent android:action="android.intent.action.VIEW"
+                    android:data="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream"/>
+            </de.firebirdberlin.preference.VersionPreference>
 
             <Preference
                 android:icon="@drawable/ic_github"

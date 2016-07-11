@@ -66,7 +66,8 @@ public class Settings {
     }
 
     public void reload() {
-        AlarmToneUri = settings.getString("AlarmToneUri", "");
+        AlarmToneUri = settings.getString("AlarmToneUri",
+                android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
@@ -177,13 +178,6 @@ public class Settings {
         nextAlarmTime = alarmTime;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlarmTime", alarmTime);
-        prefEditor.commit();
-    }
-
-    public void setAlarmToneUri(String uri) {
-        AlarmToneUri = uri;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putString("AlarmToneUri", uri);
         prefEditor.commit();
     }
 

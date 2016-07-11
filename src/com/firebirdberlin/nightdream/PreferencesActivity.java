@@ -5,24 +5,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.MediaStore;
-import android.provider.Settings.System;
 import android.widget.Toast;
-
+import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 public class PreferencesActivity extends PreferenceActivity {
     public static final String PREFS_KEY = "NightDream preferences";
     private static int RESULT_LOAD_IMAGE = 1;
-    private static int RESULT_LOAD_ALARM_SOUND = 2;
     private Settings settings = null;
 
     @Override
@@ -57,19 +53,6 @@ public class PreferencesActivity extends PreferenceActivity {
         chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 selectBackgroundImage();
-                return true;
-            }
-        });
-
-        Preference chooseAlarmSound = (Preference) findPreference("chooseAlarmSound");
-        chooseAlarmSound.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                String msg = getString(R.string.select_alarm_sound);
-                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, msg);
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(settings.AlarmToneUri));
-                startActivityForResult(intent, RESULT_LOAD_ALARM_SOUND);
                 return true;
             }
         });
@@ -151,12 +134,6 @@ public class PreferencesActivity extends PreferenceActivity {
             } else {
                 Toast.makeText(this, "Could locate image !", Toast.LENGTH_LONG).show();
             }
-        }
-        else
-        if (requestCode == RESULT_LOAD_ALARM_SOUND && resultCode == RESULT_OK && null != data){
-            Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-            String uri_string = (uri == null) ? "" : uri.toString();
-            settings.setAlarmToneUri(uri_string);
         }
     }
 
