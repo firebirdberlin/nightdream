@@ -1,5 +1,10 @@
 package com.firebirdberlin.nightdream;
 
+import java.util.Calendar;
+import java.util.Locale;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -7,7 +12,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import java.util.Calendar;
+
+import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
@@ -48,6 +54,7 @@ public class Settings {
     public String AlarmToneUri = "";
     public String bgpath = "";
     public Typeface typeface;
+    public String dateFormat;
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -96,6 +103,7 @@ public class Settings {
         showDate = settings.getBoolean("showDate", true);
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
+        dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
@@ -113,6 +121,16 @@ public class Settings {
         catch (NameNotFoundException e ) {
         }
         return false;
+    }
+
+    private String getDefaultDateFormat() {
+        // Return the date format as used in versions previous to the version code 72
+        if (Build.VERSION.SDK_INT >= 18){
+            return getBestDateTimePattern(Locale.getDefault(), "EEEEddLLLL");
+
+        }
+        DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        return ((SimpleDateFormat)formatter).toLocalizedPattern();
     }
 
     public long getDateAsLong(int year, int month, int day) {

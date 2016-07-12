@@ -52,6 +52,7 @@
     <string name="select_alarm_sound">Select alarm sound</string>
     <string name="set_alarm">set alarm</string>
     <string name="show_date">show date</string>
+    <string name="date_format">Date format</string>
     <string name="typeface_roboto_condensed">Roboto condensed</string>
     <string name="typeface_roboto_light">Roboto light</string>
     <string name="typeface_roboto_medium">Roboto medium</string>

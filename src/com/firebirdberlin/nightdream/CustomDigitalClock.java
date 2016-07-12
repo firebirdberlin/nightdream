@@ -1,7 +1,10 @@
 package com.firebirdberlin.nightdream;
 
+import java.util.Calendar;
+
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -9,16 +12,7 @@ import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import android.content.res.TypedArray;
 
-import java.util.Calendar;
-
-//import com.firebirdberlin.nightdream.R;
-/**
- * You have to make a clone of the file DigitalClock.java to use in your application, modify in the following manner:-
- *      private final static String m12 = "h:mm aa";
- *      private final static String m24 = "kk:mm";
- */
 
 public class CustomDigitalClock extends TextView {
 
@@ -43,12 +37,9 @@ public class CustomDigitalClock extends TextView {
         super(context, attrs);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomDigitalClock);
-        //TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MyCustomView, defStyle, 0);
 
         m12 = a.getString(R.styleable.CustomDigitalClock_format12Hr);
         m24 = a.getString(R.styleable.CustomDigitalClock_format24Hr);
-
-        //do something with str
 
         a.recycle();
 
@@ -122,6 +113,16 @@ public class CustomDigitalClock extends TextView {
         public void onChange(boolean selfChange) {
             setFormat();
         }
+    }
+
+    public void setFormat12Hour(String format) {
+        this.m12 = format;
+        setFormat();
+    }
+
+    public void setFormat24Hour(String format) {
+        this.m24 = format;
+        setFormat();
     }
 
 }

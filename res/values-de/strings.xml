@@ -51,6 +51,7 @@
     <string name="select_alarm_sound">Weckton auswählen</string>
     <string name="set_alarm">neuer Alarm</string>
     <string name="show_date">Datum</string>
+    <string name="date_format">Datumsformat</string>
     <string name="typeface">Schriftart</string>
     <string name="use_internal_alarm">Schnellalarm</string>
     <string name="welcome_screen_title1">Nachtuhr</string>

@@ -90,6 +90,11 @@
                 android:title="@string/show_date"
                 android:defaultValue="true" />
 
+            <com.firebirdberlin.nightdream.DateFormatPreference
+                android:dependency="showDate"
+                android:title="@string/date_format"
+                android:key="dateFormat"/>
+
             <ListPreference
                 android:title="@string/typeface"
                 android:key="typeface"

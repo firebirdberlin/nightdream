@@ -2,8 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
@@ -53,6 +51,7 @@ import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.BatteryStats;
 import com.firebirdberlin.nightdream.ClockLayout;
+import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -304,22 +303,22 @@ public class NightDreamUI {
             // from API level 18 on, we can set the system default
             TextClock tclock = (TextClock) rootView.findViewById(R.id.clock);
             TextClock tdate  = (TextClock) rootView.findViewById(R.id.date);
+
+            tdate.setFormat12Hour(settings.dateFormat);
+            tdate.setFormat24Hour(settings.dateFormat);
+
             if (Build.VERSION.SDK_INT >= 18){
                 String tlocalPattern24 = getBestDateTimePattern(Locale.getDefault(), "HH:mm");
                 String tlocalPattern12 = getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
-                String localPatternDate = getBestDateTimePattern(Locale.getDefault(), "EEEEddLLLL");
 
                 tclock.setFormat12Hour(tlocalPattern12);
                 tclock.setFormat24Hour(tlocalPattern24);
-                tdate.setFormat12Hour(localPatternDate);
-                tdate.setFormat24Hour(localPatternDate);
-            } else {
-                DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-                String pattern       = ((SimpleDateFormat)formatter).toPattern();
-                String localPattern  = ((SimpleDateFormat)formatter).toLocalizedPattern();
-                tdate.setFormat12Hour(localPattern);
-                tdate.setFormat24Hour(localPattern);
             }
+        } else {
+            CustomDigitalClock tdate = (CustomDigitalClock) rootView.findViewById(R.id.date);
+
+            tdate.setFormat12Hour(settings.dateFormat);
+            tdate.setFormat24Hour(settings.dateFormat);
         }
     }
 
