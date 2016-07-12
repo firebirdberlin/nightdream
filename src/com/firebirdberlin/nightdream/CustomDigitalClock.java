@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -73,7 +74,8 @@ public class CustomDigitalClock extends TextView {
                 public void run() {
                     if (mTickerStopped) return;
                     mCalendar.setTimeInMillis(System.currentTimeMillis());
-                    setText(DateFormat.format(mFormat, mCalendar));
+                    SimpleDateFormat sdf = new SimpleDateFormat(mFormat);
+                    setText(sdf.format(mCalendar.getTime()));
                     invalidate();
                     long now = SystemClock.uptimeMillis();
                     long next = now + (1000 - now % 1000);
