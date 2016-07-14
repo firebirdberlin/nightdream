@@ -1,18 +1,15 @@
 package com.firebirdberlin.nightdream;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
@@ -70,7 +67,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         return false;
     }
 
-    @SuppressLint("NewApi")
     static public void schedule(Context context) {
         Intent alarmIntent = new Intent(context, PowerConnectionReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, PENDING_INTENT_START_APP,
