@@ -7,27 +7,39 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
 
+import de.greenrobot.event.EventBus;
 
-public class BatteryStats{
-    class BatteryValue {
+import com.firebirdberlin.nightdream.events.OnChargingStateChanged;
+
+public class BatteryStats {
+
+    public class BatteryValue {
         public int level = 0;
         public long time = 0L;
+        public int chargingMethod = -1;
 
         public BatteryValue(int level) {
             this.level = level;
             this.time = System.currentTimeMillis();
         }
+
+        public BatteryValue(int level, int chargingMethod) {
+            this.level = level;
+            this.time = System.currentTimeMillis();
+            this.chargingMethod = chargingMethod;
+        }
     }
 
     Context mContext;
-    private BatteryValue reference = null;
+    public BatteryValue reference = null;
     public int chargingMethod = -1;
     public int dockState = -1;
 
-    // constructor
     public BatteryStats(Context context){
         this.mContext = context;
-        reference = new BatteryValue(getLevel());
+        int level = getLevel();
+        int chargingMethod = getChargingMethod();
+        reference = new BatteryValue(level, chargingMethod);
     }
 
     public int getLevel() {
@@ -49,10 +61,15 @@ public class BatteryStats{
         if (now - reference.time > 30 * 60 * 1000) {
             reference = new BatteryValue(level);
         }
-        return (((float)level / (float)scale) * 100.0f);
+        return (((float) level / (float) scale) * 100.0f);
     }
 
     public long getEstimateMillis() {
+        OnChargingStateChanged event = EventBus.getDefault().getStickyEvent(OnChargingStateChanged.class);
+        if (event == null) return -1L;
+        if ( event.referenceValue.level == getLevel() ) return -1L;
+        reference = event.referenceValue;
+
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
@@ -81,7 +98,7 @@ public class BatteryStats{
 
 
     // Are we charging / charged?
-    public boolean isCharging(){
+    public boolean isCharging() {
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         chargingMethod = batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
