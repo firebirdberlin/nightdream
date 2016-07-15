@@ -1,6 +1,6 @@
 package com.firebirdberlin.nightdream.events;
 
-import com.firebirdberlin.nightdream.BatteryStats.BatteryValue;
+import com.firebirdberlin.nightdream.BatteryValue;
 
 public class OnChargingStateChanged {
 

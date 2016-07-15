@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.firebirdberlin.nightdream.events.OnChargingStateChanged;
+import com.firebirdberlin.nightdream.BatteryStats;
+import com.firebirdberlin.nightdream.BatteryValue;
 
 import de.greenrobot.event.EventBus;
 
@@ -16,7 +18,9 @@ public class ChargingStateChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         BatteryStats battery = new BatteryStats(context.getApplicationContext());
-        BatteryStats.BatteryValue referenceValue = battery.reference;
-        EventBus.getDefault().postSticky(new OnChargingStateChanged(referenceValue));
+        BatteryValue referenceValue = battery.getBatteryValue();
+        EventBus.getDefault().post(new OnChargingStateChanged(referenceValue));
+        Settings settings = new Settings(context.getApplicationContext());
+        settings.saveBatteryReference(referenceValue);
     }
 }

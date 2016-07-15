@@ -15,6 +15,8 @@ import android.os.Build;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
+import com.firebirdberlin.nightdream.BatteryValue;
+
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
     public final static int BACKGROUND_BLACK = 1;
@@ -55,6 +57,7 @@ public class Settings {
     public String bgpath = "";
     public Typeface typeface;
     public String dateFormat;
+    public BatteryValue batteryReferenceValue;
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -109,6 +112,25 @@ public class Settings {
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
 
         typeface = loadTypeface();
+    }
+
+    public BatteryValue loadBatteryReference() {
+        long time = settings.getLong("batteryReferenceTime", 0L);
+        int level = settings.getInt("batteryReferenceMethod", -1);
+        int chargingMethod = settings.getInt("batteryReferenceChargingMethod", -1);
+        int status = settings.getInt("batteryReferenceStatus", -1);
+        BatteryValue bv = new BatteryValue(level, status, chargingMethod);
+        bv.time = time;
+        return bv;
+    }
+
+    public void saveBatteryReference(BatteryValue bv) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("batteryReferenceTime", bv.time);
+        prefEditor.putInt("batteryReferenceMethod", bv.level);
+        prefEditor.putInt("batteryReferenceChargingMethod", bv.chargingMethod);
+        prefEditor.putInt("batteryReferenceStatus", bv.status);
+        prefEditor.commit();
     }
 
     private boolean getUseInternalAlarmDefault() {

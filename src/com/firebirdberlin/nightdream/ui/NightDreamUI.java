@@ -50,6 +50,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.BatteryStats;
+import com.firebirdberlin.nightdream.BatteryValue;
 import com.firebirdberlin.nightdream.ClockLayout;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
@@ -345,18 +346,18 @@ public class NightDreamUI {
     }
 
     public void updateBatteryView() {
+        Log.d(TAG, "updateBatteryView()");
+        BatteryValue reference = settings.loadBatteryReference();
         float percentage = battery.getPercentage();
         if (battery.isCharging()) {
             if (percentage < 95.){
-                long est = battery.getEstimateMillis()/1000; // estimated seconds
+                long est = battery.getEstimateMillis(reference)/1000; // estimated seconds
                 formatBatteryEstimate(percentage, est);
-            }  else if (percentage < 98.) {
-                batteryView.setText(String.format("%02d %%", (int) percentage));
-            } else {
-                batteryView.setText(""); // nothing, if fully charged
+            }  else {
+                batteryView.setText(String.format("% 3d %%", (int) percentage));
             }
         } else { // not charging
-            long est = battery.getDischargingEstimateMillis()/1000; // estimated seconds
+            long est = battery.getDischargingEstimateMillis(reference)/1000; // estimated seconds
             formatBatteryEstimate(percentage, est);
         }
     }
@@ -366,10 +367,10 @@ public class NightDreamUI {
         if (est > 0){
             long h = est / 3600;
             long m  = ( est % 3600 ) / 60;
-            batteryView.setText(String.format("%02d %% -- %02d:%02d",
+            batteryView.setText(String.format("% 3d %% -- %02d:%02d",
                                               (int) percentage, (int) h, (int) m));
         } else {
-            batteryView.setText(String.format("%02d %%", (int) percentage));
+            batteryView.setText(String.format("% 3d %%", (int) percentage));
         }
     }
 
@@ -593,7 +594,6 @@ public class NightDreamUI {
        @Override
        public void run() {
            removeCallbacks(hideBrightnessLevel);
-           updateBatteryView();
            updateClockPosition();
 
            handler.postDelayed(this, 60000);
@@ -634,6 +634,7 @@ public class NightDreamUI {
     };
 
     public void onClockClicked() {
+        updateBatteryView();
         showAlarmClock();
     }
 
@@ -724,6 +725,7 @@ public class NightDreamUI {
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                updateBatteryView();
                 showAlarmClock();
                 event_consumed = true;
                 break;

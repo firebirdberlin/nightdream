@@ -9,27 +9,9 @@ import android.os.Build;
 
 import de.greenrobot.event.EventBus;
 
-import com.firebirdberlin.nightdream.events.OnChargingStateChanged;
+import com.firebirdberlin.nightdream.BatteryValue;
 
 public class BatteryStats {
-
-    public class BatteryValue {
-        public int level = 0;
-        public long time = 0L;
-        public int chargingMethod = -1;
-
-        public BatteryValue(int level) {
-            this.level = level;
-            this.time = System.currentTimeMillis();
-        }
-
-        public BatteryValue(int level, int chargingMethod) {
-            this.level = level;
-            this.time = System.currentTimeMillis();
-            this.chargingMethod = chargingMethod;
-        }
-    }
-
     Context mContext;
     public BatteryValue reference = null;
     public int chargingMethod = -1;
@@ -37,9 +19,15 @@ public class BatteryStats {
 
     public BatteryStats(Context context){
         this.mContext = context;
-        int level = getLevel();
-        int chargingMethod = getChargingMethod();
-        reference = new BatteryValue(level, chargingMethod);
+        reference = getBatteryValue();
+    }
+
+    public BatteryValue getBatteryValue() {
+        Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        int chargingMethod = batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+        return new BatteryValue(level, status, chargingMethod);
     }
 
     public int getLevel() {
@@ -64,11 +52,8 @@ public class BatteryStats {
         return (((float) level / (float) scale) * 100.0f);
     }
 
-    public long getEstimateMillis() {
-        OnChargingStateChanged event = EventBus.getDefault().getStickyEvent(OnChargingStateChanged.class);
-        if (event == null) return -1L;
-        if ( event.referenceValue.level == getLevel() ) return -1L;
-        reference = event.referenceValue;
+    public long getEstimateMillis(BatteryValue reference) {
+        if ( reference.level == getLevel() ) return -1L;
 
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -83,7 +68,7 @@ public class BatteryStats {
         return (long) ( (scale - level) * ((double) dt / (double) dL));
     }
 
-    public long getDischargingEstimateMillis() {
+    public long getDischargingEstimateMillis(BatteryValue reference) {
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
