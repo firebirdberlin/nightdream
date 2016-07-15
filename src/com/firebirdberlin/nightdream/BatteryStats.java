@@ -9,7 +9,7 @@ import android.os.Build;
 
 import de.greenrobot.event.EventBus;
 
-import com.firebirdberlin.nightdream.BatteryValue;
+import com.firebirdberlin.nightdream.models.BatteryValue;
 
 public class BatteryStats {
     Context mContext;

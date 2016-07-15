@@ -50,7 +50,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.BatteryStats;
-import com.firebirdberlin.nightdream.BatteryValue;
+import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.ClockLayout;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.LightSensorEventListener;

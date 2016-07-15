@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.models;
 
 public class BatteryValue {
     public int level = 0;

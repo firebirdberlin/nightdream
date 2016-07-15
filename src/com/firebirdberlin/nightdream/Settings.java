@@ -15,7 +15,7 @@ import android.os.Build;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
-import com.firebirdberlin.nightdream.BatteryValue;
+import com.firebirdberlin.nightdream.models.BatteryValue;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
