@@ -10,7 +10,8 @@ apply plugin: 'com.android.application'
 
 dependencies {
     compile project(':libraries:ShowcaseView')
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile project(':externals:android-preferences')
+    compile fileTree(include: '*.jar', dir: 'libs')
 }
 
 android {
