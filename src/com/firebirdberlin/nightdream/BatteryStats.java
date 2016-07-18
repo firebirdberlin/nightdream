@@ -53,7 +53,8 @@ public class BatteryStats {
     }
 
     public long getEstimateMillis(BatteryValue reference) {
-        if ( reference.level == getLevel() ) return -1L;
+        if ( reference.level == -1 ||
+             reference.level == getLevel() ) return -1L;
 
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -69,6 +70,9 @@ public class BatteryStats {
     }
 
     public long getDischargingEstimateMillis(BatteryValue reference) {
+        if ( reference.level == -1 ||
+             reference.level == getLevel() ) return -1L;
+
         Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
