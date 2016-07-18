@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +31,8 @@ import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnPowerConnected;
+import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
@@ -57,7 +60,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver = null;
-    private ReceiverPowerDisconnected pwrReceiver = null;
+    private ReceiverShutDown shutDownReceiver = null;
     private PowerManager pm;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -124,7 +127,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         scheduleShutdown();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
-        pwrReceiver = registerPowerDisconnectionReceiver();
+        shutDownReceiver = registerPowerDisconnectionReceiver();
 
         if (Build.VERSION.SDK_INT >= 18){
             // ask for active notifications
@@ -186,7 +189,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         unregisterReceiver(nReceiver);
-        unregisterReceiver(pwrReceiver);
+        unregisterReceiver(shutDownReceiver);
 
         if (mySettings.allow_screen_off && mode == 0 && pm.isScreenOn() == false){ // screen off in night mode
             startBackgroundListener();
@@ -212,7 +215,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         //audiomanage.setRingerMode(currentRingerMode);
 
         utility  = null;
-        pwrReceiver = null;
+        shutDownReceiver = null;
         nReceiver  = null;
     }
 
@@ -223,12 +226,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return receiver;
     }
 
-    private ReceiverPowerDisconnected registerPowerDisconnectionReceiver(){
-        ReceiverPowerDisconnected pwrReceiver = new ReceiverPowerDisconnected();
-        IntentFilter pwrFilter = new IntentFilter(ACTION_POWER_DISCONNECTED);
-        pwrFilter.addAction(ACTION_SHUT_DOWN);
-        registerReceiver(pwrReceiver, pwrFilter);
-        return pwrReceiver;
+    private ReceiverShutDown registerPowerDisconnectionReceiver(){
+        ReceiverShutDown shutDownReceiver = new ReceiverShutDown();
+        IntentFilter pwrFilter = new IntentFilter(ACTION_SHUT_DOWN);
+        registerReceiver(shutDownReceiver, pwrFilter);
+        return shutDownReceiver;
     }
 
     public boolean onTouch(View view, MotionEvent e) {
@@ -344,7 +346,22 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         SwitchModes(last_ambient, last_ambient_noise);
     }
 
-    class ReceiverPowerDisconnected extends BroadcastReceiver{
+    public void onEvent(OnPowerDisconnected event) {
+        if ( event != null ) {
+            handler.removeCallbacks(finishApp);
+            if ( event.referenceValue.chargingMethod == BatteryManager.BATTERY_PLUGGED_WIRELESS ) {
+                handler.postDelayed(finishApp, 5000);
+            } else {
+                finish();
+            }
+        }
+    }
+
+    public void onEvent(OnPowerConnected event) {
+        handler.removeCallbacks(finishApp);
+    }
+
+    class ReceiverShutDown extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
@@ -406,7 +423,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     @SuppressLint("NewApi")
-	private void scheduleShutdown() {
+    private void scheduleShutdown() {
         if (mySettings == null) return;
 
         if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
