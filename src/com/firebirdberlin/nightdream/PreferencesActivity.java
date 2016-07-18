@@ -60,18 +60,6 @@ public class PreferencesActivity extends PreferenceActivity {
         Preference prefHandlePower = (Preference) findPreference("handle_power");
         Preference prefAllowScreenOff = (Preference) findPreference("allow_screen_off");
 
-        boolean enabled = Utility.isDaydreamEnabled(this);
-        prefAllowScreenOff.setEnabled( ! enabled );
-
-        if (  Build.VERSION.SDK_INT >= 14) {
-            if ( ! enabled || Build.VERSION.SDK_INT < 17) {
-                PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
-                Preference prefForceAutoRotation = (Preference) findPreference("force_auto_rotation");
-                colorScreen.removePreference(prefForceAutoRotation);
-
-            }
-        }
-
         if ( Utility.getLightSensor(this) == null ) {
             PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
             Preference autoBrightness = (Preference) findPreference("autoBrightness");
