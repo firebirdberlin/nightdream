@@ -4,7 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.firebirdberlin.nightdream.events.OnChargingStateChanged;
+import com.firebirdberlin.nightdream.events.OnPowerConnected;
+import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.BatteryStats;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 
@@ -17,10 +18,22 @@ public class ChargingStateChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String action = "";
+        if ( intent != null ) {
+            action = intent.getAction();
+        }
         BatteryStats battery = new BatteryStats(context.getApplicationContext());
         BatteryValue referenceValue = battery.getBatteryValue();
-        EventBus.getDefault().post(new OnChargingStateChanged(referenceValue));
+
         Settings settings = new Settings(context.getApplicationContext());
         settings.saveBatteryReference(referenceValue);
+
+        if ( action.equals(Intent.ACTION_POWER_CONNECTED) ) {
+            EventBus.getDefault().post(new OnPowerConnected(referenceValue));
+        } else
+        if ( action.equals(Intent.ACTION_POWER_DISCONNECTED) ) {
+            EventBus.getDefault().post(new OnPowerDisconnected(referenceValue));
+        }
+
     }
 }
