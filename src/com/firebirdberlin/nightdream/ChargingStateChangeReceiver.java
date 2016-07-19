@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
-import com.firebirdberlin.nightdream.BatteryStats;
+import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 
 import de.greenrobot.event.EventBus;

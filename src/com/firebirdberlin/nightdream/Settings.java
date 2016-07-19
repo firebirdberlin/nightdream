@@ -117,9 +117,10 @@ public class Settings {
     public BatteryValue loadBatteryReference() {
         long time = settings.getLong("batteryReferenceTime", 0L);
         int level = settings.getInt("batteryReferenceMethod", -1);
+        int scale = settings.getInt("batteryReferenceScale", -1);
         int chargingMethod = settings.getInt("batteryReferenceChargingMethod", -1);
         int status = settings.getInt("batteryReferenceStatus", -1);
-        BatteryValue bv = new BatteryValue(level, status, chargingMethod);
+        BatteryValue bv = new BatteryValue(level, scale, status, chargingMethod);
         bv.time = time;
         return bv;
     }
@@ -128,6 +129,7 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("batteryReferenceTime", bv.time);
         prefEditor.putInt("batteryReferenceMethod", bv.level);
+        prefEditor.putInt("batteryReferenceScale", bv.scale);
         prefEditor.putInt("batteryReferenceChargingMethod", bv.chargingMethod);
         prefEditor.putInt("batteryReferenceStatus", bv.status);
         prefEditor.commit();

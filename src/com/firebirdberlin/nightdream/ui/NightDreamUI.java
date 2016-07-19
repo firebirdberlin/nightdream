@@ -49,12 +49,12 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
-import com.firebirdberlin.nightdream.BatteryStats;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.ClockLayout;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
@@ -69,7 +69,6 @@ public class NightDreamUI {
 
     final private Handler handler = new Handler();
     private int mode = 2;
-    private BatteryStats battery;
     private boolean isDebuggable;
     private Context mContext;
     private Drawable bgshape;
@@ -138,7 +137,6 @@ public class NightDreamUI {
         }
 
         utility = new Utility(context);
-        battery = new BatteryStats(context);
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
@@ -346,18 +344,19 @@ public class NightDreamUI {
     }
 
     public void updateBatteryView() {
-        Log.d(TAG, "updateBatteryView()");
         BatteryValue reference = settings.loadBatteryReference();
-        float percentage = battery.getPercentage();
-        if (battery.isCharging()) {
+        BatteryStats battery = new BatteryStats(mContext);
+        BatteryValue batteryValue = battery.reference;
+        float percentage = batteryValue.getPercentage();
+        if (batteryValue.isCharging) {
             if (percentage < 95.){
-                long est = battery.getEstimateMillis(reference)/1000; // estimated seconds
+                long est = batteryValue.getEstimateMillis(reference)/1000; // estimated seconds
                 formatBatteryEstimate(percentage, est);
             }  else {
                 batteryView.setText(String.format("% 3d %%", (int) percentage));
             }
         } else { // not charging
-            long est = battery.getDischargingEstimateMillis(reference)/1000; // estimated seconds
+            long est = batteryValue.getDischargingEstimateMillis(reference)/1000; // estimated seconds
             formatBatteryEstimate(percentage, est);
         }
     }
@@ -372,10 +371,6 @@ public class NightDreamUI {
         } else {
             batteryView.setText(String.format("% 3d %%", (int) percentage));
         }
-    }
-
-    public void powerConnected() {
-        battery = new BatteryStats(mContext);
     }
 
     private void centerClockLayout() {

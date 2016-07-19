@@ -12,6 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.DockState;
+import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
     private static int PENDING_INTENT_START_APP = 0;
@@ -22,9 +25,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         settings = new Settings(context);
         if (shallAutostart(context, settings)) {
-            Bundle extras = new Bundle();
-            extras.putString("action", "power connected");
-            NightDreamActivity.start(context, extras);
+            NightDreamActivity.start(context);
         }
     }
 
@@ -49,18 +50,20 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         boolean handle_power_wireless = settings.handle_power_wireless;
 
         BatteryStats battery = new BatteryStats(context.getApplicationContext());
-        if ( battery.isUndocked() ) {
+        BatteryValue batteryValue = battery.reference;
+        DockState dockState = battery.getDockState();
+        if ( dockState.isUndocked ) {
 
-            if ((handle_power_ac && battery.isChargingAC()) ||
-                (handle_power_usb && battery.isChargingUSB()) ||
-                (handle_power_wireless && battery.isChargingWireless())) {
+            if ((handle_power_ac && batteryValue.isChargingAC) ||
+                (handle_power_usb && batteryValue.isChargingUSB) ||
+                (handle_power_wireless && batteryValue.isChargingWireless)) {
 
                 return true;
             }
         }
 
-        if ( (handle_power_desk && battery.isDockedDesk()) ||
-             (handle_power_car && battery.isDockedCar())) {
+        if ( (handle_power_desk && dockState.isDockedDesk) ||
+             (handle_power_car && dockState.isDockedCar)) {
             return true;
         }
 

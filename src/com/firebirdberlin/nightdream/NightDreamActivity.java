@@ -1,5 +1,9 @@
 package com.firebirdberlin.nightdream;
 
+import java.util.Calendar;
+
+import de.greenrobot.event.EventBus;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -10,7 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,8 +27,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.greenrobot.event.EventBus;
-import java.util.Calendar;
 
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
@@ -153,10 +154,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
                 if (action.equals("stop alarm")) {
                     alarmClock.stopAlarm();
-                }
-
-                if (action.equals("power connected")) {
-                    nightDreamUI.powerConnected();
                 }
 
                 if (action.equals("start night mode")) {
@@ -349,7 +346,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public void onEvent(OnPowerDisconnected event) {
         if ( event != null ) {
             handler.removeCallbacks(finishApp);
-            if ( event.referenceValue.chargingMethod == BatteryManager.BATTERY_PLUGGED_WIRELESS ) {
+            if ( event.referenceValue.isChargingWireless ) {
                 handler.postDelayed(finishApp, 5000);
             } else {
                 finish();
