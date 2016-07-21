@@ -5,10 +5,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +16,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import java.io.IOException;
+import android.support.v4.app.NotificationCompat;
 
 public class AlarmService extends Service {
     private static String TAG = "NightDream.AlarmService";
@@ -54,20 +53,22 @@ public class AlarmService extends Service {
             Log.d(TAG,"onStartCommand() called.");
         }
 
-        Notification note = new Notification(R.drawable.ic_nightdream,
-                                             "Alarm",
-                                             System.currentTimeMillis());
-
         Intent i = new Intent(this, NightDreamActivity.class);
         i.putExtra("action", "stop alarm");
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
-        String msg = this.getResources().getString(R.string.notification_alarm);
-        note.setLatestEventInfo(this, "NightDream", msg, pi);
+
+        Notification note = new NotificationCompat.Builder(this)
+            .setContentTitle("Alarm")
+            .setContentText(getString(R.string.notification_alarm))
+            .setSmallIcon(R.drawable.ic_nightdream)
+            .setContentIntent(pi)
+            .build();
+
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-        startForeground(1337, note);
 
+        startForeground(1337, note);
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
