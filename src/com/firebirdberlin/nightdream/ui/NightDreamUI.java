@@ -473,10 +473,14 @@ public class NightDreamUI {
 
         setBrightness(brightness);
 
-        setAlpha(clockLayout, v, millis);
+        if ( showcaseView == null ) {
+            setAlpha(clockLayout, v, millis);
+        }
         if ( alarmClock.isClickable() ) {
             setAlpha(alarmClock, v, millis);
-            setAlpha(alarmTime, v, millis);
+            if ( showcaseView == null ) {
+                setAlpha(alarmTime, v, millis);
+            }
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
             setAlpha(settingsIcon, v, millis);
@@ -882,10 +886,12 @@ public class NightDreamUI {
 
     private void showShowcase() {
         // daydreams cannot be cast to an activity
-        if ( showcaseView != null  || daydreamMode) {
+        if ( showcaseView != null || daydreamMode) {
             return;
         }
 
+        setAlpha(clockLayout, 0.2f, 0);
+        setAlpha(alarmTime, 0.2f, 0);
         long firstInstallTime = utility.getFirstInstallTime(mContext);
         Calendar install_time = Calendar.getInstance();
         install_time.setTimeInMillis(firstInstallTime);
@@ -904,7 +910,7 @@ public class NightDreamUI {
 
         showcaseCounter = 0;
         showcaseView = new ShowcaseView.Builder((Activity) mContext)
-            .withMaterialShowcase()
+            //.withMaterialShowcase()
             .blockAllTouches()
             .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
             .setContentText(mContext.getString(R.string.welcome_screen_text1))
@@ -952,6 +958,7 @@ public class NightDreamUI {
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text3));
                 break;
             case 3:
+                setAlpha(clockLayout, 1.f, 500);
                 showcaseView.setShowcase(new ViewTarget(clockLayout), true);
                 showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text4));
@@ -962,6 +969,7 @@ public class NightDreamUI {
                 showcaseView = null;
                 handler.postDelayed(moveAround, 30000);
                 handler.postDelayed(hideAlarmClock, 20000);
+                onClockClicked();
                 break;
         }
     }
