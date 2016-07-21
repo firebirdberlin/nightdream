@@ -1,6 +1,6 @@
 package com.firebirdberlin.nightdream;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -36,14 +36,10 @@ public class Utility{
         return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
     }
 
-    @SuppressLint("NewApi")
     public Point getDisplaySize(){
         Point size = new Point();
         if(Build.VERSION.SDK_INT < 13) {
-            WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-            Display display = windowManager.getDefaultDisplay();
-            size.x = display.getWidth();
-            size.y = display.getHeight();
+            size = getDisplaySizeV12();
         } else if (Build.VERSION.SDK_INT < 17) {
             DisplayMetrics metrics = new DisplayMetrics();
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -59,6 +55,16 @@ public class Utility{
         return size;
     }
 
+    @TargetApi(12)
+    @SuppressWarnings("deprecation")
+    public Point getDisplaySizeV12() {
+        Point size = new Point();
+        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        size.x = display.getWidth();
+        size.y = display.getHeight();
+        return size;
+    }
 
     public boolean isDebuggable(){
         return ( 0 != ( mContext.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
