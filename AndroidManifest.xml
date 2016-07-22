@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="72"
-    android:versionName="2.1.6">
+    android:versionCode="73"
+    android:versionName="2.1.7">
 
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -56,6 +56,7 @@
     <service android:enabled="true" android:name=".AlarmService" />
 
     <activity android:name=".PreferencesActivity"></activity>
+    <activity android:name=".PreferencesActivityv9"></activity>
     <activity android:name=".NightDreamActivity"
         android:enabled="true"
         android:launchMode="singleTop"
@@ -76,6 +77,17 @@
         <intent-filter>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
             <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+        </intent-filter>
+    </receiver>
+
+    <receiver
+        android:name=".ChargingStateChangeReceiver"
+        android:enabled="true">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            <action android:name="android.intent.action.ACTION_AIRPLANE_MODE_CHANGED"/>
+            <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
         </intent-filter>
     </receiver>
 

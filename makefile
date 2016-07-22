@@ -26,3 +26,6 @@ clean:
 
 clear-data:
 	adb $(OPT) shell pm clear com.firebirdberlin.nightdream
+
+start:
+	adb shell am start -n com.firebirdberlin.nightdream/com.firebirdberlin.nightdream.NightDreamActivity

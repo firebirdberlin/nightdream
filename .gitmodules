@@ -1,3 +1,6 @@
 [submodule "externals/android-preferences"]
 	path = externals/android-preferences
 	url = https://github.com/firebirdberlin/android-preferences.git
+[submodule "externals/ShowcaseView"]
+	path = externals/ShowcaseView
+	url = https://github.com/firebirdberlin/ShowcaseView.git

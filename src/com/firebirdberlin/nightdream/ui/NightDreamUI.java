@@ -49,11 +49,12 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
-import com.firebirdberlin.nightdream.BatteryStats;
+import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.ClockLayout;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
@@ -68,7 +69,6 @@ public class NightDreamUI {
 
     final private Handler handler = new Handler();
     private int mode = 2;
-    private BatteryStats battery;
     private boolean isDebuggable;
     private Context mContext;
     private Drawable bgshape;
@@ -137,7 +137,6 @@ public class NightDreamUI {
         }
 
         utility = new Utility(context);
-        battery = new BatteryStats(context);
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
@@ -345,18 +344,19 @@ public class NightDreamUI {
     }
 
     public void updateBatteryView() {
-        float percentage = battery.getPercentage();
-        if (battery.isCharging()) {
+        BatteryValue reference = settings.loadBatteryReference();
+        BatteryStats battery = new BatteryStats(mContext);
+        BatteryValue batteryValue = battery.reference;
+        float percentage = batteryValue.getPercentage();
+        if (batteryValue.isCharging) {
             if (percentage < 95.){
-                long est = battery.getEstimateMillis()/1000; // estimated seconds
+                long est = batteryValue.getEstimateMillis(reference)/1000; // estimated seconds
                 formatBatteryEstimate(percentage, est);
-            }  else if (percentage < 98.) {
-                batteryView.setText(String.format("%02d %%", (int) percentage));
-            } else {
-                batteryView.setText(""); // nothing, if fully charged
+            }  else {
+                batteryView.setText(String.format("% 3d %%", (int) percentage));
             }
         } else { // not charging
-            long est = battery.getDischargingEstimateMillis()/1000; // estimated seconds
+            long est = batteryValue.getDischargingEstimateMillis(reference)/1000; // estimated seconds
             formatBatteryEstimate(percentage, est);
         }
     }
@@ -366,15 +366,11 @@ public class NightDreamUI {
         if (est > 0){
             long h = est / 3600;
             long m  = ( est % 3600 ) / 60;
-            batteryView.setText(String.format("%02d %% -- %02d:%02d",
+            batteryView.setText(String.format("% 3d %% -- %02d:%02d",
                                               (int) percentage, (int) h, (int) m));
         } else {
-            batteryView.setText(String.format("%02d %%", (int) percentage));
+            batteryView.setText(String.format("% 3d %%", (int) percentage));
         }
-    }
-
-    public void powerConnected() {
-        battery = new BatteryStats(mContext);
     }
 
     private void centerClockLayout() {
@@ -477,10 +473,14 @@ public class NightDreamUI {
 
         setBrightness(brightness);
 
-        setAlpha(clockLayout, v, millis);
+        if ( showcaseView == null ) {
+            setAlpha(clockLayout, v, millis);
+        }
         if ( alarmClock.isClickable() ) {
             setAlpha(alarmClock, v, millis);
-            setAlpha(alarmTime, v, millis);
+            if ( showcaseView == null ) {
+                setAlpha(alarmTime, v, millis);
+            }
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
             setAlpha(settingsIcon, v, millis);
@@ -593,7 +593,6 @@ public class NightDreamUI {
        @Override
        public void run() {
            removeCallbacks(hideBrightnessLevel);
-           updateBatteryView();
            updateClockPosition();
 
            handler.postDelayed(this, 60000);
@@ -634,6 +633,7 @@ public class NightDreamUI {
     };
 
     public void onClockClicked() {
+        updateBatteryView();
         showAlarmClock();
     }
 
@@ -724,6 +724,7 @@ public class NightDreamUI {
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                updateBatteryView();
                 showAlarmClock();
                 event_consumed = true;
                 break;
@@ -885,7 +886,7 @@ public class NightDreamUI {
 
     private void showShowcase() {
         // daydreams cannot be cast to an activity
-        if ( showcaseView != null  || daydreamMode) {
+        if ( showcaseView != null || daydreamMode) {
             return;
         }
 
@@ -907,7 +908,7 @@ public class NightDreamUI {
 
         showcaseCounter = 0;
         showcaseView = new ShowcaseView.Builder((Activity) mContext)
-            .withMaterialShowcase()
+            //.withMaterialShowcase()
             .blockAllTouches()
             .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
             .setContentText(mContext.getString(R.string.welcome_screen_text1))
@@ -920,6 +921,8 @@ public class NightDreamUI {
         if (showcaseView.isShowing()) {
             removeCallbacks(moveAround);
             removeCallbacks(hideAlarmClock);
+            setAlpha(clockLayout, 0.2f, 0);
+            setAlpha(alarmTime, 0.2f, 0);
         } else {
             showcaseView = null;
         }
@@ -955,6 +958,7 @@ public class NightDreamUI {
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text3));
                 break;
             case 3:
+                setAlpha(clockLayout, 1.f, 500);
                 showcaseView.setShowcase(new ViewTarget(clockLayout), true);
                 showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text4));
@@ -965,6 +969,7 @@ public class NightDreamUI {
                 showcaseView = null;
                 handler.postDelayed(moveAround, 30000);
                 handler.postDelayed(hideAlarmClock, 20000);
+                onClockClicked();
                 break;
         }
     }

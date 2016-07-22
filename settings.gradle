@@ -1,2 +1,2 @@
-include ':libraries:ShowcaseView'
+include ':externals:ShowcaseView'
 include ':externals:android-preferences'
