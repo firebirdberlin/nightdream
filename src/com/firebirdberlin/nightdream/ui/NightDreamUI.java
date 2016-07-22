@@ -890,8 +890,6 @@ public class NightDreamUI {
             return;
         }
 
-        setAlpha(clockLayout, 0.2f, 0);
-        setAlpha(alarmTime, 0.2f, 0);
         long firstInstallTime = utility.getFirstInstallTime(mContext);
         Calendar install_time = Calendar.getInstance();
         install_time.setTimeInMillis(firstInstallTime);
@@ -923,6 +921,8 @@ public class NightDreamUI {
         if (showcaseView.isShowing()) {
             removeCallbacks(moveAround);
             removeCallbacks(hideAlarmClock);
+            setAlpha(clockLayout, 0.2f, 0);
+            setAlpha(alarmTime, 0.2f, 0);
         } else {
             showcaseView = null;
         }
