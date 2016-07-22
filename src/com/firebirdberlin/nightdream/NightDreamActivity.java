@@ -35,7 +35,9 @@ import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
+import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
@@ -68,6 +70,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
 
     private Settings mySettings = null;
+    private boolean isChargingWireless = false;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,6 +118,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             Toast.makeText(this, "No Light Sensor!", Toast.LENGTH_SHORT).show();
             last_ambient = 400.0f;
         }
+
+        BatteryValue batteryValue = new BatteryStats(this).reference;
+        this.isChargingWireless = batteryValue.isChargingWireless;
     }
 
     @Override
@@ -344,18 +351,19 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnPowerDisconnected event) {
-        if ( event != null ) {
-            handler.removeCallbacks(finishApp);
-            if ( event.referenceValue.isChargingWireless ) {
-                handler.postDelayed(finishApp, 5000);
-            } else {
-                finish();
-            }
+        handler.removeCallbacks(finishApp);
+        if ( isChargingWireless ) {
+            handler.postDelayed(finishApp, 5000);
+        } else {
+            finish();
         }
     }
 
     public void onEvent(OnPowerConnected event) {
         handler.removeCallbacks(finishApp);
+        if ( event != null ) {
+            isChargingWireless = event.referenceValue.isChargingWireless;
+        }
     }
 
     class ReceiverShutDown extends BroadcastReceiver{
