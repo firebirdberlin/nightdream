@@ -3,10 +3,21 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.media.AudioManager;
 
+import de.greenrobot.event.EventBus;
+
 public class mAudioManager{
     Context mContext;
-    AudioManager audiomanage;
+    AudioManager audiomanage = null;
     int currentRingerMode;
+    EventBus bus = EventBus.getDefault();
+
+    private class OnSetRingerModeSilent {
+         private int currentRingerMode;
+
+         public OnSetRingerModeSilent(int currentRingerMode) {
+             this.currentRingerMode = currentRingerMode;
+         }
+    };
 
     // constructor
     public mAudioManager(Context context){
@@ -19,9 +30,17 @@ public class mAudioManager{
     public void setRingerModeSilent(){
         currentRingerMode = audiomanage.getRingerMode(); // ringer mode to restore
         audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+        bus.postSticky(new OnSetRingerModeSilent(currentRingerMode));
     }
 
     public void restoreRingerMode(){
+        OnSetRingerModeSilent event = bus.removeStickyEvent(OnSetRingerModeSilent.class);
+        // nothing to do
+        if (event == null) return;
+
+        currentRingerMode = event.currentRingerMode;
+
         // initial ringer mode was silent, don't have to do anything
         if (currentRingerMode == AudioManager.RINGER_MODE_SILENT) return;
 
@@ -32,13 +51,4 @@ public class mAudioManager{
         // otherwise we will reset the ringer mode
         audiomanage.setRingerMode(currentRingerMode);
     }
-
-    public void restoreRingerMode(int mode){
-        audiomanage.setRingerMode(mode);
-    }
-
-    public int getSystemRingerMode(){
-        return currentRingerMode;
-    }
-
 }
