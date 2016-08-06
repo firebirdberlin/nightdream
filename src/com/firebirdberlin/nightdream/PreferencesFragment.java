@@ -167,6 +167,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupBrightnessControls(SharedPreferences prefs) {
+        if (!isAdded() ) return;
         Preference brightnessOffset = (Preference) findPreference("brightness_offset");
         boolean on = prefs.getBoolean("autoBrightness", false);
         String title = getString(R.string.brightness);
