@@ -543,7 +543,7 @@ public class NightDreamUI {
             background_image.setImageDrawable(bgblack);
         } else
         if ((mode != 0) && (current_mode == 0)){
-            if (settings.muteRinger) AudioManage.restoreRingerMode();
+            restoreRingerMode();
             background_image.setImageDrawable(bgshape);
         }
 
@@ -575,6 +575,13 @@ public class NightDreamUI {
         } else { // should work from 12 on but had a bug report for 13 !?!
             v.animate().setDuration(millis).alpha(alpha);
         }
+    }
+
+    public void restoreRingerMode() {
+        if ( AudioManage == null ) {
+            return;
+        }
+        if (settings.muteRinger) AudioManage.restoreRingerMode();
     }
 
     // only called for apilevel >= 12

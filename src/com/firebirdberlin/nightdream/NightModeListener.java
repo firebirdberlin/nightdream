@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+
 import de.greenrobot.event.EventBus;
 
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
@@ -39,8 +40,6 @@ public class NightModeListener extends Service {
 
     private double maxAmplitude = Config.NOISE_AMPLITUDE_WAKE;
     private static int measurementMillis = 5000;
-
-    private int SYSTEM_RINGER_MODE = -1;
 
     private boolean debug = true;
 
@@ -81,13 +80,6 @@ public class NightModeListener extends Service {
         note.flags|=Notification.FLAG_NO_CLEAR;
         note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
         startForeground(1337, note);
-
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            if ( intent.hasExtra("SYSTEM_RINGER_MODE") ){
-                SYSTEM_RINGER_MODE = extras.getInt("SYSTEM_RINGER_MODE", -1);
-            }
-        }
 
         if (reactivate_on_noise ) {
             handler.postDelayed(startRecording, 1000);
@@ -169,8 +161,12 @@ public class NightModeListener extends Service {
     private void startApp(){
         Bundle bundle = new Bundle();
         bundle.putString("action", "start night mode");
-        bundle.putInt("SYSTEM_RINGER_MODE", SYSTEM_RINGER_MODE);
         NightDreamActivity.start(this, bundle);
+    }
+
+    private void restoreRingerMode() {
+        mAudioManager audioManager = new mAudioManager(this);
+        audioManager.restoreRingerMode();
     }
 
     class ReceiverPowerDisconnected extends BroadcastReceiver{
@@ -178,6 +174,7 @@ public class NightModeListener extends Service {
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
             Log.d(TAG,"Power was disconnected ... stopSelf();");
+            restoreRingerMode();
             stopSelf();
         }
     }

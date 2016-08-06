@@ -172,13 +172,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                     }
                 }
             }
-
-            if (intent.hasExtra("SYSTEM_RINGER_MODE") ){
-                int mode = extras.getInt("SYSTEM_RINGER_MODE",-1);
-                if (AudioManage != null) {
-                    AudioManage.restoreRingerMode(mode);
-                }
-            }
         }
     }
 
@@ -197,6 +190,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         if (mySettings.allow_screen_off && mode == 0 && pm.isScreenOn() == false){ // screen off in night mode
             startBackgroundListener();
+        } else {
+            nightDreamUI.restoreRingerMode();
         }
     }
 
@@ -303,9 +298,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
-        if (AudioManage != null) {
-            i.putExtra("SYSTEM_RINGER_MODE", AudioManage.getSystemRingerMode());
-        }
         startService(i);
 
         finish();

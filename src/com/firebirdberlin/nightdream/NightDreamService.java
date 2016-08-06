@@ -112,6 +112,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         super.onDreamingStopped();
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
+        nightDreamUI.restoreRingerMode();
         nightDreamUI.onPause();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
