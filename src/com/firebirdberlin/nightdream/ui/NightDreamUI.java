@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -63,7 +62,6 @@ import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 
-@SuppressLint("NewApi")
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
 

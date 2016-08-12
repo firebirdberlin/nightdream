@@ -35,9 +35,7 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
 
-import android.annotation.SuppressLint;
 
-@SuppressLint("NewApi")
 public class AlarmClock extends View {
     private static String TAG ="NightDream.AlarmClock";
     final private Handler handler = new Handler();
