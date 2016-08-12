@@ -214,7 +214,8 @@ public class NightDreamUI {
                 break;
             }
             case Settings.BACKGROUND_GRADIENT: {
-                bgshape = mContext.getResources().getDrawable(R.drawable.background_gradient);
+
+                bgshape = getDrawable(R.drawable.background_gradient);
                 break;
             }
             case Settings.BACKGROUND_IMAGE: {
@@ -227,11 +228,22 @@ public class NightDreamUI {
 
     }
 
+    private Drawable getDrawable(int resId) {
+        if (Build.VERSION.SDK_INT < 21) {
+            return deprecatedGetDrawable(resId);
+        }
+        return mContext.getResources().getDrawable(resId, null);
+
+    }
+
+    @SuppressWarnings("deprecation")
+    private Drawable deprecatedGetDrawable(int resId) {
+        return mContext.getResources().getDrawable(resId);
+    }
+
     private void setupAlarmClock() {
         if ( ! settings.useInternalAlarm ) {
-            String nextAlarm = android.provider.Settings.System.getString(
-                                    mContext.getContentResolver(),
-                                    android.provider.Settings.System.NEXT_ALARM_FORMATTED);
+            String nextAlarm = alarmClock.getNextSystemAlarmTime();
 
             if ( Build.VERSION.SDK_INT >= 19
                     && nextAlarm != null
