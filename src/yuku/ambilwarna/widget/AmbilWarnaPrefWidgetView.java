@@ -1,34 +1,35 @@
 package yuku.ambilwarna.widget;
 
+import java.lang.Math;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.View;
 
 public class AmbilWarnaPrefWidgetView extends View {
-	Paint paint;
-	float rectSize;
-	float strokeWidth;
+    Paint paint;
+    float rectSize;
+    float strokeWidth;
 
-	public AmbilWarnaPrefWidgetView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		
-		float density = context.getResources().getDisplayMetrics().density;
-		rectSize = FloatMath.floor(24.f * density + 0.5f);
-		strokeWidth = FloatMath.floor(1.f * density + 0.5f);
+    public AmbilWarnaPrefWidgetView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-		paint = new Paint();
-		paint.setColor(0xffffffff);
-		paint.setStyle(Style.STROKE);
-		paint.setStrokeWidth(strokeWidth);
-	}
+        float density = context.getResources().getDisplayMetrics().density;
+        rectSize = (float) Math.floor(24. * density + 0.5);
+        strokeWidth = (float) Math.floor(1. * density + 0.5);
 
-	@Override protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+        paint = new Paint();
+        paint.setColor(0xffffffff);
+        paint.setStyle(Style.STROKE);
+        paint.setStrokeWidth(strokeWidth);
+    }
 
-		canvas.drawRect(strokeWidth, strokeWidth, rectSize - strokeWidth, rectSize - strokeWidth, paint);
-	}
+    @Override protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        canvas.drawRect(strokeWidth, strokeWidth, rectSize - strokeWidth, rectSize - strokeWidth, paint);
+    }
 }

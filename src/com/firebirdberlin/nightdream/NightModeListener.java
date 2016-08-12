@@ -76,7 +76,6 @@ public class NightModeListener extends Service {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
-        note.setLatestEventInfo(this, "NightDream", "microphone is open ...", pi);
         note.flags|=Notification.FLAG_NO_CLEAR;
         note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
         startForeground(1337, note);
