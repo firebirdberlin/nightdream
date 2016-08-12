@@ -42,27 +42,16 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         }
         if (! shall_auto_start) return false;
 
-        boolean handle_power_desk = settings.handle_power_desk;
-        boolean handle_power_car = settings.handle_power_car;
-        boolean handle_power_ac = settings.handle_power_ac;
-        boolean handle_power_usb = settings.handle_power_usb;
-        boolean handle_power_wireless = settings.handle_power_wireless;
-
         BatteryStats battery = new BatteryStats(context.getApplicationContext());
         BatteryValue batteryValue = battery.reference;
         DockState dockState = battery.getDockState();
-        if ( dockState.isUndocked ) {
 
-            if ((handle_power_ac && batteryValue.isChargingAC) ||
-                (handle_power_usb && batteryValue.isChargingUSB) ||
-                (handle_power_wireless && batteryValue.isChargingWireless)) {
+        if ((settings.handle_power_ac && batteryValue.isChargingAC) ||
+            (settings.handle_power_usb && batteryValue.isChargingUSB) ||
+            (settings.handle_power_wireless && batteryValue.isChargingWireless) ||
+            (settings.handle_power_desk && dockState.isDockedDesk) ||
+            (settings.handle_power_car && dockState.isDockedCar)) {
 
-                return true;
-            }
-        }
-
-        if ( (handle_power_desk && dockState.isDockedDesk) ||
-             (handle_power_car && dockState.isDockedCar)) {
             return true;
         }
 
