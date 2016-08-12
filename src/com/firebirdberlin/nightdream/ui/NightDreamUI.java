@@ -178,7 +178,7 @@ public class NightDreamUI {
 
         setColor();
 
-        if (settings.ambientNoiseDetection == true){
+        if (settings.useAmbientNoiseDetection()){
             soundmeter = new SoundMeter(isDebuggable);
         } else {
             soundmeter = null;
@@ -522,7 +522,7 @@ public class NightDreamUI {
         }
 
         if (light_value <= LIGHT_VALUE_DARK
-                && ( (settings.ambientNoiseDetection == false)
+                && ( ( settings.useAmbientNoiseDetection() == false)
                     || last_ambient_noise < ambient_noise_threshold)){
             return 0;
         } else if (light_value < LIGHT_VALUE_BRIGHT/2.f) { // night shift, desk light on
@@ -786,20 +786,21 @@ public class NightDreamUI {
     }
 
     public Drawable loadBackGroundImage() {
-        if (settings.bgpath != ""){
+        String bgpath = settings.backgroundImagePath();
+        if (bgpath != ""){
             try{
                 Point display = utility.getDisplaySize();
 
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(settings.bgpath, options);
+                BitmapFactory.decodeFile(bgpath, options);
 
                 // Calculate inSampleSize
                 options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
 
                 // Decode bitmap with inSampleSize set
                 options.inJustDecodeBounds = false;
-                Bitmap bgimage = (BitmapFactory.decodeFile(settings.bgpath, options));
+                Bitmap bgimage = (BitmapFactory.decodeFile(bgpath, options));
 
                 int nw = bgimage.getWidth();
                 int nh = bgimage.getHeight();

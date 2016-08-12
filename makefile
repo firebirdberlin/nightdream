@@ -12,7 +12,7 @@ installemulator:
 	adb -e install -r bin/Pro/NightDream-release.apk
 
 installdebug:
-	adb -d install -r bin/Pro/NightDream-debug.apk
+	adb install -r bin/Pro/NightDream-debug.apk
 
 installdebugemulator:
 	adb -e install -r bin/Pro/NightDream-debug.apk
@@ -29,3 +29,10 @@ clear-data:
 
 start:
 	adb shell am start -n com.firebirdberlin.nightdream/com.firebirdberlin.nightdream.NightDreamActivity
+
+revoke-permissions:
+	adb shell pm revoke com.firebirdberlin.nightdream android.permission.READ_EXTERNAL_STORAGE
+	adb shell pm revoke com.firebirdberlin.nightdream android.permission.RECORD_AUDIO
+
+screenshot:
+	adb shell screencap -p | sed 's/\r$//' > screen.png

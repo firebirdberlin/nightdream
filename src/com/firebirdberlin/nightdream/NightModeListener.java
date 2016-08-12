@@ -48,12 +48,11 @@ public class NightModeListener extends Service {
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
+        Settings settings = new Settings(this);
+        reactivate_on_noise = settings.reactivateScreenOnNoise();
+        maxAmplitude *= settings.sensitivity;
+        reactivate_on_ambient_light_value = settings.reactivate_on_ambient_light_value;
 
-        SharedPreferences settings = getSharedPreferences(Settings.PREFS_KEY, 0);
-        int sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
-        maxAmplitude *= sensitivity;
-        reactivate_on_noise = settings.getBoolean("reactivate_screen_on_noise", reactivate_on_noise);
-        reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         if (debug){
             Log.d(TAG,"onCreate() called.");
         }
