@@ -271,9 +271,9 @@ public class AlarmClock extends View {
         String localPattern  = "";
         if (Build.VERSION.SDK_INT >= 18){
             if (is24HourFormat(ctx)) {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "HH:mm");
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
             } else {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
             }
         } else {
             DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
@@ -333,6 +333,27 @@ public class AlarmClock extends View {
         PendingIntent pI = getPendingAlarmIntent(ctx);
         am.cancel(pI);
     }
+
+    public String getNextSystemAlarmTime() {
+        if ( Build.VERSION.SDK_INT < 21 ) {
+            return deprecatedGetNextSystemAlarmTime();
+        }
+        AlarmManager.AlarmClockInfo info = am.getNextAlarmClock();
+        if (info != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(info.getTriggerTime());
+            return getTimeFormatted(cal);
+        }
+        return "";
+    }
+
+    @SuppressWarnings("deprecation")
+    private String deprecatedGetNextSystemAlarmTime() {
+         return android.provider.Settings.System.getString(
+                 ctx.getContentResolver(),
+                 android.provider.Settings.System.NEXT_ALARM_FORMATTED);
+    }
+
 
     public static void schedule(Context context) {
         Settings settings = new Settings(context);
