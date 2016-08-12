@@ -13,8 +13,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
 import de.greenrobot.event.EventBus;
 
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
@@ -67,14 +67,19 @@ public class NightModeListener extends Service {
         running = true;
 
         pwrReceiver = registerPowerDisconnectionReceiver();
-        Notification note = new Notification(R.drawable.ic_nightdream,
-                                             "NightDream night mode listener active.",
-                                             System.currentTimeMillis());
 
         Intent i = new Intent(this, NightDreamActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
+        NotificationCompat.Builder mBuilder =
+            new NotificationCompat.Builder(this)
+            .setSmallIcon(R.drawable.ic_nightdream)
+            .setContentTitle("NightDream")
+            .setContentText("The night mode listener is active.")
+            .setContentIntent(pi); //Required on Gingerbread and below
+
+        Notification note = mBuilder.build();
         note.flags|=Notification.FLAG_NO_CLEAR;
         note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
         startForeground(1337, note);
