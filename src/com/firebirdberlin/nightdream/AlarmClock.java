@@ -249,7 +249,7 @@ public class AlarmClock extends View {
             Calendar calendar = new SimpleTime(hour, min).getCalendar();
             String l = getTimeFormatted(calendar);
 
-            paint.setTextSize(touch_zone_radius * .6f);
+            paint.setTextSize(touch_zone_radius * .5f);
             float lw = paint.measureText(l);
             float cw = touch_zone_radius-60;
             if ((touch_zone_radius) <= 100)  cw = 0;
