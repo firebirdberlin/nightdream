@@ -32,10 +32,18 @@ public class PreferencesFragment extends PreferenceFragment {
     private Settings settings = null;
     private Context mContext = null;
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
 
     }
 
