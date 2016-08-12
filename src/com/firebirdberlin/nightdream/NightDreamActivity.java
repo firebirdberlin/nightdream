@@ -188,11 +188,24 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         unregisterReceiver(nReceiver);
         unregisterReceiver(shutDownReceiver);
 
-        if (mySettings.allow_screen_off && mode == 0 && pm.isScreenOn() == false){ // screen off in night mode
+        if (mySettings.allow_screen_off && mode == 0 && !isScreenOn() ){ // screen off in night mode
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
         }
+    }
+
+
+    protected boolean isScreenOn() {
+        if (Build.VERSION.SDK_INT <= 19){
+            return deprecatedIsScreenOn();
+        }
+        return pm.isInteractive();
+    }
+
+    @SuppressWarnings("deprecation")
+    protected boolean deprecatedIsScreenOn() {
+        return pm.isScreenOn();
     }
 
     @Override
