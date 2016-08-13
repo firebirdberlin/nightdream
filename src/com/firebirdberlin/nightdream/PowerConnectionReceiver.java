@@ -78,6 +78,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         Settings settings = new Settings(context);
         Calendar calendar = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
         if (Build.VERSION.SDK_INT >= 19) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         } else {
