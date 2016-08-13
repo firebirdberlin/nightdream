@@ -25,6 +25,7 @@
             android:name=".NightDreamService"
             android:label="NightDream"
             android:exported="true"
+            android:permission="android.permission.BIND_DREAM_SERVICE"
             android:configChanges="orientation|keyboard">
             <intent-filter>
                 <action android:name="android.service.dreams.DreamService" />
