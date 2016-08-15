@@ -61,9 +61,13 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnPowerConnected;
+import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
+    private int screen_alpha_animation_duration = 3000;
+    private int screen_transition_animation_duration = 10000;
 
     final private Handler handler = new Handler();
     private int mode = 2;
@@ -163,6 +167,8 @@ public class NightDreamUI {
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
+
+        setupScreenAnimation();
 
         if (settings.showDate){
             showDate();
@@ -371,6 +377,18 @@ public class NightDreamUI {
         }
     }
 
+    public void setupScreenAnimation() {
+        BatteryStats battery = new BatteryStats(mContext);
+        BatteryValue batteryValue = battery.reference;
+        if (batteryValue.isCharging) {
+            screen_alpha_animation_duration = 3000;
+            screen_transition_animation_duration = 10000;
+        } else {
+            screen_alpha_animation_duration = 0;
+            screen_transition_animation_duration = 0;
+        }
+    }
+
     private void formatBatteryEstimate(float percentage, long est) {
         Log.i(TAG, String.valueOf(est));
         if (est > 0){
@@ -430,7 +448,9 @@ public class NightDreamUI {
 
             i1 -= (clockLayout.getWidth() - scaled_width) / 2;
             i2 -= (clockLayout.getHeight() - scaled_height) / 2;
-            clockLayout.animate().setDuration(10000).x(i1).y(i2); // api level 12
+
+            // api level 12
+            clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
         }
     }
 
@@ -561,7 +581,7 @@ public class NightDreamUI {
         if ((mode == 1) && (current_mode == 0)) {
             dim_offset += 0.1f;
         }
-        dimScreen(3000, light_value, dim_offset);
+        dimScreen(screen_alpha_animation_duration, light_value, dim_offset);
 
         if (soundmeter != null) {
             if (mode == 0 && soundmeter.isRunning() == false) {
@@ -583,7 +603,10 @@ public class NightDreamUI {
              animation.setFillAfter(true);
              v.startAnimation(animation);
         } else { // should work from 12 on but had a bug report for 13 !?!
-            v.animate().setDuration(millis).alpha(alpha);
+            float oldValue = v.getAlpha();
+            if (alpha != oldValue) {
+                v.animate().setDuration(millis).alpha(alpha);
+            }
         }
     }
 
@@ -892,12 +915,20 @@ public class NightDreamUI {
 
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
-        dimScreen(3000, last_ambient, settings.dim_offset);
+        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
-        dimScreen(3000, last_ambient, settings.dim_offset);
+        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
+    }
+
+    public void onEvent(OnPowerDisconnected event) {
+        setupScreenAnimation();
+    }
+
+    public void onEvent(OnPowerConnected event) {
+        setupScreenAnimation();
     }
 
     static int showcaseCounter = 0;
