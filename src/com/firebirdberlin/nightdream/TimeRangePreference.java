@@ -126,16 +126,16 @@ public class TimeRangePreference extends DialogPreference {
                     @Override
                     public void onClick(View v) {
                         if (dialogState == 0) {
-                            startTime.hour = picker.getCurrentHour();
-                            startTime.min = picker.getCurrentMinute();
+                            startTime.hour = getHour();
+                            startTime.min = getMinute();
                             timeLabel.setText(label_end_text);
                             timeLabel.invalidate();
                             setPicker(endTime);
 
                             dialogState++;
                         } else {
-                            endTime.hour = picker.getCurrentHour();
-                            endTime.min = picker.getCurrentMinute();
+                            endTime.hour = getHour();
+                            endTime.min = getMinute();
                             dialog.dismiss();
                             onDialogClosed(true);
                         }
@@ -144,9 +144,59 @@ public class TimeRangePreference extends DialogPreference {
     }
 
     void setPicker(SimpleTime simpleTime) {
-        picker.setCurrentHour(simpleTime.hour);
-        picker.setCurrentMinute(simpleTime.min);
+        setHour(simpleTime.hour);
+        setMinute(simpleTime.min);
         picker.invalidate();
+    }
+
+    private int getHour() {
+        if (Build.VERSION.SDK_INT < 23) return deprecatedGetHour();
+
+        return picker.getHour();
+    }
+
+    private int getMinute() {
+        if (Build.VERSION.SDK_INT < 23) return deprecatedGetMinute();
+
+        return picker.getMinute();
+    }
+
+    private void setHour(int val) {
+        if (Build.VERSION.SDK_INT < 23) {
+           deprecatedSetHour(val);
+           return;
+        }
+
+        picker.setHour(val);
+    }
+
+    private void setMinute(int val) {
+        if (Build.VERSION.SDK_INT < 23) {
+            deprecatedSetMinute(val);
+            return;
+        }
+
+        picker.setMinute(val);
+    }
+
+    @SuppressWarnings("deprecation")
+    private int deprecatedGetHour() {
+        return picker.getCurrentHour();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void deprecatedSetHour(int val) {
+        picker.setCurrentHour(val);
+    }
+
+    @SuppressWarnings("deprecation")
+    private int deprecatedGetMinute() {
+        return picker.getCurrentMinute();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void deprecatedSetMinute(int val) {
+        picker.setCurrentMinute(val);
     }
 
     @Override

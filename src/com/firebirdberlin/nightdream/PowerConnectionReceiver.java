@@ -9,6 +9,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.BatteryValue;
@@ -16,15 +18,24 @@ import com.firebirdberlin.nightdream.models.DockState;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
+    private static String TAG = "NightDream.PowerConnectionReceiver";
     private static int PENDING_INTENT_START_APP = 0;
 
     private Settings settings = null;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        wakelock.acquire();
+
         settings = new Settings(context);
         if (shallAutostart(context, settings)) {
             NightDreamActivity.start(context);
+        }
+
+        if (wakelock.isHeld()){
+            wakelock.release();
         }
     }
 
@@ -42,27 +53,16 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         }
         if (! shall_auto_start) return false;
 
-        boolean handle_power_desk = settings.handle_power_desk;
-        boolean handle_power_car = settings.handle_power_car;
-        boolean handle_power_ac = settings.handle_power_ac;
-        boolean handle_power_usb = settings.handle_power_usb;
-        boolean handle_power_wireless = settings.handle_power_wireless;
-
         BatteryStats battery = new BatteryStats(context.getApplicationContext());
         BatteryValue batteryValue = battery.reference;
         DockState dockState = battery.getDockState();
-        if ( dockState.isUndocked ) {
 
-            if ((handle_power_ac && batteryValue.isChargingAC) ||
-                (handle_power_usb && batteryValue.isChargingUSB) ||
-                (handle_power_wireless && batteryValue.isChargingWireless)) {
+        if ((settings.handle_power_ac && batteryValue.isChargingAC) ||
+            (settings.handle_power_usb && batteryValue.isChargingUSB) ||
+            (settings.handle_power_wireless && batteryValue.isChargingWireless) ||
+            (settings.handle_power_desk && dockState.isDockedDesk) ||
+            (settings.handle_power_car && dockState.isDockedCar)) {
 
-                return true;
-            }
-        }
-
-        if ( (handle_power_desk && dockState.isDockedDesk) ||
-             (handle_power_car && dockState.isDockedCar)) {
             return true;
         }
 

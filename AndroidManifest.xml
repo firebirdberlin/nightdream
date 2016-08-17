@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="75"
-    android:versionName="2.1.9">
+    android:versionCode="80"
+    android:versionName="2.2.3">
 
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -15,7 +15,7 @@
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="19"/>
+        android:targetSdkVersion="23"/>
 
     <application
         android:label="NightDream"
@@ -25,6 +25,7 @@
             android:name=".NightDreamService"
             android:label="NightDream"
             android:exported="true"
+            android:permission="android.permission.BIND_DREAM_SERVICE"
             android:configChanges="orientation|keyboard">
             <intent-filter>
                 <action android:name="android.service.dreams.DreamService" />
@@ -85,7 +86,7 @@
         android:enabled="true">
         <intent-filter>
             <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            <action android:name="android.intent.action.ACTION_AIRPLANE_MODE_CHANGED"/>
+            <action android:name="android.intent.action.AIRPLANE_MODE"/>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
             <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
         </intent-filter>

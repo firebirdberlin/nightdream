@@ -4,7 +4,6 @@ import java.util.Calendar;
 
 import de.greenrobot.event.EventBus;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -188,11 +187,24 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         unregisterReceiver(nReceiver);
         unregisterReceiver(shutDownReceiver);
 
-        if (mySettings.allow_screen_off && mode == 0 && pm.isScreenOn() == false){ // screen off in night mode
+        if (mySettings.allow_screen_off && mode == 0 && !isScreenOn() ){ // screen off in night mode
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
         }
+    }
+
+
+    protected boolean isScreenOn() {
+        if (Build.VERSION.SDK_INT <= 19){
+            return deprecatedIsScreenOn();
+        }
+        return pm.isInteractive();
+    }
+
+    @SuppressWarnings("deprecation")
+    protected boolean deprecatedIsScreenOn() {
+        return pm.isScreenOn();
     }
 
     @Override
@@ -419,7 +431,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                                           PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    @SuppressLint("NewApi")
     private void scheduleShutdown() {
         if (mySettings == null) return;
 
@@ -430,12 +441,18 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
               if (Build.VERSION.SDK_INT >= 19){
                   alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
               } else {
-                  alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+                  deprecatedSetAlarm(calendar, pendingIntent);
               }
         } else {
             cancelShutdown();
         }
 
+    }
+
+    @SuppressWarnings("deprecation")
+    private void deprecatedSetAlarm(Calendar calendar, PendingIntent pendingIntent) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
     }
 
     private void cancelShutdown() {

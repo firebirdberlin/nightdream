@@ -35,9 +35,7 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
 
-import android.annotation.SuppressLint;
 
-@SuppressLint("NewApi")
 public class AlarmClock extends View {
     private static String TAG ="NightDream.AlarmClock";
     final private Handler handler = new Handler();
@@ -251,7 +249,7 @@ public class AlarmClock extends View {
             Calendar calendar = new SimpleTime(hour, min).getCalendar();
             String l = getTimeFormatted(calendar);
 
-            paint.setTextSize(touch_zone_radius * .6f);
+            paint.setTextSize(touch_zone_radius * .5f);
             float lw = paint.measureText(l);
             float cw = touch_zone_radius-60;
             if ((touch_zone_radius) <= 100)  cw = 0;
@@ -271,9 +269,9 @@ public class AlarmClock extends View {
         String localPattern  = "";
         if (Build.VERSION.SDK_INT >= 18){
             if (is24HourFormat(ctx)) {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "HH:mm");
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
             } else {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
             }
         } else {
             DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
@@ -333,6 +331,27 @@ public class AlarmClock extends View {
         PendingIntent pI = getPendingAlarmIntent(ctx);
         am.cancel(pI);
     }
+
+    public String getNextSystemAlarmTime() {
+        if ( Build.VERSION.SDK_INT < 21 ) {
+            return deprecatedGetNextSystemAlarmTime();
+        }
+        AlarmManager.AlarmClockInfo info = am.getNextAlarmClock();
+        if (info != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(info.getTriggerTime());
+            return getTimeFormatted(cal);
+        }
+        return "";
+    }
+
+    @SuppressWarnings("deprecation")
+    private String deprecatedGetNextSystemAlarmTime() {
+         return android.provider.Settings.System.getString(
+                 ctx.getContentResolver(),
+                 android.provider.Settings.System.NEXT_ALARM_FORMATTED);
+    }
+
 
     public static void schedule(Context context) {
         Settings settings = new Settings(context);

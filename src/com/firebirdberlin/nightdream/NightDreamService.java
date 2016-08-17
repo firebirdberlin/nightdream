@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream;
 
 import java.util.Calendar;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -27,7 +26,6 @@ import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 
-@SuppressLint("NewApi")
 public class NightDreamService extends DreamService implements View.OnTouchListener {
 
     TextView current;

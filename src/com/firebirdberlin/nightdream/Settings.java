@@ -11,7 +11,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.Manifest;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
@@ -27,8 +29,8 @@ public class Settings {
     SharedPreferences settings;
 
     public boolean allow_screen_off = false;
-    public boolean reactivate_screen_on_noise = false;
-    public boolean ambientNoiseDetection;
+    private boolean reactivate_screen_on_noise = false;
+    private boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
     public boolean force_auto_rotation = false;
     public boolean handle_power = false;
@@ -46,6 +48,7 @@ public class Settings {
     public float scaleClock = 1.f;
     public int background_mode = 1;
     public int clockColor;
+    public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int sensitivity = 1;
     public int tertiaryColor;
@@ -54,7 +57,7 @@ public class Settings {
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
-    public String bgpath = "";
+    private String bgpath = "";
     public Typeface typeface;
     public String dateFormat;
     public BatteryValue batteryReferenceValue;
@@ -99,6 +102,7 @@ public class Settings {
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
+        reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
@@ -250,4 +254,39 @@ public class Settings {
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
         prefEditor.commit();
     }
+
+    public boolean useAmbientNoiseDetection() {
+        return ambientNoiseDetection && hasPermission(Manifest.permission.RECORD_AUDIO);
+    }
+
+    public void setUseAmbientNoiseDetection(boolean on) {
+        ambientNoiseDetection = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("ambientNoiseDetection", on);
+        prefEditor.commit();
+    }
+
+    public boolean reactivateScreenOnNoise() {
+        return reactivate_screen_on_noise && hasPermission(Manifest.permission.RECORD_AUDIO);
+    }
+
+    public void setReactivateScreenOnNoise(boolean on) {
+        reactivate_screen_on_noise = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("reactivate_screen_on_noise", on);
+        prefEditor.commit();
+    }
+
+    public String backgroundImagePath() {
+        if (hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            return bgpath;
+        }
+        return "";
+    }
+
+    public boolean hasPermission(String permission) {
+        return (ContextCompat.checkSelfPermission(mContext, permission)
+                 == PackageManager.PERMISSION_GRANTED);
+    }
+
 }
