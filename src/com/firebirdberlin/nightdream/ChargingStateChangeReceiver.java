@@ -14,8 +14,6 @@ import de.greenrobot.event.EventBus;
 public class ChargingStateChangeReceiver extends BroadcastReceiver {
     private static int PENDING_INTENT_START_APP = 0;
 
-    private Settings settings = null;
-
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = "";

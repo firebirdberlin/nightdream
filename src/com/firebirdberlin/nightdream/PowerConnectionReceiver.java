@@ -17,6 +17,7 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.DockState;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
+
 public class PowerConnectionReceiver extends BroadcastReceiver {
     private static String TAG = "NightDream.PowerConnectionReceiver";
     private static int PENDING_INTENT_START_APP = 0;
@@ -30,13 +31,22 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         wakelock.acquire();
 
         settings = new Settings(context);
+
         if (shallAutostart(context, settings)) {
+            saveBatteryReference(context);
             NightDreamActivity.start(context);
         }
 
         if (wakelock.isHeld()){
             wakelock.release();
         }
+    }
+
+    private void saveBatteryReference(Context context) {
+        BatteryStats battery = new BatteryStats(context.getApplicationContext());
+        BatteryValue referenceValue = battery.getBatteryValue();
+
+        settings.saveBatteryReference(referenceValue);
     }
 
     public static boolean shallAutostart(Context context, Settings settings) {
