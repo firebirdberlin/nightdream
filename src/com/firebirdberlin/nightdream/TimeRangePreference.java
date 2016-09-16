@@ -33,6 +33,7 @@ public class TimeRangePreference extends DialogPreference {
     private SimpleTime startTime = new SimpleTime();
     private SimpleTime endTime = new SimpleTime();
     private TextView timeLabel = null;
+    private LinearLayout verticalLayout1 = null;
 
 
     public TimeRangePreference(Context ctxt) {
@@ -75,7 +76,7 @@ public class TimeRangePreference extends DialogPreference {
     protected View onCreateDialogView() {
 
         LinearLayout layout = new LinearLayout(mContext);
-        LinearLayout verticalLayout1 = new LinearLayout(mContext);
+        verticalLayout1 = new LinearLayout(mContext);
 
         verticalLayout1.setOrientation(LinearLayout.VERTICAL);
 
@@ -91,17 +92,11 @@ public class TimeRangePreference extends DialogPreference {
         timeLabel.setText(label_start_text);
         timeLabel.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        picker = new TimePicker(mContext);
-
-         if (DateFormat.is24HourFormat(mContext) ) {
-             picker.setIs24HourView(true);
-         }
-
-        picker.setScaleX(0.95f);
-        picker.setScaleY(0.95f);
-
         verticalLayout1.addView(timeLabel);
-        verticalLayout1.addView(picker);
+
+        picker = createTimePicker(mContext);
+        setPicker(startTime);
+
         layout.addView(verticalLayout1);
 
         return layout;
@@ -119,7 +114,6 @@ public class TimeRangePreference extends DialogPreference {
         dialogState = 0;
         final AlertDialog dialog = (AlertDialog) getDialog();
 
-        setPicker(startTime);
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(
                 new View.OnClickListener() {
@@ -130,7 +124,10 @@ public class TimeRangePreference extends DialogPreference {
                             startTime.min = getMinute();
                             timeLabel.setText(label_end_text);
                             timeLabel.invalidate();
+
+                            picker = createTimePicker(mContext);
                             setPicker(endTime);
+                            verticalLayout1.invalidate();
 
                             dialogState++;
                         } else {
@@ -141,6 +138,25 @@ public class TimeRangePreference extends DialogPreference {
                         }
                     }
                 });
+    }
+
+    private TimePicker createTimePicker(Context context) {
+        if (picker != null) {
+            verticalLayout1.removeView(picker);
+            picker = null;
+        }
+
+        picker = new TimePicker(context);
+
+         if (DateFormat.is24HourFormat(context) ) {
+             picker.setIs24HourView(true);
+         }
+
+        picker.setScaleX(0.95f);
+        picker.setScaleY(0.95f);
+
+        verticalLayout1.addView(picker);
+        return picker;
     }
 
     void setPicker(SimpleTime simpleTime) {
