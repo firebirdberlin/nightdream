@@ -62,7 +62,6 @@ import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
-import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
@@ -921,10 +920,6 @@ public class NightDreamUI {
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
-    }
-
-    public void onEvent(OnPowerDisconnected event) {
-        setupScreenAnimation();
     }
 
     public void onEvent(OnPowerConnected event) {
