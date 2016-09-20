@@ -240,26 +240,39 @@
             </de.firebirdberlin.preference.VersionPreference>
 
             <Preference
-                android:icon="@drawable/ic_github"
-                android:title="@string/contribute">
-                <intent android:action="android.intent.action.VIEW"
-                    android:data="https://github.com/firebirdberlin/nightdream"/>
-
-            </Preference>
-
-            <Preference
-                android:key="openDonationPage"
-                android:icon="@drawable/ic_paypal"
-                android:title="@string/donate"/>
-
-            <de.firebirdberlin.preference.BitcoinDonationPreference
-                android:icon="@drawable/ic_bitcoin"
-                android:title="@string/donate"/>
-
-            <Preference
                 android:key="recommendApp"
                 android:icon="@drawable/ic_share"
                 android:title="@string/recommend"/>
+
+            <PreferenceCategory android:title="@string/contribute">
+                <Preference
+                    android:icon="@drawable/ic_github"
+                    android:title="@string/contribute_source_code">
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="https://github.com/firebirdberlin/nightdream"/>
+
+                </Preference>
+
+                <Preference
+                    android:icon="@drawable/ic_github"
+                    android:title="@string/contribute_translation">
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="https://github.com/firebirdberlin/nightdream/blob/master/res/values/strings.xml"/>
+
+                </Preference>
+            </PreferenceCategory>
+
+            <PreferenceCategory android:title="@string/donate">
+                <Preference
+                    android:key="openDonationPage"
+                    android:icon="@drawable/ic_paypal"
+                    android:title="@string/donate_paypal"/>
+
+                <de.firebirdberlin.preference.BitcoinDonationPreference
+                    android:icon="@drawable/ic_bitcoin"
+                    android:title="@string/donate_bitcoin"/>
+            </PreferenceCategory>
+
 
             <PreferenceCategory android:title="@string/credits">
                 <Preference
@@ -288,5 +301,15 @@
 
                 </Preference>
             </PreferenceCategory>
+
+            <PreferenceCategory android:title="@string/other_apps">
+                <Preference
+                    android:title="@string/other_apps_tinytimetracker"
+                    android:summary="@string/other_apps_tinytimetracker_summary">
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="market://details?id=com.firebirdberlin.tinytimetracker"/>
+                </Preference>
+            </PreferenceCategory>
+
         </PreferenceScreen>
     </PreferenceScreen>
