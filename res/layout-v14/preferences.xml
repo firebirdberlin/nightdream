@@ -252,6 +252,10 @@
                 android:icon="@drawable/ic_paypal"
                 android:title="@string/donate"/>
 
+            <de.firebirdberlin.preference.BitcoinDonationPreference
+                android:icon="@drawable/ic_bitcoin"
+                android:title="@string/donate"/>
+
             <Preference
                 android:key="recommendApp"
                 android:icon="@drawable/ic_share"
