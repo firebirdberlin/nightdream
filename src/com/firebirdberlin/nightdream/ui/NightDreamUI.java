@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -892,7 +893,7 @@ public class NightDreamUI {
             PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 
             // build notification
-            Notification n = new Notification.Builder(mContext)
+            Notification n = new NotificationCompat.Builder(mContext)
                 .setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.review_request))
                 .setSmallIcon(R.drawable.ic_clock)
