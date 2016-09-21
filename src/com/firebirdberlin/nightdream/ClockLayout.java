@@ -13,16 +13,19 @@ import android.widget.TextView;
 
 public class ClockLayout extends LinearLayout {
 
+    private Context context = null;
     private TextView clock = null;
     private TextView date = null;
     private View divider = null;
 
     public ClockLayout(Context context) {
         super(context);
+        this.context = context;
     }
 
     public ClockLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
     @Override
@@ -71,21 +74,34 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void setDesiredClockWidth(float desiredWidthPercent){
+        setDesiredWidth(clock, 0.6f, 100f);
+        setDesiredWidth(date, 0.9f, 10f);
+    }
+
+    private void setDesiredWidth(TextView view, float desiredWidthPercent, float maxSp){
         View parent = (View) getParent();
         int desiredWidth = (int) (desiredWidthPercent * parent.getWidth());
-        String text = clock.getText().toString();
-        clock.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
+
+        String text = view.getText().toString();
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
         int size = 1;
+        float sizeSp = pixelsToSp(size);
         do{
-            float textWidth = clock.getPaint().measureText(text);
+            float textWidth = view.getPaint().measureText(text);
 
             if (textWidth < desiredWidth) {
-                clock.setTextSize(++size);
+                view.setTextSize(++size);
             } else {
-                clock.setTextSize(--size);
+                view.setTextSize(--size);
                 break;
             }
-        } while(true);
+            sizeSp = pixelsToSp(size);
+        } while(sizeSp < maxSp);
+    }
+
+    private float pixelsToSp(float px) {
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return px/scaledDensity;
     }
 
 }
