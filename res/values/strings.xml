@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+ -> Edit the strings in this file
+ -> Send your file to stefan.fruhner@googlemail.com.
+OR
+ -> Open a pull request on Github.
+
+ Please preserve the xml tags and the utf8 encoding.
+-->
+
+
 <resources>
     <string name="about">About</string>
     <string name="alarm">Alarm</string>
@@ -30,8 +47,12 @@
     <string name="choose_secondary_color">Secondary color</string>
     <string name="choose_tertiary_color">Tertiary color</string>
     <string name="contribute">Contribute</string>
+    <string name="contribute_source_code">Source code</string>
+    <string name="contribute_translation">Translation</string>
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
+    <string name="donate_bitcoin">Bitcoin</string>
+    <string name="donate_paypal">Paypal</string>
     <string name="recommend">Recommend app</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
@@ -46,6 +67,9 @@
     <string name="night_mode">Night mode</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
+    <string name="other_apps">Other apps</string>
+    <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="restless_mode">move clock around</string>
     <string name="review_request">Please rate this application. Thanks !</string>

@@ -52,8 +52,8 @@ public class Settings {
     public int secondaryColor;
     public int sensitivity = 1;
     public int tertiaryColor;
-    public long autostartTimeRangeStart = 0L;
-    public long autostartTimeRangeEnd = 0L;
+    public long autostartTimeRangeStart = -1L;
+    public long autostartTimeRangeEnd = -1L;
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
@@ -85,8 +85,8 @@ public class Settings {
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
-        autostartTimeRangeStart = settings.getLong("autostart_time_range_start", 0L);
-        autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", 0L);
+        autostartTimeRangeStart = settings.getLong("autostart_time_range_start", autostartTimeRangeStart);
+        autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", autostartTimeRangeEnd);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
         handle_power = settings.getBoolean("handle_power", false);
