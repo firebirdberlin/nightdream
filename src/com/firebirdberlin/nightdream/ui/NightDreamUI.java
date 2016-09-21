@@ -32,6 +32,8 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
@@ -86,10 +88,9 @@ public class NightDreamUI {
     private Settings settings = null;
     private SoundMeter soundmeter;
     private TextView batteryView;
-    private TextView clock, date;
+    private TextView clock;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility = null;
-    private View divider = null;
     private View rootView = null;
     private Window window = null;
     private mAudioManager AudioManage = null;
@@ -112,8 +113,6 @@ public class NightDreamUI {
         batteryView = (TextView) rootView.findViewById(R.id.battery);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         clock = (TextView) rootView.findViewById(R.id.clock);
-        date = (TextView) rootView.findViewById(R.id.date);
-        divider = (View) rootView.findViewById(R.id.divider);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
@@ -173,7 +172,7 @@ public class NightDreamUI {
         if (settings.showDate){
             showDate();
         } else {
-            hideDate();
+            clockLayout.hideDate();
         }
 
         if ( !settings.restless_mode ) {
@@ -193,10 +192,12 @@ public class NightDreamUI {
 
     void setColor() {
         alarmTime.setTextColor(settings.secondaryColor);
-        clock.setTypeface(settings.typeface);
-        clock.setTextColor(settings.clockColor);
-        date.setTextColor(settings.secondaryColor);
-        divider.setBackgroundColor(settings.tertiaryColor);
+
+        clockLayout.setTypeface(settings.typeface);
+        clockLayout.setPrimaryColor(settings.clockColor);
+        clockLayout.setSecondaryColor(settings.secondaryColor);
+        clockLayout.setTertiaryColor(settings.tertiaryColor);
+
         batteryView.setTextColor(settings.secondaryColor);
         gmailNumber.setTextColor(settings.secondaryColor);
         twitterNumber.setTextColor(settings.secondaryColor);
@@ -298,8 +299,14 @@ public class NightDreamUI {
 
 
     public void onConfigurationChanged() {
-        Point d = utility.getDisplaySize();
-        setDesiredClockWidth((int)(0.6 * d.x));
+        ViewTreeObserver observer = clockLayout.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                clockLayout.setDesiredClockWidth(0.6f);
+            }
+        });
+
         removeCallbacks(moveAround);
         if ( showcaseView != null ) {
             setupShowcaseView();
@@ -309,9 +316,7 @@ public class NightDreamUI {
     }
 
     public void showDate() {
-        clockLayout.setBackgroundColor(Color.parseColor("#44000000"));
-        date.setVisibility(View.VISIBLE);
-        divider.setVisibility(View.VISIBLE);
+        clockLayout.showDate();
 
         if (Build.VERSION.SDK_INT >= 17){
             // note that format string kk is implemented incorrectly in API <= 17
@@ -335,28 +340,6 @@ public class NightDreamUI {
             tdate.setFormat12Hour(settings.dateFormat);
             tdate.setFormat24Hour(settings.dateFormat);
         }
-    }
-
-    public void hideDate() {
-        date.setVisibility(View.INVISIBLE);
-        divider.setVisibility(View.INVISIBLE);
-        clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
-    }
-
-    public void setDesiredClockWidth(int desiredWidth){
-        String text = clock.getText().toString();
-        clock.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
-        int size = 1;
-        do{
-            float textWidth = clock.getPaint().measureText(text);
-
-            if (textWidth < desiredWidth) {
-                clock.setTextSize(++size);
-            } else {
-                clock.setTextSize(--size);
-                break;
-            }
-        } while(true);
     }
 
     public void updateBatteryView() {
@@ -621,8 +604,8 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            Point d = utility.getDisplaySize();
-            setDesiredClockWidth((int) (0.6 * d.x));
+            clockLayout.setDesiredClockWidth(0.6f);
+
             float s = settings.scaleClock;
             clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
        }
