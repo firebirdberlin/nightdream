@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.ui;
 
 import java.util.Locale;
 
@@ -17,6 +17,7 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
+import com.firebirdberlin.nightdream.R;
 
 public class ClockLayout extends LinearLayout {
 

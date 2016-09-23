@@ -139,18 +139,18 @@
 <!--
     date and time
 -->
-    <com.firebirdberlin.nightdream.ClockLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/clockLayout"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationX="0sp"
-        android:translationY="0sp"
-        android:layout_gravity="center"
-        android:background="#44000000"
-        >
+<com.firebirdberlin.nightdream.ui.ClockLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clockLayout"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:translationX="0sp"
+    android:translationY="0sp"
+    android:layout_gravity="center"
+    android:background="#44000000"
+    >
 
-    </com.firebirdberlin.nightdream.ClockLayout>
+</com.firebirdberlin.nightdream.ui.ClockLayout>
 
 </FrameLayout>
