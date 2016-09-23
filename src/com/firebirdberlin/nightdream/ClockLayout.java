@@ -1,15 +1,21 @@
 package com.firebirdberlin.nightdream;
 
+import java.util.Locale;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.CustomDigitalClock;
 
 public class ClockLayout extends LinearLayout {
 
@@ -102,6 +108,34 @@ public class ClockLayout extends LinearLayout {
     private float pixelsToSp(float px) {
         float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
         return px/scaledDensity;
+    }
+
+    public void setTimeFormat() {
+        if (clock == null) return;
+
+        // note that format string kk is implemented incorrectly in API <= 17
+        // from API level 18 on, we can set the system default
+        if (Build.VERSION.SDK_INT >= 18){
+            TextClock tclock = (TextClock) clock;
+            String tlocalPattern24 = DateFormat.getBestDateTimePattern(Locale.getDefault(), "HH:mm");
+            String tlocalPattern12 = DateFormat.getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
+
+            tclock.setFormat12Hour(tlocalPattern12);
+            tclock.setFormat24Hour(tlocalPattern24);
+        }
+    }
+
+    public void setDateFormat(String formatString) {
+        if (Build.VERSION.SDK_INT >= 17){
+            TextClock tdate  = (TextClock) date;
+            tdate.setFormat12Hour(formatString);
+            tdate.setFormat24Hour(formatString);
+
+        } else {
+            CustomDigitalClock tdate = (CustomDigitalClock) date;
+            tdate.setFormat12Hour(formatString);
+            tdate.setFormat24Hour(formatString);
+        }
     }
 
 }

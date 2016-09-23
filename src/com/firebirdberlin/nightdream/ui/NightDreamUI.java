@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.ui;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.Random;
 
 import android.app.Activity;
@@ -25,7 +24,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -39,7 +37,6 @@ import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
@@ -53,7 +50,6 @@ import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.ClockLayout;
-import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -88,7 +84,6 @@ public class NightDreamUI {
     private Settings settings = null;
     private SoundMeter soundmeter;
     private TextView batteryView;
-    private TextView clock;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility = null;
     private View rootView = null;
@@ -112,7 +107,6 @@ public class NightDreamUI {
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         batteryView = (TextView) rootView.findViewById(R.id.battery);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
-        clock = (TextView) rootView.findViewById(R.id.clock);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
@@ -170,7 +164,9 @@ public class NightDreamUI {
         setupScreenAnimation();
 
         if (settings.showDate){
-            showDate();
+            clockLayout.showDate();
+            clockLayout.setTimeFormat();
+            clockLayout.setDateFormat(settings.dateFormat);
         } else {
             clockLayout.hideDate();
         }
@@ -312,33 +308,6 @@ public class NightDreamUI {
             setupShowcaseView();
         } else {
             handler.postDelayed(moveAround, 2000);
-        }
-    }
-
-    public void showDate() {
-        clockLayout.showDate();
-
-        if (Build.VERSION.SDK_INT >= 17){
-            // note that format string kk is implemented incorrectly in API <= 17
-            // from API level 18 on, we can set the system default
-            TextClock tclock = (TextClock) rootView.findViewById(R.id.clock);
-            TextClock tdate  = (TextClock) rootView.findViewById(R.id.date);
-
-            tdate.setFormat12Hour(settings.dateFormat);
-            tdate.setFormat24Hour(settings.dateFormat);
-
-            if (Build.VERSION.SDK_INT >= 18){
-                String tlocalPattern24 = getBestDateTimePattern(Locale.getDefault(), "HH:mm");
-                String tlocalPattern12 = getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
-
-                tclock.setFormat12Hour(tlocalPattern12);
-                tclock.setFormat24Hour(tlocalPattern24);
-            }
-        } else {
-            CustomDigitalClock tdate = (CustomDigitalClock) rootView.findViewById(R.id.date);
-
-            tdate.setFormat12Hour(settings.dateFormat);
-            tdate.setFormat24Hour(settings.dateFormat);
         }
     }
 
