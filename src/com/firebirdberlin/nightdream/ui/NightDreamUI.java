@@ -1,7 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-
 import java.util.Calendar;
 import java.util.Random;
 

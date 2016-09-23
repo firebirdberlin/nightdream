@@ -35,47 +35,6 @@ android:background="#000000"
         android:layout_gravity="center"
         android:background="#44000000"
         >
-<!--
-        time
--->
-        <com.firebirdberlin.nightdream.CustomDigitalClock
-        android:id="@+id/clock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationX="0sp"
-        android:translationY="0sp"
-        android:layout_gravity="center"
-        android:fontFamily="sans-serif"
-        android:textColor="#C2C2C2"
-        android:textSize="50sp"
-        android:clickable="true"
-        custom:format12Hr="h:mm a"
-        custom:format24Hr="kk:mm"/>
-<!--
-        divider
--->
-        <View
-            android:id="@+id/divider"
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:background="#C2C2C2" />
-<!--
-        Date
--->
-        <com.firebirdberlin.nightdream.CustomDigitalClock
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationX="0sp"
-        android:translationY="0sp"
-        android:layout_gravity="center"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"
-        android:textColor="#C2C2C2"
-        android:textSize="30sp"
-        android:paddingTop="5sp"
-        custom:format12Hr="dd. MMMM yyyy"
-        custom:format24Hr="dd. MMMM yyyy" />
 
 </com.firebirdberlin.nightdream.ClockLayout>
 

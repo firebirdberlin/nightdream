@@ -10,6 +10,7 @@ import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
@@ -27,11 +28,20 @@ public class ClockLayout extends LinearLayout {
     public ClockLayout(Context context) {
         super(context);
         this.context = context;
+        init();
     }
 
     public ClockLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        init();
+    }
+
+    private void init() {
+        LayoutInflater inflater = (LayoutInflater)
+            context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View child = inflater.inflate(R.layout.clock_layout, null);
+        addView(child);
     }
 
     @Override
