@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -20,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -769,50 +772,77 @@ public class NightDreamUI {
     }
 
     public Drawable loadBackGroundImage() {
-        String bgpath = settings.backgroundImagePath();
-        if (bgpath != ""){
-            try{
-                Point display = utility.getDisplaySize();
+        try{
+            Point display = utility.getDisplaySize();
 
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(bgpath, options);
+            Bitmap bgimage = loadBackgroundBitmap();
 
-                // Calculate inSampleSize
-                options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+            int nw = bgimage.getWidth();
+            int nh = bgimage.getHeight();
+            boolean scaling_needed =false;
+            if ( bgimage.getHeight() > display.y ){
+                nw = (int) ((display.y /(float) bgimage.getHeight()) * bgimage.getWidth());
+                nh = display.y;
+                scaling_needed = true;
+            }
+
+            if ( nw > display.x ){
+                nh = (int) ((display.x / (float) bgimage.getWidth()) * bgimage.getHeight());
+                nw = display.x;
+                scaling_needed = true;
+            }
+            if (scaling_needed){
+                bgimage = Bitmap.createScaledBitmap(bgimage,nw, nh, false);
+            }
+
+            return new BitmapDrawable(mContext.getResources(), bgimage);
+        } catch (OutOfMemoryError e){
+            Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
+                    Toast.LENGTH_LONG).show();
+            return new ColorDrawable(Color.parseColor("#000000"));
+        } catch (Exception e) {
+            return new ColorDrawable(Color.parseColor("#000000"));
+        }
+    }
+
+    private Bitmap loadBackgroundBitmap() throws Exception {
+        Bitmap bitmap = null;
+        Point display = utility.getDisplaySize();
+        if (settings.backgroundImageURI != "") {
+            Uri uri = Uri.parse(settings.backgroundImageURI);
+            ParcelFileDescriptor parcelFileDescriptor =
+                    mContext.getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+
+            // Calculate inSampleSize
+            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
 
                 // Decode bitmap with inSampleSize set
-                options.inJustDecodeBounds = false;
-                Bitmap bgimage = (BitmapFactory.decodeFile(bgpath, options));
+            options.inJustDecodeBounds = false;
+            bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+            parcelFileDescriptor.close();
+            return bitmap;
+        } else
+        if (settings.backgroundImagePath() != "" ) {
+            String bgpath = settings.backgroundImagePath();
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(bgpath, options);
 
-                int nw = bgimage.getWidth();
-                int nh = bgimage.getHeight();
-                boolean scaling_needed =false;
-                if ( bgimage.getHeight() > display.y ){
-                    nw = (int) ((display.y /(float) bgimage.getHeight()) * bgimage.getWidth());
-                    nh = display.y;
-                    scaling_needed = true;
-                }
+            // Calculate inSampleSize
+            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
 
-                if ( nw > display.x ){
-                    nh = (int) ((display.x / (float) bgimage.getWidth()) * bgimage.getHeight());
-                    nw = display.x;
-                    scaling_needed = true;
-                }
-                if (scaling_needed){
-                    bgimage = Bitmap.createScaledBitmap(bgimage,nw, nh, false);
-                }
-
-                return new BitmapDrawable(mContext.getResources(), bgimage);
-            } catch (OutOfMemoryError e){
-                Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
-                               Toast.LENGTH_LONG).show();
-                return new ColorDrawable(Color.parseColor("#000000"));
-            } catch (Exception e) {
-                return new ColorDrawable(Color.parseColor("#000000"));
-            }
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            return bitmap = (BitmapFactory.decodeFile(bgpath, options));
         }
-        return new ColorDrawable(Color.parseColor("#000000"));
+
+        return bitmap;
     }
 
     private void checkForReviewRequest() {

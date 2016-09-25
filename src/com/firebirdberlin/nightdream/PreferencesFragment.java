@@ -29,6 +29,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private static int RESULT_LOAD_IMAGE = 1;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
+    private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private Settings settings = null;
     private Context mContext = null;
 
@@ -151,17 +152,31 @@ public class PreferencesFragment extends PreferenceFragment {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data){
 
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getActivity().getContentResolver()
-                                         .query(selectedImage,filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
+            String picturePath = getRealPathFromURI(selectedImage);
             if (picturePath != null){
                 settings.setBackgroundImage(picturePath);
             } else {
-                Toast.makeText(getActivity(), "Could locate image !", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Could not locate image !", Toast.LENGTH_LONG).show();
+            }
+        }
+        else
+        if (requestCode == RESULT_LOAD_IMAGE_KITKAT && resultCode == Activity.RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            settings.setBackgroundImageURI(uri.toString());
+        }
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = getActivity().getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
             }
         }
     }
@@ -176,16 +191,23 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void selectBackgroundImage() {
-        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        getIntent.setType("image/*");
+        if (Build.VERSION.SDK_INT < 19 ) {
+            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            getIntent.setType("image/*");
 
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-        String msg = getString(R.string.background_image_select);
-        Intent chooserIntent = Intent.createChooser(getIntent, msg);
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+            //Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            //pickIntent.setType("image/*");
+            String msg = getString(R.string.background_image_select);
+            Intent chooserIntent = Intent.createChooser(getIntent, msg);
+            //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
 
-        startActivityForResult(chooserIntent, RESULT_LOAD_IMAGE);
+            startActivityForResult(chooserIntent, RESULT_LOAD_IMAGE);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            startActivityForResult(intent, RESULT_LOAD_IMAGE_KITKAT);
+        }
     }
 
     private boolean hasPermissionReadExternalStorage() {
