@@ -163,20 +163,9 @@ public class NightDreamUI {
         lightSensorEventListener.register();
 
         setupScreenAnimation();
-
-        if (settings.showDate){
-            clockLayout.showDate();
-            clockLayout.setTimeFormat();
-            clockLayout.setDateFormat(settings.dateFormat);
-        } else {
-            clockLayout.hideDate();
-        }
-
-        if ( !settings.restless_mode ) {
-            centerClockLayout();
-        }
-
+        setupClockLayout();
         setColor();
+        setupAlarmClock();
 
         if (settings.useAmbientNoiseDetection()){
             soundmeter = new SoundMeter(isDebuggable);
@@ -187,14 +176,27 @@ public class NightDreamUI {
         showShowcase();
     }
 
-    void setColor() {
-        alarmTime.setTextColor(settings.secondaryColor);
+    private void setupClockLayout() {
+        clockLayout.setTimeFormat();
+        clockLayout.setDateFormat(settings.dateFormat);
+        if (settings.showDate){
+            clockLayout.showDate();
+        } else {
+            clockLayout.hideDate();
+        }
+
+        if ( !settings.restless_mode ) {
+            centerClockLayout();
+        }
 
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(settings.clockColor);
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setTertiaryColor(settings.tertiaryColor);
+    }
 
+    void setColor() {
+        alarmTime.setTextColor(settings.secondaryColor);
         batteryView.setTextColor(settings.secondaryColor);
         gmailNumber.setTextColor(settings.secondaryColor);
         twitterNumber.setTextColor(settings.secondaryColor);
@@ -206,7 +208,6 @@ public class NightDreamUI {
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
 
-        setupAlarmClock();
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -285,6 +286,7 @@ public class NightDreamUI {
     }
 
     public void onDestroy() {
+
     }
 
     private void removeCallbacks(Runnable runnable) {
@@ -293,7 +295,6 @@ public class NightDreamUI {
 
         handler.removeCallbacks(runnable);
     }
-
 
     public void onConfigurationChanged() {
         ViewTreeObserver observer = clockLayout.getViewTreeObserver();
@@ -368,6 +369,7 @@ public class NightDreamUI {
         if ( !settings.restless_mode) {
             return;
         }
+        setupScreenAnimation();
         Random random = new Random();
         Point size = utility.getDisplaySize();
         int w = size.x;
@@ -809,6 +811,7 @@ public class NightDreamUI {
         Bitmap bitmap = null;
         Point display = utility.getDisplaySize();
         if (settings.backgroundImageURI != "") {
+            // version for Android 4.4+ (KitKat)
             Uri uri = Uri.parse(settings.backgroundImageURI);
             ParcelFileDescriptor parcelFileDescriptor =
                     mContext.getContentResolver().openFileDescriptor(uri, "r");
@@ -829,6 +832,7 @@ public class NightDreamUI {
             return bitmap;
         } else
         if (settings.backgroundImagePath() != "" ) {
+            // deprecated legacy version
             String bgpath = settings.backgroundImagePath();
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
