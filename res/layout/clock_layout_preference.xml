@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_below="@android:id/summary"
+    android:gravity="center"
+    android:paddingTop="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.firebirdberlin.nightdream.ui.ClockLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/clockLayout"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="0sp"
+        android:translationY="0sp"
+        android:background="#44000000"
+        />
+
+</RelativeLayout>

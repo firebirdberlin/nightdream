@@ -35,6 +35,7 @@ OR
     <string name="background_gradient">gradient</string>
     <string name="background_image">image</string>
     <string name="background_image_select">Select image</string>
+    <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
     <string name="brightness_offset">Brightness offset</string>
     <string name="buttonAccessibilitySettings">start notification listener</string>
@@ -70,6 +71,7 @@ OR
     <string name="other_apps">Other apps</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
+    <string name="preview">Preview</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="restless_mode">move clock around</string>
     <string name="review_request">Please rate this application. Thanks !</string>

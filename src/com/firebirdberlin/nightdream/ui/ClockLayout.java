@@ -9,12 +9,13 @@ import android.os.Build;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
+import android.util.Log;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.R;
@@ -90,14 +91,20 @@ public class ClockLayout extends LinearLayout {
         setBackgroundColor(Color.parseColor("#00000000"));
     }
 
-    public void setDesiredClockWidth(float desiredWidthPercent){
-        setDesiredWidth(clock, 0.6f, 100f);
-        setDesiredWidth(date, 0.9f, 10f);
+    public void setDesiredClockWidth(){
+        View parent = (View) getParent();
+        int parentWidth = parent.getWidth();
+        setDesiredWidth(clock, parentWidth, 0.6f, 100f);
+        setDesiredWidth(date, parentWidth, 0.9f, 10f);
     }
 
-    private void setDesiredWidth(TextView view, float desiredWidthPercent, float maxSp){
-        View parent = (View) getParent();
-        int desiredWidth = (int) (desiredWidthPercent * parent.getWidth());
+    public void setDesiredClockWidth(int parentWidth){
+        setDesiredWidth(clock, parentWidth, 0.6f, 100f);
+        setDesiredWidth(date, parentWidth, 0.9f, 10f);
+    }
+
+    private void setDesiredWidth(TextView view, int parentWidth, float desiredWidthPercent, float maxSp){
+        float desiredWidth = desiredWidthPercent * parentWidth;
 
         String text = view.getText().toString();
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);

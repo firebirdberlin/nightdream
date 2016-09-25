@@ -297,7 +297,7 @@ public class NightDreamUI {
         observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                clockLayout.setDesiredClockWidth(0.6f);
+                clockLayout.setDesiredClockWidth();
             }
         });
 
@@ -571,7 +571,7 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            clockLayout.setDesiredClockWidth(0.6f);
+            clockLayout.setDesiredClockWidth();
 
             float s = settings.scaleClock;
             clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);

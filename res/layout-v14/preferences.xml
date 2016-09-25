@@ -64,58 +64,48 @@
             android:key="colors_screen"
             android:icon="@drawable/ic_appearance">
 
-            <SwitchPreference
-                android:key="restlessMode"
-                android:title="@string/restless_mode"
-                android:defaultValue="true" />
+            <PreferenceCategory
+                android:title="@string/appearance">
+                <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
+                    android:key="clockLayoutPreview"
+                    android:title="@string/preview"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:selectable="false"
+                    />
 
-            <SwitchPreference
-                android:key="autoBrightness"
-                android:title="@string/auto_brightness"
-                android:defaultValue="false" />
+                <SwitchPreference
+                    android:key="showDate"
+                    android:title="@string/show_date"
+                    android:defaultValue="true" />
 
-            <de.firebirdberlin.preference.InlineSeekBarPreference
-                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                android:key="brightness_offset"
-                android:title="@string/brightness_offset"
-                android:defaultValue="80"
-                android:max="100"
-                seekbar:min="-100"
-                seekbar:interval="1"
-                seekbar:unitsLeft=""
-                seekbar:unitsRight=""/>
+                <com.firebirdberlin.nightdream.DateFormatPreference
+                    android:dependency="showDate"
+                    android:title="@string/date_format"
+                    android:key="dateFormat"/>
 
-            <SwitchPreference
-                android:key="showDate"
-                android:title="@string/show_date"
-                android:defaultValue="true" />
+                <ListPreference
+                    android:title="@string/typeface"
+                    android:key="typeface"
+                    android:defaultValue="1"
+                    android:entries="@array/typeFaces"
+                    android:entryValues="@array/typeFaceValues"/>
 
-            <com.firebirdberlin.nightdream.DateFormatPreference
-                android:dependency="showDate"
-                android:title="@string/date_format"
-                android:key="dateFormat"/>
+                <yuku.ambilwarna.widget.AmbilWarnaPreference
+                    android:key="clockColor"
+                    android:defaultValue="0xff33B5E5"
+                    android:title="@string/choose_color_dialog"/>
 
-            <ListPreference
-                android:title="@string/typeface"
-                android:key="typeface"
-                android:defaultValue="1"
-                android:entries="@array/typeFaces"
-                android:entryValues="@array/typeFaceValues"/>
+                <yuku.ambilwarna.widget.AmbilWarnaPreference
+                    android:key="secondaryColor"
+                    android:defaultValue="0xffc2c2c2"
+                    android:title="@string/choose_secondary_color"/>
 
-            <yuku.ambilwarna.widget.AmbilWarnaPreference
-                android:key="clockColor"
-                android:defaultValue="0xff33B5E5"
-                android:title="@string/choose_color_dialog"/>
-
-            <yuku.ambilwarna.widget.AmbilWarnaPreference
-                android:key="secondaryColor"
-                android:defaultValue="0xffc2c2c2"
-                android:title="@string/choose_secondary_color"/>
-
-            <yuku.ambilwarna.widget.AmbilWarnaPreference
-                android:key="tertiaryColor"
-                android:defaultValue="0xffc2c2c2"
-                android:title="@string/choose_tertiary_color"/>
+                <yuku.ambilwarna.widget.AmbilWarnaPreference
+                    android:key="tertiaryColor"
+                    android:defaultValue="0xffc2c2c2"
+                    android:title="@string/choose_tertiary_color"/>
+            </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/background">
                 <ListPreference
@@ -131,10 +121,33 @@
 
             </PreferenceCategory>
 
-            <SwitchPreference
-                android:key="force_auto_rotation"
-                android:title="@string/force_auto_rotation"
-                android:defaultValue="false" />
+            <PreferenceCategory android:title="@string/behaviour">
+                <SwitchPreference
+                    android:key="restlessMode"
+                    android:title="@string/restless_mode"
+                    android:defaultValue="true" />
+
+                <SwitchPreference
+                    android:key="autoBrightness"
+                    android:title="@string/auto_brightness"
+                    android:defaultValue="false" />
+
+                <de.firebirdberlin.preference.InlineSeekBarPreference
+                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                    android:key="brightness_offset"
+                    android:title="@string/brightness_offset"
+                    android:defaultValue="80"
+                    android:max="100"
+                    seekbar:min="-100"
+                    seekbar:interval="1"
+                    seekbar:unitsLeft=""
+                    seekbar:unitsRight=""/>
+
+                <SwitchPreference
+                    android:key="force_auto_rotation"
+                    android:title="@string/force_auto_rotation"
+                    android:defaultValue="false" />
+        </PreferenceCategory>
 
         </PreferenceScreen>
 
