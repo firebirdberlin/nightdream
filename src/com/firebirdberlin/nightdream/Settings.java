@@ -58,6 +58,7 @@ public class Settings {
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
     private String bgpath = "";
+    public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
     public BatteryValue batteryReferenceValue;
@@ -96,6 +97,7 @@ public class Settings {
         handle_power_usb = settings.getBoolean("handle_power_usb", false);
         handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
         bgpath = settings.getString("BackgroundImage", "");
+        backgroundImageURI = settings.getString("backgroundImageURI", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
@@ -231,6 +233,13 @@ public class Settings {
         bgpath = uri;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putString("BackgroundImage", uri);
+        prefEditor.commit();
+    }
+
+    public void setBackgroundImageURI(String uri) {
+        backgroundImageURI = uri;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString("backgroundImageURI", uri);
         prefEditor.commit();
     }
 

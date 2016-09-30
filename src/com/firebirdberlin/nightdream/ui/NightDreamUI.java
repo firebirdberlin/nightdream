@@ -1,9 +1,8 @@
 package com.firebirdberlin.nightdream.ui;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.Random;
 
 import android.app.Activity;
@@ -23,20 +22,22 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
@@ -49,8 +50,6 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.models.BatteryValue;
-import com.firebirdberlin.nightdream.ClockLayout;
-import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -62,6 +61,7 @@ import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
+import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
@@ -85,10 +85,8 @@ public class NightDreamUI {
     private Settings settings = null;
     private SoundMeter soundmeter;
     private TextView batteryView;
-    private TextView clock, date;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility = null;
-    private View divider = null;
     private View rootView = null;
     private Window window = null;
     private mAudioManager AudioManage = null;
@@ -110,9 +108,6 @@ public class NightDreamUI {
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         batteryView = (TextView) rootView.findViewById(R.id.battery);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
-        clock = (TextView) rootView.findViewById(R.id.clock);
-        date = (TextView) rootView.findViewById(R.id.date);
-        divider = (View) rootView.findViewById(R.id.divider);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
@@ -168,18 +163,9 @@ public class NightDreamUI {
         lightSensorEventListener.register();
 
         setupScreenAnimation();
-
-        if (settings.showDate){
-            showDate();
-        } else {
-            hideDate();
-        }
-
-        if ( !settings.restless_mode ) {
-            centerClockLayout();
-        }
-
+        setupClockLayout();
         setColor();
+        setupAlarmClock();
 
         if (settings.useAmbientNoiseDetection()){
             soundmeter = new SoundMeter(isDebuggable);
@@ -190,12 +176,27 @@ public class NightDreamUI {
         showShowcase();
     }
 
+    private void setupClockLayout() {
+        clockLayout.setTimeFormat();
+        clockLayout.setDateFormat(settings.dateFormat);
+        if (settings.showDate){
+            clockLayout.showDate();
+        } else {
+            clockLayout.hideDate();
+        }
+
+        if ( !settings.restless_mode ) {
+            centerClockLayout();
+        }
+
+        clockLayout.setTypeface(settings.typeface);
+        clockLayout.setPrimaryColor(settings.clockColor);
+        clockLayout.setSecondaryColor(settings.secondaryColor);
+        clockLayout.setTertiaryColor(settings.tertiaryColor);
+    }
+
     void setColor() {
         alarmTime.setTextColor(settings.secondaryColor);
-        clock.setTypeface(settings.typeface);
-        clock.setTextColor(settings.clockColor);
-        date.setTextColor(settings.secondaryColor);
-        divider.setBackgroundColor(settings.tertiaryColor);
         batteryView.setTextColor(settings.secondaryColor);
         gmailNumber.setTextColor(settings.secondaryColor);
         twitterNumber.setTextColor(settings.secondaryColor);
@@ -207,7 +208,6 @@ public class NightDreamUI {
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
 
-        setupAlarmClock();
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -286,6 +286,7 @@ public class NightDreamUI {
     }
 
     public void onDestroy() {
+
     }
 
     private void removeCallbacks(Runnable runnable) {
@@ -295,67 +296,21 @@ public class NightDreamUI {
         handler.removeCallbacks(runnable);
     }
 
-
     public void onConfigurationChanged() {
-        Point d = utility.getDisplaySize();
-        setDesiredClockWidth((int)(0.6 * d.x));
+        ViewTreeObserver observer = clockLayout.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                clockLayout.setDesiredClockWidth();
+            }
+        });
+
         removeCallbacks(moveAround);
         if ( showcaseView != null ) {
             setupShowcaseView();
         } else {
             handler.postDelayed(moveAround, 2000);
         }
-    }
-
-    public void showDate() {
-        clockLayout.setBackgroundColor(Color.parseColor("#44000000"));
-        date.setVisibility(View.VISIBLE);
-        divider.setVisibility(View.VISIBLE);
-
-        if (Build.VERSION.SDK_INT >= 17){
-            // note that format string kk is implemented incorrectly in API <= 17
-            // from API level 18 on, we can set the system default
-            TextClock tclock = (TextClock) rootView.findViewById(R.id.clock);
-            TextClock tdate  = (TextClock) rootView.findViewById(R.id.date);
-
-            tdate.setFormat12Hour(settings.dateFormat);
-            tdate.setFormat24Hour(settings.dateFormat);
-
-            if (Build.VERSION.SDK_INT >= 18){
-                String tlocalPattern24 = getBestDateTimePattern(Locale.getDefault(), "HH:mm");
-                String tlocalPattern12 = getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
-
-                tclock.setFormat12Hour(tlocalPattern12);
-                tclock.setFormat24Hour(tlocalPattern24);
-            }
-        } else {
-            CustomDigitalClock tdate = (CustomDigitalClock) rootView.findViewById(R.id.date);
-
-            tdate.setFormat12Hour(settings.dateFormat);
-            tdate.setFormat24Hour(settings.dateFormat);
-        }
-    }
-
-    public void hideDate() {
-        date.setVisibility(View.INVISIBLE);
-        divider.setVisibility(View.INVISIBLE);
-        clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
-    }
-
-    public void setDesiredClockWidth(int desiredWidth){
-        String text = clock.getText().toString();
-        clock.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
-        int size = 1;
-        do{
-            float textWidth = clock.getPaint().measureText(text);
-
-            if (textWidth < desiredWidth) {
-                clock.setTextSize(++size);
-            } else {
-                clock.setTextSize(--size);
-                break;
-            }
-        } while(true);
     }
 
     public void updateBatteryView() {
@@ -414,6 +369,7 @@ public class NightDreamUI {
         if ( !settings.restless_mode) {
             return;
         }
+        setupScreenAnimation();
         Random random = new Random();
         Point size = utility.getDisplaySize();
         int w = size.x;
@@ -620,8 +576,8 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            Point d = utility.getDisplaySize();
-            setDesiredClockWidth((int) (0.6 * d.x));
+            clockLayout.setDesiredClockWidth();
+
             float s = settings.scaleClock;
             clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
        }
@@ -818,50 +774,79 @@ public class NightDreamUI {
     }
 
     public Drawable loadBackGroundImage() {
-        String bgpath = settings.backgroundImagePath();
-        if (bgpath != ""){
-            try{
-                Point display = utility.getDisplaySize();
+        try{
+            Point display = utility.getDisplaySize();
 
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(bgpath, options);
+            Bitmap bgimage = loadBackgroundBitmap();
 
-                // Calculate inSampleSize
-                options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+            int nw = bgimage.getWidth();
+            int nh = bgimage.getHeight();
+            boolean scaling_needed =false;
+            if ( bgimage.getHeight() > display.y ){
+                nw = (int) ((display.y /(float) bgimage.getHeight()) * bgimage.getWidth());
+                nh = display.y;
+                scaling_needed = true;
+            }
+
+            if ( nw > display.x ){
+                nh = (int) ((display.x / (float) bgimage.getWidth()) * bgimage.getHeight());
+                nw = display.x;
+                scaling_needed = true;
+            }
+            if (scaling_needed){
+                bgimage = Bitmap.createScaledBitmap(bgimage,nw, nh, false);
+            }
+
+            return new BitmapDrawable(mContext.getResources(), bgimage);
+        } catch (OutOfMemoryError e){
+            Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
+                    Toast.LENGTH_LONG).show();
+            return new ColorDrawable(Color.parseColor("#000000"));
+        } catch (Exception e) {
+            return new ColorDrawable(Color.parseColor("#000000"));
+        }
+    }
+
+    private Bitmap loadBackgroundBitmap() throws Exception {
+        Bitmap bitmap = null;
+        Point display = utility.getDisplaySize();
+        if (settings.backgroundImageURI != "") {
+            // version for Android 4.4+ (KitKat)
+            Uri uri = Uri.parse(settings.backgroundImageURI);
+            ParcelFileDescriptor parcelFileDescriptor =
+                    mContext.getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+
+            // Calculate inSampleSize
+            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
 
                 // Decode bitmap with inSampleSize set
-                options.inJustDecodeBounds = false;
-                Bitmap bgimage = (BitmapFactory.decodeFile(bgpath, options));
+            options.inJustDecodeBounds = false;
+            bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+            parcelFileDescriptor.close();
+            return bitmap;
+        } else
+        if (settings.backgroundImagePath() != "" ) {
+            // deprecated legacy version
+            String bgpath = settings.backgroundImagePath();
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(bgpath, options);
 
-                int nw = bgimage.getWidth();
-                int nh = bgimage.getHeight();
-                boolean scaling_needed =false;
-                if ( bgimage.getHeight() > display.y ){
-                    nw = (int) ((display.y /(float) bgimage.getHeight()) * bgimage.getWidth());
-                    nh = display.y;
-                    scaling_needed = true;
-                }
+            // Calculate inSampleSize
+            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
 
-                if ( nw > display.x ){
-                    nh = (int) ((display.x / (float) bgimage.getWidth()) * bgimage.getHeight());
-                    nw = display.x;
-                    scaling_needed = true;
-                }
-                if (scaling_needed){
-                    bgimage = Bitmap.createScaledBitmap(bgimage,nw, nh, false);
-                }
-
-                return new BitmapDrawable(mContext.getResources(), bgimage);
-            } catch (OutOfMemoryError e){
-                Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
-                               Toast.LENGTH_LONG).show();
-                return new ColorDrawable(Color.parseColor("#000000"));
-            } catch (Exception e) {
-                return new ColorDrawable(Color.parseColor("#000000"));
-            }
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            return bitmap = (BitmapFactory.decodeFile(bgpath, options));
         }
-        return new ColorDrawable(Color.parseColor("#000000"));
+
+        return bitmap;
     }
 
     private void checkForReviewRequest() {
@@ -892,7 +877,7 @@ public class NightDreamUI {
             PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 
             // build notification
-            Notification n = new Notification.Builder(mContext)
+            Notification n = new NotificationCompat.Builder(mContext)
                 .setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.review_request))
                 .setSmallIcon(R.drawable.ic_clock)
