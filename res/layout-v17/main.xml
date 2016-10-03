@@ -30,16 +30,25 @@
                     android:id="@+id/battery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
                     android:fontFamily="monospace"
                     android:textColor="#C2C2C2"
-                    android:text="battery"
-                    android:textSize="30sp"
+                    android:text=""
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:id="@+id/batteryView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textColor="#C2C2C2"
+                    android:text=""
+                    android:textSize="20sp"
                     />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/notificationbar"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right">
                 <ImageView
