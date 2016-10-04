@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
@@ -94,38 +95,45 @@ public class ClockLayout extends LinearLayout {
     public void setDesiredClockWidth(){
         View parent = (View) getParent();
         int parentWidth = parent.getWidth();
-        setDesiredWidth(clock, parentWidth, 0.6f, 100f);
-        setDesiredWidth(date, parentWidth, 0.9f, 10f);
+        setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
+        setDesiredWidth(date, parentWidth, 0.9f, 30.f);
     }
 
     public void setDesiredClockWidth(int parentWidth){
-        setDesiredWidth(clock, parentWidth, 0.6f, 100f);
-        setDesiredWidth(date, parentWidth, 0.9f, 10f);
+        setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
+        setDesiredWidth(date, parentWidth, 0.9f, 30.f);
     }
 
-    private void setDesiredWidth(TextView view, int parentWidth, float desiredWidthPercent, float maxSp){
+    private void setDesiredWidth(TextView view, int parentWidth, float desiredWidthPercent,
+            float maxSp){
         float desiredWidth = desiredWidthPercent * parentWidth;
 
         String text = view.getText().toString();
-        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, 1);
         int size = 1;
-        float sizeSp = pixelsToSp(size);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        int maxPX = spToPx(maxSp);
         do{
             float textWidth = view.getPaint().measureText(text);
-
             if (textWidth < desiredWidth) {
-                view.setTextSize(++size);
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
             } else {
-                view.setTextSize(--size);
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX, --size);
                 break;
             }
-            sizeSp = pixelsToSp(size);
-        } while(sizeSp < maxSp);
+        } while(size <= maxPX);
     }
 
     private float pixelsToSp(float px) {
-        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-        return px/scaledDensity;
+        float density = context.getResources().getDisplayMetrics().density;
+        return px/density;
+    }
+    private int spToPx(float sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                                               context.getResources().getDisplayMetrics());
+    }
+    private int pixelsToDp(float px) {
+        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
+        return (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics );
     }
 
     public void setTimeFormat() {
