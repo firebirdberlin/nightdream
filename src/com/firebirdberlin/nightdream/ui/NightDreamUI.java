@@ -764,7 +764,6 @@ public class NightDreamUI {
                     batteryView.setVisibility(View.GONE);
                     brightnessView.setVisibility(View.VISIBLE);
                     setAlpha(brightnessView, 1.f, 0);
-                    setAlpha(notificationbar, 1.f, 0);
                     removeCallbacks(hideBrightnessLevel);
                     removeCallbacks(hideBrightnessView);
 

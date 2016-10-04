@@ -1,0 +1,76 @@
+<LinearLayout
+    android:id="@+id/notificationbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="right"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/call_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:contentDescription="phonecalls"
+        android:paddingTop="15sp"
+        android:paddingLeft="15sp"
+        android:src="@drawable/ic_incomingcall" />
+    <ImageView
+        android:id="@+id/gmail_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:contentDescription="gmail"
+        android:paddingTop="15sp"
+        android:paddingLeft="15sp"
+        android:src="@drawable/ic_gmail" />
+    <TextView
+        android:id="@+id/gmail_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:textColor="#C2C2C2"
+        android:text="1"
+        android:textSize="15sp"
+        android:paddingTop="12.5sp"/>
+    <ImageView
+        android:id="@+id/whatsapp_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:contentDescription="whatsapp"
+        android:paddingTop="15sp"
+        android:paddingLeft="15sp"
+        android:src="@drawable/ic_whatsapp" />
+    <TextView
+        android:id="@+id/whatsapp_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:textColor="#C2C2C2"
+        android:text="1"
+        android:textSize="15sp"
+        android:paddingTop="12.5sp"/>
+    <ImageView
+        android:id="@+id/twitter_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:contentDescription="twitter"
+        android:paddingTop="15sp"
+        android:paddingLeft="15sp"
+        android:src="@drawable/ic_twitter" />
+    <TextView
+        android:id="@+id/twitter_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:fontFamily="monospace"
+        android:textStyle="bold"
+        android:textColor="#C2C2C2"
+        android:text="1"
+        android:textSize="15sp"
+        android:paddingTop="12.5sp"/>
+</LinearLayout>
