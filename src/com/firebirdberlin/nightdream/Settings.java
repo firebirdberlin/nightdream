@@ -34,6 +34,7 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean force_auto_rotation = false;
     public boolean handle_power = false;
+    public boolean handle_power_disconnection = true;
     public boolean handle_power_desk = false;
     public boolean handle_power_car = false;
     public boolean handle_power_ac = false;
@@ -91,6 +92,7 @@ public class Settings {
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
         handle_power = settings.getBoolean("handle_power", false);
+        handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
         handle_power_car = settings.getBoolean("handle_power_car", false);
         handle_power_ac = settings.getBoolean("handle_power_ac", false);

@@ -8,6 +8,11 @@
             android:key="autostart">
 
             <CheckBoxPreference
+                android:key="handle_power_disconnection"
+                android:title="@string/handle_power_disconnection"
+                android:defaultValue="true" />
+
+            <CheckBoxPreference
                 android:key="handle_power"
                 android:title="@string/handle_power"
                 android:defaultValue="false" />

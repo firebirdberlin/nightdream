@@ -62,6 +62,7 @@ OR
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">car dock</string>
     <string name="handle_power_desk">desk dock</string>
+    <string name="handle_power_disconnection">Stop automatically</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">wireless charger</string>
     <string name="mute_ringer">mute ringer</string>
