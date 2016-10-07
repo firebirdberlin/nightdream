@@ -20,6 +20,8 @@
             android:textColor="#C2C2C2"
             android:textSize="50sp"
             android:clickable="true"
+            android:singleLine="true"
+            android:ellipsize="end"
             custom:format12Hr="h:mm a"
             custom:format24Hr="kk:mm"/>
 <!--
@@ -46,6 +48,8 @@
             android:textColor="#C2C2C2"
             android:textSize="30sp"
             android:paddingTop="5sp"
+            android:singleLine="true"
+            android:ellipsize="end"
             custom:format12Hr="dd. MMMM yyyy"
             custom:format24Hr="dd. MMMM yyyy" />
 </LinearLayout>
