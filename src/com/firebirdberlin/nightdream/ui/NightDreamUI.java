@@ -10,11 +10,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,6 +39,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
@@ -83,7 +86,7 @@ public class NightDreamUI {
     private LinearLayout notificationbar;
     private Settings settings = null;
     private SoundMeter soundmeter;
-    private TextView brightnessView = null;
+    private ProgressBar brightnessProgress = null;
     private TextView batteryView = null;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility = null;
@@ -106,7 +109,7 @@ public class NightDreamUI {
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
-        brightnessView = (TextView) rootView.findViewById(R.id.battery);
+        brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
         batteryView = (TextView) rootView.findViewById(R.id.batteryView);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
@@ -196,10 +199,17 @@ public class NightDreamUI {
         clockLayout.setTertiaryColor(settings.tertiaryColor);
     }
 
+    private int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
+
     void setColor() {
         alarmTime.setTextColor(settings.secondaryColor);
         batteryView.setTextColor(settings.secondaryColor);
-        brightnessView.setTextColor(settings.secondaryColor);
         gmailNumber.setTextColor(settings.secondaryColor);
         twitterNumber.setTextColor(settings.secondaryColor);
         whatsappNumber.setTextColor(settings.secondaryColor);
@@ -210,6 +220,15 @@ public class NightDreamUI {
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
 
+        Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
+        if (Build.VERSION.SDK_INT < 21) {
+            brightnessDrawable.setColorFilter(settings.clockColor, PorterDuff.Mode.MULTIPLY);
+        } else {
+            brightnessProgress.setProgressTintList(ColorStateList.valueOf(settings.clockColor));
+            brightnessProgress.setProgressBackgroundTintList(
+                    ColorStateList.valueOf(adjustAlpha(settings.clockColor, 0.4f)));
+        }
+        brightnessProgress.setVisibility(View.INVISIBLE);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -600,7 +619,7 @@ public class NightDreamUI {
     private Runnable hideBrightnessLevel = new Runnable() {
        @Override
        public void run() {
-           setAlpha(brightnessView, 0.f, 2000);
+           setAlpha(brightnessProgress, 0.f, 2000);
            handler.postDelayed(hideBrightnessView, 2010);
        }
     };
@@ -608,7 +627,7 @@ public class NightDreamUI {
     private Runnable hideBrightnessView = new Runnable() {
        @Override
        public void run() {
-           brightnessView.setVisibility(View.GONE);
+           brightnessProgress.setVisibility(View.INVISIBLE);
        }
     };
 
@@ -630,7 +649,7 @@ public class NightDreamUI {
     };
 
     public void onClockClicked() {
-        brightnessView.setVisibility(View.GONE);
+        brightnessProgress.setVisibility(View.INVISIBLE);
         updateBatteryView();
         showAlarmClock();
     }
@@ -723,10 +742,8 @@ public class NightDreamUI {
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (click.y >= 0.2 * size.y) {// upper 20% of the screen
-                    brightnessView.setVisibility(View.GONE);
+                    brightnessProgress.setVisibility(View.INVISIBLE);
                     updateBatteryView();
-                } else {
-                    batteryView.setVisibility(View.GONE);
                 }
 
                 showAlarmClock();
@@ -756,14 +773,10 @@ public class NightDreamUI {
                     settings.dim_offset += dx;
                     settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
 
-                    int c = (int) ( (settings.dim_offset + 1.f) / 2.f * 11.f);
-                    String s = "";
-                    for (int i = 0; i < c; i++) s +="|";
-
-                    brightnessView.setText(s);
-                    batteryView.setVisibility(View.GONE);
-                    brightnessView.setVisibility(View.VISIBLE);
-                    setAlpha(brightnessView, 1.f, 0);
+                    int value = (int) (100.f * (settings.dim_offset + 1.f));
+                    brightnessProgress.setProgress(value);
+                    brightnessProgress.setVisibility(View.VISIBLE);
+                    setAlpha(brightnessProgress, 1.f, 0);
                     removeCallbacks(hideBrightnessLevel);
                     removeCallbacks(hideBrightnessView);
 
