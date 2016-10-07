@@ -1,6 +1,6 @@
 all:
 	ant -f Pro_build.xml release
-	make install
+	make install OPT="$(OPT)"
 
 debug:
 	ant -f Pro_build.xml debug
@@ -12,13 +12,13 @@ installemulator:
 	adb -e install -r bin/Pro/NightDream-release.apk
 
 installdebug:
-	adb install -r bin/Pro/NightDream-debug.apk
+	adb $(OPT) install -r bin/Pro/NightDream-debug.apk
 
 installdebugemulator:
 	adb -e install -r bin/Pro/NightDream-debug.apk
 
 uninstall:
-	adb -d uninstall com.firebirdberlin.nightdream
+	adb $(OPT) -d uninstall com.firebirdberlin.nightdream
 
 clean:
 	ant -f Pro_build.xml clean
@@ -28,7 +28,7 @@ clear-data:
 	adb $(OPT) shell pm clear com.firebirdberlin.nightdream
 
 start:
-	adb shell am start -n com.firebirdberlin.nightdream/com.firebirdberlin.nightdream.NightDreamActivity
+	adb $(OPT) shell am start -n com.firebirdberlin.nightdream/com.firebirdberlin.nightdream.NightDreamActivity
 
 revoke-permissions:
 	adb shell pm revoke com.firebirdberlin.nightdream android.permission.READ_EXTERNAL_STORAGE
