@@ -53,7 +53,6 @@ OR
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
     <string name="donate_bitcoin">Bitcoin</string>
-    <string name="donate_paypal">Paypal</string>
     <string name="recommend">Recommend app</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend_app_desc">Choose an app to share your recommendation.</string>

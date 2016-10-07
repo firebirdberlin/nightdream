@@ -223,11 +223,6 @@
             </Preference>
 
             <Preference
-                android:key="openDonationPage"
-                android:icon="@drawable/ic_paypal"
-                android:title="@string/donate"/>
-
-            <Preference
                 android:key="recommendApp"
                 android:icon="@drawable/ic_share"
                 android:title="@string/recommend"/>

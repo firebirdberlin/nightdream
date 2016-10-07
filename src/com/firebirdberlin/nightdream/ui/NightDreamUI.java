@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.Random;
 

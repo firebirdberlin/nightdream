@@ -281,11 +281,6 @@
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/donate">
-                <Preference
-                    android:key="openDonationPage"
-                    android:icon="@drawable/ic_paypal"
-                    android:title="@string/donate_paypal"/>
-
                 <de.firebirdberlin.preference.BitcoinDonationPreference
                     android:icon="@drawable/ic_bitcoin"
                     android:title="@string/donate_bitcoin"/>
