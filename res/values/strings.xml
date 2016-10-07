@@ -53,7 +53,6 @@ OR
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
     <string name="donate_bitcoin">Bitcoin</string>
-    <string name="donate_paypal">Paypal</string>
     <string name="recommend">Recommend app</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
@@ -62,6 +61,7 @@ OR
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">car dock</string>
     <string name="handle_power_desk">desk dock</string>
+    <string name="handle_power_disconnection">Stop automatically</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">wireless charger</string>
     <string name="mute_ringer">mute ringer</string>

@@ -355,11 +355,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnPowerDisconnected event) {
-        handler.removeCallbacks(finishApp);
-        if ( isChargingWireless ) {
-            handler.postDelayed(finishApp, 5000);
-        } else {
-            finish();
+        if ( mySettings.handle_power_disconnection ) {
+            handler.removeCallbacks(finishApp);
+            if ( isChargingWireless ) {
+                handler.postDelayed(finishApp, 5000);
+            } else {
+                finish();
+            }
         }
     }
 
@@ -371,10 +373,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     class ReceiverShutDown extends BroadcastReceiver{
+        // this receiver is needed to shutdown the app at the end of the autostart time range
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
-            finish();
+            if ( mySettings.handle_power_disconnection ) {
+                finish();
+            }
         }
     }
 

@@ -75,15 +75,6 @@ public class PreferencesActivityv9 extends PreferenceActivity {
             }
         });
 
-
-        Preference goToDonation = (Preference) findPreference("openDonationPage");
-        goToDonation.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                openDonationPage();
-                return true;
-            }
-        });
-
         Preference recommendApp = (Preference) findPreference("recommendApp");
         recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -136,12 +127,6 @@ public class PreferencesActivityv9 extends PreferenceActivity {
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
 
         startActivityForResult(chooserIntent, RESULT_LOAD_IMAGE);
-    }
-
-    private void openDonationPage() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5PX9XVHHE6XP8"));
-        startActivity(browserIntent);
     }
 
     private void recommendApp() {

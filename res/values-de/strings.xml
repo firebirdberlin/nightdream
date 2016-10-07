@@ -35,6 +35,7 @@
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">Dock (Auto)</string>
     <string name="handle_power_desk">Dock (Schreibtisch)</string>
+    <string name="handle_power_disconnection">Automatisch beenden</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
     <string name="mute_ringer">lautlos</string>

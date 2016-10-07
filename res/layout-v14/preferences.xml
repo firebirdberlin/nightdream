@@ -8,6 +8,11 @@
             android:key="autostart">
 
             <SwitchPreference
+                android:key="handle_power_disconnection"
+                android:title="@string/handle_power_disconnection"
+                android:defaultValue="true" />
+
+            <SwitchPreference
                 android:key="handle_power"
                 android:title="@string/handle_power"
                 android:defaultValue="false" />
@@ -276,11 +281,6 @@
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/donate">
-                <Preference
-                    android:key="openDonationPage"
-                    android:icon="@drawable/ic_paypal"
-                    android:title="@string/donate_paypal"/>
-
                 <de.firebirdberlin.preference.BitcoinDonationPreference
                     android:icon="@drawable/ic_bitcoin"
                     android:title="@string/donate_bitcoin"/>

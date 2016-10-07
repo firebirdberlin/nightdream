@@ -8,6 +8,11 @@
             android:key="autostart">
 
             <CheckBoxPreference
+                android:key="handle_power_disconnection"
+                android:title="@string/handle_power_disconnection"
+                android:defaultValue="true" />
+
+            <CheckBoxPreference
                 android:key="handle_power"
                 android:title="@string/handle_power"
                 android:defaultValue="false" />
@@ -216,11 +221,6 @@
                     android:data="https://github.com/firebirdberlin/nightdream"/>
 
             </Preference>
-
-            <Preference
-                android:key="openDonationPage"
-                android:icon="@drawable/ic_paypal"
-                android:title="@string/donate"/>
 
             <Preference
                 android:key="recommendApp"
