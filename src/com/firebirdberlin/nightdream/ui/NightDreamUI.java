@@ -62,7 +62,6 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 public class NightDreamUI {
@@ -762,6 +761,7 @@ public class NightDreamUI {
                 case MotionEvent.ACTION_DOWN:
                     removeCallbacks(hideBrightnessLevel);
                     removeCallbacks(hideBrightnessView);
+                    handler.postDelayed(hideBrightnessLevel, 1000);
                     setDimOffset = true;
                     dim_offset_init_x = click.x;
                     return true;
@@ -779,6 +779,7 @@ public class NightDreamUI {
                     setAlpha(brightnessProgress, 1.f, 0);
                     removeCallbacks(hideBrightnessLevel);
                     removeCallbacks(hideBrightnessView);
+                    handler.postDelayed(hideBrightnessLevel, 1000);
 
                     dim_offset_init_x = click.x;
 
@@ -929,10 +930,6 @@ public class NightDreamUI {
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
-    }
-
-    public void onEvent(OnPowerConnected event) {
-        setupScreenAnimation();
     }
 
     static int showcaseCounter = 0;
