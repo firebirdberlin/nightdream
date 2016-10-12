@@ -10,11 +10,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,6 +39,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
@@ -59,7 +62,6 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 public class NightDreamUI {
@@ -83,7 +85,8 @@ public class NightDreamUI {
     private LinearLayout notificationbar;
     private Settings settings = null;
     private SoundMeter soundmeter;
-    private TextView batteryView;
+    private ProgressBar brightnessProgress = null;
+    private TextView batteryView = null;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility = null;
     private View rootView = null;
@@ -105,7 +108,8 @@ public class NightDreamUI {
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
-        batteryView = (TextView) rootView.findViewById(R.id.battery);
+        brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
+        batteryView = (TextView) rootView.findViewById(R.id.batteryView);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
@@ -194,6 +198,14 @@ public class NightDreamUI {
         clockLayout.setTertiaryColor(settings.tertiaryColor);
     }
 
+    private int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
+
     void setColor() {
         alarmTime.setTextColor(settings.secondaryColor);
         batteryView.setTextColor(settings.secondaryColor);
@@ -207,6 +219,15 @@ public class NightDreamUI {
         whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
 
+        Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
+        if (Build.VERSION.SDK_INT < 21) {
+            brightnessDrawable.setColorFilter(settings.clockColor, PorterDuff.Mode.MULTIPLY);
+        } else {
+            brightnessProgress.setProgressTintList(ColorStateList.valueOf(settings.clockColor));
+            brightnessProgress.setProgressBackgroundTintList(
+                    ColorStateList.valueOf(adjustAlpha(settings.clockColor, 0.4f)));
+        }
+        brightnessProgress.setVisibility(View.INVISIBLE);
 
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
@@ -322,11 +343,24 @@ public class NightDreamUI {
                 long est = batteryValue.getEstimateMillis(reference)/1000; // estimated seconds
                 formatBatteryEstimate(percentage, est);
             }  else {
-                batteryView.setText(String.format("% 3d %%", (int) percentage));
+                batteryView.setText(String.format("%3d %%", (int) percentage));
             }
         } else { // not charging
             long est = batteryValue.getDischargingEstimateMillis(reference)/1000; // estimated seconds
             formatBatteryEstimate(percentage, est);
+        }
+        batteryView.setVisibility(View.VISIBLE);
+    }
+
+    private void formatBatteryEstimate(float percentage, long est) {
+        Log.i(TAG, String.valueOf(est));
+        if (est > 0){
+            long h = est / 3600;
+            long m  = ( est % 3600 ) / 60;
+            batteryView.setText(String.format("% 3d %% -- %02d:%02d",
+                                              (int) percentage, (int) h, (int) m));
+        } else {
+            batteryView.setText(String.format("%3d %%", (int) percentage));
         }
     }
 
@@ -339,18 +373,6 @@ public class NightDreamUI {
         } else {
             screen_alpha_animation_duration = 0;
             screen_transition_animation_duration = 0;
-        }
-    }
-
-    private void formatBatteryEstimate(float percentage, long est) {
-        Log.i(TAG, String.valueOf(est));
-        if (est > 0){
-            long h = est / 3600;
-            long m  = ( est % 3600 ) / 60;
-            batteryView.setText(String.format("% 3d %% -- %02d:%02d",
-                                              (int) percentage, (int) h, (int) m));
-        } else {
-            batteryView.setText(String.format("% 3d %%", (int) percentage));
         }
     }
 
@@ -596,8 +618,15 @@ public class NightDreamUI {
     private Runnable hideBrightnessLevel = new Runnable() {
        @Override
        public void run() {
-           setAlpha(batteryView, 0.f, 2000);
-           handler.postDelayed(hideBrightnessText, 2100);
+           setAlpha(brightnessProgress, 0.f, 2000);
+           handler.postDelayed(hideBrightnessView, 2010);
+       }
+    };
+
+    private Runnable hideBrightnessView = new Runnable() {
+       @Override
+       public void run() {
+           brightnessProgress.setVisibility(View.INVISIBLE);
        }
     };
 
@@ -618,15 +647,8 @@ public class NightDreamUI {
        }
     };
 
-    private Runnable hideBrightnessText = new Runnable() {
-       @Override
-       public void run() {
-           updateBatteryView();
-           setAlpha(batteryView, 1.f, 100);
-       }
-    };
-
     public void onClockClicked() {
+        brightnessProgress.setVisibility(View.INVISIBLE);
         updateBatteryView();
         showAlarmClock();
     }
@@ -718,7 +740,11 @@ public class NightDreamUI {
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                updateBatteryView();
+                if (click.y >= 0.2 * size.y) {// upper 20% of the screen
+                    brightnessProgress.setVisibility(View.INVISIBLE);
+                    updateBatteryView();
+                }
+
                 showAlarmClock();
                 event_consumed = true;
                 break;
@@ -734,6 +760,8 @@ public class NightDreamUI {
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     removeCallbacks(hideBrightnessLevel);
+                    removeCallbacks(hideBrightnessView);
+                    handler.postDelayed(hideBrightnessLevel, 1000);
                     setDimOffset = true;
                     dim_offset_init_x = click.x;
                     return true;
@@ -745,14 +773,13 @@ public class NightDreamUI {
                     settings.dim_offset += dx;
                     settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
 
-                    int c = (int) ( (settings.dim_offset + 1.f) / 2.f * 11.f);
-                    String s = "";
-                    for (int i = 0; i < c; i++) s +="|";
-
-                    batteryView.setText(s);
-                    setAlpha(batteryView, 1.f, 200);
-                    setAlpha(notificationbar, 1.f, 200);
+                    int value = (int) (100.f * (settings.dim_offset + 1.f));
+                    brightnessProgress.setProgress(value);
+                    brightnessProgress.setVisibility(View.VISIBLE);
+                    setAlpha(brightnessProgress, 1.f, 0);
                     removeCallbacks(hideBrightnessLevel);
+                    removeCallbacks(hideBrightnessView);
+                    handler.postDelayed(hideBrightnessLevel, 1000);
 
                     dim_offset_init_x = click.x;
 
@@ -763,7 +790,6 @@ public class NightDreamUI {
                         setDimOffset = false;
                         settings.setBrightnessOffset(settings.dim_offset);
                         handler.postDelayed(hideBrightnessLevel, 1000);
-                        //dimScreen(10000, last_ambient, settings.dim_offset);
                         return true;
                     }
                     break;
@@ -904,10 +930,6 @@ public class NightDreamUI {
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
-    }
-
-    public void onEvent(OnPowerConnected event) {
-        setupScreenAnimation();
     }
 
     static int showcaseCounter = 0;

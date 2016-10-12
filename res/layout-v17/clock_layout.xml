@@ -17,6 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textColor="#C2C2C2"
+            android:singleLine="true"
+            android:ellipsize="none"
             android:translationX="0sp"
             android:translationY="0sp"
             />
@@ -43,5 +45,7 @@
             android:format12Hour="dd. MMMM yyyy"
             android:format24Hour="dd. MMMM yyyy"
             android:textColor="#C2C2C2"
+            android:singleLine="true"
+            android:ellipsize="none"
             android:paddingTop="5sp" />
 </LinearLayout>
