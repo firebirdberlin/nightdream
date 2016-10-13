@@ -84,6 +84,16 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
+        Preference donationPreference = (Preference) findPreference("donation_play");
+        donationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                PreferencesActivity activity = (PreferencesActivity) getActivity();
+                activity.purchaseIntent(PreferencesActivity.ITEM_DONATION,
+                                        PreferencesActivity.REQUEST_CODE_PURCHASE_DONATION);
+                return true;
+            }
+        });
+
         Preference prefHandlePower = (Preference) findPreference("handle_power");
         Preference prefAmbientNoiseDetection = (Preference) findPreference("ambientNoiseDetection");
         Preference prefAmbientNoiseReactivation = (Preference) findPreference("reactivate_screen_on_noise");

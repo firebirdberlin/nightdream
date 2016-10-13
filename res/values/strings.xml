@@ -52,6 +52,8 @@ OR
     <string name="contribute_translation">Translation</string>
     <string name="credits">Credits</string>
     <string name="donate">Donate</string>
+    <string name="dialog_message_thank_you">Thank you very much!</string>
+    <string name="dialog_title_thank_you">Thanks</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="recommend">Recommend app</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
