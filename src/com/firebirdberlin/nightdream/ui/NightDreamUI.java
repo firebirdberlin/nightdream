@@ -16,7 +16,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
-import android.graphics.LightingColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -321,6 +320,7 @@ public class NightDreamUI {
         observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                fixScaleFactor();
                 clockLayout.setDesiredClockWidth();
             }
         });
@@ -329,7 +329,7 @@ public class NightDreamUI {
         if ( showcaseView != null ) {
             setupShowcaseView();
         } else {
-            handler.postDelayed(moveAround, 2000);
+            handler.postDelayed(moveAround, 1000);
         }
     }
 
@@ -700,19 +700,37 @@ public class NightDreamUI {
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            Point size = utility.getDisplaySize();
-            int screen_width = size.x;
             float s = detector.getScaleFactor();
-            s *= clockLayout.getScaleX();
-            int new_width = (int) (clockLayout.getWidth() * s);
-            if (s > 0.5f && new_width <= screen_width) {
-                clockLayout.setScaleX(s);
-                clockLayout.setScaleY(s);
-                clockLayout.invalidate();
-            }
+            applyScaleFactor(s);
             return false;
         }
     };
+
+    private void applyScaleFactor(float factor) {
+        Point size = utility.getDisplaySize();
+        int screen_width = size.x;
+        factor *= clockLayout.getScaleX();
+        int new_width = (int) (clockLayout.getWidth() * factor);
+        if (factor > 0.5f && new_width <= screen_width) {
+            clockLayout.setScaleX(factor);
+            clockLayout.setScaleY(factor);
+            clockLayout.invalidate();
+        }
+    }
+
+    private void fixScaleFactor() {
+        Point size = utility.getDisplaySize();
+        int screen_width = size.x;
+        float factor = clockLayout.getScaleX();
+        int new_width = (int) (clockLayout.getWidth() * factor);
+        if (new_width > screen_width) {
+            factor = 1.f;
+            settings.setScaleClock(factor);
+            clockLayout.setScaleX(factor);
+            clockLayout.setScaleY(factor);
+            clockLayout.invalidate();
+        }
+    }
 
     OnClickListener mOnClickListener = new OnClickListener() {
         public void onClick(View v) {
