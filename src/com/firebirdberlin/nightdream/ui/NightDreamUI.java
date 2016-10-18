@@ -316,12 +316,13 @@ public class NightDreamUI {
     }
 
     public void onConfigurationChanged() {
-        ViewTreeObserver observer = clockLayout.getViewTreeObserver();
+        final ViewTreeObserver observer = clockLayout.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 fixScaleFactor();
                 clockLayout.setDesiredClockWidth();
+                observer.removeOnGlobalLayoutListener(this);
             }
         });
 
