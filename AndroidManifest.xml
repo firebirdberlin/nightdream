@@ -4,6 +4,8 @@
     android:versionCode="90"
     android:versionName="2.2.13">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -58,6 +60,7 @@
     <service android:enabled="true" android:name=".NightModeListener" />
     <service android:enabled="true" android:name=".AlarmService" />
     <service android:enabled="true" android:name=".services.DownloadWeatherService" />
+    <service android:enabled="true" android:name=".services.LocationService" />
 
     <activity android:name=".PreferencesActivity"></activity>
     <activity android:name=".PreferencesActivityv9"></activity>

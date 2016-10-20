@@ -45,6 +45,9 @@ public class Settings {
     public boolean showDate = true;
     public boolean useInternalAlarm = true;
     public float dim_offset = 0.8f;
+    public float location_lon = 0.f;
+    public float location_lat = 0.f;
+    public long location_time = -1L;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
     public int background_mode = 1;
@@ -102,6 +105,9 @@ public class Settings {
         backgroundImageURI = settings.getString("backgroundImageURI", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
+        location_lat = settings.getFloat("location_lat", 0.f);
+        location_lon = settings.getFloat("location_lon", 0.f);
+        location_time = settings.getLong("location_time", -1L);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
@@ -285,6 +291,17 @@ public class Settings {
         reactivate_screen_on_noise = on;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("reactivate_screen_on_noise", on);
+        prefEditor.commit();
+    }
+
+    public void setLocation(float lon, float lat, long time) {
+        location_lon = lon;
+        location_lat = lat;
+        location_time = time;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("location_lon", lon);
+        prefEditor.putFloat("location_lat", lat);
+        prefEditor.putLong("location_time", time);
         prefEditor.commit();
     }
 

@@ -36,12 +36,13 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
+import com.firebirdberlin.nightdream.services.LocationService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
-    private static String TAG ="NightDreamActivity";
+    public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     private static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
@@ -126,9 +127,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     protected void onResume() {
         super.onResume();
-        DownloadWeatherService.start(this);
-        setKeepScreenOn(true);
         Log.i(TAG, "onResume()");
+        LocationService.start(this);
+        DownloadWeatherService.start(this);
+
+        setKeepScreenOn(true);
         mySettings = new Settings(this);
         alarmClock.setSettings(mySettings);
 
@@ -314,6 +317,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         startService(i);
 
         finish();
+    }
+
+    private void startLocationService() {
+        Intent i = new Intent(this, LocationService.class);
+        startService(i);
     }
 
     public void onEvent(OnClockClicked event){
