@@ -18,6 +18,7 @@ import java.net.URL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.firebirdberlin.nightdream.models.WeatherEntry;
 
 public class DownloadWeatherService extends Service {
     private static String TAG = "NightDream.DownloadWeatherService";
@@ -50,7 +51,7 @@ public class DownloadWeatherService extends Service {
     }
 
 
-    class HttpGetAsyncTask extends AsyncTask<String, Void, String>{
+    class HttpGetAsyncTask extends AsyncTask<String, Void, WeatherEntry>{
         private Context mContext;
 
         public HttpGetAsyncTask (Context context){
@@ -58,7 +59,8 @@ public class DownloadWeatherService extends Service {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected WeatherEntry doInBackground(String... params) {
+            WeatherEntry entry = new WeatherEntry();
             String response = "";
             String responseText = "";
             String urlstring = "http://api.openweathermap.org/data/2.5/weather?" +
@@ -85,21 +87,19 @@ public class DownloadWeatherService extends Service {
 
             try {
                 JSONObject json = new JSONObject(responseText);
-
                 JSONObject jsonMain = json.getJSONObject("main");
-                String temp = jsonMain.getString("temp");
                 JSONObject jsonSys = json.getJSONObject("sys");
-                String sunrise = jsonSys.getString("sunrise");
-                String sunset = jsonSys.getString("sunset");
-                Log.i(TAG, " >> sunrise = " + sunrise );
-                Log.i(TAG, " >> sunset = " + sunset );
-                Log.i(TAG, " >> temperature = " +  temp +" K");
                 JSONArray jsonWeather = json.getJSONArray("weather");
-                for (int i = 0; i < jsonWeather.length() ; i++ ) {
-                    JSONObject weatherObj = jsonWeather.getJSONObject(i);
-                    Log.i(TAG, " >> main:" + weatherObj.getString("main"));
-                    Log.i(TAG, " >> description:" + weatherObj.getString("description"));
-                    Log.i(TAG, " >> icon:" + weatherObj.getString("icon"));
+
+                entry.cityID = json.getInt("id");
+                entry.cityName = json.getString("name");
+                entry.timestamp = json.getLong("dt");
+                entry.temperature = jsonMain.getInt("temp");
+                entry.sunriseTime = jsonSys.getLong("sunrise");
+                entry.sunsetTime = jsonSys.getLong("sunset");
+                if ( jsonWeather.length() > 0 ) {
+                    JSONObject weatherObj = jsonWeather.getJSONObject(0);
+                    entry.weatherIcon = weatherObj.getString("icon");
                 }
 
             } catch (Exception e) {
@@ -109,7 +109,7 @@ public class DownloadWeatherService extends Service {
                 // JSONException
             }
 
-            return response;
+            return entry;
         }
 
         private String getResponseText(HttpURLConnection c) throws IOException {
@@ -124,10 +124,10 @@ public class DownloadWeatherService extends Service {
         }
 
         @Override
-        protected void onPostExecute(String response) {
-            super.onPostExecute(response);
+        protected void onPostExecute(WeatherEntry entry) {
+            super.onPostExecute(entry);
 
-            if (response == null){
+            if (entry == null){
                 stopSelf();
                 return;
             }
