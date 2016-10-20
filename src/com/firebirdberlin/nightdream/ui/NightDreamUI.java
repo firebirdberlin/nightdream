@@ -720,6 +720,8 @@ public class NightDreamUI {
     }
 
     private void fixScaleFactor() {
+        if ( Build.VERSION.SDK_INT < 12 ) return;
+
         Point size = utility.getDisplaySize();
         int screen_width = size.x;
         float factor = clockLayout.getScaleX();
