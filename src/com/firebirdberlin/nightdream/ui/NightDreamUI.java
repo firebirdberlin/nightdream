@@ -61,6 +61,7 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 public class NightDreamUI {
@@ -946,6 +947,10 @@ public class NightDreamUI {
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
+    }
+
+    public void onEvent(OnWeatherDataUpdated event){
+        clockLayout.update(event.entry);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){

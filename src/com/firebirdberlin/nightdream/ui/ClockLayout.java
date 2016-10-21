@@ -19,6 +19,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
+import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.R;
 
 public class ClockLayout extends LinearLayout {
@@ -26,6 +27,7 @@ public class ClockLayout extends LinearLayout {
     private Context context = null;
     private TextView clock = null;
     private TextView date = null;
+    private WeatherLayout weatherLayout = null;
     private View divider = null;
 
     public ClockLayout(Context context) {
@@ -57,6 +59,7 @@ public class ClockLayout extends LinearLayout {
     protected void onFinishInflate() {
         clock = (TextView) findViewById(R.id.clock);
         date = (TextView) findViewById(R.id.date);
+        weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
         divider = (View) findViewById(R.id.divider);
     }
 
@@ -164,4 +167,8 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
+    public void update(WeatherEntry entry) {
+        if (weatherLayout == null) return;
+        weatherLayout.update(entry);
+    }
 }

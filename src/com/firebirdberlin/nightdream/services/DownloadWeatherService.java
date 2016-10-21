@@ -96,7 +96,7 @@ public class DownloadWeatherService extends Service {
                 entry.cityID = json.getInt("id");
                 entry.cityName = json.getString("name");
                 entry.timestamp = json.getLong("dt");
-                entry.temperature = jsonMain.getInt("temp");
+                entry.temperature = jsonMain.getDouble("temp");
                 entry.sunriseTime = jsonSys.getLong("sunrise");
                 entry.sunsetTime = jsonSys.getLong("sunset");
                 if ( jsonWeather.length() > 0 ) {

@@ -4,7 +4,7 @@ public class WeatherEntry {
     public long timestamp = 0L;
     public int cityID = 0;
     public String cityName = "";
-    public int temperature = 0;
+    public double temperature = 0.f;
     public long sunriseTime = 0L;
     public long sunsetTime = 0L;
     public String weatherIcon = "";
