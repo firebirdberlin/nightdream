@@ -18,6 +18,8 @@ import java.net.URL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.greenrobot.event.EventBus;
+import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
 
 public class DownloadWeatherService extends Service {
@@ -132,6 +134,7 @@ public class DownloadWeatherService extends Service {
                 return;
             }
 
+            EventBus.getDefault().post(new OnWeatherDataUpdated(entry));
             Log.d(TAG, "Download finished.");
 
             stopSelf();
