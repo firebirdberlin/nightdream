@@ -3,6 +3,8 @@ package com.firebirdberlin.nightdream.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -36,7 +38,11 @@ public class DownloadWeatherService extends Service {
         mContext = this;
         Log.d(TAG, TAG + " started");
 
-        HttpGetAsyncTask getWeatherTask = new HttpGetAsyncTask(this);
+        Bundle bundle = intent.getExtras();
+        float lat = bundle.getFloat("lat");
+        float lon = bundle.getFloat("lon");
+
+        HttpGetAsyncTask getWeatherTask = new HttpGetAsyncTask(this, lat, lon);
         getWeatherTask.execute();
 
         return Service.START_NOT_STICKY;
@@ -55,9 +61,13 @@ public class DownloadWeatherService extends Service {
 
     class HttpGetAsyncTask extends AsyncTask<String, Void, WeatherEntry>{
         private Context mContext;
+        private float lat;
+        private float lon;
 
-        public HttpGetAsyncTask (Context context){
+        public HttpGetAsyncTask (Context context, float lat, float lon){
             mContext = context;
+            this.lat = lat;
+            this.lon = lon;
         }
 
         @Override
@@ -66,15 +76,13 @@ public class DownloadWeatherService extends Service {
             String response = "";
             String responseText = "";
             String urlstring = "http://api.openweathermap.org/data/2.5/weather?" +
-                               "lat=52.5&" +
-                               "lon=13.4&" +
+                               "lat=" + String.valueOf(lat) + "&" +
+                               "lon=" + String.valueOf(lon) + "&" +
                                "appid=645d3eb40425e8af8edc25ddbf153db8";
             Log.i(TAG, "requesting " + urlstring);
             try {
                 URL url = new URL(urlstring);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                //InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                //readStream(in);
                 response = urlConnection.getResponseMessage();
                 if ( urlConnection.getResponseCode() == 200 ) {
                     responseText = getResponseText(urlConnection);
@@ -141,9 +149,10 @@ public class DownloadWeatherService extends Service {
         }
     }
 
-    public static void start(Context context) {
+    public static void start(Context context, Location location) {
         Intent i = new Intent(context, DownloadWeatherService.class);
-        //i.putExtra("start alarm", true);
+        i.putExtra("lat", (float) location.getLatitude());
+        i.putExtra("lon", (float) location.getLongitude());
         context.startService(i);
     }
 }

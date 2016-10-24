@@ -35,8 +35,6 @@ import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.BatteryValue;
-import com.firebirdberlin.nightdream.services.DownloadWeatherService;
-import com.firebirdberlin.nightdream.services.LocationService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
@@ -128,8 +126,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
-        LocationService.start(this);
-        DownloadWeatherService.start(this);
 
         setKeepScreenOn(true);
         mySettings = new Settings(this);
@@ -317,11 +313,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         startService(i);
 
         finish();
-    }
-
-    private void startLocationService() {
-        Intent i = new Intent(this, LocationService.class);
-        startService(i);
     }
 
     public void onEvent(OnClockClicked event){

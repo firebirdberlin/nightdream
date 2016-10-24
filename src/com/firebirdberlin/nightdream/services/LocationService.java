@@ -18,10 +18,13 @@ import android.provider.Settings.Secure;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
+import de.greenrobot.event.EventBus;
+import com.firebirdberlin.nightdream.events.OnLocationUpdated;
 import com.firebirdberlin.nightdream.Settings;
 
 public class LocationService extends Service {
     private static String TAG = "NightDream.LocationService";
+    private static long MAX_AGE_IN_MILLIS = 30 * 60 * 1000;
     private LocationManager locationManager = null;
 
     private Context mContext = null;
@@ -42,6 +45,7 @@ public class LocationService extends Service {
         running = true;
 
         mContext = this;
+
         final Settings settings = new Settings(mContext);
         if (!settings.hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) ) {
             Log.w(TAG, "No location permissions granted !");
@@ -49,48 +53,48 @@ public class LocationService extends Service {
             return Service.START_REDELIVER_INTENT;
         }
 
-        Location location = getLastKnownLocation();
-        storeLocation(location);
-
         boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                storeLocation(location);
+        Location location = getLastKnownLocation();
+        long now = System.currentTimeMillis();
+        long time = location.getTime();
 
-                float lon = (float) location.getLongitude();
-                float lat = (float) location.getLatitude();
-                long time = location.getTime();
+        if ( now - time < MAX_AGE_IN_MILLIS ) {
+            storeLocation(location);
+            stopSelf();
+        } else {
+            locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    storeLocation(location);
+                    stopSelf();
+                }
 
-                settings.setLocation(lon, lat, time);
-                stopSelf();
+                public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+                public void onProviderEnabled(String provider) {}
+
+                public void onProviderDisabled(String provider) {}
+            };
+
+            if (isNetworkEnabled) {
+                Log.i(TAG, "Requesting network locations");
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            }
+            if (isGPSEnabled) {
+                Log.i(TAG, "Requesting GPS locations");
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             }
 
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                stopSelf();
+            }
+            else
+            {
+                setTimeout(60000);
+            }
 
-            public void onProviderEnabled(String provider) {}
-
-            public void onProviderDisabled(String provider) {}
-        };
-
-        if (isNetworkEnabled) {
-            Log.i(TAG, "Requesting network locations");
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         }
-        if (isGPSEnabled) {
-            Log.i(TAG, "Requesting GPS locations");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        }
-
-        if (!isGPSEnabled && !isNetworkEnabled) {
-            stopSelf();
-        }
-        else
-        {
-            setTimeout(60000);
-        }
-
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -117,6 +121,7 @@ public class LocationService extends Service {
 
         Log.i(TAG, "storing location: " + String.valueOf(lon) + ", " + String.valueOf(lat));
         settings.setLocation(lon, lat, time);
+        EventBus.getDefault().post(new OnLocationUpdated(location));
     }
 
     private Location getLastKnownLocation() {
