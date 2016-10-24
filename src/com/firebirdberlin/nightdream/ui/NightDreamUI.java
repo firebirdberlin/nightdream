@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -320,14 +321,18 @@ public class NightDreamUI {
         handler.removeCallbacks(runnable);
     }
 
-    public void onConfigurationChanged() {
-        final ViewTreeObserver observer = clockLayout.getViewTreeObserver();
+    public void onConfigurationChanged(final Configuration newConfig) {
+        ViewTreeObserver observer = clockLayout.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 fixScaleFactor();
+                clockLayout.updateLayout(newConfig);
                 clockLayout.setDesiredClockWidth();
-                observer.removeOnGlobalLayoutListener(this);
+                ViewTreeObserver observer = clockLayout.getViewTreeObserver();
+                if (observer != null) {
+                    observer.removeOnGlobalLayoutListener(this);
+                }
             }
         });
 
@@ -603,6 +608,8 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
+            Configuration config = mContext.getResources().getConfiguration();
+            clockLayout.updateLayout(config);
             clockLayout.setDesiredClockWidth();
 
             float s = settings.scaleClock;
@@ -955,7 +962,12 @@ public class NightDreamUI {
 
     public void onEvent(OnLocationUpdated event){
         if ( event == null ) return;
-        DownloadWeatherService.start(mContext, event.entry);
+        if ( event.entry != null ) {
+            DownloadWeatherService.start(mContext, event.entry);
+        } else {
+            clockLayout.clearWeather();
+        }
+
     }
 
     public void onEvent(OnWeatherDataUpdated event){

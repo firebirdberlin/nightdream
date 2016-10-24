@@ -108,6 +108,7 @@ public class LocationService extends Service {
 
     Runnable gpsTimeout = new Runnable() {
         public void run() {
+            EventBus.getDefault().post(new OnLocationUpdated(null));
             stopSelf();
         }
     };

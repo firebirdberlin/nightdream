@@ -7,32 +7,37 @@
 <!--
         time
 -->
-        <TextClock
-            android:clickable="true"
-            android:fontFamily="sans-serif-thin"
-            android:format12Hour="h:mm a"
-            android:format24Hour="kk:mm"
-            android:id="@+id/clock"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textColor="#C2C2C2"
-            android:singleLine="true"
-            android:ellipsize="none"
-            android:translationX="0sp"
-            android:translationY="0sp"
-            />
+    <TextClock
+        android:clickable="true"
+        android:fontFamily="sans-serif-thin"
+        android:format12Hour="h:mm a"
+        android:format24Hour="kk:mm"
+        android:id="@+id/clock"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textColor="#C2C2C2"
+        android:singleLine="true"
+        android:ellipsize="none"
+        android:translationX="0sp"
+        android:translationY="0sp"
+        />
 <!--
-        divider
+    divider
 -->
-        <View
-            android:id="@+id/divider"
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:background="#C2C2C2" />
+    <View
+        android:id="@+id/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:background="#C2C2C2" />
 <!--
-        Date
+    Date
 -->
+    <LinearLayout
+        android:id="@+id/info"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
         <TextClock
             android:id="@+id/date"
             android:layout_width="wrap_content"
@@ -55,4 +60,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             />
+    </LinearLayout>
 </LinearLayout>

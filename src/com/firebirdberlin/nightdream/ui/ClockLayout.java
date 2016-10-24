@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream.ui;
 import java.util.Locale;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -28,6 +29,7 @@ public class ClockLayout extends LinearLayout {
     private TextView clock = null;
     private TextView date = null;
     private WeatherLayout weatherLayout = null;
+    private LinearLayout infoLayout = null;
     private View divider = null;
 
     public ClockLayout(Context context) {
@@ -59,6 +61,7 @@ public class ClockLayout extends LinearLayout {
     protected void onFinishInflate() {
         clock = (TextView) findViewById(R.id.clock);
         date = (TextView) findViewById(R.id.date);
+        infoLayout = (LinearLayout) findViewById(R.id.info);
         weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
         divider = (View) findViewById(R.id.divider);
     }
@@ -105,6 +108,27 @@ public class ClockLayout extends LinearLayout {
     public void setDesiredClockWidth(int parentWidth){
         setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
         setDesiredWidth(date, parentWidth, 0.9f, 30.f);
+    }
+
+    public void updateLayout(Configuration config) {
+        switch (config.orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                setVerticalLayout();
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                setHorizontalLayout();
+                break;
+        }
+    }
+
+    private void setVerticalLayout() {
+        infoLayout.setOrientation(LinearLayout.VERTICAL);
+        weatherLayout.setPadding(0, spToPx(5), 0, 0);
+    }
+
+    private void setHorizontalLayout() {
+        infoLayout.setOrientation(LinearLayout.HORIZONTAL);
+        weatherLayout.setPadding(spToPx(10), 0, 0, 0);
     }
 
     private void setDesiredWidth(TextView view, int parentWidth, float desiredWidthPercent,
@@ -165,6 +189,10 @@ public class ClockLayout extends LinearLayout {
             tdate.setFormat12Hour(formatString);
             tdate.setFormat24Hour(formatString);
         }
+    }
+
+    public void clearWeather() {
+        weatherLayout.clear();
     }
 
     public void update(WeatherEntry entry) {

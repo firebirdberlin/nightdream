@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -17,13 +18,16 @@ import com.firebirdberlin.nightdream.ui.ClockLayout;
 public class ClockLayoutPreviewPreference extends Preference {
     private ClockLayout clockLayout = null;
     private View preferenceView = null;
+    private Context context = null;
 
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        this.context = context;
     }
 
     @Override
@@ -72,6 +76,8 @@ public class ClockLayoutPreviewPreference extends Preference {
 
         Utility utility = new Utility(getContext());
         Point size = utility.getDisplaySize();
+        Configuration config = context.getResources().getConfiguration();
+        clockLayout.updateLayout(config);
         clockLayout.setDesiredClockWidth(size.x - preferenceView.getPaddingLeft()
                                                 - preferenceView.getPaddingRight());
         clockLayout.invalidate();

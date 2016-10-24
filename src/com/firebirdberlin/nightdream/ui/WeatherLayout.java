@@ -1,6 +1,8 @@
 package com.firebirdberlin.nightdream.ui;
 
 
+import java.lang.Math;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -45,6 +47,11 @@ public class WeatherLayout extends LinearLayout {
         iconText.setTypeface(typeface);
     }
 
+    public void clear() {
+        iconText.setText("");
+        temperatureText.setText("");
+    }
+
     public void setTypeface(Typeface typeface) {
         if (iconText == null) return;
         temperatureText.setTypeface(typeface);
@@ -60,7 +67,7 @@ public class WeatherLayout extends LinearLayout {
         if (iconText == null) return;
         iconText.setText(iconToText(entry.weatherIcon));
 
-        temperatureText.setText(String.valueOf((int) toDegreesCelcius(entry.temperature)) + "°C");
+        temperatureText.setText(String.valueOf(toDegreesCelcius(entry.temperature)) + "°C");
         // temperatureText.setText(String.valueOf((int) toFahrenheit(entry.temperature)) + "°F");
     }
 
@@ -86,8 +93,8 @@ public class WeatherLayout extends LinearLayout {
         return "";
     }
 
-    private double toDegreesCelcius(double kelvin) {
-        return kelvin - 273.15f;
+    private long toDegreesCelcius(double kelvin) {
+        return Math.round(kelvin - 273.15);
     }
     private double toFahrenheit(double kelvin) {
         return kelvin * 1.8 - 459.67;
