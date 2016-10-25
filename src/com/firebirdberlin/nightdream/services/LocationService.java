@@ -30,6 +30,7 @@ public class LocationService extends Service {
     private Context mContext = null;
     private LocationListener locationListener = null;
     private boolean running = false;
+    private Location knownLocation = null;
 
     @Override
     public void onCreate(){
@@ -56,12 +57,11 @@ public class LocationService extends Service {
         boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        Location location = getLastKnownLocation();
+        knownLocation = getLastKnownLocation();
         long now = System.currentTimeMillis();
-        long time = location.getTime();
-
-        if ( now - time < MAX_AGE_IN_MILLIS ) {
-            storeLocation(location);
+        if ( knownLocation != null &&
+                now - knownLocation.getTime() < MAX_AGE_IN_MILLIS ) {
+            storeLocation(knownLocation);
             stopSelf();
         } else {
             locationListener = new LocationListener() {
@@ -108,7 +108,7 @@ public class LocationService extends Service {
 
     Runnable gpsTimeout = new Runnable() {
         public void run() {
-            EventBus.getDefault().post(new OnLocationUpdated(null));
+            EventBus.getDefault().post(new OnLocationUpdated(knownLocation));
             stopSelf();
         }
     };
