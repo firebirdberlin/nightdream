@@ -58,9 +58,12 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setColor(int color) {
-        if (iconText == null) return;
-        iconText.setTextColor(color);
-        temperatureText.setTextColor(color);
+        if (iconText != null) {
+            iconText.setTextColor(color);
+        }
+        if (temperatureText != null) {
+            temperatureText.setTextColor(color);
+        }
     }
 
     public void update(WeatherEntry entry) {

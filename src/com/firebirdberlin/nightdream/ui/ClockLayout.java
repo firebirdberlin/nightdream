@@ -79,6 +79,7 @@ public class ClockLayout extends LinearLayout {
     public void setSecondaryColor(int color) {
         if (date == null) return;
         date.setTextColor(color);
+        weatherLayout.setColor(color);
     }
 
     public void setTertiaryColor(int color) {
