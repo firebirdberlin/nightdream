@@ -67,12 +67,8 @@ public class ClockLayoutPreviewPreference extends Preference {
 
         clockLayout.setTimeFormat();
         clockLayout.setDateFormat(settings.dateFormat);
-
-        if (settings.showDate){
-            clockLayout.showDate();
-        } else {
-            clockLayout.hideDate();
-        }
+        clockLayout.showDate(settings.showDate);
+        clockLayout.showWeather(settings.showWeather);
 
         Utility utility = new Utility(getContext());
         Point size = utility.getDisplaySize();

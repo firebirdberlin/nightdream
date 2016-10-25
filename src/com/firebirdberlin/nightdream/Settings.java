@@ -43,6 +43,7 @@ public class Settings {
     public boolean muteRinger = false;
     public boolean restless_mode = true;
     public boolean showDate = true;
+    public boolean showWeather = false;
     public boolean useInternalAlarm = true;
     public float dim_offset = 0.8f;
     public float location_lon = 0.f;
@@ -118,6 +119,7 @@ public class Settings {
         scaleClock = settings.getFloat("scaleClock", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
+        showWeather = settings.getBoolean("showWeather", false);
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());

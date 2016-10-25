@@ -87,16 +87,26 @@ public class ClockLayout extends LinearLayout {
         divider.setBackgroundColor(color);
     }
 
-    public void showDate() {
-        date.setVisibility(View.VISIBLE);
-        divider.setVisibility(View.VISIBLE);
-        setBackgroundColor(Color.parseColor("#44000000"));
+    public void showDate(boolean on) {
+        date.setVisibility( (on) ? View.VISIBLE : View.GONE);
+        toggleDivider();
     }
 
-    public void hideDate() {
-        date.setVisibility(View.INVISIBLE);
-        divider.setVisibility(View.INVISIBLE);
-        setBackgroundColor(Color.parseColor("#00000000"));
+    public void showWeather(boolean on) {
+        weatherLayout.setVisibility( (on) ? View.VISIBLE : View.GONE);
+        toggleDivider();
+    }
+
+    private void toggleDivider() {
+        if (date.getVisibility() != View.VISIBLE
+                && weatherLayout.getVisibility() != View.VISIBLE) {
+
+            divider.setVisibility(View.INVISIBLE);
+            setBackgroundColor(Color.parseColor("#00000000"));
+        } else {
+            divider.setVisibility(View.VISIBLE);
+            setBackgroundColor(Color.parseColor("#44000000"));
+        }
     }
 
     public void setDesiredClockWidth(){

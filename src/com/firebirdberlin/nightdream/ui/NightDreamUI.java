@@ -187,11 +187,8 @@ public class NightDreamUI {
     private void setupClockLayout() {
         clockLayout.setTimeFormat();
         clockLayout.setDateFormat(settings.dateFormat);
-        if (settings.showDate){
-            clockLayout.showDate();
-        } else {
-            clockLayout.hideDate();
-        }
+        clockLayout.showDate(settings.showDate);
+        clockLayout.showWeather(settings.showWeather);
 
         if ( !settings.restless_mode ) {
             centerClockLayout();
@@ -330,8 +327,12 @@ public class NightDreamUI {
                 clockLayout.updateLayout(newConfig);
                 clockLayout.setDesiredClockWidth();
                 ViewTreeObserver observer = clockLayout.getViewTreeObserver();
-                if (observer != null) {
-                    observer.removeOnGlobalLayoutListener(this);
+                if (observer != null && observer.isAlive()) {
+                    if (Build.VERSION.SDK_INT >= 16) {
+                        observer.removeOnGlobalLayoutListener(this);
+                    } else {
+                        observer.removeGlobalOnLayoutListener(this);
+                    }
                 }
             }
         });
@@ -422,7 +423,7 @@ public class NightDreamUI {
             clockLayout.setPadding(i1, i2, 0, 0);
             clockLayout.invalidate();
         } else {
-            // determine a randowm position
+            // determine a random position
             // lower 150 px is reserved for alarm clockLayout
             // upper 90 px is for the battery stats
             int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());

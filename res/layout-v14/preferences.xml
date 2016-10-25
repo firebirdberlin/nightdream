@@ -89,6 +89,11 @@
                     android:title="@string/date_format"
                     android:key="dateFormat"/>
 
+                <SwitchPreference
+                    android:key="showWeather"
+                    android:title="@string/show_weather"
+                    android:defaultValue="true" />
+
                 <ListPreference
                     android:title="@string/typeface"
                     android:key="typeface"

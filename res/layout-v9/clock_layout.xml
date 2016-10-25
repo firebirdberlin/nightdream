@@ -35,6 +35,13 @@
 <!--
         Date
 -->
+    <LinearLayout
+        android:id="@+id/info"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/date"
@@ -42,7 +49,6 @@
             android:layout_height="wrap_content"
             android:translationX="0sp"
             android:translationY="0sp"
-            android:layout_gravity="center"
             android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:textColor="#C2C2C2"
@@ -51,5 +57,15 @@
             android:singleLine="true"
             android:ellipsize="end"
             custom:format12Hr="dd. MMMM yyyy"
-            custom:format24Hr="dd. MMMM yyyy" />
+            custom:format24Hr="dd. MMMM yyyy"
+            android:layout_gravity="center"
+            />
+
+        <com.firebirdberlin.nightdream.ui.WeatherLayout
+            android:id="@+id/weatherLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
 </LinearLayout>
