@@ -52,6 +52,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -165,8 +166,7 @@ public class NightDreamUI {
     public void onResume() {
 
         settings.reload();
-        clockLayout.update(settings.weatherEntry);
-        LocationService.start(mContext);
+        updateWeatherData();
 
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
@@ -186,6 +186,23 @@ public class NightDreamUI {
         showShowcase();
     }
 
+    private long lastLocationRequest = 0L;
+    private void updateWeatherData() {
+        if (! settings.showWeather ) return;
+        WeatherEntry entry = settings.weatherEntry;
+        long now = System.currentTimeMillis();
+        long requestAge = now - lastLocationRequest;
+        long diff = now - 1000 * entry.timestamp;
+        Log.d(TAG, "Weather: data age " + diff );
+        Log.d(TAG, "Time since last request " + requestAge );
+        if ( diff > 30 * 60 * 1000 && now - lastLocationRequest > 30 * 60 * 1000) {
+            Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
+            lastLocationRequest = now;
+            LocationService.start(mContext);
+        }
+
+    }
+
     private void setupClockLayout() {
         clockLayout.setTimeFormat();
         clockLayout.setDateFormat(settings.dateFormat);
@@ -200,6 +217,8 @@ public class NightDreamUI {
         clockLayout.setPrimaryColor(settings.clockColor);
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setTertiaryColor(settings.tertiaryColor);
+        clockLayout.setTemperatureUnit(settings.temperatureUnit);
+        clockLayout.update(settings.weatherEntry);
     }
 
     private int adjustAlpha(int color, float factor) {
@@ -626,6 +645,7 @@ public class NightDreamUI {
        public void run() {
            removeCallbacks(hideBrightnessLevel);
            updateClockPosition();
+           updateWeatherData();
 
            handler.postDelayed(this, 60000);
        }

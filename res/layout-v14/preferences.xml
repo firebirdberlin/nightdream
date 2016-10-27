@@ -92,7 +92,15 @@
                 <SwitchPreference
                     android:key="showWeather"
                     android:title="@string/show_weather"
-                    android:defaultValue="true" />
+                    android:defaultValue="false" />
+
+                <ListPreference
+                    android:title="@string/temperatureUnit"
+                    android:dependency="showWeather"
+                    android:key="temperatureUnit"
+                    android:defaultValue="1"
+                    android:entries="@array/temperatureUnit"
+                    android:entryValues="@array/temperatureUnitValues"/>
 
                 <ListPreference
                     android:title="@string/typeface"

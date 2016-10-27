@@ -73,6 +73,7 @@ public class DownloadWeatherService extends Service {
         @Override
         protected WeatherEntry doInBackground(String... params) {
             WeatherEntry entry = new WeatherEntry();
+            int responseCode = 0;
             String response = "";
             String responseText = "";
             String urlstring = "http://api.openweathermap.org/data/2.5/weather?" +
@@ -84,7 +85,8 @@ public class DownloadWeatherService extends Service {
                 URL url = new URL(urlstring);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 response = urlConnection.getResponseMessage();
-                if ( urlConnection.getResponseCode() == 200 ) {
+                responseCode = urlConnection.getResponseCode();
+                if ( responseCode == 200 ) {
                     responseText = getResponseText(urlConnection);
                 }
                 urlConnection.disconnect();
@@ -92,6 +94,8 @@ public class DownloadWeatherService extends Service {
             catch (Exception e) {
 
             }
+            if (responseCode != 200) return entry;
+
             Log.i(TAG, " >> response " + response);
             Log.i(TAG, " >> responseText " + responseText);
 
@@ -141,8 +145,9 @@ public class DownloadWeatherService extends Service {
                 stopSelf();
                 return;
             }
-
-            EventBus.getDefault().post(new OnWeatherDataUpdated(entry));
+            if ( entry.timestamp > WeatherEntry.INVALID ) {
+                EventBus.getDefault().post(new OnWeatherDataUpdated(entry));
+            }
             Log.d(TAG, "Download finished.");
 
             stopSelf();

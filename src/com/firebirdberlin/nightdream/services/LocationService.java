@@ -41,7 +41,7 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if ( running ) {
-            release();
+            return Service.START_REDELIVER_INTENT;
         }
         running = true;
 

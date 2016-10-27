@@ -87,6 +87,10 @@ public class ClockLayout extends LinearLayout {
         divider.setBackgroundColor(color);
     }
 
+    public void setTemperatureUnit(int unit) {
+        weatherLayout.setTemperatureUnit(unit);
+    }
+
     public void showDate(boolean on) {
         date.setVisibility( (on) ? View.VISIBLE : View.GONE);
         toggleDivider();

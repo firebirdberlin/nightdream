@@ -19,6 +19,7 @@ public class WeatherLayout extends LinearLayout {
     private Context context = null;
     private TextView iconText = null;
     private TextView temperatureText = null;
+    private int temperatureUnit = WeatherEntry.CELSIUS;
 
     public WeatherLayout(Context context) {
         super(context);
@@ -37,6 +38,10 @@ public class WeatherLayout extends LinearLayout {
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View child = inflater.inflate(R.layout.weather_layout, null);
         addView(child);
+    }
+
+    public void setTemperatureUnit(int unit) {
+        this.temperatureUnit = unit;
     }
 
     @Override
@@ -70,8 +75,16 @@ public class WeatherLayout extends LinearLayout {
         if (iconText == null || temperatureText == null) return;
         if (entry.timestamp > -1L) {
             iconText.setText(iconToText(entry.weatherIcon));
-            temperatureText.setText(String.valueOf(toDegreesCelcius(entry.temperature)) + "°C");
-            // temperatureText.setText(String.valueOf((int) toFahrenheit(entry.temperature)) + "°F");
+            switch (temperatureUnit) {
+                case WeatherEntry.CELSIUS:
+                    temperatureText.setText(toDegreesCelcius(entry.temperature) + "°C");
+                    break;
+                case WeatherEntry.FAHRENHEIT:
+                    temperatureText.setText(toDegreesFahrenheit(entry.temperature) + "°F");
+                    break;
+                default:
+                    temperatureText.setText(toKelvin(entry.temperature) + "K");
+            }
         } else {
             iconText.setText("");
             temperatureText.setText("");
@@ -103,7 +116,11 @@ public class WeatherLayout extends LinearLayout {
     private long toDegreesCelcius(double kelvin) {
         return Math.round(kelvin - 273.15);
     }
-    private double toFahrenheit(double kelvin) {
-        return kelvin * 1.8 - 459.67;
+
+    private long toDegreesFahrenheit(double kelvin) {
+        return Math.round(kelvin * 1.8 - 459.67);
+    }
+    private long toKelvin(double kelvin) {
+        return Math.round(kelvin);
     }
 }
