@@ -163,8 +163,10 @@ public class NightDreamUI {
     }
 
     public void onResume() {
-        LocationService.start(mContext);
+
         settings.reload();
+        clockLayout.update(settings.weatherEntry);
+        LocationService.start(mContext);
 
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
@@ -972,6 +974,7 @@ public class NightDreamUI {
     }
 
     public void onEvent(OnWeatherDataUpdated event){
+        settings.setWeatherEntry(event.entry);
         clockLayout.update(event.entry);
     }
 

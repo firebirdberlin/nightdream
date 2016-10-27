@@ -67,11 +67,15 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void update(WeatherEntry entry) {
-        if (iconText == null) return;
-        iconText.setText(iconToText(entry.weatherIcon));
-
-        temperatureText.setText(String.valueOf(toDegreesCelcius(entry.temperature)) + "°C");
-        // temperatureText.setText(String.valueOf((int) toFahrenheit(entry.temperature)) + "°F");
+        if (iconText == null || temperatureText == null) return;
+        if (entry.timestamp > -1L) {
+            iconText.setText(iconToText(entry.weatherIcon));
+            temperatureText.setText(String.valueOf(toDegreesCelcius(entry.temperature)) + "°C");
+            // temperatureText.setText(String.valueOf((int) toFahrenheit(entry.temperature)) + "°F");
+        } else {
+            iconText.setText("");
+            temperatureText.setText("");
+        }
     }
 
     private String iconToText(String code) {
