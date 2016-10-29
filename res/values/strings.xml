@@ -74,6 +74,7 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="preview">Preview</string>
+    <string name="purchaseWeatherData">Buy a license</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="restless_mode">move clock around</string>
     <string name="review_request">Please rate this application. Thanks !</string>
@@ -90,6 +91,7 @@ OR
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
     <string name="use_internal_alarm">Quick alarms</string>
+    <string name="weather">Weather</string>
     <string name="welcome_screen_title1">NightDream</string>
     <string name="welcome_screen_title2">Preferences</string>
     <string name="welcome_screen_title3">Screen brightness</string>

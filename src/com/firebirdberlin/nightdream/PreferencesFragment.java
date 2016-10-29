@@ -151,12 +151,20 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void togglePurchasePreferences() {
         Preference donationPreference = (Preference) findPreference("donation_play");
+        Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
+        Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
         donationPreference.setEnabled(! purchased_donation);
+        purchaseWeatherDataPreference.setEnabled(! purchased_weather_data);
+        enableWeatherDataPreference.setEnabled(purchased_weather_data);
+        donationPreference.setSummary("");
+        purchaseWeatherDataPreference.setSummary("");
         if (purchased_donation) {
             donationPreference.setSummary(R.string.dialog_message_thank_you);
-        } else {
-            donationPreference.setSummary("");
         }
+        if (purchased_weather_data) {
+            purchaseWeatherDataPreference.setSummary(R.string.dialog_message_thank_you);
+        }
+
     }
 
     public void purchaseIntent(String sku, int REQUEST_CODE) {
@@ -202,9 +210,12 @@ public class PreferencesFragment extends PreferenceFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
         addPreferencesFromResource(R.layout.preferences);
+        init();
+    }
+
+    private void init() {
         final Context context = mContext;
         settings = new Settings(mContext);
 
@@ -239,6 +250,14 @@ public class PreferencesFragment extends PreferenceFragment {
         donationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
+                return true;
+            }
+        });
+
+        Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
+        purchaseWeatherDataPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
                 return true;
             }
         });
@@ -282,6 +301,8 @@ public class PreferencesFragment extends PreferenceFragment {
                 settings.clear();
                 getPreferenceScreen().removeAll();
                 addPreferencesFromResource(R.layout.preferences);
+                init();
+                togglePurchasePreferences();
                 return true;
             }
         });
@@ -348,9 +369,9 @@ public class PreferencesFragment extends PreferenceFragment {
                     purchased_weather_data = true;
                     showThankYouDialog();
                 } else
-                    if (sku.equals(ITEM_WEATHER_DATA) ) {
-                        purchased_weather_data = true;
-                    }
+                if (sku.equals(ITEM_WEATHER_DATA) ) {
+                    purchased_weather_data = true;
+                }
             }
             catch (JSONException e) {
                 e.printStackTrace();
