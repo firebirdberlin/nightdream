@@ -89,6 +89,8 @@ public class WeatherLayout extends LinearLayout {
             iconText.setText("");
             temperatureText.setText("");
         }
+        temperatureText.invalidate();
+        iconText.invalidate();
     }
 
     private String iconToText(String code) {

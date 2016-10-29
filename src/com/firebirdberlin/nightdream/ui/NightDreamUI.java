@@ -195,7 +195,7 @@ public class NightDreamUI {
         long diff = now - 1000 * entry.timestamp;
         Log.d(TAG, "Weather: data age " + diff );
         Log.d(TAG, "Time since last request " + requestAge );
-        if ( diff > 30 * 60 * 1000 && now - lastLocationRequest > 30 * 60 * 1000) {
+        if ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
             lastLocationRequest = now;
             LocationService.start(mContext);
@@ -994,7 +994,7 @@ public class NightDreamUI {
     }
 
     public void onEvent(OnWeatherDataUpdated event){
-        settings.setWeatherEntry(event.entry);
+        settings.weatherEntry = event.entry;
         clockLayout.update(event.entry);
     }
 

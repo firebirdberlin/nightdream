@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import de.greenrobot.event.EventBus;
 import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.nightdream.Settings;
 
 public class DownloadWeatherService extends Service {
     private static String TAG = "NightDream.DownloadWeatherService";
@@ -146,6 +147,8 @@ public class DownloadWeatherService extends Service {
                 return;
             }
             if ( entry.timestamp > WeatherEntry.INVALID ) {
+                Settings settings = new Settings(mContext);
+                settings.setWeatherEntry(entry);
                 EventBus.getDefault().post(new OnWeatherDataUpdated(entry));
             }
             Log.d(TAG, "Download finished.");
