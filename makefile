@@ -33,6 +33,8 @@ start:
 revoke-permissions:
 	adb shell pm revoke com.firebirdberlin.nightdream android.permission.READ_EXTERNAL_STORAGE
 	adb shell pm revoke com.firebirdberlin.nightdream android.permission.RECORD_AUDIO
+	adb shell pm revoke com.firebirdberlin.nightdream android.permission.ACCESS_FINE_LOCATION
+	adb shell pm revoke com.firebirdberlin.nightdream android.permission.ACCESS_COARSE_LOCATION
 
 screenshot:
 	adb shell screencap -p | sed 's/\r$//' > screen.png

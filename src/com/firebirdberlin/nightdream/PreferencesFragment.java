@@ -48,6 +48,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
+    private final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 5;
     private Settings settings = null;
     private Context mContext = null;
 
@@ -249,6 +250,9 @@ public class PreferencesFragment extends PreferenceFragment {
         prefAmbientNoiseDetection.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
         prefAmbientNoiseReactivation.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
 
+        Preference prefFetchWeatherData = (Preference) findPreference("showWeather");
+        prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
+
         if ( Utility.getLightSensor(context) == null ) {
             PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
             Preference autoBrightness = (Preference) findPreference("autoBrightness");
@@ -290,6 +294,18 @@ public class PreferencesFragment extends PreferenceFragment {
                 if (on && ! hasPermission(Manifest.permission.RECORD_AUDIO) ) {
                     requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
                                        PERMISSIONS_REQUEST_RECORD_AUDIO);
+                }
+                return true;
+            }
+        };
+
+    Preference.OnPreferenceChangeListener fetchWeatherDataPrefChangeListener =
+        new Preference.OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference preference, Object new_value) {
+                boolean on = Boolean.parseBoolean(new_value.toString());
+                if (on && ! hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) ) {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                       PERMISSIONS_REQUEST_ACCESS_LOCATION);
                 }
                 return true;
             }
@@ -427,6 +443,18 @@ public class PreferencesFragment extends PreferenceFragment {
                     CheckBoxPreference prefAmbientNoiseReactivation = (CheckBoxPreference) findPreference("reactivate_screen_on_noise");
                     prefAmbientNoiseDetection.setChecked(false);
                     prefAmbientNoiseReactivation.setChecked(false);
+                    Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+            case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    settings.setFetchWeatherData(false);
+
+                    SwitchPreference prefShowWeather = (SwitchPreference) findPreference("showWeather");
+                    prefShowWeather.setChecked(false);
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
                 }
                 return;

@@ -301,6 +301,13 @@ public class Settings {
         prefEditor.commit();
     }
 
+    public void setFetchWeatherData(boolean on) {
+        showWeather = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("showWeather", on);
+        prefEditor.commit();
+    }
+
     public void setLocation(float lon, float lat, long time) {
         location_lon = lon;
         location_lat = lat;
