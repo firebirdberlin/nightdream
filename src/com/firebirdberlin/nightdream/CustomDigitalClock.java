@@ -65,8 +65,11 @@ public class CustomDigitalClock extends TextView {
         }
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat(mFormat);
-        setText(sdf.format(mCalendar.getTime()));
-        invalidate();
+        String text = sdf.format(mCalendar.getTime());
+        if (text != getText() ) {
+            setText(text);
+            invalidate();
+        }
     }
 
     @Override
@@ -81,6 +84,7 @@ public class CustomDigitalClock extends TextView {
                 public void run() {
                     if (mTickerStopped) return;
                     updateTextView();
+
                     long now = SystemClock.uptimeMillis();
                     long next = now + (1000 - now % 1000);
                     mHandler.postAtTime(mTicker, next);
