@@ -192,7 +192,9 @@ public class NightDreamUI {
         WeatherEntry entry = settings.weatherEntry;
         long now = System.currentTimeMillis();
         long requestAge = now - lastLocationRequest;
-        long diff = now - 1000 * entry.timestamp;
+
+        long diff = entry.ageMillis();
+
         Log.d(TAG, "Weather: data age " + diff );
         Log.d(TAG, "Time since last request " + requestAge );
         if ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000) {

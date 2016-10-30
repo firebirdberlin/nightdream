@@ -25,4 +25,13 @@ public class WeatherEntry {
         temperature = 284.15;
         weatherIcon = "03d";
     }
+
+    public long ageMillis() {
+        if (timestamp == INVALID) {
+            return INVALID;
+        }
+
+        long now = System.currentTimeMillis();
+        return now - 1000 * timestamp;
+    }
 }

@@ -73,7 +73,8 @@ public class WeatherLayout extends LinearLayout {
 
     public void update(WeatherEntry entry) {
         if (iconText == null || temperatureText == null) return;
-        if (entry.timestamp > -1L) {
+        long age = entry.ageMillis();
+        if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
             iconText.setText(iconToText(entry.weatherIcon));
             switch (temperatureUnit) {
                 case WeatherEntry.CELSIUS:
