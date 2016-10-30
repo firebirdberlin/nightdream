@@ -27,6 +27,7 @@ public class ClockLayout extends LinearLayout {
 
     private Context context = null;
     private TextView clock = null;
+    private TextView clock_ampm = null;
     private TextView date = null;
     private WeatherLayout weatherLayout = null;
     private LinearLayout infoLayout = null;
@@ -60,6 +61,7 @@ public class ClockLayout extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         clock = (TextView) findViewById(R.id.clock);
+        clock_ampm = (TextView) findViewById(R.id.clock_ampm);
         date = (TextView) findViewById(R.id.date);
         infoLayout = (LinearLayout) findViewById(R.id.info);
         weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
@@ -69,11 +71,13 @@ public class ClockLayout extends LinearLayout {
     public void setTypeface(Typeface typeface) {
         if (clock == null) return;
         clock.setTypeface(typeface);
+        clock_ampm.setTypeface(typeface);
     }
 
     public void setPrimaryColor(int color) {
         if (clock == null) return;
         clock.setTextColor(color);
+        clock_ampm.setTextColor(color);
     }
 
     public void setSecondaryColor(int color) {
@@ -151,11 +155,13 @@ public class ClockLayout extends LinearLayout {
         float desiredWidth = desiredWidthPercent * parentWidth;
 
         String text = view.getText().toString();
+        Log.i("NightDream.ClockLayout", ">>> " + text );
         int size = 1;
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         int maxPX = spToPx(maxSp);
         do{
             float textWidth = view.getPaint().measureText(text);
+            Log.i("NightDream.ClockLayout", String.valueOf(textWidth) );
             if (textWidth < desiredWidth) {
                 view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
             } else {
@@ -176,21 +182,6 @@ public class ClockLayout extends LinearLayout {
     private int pixelsToDp(float px) {
         DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics );
-    }
-
-    public void setTimeFormat() {
-        if (clock == null) return;
-
-        // note that format string kk is implemented incorrectly in API <= 17
-        // from API level 18 on, we can set the system default
-        if (Build.VERSION.SDK_INT >= 18){
-            TextClock tclock = (TextClock) clock;
-            String tlocalPattern24 = DateFormat.getBestDateTimePattern(Locale.getDefault(), "HH:mm");
-            String tlocalPattern12 = DateFormat.getBestDateTimePattern(Locale.getDefault(), "hh:mm a");
-
-            tclock.setFormat12Hour(tlocalPattern12);
-            tclock.setFormat24Hour(tlocalPattern24);
-        }
     }
 
     public void setDateFormat(String formatString) {

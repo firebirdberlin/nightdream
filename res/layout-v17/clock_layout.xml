@@ -7,21 +7,43 @@
 <!--
         time
 -->
-    <TextClock
-        android:clickable="true"
-        android:fontFamily="sans-serif-thin"
-        android:format12Hour="h:mm a"
-        android:format24Hour="kk:mm"
-        android:id="@+id/clock"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/time_layout"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:textColor="#C2C2C2"
-        android:singleLine="true"
-        android:ellipsize="none"
-        android:translationX="0sp"
-        android:translationY="0sp"
-        />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <TextClock
+            android:clickable="true"
+            android:fontFamily="sans-serif-thin"
+            android:format12Hour="h:mm"
+            android:format24Hour="kk:mm"
+            android:id="@+id/clock"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="#C2C2C2"
+            android:singleLine="true"
+            android:ellipsize="none"
+            android:text="00:00"
+            android:translationX="0sp"
+            android:translationY="0sp"
+            />
+        <TextClock
+            android:clickable="true"
+            android:fontFamily="sans-serif-thin"
+            android:format12Hour="a"
+            android:format24Hour=""
+            android:id="@+id/clock_ampm"
+            android:layout_gravity="top"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="#C2C2C2"
+            android:textSize="20sp"
+            android:singleLine="true"
+            android:ellipsize="none"
+            />
+    </LinearLayout>
 <!--
     divider
 -->
@@ -53,6 +75,7 @@
             android:format12Hour="dd. MMMM yyyy"
             android:format24Hour="dd. MMMM yyyy"
             android:textColor="#C2C2C2"
+            android:text="Sun, 30. October 2016"
             android:singleLine="true"
             android:ellipsize="none"
             android:paddingTop="5sp" />

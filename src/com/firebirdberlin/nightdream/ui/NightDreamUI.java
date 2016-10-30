@@ -206,7 +206,6 @@ public class NightDreamUI {
     }
 
     private void setupClockLayout() {
-        clockLayout.setTimeFormat();
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);

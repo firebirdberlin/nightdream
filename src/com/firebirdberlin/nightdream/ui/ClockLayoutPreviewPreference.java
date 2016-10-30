@@ -65,7 +65,6 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setTertiaryColor(settings.tertiaryColor);
 
-        clockLayout.setTimeFormat();
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
