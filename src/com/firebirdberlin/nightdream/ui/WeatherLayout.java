@@ -55,6 +55,8 @@ public class WeatherLayout extends LinearLayout {
     public void clear() {
         iconText.setText("");
         temperatureText.setText("");
+        temperatureText.invalidate();
+        iconText.invalidate();
     }
 
     public void setTypeface(Typeface typeface) {

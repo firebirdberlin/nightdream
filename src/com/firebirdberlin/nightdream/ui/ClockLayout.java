@@ -155,13 +155,11 @@ public class ClockLayout extends LinearLayout {
         float desiredWidth = desiredWidthPercent * parentWidth;
 
         String text = view.getText().toString();
-        Log.i("NightDream.ClockLayout", ">>> " + text );
         int size = 1;
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         int maxPX = spToPx(maxSp);
         do{
             float textWidth = view.getPaint().measureText(text);
-            Log.i("NightDream.ClockLayout", String.valueOf(textWidth) );
             if (textWidth < desiredWidth) {
                 view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
             } else {

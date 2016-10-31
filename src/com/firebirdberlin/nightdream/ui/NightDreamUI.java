@@ -63,7 +63,7 @@ import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnLocationUpdated;
 import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
-import com.firebirdberlin.nightdream.services.LocationService;
+import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
@@ -191,7 +191,6 @@ public class NightDreamUI {
         WeatherEntry entry = settings.weatherEntry;
         long now = System.currentTimeMillis();
         long requestAge = now - lastLocationRequest;
-
         long diff = entry.ageMillis();
 
         Log.d(TAG, "Weather: data age " + diff );
@@ -199,9 +198,8 @@ public class NightDreamUI {
         if ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
             lastLocationRequest = now;
-            LocationService.start(mContext);
+            WeatherService.start(mContext);
         }
-
     }
 
     private void setupClockLayout() {
@@ -976,12 +974,9 @@ public class NightDreamUI {
 
     public void onEvent(OnLocationUpdated event){
         if ( event == null ) return;
-        if ( event.entry != null ) {
-            DownloadWeatherService.start(mContext, event.entry);
-        } else {
+        if ( event.entry == null ) {
             clockLayout.clearWeather();
         }
-
     }
 
     public void onEvent(OnWeatherDataUpdated event){
