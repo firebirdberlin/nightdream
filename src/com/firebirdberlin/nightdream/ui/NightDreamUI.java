@@ -158,10 +158,12 @@ public class NightDreamUI {
             handler.postDelayed(zoomIn, 500);
         }
         handler.postDelayed(moveAround, 30000);
-        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public void onResume() {
+
+        removeCallbacks(hideAlarmClock);
+        handler.postDelayed(hideAlarmClock, 20000);
 
         settings.reload();
         updateWeatherData();
@@ -170,7 +172,6 @@ public class NightDreamUI {
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
-        setupScreenAnimation();
         setupClockLayout();
         setColor();
         setupAlarmClock();
