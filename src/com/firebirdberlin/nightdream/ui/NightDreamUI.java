@@ -32,8 +32,6 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
@@ -341,30 +339,21 @@ public class NightDreamUI {
     }
 
     public void onConfigurationChanged(final Configuration newConfig) {
-        ViewTreeObserver observer = clockLayout.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                fixScaleFactor();
-                clockLayout.updateLayout(newConfig);
-                clockLayout.setDesiredClockWidth();
-                ViewTreeObserver observer = clockLayout.getViewTreeObserver();
-                if (observer != null && observer.isAlive()) {
-                    if (Build.VERSION.SDK_INT >= 16) {
-                        observer.removeOnGlobalLayoutListener(this);
+        removeCallbacks(moveAround);
+        Runnable fixConfig = new Runnable() {
+                public void run() {
+                    fixScaleFactor();
+                    clockLayout.updateLayout(newConfig);
+                    clockLayout.setDesiredClockWidth();
+
+                    if ( showcaseView != null ) {
+                        setupShowcaseView();
                     } else {
-                        observer.removeGlobalOnLayoutListener(this);
+                        handler.post(moveAround);
                     }
                 }
-            }
-        });
-
-        removeCallbacks(moveAround);
-        if ( showcaseView != null ) {
-            setupShowcaseView();
-        } else {
-            handler.postDelayed(moveAround, 1000);
-        }
+            };
+        handler.postDelayed(fixConfig, 200);
     }
 
     public void updateBatteryView() {
