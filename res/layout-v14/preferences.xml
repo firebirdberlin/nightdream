@@ -336,7 +336,6 @@
                     android:summary="icons8" >
                     <intent android:action="android.intent.action.VIEW"
                         android:data="https://icons8.com"/>
-
                 </Preference>
 
                 <Preference
@@ -345,6 +344,14 @@
                     android:summary="by Alex Curran" >
                     <intent android:action="android.intent.action.VIEW"
                         android:data="https://github.com/amlcurran/ShowcaseView"/>
+                </Preference>
+
+                <Preference
+                    android:key="about_meteocons"
+                    android:title="Meteocons Font"
+                    android:summary="by Alessio Atzeni" >
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="http://www.alessioatzeni.com/meteocons/"/>
 
                 </Preference>
             </PreferenceCategory>
