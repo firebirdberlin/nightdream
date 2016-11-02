@@ -89,6 +89,7 @@ OR
     <string name="typeface_roboto_medium">Roboto medium</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
+    <string name="typeface_7_segment">7-segment LED</string>
     <string name="typeface">Typeface</string>
     <string name="use_internal_alarm">Quick alarms</string>
     <string name="weather">Weather</string>

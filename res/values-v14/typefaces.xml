@@ -2,10 +2,12 @@
 <resources>
      <string-array name="typeFaceValues">
           <item>1</item>
+          <item>6</item>
      </string-array>
 
 
     <string-array name="typeFaces">
         <item>@string/typeface_roboto_regular</item>
+        <item>@string/typeface_7_segment</item>
     </string-array>
 </resources>

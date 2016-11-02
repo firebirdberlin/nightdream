@@ -4,6 +4,7 @@
           <item>1</item>
           <item>2</item>
           <item>3</item>
+          <item>6</item>
      </string-array>
 
 
@@ -11,5 +12,6 @@
         <item>@string/typeface_roboto_regular</item>
         <item>@string/typeface_roboto_light</item>
         <item>@string/typeface_roboto_condensed</item>
+        <item>@string/typeface_7_segment</item>
     </string-array>
 </resources>

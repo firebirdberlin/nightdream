@@ -352,7 +352,14 @@
                     android:summary="by Alessio Atzeni" >
                     <intent android:action="android.intent.action.VIEW"
                         android:data="http://www.alessioatzeni.com/meteocons/"/>
+                </Preference>
 
+                <Preference
+                    android:key="about_7segment"
+                    android:title="7-Segment Digital Font"
+                    android:summary="by Jan Bobrowski" >
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="http://torinak.com/7segment"/>
                 </Preference>
             </PreferenceCategory>
 

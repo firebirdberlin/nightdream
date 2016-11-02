@@ -188,11 +188,17 @@ public class Settings {
 
     private Typeface loadTypeface() {
         int typeface = 0;
+
         if (Build.VERSION.SDK_INT >= 14){
             typeface = Integer.parseInt(settings.getString("typeface", "1"));
         }
-        String typefaceName = mapIntToTypefaceName(typeface);
-        return Typeface.create(typefaceName, Typeface.NORMAL);
+
+        if ( typeface < 6 ) {
+            String typefaceName = mapIntToTypefaceName(typeface);
+            return Typeface.create(typefaceName, Typeface.NORMAL);
+        }
+
+        return Typeface.createFromAsset(mContext.getAssets(), "fonts/7segment.ttf");
     }
 
     private String mapIntToTypefaceName(int typeface) {
