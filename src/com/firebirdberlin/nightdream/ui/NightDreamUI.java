@@ -536,7 +536,8 @@ public class NightDreamUI {
 
     private void hideSoftButtons() {
         if (Build.VERSION.SDK_INT >= 14){
-            clockLayout.setSystemUiVisibility(View. SYSTEM_UI_FLAG_LOW_PROFILE);
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
         }
     }
 
