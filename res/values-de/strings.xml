@@ -30,6 +30,8 @@
     <string name="contribute">Beitragen</string>
     <string name="date_format">Datumsformat</string>
     <string name="donate">Spenden</string>
+    <string name="dialog_message_thank_you">Vielen Dank für Ihre Unterstützung.</string>
+    <string name="dialog_title_thank_you">Dankeschön</string>
     <string name="force_auto_rotation">Erzwinge automatische Ausrichtung im DayDream</string>
     <string name="handle_power_ac">einem Ladegerät</string>
     <string name="handle_power">Autostart</string>
@@ -52,14 +54,18 @@
     <string name="other_apps_tinytimetracker">Zeiterfassung</string>
     <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
     <string name="preview">Vorschau</string>
+    <string name="purchaseWeatherData">Lizenz kaufen</string>
     <string name="reset_to_defaults">Einstellungen resetten</string>
     <string name="restless_mode">Uhr bewegen</string>
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
     <string name="select_alarm_sound">Weckton auswählen</string>
     <string name="set_alarm">neuer Alarm</string>
     <string name="show_date">Datum</string>
+    <string name="show_weather">Wetter</string>
+    <string name="temperatureUnit">Temperatureinheit</string>
     <string name="typeface">Schriftart</string>
     <string name="use_internal_alarm">Schnellalarm</string>
+    <string name="weather">Wetter</string>
     <string name="welcome_screen_text1">Willkommen zu Ihrer neuen Nachtuhr! Diese App zeigt die Uhrzeit an während Ihr Telefon geladen wird - auf Wunsch auch mit Autostart.</string>
     <string name="welcome_screen_text2">Öffnen Sie die Einstellungen hier.</string>
     <string name="welcome_screen_text3">Zum Ändern der Helligkeit hier berühren und den Finger verschieben. Probieren Sie es aus !</string>

@@ -79,6 +79,7 @@
                     android:selectable="false"
                     />
 
+
                 <SwitchPreference
                     android:key="showDate"
                     android:title="@string/show_date"
@@ -233,6 +234,33 @@
 
         </PreferenceScreen>
 
+        <PreferenceScreen
+            android:title="@string/weather"
+            android:key="weather_screen"
+            android:icon="@drawable/ic_cloud">
+
+            <Preference
+                android:key="purchaseWeatherData"
+                android:icon="@drawable/ic_googleplay"
+                android:title="@string/purchaseWeatherData"
+                android:enabled="false"/>
+
+            <SwitchPreference
+                android:key="showWeather"
+                android:title="@string/show_weather"
+                android:defaultValue="false"
+                android:enabled="false"/>
+
+            <ListPreference
+                android:title="@string/temperatureUnit"
+                android:dependency="showWeather"
+                android:key="temperatureUnit"
+                android:defaultValue="1"
+                android:entries="@array/temperatureUnit"
+                android:entryValues="@array/temperatureUnitValues"/>
+
+        </PreferenceScreen>
+
         <Preference
             android:key="startNotificationService"
             android:title="@string/buttonAccessibilitySettings"
@@ -308,7 +336,6 @@
                     android:summary="icons8" >
                     <intent android:action="android.intent.action.VIEW"
                         android:data="https://icons8.com"/>
-
                 </Preference>
 
                 <Preference
@@ -317,6 +344,14 @@
                     android:summary="by Alex Curran" >
                     <intent android:action="android.intent.action.VIEW"
                         android:data="https://github.com/amlcurran/ShowcaseView"/>
+                </Preference>
+
+                <Preference
+                    android:key="about_meteocons"
+                    android:title="Meteocons Font"
+                    android:summary="by Alessio Atzeni" >
+                    <intent android:action="android.intent.action.VIEW"
+                        android:data="http://www.alessioatzeni.com/meteocons/"/>
 
                 </Preference>
             </PreferenceCategory>

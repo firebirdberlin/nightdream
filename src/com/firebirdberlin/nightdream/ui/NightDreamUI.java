@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -31,8 +32,6 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
@@ -51,6 +50,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.firebirdberlin.nightdream.AlarmClock;
 import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -61,6 +61,10 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnLocationUpdated;
+import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
+import com.firebirdberlin.nightdream.services.WeatherService;
+import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 public class NightDreamUI {
@@ -154,17 +158,20 @@ public class NightDreamUI {
             handler.postDelayed(zoomIn, 500);
         }
         handler.postDelayed(moveAround, 30000);
-        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     public void onResume() {
+
+        removeCallbacks(hideAlarmClock);
+        handler.postDelayed(hideAlarmClock, 20000);
+
         settings.reload();
+        updateWeatherData();
 
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
-        setupScreenAnimation();
         setupClockLayout();
         setColor();
         setupAlarmClock();
@@ -178,14 +185,27 @@ public class NightDreamUI {
         showShowcase();
     }
 
-    private void setupClockLayout() {
-        clockLayout.setTimeFormat();
-        clockLayout.setDateFormat(settings.dateFormat);
-        if (settings.showDate){
-            clockLayout.showDate();
-        } else {
-            clockLayout.hideDate();
+    private long lastLocationRequest = 0L;
+    private void updateWeatherData() {
+        if (! settings.showWeather ) return;
+        WeatherEntry entry = settings.weatherEntry;
+        long now = System.currentTimeMillis();
+        long requestAge = now - lastLocationRequest;
+        long diff = entry.ageMillis();
+
+        Log.d(TAG, "Weather: data age " + diff );
+        Log.d(TAG, "Time since last request " + requestAge );
+        if ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000) {
+            Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
+            lastLocationRequest = now;
+            WeatherService.start(mContext);
         }
+    }
+
+    private void setupClockLayout() {
+        clockLayout.setDateFormat(settings.dateFormat);
+        clockLayout.showDate(settings.showDate);
+        clockLayout.showWeather(settings.showWeather);
 
         if ( !settings.restless_mode ) {
             centerClockLayout();
@@ -195,6 +215,8 @@ public class NightDreamUI {
         clockLayout.setPrimaryColor(settings.clockColor);
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setTertiaryColor(settings.tertiaryColor);
+        clockLayout.setTemperatureUnit(settings.temperatureUnit);
+        clockLayout.update(settings.weatherEntry);
     }
 
     private int adjustAlpha(int color, float factor) {
@@ -315,23 +337,22 @@ public class NightDreamUI {
         handler.removeCallbacks(runnable);
     }
 
-    public void onConfigurationChanged() {
-        final ViewTreeObserver observer = clockLayout.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                fixScaleFactor();
-                clockLayout.setDesiredClockWidth();
-                observer.removeOnGlobalLayoutListener(this);
-            }
-        });
-
+    public void onConfigurationChanged(final Configuration newConfig) {
         removeCallbacks(moveAround);
-        if ( showcaseView != null ) {
-            setupShowcaseView();
-        } else {
-            handler.postDelayed(moveAround, 1000);
-        }
+        Runnable fixConfig = new Runnable() {
+                public void run() {
+                    fixScaleFactor();
+                    clockLayout.updateLayout(newConfig);
+                    clockLayout.setDesiredClockWidth();
+
+                    if ( showcaseView != null ) {
+                        setupShowcaseView();
+                    } else {
+                        handler.post(moveAround);
+                    }
+                }
+            };
+        handler.postDelayed(fixConfig, 200);
     }
 
     public void updateBatteryView() {
@@ -412,7 +433,7 @@ public class NightDreamUI {
             clockLayout.setPadding(i1, i2, 0, 0);
             clockLayout.invalidate();
         } else {
-            // determine a randowm position
+            // determine a random position
             // lower 150 px is reserved for alarm clockLayout
             // upper 90 px is for the battery stats
             int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());
@@ -598,6 +619,8 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
+            Configuration config = mContext.getResources().getConfiguration();
+            clockLayout.updateLayout(config);
             clockLayout.setDesiredClockWidth();
 
             float s = settings.scaleClock;
@@ -611,6 +634,7 @@ public class NightDreamUI {
        public void run() {
            removeCallbacks(hideBrightnessLevel);
            updateClockPosition();
+           updateWeatherData();
 
            handler.postDelayed(this, 60000);
        }
@@ -946,6 +970,18 @@ public class NightDreamUI {
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
+    }
+
+    public void onEvent(OnLocationUpdated event){
+        if ( event == null ) return;
+        if ( event.entry == null ) {
+            clockLayout.clearWeather();
+        }
+    }
+
+    public void onEvent(OnWeatherDataUpdated event){
+        settings.weatherEntry = event.entry;
+        clockLayout.update(event.entry);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){

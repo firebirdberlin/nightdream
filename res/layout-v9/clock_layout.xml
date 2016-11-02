@@ -7,6 +7,12 @@
 <!--
         time
 -->
+    <LinearLayout
+        android:id="@+id/time_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -15,26 +21,49 @@
             android:layout_height="wrap_content"
             android:translationX="0sp"
             android:translationY="0sp"
-            android:layout_gravity="center"
             android:fontFamily="sans-serif"
             android:textColor="#C2C2C2"
             android:textSize="50sp"
             android:clickable="true"
             android:singleLine="true"
-            android:ellipsize="end"
-            custom:format12Hr="h:mm a"
+            android:ellipsize="none"
+            custom:format12Hr="h:mm"
             custom:format24Hr="kk:mm"/>
+        <com.firebirdberlin.nightdream.CustomDigitalClock
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:clickable="true"
+            android:fontFamily="sans-serif"
+            custom:format12Hr="a"
+            custom:format24Hr=""
+            android:id="@+id/clock_ampm"
+            android:layout_gravity="top"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="#C2C2C2"
+            android:textSize="20sp"
+            android:singleLine="true"
+            android:ellipsize="none"
+            />
+    </LinearLayout>
 <!--
         divider
 -->
-        <View
-            android:id="@+id/divider"
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:background="#C2C2C2" />
+    <View
+        android:id="@+id/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:background="#C2C2C2" />
 <!--
         Date
 -->
+    <LinearLayout
+        android:id="@+id/info"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/date"
@@ -42,7 +71,6 @@
             android:layout_height="wrap_content"
             android:translationX="0sp"
             android:translationY="0sp"
-            android:layout_gravity="center"
             android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:textColor="#C2C2C2"
@@ -51,5 +79,15 @@
             android:singleLine="true"
             android:ellipsize="end"
             custom:format12Hr="dd. MMMM yyyy"
-            custom:format24Hr="dd. MMMM yyyy" />
+            custom:format24Hr="dd. MMMM yyyy"
+            android:layout_gravity="center"
+            />
+
+        <com.firebirdberlin.nightdream.ui.WeatherLayout
+            android:id="@+id/weatherLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
 </LinearLayout>

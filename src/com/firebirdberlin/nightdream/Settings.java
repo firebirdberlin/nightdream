@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.WeatherEntry;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
@@ -43,8 +44,12 @@ public class Settings {
     public boolean muteRinger = false;
     public boolean restless_mode = true;
     public boolean showDate = true;
+    public boolean showWeather = false;
     public boolean useInternalAlarm = true;
     public float dim_offset = 0.8f;
+    public float location_lon = 0.f;
+    public float location_lat = 0.f;
+    public long location_time = -1L;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
     public int background_mode = 1;
@@ -52,6 +57,7 @@ public class Settings {
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int sensitivity = 1;
+    public int temperatureUnit = WeatherEntry.CELSIUS;
     public int tertiaryColor;
     public long autostartTimeRangeStart = -1L;
     public long autostartTimeRangeEnd = -1L;
@@ -63,6 +69,7 @@ public class Settings {
     public Typeface typeface;
     public String dateFormat;
     public BatteryValue batteryReferenceValue;
+    public WeatherEntry weatherEntry;
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -102,6 +109,9 @@ public class Settings {
         backgroundImageURI = settings.getString("backgroundImageURI", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
+        location_lat = settings.getFloat("location_lat", 0.f);
+        location_lon = settings.getFloat("location_lon", 0.f);
+        location_time = settings.getLong("location_time", -1L);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
@@ -112,6 +122,8 @@ public class Settings {
         scaleClock = settings.getFloat("scaleClock", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
+        showWeather = settings.getBoolean("showWeather", false);
+        temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
@@ -120,6 +132,7 @@ public class Settings {
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
 
         typeface = loadTypeface();
+        weatherEntry = getWeatherEntry();
     }
 
     public BatteryValue loadBatteryReference() {
@@ -286,6 +299,55 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("reactivate_screen_on_noise", on);
         prefEditor.commit();
+    }
+
+    public void setFetchWeatherData(boolean on) {
+        showWeather = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("showWeather", on);
+        prefEditor.commit();
+    }
+
+    public void setLocation(float lon, float lat, long time) {
+        location_lon = lon;
+        location_lat = lat;
+        location_time = time;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("location_lon", lon);
+        prefEditor.putFloat("location_lat", lat);
+        prefEditor.putLong("location_time", time);
+        prefEditor.commit();
+    }
+
+    public void setWeatherEntry(WeatherEntry entry) {
+        this.weatherEntry = entry;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("weather_lon", entry.lon);
+        prefEditor.putFloat("weather_lat", entry.lat);
+        prefEditor.putLong("weather_time", entry.timestamp);
+        prefEditor.putLong("weather_sunrise_time", entry.sunriseTime);
+        prefEditor.putLong("weather_sunset_time", entry.sunsetTime);
+        prefEditor.putString("weather_icon", entry.weatherIcon);
+        prefEditor.putString("weather_city_name", entry.cityName);
+        prefEditor.putInt("weather_city_id", entry.cityID);
+        prefEditor.putFloat("weather_temperature", (float) entry.temperature);
+        prefEditor.commit();
+    }
+
+    public WeatherEntry getWeatherEntry() {
+        this.weatherEntry = new WeatherEntry();
+        this.weatherEntry.timestamp = settings.getLong("weather_time", -1L);
+        if ( this.weatherEntry.timestamp > -1L ) {
+            this.weatherEntry.lon = settings.getFloat("weather_lon", this.weatherEntry.lon);
+            this.weatherEntry.lat = settings.getFloat("weather_lat", this.weatherEntry.lat);
+            this.weatherEntry.sunriseTime = settings.getLong("weather_sunrise_time", this.weatherEntry.sunriseTime);
+            this.weatherEntry.sunsetTime = settings.getLong("weather_sunset_time", this.weatherEntry.sunsetTime);
+            this.weatherEntry.weatherIcon = settings.getString("weather_icon", this.weatherEntry.weatherIcon);
+            this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
+            this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
+            this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
+        }
+        return this.weatherEntry;
     }
 
     public String backgroundImagePath() {

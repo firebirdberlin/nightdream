@@ -40,7 +40,7 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
-    private static String TAG ="NightDreamActivity";
+    public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     private static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
@@ -125,9 +125,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume()");
 
         setKeepScreenOn(true);
-        Log.i(TAG, "onResume()");
         mySettings = new Settings(this);
         alarmClock.setSettings(mySettings);
 
@@ -257,7 +257,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
-        nightDreamUI.onConfigurationChanged();
+        nightDreamUI.onConfigurationChanged(newConfig);
     }
 
 

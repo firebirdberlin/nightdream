@@ -48,6 +48,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
+    private final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 5;
     private Settings settings = null;
     private Context mContext = null;
 
@@ -150,12 +151,20 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void togglePurchasePreferences() {
         Preference donationPreference = (Preference) findPreference("donation_play");
+        Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
+        Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
         donationPreference.setEnabled(! purchased_donation);
+        purchaseWeatherDataPreference.setEnabled(! purchased_weather_data);
+        enableWeatherDataPreference.setEnabled(purchased_weather_data);
+        donationPreference.setSummary("");
+        purchaseWeatherDataPreference.setSummary("");
         if (purchased_donation) {
             donationPreference.setSummary(R.string.dialog_message_thank_you);
-        } else {
-            donationPreference.setSummary("");
         }
+        if (purchased_weather_data) {
+            purchaseWeatherDataPreference.setSummary(R.string.dialog_message_thank_you);
+        }
+
     }
 
     public void purchaseIntent(String sku, int REQUEST_CODE) {
@@ -201,9 +210,12 @@ public class PreferencesFragment extends PreferenceFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
         addPreferencesFromResource(R.layout.preferences);
+        init();
+    }
+
+    private void init() {
         final Context context = mContext;
         settings = new Settings(mContext);
 
@@ -242,12 +254,23 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
+        Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
+        purchaseWeatherDataPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
+                return true;
+            }
+        });
+
         Preference prefHandlePower = (Preference) findPreference("handle_power");
         Preference prefAmbientNoiseDetection = (Preference) findPreference("ambientNoiseDetection");
         Preference prefAmbientNoiseReactivation = (Preference) findPreference("reactivate_screen_on_noise");
 
         prefAmbientNoiseDetection.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
         prefAmbientNoiseReactivation.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
+
+        Preference prefFetchWeatherData = (Preference) findPreference("showWeather");
+        prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
 
         if ( Utility.getLightSensor(context) == null ) {
             PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
@@ -278,6 +301,8 @@ public class PreferencesFragment extends PreferenceFragment {
                 settings.clear();
                 getPreferenceScreen().removeAll();
                 addPreferencesFromResource(R.layout.preferences);
+                init();
+                togglePurchasePreferences();
                 return true;
             }
         });
@@ -290,6 +315,18 @@ public class PreferencesFragment extends PreferenceFragment {
                 if (on && ! hasPermission(Manifest.permission.RECORD_AUDIO) ) {
                     requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
                                        PERMISSIONS_REQUEST_RECORD_AUDIO);
+                }
+                return true;
+            }
+        };
+
+    Preference.OnPreferenceChangeListener fetchWeatherDataPrefChangeListener =
+        new Preference.OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference preference, Object new_value) {
+                boolean on = Boolean.parseBoolean(new_value.toString());
+                if (on && ! hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) ) {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                       PERMISSIONS_REQUEST_ACCESS_LOCATION);
                 }
                 return true;
             }
@@ -332,9 +369,9 @@ public class PreferencesFragment extends PreferenceFragment {
                     purchased_weather_data = true;
                     showThankYouDialog();
                 } else
-                    if (sku.equals(ITEM_WEATHER_DATA) ) {
-                        purchased_weather_data = true;
-                    }
+                if (sku.equals(ITEM_WEATHER_DATA) ) {
+                    purchased_weather_data = true;
+                }
             }
             catch (JSONException e) {
                 e.printStackTrace();
@@ -427,6 +464,18 @@ public class PreferencesFragment extends PreferenceFragment {
                     CheckBoxPreference prefAmbientNoiseReactivation = (CheckBoxPreference) findPreference("reactivate_screen_on_noise");
                     prefAmbientNoiseDetection.setChecked(false);
                     prefAmbientNoiseReactivation.setChecked(false);
+                    Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+            case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    settings.setFetchWeatherData(false);
+
+                    SwitchPreference prefShowWeather = (SwitchPreference) findPreference("showWeather");
+                    prefShowWeather.setChecked(false);
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
                 }
                 return;

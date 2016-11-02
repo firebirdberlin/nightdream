@@ -167,7 +167,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
-        nightDreamUI.onConfigurationChanged();
+        nightDreamUI.onConfigurationChanged(newConfig);
     }
 
     private void SwitchModes(float light_value){
