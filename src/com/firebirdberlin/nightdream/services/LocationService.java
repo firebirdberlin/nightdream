@@ -34,7 +34,6 @@ public class LocationService extends Service {
 
     @Override
     public void onCreate(){
-        // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     }
 
@@ -59,8 +58,7 @@ public class LocationService extends Service {
 
         knownLocation = getLastKnownLocation();
         long now = System.currentTimeMillis();
-        if ( knownLocation != null &&
-                now - knownLocation.getTime() < MAX_AGE_IN_MILLIS ) {
+        if ( knownLocation != null && now - knownLocation.getTime() < MAX_AGE_IN_MILLIS ) {
             storeLocation(knownLocation);
             stopSelf();
         } else {
@@ -108,6 +106,7 @@ public class LocationService extends Service {
 
     Runnable gpsTimeout = new Runnable() {
         public void run() {
+            storeLocation(knownLocation);
             EventBus.getDefault().post(new OnLocationUpdated(knownLocation));
             stopSelf();
         }

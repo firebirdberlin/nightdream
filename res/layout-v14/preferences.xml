@@ -259,6 +259,16 @@
                 android:entries="@array/temperatureUnit"
                 android:entryValues="@array/temperatureUnitValues"/>
 
+            <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
+                android:title="debug"
+                android:dependency="showWeather"
+                android:key="weatherPreview"/>
+
+            <Preference
+                android:key="forceLocationUpdate"
+                android:title="initiate location update"
+                android:enabled="true"/>
+
         </PreferenceScreen>
 
         <Preference
