@@ -93,6 +93,9 @@ OR
     <string name="typeface">Typeface</string>
     <string name="use_internal_alarm">Quick alarms</string>
     <string name="weather">Weather</string>
+    <string name="weather_city_id_title">City ID</string>
+    <string name="weather_city_id_summary">OpenWeatherMap City ID. Leave empty for an automatic detection of the location.</string>
+    <string name="weather_search_city_id">Search City ID</string>
     <string name="welcome_screen_title1">NightDream</string>
     <string name="welcome_screen_title2">Preferences</string>
     <string name="welcome_screen_title3">Screen brightness</string>
@@ -101,6 +104,9 @@ OR
     <string name="welcome_screen_text2">Open the preferences here !</string>
     <string name="welcome_screen_text3">Click and slide for changing the screen brightness. Try it now !</string>
     <string name="welcome_screen_text4">Resize the clock using a two-finger zoom.</string>
+    <string name="weather_info_title">Information</string>
+    <string name="location_time">location time</string>
+    <string name="weather_calculation_time">weather calculation time</string>
 </resources>
 
 

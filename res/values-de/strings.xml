@@ -66,6 +66,9 @@
     <string name="typeface">Schriftart</string>
     <string name="use_internal_alarm">Schnellalarm</string>
     <string name="weather">Wetter</string>
+    <string name="weather_city_id_title">City ID</string>
+    <string name="weather_city_id_summary">OpenWeatherMap City ID. Frei lassen zur automatischen Standortbestimmung.</string>
+    <string name="weather_search_city_id">Suche City ID</string>
     <string name="welcome_screen_text1">Willkommen zu Ihrer neuen Nachtuhr! Diese App zeigt die Uhrzeit an während Ihr Telefon geladen wird - auf Wunsch auch mit Autostart.</string>
     <string name="welcome_screen_text2">Öffnen Sie die Einstellungen hier.</string>
     <string name="welcome_screen_text3">Zum Ändern der Helligkeit hier berühren und den Finger verschieben. Probieren Sie es aus !</string>
@@ -74,6 +77,9 @@
     <string name="welcome_screen_title2">Einstellungen</string>
     <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
     <string name="welcome_screen_title4">Größe</string>
+    <string name="weather_info_title">Informationen</string>
+    <string name="location_time">Zeit der letzten Standortbestimmung</string>
+    <string name="weather_calculation_time">Zeit der Wetterdatenberechnung</string>
 </resources>
 
 

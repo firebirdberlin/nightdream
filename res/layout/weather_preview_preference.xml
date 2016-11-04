@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
-        android:text="location time"
+        android:text="@string/location_time"
         />
     <TextView
         android:id="@+id/lastLocationUpdateTime"
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
-        android:text="weather calculation time"
+        android:text="@string/weather_calculation_time"
         />
     <TextView
         android:id="@+id/lastWeatherCalculationTime"

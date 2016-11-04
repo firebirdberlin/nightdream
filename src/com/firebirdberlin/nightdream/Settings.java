@@ -70,6 +70,7 @@ public class Settings {
     public String dateFormat;
     public BatteryValue batteryReferenceValue;
     public WeatherEntry weatherEntry;
+    public String weatherCityID;
 
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -127,6 +128,7 @@ public class Settings {
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
+        weatherCityID = settings.getString("weatherCityID", "");
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;

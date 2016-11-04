@@ -35,7 +35,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebirdberlin.nightdream.services.LocationService;
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 public class PreferencesFragment extends PreferenceFragment {
@@ -259,14 +258,6 @@ public class PreferencesFragment extends PreferenceFragment {
         purchaseWeatherDataPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
-                return true;
-            }
-        });
-
-        Preference forceLocationUpdatePreference = (Preference) findPreference("forceLocationUpdate");
-        forceLocationUpdatePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                LocationService.start(mContext);
                 return true;
             }
         });

@@ -259,15 +259,25 @@
                 android:entries="@array/temperatureUnit"
                 android:entryValues="@array/temperatureUnitValues"/>
 
-            <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
-                android:title="debug"
+            <EditTextPreference
+                android:defaultValue=""
                 android:dependency="showWeather"
-                android:key="weatherPreview"/>
+                android:key="weatherCityID"
+                android:title="@string/weather_city_id_title"
+                android:summary="@string/weather_city_id_summary"
+                android:inputType="number"/>
 
             <Preference
-                android:key="forceLocationUpdate"
-                android:title="initiate location update"
-                android:enabled="true"/>
+                android:title="@string/weather_search_city_id"
+                android:dependency="showWeather">
+                <intent android:action="android.intent.action.VIEW"
+                    android:data="http://openweathermap.org/find"/>
+            </Preference>
+
+            <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
+                android:title="@string/weather_info_title"
+                android:dependency="showWeather"
+                android:key="weatherPreview"/>
 
         </PreferenceScreen>
 
@@ -314,7 +324,6 @@
                     android:title="@string/contribute_translation">
                     <intent android:action="android.intent.action.VIEW"
                         android:data="https://github.com/firebirdberlin/nightdream/blob/master/res/values/strings.xml"/>
-
                 </Preference>
             </PreferenceCategory>
 

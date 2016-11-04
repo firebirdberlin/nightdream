@@ -27,6 +27,8 @@ import com.firebirdberlin.nightdream.Settings;
 
 public class DownloadWeatherService extends Service {
     private static String TAG = "NightDream.DownloadWeatherService";
+    private static String BASEURL = "http://api.openweathermap.org/data/2.5/weather?";
+    private static String APPID = "645d3eb40425e8af8edc25ddbf153db8";
     private Context mContext = null;
 
     @Override
@@ -42,9 +44,15 @@ public class DownloadWeatherService extends Service {
         Bundle bundle = intent.getExtras();
         float lat = bundle.getFloat("lat");
         float lon = bundle.getFloat("lon");
+        String cityID = bundle.getString("cityID", "");
 
-        HttpGetAsyncTask getWeatherTask = new HttpGetAsyncTask(this, lat, lon);
-        getWeatherTask.execute();
+        if (cityID != "") {
+            HttpGetAsyncTask getWeatherTask = new HttpGetAsyncTask(this, cityID);
+            getWeatherTask.execute();
+        } else {
+            HttpGetAsyncTask getWeatherTask = new HttpGetAsyncTask(this, lat, lon);
+            getWeatherTask.execute();
+        }
 
         return Service.START_NOT_STICKY;
     }
@@ -64,11 +72,18 @@ public class DownloadWeatherService extends Service {
         private Context mContext;
         private float lat;
         private float lon;
+        private String cityID;
 
         public HttpGetAsyncTask (Context context, float lat, float lon){
             mContext = context;
             this.lat = lat;
             this.lon = lon;
+            this.cityID = "";
+        }
+
+        public HttpGetAsyncTask (Context context, String cityID){
+            mContext = context;
+            this.cityID = cityID;
         }
 
         @Override
@@ -77,10 +92,15 @@ public class DownloadWeatherService extends Service {
             int responseCode = 0;
             String response = "";
             String responseText = "";
-            String urlstring = "http://api.openweathermap.org/data/2.5/weather?" +
-                               "lat=" + String.valueOf(lat) + "&" +
-                               "lon=" + String.valueOf(lon) + "&" +
-                               "appid=645d3eb40425e8af8edc25ddbf153db8";
+            String urlstring = BASEURL;
+            if (cityID != "") {
+                urlstring += "id=" + cityID + "&";
+            } else {
+                urlstring += "lat=" + String.valueOf(lat) + "&" +
+                             "lon=" + String.valueOf(lon) + "&";
+            }
+            urlstring += "appid=" + APPID;
+
             Log.i(TAG, "requesting " + urlstring);
             try {
                 URL url = new URL(urlstring);
@@ -161,6 +181,12 @@ public class DownloadWeatherService extends Service {
         Intent i = new Intent(context, DownloadWeatherService.class);
         i.putExtra("lat", (float) location.getLatitude());
         i.putExtra("lon", (float) location.getLongitude());
+        context.startService(i);
+    }
+
+    public static void start(Context context, String cityID) {
+        Intent i = new Intent(context, DownloadWeatherService.class);
+        i.putExtra("cityID", cityID);
         context.startService(i);
     }
 }
