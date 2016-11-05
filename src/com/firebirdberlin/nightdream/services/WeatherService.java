@@ -5,6 +5,7 @@ import java.lang.String;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import de.greenrobot.event.EventBus;
@@ -27,8 +28,8 @@ public class WeatherService extends Service {
             return Service.START_REDELIVER_INTENT;
         }
         running = true;
-
         mContext = this;
+
         LocationService.start(this);
 
         return Service.START_REDELIVER_INTENT;
@@ -54,7 +55,16 @@ public class WeatherService extends Service {
 
     public static void start(Context context) {
         Intent i = new Intent(context, WeatherService.class);
-        //i.putExtra("start alarm", true);
+        context.startService(i);
+    }
+
+    public static void start(Context context, String cityID) {
+        if (!cityID.isEmpty()) {
+            DownloadWeatherService.start(context, cityID);
+            return;
+        }
+
+        Intent i = new Intent(context, WeatherService.class);
         context.startService(i);
     }
 }
