@@ -194,7 +194,7 @@ public class NightDreamUI {
 
         Log.d(TAG, "Weather: data age " + diff );
         Log.d(TAG, "Time since last request " + requestAge );
-        if ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000) {
+        if (diff < 0L || ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000)) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
             lastLocationRequest = now;
             WeatherService.start(mContext, settings.weatherCityID);
