@@ -56,7 +56,7 @@ public class LocationService extends Service {
         boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        knownLocation = getLastKnownLocation();
+        knownLocation = getLastKnownLocation(settings);
         long now = System.currentTimeMillis();
         if ( knownLocation != null && now - knownLocation.getTime() < MAX_AGE_IN_MILLIS ) {
             storeLocation(knownLocation);
@@ -120,21 +120,19 @@ public class LocationService extends Service {
         long time = location.getTime();
 
         Log.i(TAG, "storing location: " + String.valueOf(lon) + ", " + String.valueOf(lat));
-        settings.setLocation(lon, lat, time);
+        settings.setLocation(location);
         EventBus.getDefault().post(new OnLocationUpdated(location));
     }
 
-    private Location getLastKnownLocation() {
-        LocationManager mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
+    private Location getLastKnownLocation(Settings settings) {
+        List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
+        Location lastLocation = settings.getLocation();
+        if (lastLocation.getTime() > -1L ) bestLocation = lastLocation;
+
         for (String provider : providers) {
-            Location l = mLocationManager.getLastKnownLocation(provider);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
+            Location l = locationManager.getLastKnownLocation(provider);
+            if (l != null && bestLocation != null && l.getTime() > bestLocation.getTime()) {
                 bestLocation = l;
             }
         }

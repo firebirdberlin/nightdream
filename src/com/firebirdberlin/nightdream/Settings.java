@@ -11,6 +11,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationManager;
 import android.Manifest;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -50,6 +52,7 @@ public class Settings {
     public float location_lon = 0.f;
     public float location_lat = 0.f;
     public long location_time = -1L;
+    public String location_provider = LocationManager.NETWORK_PROVIDER;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
     public int background_mode = 1;
@@ -113,6 +116,7 @@ public class Settings {
         location_lat = settings.getFloat("location_lat", 0.f);
         location_lon = settings.getFloat("location_lon", 0.f);
         location_time = settings.getLong("location_time", -1L);
+        location_provider = settings.getString("location_provider", LocationManager.NETWORK_PROVIDER);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
@@ -316,15 +320,25 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public void setLocation(float lon, float lat, long time) {
-        location_lon = lon;
-        location_lat = lat;
-        location_time = time;
+    public void setLocation(Location location) {
+        location_lon = (float) location.getLongitude();
+        location_lat = (float) location.getLatitude();
+        location_time = location.getTime();
+        location_provider = location.getProvider();
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putFloat("location_lon", lon);
-        prefEditor.putFloat("location_lat", lat);
-        prefEditor.putLong("location_time", time);
+        prefEditor.putFloat("location_lon", (float) location.getLongitude());
+        prefEditor.putFloat("location_lat", (float) location.getLatitude());
+        prefEditor.putLong("location_time", location.getTime());
+        prefEditor.putString("location_provider", location.getProvider());
         prefEditor.commit();
+    }
+
+    public Location getLocation() {
+        Location l = new Location(location_provider);
+        l.setLongitude(location_lon);
+        l.setLatitude(location_lat);
+        l.setTime(location_time);
+        return l;
     }
 
     public void setWeatherEntry(WeatherEntry entry) {
