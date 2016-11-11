@@ -24,7 +24,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.events.OnClockClicked;
@@ -46,7 +45,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     private static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
     final private Handler handler = new Handler();
-    TextView current;
     AlarmClock alarmClock;
     ImageView background_image;
 
@@ -54,7 +52,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     int mode = 2;
     int currentRingerMode;
     mAudioManager AudioManage = null;
-    boolean isDebuggable = false;
 
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
@@ -86,7 +83,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         mySettings = new Settings(this);
 
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        isDebuggable = utility.isDebuggable();
 
         // allow the app to be displayed above the keyguard
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -97,7 +93,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         background_image = (ImageView) findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
 
-        current = (TextView) findViewById(R.id.current);
         alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
         alarmClock.setSettings(mySettings);
     }
@@ -269,10 +264,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if ((mode == 0) && (current_mode != 0)){
             boolean on = shallKeepScreenOn(mode);
             setKeepScreenOn(on); // allow the screen to go off
-            nightDreamUI.setAlpha(current, .0f, 3000);
         } else if ((mode > 0) && (current_mode != mode)) {
             setKeepScreenOn(true);
-            nightDreamUI.setAlpha(current, 1.0f, 3000);
         }
 
     }
@@ -328,10 +321,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     public void onEvent(OnNewLightSensorValue event){
         Log.i(TAG, String.valueOf(event.value) + " lux, n=" + String.valueOf(event.n));
-        if (isDebuggable) {
-            current.setText(String.valueOf(event.value) + " lux, n=" +
-                            String.valueOf(event.n));
-        }
         last_ambient = event.value;
         SwitchModes(last_ambient, last_ambient_noise);
     }
@@ -339,17 +328,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
-        if (isDebuggable) {
-            current.setText("Static for 15s: " + String.valueOf(last_ambient) + " lux.");
-        }
         SwitchModes(last_ambient, last_ambient_noise);
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {
         last_ambient_noise = event.value;
-        if (isDebuggable){
-            current.setText("Ambient noise " + String.valueOf(last_ambient_noise));
-        }
         SwitchModes(last_ambient, last_ambient_noise);
     }
 
