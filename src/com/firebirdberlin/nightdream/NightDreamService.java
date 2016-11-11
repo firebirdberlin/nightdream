@@ -71,7 +71,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         current = (TextView) findViewById(R.id.current);
 
         alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
-        alarmClock.setUtility(utility);
         alarmClock.setSettings(mySettings);
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);

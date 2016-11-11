@@ -99,7 +99,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         current = (TextView) findViewById(R.id.current);
         alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
-        alarmClock.setUtility(utility);
         alarmClock.setSettings(mySettings);
     }
 
