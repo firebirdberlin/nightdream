@@ -35,6 +35,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -83,6 +84,7 @@ public class NightDreamUI {
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
+    private FrameLayout clockLayoutContainer;
     private ClockLayout clockLayout;
     private LinearLayout notificationbar;
     private Settings settings = null;
@@ -112,6 +114,7 @@ public class NightDreamUI {
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
         batteryView = (TextView) rootView.findViewById(R.id.batteryView);
+        clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
@@ -414,13 +417,12 @@ public class NightDreamUI {
         }
         setupScreenAnimation();
         Random random = new Random();
-        Point size = utility.getDisplaySize();
-        int w = size.x;
-        int h = size.y;
+        int w = clockLayoutContainer.getWidth();
+        int h = clockLayoutContainer.getHeight();
         if (Build.VERSION.SDK_INT < 12) {
             // make back panel fully transparent
             clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
-            // random x position
+
             int rxpos = (w - clockLayout.getWidth()) / 2;
             int rypos = (h - clockLayout.getHeight()) / 2; // API level 1
 
@@ -434,20 +436,18 @@ public class NightDreamUI {
             clockLayout.invalidate();
         } else {
             // determine a random position
-            // lower 150 px is reserved for alarm clockLayout
-            // upper 90 px is for the battery stats
+            // api level 12
             int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());
             int scaled_height = (int) (clockLayout.getHeight() * clockLayout.getScaleY());
-            int rxpos = w - scaled_width ; // API level 11
-            int rypos = h - scaled_height - 150 - 90; // API level 11
+            int rxpos = w - scaled_width;
+            int rypos = h - scaled_height;
 
             int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
-            int i2 = (rypos > 0) ? 90 + random.nextInt(rypos) : 90;
+            int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
 
             i1 -= (clockLayout.getWidth() - scaled_width) / 2;
             i2 -= (clockLayout.getHeight() - scaled_height) / 2;
 
-            // api level 12
             clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
         }
     }
@@ -746,8 +746,7 @@ public class NightDreamUI {
     };
 
     private void applyScaleFactor(float factor) {
-        Point size = utility.getDisplaySize();
-        int screen_width = size.x;
+        int screen_width = clockLayoutContainer.getWidth();
         factor *= clockLayout.getScaleX();
         int new_width = (int) (clockLayout.getWidth() * factor);
         if (factor > 0.5f && new_width <= screen_width) {
@@ -760,8 +759,7 @@ public class NightDreamUI {
     private void fixScaleFactor() {
         if ( Build.VERSION.SDK_INT < 12 ) return;
 
-        Point size = utility.getDisplaySize();
-        int screen_width = size.x;
+        int screen_width = clockLayoutContainer.getWidth();
         float factor = clockLayout.getScaleX();
         int new_width = (int) (clockLayout.getWidth() * factor);
         if (new_width > screen_width) {
