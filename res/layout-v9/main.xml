@@ -59,13 +59,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/notification_bar" />
 
     <FrameLayout
         android:id="@+id/clockLayoutContainer"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_width="match_parent">
+
+        <include layout="@layout/notification_bar" />
+
         <!--
             date and time
         -->
