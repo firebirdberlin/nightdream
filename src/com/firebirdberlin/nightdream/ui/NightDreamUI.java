@@ -344,17 +344,18 @@ public class NightDreamUI {
         removeCallbacks(moveAround);
         Runnable fixConfig = new Runnable() {
                 public void run() {
-                    fixScaleFactor();
                     clockLayout.updateLayout(newConfig);
                     clockLayout.setDesiredClockWidth();
+                    fixScaleFactor();
+                    centerClockLayout();
 
-                    if ( showcaseView != null ) {
-                        setupShowcaseView();
+                    if ( showcaseView == null ) {
+                        handler.postDelayed(moveAround, 60000);
                     } else {
-                        handler.post(moveAround);
+                        setupShowcaseView();
                     }
                 }
-            };
+        };
         handler.postDelayed(fixConfig, 200);
     }
 
@@ -392,6 +393,7 @@ public class NightDreamUI {
     public void setupScreenAnimation() {
         BatteryStats battery = new BatteryStats(mContext);
         BatteryValue batteryValue = battery.reference;
+        long now = System.currentTimeMillis();
         if (batteryValue.isCharging) {
             screen_alpha_animation_duration = 3000;
             screen_transition_animation_duration = 10000;
@@ -415,10 +417,10 @@ public class NightDreamUI {
         if ( !settings.restless_mode) {
             return;
         }
-        setupScreenAnimation();
         Random random = new Random();
         int w = clockLayoutContainer.getWidth();
         int h = clockLayoutContainer.getHeight();
+        Log.i(TAG, String.valueOf(w) + "x" + String.valueOf(h));
         if (Build.VERSION.SDK_INT < 12) {
             // make back panel fully transparent
             clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
@@ -439,6 +441,7 @@ public class NightDreamUI {
             // api level 12
             int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());
             int scaled_height = (int) (clockLayout.getHeight() * clockLayout.getScaleY());
+            Log.i(TAG, String.valueOf(scaled_width) + "x" + String.valueOf(scaled_height));
             int rxpos = w - scaled_width;
             int rypos = h - scaled_height;
 
@@ -447,7 +450,7 @@ public class NightDreamUI {
 
             i1 -= (clockLayout.getWidth() - scaled_width) / 2;
             i2 -= (clockLayout.getHeight() - scaled_height) / 2;
-
+            Log.i(TAG, String.valueOf(i1) + "x" + String.valueOf(i2));
             clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
         }
     }
@@ -647,6 +650,7 @@ public class NightDreamUI {
        @Override
        public void run() {
            removeCallbacks(hideBrightnessLevel);
+           setupScreenAnimation();
            updateClockPosition();
            updateWeatherData();
 

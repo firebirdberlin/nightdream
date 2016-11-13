@@ -1,13 +1,11 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.util.Locale;
 
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
