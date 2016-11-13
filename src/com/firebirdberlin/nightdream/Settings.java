@@ -353,6 +353,8 @@ public class Settings {
         prefEditor.putString("weather_city_name", entry.cityName);
         prefEditor.putInt("weather_city_id", entry.cityID);
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
+        prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
+        prefEditor.putInt("weather_wind_direction", entry.windDirection);
         prefEditor.commit();
     }
 
@@ -368,6 +370,8 @@ public class Settings {
             this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
             this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
             this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
+            this.weatherEntry.windSpeed = settings.getFloat("weather_wind_speed", (float) this.weatherEntry.windSpeed);
+            this.weatherEntry.windDirection = settings.getInt("weather_wind_direction", this.weatherEntry.windDirection);
         }
         return this.weatherEntry;
     }

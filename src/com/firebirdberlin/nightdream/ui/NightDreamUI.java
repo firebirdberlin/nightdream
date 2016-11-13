@@ -191,6 +191,7 @@ public class NightDreamUI {
     private long lastLocationRequest = 0L;
     private void updateWeatherData() {
         if (! settings.showWeather ) return;
+
         WeatherEntry entry = settings.weatherEntry;
         long now = System.currentTimeMillis();
         long requestAge = now - lastLocationRequest;

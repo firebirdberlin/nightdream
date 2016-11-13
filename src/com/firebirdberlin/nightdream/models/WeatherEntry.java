@@ -15,6 +15,8 @@ public class WeatherEntry {
     public String weatherIcon = "";
     public float lat = 0.0f;
     public float lon = 0.0f;
+    public double windSpeed = 0.;
+    public int windDirection = 0;
 
     public WeatherEntry() {
 

@@ -10,15 +10,27 @@
             android:id="@+id/iconText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#C2C2C2"
             android:textSize="30sp"
-            android:paddingRight="5sp"
             android:text=""/>
         <TextView
             android:id="@+id/temperatureText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#C2C2C2"
+            android:paddingLeft="5sp"
+            android:textSize="30sp"
+            android:text=""/>
+        <TextView
+            android:id="@+id/iconWind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5sp"
+            android:textSize="30sp"
+            android:text=""/>
+        <TextView
+            android:id="@+id/windText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5sp"
             android:textSize="30sp"
             android:text=""/>
 </LinearLayout>
