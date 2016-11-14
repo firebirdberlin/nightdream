@@ -10,6 +10,7 @@
             android:id="@+id/iconText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:textSize="30sp"
             android:text=""/>
         <TextView
@@ -17,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5sp"
+            android:singleLine="true"
             android:textSize="30sp"
             android:text=""/>
         <TextView
@@ -24,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5sp"
+            android:singleLine="true"
             android:textSize="30sp"
             android:text=""/>
         <TextView
@@ -31,6 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5sp"
+            android:ellipsize="none"
+            android:singleLine="true"
             android:textSize="30sp"
             android:text=""/>
 </LinearLayout>
