@@ -20,6 +20,7 @@
             android:paddingLeft="5sp"
             android:singleLine="true"
             android:textSize="30sp"
+            android:textStyle="bold"
             android:text=""/>
         <TextView
             android:id="@+id/iconWind"
@@ -37,5 +38,6 @@
             android:ellipsize="none"
             android:singleLine="true"
             android:textSize="30sp"
+            android:textStyle="bold"
             android:text=""/>
 </LinearLayout>
