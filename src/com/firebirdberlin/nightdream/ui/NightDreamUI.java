@@ -347,8 +347,8 @@ public class NightDreamUI {
                 public void run() {
                     clockLayout.updateLayout(newConfig);
                     clockLayout.setDesiredClockWidth();
-                    fixScaleFactor();
                     centerClockLayout();
+                    setScaleFactor(newConfig);
 
                     if ( showcaseView == null ) {
                         handler.postDelayed(moveAround, 60000);
@@ -358,6 +358,20 @@ public class NightDreamUI {
                 }
         };
         handler.postDelayed(fixConfig, 200);
+    }
+
+    private void setScaleFactor(Configuration config) {
+        switch (config.orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                clockLayout.setScaleFactor(settings.scaleClockPortrait);
+                return;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                clockLayout.setScaleFactor(settings.scaleClockLandscape);
+                return;
+            default:
+                clockLayout.setScaleFactor(settings.scaleClock);
+                return;
+        }
     }
 
     public void updateBatteryView() {
@@ -637,11 +651,11 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            Configuration config = mContext.getResources().getConfiguration();
+            Configuration config = getConfiguration();
             clockLayout.updateLayout(config);
             clockLayout.setDesiredClockWidth();
 
-            float s = settings.scaleClock;
+            float s = settings.getScaleClock(config.orientation);
             clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
        }
     };
@@ -702,7 +716,7 @@ public class NightDreamUI {
         handler.postDelayed(hideAlarmClock, 20000);
 
         setupAlarmClock();
-
+        alarmClock.invalidate();
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
@@ -730,11 +744,16 @@ public class NightDreamUI {
         }
     };
 
+    private Configuration getConfiguration() {
+        return mContext.getResources().getConfiguration();
+    }
+
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
             float s = clockLayout.getScaleX();
-            settings.setScaleClock(s);
+            Configuration config = getConfiguration();
+            settings.setScaleClock(s, config.orientation);
         }
 
         @Override
@@ -752,29 +771,15 @@ public class NightDreamUI {
 
     private void applyScaleFactor(float factor) {
         int screen_width = clockLayoutContainer.getWidth();
+        int screen_height = clockLayoutContainer.getHeight();
         factor *= clockLayout.getScaleX();
         int new_width = (int) (clockLayout.getWidth() * factor);
-        if (factor > 0.5f && new_width <= screen_width) {
-            clockLayout.setScaleX(factor);
-            clockLayout.setScaleY(factor);
-            clockLayout.invalidate();
+        int new_height = (int) (clockLayout.getHeight() * factor);
+        if (factor > 0.5f && new_width <= screen_width && new_height <= screen_height) {
+            clockLayout.setScaleFactor(factor);
         }
     }
 
-    private void fixScaleFactor() {
-        if ( Build.VERSION.SDK_INT < 12 ) return;
-
-        int screen_width = clockLayoutContainer.getWidth();
-        float factor = clockLayout.getScaleX();
-        int new_width = (int) (clockLayout.getWidth() * factor);
-        if (new_width > screen_width) {
-            factor = 1.f;
-            settings.setScaleClock(factor);
-            clockLayout.setScaleX(factor);
-            clockLayout.setScaleY(factor);
-            clockLayout.invalidate();
-        }
-    }
 
     OnClickListener mOnClickListener = new OnClickListener() {
         public void onClick(View v) {

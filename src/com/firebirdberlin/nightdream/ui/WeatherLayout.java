@@ -73,6 +73,14 @@ public class WeatherLayout extends LinearLayout {
         windText.setTypeface(typeface);
     }
 
+    public void setTextSize(int unit, int size) {
+        iconText.setTextSize(unit, size);
+        iconWind.setTextSize(unit, size);
+        windText.setTextSize(unit, size);
+        temperatureText.setTextSize(unit, size);
+        invalidate();
+    }
+
     public void setColor(int color) {
         if (iconText != null) {
             iconText.setTextColor(color);

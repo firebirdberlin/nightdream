@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -55,6 +56,8 @@ public class Settings {
     public String location_provider = LocationManager.NETWORK_PROVIDER;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
+    public float scaleClockPortrait = 1.f;
+    public float scaleClockLandscape = 1.f;
     public int background_mode = 1;
     public int clockColor;
     public int reactivate_on_ambient_light_value = 30; // lux
@@ -125,6 +128,8 @@ public class Settings {
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
+        scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
+        scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
@@ -277,11 +282,34 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public void setScaleClock(float factor) {
-        scaleClock = factor;
+    public void setScaleClock(float factor, int orientation) {
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putFloat("scaleClock", scaleClock);
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                scaleClockLandscape = factor;
+                prefEditor.putFloat("scaleClockLandscape", factor);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                scaleClockPortrait = factor;
+                prefEditor.putFloat("scaleClockPortrait", factor);
+                break;
+            default:
+                scaleClock = factor;
+                prefEditor.putFloat("scaleClock", factor);
+                break;
+        }
         prefEditor.commit();
+    }
+
+    public float getScaleClock(int orientation) {
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                return scaleClockLandscape;
+            case Configuration.ORIENTATION_PORTRAIT:
+                return scaleClockPortrait;
+            default:
+                return scaleClock;
+        }
     }
 
     public void clear() {

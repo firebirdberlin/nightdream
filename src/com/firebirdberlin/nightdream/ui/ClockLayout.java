@@ -117,13 +117,18 @@ public class ClockLayout extends LinearLayout {
     public void setDesiredClockWidth(){
         View parent = (View) getParent();
         int parentWidth = parent.getWidth();
-        setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-        setDesiredWidth(date, parentWidth, 0.9f, 30.f);
+        setDesiredWidth(clock, parentWidth, 0.5f, 300.f);
+        setDesiredWidth(date, parentWidth, 0.75f, 30.f);
+        float textSize = date.getTextSize();
+        weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
+
     }
 
     public void setDesiredClockWidth(int parentWidth){
-        setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-        setDesiredWidth(date, parentWidth, 0.9f, 30.f);
+        setDesiredWidth(clock, parentWidth, 0.5f, 300.f);
+        setDesiredWidth(date, parentWidth, 0.75f, 30.f);
+        float textSize = date.getTextSize();
+        weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
     }
 
     public void updateLayout(Configuration config) {
@@ -135,6 +140,12 @@ public class ClockLayout extends LinearLayout {
                 setHorizontalLayout();
                 break;
         }
+    }
+
+    public void setScaleFactor(float factor) {
+        setScaleX(factor);
+        setScaleY(factor);
+        invalidate();
     }
 
     private void setVerticalLayout() {
@@ -156,14 +167,9 @@ public class ClockLayout extends LinearLayout {
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         int maxPX = spToPx(maxSp);
         do{
-            float textWidth = view.getPaint().measureText(text);
-            if (textWidth < desiredWidth) {
-                view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
-            } else {
-                view.setTextSize(TypedValue.COMPLEX_UNIT_PX, --size);
-                break;
-            }
-        } while(size <= maxPX);
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
+        } while(size <= maxPX && view.getPaint().measureText(text) < desiredWidth);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, --size);
     }
 
     private float pixelsToSp(float px) {
