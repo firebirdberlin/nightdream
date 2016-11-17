@@ -114,50 +114,22 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    public void setDesiredClockWidth(Configuration config){
-        View parent = (View) getParent();
-        int parentWidth = parent.getWidth();
+    public void updateLayout(int parentWidth, Configuration config){
         switch (config.orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                setDesiredWidth(clock, parentWidth, 0.4f, 300.f);
-                setDesiredWidth(date, parentWidth, 0.4f, 22.f);
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-            default:
-                setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-                setDesiredWidth(date, parentWidth, 0.9f, 25.f);
-                break;
-        }
-        float textSize = date.getTextSize();
-        weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
-
-    }
-
-    public void setDesiredClockWidth(int parentWidth, Configuration config){
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                setDesiredWidth(clock, parentWidth, 0.4f, 300.f);
-                setDesiredWidth(date, parentWidth, 0.4f, 22.f);
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-            default:
-                setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-                setDesiredWidth(date, parentWidth, 0.9f, 25.f);
-                break;
-        }
-        float textSize = date.getTextSize();
-        weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
-    }
-
-    public void updateLayout(Configuration config) {
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                setVerticalLayout();
-                break;
             case Configuration.ORIENTATION_LANDSCAPE:
                 setHorizontalLayout();
+                setDesiredWidth(clock, parentWidth, 0.4f, 300.f);
+                setDesiredWidth(date, parentWidth, 0.4f, 22.f);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+            default:
+                setVerticalLayout();
+                setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
+                setDesiredWidth(date, parentWidth, 0.9f, 25.f);
                 break;
         }
+        float textSize = date.getTextSize();
+        weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
     }
 
     public void setScaleFactor(float factor) {
