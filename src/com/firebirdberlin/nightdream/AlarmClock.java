@@ -46,6 +46,7 @@ public class AlarmClock extends View {
     private static AlarmManager am = null;
     private Settings settings = null;
     public int touch_zone_radius = 150;
+    public int quiet_zone_size = 60;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -98,13 +99,15 @@ public class AlarmClock extends View {
         float tX = e.getX();
         float tY = e.getY();
 
+
         // set alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // Allow start only in the lower left corner
                 Point click = getClickedPoint(e);
                 Point ll = new Point(0, getHeight()); // lower left corner
-                if (distance(click, ll) < touch_zone_radius) { // left corner
+                float dist = distance(click, ll);
+                if (dist > quiet_zone_size && dist < touch_zone_radius) { // left corner
                     FingerDown = true;
                     removeAlarm();
                     XYtotime(tX,tY);
@@ -137,7 +140,8 @@ public class AlarmClock extends View {
         // set alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (distance(click, lr) < touch_zone_radius) { // right corner
+                float dist = distance(click, lr);
+                if (dist > quiet_zone_size && dist < touch_zone_radius) { // right corner
                     FingerDownDeleteAlarm = true;
                     this.invalidate();
                     return true;
@@ -156,17 +160,20 @@ public class AlarmClock extends View {
     }
 
     private void XYtotime(float x, float y) {
-        int w = getWidth();
-        int h = new Utility(ctx).getDisplaySize().y;
+        int w = getWidth() - 2 * touch_zone_radius;
+        int h = new Utility(ctx).getDisplaySize().y - 2 * touch_zone_radius;
 
-        // the coordiate is negative outside the view
+        x -= touch_zone_radius;
+        x = (x < 0) ? 0 : x;
+
+        // the coordinate is negative outside the view
         y *= -1.f;
         y += getHeight();
 
-        float hours = x/w * 24;
-        float mins = y/h * 60;
-        hour = (hours >= 24.f) ? 23 : (int) hours;
-        min = (mins >= 60.f) ? 0 : (int) mins;
+        int hours = (int) (x/w * 24);
+        int mins = (int) ((y/h * 60)) / 5 * 5;
+        hour = (hours >= 24) ? 23 : hours;
+        min = (mins >= 60) ? 55 : mins;
     }
 
     @Override
@@ -182,6 +189,7 @@ public class AlarmClock extends View {
 
         // set size of the touch zone
         touch_zone_radius = (w < h) ? w : h;
+        quiet_zone_size = touch_zone_radius/4;
 
         int tzr2 = (int) (0.93 * touch_zone_radius);
         int tzr3 = (int) (0.86 * touch_zone_radius);
