@@ -803,12 +803,13 @@ public class NightDreamUI {
         Point click = new Point((int) e.getX(),(int) e.getY());
         Point size = utility.getDisplaySize();
 
+        updateBatteryView();
+
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (click.y >= 0.2 * size.y) {// upper 20% of the screen
                     brightnessProgress.setVisibility(View.INVISIBLE);
-                    updateBatteryView();
                 }
 
                 showAlarmClock();
