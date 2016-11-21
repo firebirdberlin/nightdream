@@ -220,6 +220,7 @@ public class NightDreamUI {
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setTertiaryColor(settings.tertiaryColor);
         clockLayout.setTemperatureUnit(settings.temperatureUnit);
+        clockLayout.setSpeedUnit(settings.speedUnit);
         clockLayout.update(settings.weatherEntry);
     }
 

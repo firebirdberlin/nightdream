@@ -92,6 +92,10 @@ public class ClockLayout extends LinearLayout {
         weatherLayout.setTemperatureUnit(unit);
     }
 
+    public void setSpeedUnit(int unit) {
+        weatherLayout.setSpeedUnit(unit);
+    }
+
     public void showDate(boolean on) {
         date.setVisibility( (on) ? View.VISIBLE : View.GONE);
         toggleDivider();

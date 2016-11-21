@@ -63,6 +63,7 @@
     <string name="show_date">Datum</string>
     <string name="show_weather">Wetter</string>
     <string name="temperatureUnit">Temperatureinheit</string>
+    <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
     <string name="typeface">Schriftart</string>
     <string name="use_internal_alarm">Schnellalarm</string>
     <string name="weather">Wetter</string>

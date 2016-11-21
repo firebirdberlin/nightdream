@@ -64,6 +64,7 @@ public class Settings {
     public int secondaryColor;
     public int sensitivity = 1;
     public int temperatureUnit = WeatherEntry.CELSIUS;
+    public int speedUnit = WeatherEntry.METERS_PER_SECOND;
     public int tertiaryColor;
     public long autostartTimeRangeStart = -1L;
     public long autostartTimeRangeEnd = -1L;
@@ -134,6 +135,7 @@ public class Settings {
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
+        speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());

@@ -259,6 +259,14 @@
                 android:entries="@array/temperatureUnit"
                 android:entryValues="@array/temperatureUnitValues"/>
 
+            <ListPreference
+                android:title="@string/speedUnit"
+                android:dependency="showWeather"
+                android:key="speedUnit"
+                android:defaultValue="1"
+                android:entries="@array/speedUnit"
+                android:entryValues="@array/speedUnitValues"/>
+
             <EditTextPreference
                 android:defaultValue=""
                 android:dependency="showWeather"

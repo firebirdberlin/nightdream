@@ -22,6 +22,7 @@ public class WeatherLayout extends LinearLayout {
     private TextView temperatureText = null;
     private TextView windText = null;
     private int temperatureUnit = WeatherEntry.CELSIUS;
+    private int speedUnit = WeatherEntry.METERS_PER_SECOND;
 
     public WeatherLayout(Context context) {
         super(context);
@@ -44,6 +45,10 @@ public class WeatherLayout extends LinearLayout {
 
     public void setTemperatureUnit(int unit) {
         this.temperatureUnit = unit;
+    }
+
+    public void setSpeedUnit(int unit) {
+        this.speedUnit = unit;
     }
 
     @Override
@@ -157,6 +162,17 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private String formatWindText(WeatherEntry entry) {
-        return String.format("%.0fm/s", entry.windSpeed);
+        switch (speedUnit) {
+            case WeatherEntry.MILES_PER_HOUR:
+                return String.format("%.0fmi/h", toMilesPerHour(entry.windSpeed));
+            case WeatherEntry.METERS_PER_SECOND:
+            default:
+                return String.format("%.0fm/s", entry.windSpeed);
+        }
     }
+
+    private double toMilesPerHour(double mps) {
+        return mps  * 3600. / 1609.344;
+    }
+
 }

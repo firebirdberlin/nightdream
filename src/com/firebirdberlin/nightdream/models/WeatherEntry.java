@@ -4,6 +4,8 @@ public class WeatherEntry {
     public static final int CELSIUS = 1;
     public static final int FAHRENHEIT = 2;
     public static final int KELVIN = 3;
+    public static final int METERS_PER_SECOND = 1;
+    public static final int MILES_PER_HOUR = 2;
     public static final long INVALID = -1L;
 
     public long timestamp = INVALID;
