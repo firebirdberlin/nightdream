@@ -77,7 +77,8 @@ public class ClockLayoutPreviewPreference extends Preference {
         Configuration config = context.getResources().getConfiguration();
         clockLayout.updateLayout(config);
         clockLayout.setDesiredClockWidth(size.x - preferenceView.getPaddingLeft()
-                                                - preferenceView.getPaddingRight());
+                                                - preferenceView.getPaddingRight(),
+                                         config);
         clockLayout.invalidate();
 
     }

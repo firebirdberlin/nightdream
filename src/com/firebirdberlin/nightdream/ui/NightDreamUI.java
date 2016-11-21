@@ -346,7 +346,7 @@ public class NightDreamUI {
         Runnable fixConfig = new Runnable() {
                 public void run() {
                     clockLayout.updateLayout(newConfig);
-                    clockLayout.setDesiredClockWidth();
+                    clockLayout.setDesiredClockWidth(newConfig);
                     centerClockLayout();
                     setScaleFactor(newConfig);
 
@@ -653,7 +653,7 @@ public class NightDreamUI {
         public void run() {
             Configuration config = getConfiguration();
             clockLayout.updateLayout(config);
-            clockLayout.setDesiredClockWidth();
+            clockLayout.setDesiredClockWidth(config);
 
             float s = settings.getScaleClock(config.orientation);
             clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
