@@ -88,12 +88,12 @@ public class ClockLayout extends LinearLayout {
         divider.setBackgroundColor(color);
     }
 
-    public void setTemperatureUnit(int unit) {
-        weatherLayout.setTemperatureUnit(unit);
+    public void setTemperature(boolean on, int unit) {
+        weatherLayout.setTemperature(on, unit);
     }
 
-    public void setSpeedUnit(int unit) {
-        weatherLayout.setSpeedUnit(unit);
+    public void setWindSpeed(boolean on, int unit) {
+        weatherLayout.setWindSpeed(on, unit);
     }
 
     public void showDate(boolean on) {

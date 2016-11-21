@@ -48,6 +48,8 @@ public class Settings {
     public boolean restless_mode = true;
     public boolean showDate = true;
     public boolean showWeather = false;
+    public boolean showTemperature = true;
+    public boolean showWindSpeed = false;
     public boolean useInternalAlarm = true;
     public float dim_offset = 0.8f;
     public float location_lon = 0.f;
@@ -134,6 +136,8 @@ public class Settings {
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
+        showTemperature = settings.getBoolean("showTemperature", true);
+        showWindSpeed = settings.getBoolean("showWindSpeed", false);
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));

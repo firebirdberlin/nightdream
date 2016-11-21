@@ -251,17 +251,29 @@
                 android:defaultValue="false"
                 android:enabled="false"/>
 
+            <SwitchPreference
+                android:key="showTemperature"
+                android:title="@string/show_temperature"
+                android:dependency="showWeather"
+                android:defaultValue="true"/>
+
             <ListPreference
                 android:title="@string/temperatureUnit"
-                android:dependency="showWeather"
+                android:dependency="showTemperature"
                 android:key="temperatureUnit"
                 android:defaultValue="1"
                 android:entries="@array/temperatureUnit"
                 android:entryValues="@array/temperatureUnitValues"/>
 
+            <SwitchPreference
+                android:key="showWindSpeed"
+                android:title="@string/show_wind_speed"
+                android:dependency="showWeather"
+                android:defaultValue="false"/>
+
             <ListPreference
                 android:title="@string/speedUnit"
-                android:dependency="showWeather"
+                android:dependency="showWindSpeed"
                 android:key="speedUnit"
                 android:defaultValue="1"
                 android:entries="@array/speedUnit"

@@ -61,7 +61,9 @@
     <string name="select_alarm_sound">Weckton auswählen</string>
     <string name="set_alarm">neuer Alarm</string>
     <string name="show_date">Datum</string>
+    <string name="show_temperature">Temperatur</string>
     <string name="show_weather">Wetter</string>
+    <string name="show_wind_speed">Windgeschwindigkeit</string>
     <string name="temperatureUnit">Temperatureinheit</string>
     <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
     <string name="typeface">Schriftart</string>

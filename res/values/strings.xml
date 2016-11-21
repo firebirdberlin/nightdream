@@ -82,7 +82,9 @@ OR
     <string name="set_alarm">set alarm</string>
     <string name="show_date">show date</string>
     <string name="date_format">Date format</string>
+    <string name="show_temperature">Temperature</string>
     <string name="show_weather">Show local weather</string>
+    <string name="show_wind_speed">Wind Speed</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="speedUnit">Wind speed unit</string>
     <string name="typeface_roboto_condensed">Roboto condensed</string>

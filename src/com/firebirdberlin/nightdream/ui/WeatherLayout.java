@@ -43,12 +43,16 @@ public class WeatherLayout extends LinearLayout {
         addView(child);
     }
 
-    public void setTemperatureUnit(int unit) {
+    public void setTemperature(boolean on, int unit) {
         this.temperatureUnit = unit;
+        temperatureText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
-    public void setSpeedUnit(int unit) {
+    public void setWindSpeed(boolean on, int unit) {
         this.speedUnit = unit;
+
+        iconWind.setVisibility( (on) ? View.VISIBLE : View.GONE );
+        windText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
     @Override
