@@ -169,6 +169,7 @@ public class NightDreamUI {
 
         hideSystemUI();
         settings.reload();
+        setScreenOrientation(settings.screenOrientation);
         updateWeatherData();
 
         EventBus.getDefault().register(this);
@@ -548,9 +549,14 @@ public class NightDreamUI {
     private void setBrightness(float value) {
         LayoutParams layout = window.getAttributes();
         layout.screenBrightness = value;
-        layout.buttonBrightness = 0.f;
+        layout.buttonBrightness = LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
         window.setAttributes(layout);
         fadeSoftButtons();
+    }
+
+    private void setScreenOrientation(int orientation) {
+        if (daydreamMode) return;
+        ((Activity) mContext).setRequestedOrientation(orientation);
     }
 
     private void fadeSoftButtons() {

@@ -149,9 +149,17 @@
                     seekbar:unitsLeft=""
                     seekbar:unitsRight=""/>
 
+                <ListPreference
+                    android:title="@string/screenOrientation"
+                    android:key="screenOrientation"
+                    android:defaultValue="-1"
+                    android:entries="@array/screenOrientation"
+                    android:entryValues="@array/screenOrientationValues"/>
+
                 <SwitchPreference
                     android:key="force_auto_rotation"
                     android:title="@string/force_auto_rotation"
+                    android:summary="@string/force_auto_rotation_summary"
                     android:defaultValue="false" />
         </PreferenceCategory>
 

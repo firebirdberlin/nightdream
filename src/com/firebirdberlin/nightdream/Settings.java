@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -67,6 +68,7 @@ public class Settings {
     public int sensitivity = 1;
     public int temperatureUnit = WeatherEntry.CELSIUS;
     public int speedUnit = WeatherEntry.METERS_PER_SECOND;
+    public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     public int tertiaryColor;
     public long autostartTimeRangeStart = -1L;
     public long autostartTimeRangeEnd = -1L;
@@ -140,6 +142,7 @@ public class Settings {
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
+        screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());

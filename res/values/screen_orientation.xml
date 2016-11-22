@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="screenOrientationValues">
+          <item>-1</item>
+          <item>0</item>
+          <item>1</item>
+          <item>8</item>
+          <item>9</item>
+     </string-array>
+
+
+    <string-array name="screenOrientation">
+        <item>unspecified</item>
+        <item>landscape</item>
+        <item>portrait</item>
+        <item>reverse landscape</item>
+        <item>reverse portrait</item>
+    </string-array>
+</resources>
