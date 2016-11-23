@@ -10,7 +10,7 @@
 
 
     <string-array name="screenOrientation">
-        <item>unspecified</item>
+        <item>automatic</item>
         <item>landscape</item>
         <item>portrait</item>
         <item>reverse landscape</item>
