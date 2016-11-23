@@ -169,6 +169,8 @@ public class WeatherLayout extends LinearLayout {
         switch (speedUnit) {
             case WeatherEntry.MILES_PER_HOUR:
                 return String.format("%.0fmi/h", toMilesPerHour(entry.windSpeed));
+            case WeatherEntry.KM_PER_HOUR:
+                return String.format("%.0fkm/h", toKilometersPerHour(entry.windSpeed));
             case WeatherEntry.METERS_PER_SECOND:
             default:
                 return String.format("%.0fm/s", entry.windSpeed);
@@ -177,6 +179,10 @@ public class WeatherLayout extends LinearLayout {
 
     private double toMilesPerHour(double mps) {
         return mps  * 3600. / 1609.344;
+    }
+
+    private double toKilometersPerHour(double mps) {
+        return mps  * 3.6;
     }
 
 }
