@@ -121,9 +121,10 @@ public class ClockLayout extends LinearLayout {
     public void updateLayout(int parentWidth, Configuration config){
         switch (config.orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
-                setHorizontalLayout();
-                setDesiredWidth(clock, parentWidth, 0.4f, 300.f);
-                setDesiredWidth(date, parentWidth, 0.4f, 22.f);
+                //setHorizontalLayout();
+                setVerticalLayout();
+                setDesiredWidth(clock, parentWidth, 0.3f, 300.f);
+                setDesiredWidth(date, parentWidth, 0.5f, 20.f);
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
             default:
@@ -144,7 +145,7 @@ public class ClockLayout extends LinearLayout {
 
     private void setVerticalLayout() {
         infoLayout.setOrientation(LinearLayout.VERTICAL);
-        weatherLayout.setPadding(0, spToPx(5), 0, 0);
+        weatherLayout.setPadding(0, spToPx(2), 0, 0);
     }
 
     private void setHorizontalLayout() {
