@@ -239,7 +239,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public boolean onTouch(View view, MotionEvent e) {
-        refreshScreenTimeout();
         return nightDreamUI.onTouch(view, e, last_ambient);
     }
 
@@ -308,7 +307,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnClockClicked event){
-        refreshScreenTimeout();
         if (AlarmService.isRunning) alarmClock.stopAlarm();
 
         if (lightSensor == null){
@@ -371,21 +369,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-        refreshScreenTimeout();
-    }
-
-    private void refreshScreenTimeout() {
-        handler.removeCallbacks(finishApp);
-        if ( ! isKeepScreenOn() ) {
-            int screenOffTimeout = utility.getScreenOffTimeout();
-            handler.postDelayed(finishApp, screenOffTimeout + 1000);
-        }
-    }
-
-    private boolean isKeepScreenOn() {
-        int flags = getWindow().getAttributes().flags;
-
-        return ((flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0);
     }
 
     @Override
