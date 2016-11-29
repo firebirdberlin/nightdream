@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.PackageManager;
@@ -298,11 +299,20 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference resetToDefaults = (Preference) findPreference("reset_to_defaults");
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                settings.clear();
-                getPreferenceScreen().removeAll();
-                addPreferencesFromResource(R.layout.preferences);
-                init();
-                togglePurchasePreferences();
+                new AlertDialog.Builder(mContext)
+                    .setTitle(getResources().getString(R.string.confirm_reset))
+                    .setMessage(getResources().getString(R.string.confirm_reset_question))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            settings.clear();
+                            getPreferenceScreen().removeAll();
+                            addPreferencesFromResource(R.layout.preferences);
+                            init();
+                            togglePurchasePreferences();
+                        }
+                    }).show();
+
                 return true;
             }
         });

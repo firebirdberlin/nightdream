@@ -123,6 +123,7 @@ public class DownloadWeatherService extends Service {
             try {
                 JSONObject json = new JSONObject(responseText);
                 JSONObject jsonMain = json.getJSONObject("main");
+                JSONObject jsonWind = json.getJSONObject("wind");
                 JSONObject jsonSys = json.getJSONObject("sys");
                 JSONArray jsonWeather = json.getJSONArray("weather");
 
@@ -132,6 +133,8 @@ public class DownloadWeatherService extends Service {
                 entry.temperature = jsonMain.getDouble("temp");
                 entry.sunriseTime = jsonSys.getLong("sunrise");
                 entry.sunsetTime = jsonSys.getLong("sunset");
+                entry.windSpeed = jsonWind.getDouble("speed");
+                entry.windDirection = jsonWind.getInt("deg");
                 if ( jsonWeather.length() > 0 ) {
                     JSONObject weatherObj = jsonWeather.getJSONObject(0);
                     entry.weatherIcon = weatherObj.getString("icon");

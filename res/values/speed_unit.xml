@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="speedUnitValues">
+          <item>1</item>
+          <item>2</item>
+          <item>3</item>
+     </string-array>
+
+
+    <string-array name="speedUnit">
+        <item>m/s</item>
+        <item>mi/h</item>
+        <item>km/h</item>
+    </string-array>
+</resources>

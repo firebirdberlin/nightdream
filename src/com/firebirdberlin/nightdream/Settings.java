@@ -6,8 +6,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -47,6 +49,8 @@ public class Settings {
     public boolean restless_mode = true;
     public boolean showDate = true;
     public boolean showWeather = false;
+    public boolean showTemperature = true;
+    public boolean showWindSpeed = false;
     public boolean useInternalAlarm = true;
     public float dim_offset = 0.8f;
     public float location_lon = 0.f;
@@ -55,12 +59,16 @@ public class Settings {
     public String location_provider = LocationManager.NETWORK_PROVIDER;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
+    public float scaleClockPortrait = 1.f;
+    public float scaleClockLandscape = 1.f;
     public int background_mode = 1;
     public int clockColor;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int sensitivity = 1;
     public int temperatureUnit = WeatherEntry.CELSIUS;
+    public int speedUnit = WeatherEntry.METERS_PER_SECOND;
+    public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     public int tertiaryColor;
     public long autostartTimeRangeStart = -1L;
     public long autostartTimeRangeEnd = -1L;
@@ -125,10 +133,16 @@ public class Settings {
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
+        scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
+        scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
+        showTemperature = settings.getBoolean("showTemperature", true);
+        showWindSpeed = settings.getBoolean("showWindSpeed", false);
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
+        speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
+        screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
@@ -277,11 +291,34 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public void setScaleClock(float factor) {
-        scaleClock = factor;
+    public void setScaleClock(float factor, int orientation) {
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putFloat("scaleClock", scaleClock);
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                scaleClockLandscape = factor;
+                prefEditor.putFloat("scaleClockLandscape", factor);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                scaleClockPortrait = factor;
+                prefEditor.putFloat("scaleClockPortrait", factor);
+                break;
+            default:
+                scaleClock = factor;
+                prefEditor.putFloat("scaleClock", factor);
+                break;
+        }
         prefEditor.commit();
+    }
+
+    public float getScaleClock(int orientation) {
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                return scaleClockLandscape;
+            case Configuration.ORIENTATION_PORTRAIT:
+                return scaleClockPortrait;
+            default:
+                return scaleClock;
+        }
     }
 
     public void clear() {
@@ -353,6 +390,8 @@ public class Settings {
         prefEditor.putString("weather_city_name", entry.cityName);
         prefEditor.putInt("weather_city_id", entry.cityID);
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
+        prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
+        prefEditor.putInt("weather_wind_direction", entry.windDirection);
         prefEditor.commit();
     }
 
@@ -368,6 +407,8 @@ public class Settings {
             this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
             this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
             this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
+            this.weatherEntry.windSpeed = settings.getFloat("weather_wind_speed", (float) this.weatherEntry.windSpeed);
+            this.weatherEntry.windDirection = settings.getInt("weather_wind_direction", this.weatherEntry.windDirection);
         }
         return this.weatherEntry;
     }

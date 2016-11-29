@@ -18,8 +18,11 @@ public class WeatherLayout extends LinearLayout {
 
     private Context context = null;
     private TextView iconText = null;
+    private TextView iconWind = null;
     private TextView temperatureText = null;
+    private TextView windText = null;
     private int temperatureUnit = WeatherEntry.CELSIUS;
+    private int speedUnit = WeatherEntry.METERS_PER_SECOND;
 
     public WeatherLayout(Context context) {
         super(context);
@@ -40,36 +43,65 @@ public class WeatherLayout extends LinearLayout {
         addView(child);
     }
 
-    public void setTemperatureUnit(int unit) {
+    public void setTemperature(boolean on, int unit) {
         this.temperatureUnit = unit;
+        temperatureText.setVisibility( (on) ? View.VISIBLE : View.GONE );
+    }
+
+    public void setWindSpeed(boolean on, int unit) {
+        this.speedUnit = unit;
+
+        iconWind.setVisibility( (on) ? View.VISIBLE : View.GONE );
+        windText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
     @Override
     protected void onFinishInflate() {
         iconText = (TextView) findViewById(R.id.iconText);
+        iconWind = (TextView) findViewById(R.id.iconWind);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
+        windText = (TextView) findViewById(R.id.windText);
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
         iconText.setTypeface(typeface);
+        iconWind.setTypeface(typeface);
     }
 
     public void clear() {
         iconText.setText("");
+        iconWind.setText("");
         temperatureText.setText("");
         temperatureText.invalidate();
+        windText.setText("");
+        windText.invalidate();
         iconText.invalidate();
+        iconWind.invalidate();
     }
 
     public void setTypeface(Typeface typeface) {
-        if (iconText == null) return;
         temperatureText.setTypeface(typeface);
+        windText.setTypeface(typeface);
+    }
+
+    public void setTextSize(int unit, int size) {
+        iconText.setTextSize(unit, size);
+        iconWind.setTextSize(unit, size);
+        windText.setTextSize(unit, size);
+        temperatureText.setTextSize(unit, size);
+        invalidate();
     }
 
     public void setColor(int color) {
         if (iconText != null) {
             iconText.setTextColor(color);
         }
+        if (iconWind != null) {
+            iconWind.setTextColor(color);
+        }
         if (temperatureText != null) {
             temperatureText.setTextColor(color);
+        }
+        if (windText != null) {
+            windText.setTextColor(color);
         }
     }
 
@@ -78,22 +110,19 @@ public class WeatherLayout extends LinearLayout {
         long age = entry.ageMillis();
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
             iconText.setText(iconToText(entry.weatherIcon));
-            switch (temperatureUnit) {
-                case WeatherEntry.CELSIUS:
-                    temperatureText.setText(toDegreesCelcius(entry.temperature) + "°C");
-                    break;
-                case WeatherEntry.FAHRENHEIT:
-                    temperatureText.setText(toDegreesFahrenheit(entry.temperature) + "°F");
-                    break;
-                default:
-                    temperatureText.setText(toKelvin(entry.temperature) + "K");
-            }
+            temperatureText.setText(formatTemperatureText(entry));
+            iconWind.setText("F");
+            windText.setText(formatWindText(entry));
         } else {
             iconText.setText("");
+            iconWind.setText("");
             temperatureText.setText("");
+            windText.setText("");
         }
         temperatureText.invalidate();
+        windText.invalidate();
         iconText.invalidate();
+        iconWind.invalidate();
     }
 
     private String iconToText(String code) {
@@ -118,14 +147,42 @@ public class WeatherLayout extends LinearLayout {
         return "";
     }
 
-    private long toDegreesCelcius(double kelvin) {
-        return Math.round(kelvin - 273.15);
+    private String formatTemperatureText(WeatherEntry entry) {
+        switch (temperatureUnit) {
+            case WeatherEntry.CELSIUS:
+                return String.format("%.1f°C", toDegreesCelcius(entry.temperature));
+            case WeatherEntry.FAHRENHEIT:
+                return String.format("%.1f°F", toDegreesFahrenheit(entry.temperature));
+            default:
+                return String.format("%.1fK", entry.temperature);
+        }
+    }
+    private double toDegreesCelcius(double kelvin) {
+        return kelvin - 273.15;
     }
 
-    private long toDegreesFahrenheit(double kelvin) {
-        return Math.round(kelvin * 1.8 - 459.67);
+    private double toDegreesFahrenheit(double kelvin) {
+        return kelvin * 1.8 - 459.67;
     }
-    private long toKelvin(double kelvin) {
-        return Math.round(kelvin);
+
+    private String formatWindText(WeatherEntry entry) {
+        switch (speedUnit) {
+            case WeatherEntry.MILES_PER_HOUR:
+                return String.format("%.1fmi/h", toMilesPerHour(entry.windSpeed));
+            case WeatherEntry.KM_PER_HOUR:
+                return String.format("%.1fkm/h", toKilometersPerHour(entry.windSpeed));
+            case WeatherEntry.METERS_PER_SECOND:
+            default:
+                return String.format("%.1fm/s", entry.windSpeed);
+        }
     }
+
+    private double toMilesPerHour(double mps) {
+        return mps  * 3600. / 1609.344;
+    }
+
+    private double toKilometersPerHour(double mps) {
+        return mps  * 3.6;
+    }
+
 }

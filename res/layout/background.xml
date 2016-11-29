@@ -3,12 +3,6 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.firebirdberlin.nightdream.AlarmClock xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/AlarmClock"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
     <TextView
         android:id="@+id/textview_alarm_time"
         android:layout_alignParentBottom="true"

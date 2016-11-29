@@ -1,13 +1,11 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.util.Locale;
 
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
@@ -91,8 +88,12 @@ public class ClockLayout extends LinearLayout {
         divider.setBackgroundColor(color);
     }
 
-    public void setTemperatureUnit(int unit) {
-        weatherLayout.setTemperatureUnit(unit);
+    public void setTemperature(boolean on, int unit) {
+        weatherLayout.setTemperature(on, unit);
+    }
+
+    public void setWindSpeed(boolean on, int unit) {
+        weatherLayout.setWindSpeed(on, unit);
     }
 
     public void showDate(boolean on) {
@@ -117,32 +118,34 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    public void setDesiredClockWidth(){
-        View parent = (View) getParent();
-        int parentWidth = parent.getWidth();
-        setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-        setDesiredWidth(date, parentWidth, 0.9f, 30.f);
-    }
-
-    public void setDesiredClockWidth(int parentWidth){
-        setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-        setDesiredWidth(date, parentWidth, 0.9f, 30.f);
-    }
-
-    public void updateLayout(Configuration config) {
+    public void updateLayout(int parentWidth, Configuration config){
         switch (config.orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                setVerticalLayout();
-                break;
             case Configuration.ORIENTATION_LANDSCAPE:
-                setHorizontalLayout();
+                //setHorizontalLayout();
+                setVerticalLayout();
+                setDesiredWidth(clock, parentWidth, 0.3f, 300.f);
+                setDesiredWidth(date, parentWidth, 0.5f, 20.f);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+            default:
+                setVerticalLayout();
+                setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
+                setDesiredWidth(date, parentWidth, 0.9f, 25.f);
                 break;
         }
+        float textSize = date.getTextSize();
+        weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
+    }
+
+    public void setScaleFactor(float factor) {
+        setScaleX(factor);
+        setScaleY(factor);
+        invalidate();
     }
 
     private void setVerticalLayout() {
         infoLayout.setOrientation(LinearLayout.VERTICAL);
-        weatherLayout.setPadding(0, spToPx(5), 0, 0);
+        weatherLayout.setPadding(0, spToPx(2), 0, 0);
     }
 
     private void setHorizontalLayout() {
@@ -159,14 +162,9 @@ public class ClockLayout extends LinearLayout {
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         int maxPX = spToPx(maxSp);
         do{
-            float textWidth = view.getPaint().measureText(text);
-            if (textWidth < desiredWidth) {
-                view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
-            } else {
-                view.setTextSize(TypedValue.COMPLEX_UNIT_PX, --size);
-                break;
-            }
-        } while(size <= maxPX);
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
+        } while(size <= maxPX && view.getPaint().measureText(text) < desiredWidth);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, --size);
     }
 
     private float pixelsToSp(float px) {

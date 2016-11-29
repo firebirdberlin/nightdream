@@ -16,27 +16,6 @@
 
     <include layout="@layout/background" />
 
-<!--
-android:background="#000000"
--->
-<!--
-    date and time
--->
-<@CONFIG.PACKAGENAME@.ui.ClockLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/clockLayout"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingLeft="0sp"
-    android:paddingTop="0sp"
-    android:translationX="0sp"
-    android:translationY="0sp"
-    android:layout_gravity="center"
-    android:background="#44000000"
-    >
-
-</@CONFIG.PACKAGENAME@.ui.ClockLayout>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -80,16 +59,38 @@ android:background="#000000"
         </LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/notification_bar" />
 
-    <TextView
-        android:id="@+id/current"
+    <FrameLayout
+        android:id="@+id/clockLayoutContainer"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent">
+
+        <include layout="@layout/notification_bar" />
+
+        <!--
+            date and time
+        -->
+        <@CONFIG.PACKAGENAME@.ui.ClockLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/clockLayout"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#C2C2C2"
-        android:textSize="20sp"
+        android:paddingLeft="0sp"
+        android:paddingTop="0sp"
+        android:translationX="0sp"
+        android:translationY="0sp"
+        android:layout_gravity="center"
+        android:background="#44000000"
         />
+    </FrameLayout>
 
+    <com.firebirdberlin.nightdream.AlarmClock
+        android:id="@+id/AlarmClock"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        />
 </LinearLayout>
 
 </FrameLayout>

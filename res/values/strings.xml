@@ -47,6 +47,8 @@ OR
     <string name="choose_color_dialog">Pick a color.</string>
     <string name="choose_secondary_color">Secondary color</string>
     <string name="choose_tertiary_color">Tertiary color</string>
+    <string name="confirm_reset">Reset</string>
+    <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="contribute">Contribute</string>
     <string name="contribute_source_code">Source code</string>
     <string name="contribute_translation">Translation</string>
@@ -58,7 +60,8 @@ OR
     <string name="recommend">Recommend app</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
-    <string name="force_auto_rotation">Force auto rotation in DayDream</string>
+    <string name="force_auto_rotation">Force orientation in Daydream</string>
+    <string name="force_auto_rotation_summary">Enforce the screen orientation if the Daydream is used.</string>
     <string name="handle_power_ac">AC</string>
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">car dock</string>
@@ -82,8 +85,12 @@ OR
     <string name="set_alarm">set alarm</string>
     <string name="show_date">show date</string>
     <string name="date_format">Date format</string>
-    <string name="show_weather">show local weather</string>
-    <string name="temperatureUnit">temperature unit</string>
+    <string name="show_temperature">Temperature</string>
+    <string name="show_weather">Show local weather</string>
+    <string name="show_wind_speed">Wind Speed</string>
+    <string name="temperatureUnit">Temperature unit</string>
+    <string name="speedUnit">Wind speed unit</string>
+    <string name="screenOrientation">Screen orientation</string>
     <string name="typeface_roboto_condensed">Roboto condensed</string>
     <string name="typeface_roboto_light">Roboto light</string>
     <string name="typeface_roboto_medium">Roboto medium</string>

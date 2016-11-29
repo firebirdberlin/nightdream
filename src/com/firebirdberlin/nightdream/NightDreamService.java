@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
@@ -28,19 +27,16 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 public class NightDreamService extends DreamService implements View.OnTouchListener {
 
-    TextView current;
     AlarmClock alarmClock;
     ImageView background_image;
 
     SensorManager sensorManager;
     Sensor lightSensor;
     int mode;
-    boolean isDebuggable;
 
     private float last_ambient;
     private double last_ambient_noise = 32000.;
     private NightDreamUI nightDreamUI = null;
-    private Utility utility;
     private NotificationReceiver nReceiver;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -53,8 +49,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
         nightDreamUI = new NightDreamUI(this, getWindow(), true);
         mySettings = new Settings(this);
-        utility = new Utility(this);
-        isDebuggable = utility.isDebuggable();
 
         if (mySettings.force_auto_rotation ) {
             NightDreamActivity.start(this);
@@ -68,10 +62,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         NOISE_AMPLITUDE_SLEEP *= mySettings.sensitivity;
         NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
 
-        current = (TextView) findViewById(R.id.current);
-
         alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
-        alarmClock.setUtility(utility);
         alarmClock.setSettings(mySettings);
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
@@ -140,8 +131,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (isDebuggable)
-            Log.d("NightDreamService","onDetachedFromWindow() called.");
+        Log.d("NightDreamService","onDetachedFromWindow() called.");
     }
 
     private NotificationReceiver registerNotificationReceiver(){
@@ -201,24 +191,17 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     }
 
     public void onEvent(OnNewLightSensorValue event){
-        if (isDebuggable)
-            current.setText(String.valueOf(event.value) + " lux, n=" + String.valueOf(event.n));
         last_ambient = event.value;
         SwitchModes(event.value);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
-        if (isDebuggable)
-            current.setText("Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         SwitchModes(last_ambient);
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {
         last_ambient_noise = event.value;
-        if (isDebuggable){
-            current.setText("Ambient noise " + String.valueOf(last_ambient_noise));
-        }
         SwitchModes(last_ambient);
     }
 }

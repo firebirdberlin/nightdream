@@ -35,6 +35,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -83,6 +84,7 @@ public class NightDreamUI {
     private ImageView settingsIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
+    private FrameLayout clockLayoutContainer;
     private ClockLayout clockLayout;
     private LinearLayout notificationbar;
     private Settings settings = null;
@@ -112,6 +114,7 @@ public class NightDreamUI {
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
         batteryView = (TextView) rootView.findViewById(R.id.batteryView);
+        clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
@@ -153,18 +156,20 @@ public class NightDreamUI {
     public void onStart() {
         setAlpha(settingsIcon, .5f, 100);
         updateBatteryView();
-        if (Build.VERSION.SDK_INT >= 12){
-            handler.postDelayed(zoomIn, 500);
-        }
         handler.postDelayed(moveAround, 30000);
     }
 
     public void onResume() {
 
+        if (Build.VERSION.SDK_INT >= 12){
+            handler.postDelayed(zoomIn, 500);
+        }
         removeCallbacks(hideAlarmClock);
         handler.postDelayed(hideAlarmClock, 20000);
 
+        hideSystemUI();
         settings.reload();
+        setScreenOrientation(settings.screenOrientation);
         updateWeatherData();
 
         EventBus.getDefault().register(this);
@@ -187,6 +192,7 @@ public class NightDreamUI {
     private long lastLocationRequest = 0L;
     private void updateWeatherData() {
         if (! settings.showWeather ) return;
+
         WeatherEntry entry = settings.weatherEntry;
         long now = System.currentTimeMillis();
         long requestAge = now - lastLocationRequest;
@@ -214,7 +220,8 @@ public class NightDreamUI {
         clockLayout.setPrimaryColor(settings.clockColor);
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setTertiaryColor(settings.tertiaryColor);
-        clockLayout.setTemperatureUnit(settings.temperatureUnit);
+        clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
+        clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.update(settings.weatherEntry);
     }
 
@@ -340,17 +347,18 @@ public class NightDreamUI {
         removeCallbacks(moveAround);
         Runnable fixConfig = new Runnable() {
                 public void run() {
-                    fixScaleFactor();
-                    clockLayout.updateLayout(newConfig);
-                    clockLayout.setDesiredClockWidth();
+                    clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
+                    centerClockLayout();
+                    float s = getScaleFactor(newConfig);
+                    clockLayout.setScaleFactor(s);
 
-                    if ( showcaseView != null ) {
-                        setupShowcaseView();
+                    if ( showcaseView == null ) {
+                        handler.postDelayed(moveAround, 60000);
                     } else {
-                        handler.post(moveAround);
+                        setupShowcaseView();
                     }
                 }
-            };
+        };
         handler.postDelayed(fixConfig, 200);
     }
 
@@ -388,6 +396,7 @@ public class NightDreamUI {
     public void setupScreenAnimation() {
         BatteryStats battery = new BatteryStats(mContext);
         BatteryValue batteryValue = battery.reference;
+        long now = System.currentTimeMillis();
         if (batteryValue.isCharging) {
             screen_alpha_animation_duration = 3000;
             screen_transition_animation_duration = 10000;
@@ -411,15 +420,14 @@ public class NightDreamUI {
         if ( !settings.restless_mode) {
             return;
         }
-        setupScreenAnimation();
         Random random = new Random();
-        Point size = utility.getDisplaySize();
-        int w = size.x;
-        int h = size.y;
+        int w = clockLayoutContainer.getWidth();
+        int h = clockLayoutContainer.getHeight();
+        Log.i(TAG, String.valueOf(w) + "x" + String.valueOf(h));
         if (Build.VERSION.SDK_INT < 12) {
             // make back panel fully transparent
             clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
-            // random x position
+
             int rxpos = (w - clockLayout.getWidth()) / 2;
             int rypos = (h - clockLayout.getHeight()) / 2; // API level 1
 
@@ -433,20 +441,19 @@ public class NightDreamUI {
             clockLayout.invalidate();
         } else {
             // determine a random position
-            // lower 150 px is reserved for alarm clockLayout
-            // upper 90 px is for the battery stats
+            // api level 12
             int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());
             int scaled_height = (int) (clockLayout.getHeight() * clockLayout.getScaleY());
-            int rxpos = w - scaled_width ; // API level 11
-            int rypos = h - scaled_height - 150 - 90; // API level 11
+            Log.i(TAG, String.valueOf(scaled_width) + "x" + String.valueOf(scaled_height));
+            int rxpos = w - scaled_width;
+            int rypos = h - scaled_height;
 
             int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
-            int i2 = (rypos > 0) ? 90 + random.nextInt(rypos) : 90;
+            int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
 
             i1 -= (clockLayout.getWidth() - scaled_width) / 2;
             i2 -= (clockLayout.getHeight() - scaled_height) / 2;
-
-            // api level 12
+            Log.i(TAG, String.valueOf(i1) + "x" + String.valueOf(i2));
             clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
         }
     }
@@ -529,14 +536,33 @@ public class NightDreamUI {
     private void setBrightness(float value) {
         LayoutParams layout = window.getAttributes();
         layout.screenBrightness = value;
-        layout.buttonBrightness = 0.f;
+        layout.buttonBrightness = LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
         window.setAttributes(layout);
-        hideSoftButtons();
+        fadeSoftButtons();
     }
 
-    private void hideSoftButtons() {
-        if (Build.VERSION.SDK_INT >= 14){
-            clockLayout.setSystemUiVisibility(View. SYSTEM_UI_FLAG_LOW_PROFILE);
+    private void setScreenOrientation(int orientation) {
+        if (daydreamMode) return;
+        ((Activity) mContext).setRequestedOrientation(orientation);
+    }
+
+    private void fadeSoftButtons() {
+        if (Build.VERSION.SDK_INT >= 14 && Build.VERSION.SDK_INT < 19){
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        }
+    }
+
+    private void hideSystemUI() {
+        if (Build.VERSION.SDK_INT >= 19){
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -618,11 +644,10 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            Configuration config = mContext.getResources().getConfiguration();
-            clockLayout.updateLayout(config);
-            clockLayout.setDesiredClockWidth();
+            Configuration config = getConfiguration();
+            clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
-            float s = settings.scaleClock;
+            float s = getScaleFactor(config);
             clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
        }
     };
@@ -632,6 +657,7 @@ public class NightDreamUI {
        @Override
        public void run() {
            removeCallbacks(hideBrightnessLevel);
+           setupScreenAnimation();
            updateClockPosition();
            updateWeatherData();
 
@@ -682,7 +708,7 @@ public class NightDreamUI {
         handler.postDelayed(hideAlarmClock, 20000);
 
         setupAlarmClock();
-
+        alarmClock.invalidate();
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
@@ -710,11 +736,16 @@ public class NightDreamUI {
         }
     };
 
+    private Configuration getConfiguration() {
+        return mContext.getResources().getConfiguration();
+    }
+
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
             float s = clockLayout.getScaleX();
-            settings.setScaleClock(s);
+            Configuration config = getConfiguration();
+            settings.setScaleClock(s, config.orientation);
         }
 
         @Override
@@ -731,31 +762,26 @@ public class NightDreamUI {
     };
 
     private void applyScaleFactor(float factor) {
-        Point size = utility.getDisplaySize();
-        int screen_width = size.x;
+        int screen_width = clockLayoutContainer.getWidth();
+        int screen_height = clockLayoutContainer.getHeight();
         factor *= clockLayout.getScaleX();
         int new_width = (int) (clockLayout.getWidth() * factor);
-        if (factor > 0.5f && new_width <= screen_width) {
-            clockLayout.setScaleX(factor);
-            clockLayout.setScaleY(factor);
-            clockLayout.invalidate();
+        int new_height = (int) (clockLayout.getHeight() * factor);
+        if (factor > 0.5f && new_width <= screen_width && new_height <= screen_height) {
+            clockLayout.setScaleFactor(factor);
         }
     }
 
-    private void fixScaleFactor() {
-        if ( Build.VERSION.SDK_INT < 12 ) return;
+    private float getScaleFactor(Configuration config) {
+        float s = settings.getScaleClock(config.orientation);
+        float max = getMaxScaleFactor();
+        return ( s < max ) ? s : max;
+    }
 
-        Point size = utility.getDisplaySize();
-        int screen_width = size.x;
-        float factor = clockLayout.getScaleX();
-        int new_width = (int) (clockLayout.getWidth() * factor);
-        if (new_width > screen_width) {
-            factor = 1.f;
-            settings.setScaleClock(factor);
-            clockLayout.setScaleX(factor);
-            clockLayout.setScaleY(factor);
-            clockLayout.invalidate();
-        }
+    private float getMaxScaleFactor() {
+        float factor_x = (float) clockLayoutContainer.getWidth() / clockLayout.getWidth();
+        float factor_y = (float) clockLayoutContainer.getHeight() / clockLayout.getHeight();
+        return (factor_x < factor_y ) ? factor_x : factor_y;
     }
 
     OnClickListener mOnClickListener = new OnClickListener() {
@@ -781,12 +807,13 @@ public class NightDreamUI {
         Point click = new Point((int) e.getX(),(int) e.getY());
         Point size = utility.getDisplaySize();
 
+        updateBatteryView();
+
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (click.y >= 0.2 * size.y) {// upper 20% of the screen
                     brightnessProgress.setVisibility(View.INVISIBLE);
-                    updateBatteryView();
                 }
 
                 showAlarmClock();

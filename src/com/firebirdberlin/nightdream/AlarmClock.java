@@ -37,17 +37,16 @@ public class AlarmClock extends View {
     private boolean FingerDown;
     private boolean FingerDownDeleteAlarm;
     private Context ctx;
-    private float tX, tY;
     private int customcolor = Color.parseColor("#33B5E5");
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
-    private int h;
+    private int display_height;
     private int hour, min;
     private int w;
     private Paint paint = new Paint();
     private static AlarmManager am = null;
     private Settings settings = null;
-    private Utility utility;
     public int touch_zone_radius = 150;
+    public int quiet_zone_size = 60;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -58,7 +57,6 @@ public class AlarmClock extends View {
         }
     }
 
-    public void setUtility(Utility u) {utility = u;}
     public void setSettings(Settings s) {
         settings = s;
         SimpleTime time = new SimpleTime(s.nextAlarmTime);
@@ -98,19 +96,18 @@ public class AlarmClock extends View {
     }
 
     private boolean handleAlarmSetEvents(MotionEvent e) {
-        tX = e.getX();
-        tY = e.getY();
+        float tX = e.getX();
+        float tY = e.getY();
 
-        Point click = getClickedPoint(e);
-        Point size = utility.getDisplaySize();
-
-        Point ll = new Point(0, size.y); // lower left corner
 
         // set alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                // Allow start only in the top left corner
-                if (distance(click, ll) < touch_zone_radius) { // left corner
+                // Allow start only in the lower left corner
+                Point click = getClickedPoint(e);
+                Point ll = new Point(0, getHeight()); // lower left corner
+                float dist = distance(click, ll);
+                if (dist > quiet_zone_size && dist < touch_zone_radius) { // left corner
                     FingerDown = true;
                     removeAlarm();
                     XYtotime(tX,tY);
@@ -138,13 +135,13 @@ public class AlarmClock extends View {
 
     private boolean handleAlarmCancelling(MotionEvent e){
         Point click = getClickedPoint(e);
-        Point size = utility.getDisplaySize();
-        Point lr = new Point(size.x, size.y); // lower right corner
+        Point lr = new Point(getWidth(), getHeight()); // lower right corner
 
         // set alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (distance(click, lr) < touch_zone_radius) { // right corner
+                float dist = distance(click, lr);
+                if (dist > quiet_zone_size && dist < touch_zone_radius) { // right corner
                     FingerDownDeleteAlarm = true;
                     this.invalidate();
                     return true;
@@ -163,31 +160,36 @@ public class AlarmClock extends View {
     }
 
     private void XYtotime(float x, float y) {
-        Point size = utility.getDisplaySize();
-        int w = size.x;
-        int h = size.y;
-        float hours = x/w * 24;
-        float mins = (1.f - y/h) * 60;
-        hour = (hours >= 24.f) ? 23 : (int) hours;
-        min = (mins >= 60.f) ? 0 : (int) mins;
+        int w = getWidth() - 2 * touch_zone_radius;
+        int h = new Utility(ctx).getDisplaySize().y - 2 * touch_zone_radius;
+
+        x -= touch_zone_radius;
+        x = (x < 0) ? 0 : x;
+
+        // the coordinate is negative outside the view
+        y *= -1.f;
+        y += getHeight();
+
+        int hours = (int) (x/w * 24);
+        int mins = (int) ((y/h * 60)) / 5 * 5;
+        hour = (hours >= 24) ? 23 : hours;
+        min = (mins >= 60) ? 55 : mins;
     }
 
     @Override
     protected void onDraw(Canvas canvas){
         if ( !isVisible ) return;
-        Point size = utility.getDisplaySize();
         ColorFilter customColorFilter = new LightingColorFilter(customcolor, 1);
         ColorFilter secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
         paint.setColorFilter(customColorFilter);
 
-        int w = size.x;
-        int h = size.y;
+        int w = getWidth();
+        int h = getHeight();
         // touch zones
 
         // set size of the touch zone
-        if (size.x < size.y) touch_zone_radius = size.x/5;
-        else touch_zone_radius = size.y/5;
-        touch_zone_radius = (touch_zone_radius > 180) ? 180 : touch_zone_radius;
+        touch_zone_radius = (w < h) ? w : h;
+        quiet_zone_size = touch_zone_radius/4;
 
         int tzr2 = (int) (0.93 * touch_zone_radius);
         int tzr3 = (int) (0.86 * touch_zone_radius);
@@ -281,7 +283,6 @@ public class AlarmClock extends View {
     public void startAlarm(){
         if ( isAlarmSet() ) {
             try {
-                //utility.AlarmPlay();
                 Intent i = new Intent(ctx, AlarmService.class);
                 i.putExtra("start alarm", true);
                 ctx.startService(i);
@@ -298,7 +299,6 @@ public class AlarmClock extends View {
         @Override
         public void run() {
             handler.removeCallbacks(stopRunningAlarm);
-            //utility.AlarmStop();
             Intent i = new Intent(ctx, AlarmService.class);
             i.putExtra("stop alarm", true);
             ctx.startService(i);

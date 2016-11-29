@@ -68,16 +68,17 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
-        clockLayout.setTemperatureUnit(settings.temperatureUnit);
+        clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
+        clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         WeatherEntry entry = getWeatherEntry(settings);
         clockLayout.update(entry);
 
         Utility utility = new Utility(getContext());
         Point size = utility.getDisplaySize();
         Configuration config = context.getResources().getConfiguration();
-        clockLayout.updateLayout(config);
-        clockLayout.setDesiredClockWidth(size.x - preferenceView.getPaddingLeft()
-                                                - preferenceView.getPaddingRight());
+        clockLayout.updateLayout(size.x - preferenceView.getPaddingLeft()
+                                        - preferenceView.getPaddingRight(),
+                                 config);
         clockLayout.invalidate();
 
     }

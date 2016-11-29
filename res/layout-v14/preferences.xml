@@ -149,9 +149,17 @@
                     seekbar:unitsLeft=""
                     seekbar:unitsRight=""/>
 
+                <ListPreference
+                    android:title="@string/screenOrientation"
+                    android:key="screenOrientation"
+                    android:defaultValue="-1"
+                    android:entries="@array/screenOrientation"
+                    android:entryValues="@array/screenOrientationValues"/>
+
                 <SwitchPreference
                     android:key="force_auto_rotation"
                     android:title="@string/force_auto_rotation"
+                    android:summary="@string/force_auto_rotation_summary"
                     android:defaultValue="false" />
         </PreferenceCategory>
 
@@ -251,13 +259,33 @@
                 android:defaultValue="false"
                 android:enabled="false"/>
 
+            <SwitchPreference
+                android:key="showTemperature"
+                android:title="@string/show_temperature"
+                android:dependency="showWeather"
+                android:defaultValue="true"/>
+
             <ListPreference
                 android:title="@string/temperatureUnit"
-                android:dependency="showWeather"
+                android:dependency="showTemperature"
                 android:key="temperatureUnit"
                 android:defaultValue="1"
                 android:entries="@array/temperatureUnit"
                 android:entryValues="@array/temperatureUnitValues"/>
+
+            <SwitchPreference
+                android:key="showWindSpeed"
+                android:title="@string/show_wind_speed"
+                android:dependency="showWeather"
+                android:defaultValue="false"/>
+
+            <ListPreference
+                android:title="@string/speedUnit"
+                android:dependency="showWindSpeed"
+                android:key="speedUnit"
+                android:defaultValue="1"
+                android:entries="@array/speedUnit"
+                android:entryValues="@array/speedUnitValues"/>
 
             <EditTextPreference
                 android:defaultValue=""
