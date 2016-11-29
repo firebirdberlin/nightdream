@@ -47,6 +47,8 @@ OR
     <string name="choose_color_dialog">Pick a color.</string>
     <string name="choose_secondary_color">Secondary color</string>
     <string name="choose_tertiary_color">Tertiary color</string>
+    <string name="confirm_reset">Reset</string>
+    <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="contribute">Contribute</string>
     <string name="contribute_source_code">Source code</string>
     <string name="contribute_translation">Translation</string>

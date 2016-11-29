@@ -27,6 +27,8 @@
     <string name="choose_color">Farbe wählen</string>
     <string name="choose_secondary_color">Sekundäre Farbe</string>
     <string name="choose_tertiary_color">Tertiäre Farbe</string>
+    <string name="confirm_reset">Zurücksetzen</string>
+    <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen ?</string>
     <string name="contribute">Beitragen</string>
     <string name="date_format">Datumsformat</string>
     <string name="donate">Spenden</string>
@@ -56,7 +58,7 @@
     <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
     <string name="preview">Vorschau</string>
     <string name="purchaseWeatherData">Lizenz kaufen</string>
-    <string name="reset_to_defaults">Einstellungen resetten</string>
+    <string name="reset_to_defaults">Einstellungen zurücksetzen</string>
     <string name="restless_mode">Uhr bewegen</string>
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
     <string name="select_alarm_sound">Weckton auswählen</string>
