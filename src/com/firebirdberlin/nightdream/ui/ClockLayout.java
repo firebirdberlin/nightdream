@@ -138,6 +138,8 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void setScaleFactor(float factor) {
+        if (Build.VERSION.SDK_INT < 11) return;
+
         setScaleX(factor);
         setScaleY(factor);
         invalidate();
