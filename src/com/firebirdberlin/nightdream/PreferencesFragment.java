@@ -37,6 +37,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
+import com.firebirdberlin.nightdream.services.AlarmService;
 
 public class PreferencesFragment extends PreferenceFragment {
     public static final String TAG = "PreferencesFragment";
@@ -314,6 +315,14 @@ public class PreferencesFragment extends PreferenceFragment {
                         }
                     }).show();
 
+                return true;
+            }
+        });
+
+        Preference startAudioStream = (Preference) findPreference("startAudioStream");
+        startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                AlarmService.startStream(context);
                 return true;
             }
         });

@@ -75,6 +75,11 @@ public class AlarmService extends Service {
                 AlarmPlay();
                 handler.postDelayed(timeout, 120000);
             } else
+            if ( intent.hasExtra("start stream") ){
+                isRunning = true;
+                settings = new Settings(this);
+                playStream();
+            } else
             if ( intent.hasExtra("stop alarm") ){
                 handler.post(timeout);
             }
@@ -103,6 +108,29 @@ public class AlarmService extends Service {
             stopSelf();
         }
     };
+
+    private void playStream() {
+        AlarmStop();
+        Log.i(TAG, "playStream()");
+        if (mMediaPlayer == null) {
+            mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
+
+        try {
+            mMediaPlayer.setDataSource("http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m");
+        } catch (IOException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+        }
+
+        try {
+            mMediaPlayer.prepare();
+        } catch (IOException e) {
+            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+        }
+
+        mMediaPlayer.start();
+    }
 
     public void AlarmPlay() {
         AlarmStop();
@@ -161,6 +189,12 @@ public class AlarmService extends Service {
         if ( AlarmService.isRunning ) return;
         Intent i = new Intent(context, AlarmService.class);
         i.putExtra("start alarm", true);
+        context.startService(i);
+    }
+
+    public static void startStream(Context context) {
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("start stream", true);
         context.startService(i);
     }
 

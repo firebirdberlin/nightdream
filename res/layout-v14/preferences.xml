@@ -241,6 +241,10 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
+            <Preference
+                android:key="startAudioStream"
+                android:title="start audio stream"
+                />
         </PreferenceScreen>
 
         <PreferenceScreen
