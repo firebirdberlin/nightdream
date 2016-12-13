@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,14 +23,14 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 
-public class AlarmService extends Service {
+public class AlarmService extends Service implements MediaPlayer.OnErrorListener {
     private static String TAG = "NightDream.AlarmService";
     final private Handler handler = new Handler();
 
     static public boolean isRunning = false;
     PowerManager.WakeLock wakelock;
     private PowerManager pm;
-    private MediaPlayer mMediaPlayer = null;
+    private static MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
 
     @Override
@@ -165,6 +166,13 @@ public class AlarmService extends Service {
         }
 
         mMediaPlayer.start();
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.e(TAG, "MediaPlayer.error: " + String.valueOf( what) + " "
+                    + String.valueOf(extra));
+        return false;
     }
 
     public Uri getAlarmToneUri() {
