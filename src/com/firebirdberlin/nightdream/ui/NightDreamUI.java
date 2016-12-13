@@ -49,7 +49,6 @@ import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import com.firebirdberlin.nightdream.AlarmClock;
-import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
@@ -64,6 +63,7 @@ import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnLocationUpdated;
 import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
+import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 

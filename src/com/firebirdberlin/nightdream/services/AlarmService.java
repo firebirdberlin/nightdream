@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -18,12 +18,15 @@ import android.util.Log;
 import java.io.IOException;
 import android.support.v4.app.NotificationCompat;
 
+import com.firebirdberlin.nightdream.NightDreamActivity;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+
 public class AlarmService extends Service {
     private static String TAG = "NightDream.AlarmService";
     final private Handler handler = new Handler();
 
     static public boolean isRunning = false;
-    private boolean error_on_microphone = false;
     PowerManager.WakeLock wakelock;
     private PowerManager pm;
     private MediaPlayer mMediaPlayer = null;
