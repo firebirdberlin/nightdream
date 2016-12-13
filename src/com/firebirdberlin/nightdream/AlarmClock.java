@@ -242,12 +242,17 @@ public class AlarmClock extends View {
 
             paint.setColorFilter(secondaryColorFilter);
 
-            Calendar calendar = new SimpleTime(hour, min).getCalendar();
-            String l = getTimeFormatted(calendar);
+            String l = "";
+            if ( FingerDown ) {
+                l = getTimeFormatted(new SimpleTime(hour, min).getCalendar());
+            } else
+            if ( isAlarmSet() ) {
+                l = getTimeFormatted(settings.getAlarmTime());
+            }
 
             paint.setTextSize(touch_zone_radius * .5f);
             float lw = paint.measureText(l);
-            float cw = touch_zone_radius-60;
+            float cw = touch_zone_radius - 60;
             if ((touch_zone_radius) <= 100)  cw = 0;
             if (FingerDown || isAlarmSet()){
                 paint.setColor(Color.WHITE);
@@ -278,7 +283,9 @@ public class AlarmClock extends View {
         return hourDateFormat.format(calendar.getTime());
     }
 
-    public boolean isAlarmSet(){return (settings.nextAlarmTime > 0L);}
+    public boolean isAlarmSet(){
+        return (settings.nextAlarmTime > 0L);
+    }
 
     public void startAlarm(){
         if ( isAlarmSet() ) {

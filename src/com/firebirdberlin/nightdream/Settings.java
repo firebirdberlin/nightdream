@@ -270,6 +270,12 @@ public class Settings {
         prefEditor.commit();
     }
 
+    public Calendar getAlarmTime() {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(nextAlarmTime);
+            return calendar;
+    }
+
     public void setBackgroundImage(String uri) {
         bgpath = uri;
         SharedPreferences.Editor prefEditor = settings.edit();
