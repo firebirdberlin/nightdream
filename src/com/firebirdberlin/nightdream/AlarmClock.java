@@ -242,12 +242,17 @@ public class AlarmClock extends View {
 
             paint.setColorFilter(secondaryColorFilter);
 
-            Calendar calendar = new SimpleTime(hour, min).getCalendar();
-            String l = getTimeFormatted(calendar);
+            String l = "";
+            if ( FingerDown ) {
+                l = getTimeFormatted(new SimpleTime(hour, min).getCalendar());
+            } else
+            if ( isAlarmSet() ) {
+                l = getTimeFormatted(settings.getAlarmTime());
+            }
 
             paint.setTextSize(touch_zone_radius * .5f);
             float lw = paint.measureText(l);
-            float cw = touch_zone_radius-60;
+            float cw = touch_zone_radius - 60;
             if ((touch_zone_radius) <= 100)  cw = 0;
             if (FingerDown || isAlarmSet()){
                 paint.setColor(Color.WHITE);
@@ -278,7 +283,9 @@ public class AlarmClock extends View {
         return hourDateFormat.format(calendar.getTime());
     }
 
-    public boolean isAlarmSet(){return (settings.nextAlarmTime > 0L);}
+    public boolean isAlarmSet(){
+        return (settings.nextAlarmTime > 0L);
+    }
 
     public void startAlarm(){
         if ( isAlarmSet() ) {
@@ -311,13 +318,8 @@ public class AlarmClock extends View {
     private void setAlarm() {
         removeAlarm();
         SimpleTime alarmTime = new SimpleTime(hour, min);
-        PendingIntent pI = getPendingAlarmIntent(ctx);
-        if (Build.VERSION.SDK_INT >= 19){
-            am.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pI );
-        } else {
-            am.set(AlarmManager.RTC_WAKEUP, alarmTime.getMillis(), pI );
-        }
         settings.setAlarmTime(alarmTime.getMillis());
+        AlarmClock.schedule(ctx);
     }
 
     public void removeAlarm(){
@@ -352,7 +354,12 @@ public class AlarmClock extends View {
         if (settings.nextAlarmTime == 0L) return;
         PendingIntent pI = getPendingAlarmIntent(context);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= 19){
+        if (Build.VERSION.SDK_INT >= 21) {
+            AlarmManager.AlarmClockInfo info =
+                new AlarmManager.AlarmClockInfo(settings.nextAlarmTime, pI);
+            alarmManager.setAlarmClock(info, pI);
+        } else
+        if (Build.VERSION.SDK_INT >= 19) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );

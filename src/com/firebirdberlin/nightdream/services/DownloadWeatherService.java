@@ -113,12 +113,18 @@ public class DownloadWeatherService extends Service {
                 urlConnection.disconnect();
             }
             catch (Exception e) {
-
+                Log.e(TAG, Log.getStackTraceString(e));
+                e.printStackTrace();
             }
-            if (responseCode != 200) return entry;
 
             Log.i(TAG, " >> response " + response);
-            Log.i(TAG, " >> responseText " + responseText);
+            if (responseCode != 200) {
+                Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
+                return entry;
+            } else {
+                Log.i(TAG, " >> responseText " + responseText);
+            }
+
 
             try {
                 JSONObject json = new JSONObject(responseText);
@@ -169,11 +175,16 @@ public class DownloadWeatherService extends Service {
                 stopSelf();
                 return;
             }
+
             if ( entry.timestamp > WeatherEntry.INVALID ) {
                 Settings settings = new Settings(mContext);
                 settings.setWeatherEntry(entry);
                 EventBus.getDefault().post(new OnWeatherDataUpdated(entry));
+            } else {
+                Log.w(TAG, "entry.timestamp is INVALID!");
+
             }
+
             Log.d(TAG, "Download finished.");
 
             stopSelf();

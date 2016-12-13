@@ -61,7 +61,7 @@ public class AlarmService extends Service {
         Notification note = new NotificationCompat.Builder(this)
             .setContentTitle("Alarm")
             .setContentText(getString(R.string.notification_alarm))
-            .setSmallIcon(R.drawable.ic_nightdream)
+            .setSmallIcon(R.drawable.ic_audio)
             .setContentIntent(pi)
             .build();
 
