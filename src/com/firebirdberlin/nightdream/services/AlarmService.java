@@ -71,7 +71,6 @@ public class AlarmService extends Service {
                 handler.post(timeout);
             } else
             if ( intent.hasExtra("start alarm") ){
-                isRunning = true;
                 settings = new Settings(this);
                 AlarmPlay();
                 handler.postDelayed(timeout, 120000);
@@ -111,11 +110,17 @@ public class AlarmService extends Service {
         Log.i(TAG, "playStream()");
         AlarmStop();
         mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
         try {
-            mMediaPlayer.setDataSource("http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m");
+            mMediaPlayer.setDataSource(settings.radioStreamURL);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
         } catch (IOException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+        } catch (SecurityException e) {
             Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
         }
 
@@ -123,9 +128,15 @@ public class AlarmService extends Service {
             mMediaPlayer.prepare();
         } catch (IOException e) {
             Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
         }
 
-        mMediaPlayer.start();
+        try {
+            mMediaPlayer.start();
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+        }
     }
 
     public void AlarmPlay() {
@@ -197,7 +208,12 @@ public class AlarmService extends Service {
         context.startService(i);
     }
 
-    private Intent getStopIntent(Context context) {
+    public static void stopStream(Context context) {
+        Intent i = getStopIntent(context);
+        context.startService(i);
+    }
+
+    private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, AlarmService.class);
         i.putExtra("stop alarm", true);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);

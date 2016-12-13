@@ -322,7 +322,11 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference startAudioStream = (Preference) findPreference("startAudioStream");
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                AlarmService.startStream(context);
+                if (! AlarmService.isRunning) {
+                    AlarmService.startStream(context);
+                } else {
+                    AlarmService.stopStream(context);
+                }
                 return true;
             }
         });

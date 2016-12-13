@@ -241,6 +241,12 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
+            <EditTextPreference
+                android:defaultValue="http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m"
+                android:key="radioStreamURL"
+                android:title="radio_stream_url"
+                android:summary="radio_stream_url_summary"/>
+
             <Preference
                 android:key="startAudioStream"
                 android:title="start audio stream"

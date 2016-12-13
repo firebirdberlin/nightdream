@@ -75,6 +75,7 @@ public class Settings {
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
+    public String radioStreamURL = "";
     private String bgpath = "";
     public String backgroundImageURI = "";
     public Typeface typeface;
@@ -130,6 +131,7 @@ public class Settings {
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
+        radioStreamURL = settings.getString("radioStreamURL", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
