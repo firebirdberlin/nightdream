@@ -50,10 +50,8 @@ public class AlarmService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() called.");
 
-        Intent i = new Intent(this, NightDreamActivity.class);
-        i.putExtra("action", "stop alarm");
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+        Intent i = getStopIntent(this);
+        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
 
         Notification note = new NotificationCompat.Builder(this)
             .setContentTitle("Alarm")
@@ -69,6 +67,9 @@ public class AlarmService extends Service {
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
+            if ( intent.hasExtra("stop alarm") ){
+                handler.post(timeout);
+            } else
             if ( intent.hasExtra("start alarm") ){
                 isRunning = true;
                 settings = new Settings(this);
@@ -79,9 +80,6 @@ public class AlarmService extends Service {
                 isRunning = true;
                 settings = new Settings(this);
                 playStream();
-            } else
-            if ( intent.hasExtra("stop alarm") ){
-                handler.post(timeout);
             }
         }
 
@@ -110,12 +108,10 @@ public class AlarmService extends Service {
     };
 
     private void playStream() {
-        AlarmStop();
         Log.i(TAG, "playStream()");
-        if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        }
+        AlarmStop();
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         try {
             mMediaPlayer.setDataSource("http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m");
@@ -135,12 +131,9 @@ public class AlarmService extends Service {
     public void AlarmPlay() {
         AlarmStop();
         Log.i(TAG, "AlarmPlay()");
-        if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-            mMediaPlayer.setLooping(true);
-        }
-
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        mMediaPlayer.setLooping(true);
 
         try {
             Uri soundUri = getAlarmToneUri();
@@ -200,8 +193,14 @@ public class AlarmService extends Service {
 
     public static void stopAlarm(Context context) {
         if ( ! AlarmService.isRunning ) return;
+        Intent i = getStopIntent(context);
+        context.startService(i);
+    }
+
+    private Intent getStopIntent(Context context) {
         Intent i = new Intent(context, AlarmService.class);
         i.putExtra("stop alarm", true);
-        context.startService(i);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return i;
     }
 }
