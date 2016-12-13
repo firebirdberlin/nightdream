@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,14 +25,16 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 
-public class AlarmService extends Service implements MediaPlayer.OnErrorListener {
+public class AlarmService extends Service implements MediaPlayer.OnErrorListener,
+                                                     MediaPlayer.OnBufferingUpdateListener,
+                                                     MediaPlayer.OnCompletionListener {
     private static String TAG = "NightDream.AlarmService";
     final private Handler handler = new Handler();
 
     static public boolean isRunning = false;
     PowerManager.WakeLock wakelock;
     private PowerManager pm;
-    private static MediaPlayer mMediaPlayer = null;
+    private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
 
     @Override
@@ -111,7 +115,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         Log.i(TAG, "playStream()");
         AlarmStop();
         mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mMediaPlayer.setDataSource(settings.radioStreamURL);
@@ -173,6 +179,17 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         Log.e(TAG, "MediaPlayer.error: " + String.valueOf( what) + " "
                     + String.valueOf(extra));
         return false;
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        Log.e(TAG, "onBufferingUpdate " + String.valueOf(percent));
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        Log.e(TAG, "onCompletion ");
+        playStream();
     }
 
     public Uri getAlarmToneUri() {
