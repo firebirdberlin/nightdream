@@ -36,6 +36,7 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
@@ -260,6 +261,14 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         PreferencesActivity.start(this);
     }
 
+    public void onRadioClick(View v) {
+        if (! RadioStreamService.isRunning) {
+            RadioStreamService.start(this);
+        } else {
+            RadioStreamService.stop(this);
+        }
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
@@ -321,7 +330,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     public void onEvent(OnClockClicked event){
         if (AlarmService.isRunning) {
-            AlarmService.stopAlarm(this);
+            AlarmService.stop(this);
             alarmClock.stopAlarm();
         }
 

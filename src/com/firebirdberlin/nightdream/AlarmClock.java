@@ -303,7 +303,7 @@ public class AlarmClock extends View {
         public void run() {
             handler.removeCallbacks(stopRunningAlarm);
 
-            AlarmService.stopAlarm(ctx);
+            AlarmService.stop(ctx);
             cancelAlarm();
             invalidate();
         }

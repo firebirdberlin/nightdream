@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import java.io.IOException;
 import android.support.v4.app.NotificationCompat;
@@ -24,25 +23,20 @@ import android.support.v4.app.NotificationCompat;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 
-public class AlarmService extends Service implements MediaPlayer.OnErrorListener,
+public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                      MediaPlayer.OnBufferingUpdateListener,
                                                      MediaPlayer.OnCompletionListener {
-    private static String TAG = "NightDream.AlarmService";
+    private static String TAG = "NightDream.RadioStreamService";
     final private Handler handler = new Handler();
 
     static public boolean isRunning = false;
-    PowerManager.WakeLock wakelock;
-    private PowerManager pm;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
 
+
     @Override
     public void onCreate(){
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        wakelock.acquire();
-
-        Log.d(TAG, "onCreate() called.");
+        Log.d(TAG,"onCreate() called.");
     }
 
     @Override
@@ -52,15 +46,15 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand() called.");
+        Log.d(TAG,"onStartCommand() called.");
 
         Intent i = getStopIntent(this);
         PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
 
         Notification note = new NotificationCompat.Builder(this)
-            .setContentTitle("Alarm")
+            .setContentTitle("Radio")
             .setContentText(getString(R.string.notification_alarm))
-            .setSmallIcon(R.drawable.ic_audio)
+            .setSmallIcon(R.drawable.ic_radio)
             .setContentIntent(pi)
             .build();
 
@@ -71,13 +65,13 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if ( intent.hasExtra("stop alarm") ){
+            if ( intent.hasExtra("stop") ){
                 handler.post(timeout);
             } else
-            if ( intent.hasExtra("start alarm") ){
+            if ( intent.hasExtra("start") ){
+                isRunning = true;
                 settings = new Settings(this);
-                AlarmPlay();
-                handler.postDelayed(timeout, 120000);
+                playStream();
             }
         }
 
@@ -86,51 +80,55 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public void onDestroy(){
-        Log.d(TAG, "onDestroy() called.");
+        Log.d(TAG,"onDestroy() called.");
 
         isRunning = false;
-
-        if (wakelock.isHeld()){
-            wakelock.release();
-        }
     }
 
     private Runnable timeout = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(timeout);
-            AlarmStop();
+            stopPlaying();
             stopForeground(false); // bool: true = remove Notification
             stopSelf();
         }
     };
 
-    public void AlarmPlay() {
-        AlarmStop();
-        Log.i(TAG, "AlarmPlay()");
+    private void playStream() {
+        Log.i(TAG, "playStream()");
+        stopPlaying();
         mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-        mMediaPlayer.setLooping(true);
-
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         try {
-            Uri soundUri = getAlarmToneUri();
-            mMediaPlayer.setDataSource(this, soundUri);
-        } catch (IOException e1) {
-            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            try {
-                mMediaPlayer.setDataSource(this, soundUri);
-            } catch (IOException e2) {
-                Log.e(TAG, "Playing the default alarm tone failed", e2);
-            }
+            mMediaPlayer.setDataSource(settings.radioStreamURL);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+        } catch (IOException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+        } catch (SecurityException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
         }
 
         try {
             mMediaPlayer.prepare();
         } catch (IOException e) {
-            Log.e(TAG, "MediaPlayer.prepare() failed", e);
+            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
         }
 
-        mMediaPlayer.start();
+        try {
+            mMediaPlayer.start();
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+        }
     }
 
     @Override
@@ -148,6 +146,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.e(TAG, "onCompletion ");
+        playStream();
     }
 
     public Uri getAlarmToneUri() {
@@ -161,10 +160,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
     }
 
-    public void AlarmStop(){
+    public void stopPlaying(){
         if (mMediaPlayer != null){
             if(mMediaPlayer.isPlaying()) {
-                Log.i(TAG, "AlarmStop()");
+                Log.i(TAG, "stopPlaying()");
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
             }
@@ -172,10 +171,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     }
 
-    public static void startAlarm(Context context) {
-        if ( AlarmService.isRunning ) return;
-        Intent i = new Intent(context, AlarmService.class);
-        i.putExtra("start alarm", true);
+    public static void start(Context context) {
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.putExtra("start", true);
         context.startService(i);
     }
 
@@ -185,8 +183,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     }
 
     private static Intent getStopIntent(Context context) {
-        Intent i = new Intent(context, AlarmService.class);
-        i.putExtra("stop alarm", true);
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.putExtra("stop", true);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return i;
     }

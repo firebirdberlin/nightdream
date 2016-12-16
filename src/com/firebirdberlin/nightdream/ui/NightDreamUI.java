@@ -82,6 +82,7 @@ public class NightDreamUI {
     private TextView alarmTime = null;
     private ImageView background_image;
     private ImageView settingsIcon;
+    private ImageView radioIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
     private FrameLayout clockLayoutContainer;
@@ -120,6 +121,7 @@ public class NightDreamUI {
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
+        radioIcon = (ImageView) rootView.findViewById(R.id.radio_icon);
 
         callIcon = (ImageView) rootView.findViewById(R.id.call_icon);
         gmailIcon = (ImageView) rootView.findViewById(R.id.gmail_icon);
@@ -155,6 +157,7 @@ public class NightDreamUI {
 
     public void onStart() {
         setAlpha(settingsIcon, .5f, 100);
+        setAlpha(radioIcon, .5f, 100);
         updateBatteryView();
         handler.postDelayed(moveAround, 30000);
     }
@@ -239,6 +242,7 @@ public class NightDreamUI {
         twitterNumber.setTextColor(settings.secondaryColor);
         whatsappNumber.setTextColor(settings.secondaryColor);
         settingsIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
+        radioIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         callIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         gmailIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
         twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
@@ -516,6 +520,7 @@ public class NightDreamUI {
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
             setAlpha(settingsIcon, v, millis);
+            setAlpha(radioIcon, v, millis);
         }
 
         if ( mode == 0 ) {
@@ -691,6 +696,7 @@ public class NightDreamUI {
            }
            setAlpha(batteryView, 0.f, 2000);
            setAlpha(settingsIcon, 0.f, 2000);
+           setAlpha(radioIcon, 0.f, 2000);
            alarmClock.isVisible = false;
            alarmClock.setClickable(false);
            alarmTime.setClickable(false);

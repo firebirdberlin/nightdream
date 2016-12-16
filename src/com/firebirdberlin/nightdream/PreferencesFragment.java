@@ -37,7 +37,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
-import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class PreferencesFragment extends PreferenceFragment {
     public static final String TAG = "PreferencesFragment";
@@ -322,10 +322,10 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference startAudioStream = (Preference) findPreference("startAudioStream");
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                if (! AlarmService.isRunning) {
-                    AlarmService.startStream(context);
+                if (! RadioStreamService.isRunning) {
+                    RadioStreamService.start(context);
                 } else {
-                    AlarmService.stopStream(context);
+                    RadioStreamService.stop(context);
                 }
                 return true;
             }
