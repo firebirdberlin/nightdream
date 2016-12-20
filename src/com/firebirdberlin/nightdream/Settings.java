@@ -60,7 +60,7 @@ public class Settings {
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
     public float scaleClockPortrait = 1.f;
-    public float scaleClockLandscape = 1.f;
+    public float scaleClockLandscape = 1.5f;
     public int background_mode = 1;
     public int clockColor;
     public int reactivate_on_ambient_light_value = 30; // lux
@@ -134,7 +134,7 @@ public class Settings {
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
-        scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.f);
+        scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
@@ -271,9 +271,9 @@ public class Settings {
     }
 
     public Calendar getAlarmTime() {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(nextAlarmTime);
-            return calendar;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(nextAlarmTime);
+        return calendar;
     }
 
     public void setBackgroundImage(String uri) {
