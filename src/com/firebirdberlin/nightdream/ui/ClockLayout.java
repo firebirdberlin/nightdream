@@ -78,14 +78,15 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void setSecondaryColor(int color) {
-        if (date == null) return;
-        date.setTextColor(color);
-        weatherLayout.setColor(color);
-    }
-
-    public void setTertiaryColor(int color) {
-        if (divider == null) return;
-        divider.setBackgroundColor(color);
+        if (date != null) {
+            date.setTextColor(color);
+        }
+        if (weatherLayout != null ) {
+            weatherLayout.setColor(color);
+        }
+        if (divider != null) {
+            divider.setBackgroundColor(color);
+        }
     }
 
     public void setTemperature(boolean on, int unit) {

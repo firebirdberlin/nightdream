@@ -22,11 +22,8 @@
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
     <string name="category_handle_power">... und wenn verbunden mit</string>
     <string name="choose_alarm_sound">Weckton</string>
-    <string name="choose_color_btn">wählen</string>
-    <string name="choose_color_dialog">Wählen Sie eine Farbe.</string>
-    <string name="choose_color">Farbe wählen</string>
-    <string name="choose_secondary_color">Sekundäre Farbe</string>
-    <string name="choose_tertiary_color">Tertiäre Farbe</string>
+    <string name="choose_primary_color">Akzentfarbe</string>
+    <string name="choose_secondary_color">Textfarbe</string>
     <string name="confirm_reset">Zurücksetzen</string>
     <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen ?</string>
     <string name="contribute">Beitragen</string>
