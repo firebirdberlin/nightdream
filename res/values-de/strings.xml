@@ -43,6 +43,8 @@
     <string name="handle_power_disconnection">Automatisch beenden</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
+    <string name="hide_background_image_in_night_mode">Ausblenden</string>
+    <string name="hide_background_image_in_night_mode_summary">Das Hintergrundbild soll im Nachtmodus ausgeblendet werden.</string>
     <string name="mute_ringer">lautlos</string>
     <string name="night_mode">Nachtmodus</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>

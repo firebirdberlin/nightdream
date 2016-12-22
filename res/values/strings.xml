@@ -69,6 +69,8 @@ OR
     <string name="handle_power_disconnection">Stop automatically</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">wireless charger</string>
+    <string name="hide_background_image_in_night_mode">Hide</string>
+    <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="mute_ringer">mute ringer</string>
     <string name="night_mode">Night mode</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>

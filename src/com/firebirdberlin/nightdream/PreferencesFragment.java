@@ -224,6 +224,7 @@ public class PreferencesFragment extends PreferenceFragment {
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
 
         setupBrightnessControls(prefs);
+        setupBackgroundImageControls(prefs);
 
         Preference goToSettings = (Preference) findPreference("startNotificationService");
         goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -515,6 +516,16 @@ public class PreferencesFragment extends PreferenceFragment {
         brightnessOffset.setTitle(title);
     }
 
+    private void setupBackgroundImageControls(SharedPreferences prefs) {
+        String selection = prefs.getString("backgroundMode", "1");
+        boolean on = selection.equals("3");
+
+        Preference chooseImage = (Preference) findPreference("chooseBackgroundImage");
+        Preference hideImage = (Preference) findPreference("hideBackgroundImage");
+        chooseImage.setEnabled(on);
+        hideImage.setEnabled(on);
+    }
+
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
         new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -529,6 +540,9 @@ public class PreferencesFragment extends PreferenceFragment {
                     settings.setBrightnessOffset(0.8f);
                     pref.setProgress(80);
                     setupBrightnessControls(sharedPreferences);
+                } else
+                if (key.equals("backgroundMode")) {
+                    setupBackgroundImageControls(sharedPreferences);
                 }
             }
         };

@@ -125,6 +125,12 @@
                     android:key="chooseBackgroundImage"
                     android:title="@string/background_image"/>
 
+                <CheckBoxPreference
+                    android:key="hideBackgroundImage"
+                    android:title="@string/hide_background_image_in_night_mode"
+                    android:summary="@string/hide_background_image_in_night_mode_summary"
+                    android:defaultValue="true" />
+
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/behaviour">

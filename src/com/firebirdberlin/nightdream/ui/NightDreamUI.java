@@ -264,7 +264,6 @@ public class NightDreamUI {
                 break;
             }
             case Settings.BACKGROUND_GRADIENT: {
-
                 bgshape = getDrawable(R.drawable.background_gradient);
                 break;
             }
@@ -593,11 +592,15 @@ public class NightDreamUI {
 
         if ((mode == 0) && (current_mode != 0)){
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
-            background_image.setImageDrawable(bgblack);
+            if ( settings.hideBackgroundImage ) {
+                background_image.setImageDrawable(bgblack);
+            }
         } else
         if ((mode != 0) && (current_mode == 0)){
             restoreRingerMode();
-            background_image.setImageDrawable(bgshape);
+            if ( settings.hideBackgroundImage ) {
+                background_image.setImageDrawable(bgshape);
+            }
         }
 
         float dim_offset = settings.dim_offset;

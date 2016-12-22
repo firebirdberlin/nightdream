@@ -45,6 +45,7 @@ public class Settings {
     public boolean handle_power_ac = false;
     public boolean handle_power_usb = false;
     public boolean handle_power_wireless = false;
+    public boolean hideBackgroundImage = true;
     public boolean muteRinger = false;
     public boolean restless_mode = true;
     public boolean showDate = true;
@@ -117,6 +118,7 @@ public class Settings {
         handle_power_ac = settings.getBoolean("handle_power_ac", false);
         handle_power_usb = settings.getBoolean("handle_power_usb", false);
         handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
+        hideBackgroundImage = settings.getBoolean("hideBackgroundImage", true);
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
