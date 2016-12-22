@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import java.util.Calendar;
+import java.lang.IllegalArgumentException;
 
 import de.greenrobot.event.EventBus;
 
@@ -183,8 +184,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         handler.removeCallbacks(finishApp);
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
-        unregisterReceiver(nReceiver);
-        unregisterReceiver(shutDownReceiver);
+        unregister(nReceiver);
+        unregister(shutDownReceiver);
 
         if (mySettings.allow_screen_off && mode == 0 && !isScreenOn() ){ // screen off in night mode
             startBackgroundListener();
@@ -193,6 +194,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
     }
 
+    private void unregister(BroadcastReceiver receiver) {
+        try {
+            unregisterReceiver(receiver);
+        } catch ( IllegalArgumentException e ) {
+
+        }
+    }
 
     protected boolean isScreenOn() {
         if (Build.VERSION.SDK_INT <= 19){
