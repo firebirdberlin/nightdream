@@ -87,6 +87,11 @@
                     android:selectable="false"
                     />
 
+                <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
+                    android:key="colorSelection"
+                    android:selectable="true"
+                    android:descendantFocusability="afterDescendants"
+                    />
 
                 <SwitchPreference
                     android:key="showDate"
