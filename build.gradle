@@ -9,13 +9,16 @@ buildscript {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(':libraries:ShowcaseView')
+    compile (project(':externals:ShowcaseView:library')) {
+      exclude module: 'support-v4'
+      exclude module: 'support-annotations'
+    }
     compile project(':externals:android-preferences')
     compile fileTree(include: '*.jar', dir: 'libs')
 }
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 23
     buildToolsVersion "24.0.0"
 
     sourceSets {
