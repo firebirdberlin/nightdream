@@ -369,6 +369,9 @@ public class AlarmClock extends View {
     private static PendingIntent getPendingAlarmIntent(Context context) {
         Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
         intent.putExtra("cmd", "start alarm");
-        return PendingIntent.getBroadcast( context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        //return PendingIntent.getBroadcast( context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain Android devices, e.g. HTC One m7,
+        // i.e. getNextSystemAlarmTime() still returns already cancelled alarm times afterwards.
+        return PendingIntent.getBroadcast( context, 0, intent, 0);
     }
 }

@@ -293,6 +293,7 @@ public class NightDreamUI {
 
     private void setupAlarmClock() {
         if ( ! settings.useInternalAlarm ) {
+            alarmClock.removeAlarm(); //remove any internal alarms first
             String nextAlarm = alarmClock.getNextSystemAlarmTime();
 
             if ( Build.VERSION.SDK_INT >= 19
@@ -303,7 +304,6 @@ public class NightDreamUI {
             alarmTime.setText(nextAlarm);
             alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
             alarmTime.setClickable(true);
-            alarmClock.removeAlarm();
         } else {
             alarmTime.setOnClickListener(null);
             alarmTime.setClickable(false);
