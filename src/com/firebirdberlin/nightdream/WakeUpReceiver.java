@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.firebirdberlin.nightdream.services.AlarmService;
+
 public class WakeUpReceiver extends BroadcastReceiver {
 
     @Override
@@ -12,5 +14,6 @@ public class WakeUpReceiver extends BroadcastReceiver {
         Bundle alarm = new Bundle();
         alarm.putString("action", "start alarm");
         NightDreamActivity.start(context, alarm);
+        AlarmService.startAlarm(context);
     }
 }

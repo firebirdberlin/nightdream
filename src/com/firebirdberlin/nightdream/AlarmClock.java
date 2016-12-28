@@ -293,9 +293,7 @@ public class AlarmClock extends View {
         Log.i(TAG, "startAlarm()");
         if ( isAlarmSet() ) {
             Log.i(TAG, "An alarm is scheduled.");
-            Intent i = new Intent(ctx, AlarmService.class);
-            i.putExtra("start alarm", true);
-            ctx.startService(i);
+            AlarmService.startAlarm(ctx);
             handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
         }
     }

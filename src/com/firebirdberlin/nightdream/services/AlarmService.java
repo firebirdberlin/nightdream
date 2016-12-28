@@ -156,4 +156,11 @@ public class AlarmService extends Service {
             mMediaPlayer = null;
         }
     }
+
+    public static void startAlarm(Context context) {
+        if ( AlarmService.isRunning ) return;
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("start alarm", true);
+        context.startService(i);
+    }
 }
