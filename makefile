@@ -5,6 +5,9 @@ all:
 debug:
 	ant -f Pro_build.xml debug
 
+doze:
+	adb shell dumpsys deviceidle force-idle
+
 install:
 	adb $(OPT) install -r bin/Pro/NightDream-release.apk
 
