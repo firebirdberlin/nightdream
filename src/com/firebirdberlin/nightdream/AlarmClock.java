@@ -16,6 +16,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import java.lang.Math;
@@ -288,12 +289,12 @@ public class AlarmClock extends View {
     }
 
     public void startAlarm(){
+        Log.i(TAG, "startAlarm()");
         if ( isAlarmSet() ) {
-            try {
-                Intent i = new Intent(ctx, AlarmService.class);
-                i.putExtra("start alarm", true);
-                ctx.startService(i);
-            } catch (Exception e) {}
+            Log.i(TAG, "An alarm is scheduled.");
+            Intent i = new Intent(ctx, AlarmService.class);
+            i.putExtra("start alarm", true);
+            ctx.startService(i);
             handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
         }
     }
@@ -354,6 +355,7 @@ public class AlarmClock extends View {
         if (settings.nextAlarmTime == 0L) return;
         PendingIntent pI = getPendingAlarmIntent(context);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pI);
         if (Build.VERSION.SDK_INT >= 21) {
             AlarmManager.AlarmClockInfo info =
                 new AlarmManager.AlarmClockInfo(settings.nextAlarmTime, pI);
@@ -368,10 +370,11 @@ public class AlarmClock extends View {
 
     private static PendingIntent getPendingAlarmIntent(Context context) {
         Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
-        intent.putExtra("cmd", "start alarm");
-        //return PendingIntent.getBroadcast( context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain Android devices, e.g. HTC One m7,
-        // i.e. getNextSystemAlarmTime() still returns already cancelled alarm times afterwards.
-        return PendingIntent.getBroadcast( context, 0, intent, 0);
+        intent.putExtra("action", "start alarm");
+        //return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
+        // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
+        // already cancelled alarm times afterwards.
+        return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 }

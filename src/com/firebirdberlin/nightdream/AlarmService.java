@@ -29,17 +29,13 @@ public class AlarmService extends Service {
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
 
-    private boolean debug = true;
-
     @Override
     public void onCreate(){
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
 
-        if (debug){
-            Log.d(TAG,"onCreate() called.");
-        }
+        Log.d(TAG, "onCreate() called.");
     }
 
     @Override
@@ -49,9 +45,7 @@ public class AlarmService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (debug){
-            Log.d(TAG,"onStartCommand() called.");
-        }
+        Log.d(TAG, "onStartCommand() called.");
 
         Intent i = new Intent(this, NightDreamActivity.class);
         i.putExtra("action", "stop alarm");
@@ -88,9 +82,7 @@ public class AlarmService extends Service {
 
     @Override
     public void onDestroy(){
-        if (debug){
-            Log.d(TAG,"onDestroy() called.");
-        }
+        Log.d(TAG, "onDestroy() called.");
 
         isRunning = false;
 
