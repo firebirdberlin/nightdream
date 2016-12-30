@@ -33,6 +33,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean isRunning = false;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
+    private float currentVolume = 0.f;
 
 
     @Override
@@ -96,6 +97,19 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     };
 
+    private Runnable fadeIn = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeIn);
+            if ( mMediaPlayer == null ) return;
+            currentVolume += 0.1;
+            if ( currentVolume < 1. ) {
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeIn, 500);
+            }
+        }
+    };
+
     private void playStream() {
         Log.i(TAG, "playStream()");
         stopPlaying();
@@ -106,6 +120,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+
         try {
             mMediaPlayer.setDataSource(settings.radioStreamURL);
         } catch (IllegalStateException e) {
@@ -140,7 +155,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onPrepared(MediaPlayer mp) {
         try {
+            currentVolume = 0.f;
             mp.start();
+            handler.post(fadeIn);
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }
