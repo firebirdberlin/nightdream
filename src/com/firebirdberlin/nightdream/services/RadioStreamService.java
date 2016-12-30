@@ -25,7 +25,8 @@ import com.firebirdberlin.nightdream.Settings;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
-                                                           MediaPlayer.OnCompletionListener {
+                                                           MediaPlayer.OnCompletionListener,
+                                                           MediaPlayer.OnPreparedListener {
     private static String TAG = "NightDream.RadioStreamService";
     final private Handler handler = new Handler();
 
@@ -102,6 +103,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         try {
@@ -117,18 +119,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
 
         try {
-            mMediaPlayer.prepare();
-        } catch (IOException e) {
-            Log.e(TAG, "MediaPlayer.prepare() failed", e);
+            mMediaPlayer.prepareAsync();
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
 
-        try {
-            mMediaPlayer.start();
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "MediaPlayer.prepare() failed", e);
-        }
     }
 
     @Override
@@ -143,8 +138,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     @Override
+    public void onPrepared(MediaPlayer mp) {
+        try {
+            mp.start();
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "MediaPlayer.start() failed", e);
+        }
+    }
+
+    @Override
     public void onCompletion(MediaPlayer mp) {
-        Log.e(TAG, "onCompletion");
+        Log.i(TAG, "onCompletion");
         playStream();
     }
 
