@@ -58,7 +58,7 @@
     </service>
 
     <service android:enabled="true" android:name=".NightModeListener" />
-    <service android:enabled="true" android:name=".AlarmService" />
+    <service android:enabled="true" android:name=".services.AlarmService" />
     <service android:enabled="true" android:name=".services.DownloadWeatherService" />
     <service android:enabled="true" android:name=".services.WeatherService" />
     <service android:enabled="true" android:name=".services.LocationService" />

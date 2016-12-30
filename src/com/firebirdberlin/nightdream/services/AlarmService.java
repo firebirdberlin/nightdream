@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -18,18 +18,19 @@ import android.util.Log;
 import java.io.IOException;
 import android.support.v4.app.NotificationCompat;
 
+import com.firebirdberlin.nightdream.NightDreamActivity;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+
 public class AlarmService extends Service {
     private static String TAG = "NightDream.AlarmService";
     final private Handler handler = new Handler();
 
     static public boolean isRunning = false;
-    private boolean error_on_microphone = false;
     PowerManager.WakeLock wakelock;
     private PowerManager pm;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
-
-    private boolean debug = true;
 
     @Override
     public void onCreate(){
@@ -37,9 +38,7 @@ public class AlarmService extends Service {
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
 
-        if (debug){
-            Log.d(TAG,"onCreate() called.");
-        }
+        Log.d(TAG, "onCreate() called.");
     }
 
     @Override
@@ -49,9 +48,7 @@ public class AlarmService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (debug){
-            Log.d(TAG,"onStartCommand() called.");
-        }
+        Log.d(TAG, "onStartCommand() called.");
 
         Intent i = new Intent(this, NightDreamActivity.class);
         i.putExtra("action", "stop alarm");
@@ -88,9 +85,7 @@ public class AlarmService extends Service {
 
     @Override
     public void onDestroy(){
-        if (debug){
-            Log.d(TAG,"onDestroy() called.");
-        }
+        Log.d(TAG, "onDestroy() called.");
 
         isRunning = false;
 
@@ -160,5 +155,19 @@ public class AlarmService extends Service {
             }
             mMediaPlayer = null;
         }
+    }
+
+    public static void startAlarm(Context context) {
+        if ( AlarmService.isRunning ) return;
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("start alarm", true);
+        context.startService(i);
+    }
+
+    public static void stopAlarm(Context context) {
+        if ( ! AlarmService.isRunning ) return;
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("stop alarm", true);
+        context.startService(i);
     }
 }

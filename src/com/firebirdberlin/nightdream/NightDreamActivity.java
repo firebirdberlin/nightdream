@@ -34,6 +34,7 @@ import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
@@ -143,13 +144,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
+            Log.i(TAG, "Intent has extras");
             String action = extras.getString("action");
 
             if (action != null) {
-                Log.i(TAG, action);
+                Log.i(TAG, "action: " + action);
                 if (action.equals("start alarm")) {
-                    alarmClock.startAlarm();
-                    nightDreamUI.showAlarmClock();
                 }
 
                 if (action.equals("stop alarm")) {
@@ -165,6 +165,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                     }
                 }
             }
+        }
+
+        if ( AlarmService.isRunning ) {
+            alarmClock.startAlarm();
+            nightDreamUI.showAlarmClock();
         }
     }
 
@@ -307,7 +312,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnClockClicked event){
-        if (AlarmService.isRunning) alarmClock.stopAlarm();
+        if (AlarmService.isRunning) {
+            AlarmService.stopAlarm(this);
+            alarmClock.stopAlarm();
+        }
 
         if (lightSensor == null){
             last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;

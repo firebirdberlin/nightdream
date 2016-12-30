@@ -49,7 +49,6 @@ import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import com.firebirdberlin.nightdream.AlarmClock;
-import com.firebirdberlin.nightdream.AlarmService;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
@@ -64,6 +63,7 @@ import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnLocationUpdated;
 import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
+import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
@@ -293,6 +293,7 @@ public class NightDreamUI {
 
     private void setupAlarmClock() {
         if ( ! settings.useInternalAlarm ) {
+            alarmClock.cancelAlarm(); //remove any internal alarms first
             String nextAlarm = alarmClock.getNextSystemAlarmTime();
 
             if ( Build.VERSION.SDK_INT >= 19
@@ -303,7 +304,6 @@ public class NightDreamUI {
             alarmTime.setText(nextAlarm);
             alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
             alarmTime.setClickable(true);
-            alarmClock.removeAlarm();
         } else {
             alarmTime.setOnClickListener(null);
             alarmTime.setClickable(false);
