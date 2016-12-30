@@ -51,7 +51,8 @@
                     android:alpha="0.0"
                     android:src="@drawable/ic_radio"
                     android:onClick="onRadioClick"
-                    android:clickable="true"/>
+                    android:clickable="true"
+                    android:visibility="gone"/>
 
                 <ImageView
                     android:id="@+id/settings_icon"

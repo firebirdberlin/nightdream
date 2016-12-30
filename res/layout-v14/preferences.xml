@@ -241,16 +241,28 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
-            <EditTextPreference
-                android:defaultValue="http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m"
-                android:key="radioStreamURL"
-                android:title="radio_stream_url"
-                android:summary="radio_stream_url_summary"/>
+            <PreferenceCategory
+                android:title="@string/radio_stream"
+                key="category_radio_stream">
 
-            <Preference
-                android:key="startAudioStream"
-                android:title="start audio stream"
-                />
+                <SwitchPreference
+                    android:key="useRadioAlarmClock"
+                    android:title="@string/radio_stream_enabled"
+                    android:defaultValue="false"/>
+
+                <EditTextPreference
+                    android:defaultValue="http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m"
+                    android:key="radioStreamURL"
+                    android:title="@string/radio_stream_url"
+                    android:dependency="useRadioAlarmClock"
+                    android:summary="@string/radio_stream_url_summary"/>
+
+                <Preference
+                    android:key="startAudioStream"
+                    android:dependency="useRadioAlarmClock"
+                    android:title="@string/radio_stream_start"/>
+
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <PreferenceScreen

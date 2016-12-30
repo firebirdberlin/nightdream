@@ -167,7 +167,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if ( AlarmService.isRunning ) {
             alarmClock.startAlarm();
             nightDreamUI.showAlarmClock();
+        } else
+        if ( RadioStreamService.isRunning ) {
+            nightDreamUI.showAlarmClock();
         }
+
     }
 
     @Override
@@ -293,7 +297,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         long now = Calendar.getInstance().getTimeInMillis();
         if ( (0 < mySettings.nextAlarmTime - now
                 && mySettings.nextAlarmTime - now < 600000)
-                || AlarmService.isRunning ) {
+                || AlarmService.isRunning
+                || RadioStreamService.isRunning ) {
             Log.d(TAG, "shallKeepScreenOn() true");
             return true;
         }

@@ -27,6 +27,7 @@ import java.util.Locale;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
@@ -85,6 +86,7 @@ public class AlarmClock extends View {
 
     public boolean onTouchEvent(MotionEvent e) {
         if (AlarmService.isRunning) stopAlarm();
+        if (RadioStreamService.isRunning) stopRadioStream();
 
         // the view should be visible before the user interacts with it
         if (! isVisible ) return false;
@@ -296,6 +298,12 @@ public class AlarmClock extends View {
 
     public void stopAlarm(){
         handler.post(stopRunningAlarm);
+    }
+
+    public void stopRadioStream(){
+        RadioStreamService.stop(ctx);
+        cancelAlarm();
+        invalidate();
     }
 
     private Runnable stopRunningAlarm = new Runnable() {

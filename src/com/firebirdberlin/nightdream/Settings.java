@@ -53,6 +53,7 @@ public class Settings {
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
     public boolean useInternalAlarm = true;
+    public boolean useRadioAlarmClock = false;
     public float dim_offset = 0.8f;
     public float location_lon = 0.f;
     public float location_lat = 0.f;
@@ -147,6 +148,7 @@ public class Settings {
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
+        useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         weatherCityID = settings.getString("weatherCityID", "");
 
