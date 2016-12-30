@@ -163,4 +163,11 @@ public class AlarmService extends Service {
         i.putExtra("start alarm", true);
         context.startService(i);
     }
+
+    public static void stopAlarm(Context context) {
+        if ( ! AlarmService.isRunning ) return;
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("stop alarm", true);
+        context.startService(i);
+    }
 }

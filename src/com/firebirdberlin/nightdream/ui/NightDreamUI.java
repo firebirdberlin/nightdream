@@ -293,7 +293,7 @@ public class NightDreamUI {
 
     private void setupAlarmClock() {
         if ( ! settings.useInternalAlarm ) {
-            alarmClock.removeAlarm(); //remove any internal alarms first
+            alarmClock.cancelAlarm(); //remove any internal alarms first
             String nextAlarm = alarmClock.getNextSystemAlarmTime();
 
             if ( Build.VERSION.SDK_INT >= 19

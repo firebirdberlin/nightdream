@@ -150,8 +150,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             if (action != null) {
                 Log.i(TAG, "action: " + action);
                 if (action.equals("start alarm")) {
-                    alarmClock.startAlarm();
-                    nightDreamUI.showAlarmClock();
                 }
 
                 if (action.equals("stop alarm")) {
@@ -167,6 +165,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                     }
                 }
             }
+        }
+
+        if ( AlarmService.isRunning ) {
+            alarmClock.startAlarm();
+            nightDreamUI.showAlarmClock();
         }
     }
 
@@ -309,7 +312,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onEvent(OnClockClicked event){
-        if (AlarmService.isRunning) alarmClock.stopAlarm();
+        if (AlarmService.isRunning) {
+            AlarmService.stopAlarm(this);
+            alarmClock.stopAlarm();
+        }
 
         if (lightSensor == null){
             last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;

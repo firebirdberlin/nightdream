@@ -111,7 +111,7 @@ public class AlarmClock extends View {
                 float dist = distance(click, ll);
                 if (dist > quiet_zone_size && dist < touch_zone_radius) { // left corner
                     FingerDown = true;
-                    removeAlarm();
+                    cancelAlarm();
                     XYtotime(tX,tY);
                     this.invalidate();
                     return true;
@@ -152,7 +152,7 @@ public class AlarmClock extends View {
             case MotionEvent.ACTION_UP:
                 if (FingerDownDeleteAlarm == true) {
                     FingerDownDeleteAlarm = false;
-                    removeAlarm();
+                    cancelAlarm();
                     this.invalidate();
                     return true;
                 }
@@ -291,11 +291,7 @@ public class AlarmClock extends View {
 
     public void startAlarm(){
         Log.i(TAG, "startAlarm()");
-        if ( isAlarmSet() ) {
-            Log.i(TAG, "An alarm is scheduled.");
-            AlarmService.startAlarm(ctx);
-            handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
-        }
+        handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
     }
 
     public void stopAlarm(){
@@ -306,23 +302,20 @@ public class AlarmClock extends View {
         @Override
         public void run() {
             handler.removeCallbacks(stopRunningAlarm);
-            Intent i = new Intent(ctx, AlarmService.class);
-            i.putExtra("stop alarm", true);
-            ctx.startService(i);
 
-            removeAlarm();
+            cancelAlarm();
             invalidate();
         }
     };
 
     private void setAlarm() {
-        removeAlarm();
+        cancelAlarm();
         SimpleTime alarmTime = new SimpleTime(hour, min);
         settings.setAlarmTime(alarmTime.getMillis());
         AlarmClock.schedule(ctx);
     }
 
-    public void removeAlarm(){
+    public void cancelAlarm(){
         settings.setAlarmTime(0L);
         PendingIntent pI = getPendingAlarmIntent(ctx);
         am.cancel(pI);
