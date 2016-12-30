@@ -151,12 +151,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
             if (action != null) {
                 Log.i(TAG, "action: " + action);
-                if (action.equals("start alarm")) {
-                }
 
-                if (action.equals("stop alarm")) {
-                    alarmClock.stopAlarm();
-                }
 
                 if (action.equals("start night mode")) {
                     last_ambient = mySettings.minIlluminance;

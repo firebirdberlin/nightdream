@@ -24,8 +24,8 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
-                                                     MediaPlayer.OnBufferingUpdateListener,
-                                                     MediaPlayer.OnCompletionListener {
+                                                           MediaPlayer.OnBufferingUpdateListener,
+                                                           MediaPlayer.OnCompletionListener {
     private static String TAG = "NightDream.RadioStreamService";
     final private Handler handler = new Handler();
 
@@ -119,22 +119,21 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         try {
             mMediaPlayer.prepare();
         } catch (IOException e) {
-            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+            Log.e(TAG, "MediaPlayer.prepare() failed", e);
         } catch (IllegalStateException e) {
-            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+            Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
 
         try {
             mMediaPlayer.start();
         } catch (IllegalStateException e) {
-            Log.e(TAG, "DatMediaPlayer.prepare() failed", e);
+            Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e(TAG, "MediaPlayer.error: " + String.valueOf( what) + " "
-                    + String.valueOf(extra));
+        Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
         return false;
     }
 
@@ -145,19 +144,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        Log.e(TAG, "onCompletion ");
+        Log.e(TAG, "onCompletion");
         playStream();
-    }
-
-    public Uri getAlarmToneUri() {
-        Log.i(TAG, settings.AlarmToneUri);
-        try {
-            return Uri.parse(settings.AlarmToneUri);
-        } catch (Exception e) {
-            Log.e(TAG, "Exception", e);
-        }
-
-        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
     }
 
     public void stopPlaying(){

@@ -108,6 +108,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     public void AlarmPlay() {
         AlarmStop();
         Log.i(TAG, "AlarmPlay()");
+        isRunning = true;
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
         mMediaPlayer.setLooping(true);
@@ -135,8 +136,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e(TAG, "MediaPlayer.error: " + String.valueOf( what) + " "
-                    + String.valueOf(extra));
+        Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
         return false;
     }
 
@@ -180,6 +180,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     }
 
     public static void stop(Context context) {
+        if ( ! AlarmService.isRunning ) return;
         Intent i = getStopIntent(context);
         context.startService(i);
     }
