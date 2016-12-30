@@ -251,7 +251,7 @@
                     android:defaultValue="false"/>
 
                 <EditTextPreference
-                    android:defaultValue="http://rbb-mp3-radioeins-m.akacast.akamaistream.net/7/854/292097/v1/gnl.akacast.akamaistream.net/rbb_mp3_radioeins_m"
+                    android:defaultValue="http://lush.wavestreamer.com:7309/"
                     android:key="radioStreamURL"
                     android:title="@string/radio_stream_url"
                     android:dependency="useRadioAlarmClock"
