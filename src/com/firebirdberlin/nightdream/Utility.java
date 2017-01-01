@@ -10,13 +10,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings.System;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-
 
 public class Utility{
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
@@ -160,5 +160,13 @@ public class Utility{
         } catch (NameNotFoundException e) {
             return 0L;
         }
+    }
+
+    public static boolean hasNetworkConnection(Context context) {
+        ConnectivityManager cm =
+            (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return ( activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
 }

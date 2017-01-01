@@ -17,11 +17,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.Toast;
 import java.io.IOException;
 import android.support.v4.app.NotificationCompat;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
@@ -182,6 +184,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     public static void start(Context context) {
+        if ( ! Utility.hasNetworkConnection(context) ) {
+            Toast.makeText(context, "No network connection.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent i = new Intent(context, RadioStreamService.class);
         i.putExtra("start", true);
         context.startService(i);
