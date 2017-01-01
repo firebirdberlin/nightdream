@@ -45,6 +45,7 @@ public class Settings {
     public boolean handle_power_ac = false;
     public boolean handle_power_usb = false;
     public boolean handle_power_wireless = false;
+    public boolean hideBackgroundImage = true;
     public boolean muteRinger = false;
     public boolean restless_mode = true;
     public boolean showDate = true;
@@ -60,7 +61,7 @@ public class Settings {
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
     public float scaleClockPortrait = 1.f;
-    public float scaleClockLandscape = 1.f;
+    public float scaleClockLandscape = 1.5f;
     public int background_mode = 1;
     public int clockColor;
     public int reactivate_on_ambient_light_value = 30; // lux
@@ -69,7 +70,6 @@ public class Settings {
     public int temperatureUnit = WeatherEntry.CELSIUS;
     public int speedUnit = WeatherEntry.METERS_PER_SECOND;
     public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-    public int tertiaryColor;
     public long autostartTimeRangeStart = -1L;
     public long autostartTimeRangeEnd = -1L;
     public long nextAlarmTime = 0L;
@@ -117,6 +117,7 @@ public class Settings {
         handle_power_ac = settings.getBoolean("handle_power_ac", false);
         handle_power_usb = settings.getBoolean("handle_power_usb", false);
         handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
+        hideBackgroundImage = settings.getBoolean("hideBackgroundImage", true);
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
@@ -134,7 +135,7 @@ public class Settings {
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
-        scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.f);
+        scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
@@ -143,7 +144,6 @@ public class Settings {
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
-        tertiaryColor= settings.getInt("tertiaryColor", Color.parseColor("#C2C2C2"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         weatherCityID = settings.getString("weatherCityID", "");
@@ -271,9 +271,9 @@ public class Settings {
     }
 
     public Calendar getAlarmTime() {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(nextAlarmTime);
-            return calendar;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(nextAlarmTime);
+        return calendar;
     }
 
     public void setBackgroundImage(String uri) {

@@ -63,7 +63,6 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(settings.clockColor);
         clockLayout.setSecondaryColor(settings.secondaryColor);
-        clockLayout.setTertiaryColor(settings.tertiaryColor);
 
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.showDate(settings.showDate);

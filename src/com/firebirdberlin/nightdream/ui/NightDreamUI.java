@@ -219,7 +219,6 @@ public class NightDreamUI {
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(settings.clockColor);
         clockLayout.setSecondaryColor(settings.secondaryColor);
-        clockLayout.setTertiaryColor(settings.tertiaryColor);
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.update(settings.weatherEntry);
@@ -264,7 +263,6 @@ public class NightDreamUI {
                 break;
             }
             case Settings.BACKGROUND_GRADIENT: {
-
                 bgshape = getDrawable(R.drawable.background_gradient);
                 break;
             }
@@ -593,11 +591,15 @@ public class NightDreamUI {
 
         if ((mode == 0) && (current_mode != 0)){
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
-            background_image.setImageDrawable(bgblack);
+            if ( settings.hideBackgroundImage ) {
+                background_image.setImageDrawable(bgblack);
+            }
         } else
         if ((mode != 0) && (current_mode == 0)){
             restoreRingerMode();
-            background_image.setImageDrawable(bgshape);
+            if ( settings.hideBackgroundImage ) {
+                background_image.setImageDrawable(bgshape);
+            }
         }
 
         float dim_offset = settings.dim_offset;

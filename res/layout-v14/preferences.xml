@@ -100,17 +100,12 @@
                 <yuku.ambilwarna.widget.AmbilWarnaPreference
                     android:key="clockColor"
                     android:defaultValue="0xff33B5E5"
-                    android:title="@string/choose_color_dialog"/>
+                    android:title="@string/choose_primary_color"/>
 
                 <yuku.ambilwarna.widget.AmbilWarnaPreference
                     android:key="secondaryColor"
                     android:defaultValue="0xffc2c2c2"
                     android:title="@string/choose_secondary_color"/>
-
-                <yuku.ambilwarna.widget.AmbilWarnaPreference
-                    android:key="tertiaryColor"
-                    android:defaultValue="0xffc2c2c2"
-                    android:title="@string/choose_tertiary_color"/>
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/background">
@@ -124,6 +119,12 @@
                 <Preference
                     android:key="chooseBackgroundImage"
                     android:title="@string/background_image"/>
+
+                <CheckBoxPreference
+                    android:key="hideBackgroundImage"
+                    android:title="@string/hide_background_image_in_night_mode"
+                    android:summary="@string/hide_background_image_in_night_mode_summary"
+                    android:defaultValue="true" />
 
             </PreferenceCategory>
 

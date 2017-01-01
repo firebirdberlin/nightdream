@@ -34,7 +34,7 @@ OR
     <string name="background_black">black</string>
     <string name="background_gradient">gradient</string>
     <string name="background_image">image</string>
-    <string name="background_image_select">Select image</string>
+    <string name="background_image_select">Select an image</string>
     <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
     <string name="brightness_offset">Brightness offset</string>
@@ -42,11 +42,8 @@ OR
     <string name="category_handle_power">... and when connected to</string>
     <string name="category_handle_power_autostart_time">Start within the time range</string>
     <string name="choose_alarm_sound">Alarm tone</string>
-    <string name="choose_color_btn">pick color</string>
-    <string name="choose_color">Clock color</string>
-    <string name="choose_color_dialog">Pick a color.</string>
-    <string name="choose_secondary_color">Secondary color</string>
-    <string name="choose_tertiary_color">Tertiary color</string>
+    <string name="choose_primary_color">Accent color</string>
+    <string name="choose_secondary_color">Text color</string>
     <string name="confirm_reset">Reset</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="contribute">Contribute</string>
@@ -69,6 +66,8 @@ OR
     <string name="handle_power_disconnection">Stop automatically</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">wireless charger</string>
+    <string name="hide_background_image_in_night_mode">Hide</string>
+    <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="mute_ringer">mute ringer</string>
     <string name="night_mode">Night mode</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
