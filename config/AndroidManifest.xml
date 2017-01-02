@@ -101,7 +101,7 @@
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".WakeUpReceiver">
+    <receiver android:name=".receivers.WakeUpReceiver">
         <intent-filter>
             <action android:name="com.firebirdberlin.nightdream.WAKEUP"/>
         </intent-filter>

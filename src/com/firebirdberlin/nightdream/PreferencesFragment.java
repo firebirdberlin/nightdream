@@ -37,6 +37,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
+import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class PreferencesFragment extends PreferenceFragment {
