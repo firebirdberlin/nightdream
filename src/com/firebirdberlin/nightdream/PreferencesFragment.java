@@ -309,6 +309,7 @@ public class PreferencesFragment extends PreferenceFragment {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             settings.clear();
                             getPreferenceScreen().removeAll();
+                            WakeUpReceiver.cancelAlarm(mContext);
                             addPreferencesFromResource(R.layout.preferences);
                             init();
                             togglePurchasePreferences();
