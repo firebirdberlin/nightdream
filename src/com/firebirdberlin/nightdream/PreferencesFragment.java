@@ -41,7 +41,7 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class PreferencesFragment extends PreferenceFragment {
-    public static final String TAG = "PreferencesFragment";
+    public static final String TAG = "NightDream.PreferencesFragment";
     public static final String ITEM_DONATION = "donation";
     public static final String ITEM_WEATHER_DATA = "weather_data";
     public static final int REQUEST_CODE_PURCHASE_DONATION = 1001;

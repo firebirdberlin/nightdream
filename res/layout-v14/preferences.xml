@@ -250,12 +250,10 @@
                     android:title="@string/radio_stream_enabled"
                     android:defaultValue="false"/>
 
-                <EditTextPreference
-                    android:defaultValue="http://lush.wavestreamer.com:7309/"
+                <com.firebirdberlin.radiostreamapi.RadioStreamPreference
                     android:key="radioStreamURL"
-                    android:title="@string/radio_stream_url"
-                    android:dependency="useRadioAlarmClock"
-                    android:summary="@string/radio_stream_url_summary"/>
+                    android:defaultValue="http://lush.wavestreamer.com:7309/"
+                    android:title="@string/radio_stream_url"/>
 
                 <Preference
                     android:key="startAudioStream"
