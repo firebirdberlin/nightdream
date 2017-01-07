@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
@@ -33,6 +34,8 @@ public class RadioStreamPreference extends DialogPreference
     private ArrayList<RadioStation> stations = new ArrayList<RadioStation>();
     private ArrayAdapter<RadioStation> adapter;
     private ListView stationListView;
+    private TextView noResultsText;
+    private ContentLoadingProgressBar spinner;
 
     public RadioStreamPreference(Context ctx) {
         this(ctx, null);
@@ -79,13 +82,21 @@ public class RadioStreamPreference extends DialogPreference
 
         final RadioStreamPreference context = this;
         queryText = ((EditText) v.findViewById(R.id.query_string));
+        spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
+        stationListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
+        noResultsText = (TextView) v.findViewById(R.id.no_results);
+        noResultsText.setVisibility(View.GONE);
 
         queryText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    spinner.show();
+                    stationListView.setVisibility(View.GONE);
+                    noResultsText.setVisibility(View.GONE);
                     String query = v.getText().toString();
                     new StationRequestTask(context).execute(query);
+
 
                     InputMethodManager imm =
                         (InputMethodManager) v.getContext()
@@ -97,7 +108,6 @@ public class RadioStreamPreference extends DialogPreference
             }
         });
 
-        stationListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
         stationListView.setAdapter(adapter);
         stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
@@ -105,7 +115,6 @@ public class RadioStreamPreference extends DialogPreference
                 RadioStation station = (RadioStation) parent.getItemAtPosition(position);
                 persistString(station.stream);
                 setSummary(station.stream);
-                //invalidate();
                 notifyChanged();
                 getDialog().dismiss();
 
@@ -121,6 +130,15 @@ public class RadioStreamPreference extends DialogPreference
         this.stations.addAll(stations);
         Log.i(TAG, String.format("Request finished with %d entries", this.stations.size()));
         ((ArrayAdapter) stationListView.getAdapter()).notifyDataSetChanged();
+        spinner.hide();
+        stationListView.setVisibility((stations.size() == 0) ? View.GONE : View.VISIBLE);
+        noResultsText.setVisibility((stations.size() == 0) ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    protected void onDialogClosed(boolean positiveResult) {
+        super.onDialogClosed(positiveResult);
+        this.stations.clear();
     }
 
     @Override

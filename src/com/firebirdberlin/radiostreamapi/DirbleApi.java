@@ -9,6 +9,7 @@ import java.lang.String;
 import java.lang.StringBuilder;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,23 +24,34 @@ public class DirbleApi {
     private static String TAG = "NightDream.DirbleAPI";
     private static String BASEURL = "http://api.dirble.com/v2/search/";
     private static String TOKEN = "770f99fe4971232de187503040";
+    private static int MAX_NUM_RESULTS = 100;
+    private static int READ_TIMEOUT = 10000;
+    private static int CONNECT_TIMEOUT = 10000;
 
     public static List<RadioStation> fetchStations(String queryString) {
         List<RadioStation> stationList = new ArrayList<RadioStation>();
         int responseCode = 0;
         String response = "";
         String responseText = "";
-        String urlstring = BASEURL + queryString + "?token=" + TOKEN + "&per_page=20";
+        String urlstring = BASEURL + queryString +
+                          "?token=" + TOKEN +
+                          "&per_page=" + String.valueOf(MAX_NUM_RESULTS);
         Log.i(TAG, "requesting " + urlstring);
         try {
             URL url = new URL(urlstring);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            urlConnection.setReadTimeout(READ_TIMEOUT);
             response = urlConnection.getResponseMessage();
             responseCode = urlConnection.getResponseCode();
             if ( responseCode == 200 ) {
                 responseText = getResponseText(urlConnection);
             }
             urlConnection.disconnect();
+        }
+        catch (SocketTimeoutException e) {
+            Log.e(TAG, "Http Timeout");
+            return stationList;
         }
         catch (Exception e) {
             Log.e(TAG, Log.getStackTraceString(e));
