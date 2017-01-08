@@ -191,6 +191,7 @@
 
             <CheckBoxPreference
                 android:key="alarmFadeIn"
+                android:dependency="useInternalAlarm"
                 android:title="@string/alarmFadeIn"
                 android:defaultValue="true" />
 
