@@ -20,7 +20,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Settings settings = new Settings(context);
         if (settings.useInternalAlarm ) {
-            if ( settings.useRadioAlarmClock && Utility.hasNetworkConnection(context) ) {
+            if ( settings.useRadioAlarmClock && Utility.hasFastNetworkConnection(context) ) {
                 RadioStreamService.start(context);
             } else {
                 AlarmService.startAlarm(context);

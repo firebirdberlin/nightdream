@@ -169,4 +169,16 @@ public class Utility{
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return ( activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
+
+    public static boolean hasFastNetworkConnection(Context context) {
+        ConnectivityManager cm =
+            (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return ( hasNetworkConnection(context) &&
+                ( activeNetwork.getType() == ConnectivityManager.TYPE_WIFI ||
+                  activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET));
+    }
+
 }
