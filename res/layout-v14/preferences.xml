@@ -241,6 +241,11 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
+            <CheckBoxPreference
+                android:key="alarmFadeIn"
+                android:title="@string/alarmFadeIn"
+                android:defaultValue="true" />
+
             <PreferenceCategory
                 android:title="@string/radio_stream"
                 key="category_radio_stream">

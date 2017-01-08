@@ -2,6 +2,7 @@
 <resources>
     <string name="about">Über</string>
     <string name="alarm">Wecker</string>
+    <string name="alarmFadeIn">ansteigende Lautstärke</string>
     <string name="allow_screen_off">Bildschirm aus</string>
     <string name="ambient_noise_summary">Verhindert das Abschalten bei Umgebungsgeräuschen.</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>

@@ -189,6 +189,11 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
+            <CheckBoxPreference
+                android:key="alarmFadeIn"
+                android:title="@string/alarmFadeIn"
+                android:defaultValue="true" />
+
         </PreferenceScreen>
 
         <Preference

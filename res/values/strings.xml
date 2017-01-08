@@ -19,6 +19,7 @@ OR
 <resources>
     <string name="about">About</string>
     <string name="alarm">Alarm</string>
+    <string name="alarmFadeIn">increasing volume</string>
     <string name="allow_screen_off">screen off</string>
     <string name="reactivate_screen_on_noise">wake on ambient noise</string>
     <string name="reactivate_on_ambient_light_value">Illuminance threshold</string>

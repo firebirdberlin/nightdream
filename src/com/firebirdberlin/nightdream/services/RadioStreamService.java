@@ -86,6 +86,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public void onDestroy(){
         Log.d(TAG,"onDestroy() called.");
 
+        handler.removeCallbacks(fadeIn);
         isRunning = false;
     }
 
@@ -104,10 +105,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         public void run() {
             handler.removeCallbacks(fadeIn);
             if ( mMediaPlayer == null ) return;
-            currentVolume += 0.1;
+            currentVolume += 0.01;
             if ( currentVolume < 1. ) {
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
-                handler.postDelayed(fadeIn, 500);
+                handler.postDelayed(fadeIn, 50);
             }
         }
     };
@@ -157,10 +158,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        try {
+        if ( settings.alarmFadeIn ) {
             currentVolume = 0.f;
-            mp.start();
             handler.post(fadeIn);
+        };
+        try {
+            mp.start();
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }

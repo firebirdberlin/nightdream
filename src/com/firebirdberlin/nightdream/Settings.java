@@ -35,6 +35,7 @@ public class Settings {
 
     public boolean allow_screen_off = false;
     private boolean reactivate_screen_on_noise = false;
+    public boolean alarmFadeIn = true;
     private boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
     public boolean force_auto_rotation = false;
@@ -106,6 +107,7 @@ public class Settings {
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
+        alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", autostartTimeRangeStart);

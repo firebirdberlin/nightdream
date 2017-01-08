@@ -89,6 +89,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     public void onDestroy(){
         Log.d(TAG, "onDestroy() called.");
 
+        handler.removeCallbacks(fadeIn);
         isRunning = false;
 
         if (wakelock.isHeld()){
@@ -111,10 +112,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         public void run() {
             handler.removeCallbacks(fadeIn);
             if ( mMediaPlayer == null ) return;
-            currentVolume += 0.1;
+            currentVolume += 0.01;
             if ( currentVolume < 1. ) {
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
-                handler.postDelayed(fadeIn, 500);
+                handler.postDelayed(fadeIn, 150);
             }
         }
     };
@@ -145,9 +146,12 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
 
-        currentVolume = 0.f;
+        if ( settings.alarmFadeIn ) {
+            currentVolume = 0.f;
+            handler.post(fadeIn);
+        };
+
         mMediaPlayer.start();
-        handler.post(fadeIn);
     }
 
     @Override
