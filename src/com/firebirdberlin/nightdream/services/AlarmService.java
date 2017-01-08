@@ -35,6 +35,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private PowerManager pm;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
+    private float currentVolume = 0.f;
 
     @Override
     public void onCreate(){
@@ -105,6 +106,19 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     };
 
+    private Runnable fadeIn = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeIn);
+            if ( mMediaPlayer == null ) return;
+            currentVolume += 0.1;
+            if ( currentVolume < 1. ) {
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeIn, 500);
+            }
+        }
+    };
+
     public void AlarmPlay() {
         AlarmStop();
         Log.i(TAG, "AlarmPlay()");
@@ -131,7 +145,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
 
+        currentVolume = 0.f;
         mMediaPlayer.start();
+        handler.post(fadeIn);
     }
 
     @Override
