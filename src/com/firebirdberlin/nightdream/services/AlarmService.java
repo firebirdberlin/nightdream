@@ -101,9 +101,18 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         @Override
         public void run() {
             handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeIn);
             AlarmStop();
             stopForeground(false); // bool: true = remove Notification
             stopSelf();
+        }
+    };
+
+    private Runnable retry = new Runnable() {
+        @Override
+        public void run() {
+            AlarmPlay();
+            handler.postDelayed(timeout, 120000);
         }
     };
 
@@ -126,23 +135,33 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         isRunning = true;
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setLooping(true);
 
-        try {
-            Uri soundUri = getAlarmToneUri();
-            mMediaPlayer.setDataSource(this, soundUri);
-        } catch (IOException e1) {
-            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            try {
-                mMediaPlayer.setDataSource(this, soundUri);
-            } catch (IOException e2) {
-                Log.e(TAG, "Playing the default alarm tone failed", e2);
-            }
+        boolean result = false;
+        Uri soundUri = getAlarmToneUri();
+        result = setDataSource(soundUri);
+        if (! result ) {
+            soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            result = setDataSource(soundUri);
+        }
+
+        if (! result ) {
+            Log.e(TAG, "Could not set the data source !");
+            handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeIn);
+            AlarmStop();
+            handler.postDelayed(retry, 10000);
+            return;
         }
 
         try {
             mMediaPlayer.prepare();
         } catch (IOException e) {
+            Log.e(TAG, "MediaPlayer.prepare() failed", e);
+        } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
 
@@ -152,6 +171,21 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         };
 
         mMediaPlayer.start();
+    }
+
+    private boolean setDataSource(Uri soundUri) {
+        if (soundUri == null) return false;
+        try {
+            mMediaPlayer.setDataSource(this, soundUri);
+        } catch (IOException e) {
+            Log.e(TAG, String.format("Setting the Uri %s failed !", soundUri.toString()));
+            return false;
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+            return false;
+        }
+        return true;
+
     }
 
     @Override
