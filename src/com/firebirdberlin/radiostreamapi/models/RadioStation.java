@@ -8,7 +8,7 @@ public class RadioStation {
     public String stream;
 
     public String toString() {
-        return String.format("%s %s (%d)", this.countryCode, this.name, this.id);
+        return String.format("%s %s", this.countryCode, this.name);
     }
 
 }
