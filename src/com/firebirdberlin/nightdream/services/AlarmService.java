@@ -220,8 +220,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             if(mMediaPlayer.isPlaying()) {
                 Log.i(TAG, "AlarmStop()");
                 mMediaPlayer.stop();
-                mMediaPlayer.release();
             }
+            mMediaPlayer.release();
             mMediaPlayer = null;
         }
     }

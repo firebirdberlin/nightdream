@@ -28,6 +28,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                                                            MediaPlayer.OnCompletionListener,
                                                            MediaPlayer.OnPreparedListener {
     private static String TAG = "NightDream.RadioStreamService";
+    private static String ACTION_START = "start";
+    private static String ACTION_START_STREAM = "start stream";
+    private static String ACTION_STOP = "stop";
     final private Handler handler = new Handler();
 
     static public boolean isRunning = false;
@@ -52,6 +55,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.d(TAG,"onStartCommand() called.");
 
         Intent i = getStopIntent(this);
+        i.setAction(ACTION_STOP);
         PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
 
         Notification note = new NotificationCompat.Builder(this)
@@ -66,22 +70,20 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         startForeground(1337, note);
 
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            if ( intent.hasExtra("stop") ){
-                handler.post(timeout);
-            } else
-            if ( intent.hasExtra("start") ){
-                isRunning = true;
-                alarmIsRunning = true;
-                settings = new Settings(this);
-                playStream();
-            }
-            if ( intent.hasExtra("start stream") ){
-                isRunning = true;
-                settings = new Settings(this);
-                playStream();
-            }
+        String action = intent.getAction();
+        if ( ACTION_START.equals(action) ) {
+            isRunning = true;
+            alarmIsRunning = true;
+            settings = new Settings(this);
+            playStream();
+        } else
+        if ( ACTION_START_STREAM.equals(action) ) {
+            isRunning = true;
+            settings = new Settings(this);
+            playStream();
+        } else
+        if ( ACTION_STOP.equals(action) ) {
+            handler.post(timeout);
         }
 
         return Service.START_REDELIVER_INTENT;
@@ -92,6 +94,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.d(TAG,"onDestroy() called.");
 
         handler.removeCallbacks(fadeIn);
+        handler.removeCallbacks(timeout);
+        stopPlaying();
+        stopForeground(false); // bool: true = remove Notification
         isRunning = false;
         alarmIsRunning = false;
     }
@@ -99,9 +104,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private Runnable timeout = new Runnable() {
         @Override
         public void run() {
-            handler.removeCallbacks(timeout);
-            stopPlaying();
-            stopForeground(false); // bool: true = remove Notification
             stopSelf();
         }
     };
@@ -190,8 +192,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             if(mMediaPlayer.isPlaying()) {
                 Log.i(TAG, "stopPlaying()");
                 mMediaPlayer.stop();
-                mMediaPlayer.release();
             }
+            mMediaPlayer.release();
             mMediaPlayer = null;
         }
     }
@@ -203,18 +205,28 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
 
         Intent i = new Intent(context, RadioStreamService.class);
-        i.putExtra("start", true);
+        i.setAction(ACTION_START);
+        context.startService(i);
+    }
+
+    public static void startStream(Context context) {
+        if ( ! Utility.hasNetworkConnection(context) ) {
+            Toast.makeText(context, "No network connection.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setAction(ACTION_START_STREAM);
         context.startService(i);
     }
 
     public static void stop(Context context) {
         Intent i = getStopIntent(context);
-        context.startService(i);
+        context.stopService(i);
     }
 
     private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, RadioStreamService.class);
-        i.putExtra("stop", true);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return i;
     }
