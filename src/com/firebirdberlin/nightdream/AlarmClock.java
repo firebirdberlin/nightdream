@@ -80,7 +80,7 @@ public class AlarmClock extends View {
 
     public boolean onTouchEvent(MotionEvent e) {
         if (AlarmService.isRunning) stopAlarm();
-        if (RadioStreamService.isRunning) stopRadioStream();
+        if (RadioStreamService.alarmIsRunning) stopRadioStream();
 
         // the view should be visible before the user interacts with it
         if (! isVisible ) return false;

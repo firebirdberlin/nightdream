@@ -168,7 +168,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             alarmClock.startAlarm();
             nightDreamUI.showAlarmClock();
         } else
-        if ( RadioStreamService.isRunning ) {
+        if ( RadioStreamService.alarmIsRunning ) {
             nightDreamUI.showAlarmClock();
         }
 
