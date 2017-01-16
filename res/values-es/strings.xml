@@ -71,7 +71,7 @@ OR
     <string name="notification_alarm">Selecciona para detener la alama.</string>
     <string name="other_apps">Otras aplicaciones</string>
     <string name="other_apps_tinytimetracker_summary">Controla tu tiempo de trabajo diario.</string>
-    <string name="other_apps_tinytimetracker">TinyTimetracker</string>
+    <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="preview">Vista previa</string>
     <string name="purchaseWeatherData">Compra una licencia</string>
     <string name="radio_stream_enabled">Enabled</string>

@@ -239,7 +239,7 @@
                     android:key="credits"
                     android:selectable="false"
                     android:enabled="true"
-                    android:title="Stefan Fruhner (2016)"
+                    android:title="Stefan Fruhner (2017)"
                     android:summary="stefan.fruhner@googlemail.com"/>
 
                 <Preference
