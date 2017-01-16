@@ -8,7 +8,7 @@
         android:id="@+id/query_string"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="query"
+        android:hint="@string/radio_stream_query_hint"
         android:inputType="text"
         android:imeOptions="actionSearch"
         />
