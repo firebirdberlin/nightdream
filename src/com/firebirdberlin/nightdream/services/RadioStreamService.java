@@ -75,11 +75,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             isRunning = true;
             alarmIsRunning = true;
             settings = new Settings(this);
+            setVolume(settings.alarmVolume);
             playStream();
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
             isRunning = true;
             settings = new Settings(this);
+            setVolume(settings.alarmVolume);
             playStream();
         } else
         if ( ACTION_STOP.equals(action) ) {
@@ -120,6 +122,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             }
         }
     };
+
+    public void setVolume(int volume) {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
+    }
 
     private void playStream() {
         Log.i(TAG, "playStream()");

@@ -64,6 +64,7 @@ public class Settings {
     public float scaleClock = 1.f;
     public float scaleClockPortrait = 1.f;
     public float scaleClockLandscape = 1.5f;
+    public int alarmVolume = 3;
     public int background_mode = 1;
     public int clockColor;
     public int reactivate_on_ambient_light_value = 30; // lux
@@ -107,6 +108,7 @@ public class Settings {
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
+        alarmVolume = settings.getInt("alarmVolume", 3);
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);

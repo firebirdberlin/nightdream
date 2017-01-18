@@ -77,6 +77,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             } else
             if ( intent.hasExtra("start alarm") ){
                 settings = new Settings(this);
+                setVolume(settings.alarmVolume);
                 AlarmPlay();
                 handler.postDelayed(timeout, 120000);
             }
@@ -128,6 +129,11 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             }
         }
     };
+
+    public void setVolume(int volume) {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
+    }
 
     public void AlarmPlay() {
         AlarmStop();

@@ -189,6 +189,12 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
+            <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:key="alarmVolume"
+                android:title="@string/alarmVolume"
+                android:defaultValue="3"/>
+
             <CheckBoxPreference
                 android:key="alarmFadeIn"
                 android:dependency="useInternalAlarm"
