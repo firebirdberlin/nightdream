@@ -66,15 +66,18 @@ public class DirbleApi {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonStation = jsonArray.getJSONObject(i);
                     JSONArray jsonStreams = jsonStation.getJSONArray("streams");
-                    RadioStation station = new RadioStation();
-                    station.id = jsonStation.getLong("id");
-                    station.name = jsonStation.getString("name");
-                    station.countryCode = jsonStation.getString("country");
-                    if ( jsonStreams.length() > 0 ) {
-                        JSONObject streamObj = jsonStreams.getJSONObject(0);
+                    for (int j = 0; j < jsonStreams.length(); j++) {
+                        JSONObject streamObj = jsonStreams.getJSONObject(j);
+
+                        RadioStation station = new RadioStation();
+                        station.id = jsonStation.getLong("id");
+                        station.name = jsonStation.getString("name");
+                        station.countryCode = jsonStation.getString("country");
                         station.stream = streamObj.getString("stream");
+                        station.bitrate = streamObj.getLong("bitrate");
+                        station.isOnline = streamObj.getLong("status") == 1L;
+                        if ( station.isOnline ) stationList.add(station);
                     }
-                    stationList.add(station);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
