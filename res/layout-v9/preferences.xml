@@ -189,6 +189,19 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
+            <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:key="alarmVolume"
+                android:dependency="useInternalAlarm"
+                android:title="@string/alarmVolume"
+                android:defaultValue="3"/>
+
+            <CheckBoxPreference
+                android:key="alarmFadeIn"
+                android:dependency="useInternalAlarm"
+                android:title="@string/alarmFadeIn"
+                android:defaultValue="true" />
+
         </PreferenceScreen>
 
         <Preference
@@ -233,7 +246,7 @@
                     android:key="credits"
                     android:selectable="false"
                     android:enabled="true"
-                    android:title="Stefan Fruhner (2016)"
+                    android:title="Stefan Fruhner (2017)"
                     android:summary="stefan.fruhner@googlemail.com"/>
 
                 <Preference

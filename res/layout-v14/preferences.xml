@@ -241,6 +241,48 @@
                 android:showDefault="false"
                 android:showSilent="false"/>
 
+            <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:key="alarmVolume"
+                android:dependency="useInternalAlarm"
+                android:title="@string/alarmVolume"
+                android:defaultValue="3"/>
+
+            <CheckBoxPreference
+                android:key="alarmFadeIn"
+                android:dependency="useInternalAlarm"
+                android:title="@string/alarmFadeIn"
+                android:defaultValue="true" />
+
+            <PreferenceCategory
+                android:title="@string/radio_stream"
+                key="category_radio_stream">
+
+                <Preference
+                    android:key="purchaseWebRadio"
+                    android:icon="@drawable/ic_googleplay"
+                    android:title="@string/purchaseWebRadio"
+                    android:enabled="false"/>
+
+                <SwitchPreference
+                    android:key="useRadioAlarmClock"
+                    android:title="@string/radio_stream_enabled"
+                    android:dependency="useInternalAlarm"
+                    android:defaultValue="false"
+                    android:enabled="false"/>
+
+                <com.firebirdberlin.radiostreamapi.RadioStreamPreference
+                    android:key="radioStreamURL"
+                    android:defaultValue="http://lush.wavestreamer.com:7309/"
+                    android:dependency="useRadioAlarmClock"
+                    android:title="@string/radio_stream_url"/>
+
+                <Preference
+                    android:key="startAudioStream"
+                    android:dependency="useRadioAlarmClock"
+                    android:title="@string/radio_stream_start"/>
+
+            </PreferenceCategory>
         </PreferenceScreen>
 
         <PreferenceScreen
@@ -374,7 +416,7 @@
                     android:key="credits"
                     android:selectable="false"
                     android:enabled="true"
-                    android:title="Stefan Fruhner (2016)"
+                    android:title="Stefan Fruhner (2017)"
                     android:summary="stefan.fruhner@googlemail.com"/>
 
                 <Preference

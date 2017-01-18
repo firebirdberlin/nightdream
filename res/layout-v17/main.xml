@@ -44,6 +44,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
+                    android:id="@+id/radio_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="radio"
+                    android:alpha="0.0"
+                    android:src="@drawable/ic_radio"
+                    android:onClick="onRadioClick"
+                    android:clickable="true"
+                    android:visibility="gone"/>
+
+                <ImageView
                     android:id="@+id/settings_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

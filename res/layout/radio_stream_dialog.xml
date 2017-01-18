@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="24dp">
+    <EditText
+        android:id="@+id/query_string"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/radio_stream_query_hint"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        />
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+    <ListView
+        android:id="@+id/radio_stream_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
+    </ListView>
+    <TextView
+        android:id="@+id/no_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/radio_stream_no_search_results"
+        />
+</LinearLayout>

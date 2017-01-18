@@ -143,7 +143,7 @@ public class WeatherLayout extends LinearLayout {
         if (code.equals("13d") ) return "W";
         if (code.equals("13n") ) return "W";
         if (code.equals("50d") ) return "M";
-        if (code.equals("50n") ) return "C";
+        if (code.equals("50n") ) return "M";
         return "";
     }
 

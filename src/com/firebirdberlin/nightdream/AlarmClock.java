@@ -1,9 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +24,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
@@ -45,7 +45,6 @@ public class AlarmClock extends View {
     private int hour, min;
     private int w;
     private Paint paint = new Paint();
-    private static AlarmManager am = null;
     private Settings settings = null;
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
@@ -53,10 +52,6 @@ public class AlarmClock extends View {
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
-
-        if (am == null) {
-            am = (AlarmManager) (ctx.getSystemService( Context.ALARM_SERVICE ));
-        }
     }
 
     public void setSettings(Settings s) {
@@ -85,6 +80,7 @@ public class AlarmClock extends View {
 
     public boolean onTouchEvent(MotionEvent e) {
         if (AlarmService.isRunning) stopAlarm();
+        if (RadioStreamService.alarmIsRunning) stopRadioStream();
 
         // the view should be visible before the user interacts with it
         if (! isVisible ) return false;
@@ -298,12 +294,18 @@ public class AlarmClock extends View {
         handler.post(stopRunningAlarm);
     }
 
+    public void stopRadioStream(){
+        RadioStreamService.stop(ctx);
+        cancelAlarm();
+        invalidate();
+    }
+
     private Runnable stopRunningAlarm = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(stopRunningAlarm);
 
-            AlarmService.stopAlarm(ctx);
+            AlarmService.stop(ctx);
             cancelAlarm();
             invalidate();
         }
@@ -313,19 +315,19 @@ public class AlarmClock extends View {
         cancelAlarm();
         SimpleTime alarmTime = new SimpleTime(hour, min);
         settings.setAlarmTime(alarmTime.getMillis());
-        AlarmClock.schedule(ctx);
+        WakeUpReceiver.schedule(ctx);
     }
 
     public void cancelAlarm(){
         settings.setAlarmTime(0L);
-        PendingIntent pI = getPendingAlarmIntent(ctx);
-        am.cancel(pI);
+        WakeUpReceiver.cancelAlarm(ctx);
     }
 
     public String getNextSystemAlarmTime() {
         if ( Build.VERSION.SDK_INT < 21 ) {
             return deprecatedGetNextSystemAlarmTime();
         }
+        AlarmManager am = (AlarmManager) (ctx.getSystemService( Context.ALARM_SERVICE ));
         AlarmManager.AlarmClockInfo info = am.getNextAlarmClock();
         if (info != null) {
             Calendar cal = Calendar.getInstance();
@@ -340,34 +342,5 @@ public class AlarmClock extends View {
          return android.provider.Settings.System.getString(
                  ctx.getContentResolver(),
                  android.provider.Settings.System.NEXT_ALARM_FORMATTED);
-    }
-
-
-    public static void schedule(Context context) {
-        Settings settings = new Settings(context);
-        if (settings.nextAlarmTime == 0L) return;
-        PendingIntent pI = getPendingAlarmIntent(context);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pI);
-        if (Build.VERSION.SDK_INT >= 21) {
-            AlarmManager.AlarmClockInfo info =
-                new AlarmManager.AlarmClockInfo(settings.nextAlarmTime, pI);
-            alarmManager.setAlarmClock(info, pI);
-        } else
-        if (Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, settings.nextAlarmTime, pI );
-        }
-    }
-
-    private static PendingIntent getPendingAlarmIntent(Context context) {
-        Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
-        intent.putExtra("action", "start alarm");
-        //return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
-        // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
-        // already cancelled alarm times afterwards.
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 }

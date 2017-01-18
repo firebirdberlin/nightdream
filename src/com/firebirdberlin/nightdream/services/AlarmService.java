@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,11 +21,12 @@ import android.util.Log;
 import java.io.IOException;
 import android.support.v4.app.NotificationCompat;
 
-import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 
-public class AlarmService extends Service {
+public class AlarmService extends Service implements MediaPlayer.OnErrorListener,
+                                                     MediaPlayer.OnBufferingUpdateListener,
+                                                     MediaPlayer.OnCompletionListener {
     private static String TAG = "NightDream.AlarmService";
     final private Handler handler = new Handler();
 
@@ -31,6 +35,7 @@ public class AlarmService extends Service {
     private PowerManager pm;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
+    private float currentVolume = 0.f;
 
     @Override
     public void onCreate(){
@@ -50,10 +55,8 @@ public class AlarmService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() called.");
 
-        Intent i = new Intent(this, NightDreamActivity.class);
-        i.putExtra("action", "stop alarm");
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+        Intent i = getStopIntent(this);
+        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
 
         Notification note = new NotificationCompat.Builder(this)
             .setContentTitle("Alarm")
@@ -69,14 +72,14 @@ public class AlarmService extends Service {
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if ( intent.hasExtra("start alarm") ){
-                isRunning = true;
-                settings = new Settings(this);
-                AlarmPlay();
-                handler.postDelayed(timeout, 120000);
-            } else
             if ( intent.hasExtra("stop alarm") ){
                 handler.post(timeout);
+            } else
+            if ( intent.hasExtra("start alarm") ){
+                settings = new Settings(this);
+                setVolume(settings.alarmVolume);
+                AlarmPlay();
+                handler.postDelayed(timeout, 120000);
             }
         }
 
@@ -87,6 +90,7 @@ public class AlarmService extends Service {
     public void onDestroy(){
         Log.d(TAG, "onDestroy() called.");
 
+        handler.removeCallbacks(fadeIn);
         isRunning = false;
 
         if (wakelock.isHeld()){
@@ -98,41 +102,112 @@ public class AlarmService extends Service {
         @Override
         public void run() {
             handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeIn);
             AlarmStop();
             stopForeground(false); // bool: true = remove Notification
             stopSelf();
         }
     };
 
+    private Runnable retry = new Runnable() {
+        @Override
+        public void run() {
+            AlarmPlay();
+            handler.postDelayed(timeout, 120000);
+        }
+    };
+
+    private Runnable fadeIn = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeIn);
+            if ( mMediaPlayer == null ) return;
+            currentVolume += 0.01;
+            if ( currentVolume < 1. ) {
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeIn, 150);
+            }
+        }
+    };
+
+    public void setVolume(int volume) {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
+    }
+
     public void AlarmPlay() {
         AlarmStop();
         Log.i(TAG, "AlarmPlay()");
-        if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-            mMediaPlayer.setLooping(true);
+        isRunning = true;
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnBufferingUpdateListener(this);
+        mMediaPlayer.setLooping(true);
+
+        boolean result = false;
+        Uri soundUri = getAlarmToneUri();
+        result = setDataSource(soundUri);
+        if (! result ) {
+            soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            result = setDataSource(soundUri);
         }
 
-
-        try {
-            Uri soundUri = getAlarmToneUri();
-            mMediaPlayer.setDataSource(this, soundUri);
-        } catch (IOException e1) {
-            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            try {
-                mMediaPlayer.setDataSource(this, soundUri);
-            } catch (IOException e2) {
-                Log.e(TAG, "Playing the default alarm tone failed", e2);
-            }
+        if (! result ) {
+            Log.e(TAG, "Could not set the data source !");
+            handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeIn);
+            AlarmStop();
+            handler.postDelayed(retry, 10000);
+            return;
         }
 
         try {
             mMediaPlayer.prepare();
         } catch (IOException e) {
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
 
+        if ( settings.alarmFadeIn ) {
+            currentVolume = 0.f;
+            handler.post(fadeIn);
+        };
+
         mMediaPlayer.start();
+    }
+
+    private boolean setDataSource(Uri soundUri) {
+        if (soundUri == null) return false;
+        try {
+            mMediaPlayer.setDataSource(this, soundUri);
+        } catch (IOException e) {
+            Log.e(TAG, String.format("Setting the Uri %s failed !", soundUri.toString()));
+            return false;
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+            return false;
+        }
+        return true;
+
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
+        return false;
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        Log.e(TAG, "onBufferingUpdate " + String.valueOf(percent));
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        Log.e(TAG, "onCompletion ");
     }
 
     public Uri getAlarmToneUri() {
@@ -151,8 +226,8 @@ public class AlarmService extends Service {
             if(mMediaPlayer.isPlaying()) {
                 Log.i(TAG, "AlarmStop()");
                 mMediaPlayer.stop();
-                mMediaPlayer.release();
             }
+            mMediaPlayer.release();
             mMediaPlayer = null;
         }
     }
@@ -164,10 +239,16 @@ public class AlarmService extends Service {
         context.startService(i);
     }
 
-    public static void stopAlarm(Context context) {
+    public static void stop(Context context) {
         if ( ! AlarmService.isRunning ) return;
+        Intent i = getStopIntent(context);
+        context.startService(i);
+    }
+
+    private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, AlarmService.class);
         i.putExtra("stop alarm", true);
-        context.startService(i);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return i;
     }
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="103"
-    android:versionName="2.3.11">
+    android:versionCode="106"
+    android:versionName="2.3.14">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -60,8 +61,9 @@
     <service android:enabled="true" android:name=".NightModeListener" />
     <service android:enabled="true" android:name=".services.AlarmService" />
     <service android:enabled="true" android:name=".services.DownloadWeatherService" />
-    <service android:enabled="true" android:name=".services.WeatherService" />
     <service android:enabled="true" android:name=".services.LocationService" />
+    <service android:enabled="true" android:name=".services.RadioStreamService" />
+    <service android:enabled="true" android:name=".services.WeatherService" />
 
     <activity android:name=".PreferencesActivity"></activity>
     <activity android:name=".PreferencesActivityv9"></activity>
@@ -99,7 +101,7 @@
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".WakeUpReceiver">
+    <receiver android:name=".receivers.WakeUpReceiver">
         <intent-filter>
             <action android:name="com.firebirdberlin.nightdream.WAKEUP"/>
         </intent-filter>

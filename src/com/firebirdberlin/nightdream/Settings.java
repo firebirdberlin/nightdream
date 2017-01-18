@@ -35,6 +35,7 @@ public class Settings {
 
     public boolean allow_screen_off = false;
     private boolean reactivate_screen_on_noise = false;
+    public boolean alarmFadeIn = true;
     private boolean ambientNoiseDetection;
     public boolean autoBrightness = false;
     public boolean force_auto_rotation = false;
@@ -53,6 +54,7 @@ public class Settings {
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
     public boolean useInternalAlarm = true;
+    public boolean useRadioAlarmClock = false;
     public float dim_offset = 0.8f;
     public float location_lon = 0.f;
     public float location_lat = 0.f;
@@ -62,6 +64,7 @@ public class Settings {
     public float scaleClock = 1.f;
     public float scaleClockPortrait = 1.f;
     public float scaleClockLandscape = 1.5f;
+    public int alarmVolume = 3;
     public int background_mode = 1;
     public int clockColor;
     public int reactivate_on_ambient_light_value = 30; // lux
@@ -75,6 +78,7 @@ public class Settings {
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
+    public String radioStreamURL = "";
     private String bgpath = "";
     public String backgroundImageURI = "";
     public Typeface typeface;
@@ -104,6 +108,8 @@ public class Settings {
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
+        alarmVolume = settings.getInt("alarmVolume", 3);
+        alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", autostartTimeRangeStart);
@@ -130,6 +136,7 @@ public class Settings {
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
+        radioStreamURL = settings.getString("radioStreamURL", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
@@ -145,6 +152,7 @@ public class Settings {
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
+        useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         weatherCityID = settings.getString("weatherCityID", "");
 
