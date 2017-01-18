@@ -20,6 +20,7 @@ OR
     <string name="about">Acerca de</string>
     <string name="alarm">Alarma</string>
     <string name="alarmFadeIn">Incremento de volumen</string>
+    <string name="alarmVolume">Volumen de la alarma</string>
     <string name="allow_screen_off">Apagar pantalla</string>
     <string name="ambient_noise">Detección de sonidos ambientales</string>
     <string name="ambient_noise_summary">El ruido ambiental debería impedir que el modo nocturno se active?</string>
@@ -74,6 +75,7 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="preview">Vista previa</string>
     <string name="purchaseWeatherData">Compra una licencia</string>
+    <string name="purchaseWebRadio">Compra una licencia</string>
     <string name="radio_stream_enabled">Activado</string>
     <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
     <string name="radio_stream">Radio emisoras (experimental)</string>

@@ -3,6 +3,7 @@
     <string name="about">Über</string>
     <string name="alarmFadeIn">ansteigende Lautstärke</string>
     <string name="alarm">Wecker</string>
+    <string name="alarmVolume">Lautstärke</string>
     <string name="allow_screen_off">Bildschirm aus</string>
     <string name="ambient_noise_summary">Verhindert das Abschalten bei Umgebungsgeräuschen.</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
@@ -53,6 +54,7 @@
     <string name="other_apps_tinytimetracker">Zeiterfassung</string>
     <string name="preview">Vorschau</string>
     <string name="purchaseWeatherData">Lizenz kaufen</string>
+    <string name="purchaseWebRadio">Lizenz kaufen</string>
     <string name="radio_stream_enabled">Aktiviert</string>
     <string name="radio_stream">Internetradio (experimentell)</string>
     <string name="radio_stream_query_hint">Suchbegriff</string>

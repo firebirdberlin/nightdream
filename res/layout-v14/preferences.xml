@@ -244,6 +244,7 @@
             <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                 android:key="alarmVolume"
+                android:dependency="useInternalAlarm"
                 android:title="@string/alarmVolume"
                 android:defaultValue="3"/>
 
@@ -257,14 +258,23 @@
                 android:title="@string/radio_stream"
                 key="category_radio_stream">
 
+                <Preference
+                    android:key="purchaseWebRadio"
+                    android:icon="@drawable/ic_googleplay"
+                    android:title="@string/purchaseWebRadio"
+                    android:enabled="false"/>
+
                 <SwitchPreference
                     android:key="useRadioAlarmClock"
                     android:title="@string/radio_stream_enabled"
-                    android:defaultValue="false"/>
+                    android:dependency="useInternalAlarm"
+                    android:defaultValue="false"
+                    android:enabled="false"/>
 
                 <com.firebirdberlin.radiostreamapi.RadioStreamPreference
                     android:key="radioStreamURL"
                     android:defaultValue="http://lush.wavestreamer.com:7309/"
+                    android:dependency="useRadioAlarmClock"
                     android:title="@string/radio_stream_url"/>
 
                 <Preference

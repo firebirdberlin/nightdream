@@ -75,6 +75,7 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="preview">Preview</string>
     <string name="purchaseWeatherData">Buy a license</string>
+    <string name="purchaseWebRadio">Buy a license</string>
     <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream_no_search_results">There were no search results.</string>
     <string name="radio_stream">Radio streams (experimental)</string>
