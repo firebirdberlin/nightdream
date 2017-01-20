@@ -56,7 +56,7 @@
     <string name="purchaseWeatherData">Lizenz kaufen</string>
     <string name="purchaseWebRadio">Lizenz kaufen</string>
     <string name="radio_stream_enabled">Aktiviert</string>
-    <string name="radio_stream">Internetradio (experimentell)</string>
+    <string name="radio_stream">Internetradio</string>
     <string name="radio_stream_query_hint">Suchbegriff</string>
     <string name="radio_stream_no_search_results">Es gab keine Suchergebnisse.</string>
     <string name="radio_stream_start">Stream starten/stoppen</string>

@@ -78,7 +78,7 @@ OR
     <string name="purchaseWebRadio">Buy a license</string>
     <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream_no_search_results">There were no search results.</string>
-    <string name="radio_stream">Radio streams (experimental)</string>
+    <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_query_hint">Search string</string>
     <string name="radio_stream_start">Start/stop radio stream</string>
     <string name="radio_stream_url">Radio stream URL</string>

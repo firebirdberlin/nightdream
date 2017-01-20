@@ -78,7 +78,7 @@ OR
     <string name="purchaseWebRadio">Compra una licencia</string>
     <string name="radio_stream_enabled">Activado</string>
     <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
-    <string name="radio_stream">Radio emisoras (experimental)</string>
+    <string name="radio_stream">Radio emisoras</string>
     <string name="radio_stream_query_hint">Buscar enlace (string)</string>
     <string name="radio_stream_start">Iniciar/detener emisoras</string>
     <string name="radio_stream_url">Página web de emisora de radio (URL)</string>
