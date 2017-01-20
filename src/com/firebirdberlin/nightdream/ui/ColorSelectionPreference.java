@@ -14,11 +14,15 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.ui.ColorPrefWidgetView;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 public class ColorSelectionPreference extends Preference
                                       implements View.OnClickListener {
     //private LinearLayout colorSelectionLayout = null;
     private ColorPrefWidgetView primaryColorView = null;
     private ColorPrefWidgetView secondaryColorView = null;
+    private ColorPrefWidgetView primaryColorNightView = null;
+    private ColorPrefWidgetView secondaryColorNightView = null;
     private View preferenceView = null;
     private Context context = null;
 
@@ -49,8 +53,13 @@ public class ColorSelectionPreference extends Preference
                 primaryColorView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.primaryColor);
                 secondaryColorView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.secondaryColor);
 
+                primaryColorNightView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.primaryColorNight);
+                secondaryColorNightView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.secondaryColorNight);
+
                 primaryColorView.setOnClickListener(this);
                 secondaryColorView.setOnClickListener(this);
+                primaryColorNightView.setOnClickListener(this);
+                secondaryColorNightView.setOnClickListener(this);
             }
         }
 
@@ -67,6 +76,8 @@ public class ColorSelectionPreference extends Preference
         Settings settings = new Settings(getContext());
         primaryColorView.setColor(settings.clockColor);
         secondaryColorView.setColor(settings.secondaryColor);
+        primaryColorNightView.setColor(settings.clockColor);
+        secondaryColorNightView.setColor(settings.secondaryColor);
         //colorSelectionLayout.invalidate();
 
     }
@@ -74,5 +85,22 @@ public class ColorSelectionPreference extends Preference
     @Override
     public void onClick(View v) {
         Log.d("NightDream", "click");
+        final ColorPrefWidgetView view = (ColorPrefWidgetView) v;
+        int color = view.getColor();
+
+        new AmbilWarnaDialog(getContext(), color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override public void onOk(AmbilWarnaDialog dialog, int color) {
+                //if (!callChangeListener(color)) return; // They don't want the value to be set
+                //value = color;
+                view.setColor(color);
+                view.invalidate();
+                //persistInt(value);
+                //notifyChanged();
+            }
+
+            @Override public void onCancel(AmbilWarnaDialog dialog) {
+                // nothing to do
+            }
+        }).show();
     }
 }

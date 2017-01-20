@@ -13,6 +13,7 @@ public class ColorPrefWidgetView extends View {
     Paint paint;
     float rectSize;
     float strokeWidth;
+    int color = 0xffffffff;
 
     public ColorPrefWidgetView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -30,10 +31,19 @@ public class ColorPrefWidgetView extends View {
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        paint.setColor(0xffffffff);
+        paint.setStyle(Style.STROKE);
+        canvas.drawRect(0, 0, rectSize, rectSize, paint);
+        paint.setColor(color);
+        paint.setStyle(Style.FILL);
         canvas.drawRect(strokeWidth, strokeWidth, rectSize - strokeWidth, rectSize - strokeWidth, paint);
     }
 
     public void setColor(int color) {
-        paint.setColor(color);
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 }

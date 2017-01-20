@@ -7,24 +7,92 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/primaryColor"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="right"
-        android:layout_marginRight="6dp"
-        android:focusable="true"
-        android:clickable="true" />
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:stretchColumns="0,1" >
 
-    <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/secondaryColor"
-        android:layout_below="@id/primaryColor"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="right"
-        android:layout_marginRight="6dp"
-        android:focusable="true"
-        android:clickable="true" />
+        <TableRow
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+            <ImageView
+                android:id="@+id/iconDay"
+                android:src="@drawable/ic_sun"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="left"
+                android:layout_column="1"
+                android:paddingLeft="-5dp"
+                android:scaleType="fitCenter" />
+            <ImageView
+                android:id="@+id/iconNight"
+                android:src="@drawable/ic_moon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_column="2"
+                android:scaleType="fitCenter" />
+        </TableRow>
+
+        <TableRow
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:id="@+id/textview_primary_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_primary_color"
+                android:textAppearance="?android:attr/textAppearanceListItem"/>
+
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/primaryColor"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_column="1"
+                android:focusable="true"
+                android:clickable="true" />
+
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/primaryColorNight"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_column="2"
+                android:focusable="true"
+                android:clickable="true" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/textview_primary_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_secondary_color"
+                android:textAppearance="?android:attr/textAppearanceListItem"/>
+
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/secondaryColor"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_column="1"
+                android:focusable="true"
+                android:clickable="true" />
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/secondaryColorNight"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_column="2"
+                android:focusable="true"
+                android:clickable="true" />
+        </TableRow>
+    </TableLayout>
 </RelativeLayout>
