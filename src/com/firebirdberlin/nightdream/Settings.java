@@ -67,8 +67,10 @@ public class Settings {
     public int alarmVolume = 3;
     public int background_mode = 1;
     public int clockColor;
+    public int clockColorNight;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
+    public int secondaryColorNight;
     public int sensitivity = 1;
     public int temperatureUnit = WeatherEntry.CELSIUS;
     public int speedUnit = WeatherEntry.METERS_PER_SECOND;
@@ -127,6 +129,7 @@ public class Settings {
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
+        clockColorNight = settings.getInt("primaryColorNight", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
         location_lat = settings.getFloat("location_lat", 0.f);
         location_lon = settings.getFloat("location_lon", 0.f);
@@ -140,6 +143,7 @@ public class Settings {
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
+        secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);

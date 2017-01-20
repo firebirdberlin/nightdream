@@ -525,10 +525,12 @@ public class NightDreamUI {
 
         if ( mode == 0 ) {
             setAlpha(notificationbar, 0.0f, millis);
+            clockLayout.setPrimaryColor(settings.clockColorNight);
         } else {
             // increase minimum alpha value for the notification bar
             v = to_range(v, 0.6f, 1.f);
             setAlpha(notificationbar, v, millis);
+            clockLayout.setPrimaryColor(settings.clockColor);
         }
 
         if ( light_value + 0.2f < settings.minIlluminance ) {

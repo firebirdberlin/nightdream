@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -8,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.LinearLayout;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -76,8 +76,8 @@ public class ColorSelectionPreference extends Preference
         Settings settings = new Settings(getContext());
         primaryColorView.setColor(settings.clockColor);
         secondaryColorView.setColor(settings.secondaryColor);
-        primaryColorNightView.setColor(settings.clockColor);
-        secondaryColorNightView.setColor(settings.secondaryColor);
+        primaryColorNightView.setColor(settings.clockColorNight);
+        secondaryColorNightView.setColor(settings.secondaryColorNight);
         //colorSelectionLayout.invalidate();
 
     }
@@ -94,6 +94,18 @@ public class ColorSelectionPreference extends Preference
                 //value = color;
                 view.setColor(color);
                 view.invalidate();
+                if (view.equals(primaryColorView)) {
+                    putInt("clockColor", color);
+                } else
+                if (view.equals(primaryColorNightView)) {
+                    putInt("primaryColorNight", color);
+                } else
+                if (view.equals(secondaryColorView)) {
+                    putInt("secondaryColor", color);
+                } else
+                if (view.equals(secondaryColorNightView)) {
+                    putInt("secondaryColorNight", color);
+                }
                 //persistInt(value);
                 //notifyChanged();
             }
@@ -103,4 +115,12 @@ public class ColorSelectionPreference extends Preference
             }
         }).show();
     }
+
+    public void putInt(String key, int value) {
+        SharedPreferences settings = context.getSharedPreferences(Settings.PREFS_KEY, 0);
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putInt(key, value);
+        prefEditor.commit();
+    }
+
 }
