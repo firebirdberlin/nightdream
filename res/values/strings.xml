@@ -100,6 +100,7 @@ OR
     <string name="show_wind_speed">Wind Speed</string>
     <string name="speedUnit">Wind speed unit</string>
     <string name="temperatureUnit">Temperature unit</string>
+    <string name="translations">Translations</string>
     <string name="typeface_7_segment">7-segment LED</string>
     <string name="typeface_roboto_condensed">Roboto condensed</string>
     <string name="typeface_roboto_light">Roboto light</string>

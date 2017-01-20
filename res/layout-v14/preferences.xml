@@ -2,6 +2,14 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="main_screen">
 
+        <Preference
+            android:icon="@drawable/ic_attention"
+            android:title="Translations wanted !"
+            android:summary="Volunteers, who submit a translation, get free access to paid features.">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://fhain.zzzz.io/pastt"/>
+        </Preference>
+
         <PreferenceScreen
             android:title="@string/handle_power"
             android:icon="@drawable/ic_power"
@@ -226,7 +234,7 @@
         <PreferenceScreen
             android:title="@string/alarm"
             android:key="alarm_screen"
-            android:icon="@drawable/ic_clock">
+            android:icon="@drawable/ic_alarm_clock">
 
             <SwitchPreference
                 android:key="useInternalAlarm"
@@ -394,7 +402,7 @@
                     android:icon="@drawable/ic_github"
                     android:title="@string/contribute_translation">
                     <intent android:action="android.intent.action.VIEW"
-                        android:data="https://github.com/firebirdberlin/nightdream/blob/master/res/values/strings.xml"/>
+                        android:data="https://fhain.zzzz.io/pastt"/>
                 </Preference>
             </PreferenceCategory>
 
@@ -418,6 +426,13 @@
                     android:enabled="true"
                     android:title="Stefan Fruhner (2017)"
                     android:summary="stefan.fruhner@googlemail.com"/>
+
+                <Preference
+                    android:key="translations"
+                    android:selectable="false"
+                    android:enabled="true"
+                    android:title="@string/translations"
+                    android:summary="de - Stefan Fruhner\nes - Romina Ramírez"/>
 
                 <Preference
                     android:icon="@drawable/ic_icons8"
