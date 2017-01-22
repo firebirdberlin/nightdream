@@ -90,8 +90,6 @@ public class ColorSelectionPreference extends Preference
 
         new AmbilWarnaDialog(getContext(), color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override public void onOk(AmbilWarnaDialog dialog, int color) {
-                //if (!callChangeListener(color)) return; // They don't want the value to be set
-                //value = color;
                 view.setColor(color);
                 view.invalidate();
                 if (view.equals(primaryColorView)) {
@@ -106,8 +104,7 @@ public class ColorSelectionPreference extends Preference
                 if (view.equals(secondaryColorNightView)) {
                     putInt("secondaryColorNight", color);
                 }
-                //persistInt(value);
-                //notifyChanged();
+                notifyChanged();
             }
 
             @Override public void onCancel(AmbilWarnaDialog dialog) {
