@@ -110,16 +110,6 @@
                     android:defaultValue="1"
                     android:entries="@array/typeFaces"
                     android:entryValues="@array/typeFaceValues"/>
-
-                <yuku.ambilwarna.widget.AmbilWarnaPreference
-                    android:key="clockColor"
-                    android:defaultValue="0xff33B5E5"
-                    android:title="@string/choose_primary_color"/>
-
-                <yuku.ambilwarna.widget.AmbilWarnaPreference
-                    android:key="secondaryColor"
-                    android:defaultValue="0xffc2c2c2"
-                    android:title="@string/choose_secondary_color"/>
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/background">
