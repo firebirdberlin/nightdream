@@ -7,12 +7,12 @@ Translations wanted !
 If you want to contribute a translation to NightDream
 simply follow these steps
 
- -> Edit the strings in this file
- -> Send your file to stefan.fruhner@googlemail.com.
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
 OR
- -> Open a pull request on Github.
+-> Open a pull request on Github.
 
- Please preserve the xml tags and the utf8 encoding.
+Please preserve the xml tags and the utf8 encoding.
 -->
 
 
@@ -29,8 +29,8 @@ OR
     <string name="auto_brightness">Brillo automático</string>
     <string name="autostart_timerange_label_end">Hora de finalización</string>
     <string name="autostart_timerange_label_start">Hora de inicio</string>
-    <string name="background_black">Negro</string>
     <string name="background">Fondo de pantalla</string>
+    <string name="background_black">Negro</string>
     <string name="background_gradient">Gradiente</string>
     <string name="background_image">Imagen</string>
     <string name="background_image_select">Selecciona una imagen</string>
@@ -38,8 +38,8 @@ OR
     <string name="brightness">Brillo</string>
     <string name="brightness_offset">Austes de brillo</string>
     <string name="buttonAccessibilitySettings">Permitir notificaciones</string>
-    <string name="category_handle_power_autostart_time">Comenzar dentro del intervalo de tiempo</string>
     <string name="category_handle_power">... y cuando está conectado a</string>
+    <string name="category_handle_power_autostart_time">Comenzar dentro del intervalo de tiempo</string>
     <string name="choose_alarm_sound">Tono de alarma</string>
     <string name="choose_primary_color">Destacar color</string>
     <string name="choose_secondary_color">Color del texto</string>
@@ -57,10 +57,10 @@ OR
     <string name="force_auto_rotation">Forzar la orientación de la pantalla en modo daydream</string>
     <string name="force_auto_rotation_summary">Forzar la orientación de la pantalla si el modo Daydream está en uso.</string>
     <string name="handle_power_ac">Cargador de pared</string>
+    <string name="handle_power">Inicio automático</string>
     <string name="handle_power_car">Base de automóvil</string>
     <string name="handle_power_desk">Base de escritorio</string>
     <string name="handle_power_disconnection">Detener automáticamente</string>
-    <string name="handle_power">Inicio automático</string>
     <string name="handle_power_usb">Conectado al usb</string>
     <string name="handle_power_wireless">En cargador inalámbrico</string>
     <string name="hide_background_image_in_night_mode">Ocultar</string>
@@ -100,6 +100,7 @@ OR
     <string name="show_wind_speed">Velocidad del viento</string>
     <string name="speedUnit">Unidad de velocidad del viento</string>
     <string name="temperatureUnit">Unidad de temperatura</string>
+    <string name="translations">Traducciones</string>
     <string name="typeface_7_segment">Reloj digital </string>
     <string name="typeface_roboto_condensed">Roboto condensado</string>
     <string name="typeface_roboto_light">Roboto ligero</string>
@@ -111,9 +112,9 @@ OR
     <string name="weather_calculation_time">Previsión climática</string>
     <string name="weather_city_id_summary">Abrir mapa climático de ciudades. deja vacío para detección automática de tu ciudad.</string>
     <string name="weather_city_id_title">Identificación de ciudad</string>
-    <string name="weather">Clima</string>
     <string name="weather_info_title">Información</string>
     <string name="weather_search_city_id">Buscar ciudad</string>
+    <string name="weather">Clima</string>
     <string name="welcome_screen_text1">Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
     <string name="welcome_screen_text2">Accede a las preferencias aquí!</string>
     <string name="welcome_screen_text3">Selecciona y desliza para cambiar el brillo de la pantalla. Pruébalo ahora!</string>

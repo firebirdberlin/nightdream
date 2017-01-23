@@ -87,6 +87,12 @@
                     android:selectable="false"
                     />
 
+                <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
+                    android:key="colorSelection"
+                    android:title="@string/colors"
+                    android:selectable="true"
+                    android:descendantFocusability="afterDescendants"
+                    />
 
                 <SwitchPreference
                     android:key="showDate"
@@ -104,16 +110,6 @@
                     android:defaultValue="1"
                     android:entries="@array/typeFaces"
                     android:entryValues="@array/typeFaceValues"/>
-
-                <yuku.ambilwarna.widget.AmbilWarnaPreference
-                    android:key="clockColor"
-                    android:defaultValue="0xff33B5E5"
-                    android:title="@string/choose_primary_color"/>
-
-                <yuku.ambilwarna.widget.AmbilWarnaPreference
-                    android:key="secondaryColor"
-                    android:defaultValue="0xffc2c2c2"
-                    android:title="@string/choose_secondary_color"/>
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/background">
@@ -432,7 +428,7 @@
                     android:selectable="false"
                     android:enabled="true"
                     android:title="@string/translations"
-                    android:summary="de - Stefan Fruhner\nes - Romina Ramírez"/>
+                    android:summary="de - Stefan Fruhner\nes - Romina Ramírez\nfr - Michel Dumont"/>
 
                 <Preference
                     android:icon="@drawable/ic_icons8"

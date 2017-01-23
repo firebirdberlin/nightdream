@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.greenrobot.event.EventBus;
@@ -126,34 +127,99 @@ public class DownloadWeatherService extends Service {
             }
 
 
-            try {
-                JSONObject json = new JSONObject(responseText);
-                JSONObject jsonMain = json.getJSONObject("main");
-                JSONObject jsonWind = json.getJSONObject("wind");
-                JSONObject jsonSys = json.getJSONObject("sys");
-                JSONArray jsonWeather = json.getJSONArray("weather");
+            JSONObject json = getJSONObject(responseText);
+            JSONObject jsonMain = getJSONObject(json, "main");
+            JSONObject jsonWind = getJSONObject(json, "wind");
+            JSONObject jsonSys = getJSONObject(json, "sys");
+            JSONArray jsonWeather = getJSONArray(json, "weather");
 
-                entry.cityID = json.getInt("id");
-                entry.cityName = json.getString("name");
-                entry.timestamp = json.getLong("dt");
-                entry.temperature = jsonMain.getDouble("temp");
-                entry.sunriseTime = jsonSys.getLong("sunrise");
-                entry.sunsetTime = jsonSys.getLong("sunset");
-                entry.windSpeed = jsonWind.getDouble("speed");
-                entry.windDirection = jsonWind.getInt("deg");
-                if ( jsonWeather.length() > 0 ) {
-                    JSONObject weatherObj = jsonWeather.getJSONObject(0);
-                    entry.weatherIcon = weatherObj.getString("icon");
-                }
+            entry.cityID = getValue(json, "id", 0);
+            entry.cityName = getValue(json, "name", "");
+            entry.timestamp = getValue(json, "dt", 0L);
+            entry.temperature = getValue(jsonMain, "temp", 0.);
+            entry.sunriseTime = getValue(jsonSys, "sunrise", 0L);
+            entry.sunsetTime = getValue(jsonSys, "sunset", 0L);
 
-            } catch (Exception e) {
-                //Log.e(TAG, "Exception " + e.toString());
-                Log.e(TAG, Log.getStackTraceString(e));
-                e.printStackTrace();
-                // JSONException
+            entry.windSpeed = getValue(jsonWind, "speed", 0.);
+            entry.windDirection = getValue(jsonWind, "deg", 0);
+
+            if ( jsonWeather.length() > 0 ) {
+                JSONObject weatherObj = getJSONObject(jsonWeather, 0);
+                entry.weatherIcon = getValue(weatherObj, "icon", "");
             }
 
+            // 2747311
+            // 2878102
+
             return entry;
+        }
+
+        private JSONObject getJSONObject(String string_representation) {
+            try {
+                return new JSONObject(string_representation);
+            } catch (JSONException e) {
+                return null;
+            }
+        }
+
+        private JSONObject getJSONObject(JSONArray jsonArray, int index) {
+            try {
+                return jsonArray.getJSONObject(index);
+            } catch (JSONException e) {
+                return null;
+            }
+        }
+
+        private JSONObject getJSONObject(JSONObject json, String name) {
+            try {
+                return json.getJSONObject(name);
+            } catch (JSONException e) {
+                return null;
+            }
+        }
+
+        private JSONArray getJSONArray(JSONObject json, String name) {
+            try {
+                return json.getJSONArray(name);
+            } catch (JSONException e) {
+                return null;
+            }
+        }
+
+        private double getValue(JSONObject json, String name, double defaultvalue) {
+            if ( json == null ) return defaultvalue;
+            try {
+                return json.getDouble(name);
+            } catch (JSONException e) {
+                return defaultvalue;
+            }
+        }
+
+        private int getValue(JSONObject json, String name, int defaultvalue) {
+            if ( json == null ) return defaultvalue;
+            try {
+                return json.getInt(name);
+            } catch (JSONException e) {
+                return defaultvalue;
+            }
+        }
+
+        private String getValue(JSONObject json, String name, String defaultvalue) {
+            if ( json == null ) return defaultvalue;
+            try {
+                return json.getString(name);
+            } catch (JSONException e) {
+                return defaultvalue;
+            }
+        }
+
+        private long getValue(JSONObject json, String name, long defaultvalue) {
+            if ( json == null ) return defaultvalue;
+            try {
+                return json.getLong(name);
+            } catch (JSONException e) {
+                return defaultvalue;
+            }
         }
 
         private String getResponseText(HttpURLConnection c) throws IOException {

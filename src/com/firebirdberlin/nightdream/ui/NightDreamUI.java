@@ -179,8 +179,10 @@ public class NightDreamUI {
         lightSensorEventListener = new LightSensorEventListener(mContext);
         lightSensorEventListener.register();
 
+        brightnessProgress.setVisibility(View.INVISIBLE);
         setupClockLayout();
         setColor();
+        setupBackgroundImage();
         setupAlarmClock();
 
         if (settings.useAmbientNoiseDetection()){
@@ -220,45 +222,41 @@ public class NightDreamUI {
         }
 
         clockLayout.setTypeface(settings.typeface);
-        clockLayout.setPrimaryColor(settings.clockColor);
-        clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.update(settings.weatherEntry);
     }
 
-    private int adjustAlpha(int color, float factor) {
-        int alpha = Math.round(Color.alpha(color) * factor);
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        return Color.argb(alpha, red, green, blue);
-    }
-
     void setColor() {
-        alarmTime.setTextColor(settings.secondaryColor);
-        batteryView.setTextColor(settings.secondaryColor);
-        gmailNumber.setTextColor(settings.secondaryColor);
-        twitterNumber.setTextColor(settings.secondaryColor);
-        whatsappNumber.setTextColor(settings.secondaryColor);
-        settingsIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        radioIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        callIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        gmailIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        twitterIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        whatsappIcon.setColorFilter( settings.secondaryColor, PorterDuff.Mode.MULTIPLY );
-        alarmClock.setCustomColor(settings.clockColor, settings.secondaryColor);
+        int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
+        int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
+
+        alarmTime.setTextColor(textColor);
+        batteryView.setTextColor(textColor);
+        gmailNumber.setTextColor(textColor);
+        twitterNumber.setTextColor(textColor);
+        whatsappNumber.setTextColor(textColor);
+        settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        radioIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        callIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        gmailIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        twitterIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        whatsappIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        alarmClock.setCustomColor(accentColor, textColor);
+        clockLayout.setPrimaryColor(accentColor);
+        clockLayout.setSecondaryColor(textColor);
 
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
         if (Build.VERSION.SDK_INT < 21) {
-            brightnessDrawable.setColorFilter(settings.clockColor, PorterDuff.Mode.MULTIPLY);
+            brightnessDrawable.setColorFilter(accentColor, PorterDuff.Mode.MULTIPLY);
         } else {
-            brightnessProgress.setProgressTintList(ColorStateList.valueOf(settings.clockColor));
+            brightnessProgress.setProgressTintList(ColorStateList.valueOf(accentColor));
             brightnessProgress.setProgressBackgroundTintList(
-                    ColorStateList.valueOf(adjustAlpha(settings.clockColor, 0.4f)));
+                    ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
         }
-        brightnessProgress.setVisibility(View.INVISIBLE);
+    }
 
+    private void setupBackgroundImage() {
         bgblack = new ColorDrawable(Color.parseColor("#000000"));
         bgshape = bgblack;
         switch (settings.background_mode){
@@ -276,8 +274,19 @@ public class NightDreamUI {
             }
         }
 
-        background_image.setImageDrawable(bgshape);
+        if ( settings.hideBackgroundImage && mode == 0 ) {
+            background_image.setImageDrawable(bgblack);
+        } else {
+            background_image.setImageDrawable(bgshape);
+        }
+    }
 
+    private int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
     }
 
     private Drawable getDrawable(int resId) {
@@ -596,12 +605,14 @@ public class NightDreamUI {
 
         if ((mode == 0) && (current_mode != 0)){
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
+            setColor();
             if ( settings.hideBackgroundImage ) {
                 background_image.setImageDrawable(bgblack);
             }
         } else
         if ((mode != 0) && (current_mode == 0)){
             restoreRingerMode();
+            setColor();
             if ( settings.hideBackgroundImage ) {
                 background_image.setImageDrawable(bgshape);
             }

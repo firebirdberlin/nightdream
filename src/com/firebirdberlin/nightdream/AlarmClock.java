@@ -64,6 +64,7 @@ public class AlarmClock extends View {
     public void setCustomColor(int primary, int secondary) {
         customcolor = primary;
         customSecondaryColor = secondary;
+        this.invalidate();
     }
 
     public boolean isInteractive() {
