@@ -274,7 +274,11 @@ public class NightDreamUI {
             }
         }
 
-        background_image.setImageDrawable(bgshape);
+        if ( settings.hideBackgroundImage && mode == 0 ) {
+            background_image.setImageDrawable(bgblack);
+        } else {
+            background_image.setImageDrawable(bgshape);
+        }
     }
 
     private int adjustAlpha(int color, float factor) {
@@ -530,12 +534,10 @@ public class NightDreamUI {
 
         if ( mode == 0 ) {
             setAlpha(notificationbar, 0.0f, millis);
-            setColor();
         } else {
             // increase minimum alpha value for the notification bar
             v = to_range(v, 0.6f, 1.f);
             setAlpha(notificationbar, v, millis);
-            setColor();
         }
 
         if ( light_value + 0.2f < settings.minIlluminance ) {
@@ -603,12 +605,14 @@ public class NightDreamUI {
 
         if ((mode == 0) && (current_mode != 0)){
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
+            setColor();
             if ( settings.hideBackgroundImage ) {
                 background_image.setImageDrawable(bgblack);
             }
         } else
         if ((mode != 0) && (current_mode == 0)){
             restoreRingerMode();
+            setColor();
             if ( settings.hideBackgroundImage ) {
                 background_image.setImageDrawable(bgshape);
             }
