@@ -428,7 +428,7 @@
                     android:selectable="false"
                     android:enabled="true"
                     android:title="@string/translations"
-                    android:summary="de - Stefan Fruhner\nes - Romina Ramírez"/>
+                    android:summary="de - Stefan Fruhner\nes - Romina Ramírez\nfr - Michel Dumont"/>
 
                 <Preference
                     android:icon="@drawable/ic_icons8"
