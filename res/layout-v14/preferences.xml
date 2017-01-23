@@ -89,7 +89,7 @@
 
                 <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
                     android:key="colorSelection"
-                    android:title="Colors"
+                    android:title="@string/colors"
                     android:selectable="true"
                     android:descendantFocusability="afterDescendants"
                     />

@@ -34,11 +34,13 @@
             android:id="@+id/ambilwarna_cursor"
             android:layout_width="9dp"
             android:layout_height="9dp"
+            android:background="@android:color/transparent"
             android:scaleType="matrix"
             android:src="@drawable/ambilwarna_cursor" />
 
         <ImageView
             android:id="@+id/ambilwarna_target"
+            android:background="@android:color/transparent"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:scaleType="matrix"
@@ -72,6 +74,45 @@
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:background="#aaf" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ambilwarna_quick_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ambilwarna_state"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/ambilwarna_distance"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/quick_color1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                />
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/quick_color2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/ambilwarna_distance"
+                />
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/quick_color3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/ambilwarna_distance"
+                />
+            <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/quick_color4"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/ambilwarna_distance"
+                />
         </LinearLayout>
     </RelativeLayout>
 

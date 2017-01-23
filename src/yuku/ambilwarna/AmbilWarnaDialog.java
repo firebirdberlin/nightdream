@@ -8,6 +8,7 @@ import android.os.Build;
 import android.view.*;
 import android.widget.*;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.ui.ColorPrefWidgetView;
 
 public class AmbilWarnaDialog {
     public interface OnAmbilWarnaListener {
@@ -24,6 +25,10 @@ public class AmbilWarnaDialog {
     final View viewNewColor;
     final ImageView viewTarget;
     final ViewGroup viewContainer;
+    final ColorPrefWidgetView quickColor1;
+    final ColorPrefWidgetView quickColor2;
+    final ColorPrefWidgetView quickColor3;
+    final ColorPrefWidgetView quickColor4;
     final float[] currentColorHsv = new float[3];
 
     /**
@@ -48,6 +53,15 @@ public class AmbilWarnaDialog {
         viewNewColor = view.findViewById(R.id.ambilwarna_warnaBaru);
         viewTarget = (ImageView) view.findViewById(R.id.ambilwarna_target);
         viewContainer = (ViewGroup) view.findViewById(R.id.ambilwarna_viewContainer);
+        quickColor1 = (ColorPrefWidgetView) view.findViewById(R.id.quick_color1);
+        quickColor2 = (ColorPrefWidgetView) view.findViewById(R.id.quick_color2);
+        quickColor3 = (ColorPrefWidgetView) view.findViewById(R.id.quick_color3);
+        quickColor4 = (ColorPrefWidgetView) view.findViewById(R.id.quick_color4);
+
+        quickColor1.setOnClickListener(quickClickListener);
+        quickColor2.setOnClickListener(quickClickListener);
+        quickColor3.setOnClickListener(quickClickListener);
+        quickColor4.setOnClickListener(quickClickListener);
 
         viewSatVal.setHue(getHue());
         viewOldColor.setBackgroundColor(color);
@@ -145,6 +159,22 @@ public class AmbilWarnaDialog {
             }
         });
     }
+
+    public void setQuickColor1(int color) { quickColor1.setColor(color); }
+    public void setQuickColor2(int color) { quickColor2.setColor(color); }
+    public void setQuickColor3(int color) { quickColor3.setColor(color); }
+    public void setQuickColor4(int color) { quickColor4.setColor(color); }
+    private View.OnClickListener quickClickListener =
+        new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (AmbilWarnaDialog.this.listener != null) {
+                    ColorPrefWidgetView view = (ColorPrefWidgetView) v;
+                    AmbilWarnaDialog.this.listener.onOk(AmbilWarnaDialog.this, view.getColor());
+                    dialog.dismiss();
+                }
+            }
+        };
 
     @SuppressWarnings("deprecation")
     protected void deprecatedremoveGlobalOnLayoutListener(View view, ViewTreeObserver.OnGlobalLayoutListener victim) {

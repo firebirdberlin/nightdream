@@ -26,6 +26,7 @@
     <string name="choose_alarm_sound">Weckton</string>
     <string name="choose_primary_color">Akzentfarbe</string>
     <string name="choose_secondary_color">Textfarbe</string>
+    <string name="colors">Farben</string>
     <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen ?</string>
     <string name="confirm_reset">Zurücksetzen</string>
     <string name="contribute">Beitragen</string>

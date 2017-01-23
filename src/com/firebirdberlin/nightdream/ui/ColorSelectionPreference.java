@@ -88,7 +88,7 @@ public class ColorSelectionPreference extends Preference
         final ColorPrefWidgetView view = (ColorPrefWidgetView) v;
         int color = view.getColor();
 
-        new AmbilWarnaDialog(getContext(), color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+        AmbilWarnaDialog dialog = new AmbilWarnaDialog(getContext(), color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override public void onOk(AmbilWarnaDialog dialog, int color) {
                 view.setColor(color);
                 view.invalidate();
@@ -110,7 +110,13 @@ public class ColorSelectionPreference extends Preference
             @Override public void onCancel(AmbilWarnaDialog dialog) {
                 // nothing to do
             }
-        }).show();
+        });
+
+        dialog.setQuickColor1(primaryColorView.getColor());
+        dialog.setQuickColor2(secondaryColorView.getColor());
+        dialog.setQuickColor3(primaryColorNightView.getColor());
+        dialog.setQuickColor4(secondaryColorNightView.getColor());
+        dialog.show();
     }
 
     public void putInt(String key, int value) {
