@@ -43,6 +43,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_alarm_sound">Tono de alarma</string>
     <string name="choose_primary_color">Destacar color</string>
     <string name="choose_secondary_color">Color del texto</string>
+    <string name="colors">Colores</string>
     <string name="confirm_reset_question">Realmente deseas restablecer todas las configuraciones?</string>
     <string name="confirm_reset">Restablecer</string>
     <string name="contribute">Contribuye</string>
