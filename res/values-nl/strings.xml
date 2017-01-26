@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">Over</string>
+<string name="alarm">Alarm</string>
+<string name="alarmFadeIn">Volume harder </string>
+<string name="alarmVolume">Volume</string>
+<string name="allow_screen_off">Scherm uit</string>
+<string name="ambient_noise">Omgevingsgeluidsensor</string>
+<string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmode voorkomen?</string>
+<string name="appearance">Uiterlijk </string>
+<string name="app_name">Nachtdroom</string>
+<string name="auto_brightness">Automatische helderheid</string>
+<string name="autostart_timerange_label_end">Eindtijd</string>
+<string name="autostart_timerange_label_start">Begintijd</string>
+<string name="background">Achtergrond</string>
+<string name="background_black">Zwart</string>
+<string name="background_gradient">Gradiënt</string>
+<string name="background_image">Afbeelding</string>
+<string name="background_image_select">Selecteer een afbeelding </string>
+<string name="behaviour">Gedrag</string>
+<string name="brightness">Helderheid</string>
+<string name="brightness_offset">Helderheid standaard</string>
+<string name="buttonAccessibilitySettings">Start notificatie luisteraar</string>
+<string name="category_handle_power">... en wanneer verbonden met</string>
+<string name="category_handle_power_autostart_time">Start binnenbtijdsbereik</string>
+<string name="choose_alarm_sound">Alarmtoon</string>
+<string name="choose_primary_color">Accentkleur</string>
+<string name="choose_secondary_color">Tekstkleur</string>
+<string name="colors">Kleur</string>
+<string name="confirm_reset_question">Wil je echt alle instellingen verwijderen? </string>
+<string name="confirm_reset">Reset</string>
+<string name="contribute">Bijdragen</string>
+<string name="contribute_source_code">Broncode</string>
+<string name="contribute_translation">Vertaling</string>
+<string name="credits">Credits</string>
+<string name="date_format">Datumformaat</string>
+<string name="dialog_message_thank_you">Dank U wel!</string>
+<string name="dialog_title_thank_you">Bedankt</string>
+<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate">Doneer</string>
+<string name="force_auto_rotation">Forceer schermorientatie tijdens Dagdromen</string>
+<string name="force_auto_rotation_summary">Forceer schermorientatie tijdens Dagdromen</string>
+<string name="handle_power_ac">AC</string>
+<string name="handle_power">Automatisch starten</string>
+<string name="handle_power_car">Autohouder</string>
+<string name="handle_power_desk">Bureaustand</string>
+<string name="handle_power_disconnection">Stop automatisch </string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">Draadloze opladet</string>
+<string name="hide_background_image_in_night_mode">Verbergen</string>
+<string name="hide_background_image_in_night_mode_summary">Verberg de achtergrond in de nachtmode</string>
+<string name="location_time">Locatie tijd</string>
+<string name="mute_ringer">Mute alarm</string>
+<string name="night_mode">Nachtmodus</string>
+<string name="noise_sensitivity">Gevoeligheid microfoon</string>
+<string name="notification_alarm">Druk om alarm te stoppen</string>
+<string name="other_apps">Andere apps</string>
+<string name="other_apps_tinytimetracker_summary">Hou je werkuren bij</string>
+<string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+<string name="preview">Voorbeeld</string>
+<string name="purchaseWeatherData">Koop een licentie </string>
+<string name="purchaseWebRadio">Koop een licentie </string>
+<string name="radio_stream_enabled">Ingeschakeld</string>
+<string name="radio_stream_no_search_results">Geen zoekresultaten</string>
+<string name="radio_stream">Radio streams</string>
+<string name="radio_stream_query_hint">Zoek</string>
+<string name="radio_stream_start">Start/Stop radio</string>
+<string name="radio_stream_url">Radio stream URL</string>
+<string name="reactivate_on_ambient_light_value">Licht grens</string>
+<string name="reactivate_on_ambient_light_value_summary">Bij bereiken ingestelde helderheid wordt het scherm geactiveerd. </string>
+<string name="reactivate_screen_on_noise">Wakker worden van omgevingsgeluid </string>
+<string name="recommend_app_desc">Kies een App om je aanbeveling te delen</string>
+<string name="recommend_app_subject">Ik wil je deze nachtelijke aanbevelen </string>
+<string name="recommend">Aanbevolen applicatie </string>
+<string name="reset_to_defaults">Terug naar originele instellingen </string>
+<string name="restless_mode">Beweeg klok over het scherm</string>
+<string name="review_request">Wardeer applicatie a.u.b. Bedankt!</string>
+<string name="screenOrientation">Schermorientatie </string>
+<string name="select_alarm_sound">Kies geluid alarm</string>
+<string name="set_alarm">Stel alarm in</string>
+<string name="show_date">Toon datum</string>
+<string name="show_temperature">Temperatuur </string>
+<string name="show_weather">Toon lokaal weer</string>
+<string name="show_wind_speed">Windsnelheid</string>
+<string name="speedUnit">Eenheid windsnelheid </string>
+<string name="temperatureUnit">Eenheid temperatuur</string>
+<string name="translations">Vertalingen</string>
+<string name="typeface_7_segment">7-segment LED</string>
+<string name="typeface_roboto_condensed">Roboto compact</string>
+<string name="typeface_roboto_light">Roboto licht</string>
+<string name="typeface_roboto_medium">Roboto mediom</string>
+<string name="typeface_roboto_regular">Roboto gewoon</string>
+<string name="typeface_roboto_thin">Roboto dun</string>
+<string name="typeface">Font</string>
+<string name="use_internal_alarm">Snelle alarmen</string>
+<string name="weather_calculation_time">Weerberekeningstijdstip</string>
+<string name="weather_city_id_summary">Openweathermap stad. Laat leeg voor automatisch bepalen van je locatie.</string>
+<string name="weather_city_id_title">Stad ID</string>
+<string name="weather_info_title">Informatie</string>
+<string name="weather_search_city_id">Zoek stad ID</string>
+<string name="weather">Weer</string>
+<string name="welcome_screen_text1">Welkom! Deze app toont de tij tijdens het opladen van je telefoon.</string>
+<string name="welcome_screen_text2">Open voorkeuren hier!</string>
+<string name="welcome_screen_text3">Sleep over het scherm om helderheid aan te passen. Probeer nu!</string>
+<string name="welcome_screen_text4">Verander grootte met twee vingers op het scherm</string>
+<string name="welcome_screen_title1">Nachtdromen</string>
+<string name="welcome_screen_title2">Voorkeuren </string>
+<string name="welcome_screen_title3">Scherm helderheid </string>
+<string name="welcome_screen_title4">Grootte klok</string>
+</resources>
