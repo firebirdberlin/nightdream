@@ -25,7 +25,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="ambient_noise">Omgevingsgeluidsensor</string>
 <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmode voorkomen?</string>
 <string name="appearance">Uiterlijk </string>
-<string name="app_name">Nachtdroom</string>
+<string name="app_name">Nachtklok</string>
 <string name="auto_brightness">Automatische helderheid</string>
 <string name="autostart_timerange_label_end">Eindtijd</string>
 <string name="autostart_timerange_label_start">Begintijd</string>
@@ -39,7 +39,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness_offset">Helderheid standaard</string>
 <string name="buttonAccessibilitySettings">Start notificatie luisteraar</string>
 <string name="category_handle_power">... en wanneer verbonden met</string>
-<string name="category_handle_power_autostart_time">Start binnenbtijdsbereik</string>
+<string name="category_handle_power_autostart_time">Start binnen tijdsbereik</string>
 <string name="choose_alarm_sound">Alarmtoon</string>
 <string name="choose_primary_color">Accentkleur</string>
 <string name="choose_secondary_color">Tekstkleur</string>
@@ -55,8 +55,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Bedankt</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Doneer</string>
-<string name="force_auto_rotation">Forceer schermorientatie tijdens Dagdromen</string>
-<string name="force_auto_rotation_summary">Forceer schermorientatie tijdens Dagdromen</string>
+<string name="force_auto_rotation">Forceer schermorientatie</string>
+<string name="force_auto_rotation_summary">Forceer schermorientatie tijdens gebruik Nachtklok</string>
 <string name="handle_power_ac">AC</string>
 <string name="handle_power">Automatisch starten</string>
 <string name="handle_power_car">Autohouder</string>
@@ -116,11 +116,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_info_title">Informatie</string>
 <string name="weather_search_city_id">Zoek stad ID</string>
 <string name="weather">Weer</string>
-<string name="welcome_screen_text1">Welkom! Deze app toont de tij tijdens het opladen van je telefoon.</string>
+<string name="welcome_screen_text1">Welkom in de app Nachtklok! Deze app toont de tij tijdens het opladen van je telefoon.</string>
 <string name="welcome_screen_text2">Open voorkeuren hier!</string>
 <string name="welcome_screen_text3">Sleep over het scherm om helderheid aan te passen. Probeer nu!</string>
 <string name="welcome_screen_text4">Verander grootte met twee vingers op het scherm</string>
-<string name="welcome_screen_title1">Nachtdromen</string>
+<string name="welcome_screen_title1">Nachtklok</string>
 <string name="welcome_screen_title2">Voorkeuren </string>
 <string name="welcome_screen_title3">Scherm helderheid </string>
 <string name="welcome_screen_title4">Grootte klok</string>
