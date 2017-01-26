@@ -25,7 +25,7 @@ OR
     <string name="ambient_noise">ambient noise detection</string>
     <string name="ambient_noise_summary">Shall ambient noise prevent the night mode to be activated?</string>
     <string name="appearance">Appearance</string>
-    <string name="app_name">NightDream</string>
+    <string name="app_name">Night Clock</string>
     <string name="auto_brightness">Auto brightness</string>
     <string name="autostart_timerange_label_end">End time</string>
     <string name="autostart_timerange_label_start">Start time</string>
@@ -120,7 +120,7 @@ OR
     <string name="welcome_screen_text2">Open the preferences here !</string>
     <string name="welcome_screen_text3">Click and slide for changing the screen brightness. Try it now !</string>
     <string name="welcome_screen_text4">Resize the clock using a two-finger zoom.</string>
-    <string name="welcome_screen_title1">NightDream</string>
+    <string name="welcome_screen_title1">Night Clock</string>
     <string name="welcome_screen_title2">Preferences</string>
     <string name="welcome_screen_title3">Screen brightness</string>
     <string name="welcome_screen_title4">Clock size</string>
