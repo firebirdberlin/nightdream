@@ -43,4 +43,4 @@ revoke-permissions:
 	adb shell pm revoke com.firebirdberlin.nightdream android.permission.ACCESS_COARSE_LOCATION
 
 screenshot:
-	adb shell screencap -p | sed 's/\r$//' > screen.png
+	adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > screen.png
