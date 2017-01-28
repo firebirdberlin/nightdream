@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="screenOrientationValues">
+          <item>-1</item>
+          <item>0</item>
+          <item>1</item>
+          <item>8</item>
+          <item>9</item>
+     </string-array>
+
+    <string-array name="screenOrientation">
+        <item>Automatisch</item>
+        <item>Landschap</item>
+        <item>Portret</item>
+        <item>Omgekeerd landschap</item>
+        <item>Omgekeerd portret</item>
+    </string-array>
+</resources>
