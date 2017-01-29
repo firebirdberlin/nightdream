@@ -429,10 +429,13 @@
                     android:enabled="true"
                     android:title="@string/translations"
                     android:summary="
-de - Stefan Fruhner\n
+ar - Mahmoud Abdul-Hakam\n
+de - Stefan Fruhner et. al.\n
 es - Romina Ramírez\n
 fr - Michel Dumont\n
-nl - Leo van der Meulen\n
+hr - Tomislav Gal\n
+nl - Leo van der Meulen et. al.\n
+pl - Wojciech\n
 ro - Lucian Balaj"/>
 
                 <Preference

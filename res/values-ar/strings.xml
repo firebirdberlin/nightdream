@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">حول التطبيق</string>
+<string name="alarm">منبه</string>
+<string name="alarmFadeIn">صوت تصاعدي</string>
+<string name="alarmVolume">مستوى الصوت</string>
+<string name="allow_screen_off">قفل الشاشة</string>
+<string name="ambient_noise">الكشف عن الضوضاء المحيطة</string>
+<string name="ambient_noise_summary">هل تريد منع تفعيل الوضع الليلي بواسطة الضوضاء المحيطة ؟</string>
+<string name="appearance">المظهر</string>
+<string name="app_name">الساعة الليلية</string>
+<string name="auto_brightness">تحكم تلقائي بالسطوع</string>
+<string name="autostart_timerange_label_end">وقت الإنتهاء</string>
+<string name="autostart_timerange_label_start">وقت البداية</string>
+<string name="background">الخلفية</string>
+<string name="background_black">سوداء</string>
+<string name="background_gradient">متدرجة</string>
+<string name="background_image">صورة</string>
+<string name="background_image_select">إختر صورة</string>
+<string name="behaviour">السلوك</string>
+<string name="brightness">السطوع</string>
+<string name="brightness_offset">تعويض السطوع</string>
+<string name="buttonAccessibilitySettings">تشغيل الإستماع الى الإشعارات</string>
+<string name="category_handle_power">... وعند الإتصال بـ</string>
+<string name="category_handle_power_autostart_time">التشغيل في المدة الزمنية </string>
+<string name="choose_alarm_sound">نغمة المنبه</string>
+<string name="choose_primary_color">لون الساعة</string>
+<string name="choose_secondary_color">لون الكتابة</string>
+<string name="colors">الألوان</string>
+<string name="confirm_reset_question">هل تريد حقاً إعادة ضبط جميع الإعدادات ؟</string>
+<string name="confirm_reset">إعادة الضبط</string>
+<string name="contribute">المساهمة</string>
+<string name="contribute_source_code">كود المصدر</string>
+<string name="contribute_translation">الترجمة</string>
+<string name="credits">بواسطة</string>
+<string name="date_format">شكل التاريخ</string>
+<string name="dialog_message_thank_you">شكراً جزيلاً!</string>
+<string name="dialog_title_thank_you">شكراً</string>
+<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate">التبرع</string>
+<string name="force_auto_rotation">إجبار التدوير في حلم اليقظة</string>
+<string name="force_auto_rotation_summary">إجبار تدوير الشاشة عند إستخدام حلم اليقظة</string>
+<string name="handle_power_ac">الكهرباء</string>
+<string name="handle_power">بدء تلقائي</string>
+<string name="handle_power_car">وصلة السيارة</string>
+<string name="handle_power_desk">وصلة المكتب</string>
+<string name="handle_power_disconnection">وقف تلقائي</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">شحن لاسلكي</string>
+<string name="hide_background_image_in_night_mode">إخفاء</string>
+<string name="hide_background_image_in_night_mode_summary">إخفاء صورة الخلفية في الوضع الليلي</string>
+<string name="location_time">وقت المكان</string>
+<string name="mute_ringer">نغمة صامتة</string>
+<string name="night_mode">الوضع الليلي</string>
+<string name="noise_sensitivity">إحساس الميكروفون</string>
+<string name="notification_alarm">إضغط لإيقاف المنبه</string>
+<string name="other_apps">تطبيقات أخرى</string>
+<string name="other_apps_tinytimetracker_summary">تتبع وقت عملك اليومي</string>
+<string name="other_apps_tinytimetracker">متتبع الوقت الصغير</string>
+<string name="preview">العرض</string>
+<string name="purchaseWeatherData">اشتري ترخيص</string>
+<string name="purchaseWebRadio">اشتري ترخيص</string>
+<string name="radio_stream_enabled">تمكين</string>
+<string name="radio_stream_no_search_results">لا يوجد نتائج للبحث</string>
+<string name="radio_stream">موجات الراديو</string>
+<string name="radio_stream_query_hint">البحث بـ</string>
+<string name="radio_stream_start">بدء/وقف موجة الراديو</string>
+<string name="radio_stream_url">رابط موجة الراديو</string>
+<string name="reactivate_on_ambient_light_value">درجة الإحساس بالضوء</string>
+<string name="reactivate_on_ambient_light_value_summary">إعادة تفعيل الشاشة عند تعدي درجة الإحساس بالضوء</string>
+<string name="reactivate_screen_on_noise">الاستيقاظ مع الضوضاء المحيطة</string>
+<string name="recommend_app_desc">إختر تطبيق لمشاركة توصيتك</string>
+<string name="recommend_app_subject">أحب أن أوصيك بتطبيق الساعة الليلية هذا.</string>
+<string name="recommend">توصية بالتطبيق</string>
+<string name="reset_to_defaults">إعادة الضبط الافتراضي</string>
+<string name="restless_mode">تَحَرُك الساعة حول الشاشة</string>
+<string name="review_request">من فضلك قيم هذا التطبيق ، شكراً !</string>
+<string name="screenOrientation">تدوير الشاشة</string>
+<string name="select_alarm_sound">إختر صوت المنبه</string>
+<string name="set_alarm">ضبط المنبه</string>
+<string name="show_date">إظهار التاريخ</string>
+<string name="show_temperature">درجة الحرارة</string>
+<string name="show_weather">إظهار الطقس المحلي</string>
+<string name="show_wind_speed">سرعة الرياح</string>
+<string name="speedUnit">وحدة سرعة الرياح</string>
+<string name="temperatureUnit">وحدة درجة الحرارة</string>
+<string name="translations">الترجمات</string>
+<string name="typeface_7_segment">7-segment LED</string>
+<string name="typeface_roboto_condensed">روبوتو مكثف</string>
+<string name="typeface_roboto_light">روبوتو خفيف</string>
+<string name="typeface_roboto_medium">روبوتو وسط</string>
+<string name="typeface_roboto_regular">روبوتو معتاد</string>
+<string name="typeface_roboto_thin">روبوتو رفيع</string>
+<string name="typeface">نوع الخط</string>
+<string name="use_internal_alarm">منبه سريع</string>
+<string name="weather_calculation_time">وقت حساب الطقس</string>
+<string name="weather_city_id_summary">إسم المدينة في  (OpenWeatherMap) . اتركها خالية من أجل تحديد المكان تلقائياً</string>
+<string name="weather_city_id_title">إسم المدينة</string>
+<string name="weather_info_title">معلومات</string>
+<string name="weather_search_city_id">البحث عن إسم مدينة</string>
+<string name="weather">الطقس</string>
+<string name="welcome_screen_text1">مرحباً في ساعتك الليلية الجديدة ! هذا التطبيق يظهر التوقيت الحالي وانت تشحن هاتفك</string>
+<string name="welcome_screen_text2">افتح الخيارات هنا !</string>
+<string name="welcome_screen_text3">إضغط ثم حرك لتغيير سطوع الشاشة. جرب الآن !</string>
+<string name="welcome_screen_text4">غير حجم الساعة بحركة زووم الأصبعين</string>
+<string name="welcome_screen_title1">الساعة الليلية</string>
+<string name="welcome_screen_title2">الخيارات</string>
+<string name="welcome_screen_title3">سطوع الشاشة</string>
+<string name="welcome_screen_title4">حجم الساعة</string>
+</resources>

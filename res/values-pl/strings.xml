@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">O</string>
+<string name="alarm">Alarm</string>
+<string name="alarmFadeIn">Zwiekszenie głosnosci</string>
+<string name="alarmVolume">Głosność</string>
+<string name="allow_screen_off">Ekran wyłączony</string>
+<string name="ambient_noise">Wyrywanie dzwieków otoczenia</string>
+<string name="ambient_noise_summary">Czy wykrywnie dzwieków otoczenia ma być aktywne w nocy</string>
+<string name="appearance">Wyglad</string>
+<string name="app_name">Nocny zegar</string>
+<string name="auto_brightness">Auto jasność</string>
+<string name="autostart_timerange_label_end">Koniec</string>
+<string name="autostart_timerange_label_start">Początek</string>
+<string name="background">Tło</string>
+<string name="background_black">Czarny</string>
+<string name="background_gradient">Gradient</string>
+<string name="background_image">Zdjęcie</string>
+<string name="background_image_select">Wybór zdjęcia</string>
+<string name="behaviour">Zachowanie</string>
+<string name="brightness">Jasność</string>
+<string name="brightness_offset">Offset Jasności</string>
+<string name="buttonAccessibilitySettings">Rozpoczęcie nasłuchwania </string>
+<string name="category_handle_power">a kiedy się połączy</string>
+<string name="category_handle_power_autostart_time">Rozpocznij z ograniczeniem czasowym</string>
+<string name="choose_alarm_sound">Dzwiek alarmu</string>
+<string name="choose_primary_color">Odcien koloru</string>
+<string name="choose_secondary_color">Kolor tekstu</string>
+<string name="colors">Kolory</string>
+<string name="confirm_reset_question">Czy napewno chcesz resetować ustawienia </string>
+<string name="confirm_reset">Reset</string>
+<string name="contribute">Przyczyn się</string>
+<string name="contribute_source_code">Kod źródłowy</string>
+<string name="contribute_translation">Tłumaczenie</string>
+<string name="credits">Autorzy</string>
+<string name="date_format">Format daty</string>
+<string name="dialog_message_thank_you">Dziękuje Ci bardzo !</string>
+<string name="dialog_title_thank_you">Dziękuje</string>
+<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate">Wspomóż</string>
+<string name="force_auto_rotation">Wymuś orientacje w Daydream</string>
+<string name="force_auto_rotation_summary">Tryb enforce orientacji ekranu uzyty w Daydream</string>
+<string name="handle_power_ac">Ac</string>
+<string name="handle_power">Auto uruchomienie</string>
+<string name="handle_power_car">Stacja dokująca samochodowa</string>
+<string name="handle_power_desk">Stacja dokująca</string>
+<string name="handle_power_disconnection">Zatrzym automatycznie</string>
+<string name="handle_power_usb">Usb</string>
+<string name="handle_power_wireless">Bezprzewodowe ładowanie</string>
+<string name="hide_background_image_in_night_mode">Ukryj</string>
+<string name="hide_background_image_in_night_mode_summary">Ukryj tło zdjęcia w trybie nocnym</string>
+<string name="location_time">Czas lokalny</string>
+<string name="mute_ringer">Wycisz</string>
+<string name="night_mode">Tryb nocny</string>
+<string name="noise_sensitivity">Intesywność mikrofonu</string>
+<string name="notification_alarm">Ķliknij aby zatrzymać alarm</string>
+<string name="other_apps">Inne aplikacje</string>
+<string name="other_apps_tinytimetracker_summary">Śledź mój dzienny czas pracy</string>
+<string name="other_apps_tinytimetracker">Tiny Time Tracker</string>
+<string name="preview">Podgląd</string>
+<string name="purchaseWeatherData">Kup licencje na pogode</string>
+<string name="purchaseWebRadio">Kup licencje webradio</string>
+<string name="radio_stream_enabled">Włącz</string>
+<string name="radio_stream_no_search_results">Brak rezultatów</string>
+<string name="radio_stream">Radio stream</string>
+<string name="radio_stream_query_hint">Szukaj</string>
+<string name="radio_stream_start">Zatrzymaj Stop</string>
+<string name="radio_stream_url">Url</string>
+<string name="reactivate_on_ambient_light_value">Wartość światla otoczenia</string>
+<string name="reactivate_on_ambient_light_value_summary">Ekran zostanie reaktywowany jezeli wartość podświetlenia zostanie osiagnięta</string>
+<string name="reactivate_screen_on_noise">obudz przez dźwiek otoczenia</string>
+<string name="recommend_app_desc">Wybierz aplikacje do udostępnienia </string>
+<string name="recommend_app_subject">Chciałem żeby zarekomendowaleś night clock </string>
+<string name="recommend">Zarekomenduj</string>
+<string name="reset_to_defaults">Przywrócenie ustawien domyślnych</string>
+<string name="restless_mode">Przesuwaj zegar na całym ekranie</string>
+<string name="review_request">Oceń aplikacje Dziękuje !</string>
+<string name="screenOrientation">Orientacja ekranu</string>
+<string name="select_alarm_sound">Wybierz dźwięk alarmu </string>
+<string name="set_alarm">Ustaw zegar</string>
+<string name="show_date">Pokaż date</string>
+<string name="show_temperature">Teperatura</string>
+<string name="show_weather">Pokaż lokalną temperturę</string>
+<string name="show_wind_speed">Szybkość wiatru</string>
+<string name="speedUnit">Jednosta szybkości wiatru</string>
+<string name="temperatureUnit">Jednosta temperatury</string>
+<string name="translations">Tłumaczenia</string>
+<string name="typeface_7_segment">7 segment Led</string>
+<string name="typeface_roboto_condensed">Robot </string>
+<string name="typeface_roboto_light">Robot light</string>
+<string name="typeface_roboto_medium">Robot medium</string>
+<string name="typeface_roboto_regular">Robot regular</string>
+<string name="typeface_roboto_thin">Robot thin</string>
+<string name="typeface">Typ</string>
+<string name="use_internal_alarm">Szybkie alarmy</string>
+<string name="weather_calculation_time">Pogoda kalkulator czasu</string>
+<string name="weather_city_id_summary">Otwórz weatherMap City Id. Zostaw puste dla automatycznego wykrycia lokalizacji</string>
+<string name="weather_city_id_title">Miasto kod</string>
+<string name="weather_info_title">Informacje</string>
+<string name="weather_search_city_id">Szukane miasto Kod</string>
+<string name="weather">Pogoda</string>
+<string name="welcome_screen_text2">Otwarcie ustawien tu jest</string>
+<string name="welcome_screen_text3">Klik i przeciągnij aby zmienic jasność ekranu</string>
+<string name="welcome_screen_text4">Aby zmienić wielkośc zegara użyj dwóch palców</string>
+<string name="welcome_screen_title1">Nocny zegar</string>
+<string name="welcome_screen_title2">Preferencje</string>
+<string name="welcome_screen_title3">Jasność ekranu</string>
+<string name="welcome_screen_title4">Wielkość ekranu</string>
+</resources>

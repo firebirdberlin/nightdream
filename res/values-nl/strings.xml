@@ -116,12 +116,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_info_title">Informatie</string>
 <string name="weather_search_city_id">Zoek stad ID</string>
 <string name="weather">Weer</string>
-<string name="welcome_screen_text1">Welkom in de app Nachtklok! Deze app toont de tij tijdens het opladen van je telefoon.</string>
-<string name="welcome_screen_text2">Open voorkeuren hier!</string>
-<string name="welcome_screen_text3">Sleep over het scherm om helderheid aan te passen. Probeer nu!</string>
+<string name="welcome_screen_text1">Welkom in de app Nachtklok! Deze app toont de huideige tijd tijdens het opladen van je telefoon.</string>
+<string name="welcome_screen_text2">Open de voorkeuren hier!</string>
+<string name="welcome_screen_text3">Sleep over het scherm om helderheid aan te passen. Probeer het nu!</string>
 <string name="welcome_screen_text4">Verander grootte met twee vingers op het scherm</string>
 <string name="welcome_screen_title1">Nachtklok</string>
 <string name="welcome_screen_title2">Voorkeuren </string>
 <string name="welcome_screen_title3">Scherm helderheid </string>
-<string name="welcome_screen_title4">Grootte klok</string>
+<string name="welcome_screen_title4">Klok groote</string>
 </resources>
