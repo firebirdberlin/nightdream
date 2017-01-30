@@ -45,12 +45,10 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         Calendar start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
         Calendar end = new SimpleTime(settings.autostartTimeRangeEnd).getCalendar();
 
-        boolean shall_auto_start = true;
-        if (start.equals(end)) {
-            shall_auto_start = false;
-        } else if (end.before(start)){
+        boolean shall_auto_start = false;
+        if (end.before(start)){
             shall_auto_start = ( now.after(start) || now.before(end) );
-        } else {
+        } else if (! start.equals(end)) {
             shall_auto_start = ( now.after(start) && now.before(end) );
         }
         if (! shall_auto_start) return false;
