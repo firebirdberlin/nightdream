@@ -76,13 +76,17 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
                                                                  PendingIntent.FLAG_UPDATE_CURRENT);
 
         Settings settings = new Settings(context);
-        Calendar calendar = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
+        Calendar start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
+        Calendar end = new SimpleTime(settings.autostartTimeRangeEnd).getCalendar();
+        if( start.equals(end)) {
+            return;
+        }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
         if (Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
         }
     }
 
