@@ -429,13 +429,13 @@
                     android:enabled="true"
                     android:title="@string/translations"
                     android:summary="
-ar - Mahmoud Abdul-Hakam\n
+ar - M. Hakam\n
 de - Stefan Fruhner et. al.\n
 es - Romina Ramírez\n
 fr - Michel Dumont\n
 hr - Tomislav Gal\n
 nl - Leo van der Meulen et. al.\n
-pl - Wojciech\n
+pl - Wojciech Mudyn\n
 ro - Lucian Balaj"/>
 
                 <Preference
