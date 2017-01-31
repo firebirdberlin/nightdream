@@ -55,8 +55,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Hvala</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Doniraj</string>
-<string name="force_auto_rotation">Prisilna orjentacija u Daydreamu</string>
-<string name="force_auto_rotation_summary">Primjeni orjentaciju ekrana kada se koristi Daydream</string>
+<string name="force_auto_rotation">Prisilna orijentacija u Daydreamu</string>
+<string name="force_auto_rotation_summary">Primjeni orijentaciju ekrana kada se koristi Daydream</string>
 <string name="handle_power_ac">Punjenje</string>
 <string name="handle_power">Automatsko pokretanje</string>
 <string name="handle_power_car">Automobilska baza za punjenje</string>
@@ -92,7 +92,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="reset_to_defaults">Vrati na tvorničke postavke</string>
 <string name="restless_mode">Pomiči sat uokolo</string>
 <string name="review_request">Ocijeni ovu aplikaciju. Hvala!</string>
-<string name="screenOrientation">Orjentacija zaslona</string>
+<string name="screenOrientation">Orijentacija zaslona</string>
 <string name="select_alarm_sound">Odaberi zvuk alarma</string>
 <string name="set_alarm">postavi alarm</string>
 <string name="show_date">Prikaži datum</string>
