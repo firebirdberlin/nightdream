@@ -94,11 +94,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
 <string name="screenOrientation">Bildschirmausrichtung</string>
 <string name="select_alarm_sound">Weckton auswählen</string>
-<string name="set_alarm">neuer Alarm</string>
-<string name="show_date">Datum</string>
-<string name="show_temperature">Temperatur</string>
-<string name="show_weather">Wetter</string>
-<string name="show_wind_speed">Windgeschwindigkeit</string>
+<string name="set_alarm">Alarm einstellen</string>
+<string name="show_date">Datum anzeigen</string>
+<string name="show_temperature">Temperatur anzeigen</string>
+<string name="show_weather">Wetter anzeigen</string>
+<string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
 <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
 <string name="temperatureUnit">Temperatureinheit</string>
 <string name="translations">Übersetzungen</string>
