@@ -22,6 +22,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarmFadeIn">ansteigende Lautstärke</string>
 <string name="alarmVolume">Lautstärke</string>
 <string name="allow_screen_off">Bildschirm aus</string>
+<string name="allow_screen_off_summary">Der Bildschirm darf sich während der Nacht abschalten.</string>
 <string name="ambient_noise">Umgebungslautstärke messen</string>
 <string name="ambient_noise_summary">Verhindert das Abschalten bei Umgebungsgeräuschen.</string>
 <string name="appearance">Aussehen</string>
@@ -37,7 +38,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="behaviour">Verhalten</string>
 <string name="brightness">Helligkeit</string>
 <string name="brightness_offset">Richtwert</string>
-<string name="buttonAccessibilitySettings">Benachrichtigungsservice starten</string>
+<string name="buttonAccessibilitySettings">Benachrichtigungen anzeigen</string>
 <string name="category_handle_power">... und wenn verbunden mit</string>
 <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
 <string name="choose_alarm_sound">Weckton</string>
@@ -62,6 +63,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">Dock (Auto)</string>
 <string name="handle_power_desk">Dock (Schreibtisch)</string>
 <string name="handle_power_disconnection">Automatisch beenden</string>
+<string name="handle_power_disconnection_summary">Die Anwendung soll sich beim Trennen der Stromzufuhr automatisch beenden.</string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
 <string name="hide_background_image_in_night_mode">Ausblenden</string>

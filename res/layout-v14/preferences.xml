@@ -18,6 +18,7 @@
             <SwitchPreference
                 android:key="handle_power_disconnection"
                 android:title="@string/handle_power_disconnection"
+                android:summary="@string/handle_power_disconnection_summary"
                 android:defaultValue="true" />
 
             <SwitchPreference
@@ -193,6 +194,7 @@
                 <SwitchPreference
                     android:key="allow_screen_off"
                     android:title="@string/allow_screen_off"
+                    android:summary="@string/allow_screen_off_summary"
                     android:defaultValue="false" />
 
                 <de.firebirdberlin.preference.InlineSeekBarPreference
@@ -431,7 +433,7 @@
                     android:summary="
 ar - M. Hakam\n
 de - Stefan Fruhner et. al.\n
-es - Romina Ramírez\n
+es - Romina Ramírez et. al.\n
 fr - Michel Dumont\n
 hr - Tomislav Gal\n
 nl - Leo van der Meulen et. al.\n
