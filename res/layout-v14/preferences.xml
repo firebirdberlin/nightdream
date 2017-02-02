@@ -5,7 +5,7 @@
         <Preference
             android:icon="@drawable/ic_attention"
             android:title="Translations wanted !"
-            android:summary="Volunteers, who submit a translation, get free access to paid features.">
+            android:summary="Please add or update the translation for your language.">
             <intent android:action="android.intent.action.VIEW"
                 android:data="https://fhain.zzzz.io/pastt"/>
         </Preference>
