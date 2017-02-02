@@ -38,7 +38,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">السطوع</string>
 <string name="brightness_offset">تعويض السطوع</string>
 <string name="buttonAccessibilitySettings">تشغيل الإستماع الى الإشعارات</string>
-<string name="category_handle_power">... وعند الإتصال بـ</string>
+<string name="category_handle_power">وعند الإتصال بـ ...</string>
 <string name="category_handle_power_autostart_time">التشغيل في المدة الزمنية </string>
 <string name="choose_alarm_sound">نغمة المنبه</string>
 <string name="choose_primary_color">لون الساعة</string>
@@ -47,7 +47,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="confirm_reset_question">هل تريد حقاً إعادة ضبط جميع الإعدادات ؟</string>
 <string name="confirm_reset">إعادة الضبط</string>
 <string name="contribute">المساهمة</string>
-<string name="contribute_source_code">كود المصدر</string>
+<string name="contribute_source_code">Source code</string>
 <string name="contribute_translation">الترجمة</string>
 <string name="credits">بواسطة</string>
 <string name="date_format">شكل التاريخ</string>
