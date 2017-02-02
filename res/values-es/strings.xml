@@ -19,13 +19,13 @@ Please preserve the xml tags and the utf8 encoding.
 <resources>
 <string name="about">Acerca de</string>
 <string name="alarm">Alarma</string>
-<string name="alarmFadeIn">Incremento de volumen</string>
+<string name="alarmFadeIn">Volumen ascendente</string>
 <string name="alarmVolume">Volumen de la alarma</string>
 <string name="allow_screen_off">Apagar pantalla</string>
 <string name="ambient_noise">Detección de sonidos ambientales</string>
-<string name="ambient_noise_summary">El ruido ambiental debería impedir que el modo nocturno se active?</string>
+<string name="ambient_noise_summary">Debería el ruido ambiental impedir que el modo nocturno se active?</string>
 <string name="appearance">Apariencia</string>
-<string name="app_name">Reloj Despertador de Mesa de Luz</string>
+<string name="app_name">Reloj Nocturno</string>
 <string name="auto_brightness">Brillo automático</string>
 <string name="autostart_timerange_label_end">Hora de finalización</string>
 <string name="autostart_timerange_label_start">Hora de inicio</string>
@@ -36,12 +36,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="background_image_select">Selecciona una imagen</string>
 <string name="behaviour">Comportamiento</string>
 <string name="brightness">Brillo</string>
-<string name="brightness_offset">Austes de brillo</string>
+<string name="brightness_offset">Ajustes de brillo</string>
 <string name="buttonAccessibilitySettings">Permitir notificaciones</string>
 <string name="category_handle_power">... y cuando está conectado a</string>
 <string name="category_handle_power_autostart_time">Comenzar dentro del intervalo de tiempo</string>
 <string name="choose_alarm_sound">Tono de alarma</string>
-<string name="choose_primary_color">Destacar color</string>
+<string name="choose_primary_color">Color destacado</string>
 <string name="choose_secondary_color">Color del texto</string>
 <string name="colors">Colores</string>
 <string name="confirm_reset_question">Realmente deseas restablecer todas las configuraciones?</string>
@@ -51,7 +51,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute_translation">Traducción</string>
 <string name="credits">Créditos</string>
 <string name="date_format">Formato de fecha</string>
-<string name="dialog_message_thank_you">Muchas gracias!</string>
+<string name="dialog_message_thank_you">¡Muchas gracias!</string>
 <string name="dialog_title_thank_you">Gracias</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Donación</string>
@@ -63,7 +63,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_desk">Base de escritorio</string>
 <string name="handle_power_disconnection">Detener automáticamente</string>
 <string name="handle_power_usb">Conectado al usb</string>
-<string name="handle_power_wireless">En cargador inalámbrico</string>
+<string name="handle_power_wireless">Cargador inalámbrico</string>
 <string name="hide_background_image_in_night_mode">Ocultar</string>
 <string name="hide_background_image_in_night_mode_summary">Ocultar la imagen de fondo en modo noche.</string>
 <string name="location_time">Hora local</string>
@@ -79,10 +79,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWebRadio">Compra una licencia</string>
 <string name="radio_stream_enabled">Activado</string>
 <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
-<string name="radio_stream">Radio emisoras</string>
+<string name="radio_stream">Emisoras de radio</string>
 <string name="radio_stream_query_hint">Buscar enlace (string)</string>
 <string name="radio_stream_start">Iniciar/detener emisoras</string>
-<string name="radio_stream_url">Página web de emisora de radio (URL)</string>
+<string name="radio_stream_url">URL emisora de radio</string>
 <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
 <string name="reactivate_on_ambient_light_value_summary">La pantalla se reactivará si el límite de la iluminación es excedido.</string>
 <string name="reactivate_screen_on_noise">Despertar en ambiente ruidoso</string>
@@ -91,7 +91,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend">Recomienda la aplicación</string>
 <string name="reset_to_defaults">Restablecer a valores predeterminados</string>
 <string name="restless_mode">Reloj en movimiento</string>
-<string name="review_request">Por favor califica esta aplicación. Gracias!</string>
+<string name="review_request">Por favor califica esta aplicación. ¡Gracias!</string>
 <string name="screenOrientation">Orientación de la pantalla</string>
 <string name="select_alarm_sound">Selecciona sonido de la alarma</string>
 <string name="set_alarm">Ajustar alarma</string>
@@ -102,7 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="speedUnit">Unidad de velocidad del viento</string>
 <string name="temperatureUnit">Unidad de temperatura</string>
 <string name="translations">Traducciones</string>
-<string name="typeface_7_segment">Reloj digital </string>
+<string name="typeface_7_segment">Reloj digital</string>
 <string name="typeface_roboto_condensed">Roboto condensado</string>
 <string name="typeface_roboto_light">Roboto ligero</string>
 <string name="typeface_roboto_medium">Roboto medio</string>
@@ -116,11 +116,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_info_title">Información</string>
 <string name="weather_search_city_id">Buscar ciudad</string>
 <string name="weather">Clima</string>
-<string name="welcome_screen_text1">Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
-<string name="welcome_screen_text2">Accede a las preferencias aquí!</string>
-<string name="welcome_screen_text3">Selecciona y desliza para cambiar el brillo de la pantalla. Pruébalo ahora!</string>
+<string name="welcome_screen_text1">¡Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
+<string name="welcome_screen_text2">¡Accede a las preferencias aquí!</string>
+<string name="welcome_screen_text3">Selecciona y desliza para cambiar el brillo de la pantalla. ¡Pruébalo ahora!</string>
 <string name="welcome_screen_text4">Cambia el tamaño del reloj con zoom de dos dedos.</string>
-<string name="welcome_screen_title1">Reloj Despertador de Mesa de Luz</string>
+<string name="welcome_screen_title1">Reloj Nocturno</string>
 <string name="welcome_screen_title2">Preferencias</string>
 <string name="welcome_screen_title3">Brillo de pantalla</string>
 <string name="welcome_screen_title4">Tamaño de reloj</string>
