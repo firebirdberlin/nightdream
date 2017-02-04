@@ -22,6 +22,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarmFadeIn">Zwiekszenie głosnosci</string>
 <string name="alarmVolume">Głosność</string>
 <string name="allow_screen_off">Ekran wyłączony</string>
+<string name="allow_screen_off_summary">Wylacz ekran na noc</string>
 <string name="ambient_noise">Wyrywanie dzwieków otoczenia</string>
 <string name="ambient_noise_summary">Czy wykrywnie dzwieków otoczenia ma być aktywne w nocy</string>
 <string name="appearance">Wyglad</string>
@@ -62,6 +63,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">Stacja dokująca samochodowa</string>
 <string name="handle_power_desk">Stacja dokująca</string>
 <string name="handle_power_disconnection">Zatrzym automatycznie</string>
+<string name="handle_power_disconnection_summary">Zakoncz aplikacje po odlaczeniu od ladowarki</string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">Bezprzewodowe ładowanie</string>
 <string name="hide_background_image_in_night_mode">Ukryj</string>
