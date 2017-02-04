@@ -22,11 +22,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarmFadeIn">صوت تصاعدي</string>
 <string name="alarmVolume">مستوى الصوت</string>
 <string name="allow_screen_off">قفل الشاشة</string>
+<string name="allow_screen_off_summary">قفل الشاشة أثناء الليل</string>
 <string name="ambient_noise">الكشف عن الضوضاء المحيطة</string>
 <string name="ambient_noise_summary">هل تريد منع تفعيل الوضع الليلي بواسطة الضوضاء المحيطة ؟</string>
 <string name="appearance">المظهر</string>
 <string name="app_name">الساعة الليلية</string>
-<string name="auto_brightness">تحكم تلقائي بالسطوع</string>
+<string name="auto_brightness">سطوع تلقائي</string>
 <string name="autostart_timerange_label_end">وقت الإنتهاء</string>
 <string name="autostart_timerange_label_start">وقت البداية</string>
 <string name="background">الخلفية</string>
@@ -39,7 +40,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness_offset">تعويض السطوع</string>
 <string name="buttonAccessibilitySettings">تشغيل الإستماع الى الإشعارات</string>
 <string name="category_handle_power">وعند الإتصال بـ ...</string>
-<string name="category_handle_power_autostart_time">التشغيل في المدة الزمنية </string>
+<string name="category_handle_power_autostart_time">التشغيل في المدة الزمنية</string>
 <string name="choose_alarm_sound">نغمة المنبه</string>
 <string name="choose_primary_color">لون الساعة</string>
 <string name="choose_secondary_color">لون الكتابة</string>
@@ -47,7 +48,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="confirm_reset_question">هل تريد حقاً إعادة ضبط جميع الإعدادات ؟</string>
 <string name="confirm_reset">إعادة الضبط</string>
 <string name="contribute">المساهمة</string>
-<string name="contribute_source_code">Source code</string>
+<string name="contribute_source_code">شفرة المصدر</string>
 <string name="contribute_translation">الترجمة</string>
 <string name="credits">بواسطة</string>
 <string name="date_format">شكل التاريخ</string>
@@ -62,6 +63,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">وصلة السيارة</string>
 <string name="handle_power_desk">وصلة المكتب</string>
 <string name="handle_power_disconnection">وقف تلقائي</string>
+<string name="handle_power_disconnection_summary">إنهاء التطبيق عند فصل طاقة المصدر</string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">شحن لاسلكي</string>
 <string name="hide_background_image_in_night_mode">إخفاء</string>
