@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">O aplikaci</string>
+<string name="alarm">Budík</string>
+<string name="alarmFadeIn">Zvyšující se hlasitost</string>
+<string name="alarmVolume">Hlasitost</string>
+<string name="allow_screen_off">Vypnout obrazovku</string>
+<string name="allow_screen_off_summary">Vypnout obrazovku v noci</string>
+<string name="ambient_noise">Detekce zvuků v okolí</string>
+<string name="ambient_noise_summary">Chcete aby zvuky z okolí zařízení zabránili zapnutí nočního režimu?</string>
+<string name="appearance">Vzhled</string>
+<string name="app_name">Noční hodiny</string>
+<string name="auto_brightness">Automatický jas</string>
+<string name="autostart_timerange_label_end">Koncový čas</string>
+<string name="autostart_timerange_label_start">Počáteční čas</string>
+<string name="background">Pozadí</string>
+<string name="background_black">Černé</string>
+<string name="background_gradient">Rozmazané</string>
+<string name="background_image">Obrázek</string>
+<string name="background_image_select">Vyber obrázek</string>
+<string name="behaviour">Funkce</string>
+<string name="brightness">Jas</string>
+<string name="brightness_offset">Posun jasu</string>
+<string name="buttonAccessibilitySettings">Zobrazovat oznámení</string>
+<string name="category_handle_power">... a pokud je připojeno k</string>
+<string name="category_handle_power_autostart_time">Spusť v časovém rozsahu</string>
+<string name="choose_alarm_sound">Zvuk budíku</string>
+<string name="choose_primary_color">Barva času</string>
+<string name="choose_secondary_color">Barva textu</string>
+<string name="colors">Barvy</string>
+<string name="confirm_reset_question">Opravu chcete obnovit výchozí nastavení?</string>
+<string name="confirm_reset">Obnova</string>
+<string name="contribute">Přispět</string>
+<string name="contribute_source_code">Zdrojový kód</string>
+<string name="contribute_translation">Překlady</string>
+<string name="credits">Zásluhy</string>
+<string name="date_format">Formát data</string>
+<string name="dialog_message_thank_you">Velice děkuji!</string>
+<string name="dialog_title_thank_you">Poděkování</string>
+<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate">Darovat</string>
+<string name="force_auto_rotation">Vynucení orientace</string>
+<string name="force_auto_rotation_summary">Vynutit orientaci obrazovky při spuštěném spořiči displeje</string>
+<string name="handle_power_ac">externímu napájení</string>
+<string name="handle_power">Automatický start</string>
+<string name="handle_power_car">dokovaní v autě</string>
+<string name="handle_power_desk">dokovací stanici</string>
+<string name="handle_power_disconnection">Automatické ukončení</string>
+<string name="handle_power_disconnection_summary">Ukončit aplikaci po odpojení napájení</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">bezdrátovému nabíjení</string>
+<string name="hide_background_image_in_night_mode">Skrýt</string>
+<string name="hide_background_image_in_night_mode_summary">Skrýt obrázek na pozadí v nočním režimu</string>
+<string name="location_time">místní čas</string>
+<string name="mute_ringer">Ztlumit vyzvánění</string>
+<string name="night_mode">Noční režim</string>
+<string name="noise_sensitivity">Citlivost mikrofonu</string>
+<string name="notification_alarm">Kliknout pro zastavení budíku</string>
+<string name="other_apps">Ostatní aplikace</string>
+<string name="other_apps_tinytimetracker_summary">Sleduje váš denní pracovní režim</string>
+<string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+<string name="preview">Náhled</string>
+<string name="purchaseWeatherData">Koupit licenci</string>
+<string name="purchaseWebRadio">Koupit licenci</string>
+<string name="radio_stream_enabled">Povoleno</string>
+<string name="radio_stream_no_search_results">Nic nenalezeno.</string>
+<string name="radio_stream">Radiová vysílání</string>
+<string name="radio_stream_query_hint">Vyhledat text</string>
+<string name="radio_stream_start">Spustit/zastavit vysílání rádia</string>
+<string name="radio_stream_url">URL rádiového vysílání</string>
+<string name="reactivate_on_ambient_light_value">Práh osvětlení</string>
+<string name="reactivate_on_ambient_light_value_summary">Obrazovka je obnovena pokud osvětlení přesáhne nastavenou hodnotu.</string>
+<string name="reactivate_screen_on_noise">Obnovit při detekci zvuků v okolí</string>
+<string name="recommend_app_desc">Vyber aplikaci pro sdílení vašeho doporučení</string>
+<string name="recommend_app_subject">Rád bych vám doporučil tuto aplikaci pro zobrazení hodin v noci.</string>
+<string name="recommend">Doporučit aplikaci</string>
+<string name="reset_to_defaults">Obnovit výchozí nastavení</string>
+<string name="restless_mode">Posunovat hodiny po displeji</string>
+<string name="review_request">Prosím ohodnoťte tuto aplikaci, Děkuji!</string>
+<string name="screenOrientation">Orientace obrazovky</string>
+<string name="select_alarm_sound">Vyber zvuk budíku</string>
+<string name="set_alarm">nastavit budík</string>
+<string name="show_date">Zobrazit datum</string>
+<string name="show_temperature">Zobrazit teplotu</string>
+<string name="show_weather">Zobrazit místní počasí</string>
+<string name="show_wind_speed">Zobrazit rychlost větru</string>
+<string name="speedUnit">Jednotky pro rychlost větru</string>
+<string name="temperatureUnit">Jednotky pro teplotu</string>
+<string name="translations">Překlady</string>
+<string name="typeface_7_segment">Segmentový displej</string>
+<string name="typeface_roboto_condensed">Roboto zmenšené</string>
+<string name="typeface_roboto_light">Roboto tenké</string>
+<string name="typeface_roboto_medium">Roboto střední</string>
+<string name="typeface_roboto_regular">Roboto normální</string>
+<string name="typeface_roboto_thin">Roboto silné</string>
+<string name="typeface">Písmo</string>
+<string name="use_internal_alarm">Povolit rychlý budík</string>
+<string name="weather_calculation_time">čas předpovědi počasí</string>
+<string name="weather_city_id_summary">Identifikace města ve OpenWeatherMap. Ponechte prázdné pro automatickou detekci podle lokality.</string>
+<string name="weather_city_id_title">Identifikace města</string>
+<string name="weather_info_title">Informace</string>
+<string name="weather_search_city_id">Vyhledat město</string>
+<string name="weather">Počasí</string>
+<string name="welcome_screen_text1">Vítejte v aplikaci pro zobrazení hodin v noci. Aktuální čas se zobrazuje při nabíjení vašeho mobilního zařízení.</string>
+<string name="welcome_screen_text2">Změna nastavení zde !</string>
+<string name="welcome_screen_text3">Kliknou a táhnout pro změnu jasu. Vyzkoušejte hned !</string>
+<string name="welcome_screen_text4">Velikost hodin lze změnit pomocí dvou prstů.</string>
+<string name="welcome_screen_title1">Noční hodiny</string>
+<string name="welcome_screen_title2">Nastavení</string>
+<string name="welcome_screen_title3">Jas obrazovky</string>
+<string name="welcome_screen_title4">Velikost hodin</string>
+</resources>

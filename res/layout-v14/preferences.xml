@@ -432,6 +432,7 @@
                     android:title="@string/translations"
                     android:summary="
 ar - M. Hakam et. al.\n
+cs - Tomáš Holub\n
 de - Stefan Fruhner et. al.\n
 es - Romina Ramírez et. al.\n
 fr - Michel Dumont\n
