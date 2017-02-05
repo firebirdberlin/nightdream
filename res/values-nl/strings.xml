@@ -22,6 +22,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarmFadeIn">Volume harder </string>
 <string name="alarmVolume">Volume</string>
 <string name="allow_screen_off">Scherm uit</string>
+<string name="allow_screen_off_summary">Scherm uit tijdens de nacht</string>
 <string name="ambient_noise">Omgevingsgeluidsensor</string>
 <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmode voorkomen?</string>
 <string name="appearance">Uiterlijk </string>
@@ -62,6 +63,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">Autohouder</string>
 <string name="handle_power_desk">Bureaustand</string>
 <string name="handle_power_disconnection">Stop automatisch </string>
+<string name="handle_power_disconnection_summary">Afsluiten de app als oplader is verwijderd</string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">Draadloze opladet</string>
 <string name="hide_background_image_in_night_mode">Verbergen</string>
