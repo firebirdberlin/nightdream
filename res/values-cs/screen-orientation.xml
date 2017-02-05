@@ -8,12 +8,11 @@
           <item>9</item>
      </string-array>
 
-
     <string-array name="screenOrientation">
         <item>automaticky</item>
-        <item>na šíøku</item>
+        <item>na šířku</item>
         <item>na výšku</item>
-        <item>obrácenì na šíøku</item>
-        <item>obrácenì na výšku</item>
+        <item>obráceně na šířku</item>
+        <item>obráceně na výšku</item>
     </string-array>
 </resources>

@@ -105,11 +105,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="temperatureUnit">Jednotky pro teplotu</string>
 <string name="translations">Překlady</string>
 <string name="typeface_7_segment">Segmentový displej</string>
-<string name="typeface_roboto_condensed">Roboto zmenšené</string>
-<string name="typeface_roboto_light">Roboto tenké</string>
-<string name="typeface_roboto_medium">Roboto střední</string>
+<string name="typeface_roboto_condensed">Roboto vyšší</string>
+<string name="typeface_roboto_light">Roboto slabé</string>
+<string name="typeface_roboto_medium">Roboto silné</string>
 <string name="typeface_roboto_regular">Roboto normální</string>
-<string name="typeface_roboto_thin">Roboto silné</string>
+<string name="typeface_roboto_thin">Roboto tenké</string>
 <string name="typeface">Písmo</string>
 <string name="use_internal_alarm">Povolit rychlý budík</string>
 <string name="weather_calculation_time">čas předpovědi počasí</string>
