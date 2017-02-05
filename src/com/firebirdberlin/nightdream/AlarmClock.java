@@ -159,6 +159,10 @@ public class AlarmClock extends View {
     }
 
     private void XYtotime(float x, float y) {
+
+        // to be tested: avoid resetting the clock if user only taps on the left corner
+        //if (x < touch_zone_radius && getHeight() - y < touch_zone_radius) return;
+
         int w = getWidth() - 2 * touch_zone_radius;
         int h = new Utility(ctx).getDisplaySize().y - 2 * touch_zone_radius;
 
@@ -168,11 +172,13 @@ public class AlarmClock extends View {
         // the coordinate is negative outside the view
         y *= -1.f;
         y += getHeight();
+        y -= touch_zone_radius;
+        if (y < 0) y = 0;
 
         int hours = (int) (x/w * 24);
         int mins = (int) ((y/h * 60)) / 5 * 5;
         hour = (hours >= 24) ? 23 : hours;
-        min = (mins >= 60) ? 55 : mins;
+        min = (mins >= 60) ? 0 : mins;
     }
 
     @Override
