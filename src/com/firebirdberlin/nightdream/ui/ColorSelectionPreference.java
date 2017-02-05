@@ -60,10 +60,31 @@ public class ColorSelectionPreference extends Preference
                 secondaryColorView.setOnClickListener(this);
                 primaryColorNightView.setOnClickListener(this);
                 secondaryColorNightView.setOnClickListener(this);
+
+                toggleDayNightPreviewMode(summaryParent2);
             }
         }
 
         return preferenceView;
+    }
+
+    private void toggleDayNightPreviewMode(ViewGroup summaryParent2) {
+        View iconDay = summaryParent2.findViewById(R.id.iconDay);
+        iconDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClockLayoutPreviewPreference.setPreviewMode(ClockLayoutPreviewPreference.PreviewMode.DAY);
+                notifyChanged();
+            }
+        });
+        View iconNight = summaryParent2.findViewById(R.id.iconNight);
+        iconNight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClockLayoutPreviewPreference.setPreviewMode(ClockLayoutPreviewPreference.PreviewMode.NIGHT);
+                notifyChanged();
+            }
+        });
     }
 
     @Override

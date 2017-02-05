@@ -21,6 +21,9 @@ public class ClockLayoutPreviewPreference extends Preference {
     private View preferenceView = null;
     private Context context = null;
 
+    public enum PreviewMode {DAY, NIGHT}
+    private static PreviewMode previewMode = PreviewMode.DAY;
+
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -61,7 +64,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         Settings settings = new Settings(getContext());
 
         clockLayout.setTypeface(settings.typeface);
-        clockLayout.setPrimaryColor(settings.clockColor);
+        clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(settings.secondaryColor);
 
         clockLayout.setDateFormat(settings.dateFormat);
@@ -88,5 +91,9 @@ public class ClockLayoutPreviewPreference extends Preference {
             entry.setFakeData();
         }
         return entry;
+    }
+
+    public static void setPreviewMode(PreviewMode previewMode) {
+        ClockLayoutPreviewPreference.previewMode = previewMode;
     }
 }
