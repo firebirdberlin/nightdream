@@ -22,6 +22,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarmFadeIn">Volumen ascendente</string>
 <string name="alarmVolume">Volumen de la alarma</string>
 <string name="allow_screen_off">Apagar pantalla</string>
+<string name="allow_screen_off_summary">Apagar la pantalla durante la noche</string>
 <string name="ambient_noise">Detección de sonidos ambientales</string>
 <string name="ambient_noise_summary">Debería el ruido ambiental impedir que el modo nocturno se active?</string>
 <string name="appearance">Apariencia</string>
@@ -62,6 +63,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">Base de automóvil</string>
 <string name="handle_power_desk">Base de escritorio</string>
 <string name="handle_power_disconnection">Detener automáticamente</string>
+<string name="handle_power_disconnection_summary">Finalizar la aplicación al desconectar la fuente de alimentación</string>
 <string name="handle_power_usb">Conectado al usb</string>
 <string name="handle_power_wireless">Cargador inalámbrico</string>
 <string name="hide_background_image_in_night_mode">Ocultar</string>
