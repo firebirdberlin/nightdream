@@ -19,13 +19,13 @@ Please preserve the xml tags and the utf8 encoding.
 <resources>
 <string name="about">Over</string>
 <string name="alarm">Alarm</string>
-<string name="alarmFadeIn">Volume harder </string>
+<string name="alarmFadeIn">Volume harder</string>
 <string name="alarmVolume">Volume</string>
 <string name="allow_screen_off">Scherm uit</string>
 <string name="allow_screen_off_summary">Scherm uitzetten tijdens de nacht</string>
 <string name="ambient_noise">Omgevingsgeluidsensor</string>
 <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmode voorkomen?</string>
-<string name="appearance">Uiterlijk </string>
+<string name="appearance">Uiterlijk</string>
 <string name="app_name">Nachtklok</string>
 <string name="auto_brightness">Automatische helderheid</string>
 <string name="autostart_timerange_label_end">Eindtijd</string>
@@ -34,7 +34,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="background_black">Zwart</string>
 <string name="background_gradient">Contrast</string>
 <string name="background_image">Afbeelding</string>
-<string name="background_image_select">Selecteer een afbeelding </string>
+<string name="background_image_select">Selecteer een afbeelding</string>
 <string name="behaviour">Gedrag</string>
 <string name="brightness">Helderheid</string>
 <string name="brightness_offset">Helderheid standaard</string>
@@ -45,7 +45,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_primary_color">Accentkleur</string>
 <string name="choose_secondary_color">Tekstkleur</string>
 <string name="colors">Kleur</string>
-<string name="confirm_reset_question">Wil je echt alle instellingen verwijderen? </string>
+<string name="confirm_reset_question">Wil je echt alle instellingen verwijderen?</string>
 <string name="confirm_reset">Reset</string>
 <string name="contribute">Bijdragen</string>
 <string name="contribute_source_code">Broncode</string>
@@ -62,7 +62,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power">Automatisch starten</string>
 <string name="handle_power_car">Stand voor autohouder</string>
 <string name="handle_power_desk">Bureaustand</string>
-<string name="handle_power_disconnection">Stop automatisch </string>
+<string name="handle_power_disconnection">Stop automatisch</string>
 <string name="handle_power_disconnection_summary">Sluit de app af als oplader is verwijderd</string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">Draadloze oplader</string>
@@ -77,8 +77,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="other_apps_tinytimetracker_summary">Hou je werkuren bij</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
 <string name="preview">Voorbeeld</string>
-<string name="purchaseWeatherData">Koop een licentie </string>
-<string name="purchaseWebRadio">Koop een licentie </string>
+<string name="purchaseWeatherData">Koop een licentie</string>
+<string name="purchaseWebRadio">Koop een licentie</string>
 <string name="radio_stream_enabled">Ingeschakeld</string>
 <string name="radio_stream_no_search_results">Geen zoekresultaten</string>
 <string name="radio_stream">Radio streams</string>
@@ -86,22 +86,22 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_start">Start/Stop radio</string>
 <string name="radio_stream_url">Radio stream URL</string>
 <string name="reactivate_on_ambient_light_value">Licht grens</string>
-<string name="reactivate_on_ambient_light_value_summary">Bij bereiken ingestelde helderheid wordt het scherm geactiveerd. </string>
-<string name="reactivate_screen_on_noise">Wakker worden van omgevingsgeluid </string>
+<string name="reactivate_on_ambient_light_value_summary">Bij bereiken ingestelde helderheid wordt het scherm geactiveerd.</string>
+<string name="reactivate_screen_on_noise">Wakker worden van omgevingsgeluid</string>
 <string name="recommend_app_desc">Kies een App om je aanbeveling te delen</string>
-<string name="recommend_app_subject">Ik wil je deze nachtklok aanbevelen </string>
-<string name="recommend">Aanbevolen applicatie </string>
-<string name="reset_to_defaults">Terug naar originele instellingen </string>
+<string name="recommend_app_subject">Ik wil je deze nachtklok aanbevelen</string>
+<string name="recommend">Aanbevolen applicatie</string>
+<string name="reset_to_defaults">Terug naar originele instellingen</string>
 <string name="restless_mode">Beweeg klok over het scherm</string>
 <string name="review_request">Wardeer applicatie a.u.b. Bedankt!</string>
-<string name="screenOrientation">Schermorientatie </string>
+<string name="screenOrientation">Schermorientatie</string>
 <string name="select_alarm_sound">Kies alarmgeluid</string>
 <string name="set_alarm">Stel alarm in</string>
 <string name="show_date">Toon datum</string>
-<string name="show_temperature">Temperatuur </string>
+<string name="show_temperature">Temperatuur</string>
 <string name="show_weather">Toon lokaal weer</string>
 <string name="show_wind_speed">Windsnelheid</string>
-<string name="speedUnit">Eenheid windsnelheid </string>
+<string name="speedUnit">Eenheid windsnelheid</string>
 <string name="temperatureUnit">Eenheid temperatuur</string>
 <string name="translations">Vertalingen</string>
 <string name="typeface_7_segment">7-segment LED</string>
@@ -123,7 +123,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_text3">Sleep over het scherm om helderheid aan te passen. Probeer het nu!</string>
 <string name="welcome_screen_text4">Verander grootte met twee vingers op het scherm</string>
 <string name="welcome_screen_title1">Nachtklok</string>
-<string name="welcome_screen_title2">Voorkeuren </string>
-<string name="welcome_screen_title3">Scherm helderheid </string>
+<string name="welcome_screen_title2">Voorkeuren</string>
+<string name="welcome_screen_title3">Scherm helderheid</string>
 <string name="welcome_screen_title4">Klok groote</string>
 </resources>
