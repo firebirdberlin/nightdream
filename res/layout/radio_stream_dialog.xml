@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="24dp">
-    <EditText
-        android:id="@+id/query_string"
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/radio_stream_query_hint"
-        android:inputType="text"
-        android:imeOptions="actionSearch"
-        />
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/query_string"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/radio_stream_query_hint"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:layout_weight="1" />
+
+        <Button
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/radio_stream_search"
+            android:drawableLeft="@drawable/ic_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/start_search"
+            style="@android:style/Widget.DeviceDefault.Button.Borderless"
+            android:textAllCaps="true"
+            android:textColor="?android:attr/textColorLink" />
+    </LinearLayout>
+
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleLarge"
