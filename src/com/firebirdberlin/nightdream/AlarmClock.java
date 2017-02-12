@@ -37,6 +37,7 @@ public class AlarmClock extends View {
     final private Handler handler = new Handler();
     public boolean isVisible = false;
     private boolean FingerDown;
+    private boolean userChangesAlarmTime = false;
     private boolean FingerDownDeleteAlarm;
     private Context ctx;
     private int customcolor = Color.parseColor("#33B5E5");
@@ -98,34 +99,40 @@ public class AlarmClock extends View {
         float tX = e.getX();
         float tY = e.getY();
 
+        Point click = getClickedPoint(e);
+        Point ll = new Point(0, getHeight()); // lower left corner
+        float dist = distance(click, ll);
 
         // set alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // Allow start only in the lower left corner
-                Point click = getClickedPoint(e);
-                Point ll = new Point(0, getHeight()); // lower left corner
-                float dist = distance(click, ll);
                 if (dist > quiet_zone_size && dist < touch_zone_radius) { // left corner
                     FingerDown = true;
-                    cancelAlarm();
-                    XYtotime(tX,tY);
                     this.invalidate();
                     return true;
                 }
                 return false;
             case MotionEvent.ACTION_MOVE:
                 if (FingerDown == false) return false;
-                XYtotime(tX,tY);
+                if ( dist > touch_zone_radius ) {
+                    userChangesAlarmTime = true;
+                    cancelAlarm();
+                    XYtotime(tX,tY);
+                }
+                else {
+                    userChangesAlarmTime = false;
+                }
                 this.invalidate();
                 break;
             case MotionEvent.ACTION_UP:
                 if (FingerDown == false) return false;
+                if ( dist > touch_zone_radius ) {
+                    XYtotime(tX,tY);
+                    setAlarm();
+                }
                 FingerDown = false;
-
-                XYtotime(tX,tY);
-                setAlarm();
-
+                userChangesAlarmTime = false;
                 this.invalidate();
                 break;
         }
@@ -167,12 +174,11 @@ public class AlarmClock extends View {
 
         // the coordinate is negative outside the view
         y *= -1.f;
-        y += getHeight();
 
         int hours = (int) (x/w * 24);
         int mins = (int) ((y/h * 60)) / 5 * 5;
         hour = (hours >= 24) ? 23 : hours;
-        min = (mins >= 60) ? 55 : mins;
+        min = (mins >= 60) ? 0 : mins;
     }
 
     @Override
@@ -218,7 +224,7 @@ public class AlarmClock extends View {
         }
 
         // right corner
-        if (isAlarmSet() || FingerDown){
+        if (isAlarmSet() || userChangesAlarmTime){
             Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
             Bitmap ic_no_audio = BitmapFactory.decodeResource(res, R.drawable.ic_no_audio);
 
@@ -242,7 +248,7 @@ public class AlarmClock extends View {
             paint.setColorFilter(secondaryColorFilter);
 
             String l = "";
-            if ( FingerDown ) {
+            if ( userChangesAlarmTime ) {
                 l = getTimeFormatted(new SimpleTime(hour, min).getCalendar());
             } else
             if ( isAlarmSet() ) {
@@ -253,7 +259,7 @@ public class AlarmClock extends View {
             float lw = paint.measureText(l);
             float cw = touch_zone_radius - 60;
             if ((touch_zone_radius) <= 100)  cw = 0;
-            if (FingerDown || isAlarmSet()){
+            if (userChangesAlarmTime || isAlarmSet()){
                 paint.setColor(Color.WHITE);
                 canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
             }
