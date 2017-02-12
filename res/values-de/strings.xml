@@ -73,6 +73,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode">Nachtmodus</string>
 <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
 <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
+<string name="screen_orientation_automatic">automatisch</string>
+<string name="screen_orientation_landscape">Querformat</string>
+<string name="screen_orientation_portrait">Hochformat</string>
+<string name="screen_orientation_reverse_landscape">Querformat umgedreht</string>
+<string name="screen_orientation_reverse_portrait">Hochformat umgedreht</string>
 <string name="other_apps">Andere Apps</string>
 <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
 <string name="other_apps_tinytimetracker">Zeiterfassung</string>

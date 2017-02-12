@@ -10,10 +10,10 @@
 
 
     <string-array name="screenOrientation">
-        <item>automatic</item>
-        <item>landscape</item>
-        <item>portrait</item>
-        <item>reverse landscape</item>
-        <item>reverse portrait</item>
+        <item>@string/screen_orientation_automatic</item>
+        <item>@string/screen_orientation_landscape</item>
+        <item>@string/screen_orientation_portrait</item>
+        <item>@string/screen_orientation_reverse_landscape</item>
+        <item>@string/screen_orientation_reverse_portrait</item>
     </string-array>
 </resources>

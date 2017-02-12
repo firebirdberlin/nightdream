@@ -73,6 +73,11 @@ OR
     <string name="night_mode">Night mode</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
+    <string name="screen_orientation_automatic">automatic</string>
+    <string name="screen_orientation_landscape">landscape</string>
+    <string name="screen_orientation_portrait">portrait</string>
+    <string name="screen_orientation_reverse_landscape">reverse landscape</string>
+    <string name="screen_orientation_reverse_portrait">reverse portrait</string>
     <string name="other_apps">Other apps</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
