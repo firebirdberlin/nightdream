@@ -31,7 +31,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="autostart_timerange_label_end">Endzeit</string>
 <string name="autostart_timerange_label_start">Startzeit</string>
 <string name="background">Hintergrund</string>
-<string name="background_black">schwarz</string>
+<string name="background_black">Schwarz</string>
 <string name="background_gradient">Gradient</string>
 <string name="background_image">Bild</string>
 <string name="background_image_select">Bild auswählen</string>
@@ -45,7 +45,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_primary_color">Akzentfarbe</string>
 <string name="choose_secondary_color">Textfarbe</string>
 <string name="colors">Farben</string>
-<string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen ?</string>
+<string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
 <string name="confirm_reset">Zurücksetzen</string>
 <string name="contribute">Beitragen</string>
 <string name="contribute_source_code">Quellcode </string>
@@ -53,7 +53,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="credits">Verdienste </string>
 <string name="date_format">Datumsformat</string>
 <string name="dialog_message_thank_you">Vielen Dank für Ihre Unterstützung.</string>
-<string name="dialog_title_thank_you">Dankeschön</string>
+<string name="dialog_title_thank_you">Dankeschön!</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Spenden</string>
 <string name="force_auto_rotation">Erzwinge Ausrichtung im DayDream</string>
@@ -77,8 +77,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
 <string name="other_apps_tinytimetracker">Zeiterfassung</string>
 <string name="preview">Vorschau</string>
-<string name="purchaseWeatherData">Lizenz kaufen</string>
-<string name="purchaseWebRadio">Lizenz kaufen</string>
+<string name="purchaseWeatherData">Wetterdaten Lizenz kaufen</string>
+<string name="purchaseWebRadio">Web-Radio Lizenz kaufen</string>
 <string name="radio_stream_enabled">Aktiviert</string>
 <string name="radio_stream_no_search_results">Es gab keine Suchergebnisse.</string>
 <string name="radio_stream">Internetradio</string>
