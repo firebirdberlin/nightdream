@@ -149,7 +149,7 @@ public class RadioStreamPreference extends DialogPreference
         spinner.show();
         stationListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
-        String query = queryText.getText().toString();
+        String query = queryText.getText().toString().trim();
         new StationRequestTask(this).execute(query);
 
 

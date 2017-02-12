@@ -88,6 +88,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_no_search_results">Es gab keine Suchergebnisse.</string>
 <string name="radio_stream">Internetradio</string>
 <string name="radio_stream_query_hint">Suchbegriff</string>
+<string name="radio_stream_search">Suchen</string>
 <string name="radio_stream_start">Stream starten/stoppen</string>
 <string name="radio_stream_url">Sendersuche</string>
 <string name="reactivate_on_ambient_light_value">Beleuchtungsschwellwert</string>

@@ -88,6 +88,7 @@ OR
     <string name="radio_stream_no_search_results">There were no search results.</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_query_hint">Search string</string>
+    <string name="radio_stream_search">Search</string>
     <string name="radio_stream_start">Start/stop radio stream</string>
     <string name="radio_stream_url">Radio stream URL</string>
     <string name="reactivate_on_ambient_light_value">Illuminance threshold</string>
