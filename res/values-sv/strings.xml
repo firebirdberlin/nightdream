@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">Om</string>
+<string name="alarm">Alarm</string>
+<string name="alarmFadeIn">Öka volym</string>
+<string name="alarmVolume">Volym</string>
+<string name="allow_screen_off">Släck skärm</string>
+<string name="allow_screen_off_summary">Släck skärm på natten</string>
+<string name="ambient_noise">Känn av ambient ljud</string>
+<string name="ambient_noise_summary">Ska ambient ljud förhindra att nattvila aktiveras?</string>
+<string name="appearance">Utseende</string>
+<string name="app_name">Nattklocka</string>
+<string name="auto_brightness">Automatisk ljusstyrka</string>
+<string name="autostart_timerange_label_end">Sluttid</string>
+<string name="autostart_timerange_label_start">Starttid</string>
+<string name="background">Bakgrund</string>
+<string name="background_black">Svart</string>
+<string name="background_gradient">Gradient</string>
+<string name="background_image">Bild</string>
+<string name="background_image_select">Välj en bild</string>
+<string name="behaviour">Beteende</string>
+<string name="brightness">Ljusstyrka</string>
+<string name="brightness_offset">Förskjuten ljusstyrka</string>
+<string name="buttonAccessibilitySettings">Visa notifieringar</string>
+<string name="category_handle_power">När ansluten till</string>
+<string name="category_handle_power_autostart_time">Starta inom tidsramen</string>
+<string name="choose_alarm_sound">Alarm ton</string>
+<string name="choose_primary_color">Accentfärg</string>
+<string name="choose_secondary_color">Textfärg</string>
+<string name="colors">Färger</string>
+<string name="confirm_reset_question">Vill du verkligen återställa alla inställningar?</string>
+<string name="confirm_reset">Återställ</string>
+<string name="contribute">Bidra</string>
+<string name="contribute_source_code">Källkod</string>
+<string name="contribute_translation">Översättning</string>
+<string name="date_format">Datum format</string>
+<string name="dialog_message_thank_you">Tack så mycket!</string>
+<string name="dialog_title_thank_you">Tack</string>
+<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate">Donera</string>
+<string name="force_auto_rotation">Tvinga rotation i Daydream</string>
+<string name="force_auto_rotation_summary">Tillämpa skärmens rotation om Daydream används.</string>
+<string name="handle_power_ac">AC</string>
+<string name="handle_power">Automatisk start</string>
+<string name="handle_power_car">Bildocka</string>
+<string name="handle_power_desk">Skrivborddocka</string>
+<string name="handle_power_disconnection">Stoppa automatiskt</string>
+<string name="handle_power_disconnection_summary">Stäng av applikationen när strömkälla frånkopplas.</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">Trådlös laddare</string>
+<string name="hide_background_image_in_night_mode">Göm</string>
+<string name="hide_background_image_in_night_mode_summary">Göm bakgrundsbilden i nattvila.</string>
+<string name="location_time">Platstid</string>
+<string name="mute_ringer">Tysta ringning</string>
+<string name="night_mode">Nattläge</string>
+<string name="noise_sensitivity">Mikrofon känslighet</string>
+<string name="notification_alarm">Tryck för att stoppa alarm.</string>
+<string name="other_apps">Andra applikationer</string>
+<string name="other_apps_tinytimetracker_summary">Följ din dagliga arbetstid.</string>
+<string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+<string name="preview">Förhandsvisa</string>
+<string name="purchaseWeatherData">Köp en licens</string>
+<string name="purchaseWebRadio">Köp en licens</string>
+<string name="radio_stream_enabled">Aktiverad</string>
+<string name="radio_stream_no_search_results">Den fanns inga resultat.</string>
+<string name="radio_stream">Radioströmmar</string>
+<string name="radio_stream_start">Starta/stoppa radioströmmar</string>
+<string name="radio_stream_url">Radioström URL</string>
+<string name="reactivate_on_ambient_light_value">Belysningströskel</string>
+<string name="reactivate_on_ambient_light_value_summary">Skärmen är åter aktiverad om belysningströskeln överskrids.</string>
+<string name="reactivate_screen_on_noise">Vakna vid ambient ljud.</string>
+<string name="recommend_app_desc">Välj en app för att dela din rekommendation.</string>
+<string name="recommend_app_subject">Jag skulle vilja rekommendera den här nattklocksappen till dig.</string>
+<string name="recommend">Rekommendera app</string>
+<string name="reset_to_defaults">Återställ till ursprung</string>
+<string name="restless_mode">Flytta runt klockan</string>
+<string name="review_request">Vänligen betygsätt den här applikationen. Tack!</string>
+<string name="screenOrientation">Skärmrotation</string>
+<string name="select_alarm_sound">Välj alarmljud</string>
+<string name="set_alarm">Ställ alarm</string>
+<string name="show_date">Visa datum</string>
+<string name="show_temperature">Visa temperatur</string>
+<string name="show_weather">Visa lokalt väder</string>
+<string name="show_wind_speed">Visa vindhastighet</string>
+<string name="speedUnit">Enhet för vindhastighet</string>
+<string name="temperatureUnit">Enhet för temperatur</string>
+<string name="translations">Översättning</string>
+<string name="typeface_7_segment">7-segments LED</string>
+<string name="typeface_roboto_condensed">Roboto kondenserad</string>
+<string name="typeface_roboto_light">Roboto ljus</string>
+<string name="typeface_roboto_medium">Roboto medium</string>
+<string name="typeface_roboto_regular">Roboto normal</string>
+<string name="typeface_roboto_thin">Roboto tunn</string>
+<string name="typeface">Typsnitt</string>
+<string name="use_internal_alarm">Snabbalarm</string>
+<string name="weather_calculation_time">Väder beräkningstid</string>
+<string name="weather_city_id_summary">Öppna väderkarta stads ID. Lämna blankt för automatiskt detektion av plats.</string>
+<string name="weather_city_id_title">Stads ID</string>
+<string name="weather_info_title">Information</string>
+<string name="weather_search_city_id">Sök stads ID</string>
+<string name="weather">Väder</string>
+<string name="welcome_screen_text1">Välkommen till din nya nattklocksappen! Den här appen visar aktuell tid när din mobil laddas.</string>
+<string name="welcome_screen_text2">Öppna inställningar här!</string>
+<string name="welcome_screen_text3">Tryck och svep för att ändra skärmens ljusstyrka. Testa nu!</string>
+<string name="welcome_screen_text4">Ändra storlek genom att nypa med fingrarna.</string>
+<string name="welcome_screen_title1">Nattklocka</string>
+<string name="welcome_screen_title2">Inställningar</string>
+<string name="welcome_screen_title3">Skärmens ljusstyrka</string>
+<string name="welcome_screen_title4">Klockans storlek</string>
+</resources>
