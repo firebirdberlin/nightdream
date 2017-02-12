@@ -7,6 +7,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -15,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -36,6 +39,7 @@ public class RadioStreamPreference extends DialogPreference
     private ListView stationListView;
     private TextView noResultsText;
     private ContentLoadingProgressBar spinner;
+    private Button searchButton;
 
     public RadioStreamPreference(Context ctx) {
         this(ctx, null);
@@ -91,17 +95,7 @@ public class RadioStreamPreference extends DialogPreference
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    spinner.show();
-                    stationListView.setVisibility(View.GONE);
-                    noResultsText.setVisibility(View.GONE);
-                    String query = v.getText().toString();
-                    new StationRequestTask(context).execute(query);
-
-
-                    InputMethodManager imm =
-                        (InputMethodManager) v.getContext()
-                                              .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    startSearch();
                     return true;
                 }
                 return false;
@@ -121,14 +115,56 @@ public class RadioStreamPreference extends DialogPreference
             }
         });
 
+        searchButton = ((Button) v.findViewById(R.id.start_search));
+        searchButton.setEnabled(false);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startSearch();
+            }
+        });
+
+        queryText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchButton.setEnabled(queryText.getText().length() > 0 );
+            }
+        });
+
         return v;
+    }
+
+    private void startSearch() {
+        spinner.show();
+        stationListView.setVisibility(View.GONE);
+        noResultsText.setVisibility(View.GONE);
+        String query = queryText.getText().toString();
+        new StationRequestTask(this).execute(query);
+
+
+        InputMethodManager imm =
+                (InputMethodManager) queryText.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
+        searchButton.setEnabled(false);
     }
 
     @Override
     public void onRequestFinished(List<RadioStation> stations){
         this.stations.clear();
         this.stations.addAll(stations);
-        Log.i(TAG, String.format("Request finished with %d entries", this.stations.size()));
+        //Log.i(TAG, String.format("Request finished with %d entries", this.stations.size()));
         ((ArrayAdapter) stationListView.getAdapter()).notifyDataSetChanged();
         spinner.hide();
         stationListView.setVisibility((stations.size() == 0) ? View.GONE : View.VISIBLE);
