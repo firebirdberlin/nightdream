@@ -436,10 +436,20 @@ cs - Tomáš Holub\n
 de - Stefan Fruhner et. al.\n
 es - Romina Ramírez et. al.\n
 fr - Michel Dumont\n
+he - Nati Rubinstein"/>
+
+                <Preference
+                    android:key="translations2"
+                    android:selectable="false"
+                    android:enabled="true"
+                    android:summary="
 hr - Tomislav Gal\n
+hu - Szabados János\n
 nl - Leo van der Meulen et. al.\n
 pl - Wojciech Mudyn et. al.\n
-ro - Lucian Balaj"/>
+ro - Lucian Balaj\n
+sk - Martin Renko\n
+sv - Johnny Wahlberg"/>
 
                 <Preference
                     android:icon="@drawable/ic_icons8"
