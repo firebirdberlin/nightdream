@@ -75,6 +75,7 @@ public class NightDreamUI {
     final private Handler handler = new Handler();
     private int mode = 2;
     private boolean isDebuggable;
+    private BatteryValue batteryValue;
     private Context mContext;
     private Drawable bgshape;
     private Drawable bgblack;
@@ -406,9 +407,8 @@ public class NightDreamUI {
 
     public void setupScreenAnimation() {
         BatteryStats battery = new BatteryStats(mContext);
-        BatteryValue batteryValue = battery.reference;
-        long now = System.currentTimeMillis();
-        if (batteryValue.isCharging) {
+        this.batteryValue = battery.reference;
+        if (this.batteryValue.isCharging) {
             screen_alpha_animation_duration = 3000;
             screen_transition_animation_duration = 10000;
         } else {
@@ -705,7 +705,9 @@ public class NightDreamUI {
                handler.postDelayed(hideAlarmClock, 20000);
                return;
            }
-           setAlpha(batteryView, 0.f, 2000);
+           if (! batteryValue.isCharging || batteryValue.getPercentage() > 95.f ) {
+               setAlpha(batteryView, 0.f, 2000);
+           }
            setAlpha(settingsIcon, 0.f, 2000);
            setAlpha(radioIcon, 0.f, 2000);
            alarmClock.isVisible = false;
