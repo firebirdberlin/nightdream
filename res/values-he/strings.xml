@@ -73,6 +73,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode">מצב לילה</string>
 <string name="noise_sensitivity">רגישות מיקרופון</string>
 <string name="notification_alarm">לחץ להפסקת הצלצול</string>
+<string name="screen_orientation_automatic">אוטומטי</string>
+<string name="screen_orientation_landscape">לרוחב</string>
+<string name="screen_orientation_portrait">לאורך</string>
+<string name="screen_orientation_reverse_landscape">לרוחב הפוך</string>
+<string name="screen_orientation_reverse_portrait">לאורך הפוך</string>
 <string name="other_apps">אפליקציות אחרות</string>
 <string name="other_apps_tinytimetracker_summary">עקוב אחר שעות העבודה היומיות שלך</string>
 <string name="other_apps_tinytimetracker">עוקב זמן זעיר</string>
@@ -83,6 +88,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_no_search_results">לא נמצאו תוצאות</string>
 <string name="radio_stream">הזרמת תחנות רדיו</string>
 <string name="radio_stream_query_hint">טקסט חיפוש</string>
+<string name="radio_stream_search">חפש</string>
 <string name="radio_stream_start">הפעל/כבה הזרמת רדיו</string>
 <string name="radio_stream_url">כתובת הזרמת רדיו</string>
 <string name="reactivate_on_ambient_light_value">סף רמת התאורה</string>
