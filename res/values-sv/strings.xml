@@ -50,6 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute">Bidra</string>
 <string name="contribute_source_code">Källkod</string>
 <string name="contribute_translation">Översättning</string>
+<string name="credits">Credits</string>
 <string name="date_format">Datum format</string>
 <string name="dialog_message_thank_you">Tack så mycket!</string>
 <string name="dialog_title_thank_you">Tack</string>
@@ -72,6 +73,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode">Nattläge</string>
 <string name="noise_sensitivity">Mikrofon känslighet</string>
 <string name="notification_alarm">Tryck för att stoppa alarm.</string>
+<string name="screen_orientation_automatic">Automatisk</string>
+<string name="screen_orientation_landscape">landscape</string>
+<string name="screen_orientation_portrait">porträtt</string>
+<string name="screen_orientation_reverse_landscape">Omvänt landskap</string>
+<string name="screen_orientation_reverse_portrait">Omvänt porträtt</string>
 <string name="other_apps">Andra applikationer</string>
 <string name="other_apps_tinytimetracker_summary">Följ din dagliga arbetstid.</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -81,6 +87,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_enabled">Aktiverad</string>
 <string name="radio_stream_no_search_results">Den fanns inga resultat.</string>
 <string name="radio_stream">Radioströmmar</string>
+<string name="radio_stream_query_hint">Söksträng</string>
+<string name="radio_stream_search">Sök</string>
 <string name="radio_stream_start">Starta/stoppa radioströmmar</string>
 <string name="radio_stream_url">Radioström URL</string>
 <string name="reactivate_on_ambient_light_value">Belysningströskel</string>
