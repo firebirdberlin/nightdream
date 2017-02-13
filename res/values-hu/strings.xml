@@ -73,6 +73,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode">Éjszakai üzemmód</string>
 <string name="noise_sensitivity">Mikrofon érzékenység</string>
 <string name="notification_alarm">Kattints, az ébresztő leállításához.</string>
+<string name="screen_orientation_automatic">Automatikus</string>
+<string name="screen_orientation_landscape">Tájkép</string>
+<string name="screen_orientation_portrait">Portré</string>
+<string name="screen_orientation_reverse_landscape">Fordított tájkép</string>
+<string name="screen_orientation_reverse_portrait">Fordított portré</string>
 <string name="other_apps">További alkalmazások</string>
 <string name="other_apps_tinytimetracker_summary">Kövesd nyomon a napi munkaidőt.</string>
 <string name="other_apps_tinytimetracker">ApróIdőNyomonkövető</string>
@@ -83,6 +88,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_no_search_results">Nem volt keresési eredmény.</string>
 <string name="radio_stream">Rádióadások</string>
 <string name="radio_stream_query_hint">Sor keresése</string>
+<string name="radio_stream_search">Keresés</string>
 <string name="radio_stream_start">Rádióadás Indítása/Leállítása</string>
 <string name="radio_stream_url">Rádióadás URL</string>
 <string name="reactivate_on_ambient_light_value">Megvilágítás határértéke</string>
