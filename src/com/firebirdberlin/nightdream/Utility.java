@@ -70,6 +70,9 @@ public class Utility{
         return ( 0 != ( mContext.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
     }
 
+    public static boolean isDebuggable(Context context){
+        return ( 0 != ( context.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
+    }
 
     public int getStatusBarHeight() {
       int result = 0;

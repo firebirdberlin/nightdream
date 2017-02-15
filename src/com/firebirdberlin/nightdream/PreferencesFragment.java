@@ -97,6 +97,11 @@ public class PreferencesFragment extends PreferenceFragment {
     };
 
     private void getPurchases() {
+        if ( Utility.isDebuggable(mContext) ) {
+            purchased_donation = true;
+            purchased_weather_data = true;
+            purchased_web_radio = true;
+        }
         if (mService == null || getActivity() == null) {
             return;
         }
