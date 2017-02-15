@@ -65,7 +65,9 @@ import com.firebirdberlin.nightdream.events.OnLocationUpdated;
 import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.WeatherService;
+import com.firebirdberlin.nightdream.ui.BatteryView;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
+
 
 public class NightDreamUI {
     private static String TAG ="NightDreamUI";
@@ -75,6 +77,7 @@ public class NightDreamUI {
     final private Handler handler = new Handler();
     private int mode = 2;
     private boolean isDebuggable;
+    private boolean controlsVisible = false;
     private BatteryValue batteryValue;
     private Context mContext;
     private Drawable bgshape;
@@ -92,7 +95,7 @@ public class NightDreamUI {
     private Settings settings = null;
     private SoundMeter soundmeter;
     private ProgressBar brightnessProgress = null;
-    private TextView batteryView = null;
+    private BatteryView batteryView = null;
     private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility = null;
     private View rootView = null;
@@ -115,7 +118,7 @@ public class NightDreamUI {
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
-        batteryView = (TextView) rootView.findViewById(R.id.batteryView);
+        batteryView = (BatteryView) rootView.findViewById(R.id.batteryView);
         clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
@@ -159,6 +162,7 @@ public class NightDreamUI {
     public void onStart() {
         setAlpha(settingsIcon, .5f, 100);
         setAlpha(radioIcon, .5f, 100);
+        updateBatteryValue();
         updateBatteryView();
         handler.postDelayed(moveAround, 30000);
     }
@@ -185,6 +189,7 @@ public class NightDreamUI {
         setColor();
         setupBackgroundImage();
         setupAlarmClock();
+        setupScreenAnimation();
 
         if (settings.useAmbientNoiseDetection()){
             soundmeter = new SoundMeter(isDebuggable);
@@ -376,33 +381,12 @@ public class NightDreamUI {
 
     public void updateBatteryView() {
         BatteryValue reference = settings.loadBatteryReference();
-        BatteryStats battery = new BatteryStats(mContext);
-        BatteryValue batteryValue = battery.reference;
-        float percentage = batteryValue.getPercentage();
-        if (batteryValue.isCharging) {
-            if (percentage < 95.){
-                long est = batteryValue.getEstimateMillis(reference)/1000; // estimated seconds
-                formatBatteryEstimate(percentage, est);
-            }  else {
-                batteryView.setText(String.format("%3d %%", (int) percentage));
-            }
-        } else { // not charging
-            long est = batteryValue.getDischargingEstimateMillis(reference)/1000; // estimated seconds
-            formatBatteryEstimate(percentage, est);
-        }
-        batteryView.setVisibility(View.VISIBLE);
+        batteryView.update(batteryValue, reference);
     }
 
-    private void formatBatteryEstimate(float percentage, long est) {
-        Log.i(TAG, String.valueOf(est));
-        if (est > 0){
-            long h = est / 3600;
-            long m  = ( est % 3600 ) / 60;
-            batteryView.setText(String.format("% 3d %% -- %02d:%02d",
-                                              (int) percentage, (int) h, (int) m));
-        } else {
-            batteryView.setText(String.format("%3d %%", (int) percentage));
-        }
+    public void updateBatteryValue() {
+        BatteryStats battery = new BatteryStats(mContext);
+        this.batteryValue = battery.reference;
     }
 
     public void setupScreenAnimation() {
@@ -527,9 +511,17 @@ public class NightDreamUI {
                 setAlpha(alarmTime, v, millis);
             }
             v = to_range(v, 0.6f, 1.f);
-            setAlpha(batteryView, v, millis);
             setAlpha(settingsIcon, v, millis);
             setAlpha(radioIcon, v, millis);
+        }
+
+        updateBatteryValue();
+        if ( controlsVisible || batteryView.shallBeVisible(this.batteryValue) ) {
+            updateBatteryView();
+            v = to_range(v, 0.6f, 1.f);
+            setAlpha(batteryView, v, millis);
+        } else {
+            setAlpha(batteryView, 0.0f, millis);
         }
 
         if ( mode == 0 ) {
@@ -705,7 +697,7 @@ public class NightDreamUI {
                handler.postDelayed(hideAlarmClock, 20000);
                return;
            }
-           if (! batteryValue.isCharging || batteryValue.getPercentage() > 95.f ) {
+           if (! batteryView.shallBeVisible(batteryValue) ) {
                setAlpha(batteryView, 0.f, 2000);
            }
            setAlpha(settingsIcon, 0.f, 2000);
@@ -715,11 +707,13 @@ public class NightDreamUI {
            alarmTime.setClickable(false);
            setAlpha(alarmClock, 0.f, 2000);
            setAlpha(alarmTime, 0.f, 2000);
+           controlsVisible = false;
        }
     };
 
     public void onClockClicked() {
         brightnessProgress.setVisibility(View.INVISIBLE);
+        updateBatteryValue();
         updateBatteryView();
         showAlarmClock();
     }
@@ -727,7 +721,7 @@ public class NightDreamUI {
     public void showAlarmClock() {
         removeCallbacks(hideAlarmClock);
         handler.postDelayed(hideAlarmClock, 20000);
-
+        controlsVisible = true;
         setupAlarmClock();
         alarmClock.invalidate();
         dimScreen(0, last_ambient, settings.dim_offset);
@@ -828,6 +822,7 @@ public class NightDreamUI {
         Point click = new Point((int) e.getX(),(int) e.getY());
         Point size = utility.getDisplaySize();
 
+        updateBatteryValue();
         updateBatteryView();
 
         // handle the visibility of the alarm clock
