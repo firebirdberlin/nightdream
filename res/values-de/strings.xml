@@ -97,6 +97,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend_app_desc">Wählen Sie eine App aus, mit der Sie Ihre Empfehlung posten möchten.</string>
 <string name="recommend_app_subject">Ich möchte diese Nachtuhr empfehlen.</string>
 <string name="recommend">Weiterempfehlen</string>
+<string name="remaining">übrig</string>
 <string name="reset_to_defaults">Einstellungen zurücksetzen</string>
 <string name="restless_mode">Uhr bewegen</string>
 <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>

@@ -41,7 +41,9 @@
                 android:layout_height="wrap_content"
                 android:textColor="#C2C2C2"
                 android:text=""
-                android:textSize="30sp"/>
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:textSize="20sp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
