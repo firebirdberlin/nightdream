@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -85,7 +84,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             playStream();
         } else
         if ( ACTION_STOP.equals(action) ) {
-            handler.post(timeout);
+            stopSelf();
         }
 
         return Service.START_REDELIVER_INTENT;
@@ -96,19 +95,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.d(TAG,"onDestroy() called.");
 
         handler.removeCallbacks(fadeIn);
-        handler.removeCallbacks(timeout);
         stopPlaying();
         stopForeground(false); // bool: true = remove Notification
         isRunning = false;
         alarmIsRunning = false;
     }
-
-    private Runnable timeout = new Runnable() {
-        @Override
-        public void run() {
-            stopSelf();
-        }
-    };
 
     private Runnable fadeIn = new Runnable() {
         @Override
@@ -165,7 +156,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
         if ( alarmIsRunning ) {
             AlarmService.startAlarm(this);
-            handler.post(timeout);
+            stopSelf();
+            return true;
         }
         return false;
     }
