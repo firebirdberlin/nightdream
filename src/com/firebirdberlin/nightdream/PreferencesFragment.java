@@ -30,6 +30,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.MediaStore;
@@ -101,6 +102,8 @@ public class PreferencesFragment extends PreferenceFragment {
             purchased_donation = true;
             purchased_weather_data = true;
             purchased_web_radio = true;
+            togglePurchasePreferences();
+            return;
         }
         if (mService == null || getActivity() == null) {
             return;
@@ -171,24 +174,22 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
         Preference useRadioAlarmClockPreference = (Preference) findPreference("useRadioAlarmClock");
 
-        donationPreference.setEnabled(! purchased_donation);
-        purchaseWeatherDataPreference.setEnabled(! purchased_weather_data);
-        purchaseWebRadioPreference.setEnabled(! purchased_web_radio);
         enableWeatherDataPreference.setEnabled(purchased_weather_data);
         useRadioAlarmClockPreference.setEnabled(purchased_web_radio);
 
-        donationPreference.setSummary("");
-        purchaseWeatherDataPreference.setSummary("");
-        purchaseWebRadioPreference.setSummary("");
-
         if (purchased_donation) {
-            donationPreference.setSummary(R.string.dialog_message_thank_you);
+            PreferenceCategory category = (PreferenceCategory) findPreference("donation_screen");
+            category.removePreference(donationPreference);
         }
+
         if (purchased_weather_data) {
-            purchaseWeatherDataPreference.setSummary(R.string.dialog_message_thank_you);
+            PreferenceScreen screen = (PreferenceScreen) findPreference("weather_screen");
+            screen.removePreference(purchaseWeatherDataPreference);
         }
+
         if (purchased_web_radio) {
-            purchaseWebRadioPreference.setSummary(R.string.dialog_message_thank_you);
+            PreferenceCategory categoryRadio = (PreferenceCategory) findPreference("category_radio_stream");
+            categoryRadio.removePreference(purchaseWebRadioPreference);
         }
     }
 

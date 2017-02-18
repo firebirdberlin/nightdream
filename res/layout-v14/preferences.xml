@@ -262,13 +262,12 @@
 
             <PreferenceCategory
                 android:title="@string/radio_stream"
-                key="category_radio_stream">
+                android:key="category_radio_stream">
 
                 <Preference
                     android:key="purchaseWebRadio"
                     android:icon="@drawable/ic_googleplay"
-                    android:title="@string/purchaseWebRadio"
-                    android:enabled="false"/>
+                    android:title="@string/purchaseWebRadio"/>
 
                 <SwitchPreference
                     android:key="useRadioAlarmClock"
@@ -299,8 +298,7 @@
             <Preference
                 android:key="purchaseWeatherData"
                 android:icon="@drawable/ic_googleplay"
-                android:title="@string/purchaseWeatherData"
-                android:enabled="false"/>
+                android:title="@string/purchaseWeatherData"/>
 
             <SwitchPreference
                 android:key="showWeather"
@@ -404,12 +402,13 @@
                 </Preference>
             </PreferenceCategory>
 
-            <PreferenceCategory android:title="@string/donate">
+            <PreferenceCategory
+                android:title="@string/donate"
+                android:key="donation_screen">
                 <Preference
                     android:key="donation_play"
                     android:icon="@drawable/ic_googleplay"
-                    android:title="@string/donate"
-                    android:enabled="false"/>
+                    android:title="@string/donate"/>
 
                 <de.firebirdberlin.preference.BitcoinDonationPreference
                     android:icon="@drawable/ic_bitcoin"
