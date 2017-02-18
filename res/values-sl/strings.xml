@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">O programu</string>
+<string name="alarm">Alarm</string>
+<string name="alarmFadeIn">Povecaj glasnost</string>
+<string name="alarmVolume">Glasnost</string>
+<string name="allow_screen_off_summary">Izklopi ekran ponoci</string>
+<string name="allow_screen_off">Izklopi ekran</string>
+<string name="ambient_noise">Detekcija zvoka ozadja</string>
+<string name="ambient_noise_summary">Ali naj zvok v ozadju prepreci izvajanje v night mode?</string>
+<string name="appearance">Izgled</string>
+<string name="app_name">Nocna ura</string>
+<string name="auto_brightness">Avtomatska osvetlitev</string>
+<string name="autostart_timerange_label_end">Koncni cas</string>
+<string name="autostart_timerange_label_start">Zacetni cas</string>
+<string name="background">Ozadje</string>
+<string name="background_black">Crno</string>
+<string name="background_gradient">Barva ozadja</string>
+<string name="background_image">Slika</string>
+<string name="background_image_select">Izbeti sliko</string>
+<string name="behaviour">Onasanje</string>
+<string name="brightness">Svetlost</string>
+<string name="brightness_offset">Ofset svetlosti</string>
+<string name="buttonAccessibilitySettings">Prikazi obvestila</string>
+<string name="category_handle_power">... in ko je povezava z</string>
+<string name="category_handle_power_autostart_time">Zacni v dolocenem casu</string>
+<string name="choose_alarm_sound">Ton alarma</string>
+<string name="choose_primary_color">Barva prikaza</string>
+<string name="choose_secondary_color">Barva teksta</string>
+<string name="colors">Barve</string>
+<string name="confirm_reset_question">Ali zelite ponastaviti nastavitve ?</string>
+<string name="confirm_reset">Ponastavitev</string>
+<string name="contribute">Zahvala</string>
+<string name="contribute_source_code">Varnostna koda</string>
+<string name="contribute_translation">Prevod</string>
+<string name="credits">Zasluge</string>
+<string name="date_format">Format datuma</string>
+<string name="dialog_message_thank_you">Najlepsa hvala!</string>
+<string name="dialog_title_thank_you">Hvala</string>
+<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate">Donirati</string>
+<string name="force_auto_rotation">Vsili vrtenje v Daydream</string>
+<string name="force_auto_rotation_summary">Dopusti vrtenje zaslona ce je v uporabi Daydream</string>
+<string name="handle_power_ac">AC</string>
+<string name="handle_power">Avtomatski zagon</string>
+<string name="handle_power_car">Avto polnilec</string>
+<string name="handle_power_desk">Namizni polnilec</string>
+<string name="handle_power_disconnection">Avtomatska zaustavitev</string>
+<string name="handle_power_disconnection_summary">Prekini aplikacijo ob prekinitvi polnjenja</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">Brezzicno polnenje</string>
+<string name="hide_background_image_in_night_mode">Skrij</string>
+<string name="hide_background_image_in_night_mode_summary">Skrij sliko ozadja v night mode</string>
+<string name="hour">h</string>
+<string name="location_time">Lokalni cas</string>
+<string name="minute">min</string>
+<string name="mute_ringer">Izklopi zvonenje</string>
+<string name="night_mode">Night mode</string>
+<string name="noise_sensitivity">Obcutljivost mikrofona</string>
+<string name="notification_alarm">Pritisni za izklop alarma</string>
+<string name="other_apps">Ostale aplikacije</string>
+<string name="other_apps_tinytimetracker_summary">Spremljaj dnevni delovni cad</string>
+<string name="other_apps_tinytimetracker">TinyTimeTracket</string>
+<string name="preview">Predogled</string>
+<string name="purchaseWeatherData">Kupi licenco</string>
+<string name="purchaseWebRadio">Kupi licenco</string>
+<string name="radio_stream_enabled">Omogoceno</string>
+<string name="radio_stream_no_search_results">Ni zadetkov iskanja</string>
+<string name="radio_stream_query_hint">Iskalni niz</string>
+<string name="radio_stream">Radijsko oddajanje</string>
+<string name="radio_stream_search">Isci</string>
+<string name="radio_stream_start">Vklop/Izklop radijskega odajanja</string>
+<string name="radio_stream_url">Radijsko oddajanje URL</string>
+<string name="reactivate_on_ambient_light_value">Osvetljenost</string>
+<string name="reactivate_on_ambient_light_value_summary">Ponovni vklop ekrana ce je presezena stopnja osvetlitve</string>
+<string name="reactivate_screen_on_noise">Prebudi se ob zvoku iz ozadja</string>
+<string name="recommend_app_desc">Izberi aplikacijo za delitev priporocila</string>
+<string name="recommend_app_subject">Priporocil bi vam aplikacijo nocne ure</string>
+<string name="recommend">Priporocena aplikacija</string>
+<string name="remaining">Ostanek</string>
+<string name="reset_to_defaults">Ponastavitev na prednastavljene nastavitve</string>
+<string name="restless_mode">Premikaj uro</string>
+<string name="review_request">Prosim oceni to aplikacijo</string>
+<string name="screen_orientation_automatic">Avtomatsko</string>
+<string name="screen_orientation_landscape">Lezece</string>
+<string name="screen_orientation_portrait">Pokoncno</string>
+<string name="screen_orientation_reverse_landscape">Obratno lezece</string>
+<string name="screen_orientation_reverse_portrait">Obratno pokoncno</string>
+<string name="screenOrientation">Zasuk ekrana</string>
+<string name="select_alarm_sound">Izberi zvok alarma</string>
+<string name="set_alarm">Nastavi alarm</string>
+<string name="show_date">Prikazi datum</string>
+<string name="show_temperature">Prikazi temperaturo</string>
+<string name="show_weather">Prikazi lokalno vreme</string>
+<string name="show_wind_speed">Prikazi hitrost vetra</string>
+<string name="speedUnit">Enota za hitrost vetra</string>
+<string name="temperatureUnit">Enota za temperaturo</string>
+<string name="translations">Prevod</string>
+<string name="typeface_7_segment">7-segmentni LED</string>
+<string name="typeface_roboto_condensed">Roboto kondenzirano</string>
+<string name="typeface_roboto_light">Roboto lahko</string>
+<string name="typeface_roboto_medium">Roboto srednje</string>
+<string name="typeface_roboto_regular">Roboto normalno</string>
+<string name="typeface_roboto_thin">Roboto tanko</string>
+<string name="typeface">Typeface</string>
+<string name="use_internal_alarm">Hitri alarm</string>
+<string name="weather_calculation_time">Vremenski preracun casa</string>
+<string name="weather_city_id_summary">Odpri vremensko karto z kodo Mesta. Pusti prazno za avtomatkodetekcino lokacije.</string>
+<string name="weather_city_id_title">Koda Mesta</string>
+<string name="weather_info_title">Informacije</string>
+<string name="weather_search_city_id">Poisci kodo Mesta</string>
+<string name="weather">Vreme</string>
+<string name="welcome_screen_text1">Dobrodosel v tvoji novi aplikaciji nocna ura ! Ta aplikacija prikazuje trenutni cas med polnjenjem telefona.</string>
+<string name="welcome_screen_text2">Tukaj odpri nastavitve !</string>
+<string name="welcome_screen_text3">Pritisni in podrsaj za spremembo osvetlitve. Preizkusi !</string>
+<string name="welcome_screen_text4">Povecaj uro z uporabo zooma dveh prstov</string>
+<string name="welcome_screen_title1">Nocna ura</string>
+<string name="welcome_screen_title2">Preference</string>
+<string name="welcome_screen_title3">Osvetljenost zaslona</string>
+<string name="welcome_screen_title4">Velikost ure</string>
+</resources>
