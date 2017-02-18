@@ -429,15 +429,22 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private void scheduleShutdown() {
         if (mySettings == null) return;
 
+        Calendar start = new SimpleTime(mySettings.autostartTimeRangeStart).getCalendar();
+        Calendar end = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
+        if( start.equals(end)) {
+            cancelShutdown();
+            return;
+        }
+
         if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
             PendingIntent pendingIntent = getShutdownIntent();
             Calendar calendar = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-              if (Build.VERSION.SDK_INT >= 19){
-                  alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-              } else {
-                  deprecatedSetAlarm(calendar, pendingIntent);
-              }
+            if (Build.VERSION.SDK_INT >= 19){
+                alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+            } else {
+                deprecatedSetAlarm(calendar, pendingIntent);
+            }
         } else {
             cancelShutdown();
         }
