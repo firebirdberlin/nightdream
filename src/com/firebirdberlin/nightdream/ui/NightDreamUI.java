@@ -515,7 +515,6 @@ public class NightDreamUI {
             setAlpha(radioIcon, v, millis);
         }
 
-        updateBatteryValue();
         if ( controlsVisible || batteryView.shallBeVisible(this.batteryValue) ) {
             updateBatteryView();
             v = to_range(v, 0.6f, 1.f);
@@ -668,6 +667,8 @@ public class NightDreamUI {
        public void run() {
            removeCallbacks(hideBrightnessLevel);
            setupScreenAnimation();
+           updateBatteryValue();
+           updateBatteryView();
            updateClockPosition();
            updateWeatherData();
 

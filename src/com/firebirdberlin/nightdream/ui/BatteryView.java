@@ -52,10 +52,10 @@ public class BatteryView extends TextView {
             String hour = "";
             String min = "";
             if ( h > 0L ) {
-                hour = String.format("%d %s ", h, context.getString(R.string.hour));
+                hour = String.format("%d%s ", h, context.getString(R.string.hour));
             }
             if ( m > 0L ) {
-                min = String.format("%d %s ", m, context.getString(R.string.minute));
+                min = String.format("%d%s ", m, context.getString(R.string.minute));
             }
 
             return String.format(" (%s%s%s)", hour, min, context.getString(R.string.remaining));
