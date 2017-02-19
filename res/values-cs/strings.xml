@@ -73,6 +73,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode">Noční režim</string>
 <string name="noise_sensitivity">Citlivost mikrofonu</string>
 <string name="notification_alarm">Kliknout pro zastavení budíku</string>
+<string name="screen_orientation_automatic">automaticky</string>
+<string name="screen_orientation_landscape">na šířku</string>
+<string name="screen_orientation_portrait">na výšku</string>
+<string name="screen_orientation_reverse_landscape">obráceně na šířku</string>
+<string name="screen_orientation_reverse_portrait">obráceně na výšku</string>
 <string name="other_apps">Ostatní aplikace</string>
 <string name="other_apps_tinytimetracker_summary">Sleduje váš denní pracovní režim</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -83,6 +88,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_no_search_results">Nic nenalezeno.</string>
 <string name="radio_stream">Radiová vysílání</string>
 <string name="radio_stream_query_hint">Vyhledat text</string>
+<string name="radio_stream_search">Hledání</string>
 <string name="radio_stream_start">Spustit/zastavit vysílání rádia</string>
 <string name="radio_stream_url">URL rádiového vysílání</string>
 <string name="reactivate_on_ambient_light_value">Práh osvětlení</string>
