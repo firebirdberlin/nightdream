@@ -1,6 +1,5 @@
-all:
+release:
 	ant -f Pro_build.xml release
-	make install OPT="$(OPT)"
 
 debug:
 	ant -f Pro_build.xml debug
