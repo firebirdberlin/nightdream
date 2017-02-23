@@ -387,13 +387,12 @@ public class NightDreamUI {
     }
 
     public void updateBatteryValue() {
+        Log.d(TAG, "updating battery value");
         BatteryStats battery = new BatteryStats(mContext);
         this.batteryValue = battery.reference;
     }
 
     public void setupScreenAnimation() {
-        BatteryStats battery = new BatteryStats(mContext);
-        this.batteryValue = battery.reference;
         if (this.batteryValue.isCharging) {
             screen_alpha_animation_duration = 3000;
             screen_transition_animation_duration = 10000;
@@ -668,8 +667,8 @@ public class NightDreamUI {
        @Override
        public void run() {
            removeCallbacks(hideBrightnessLevel);
-           setupScreenAnimation();
            updateBatteryValue();
+           setupScreenAnimation();
            updateBatteryView();
            updateClockPosition();
            updateWeatherData();
