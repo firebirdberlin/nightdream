@@ -40,54 +40,46 @@
                     android:textSize="20sp"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/radio_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="radio"
-                    android:alpha="0.0"
-                    android:src="@drawable/ic_radio"
-                    android:onClick="onRadioClick"
-                    android:clickable="true"
-                    android:visibility="gone"/>
-
-                <ImageView
-                    android:id="@+id/settings_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="settings"
-                    android:alpha="0.0"
-                    android:src="@drawable/ic_settings"
-                    android:onClick="onSettingsClick"
-                    android:clickable="true"/>
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <FrameLayout
-                android:id="@+id/clockLayoutContainer"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_width="match_parent">
-
-            <include layout="@layout/notification_bar" />
-            <!--
-                date and time
-            -->
-            <com.firebirdberlin.nightdream.ui.ClockLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/clockLayout"
-                android:orientation="vertical"
+            <ImageView
+                android:id="@+id/settings_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:translationX="0sp"
-                android:translationY="0sp"
-                android:layout_gravity="center"
-                android:background="#44000000"
-                />
+                android:contentDescription="settings"
+                android:alpha="0.0"
+                android:src="@drawable/ic_settings"
+                android:onClick="onSettingsClick"
+                android:clickable="true"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent">
+
+            <FrameLayout
+                android:id="@+id/clockLayoutContainer"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent">
+
+                <include layout="@layout/notification_bar" />
+
+                <!--
+                    date and time
+                -->
+                <com.firebirdberlin.nightdream.ui.ClockLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/clockLayout"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:translationX="0sp"
+                    android:translationY="0sp"
+                    android:layout_gravity="center"
+                    android:background="#44000000"
+                    />
+            </FrameLayout>
+
+            <include layout="@layout/side_panel" />
         </FrameLayout>
 
         <com.firebirdberlin.nightdream.AlarmClock

@@ -37,6 +37,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private float currentVolume = 0.f;
+    private int currentStreamType = AudioManager.STREAM_ALARM;
 
 
     @Override
@@ -69,21 +70,20 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         startForeground(1337, note);
 
+        settings = new Settings(this);
+        isRunning = true;
+
         String action = intent.getAction();
         if ( ACTION_START.equals(action) ) {
-            isRunning = true;
             alarmIsRunning = true;
-            settings = new Settings(this);
-            setVolume(settings.alarmVolume);
-            playStream();
+            setAlarmVolume(settings.alarmVolume);
+            playStream(AudioManager.STREAM_ALARM);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
-            isRunning = true;
-            settings = new Settings(this);
-            setVolume(settings.alarmVolume);
-            playStream();
+            playStream(AudioManager.STREAM_MUSIC);
         } else
         if ( ACTION_STOP.equals(action) ) {
+            isRunning = false;
             stopSelf();
         }
 
@@ -114,21 +114,22 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     };
 
-    public void setVolume(int volume) {
+    public void setAlarmVolume(int volume) {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
     }
 
-    private void playStream() {
+    private void playStream(int stream_type) {
         Log.i(TAG, "playStream()");
         stopPlaying();
+        currentStreamType = stream_type;
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         //mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        mMediaPlayer.setAudioStreamType(stream_type);
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 
         try {
@@ -156,6 +157,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
         if ( alarmIsRunning ) {
             AlarmService.startAlarm(this);
+            isRunning = false;
             stopSelf();
             return true;
         }
@@ -183,7 +185,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.i(TAG, "onCompletion");
-        playStream();
+        playStream(currentStreamType);
     }
 
     public void stopPlaying(){

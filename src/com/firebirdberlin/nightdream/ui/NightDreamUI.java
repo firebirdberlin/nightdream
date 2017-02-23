@@ -64,6 +64,7 @@ import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnLocationUpdated;
 import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.BatteryView;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
@@ -92,6 +93,7 @@ public class NightDreamUI {
     private FrameLayout clockLayoutContainer;
     private ClockLayout clockLayout;
     private LinearLayout notificationbar;
+    private LinearLayout sidePanel;
     private Settings settings = null;
     private SoundMeter soundmeter;
     private ProgressBar brightnessProgress = null;
@@ -124,6 +126,7 @@ public class NightDreamUI {
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
+        sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
         radioIcon = (ImageView) rootView.findViewById(R.id.radio_icon);
 
@@ -161,8 +164,6 @@ public class NightDreamUI {
 
     public void onStart() {
         setAlpha(settingsIcon, .5f, 100);
-        setAlpha(radioIcon, .5f, 100);
-
         handler.postDelayed(moveAround, 30000);
     }
 
@@ -221,6 +222,7 @@ public class NightDreamUI {
     }
 
     private void setupClockLayout() {
+        sidePanel.setX(-1000);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
@@ -245,7 +247,6 @@ public class NightDreamUI {
         twitterNumber.setTextColor(textColor);
         whatsappNumber.setTextColor(textColor);
         settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
-        radioIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         callIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         gmailIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         twitterIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
@@ -253,6 +254,12 @@ public class NightDreamUI {
         alarmClock.setCustomColor(accentColor, textColor);
         clockLayout.setPrimaryColor(accentColor);
         clockLayout.setSecondaryColor(textColor);
+
+        if ( RadioStreamService.isRunning ) {
+            setRadioIconActive();
+        } else {
+            setRadioIconInactive();
+        }
 
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
         if (Build.VERSION.SDK_INT < 21) {
@@ -262,6 +269,16 @@ public class NightDreamUI {
             brightnessProgress.setProgressBackgroundTintList(
                     ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
         }
+    }
+
+    public void setRadioIconActive() {
+        int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
+        radioIcon.setColorFilter( accentColor, PorterDuff.Mode.MULTIPLY );
+    }
+
+    public void setRadioIconInactive() {
+        int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
+        radioIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
     }
 
     private void setupBackgroundImage() {
@@ -513,7 +530,6 @@ public class NightDreamUI {
             }
             v = to_range(v, 0.6f, 1.f);
             setAlpha(settingsIcon, v, millis);
-            setAlpha(radioIcon, v, millis);
         }
 
         if ( batteryViewShallBeVisible() ) {
@@ -704,15 +720,29 @@ public class NightDreamUI {
            controlsVisible = false;
            hideBatteryView(2000);
            setAlpha(settingsIcon, 0.f, 2000);
-           setAlpha(radioIcon, 0.f, 2000);
            alarmClock.isVisible = false;
            alarmClock.setClickable(false);
            alarmTime.setClickable(false);
            setAlpha(alarmClock, 0.f, 2000);
            setAlpha(alarmTime, 0.f, 2000);
+           hideSidePanel();
        }
     };
 
+    private void toggleSidePanel() {
+       float x = sidePanel.getX();
+       if (x < 0.f ) {
+           sidePanel.setVisibility(View.VISIBLE);
+           sidePanel.animate().setDuration(250).x(0);
+       } else {
+           hideSidePanel();
+       }
+    }
+
+    private void hideSidePanel() {
+        int w = sidePanel.getWidth();
+        sidePanel.animate().setDuration(250).x(-w);
+    }
     private void hideBatteryView(int millis) {
         if (! batteryViewShallBeVisible() ) {
             setAlpha(batteryView, 0.f, millis);
@@ -730,6 +760,7 @@ public class NightDreamUI {
         brightnessProgress.setVisibility(View.INVISIBLE);
         updateBatteryValue();
         updateBatteryView();
+        toggleSidePanel();
         showAlarmClock();
     }
 
@@ -847,6 +878,7 @@ public class NightDreamUI {
                     brightnessProgress.setVisibility(View.INVISIBLE);
                 }
 
+                toggleSidePanel();
                 showAlarmClock();
                 event_consumed = true;
                 break;

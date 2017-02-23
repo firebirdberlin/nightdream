@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -169,6 +170,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             nightDreamUI.showAlarmClock();
         } else
         if ( RadioStreamService.alarmIsRunning ) {
+            setVolumeControlStream(AudioManager.STREAM_ALARM);
             nightDreamUI.showAlarmClock();
         }
 
@@ -178,6 +180,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     protected void onPause() {
         super.onPause();
         Log.i(TAG ,"onPause()");
+        setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
 
         nightDreamUI.onPause();
 
@@ -262,8 +265,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     public void onRadioClick(View v) {
         if (! RadioStreamService.isRunning) {
-            RadioStreamService.start(this);
+            setVolumeControlStream(AudioManager.STREAM_MUSIC);
+            nightDreamUI.setRadioIconActive();
+            RadioStreamService.startStream(this);
+
         } else {
+            setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+            nightDreamUI.setRadioIconInactive();
             RadioStreamService.stop(this);
         }
     }
