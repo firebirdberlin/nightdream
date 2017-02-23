@@ -27,6 +27,7 @@ import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.GestureDetector;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
@@ -104,6 +105,8 @@ public class NightDreamUI {
     private Window window = null;
     private mAudioManager AudioManage = null;
     private ScaleGestureDetector mScaleDetector = null;
+    private GestureDetector mGestureDetector = null;
+
     private ShowcaseView showcaseView = null;
 
     private int dim_offset_init_x = 0;
@@ -115,6 +118,7 @@ public class NightDreamUI {
     public NightDreamUI(Context context, Window window) {
         mContext = context;
         mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
+        mGestureDetector = new GestureDetector(mContext, mSimpleOnGestureListener);
 
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
@@ -732,17 +736,21 @@ public class NightDreamUI {
     private void toggleSidePanel() {
        float x = sidePanel.getX();
        if (x < 0.f ) {
-           sidePanel.setVisibility(View.VISIBLE);
-           sidePanel.animate().setDuration(250).x(0);
+           showSidePanel();
        } else {
            hideSidePanel();
        }
+
+    }
+    private void showSidePanel() {
+        sidePanel.animate().setDuration(250).x(0);
     }
 
     private void hideSidePanel() {
         int w = sidePanel.getWidth();
         sidePanel.animate().setDuration(250).x(-w);
     }
+
     private void hideBatteryView(int millis) {
         if (! batteryViewShallBeVisible() ) {
             setAlpha(batteryView, 0.f, millis);
@@ -760,7 +768,6 @@ public class NightDreamUI {
         brightnessProgress.setVisibility(View.INVISIBLE);
         updateBatteryValue();
         updateBatteryView();
-        toggleSidePanel();
         showAlarmClock();
     }
 
@@ -800,6 +807,32 @@ public class NightDreamUI {
     private Configuration getConfiguration() {
         return mContext.getResources().getConfiguration();
     }
+
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                float velocityY) {
+            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH){
+                return false;
+            }
+            // right to left swipe
+            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                Log.w(TAG, "left swipe");
+                hideSidePanel();
+            }
+            // left to right swipe
+            else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                Log.w(TAG, "right swipe");
+                showSidePanel();
+            }
+            return false;
+        }
+    };
 
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
@@ -868,9 +901,8 @@ public class NightDreamUI {
         Point click = new Point((int) e.getX(),(int) e.getY());
         Point size = utility.getDisplaySize();
 
-        updateBatteryValue();
-        updateBatteryView();
 
+        mGestureDetector.onTouchEvent(e);
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -878,7 +910,9 @@ public class NightDreamUI {
                     brightnessProgress.setVisibility(View.INVISIBLE);
                 }
 
-                toggleSidePanel();
+                updateBatteryValue();
+                updateBatteryView();
+
                 showAlarmClock();
                 event_consumed = true;
                 break;
