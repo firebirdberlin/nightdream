@@ -517,7 +517,6 @@ public class NightDreamUI {
         }
 
         if ( controlsVisible || batteryView.shallBeVisible(this.batteryValue) ) {
-            updateBatteryView();
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
         } else {
@@ -669,7 +668,10 @@ public class NightDreamUI {
            removeCallbacks(hideBrightnessLevel);
            updateBatteryValue();
            setupScreenAnimation();
+
+           hideBatteryView(2000);
            updateBatteryView();
+
            updateClockPosition();
            updateWeatherData();
 
@@ -699,9 +701,8 @@ public class NightDreamUI {
                handler.postDelayed(hideAlarmClock, 20000);
                return;
            }
-           if (! batteryView.shallBeVisible(batteryValue) ) {
-               setAlpha(batteryView, 0.f, 2000);
-           }
+           controlsVisible = false;
+           hideBatteryView(2000);
            setAlpha(settingsIcon, 0.f, 2000);
            setAlpha(radioIcon, 0.f, 2000);
            alarmClock.isVisible = false;
@@ -709,9 +710,14 @@ public class NightDreamUI {
            alarmTime.setClickable(false);
            setAlpha(alarmClock, 0.f, 2000);
            setAlpha(alarmTime, 0.f, 2000);
-           controlsVisible = false;
        }
     };
+
+    private void hideBatteryView((int millis) {
+        if (!controlsVisible && ! batteryView.shallBeVisible(batteryValue) ) {
+            setAlpha(batteryView, 0.f, millis);
+        }
+    }
 
     public void onClockClicked() {
         brightnessProgress.setVisibility(View.INVISIBLE);
