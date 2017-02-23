@@ -17,15 +17,15 @@ Please preserve the xml tags and the utf8 encoding.
 
 
 <resources>
-<string name="about">O</string>
+<string name="about">O autorach</string>
 <string name="alarm">Alarm</string>
-<string name="alarmFadeIn">Zwiekszenie głosnosci</string>
+<string name="alarmFadeIn">Zwiększenie głośności</string>
 <string name="alarmVolume">Głosność</string>
+<string name="allow_screen_off_summary">Wyłacz ekran na noc</string>
 <string name="allow_screen_off">Ekran wyłączony</string>
-<string name="allow_screen_off_summary">Wylacz ekran na noc</string>
-<string name="ambient_noise">Wyrywanie dzwieków otoczenia</string>
-<string name="ambient_noise_summary">Czy wykrywnie dzwieków otoczenia ma być aktywne w nocy</string>
-<string name="appearance">Wyglad</string>
+<string name="ambient_noise">Wyrywanie dzwięków otoczenia</string>
+<string name="ambient_noise_summary">Czy wykrywnie dzwięków otoczenia ma być aktywne w nocy</string>
+<string name="appearance">Wygląd</string>
 <string name="app_name">Nocny zegar</string>
 <string name="auto_brightness">Auto jasność</string>
 <string name="autostart_timerange_label_end">Koniec</string>
@@ -38,10 +38,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="behaviour">Zachowanie</string>
 <string name="brightness">Jasność</string>
 <string name="brightness_offset">Intensywność świecenia</string>
-<string name="buttonAccessibilitySettings">Rozpoczęcie nasłuchwania </string>
-<string name="category_handle_power">....a kiedy się połączy</string>
-<string name="category_handle_power_autostart_time">Rozpocznij z przedziałem czasowym</string>
-<string name="choose_alarm_sound">Dzwiek alarmu</string>
+<string name="buttonAccessibilitySettings">Dostęp do powiadomień</string>
+<string name="category_handle_power">....obszar działania....</string>
+<string name="category_handle_power_autostart_time">Rozpocznij w przedziale czasowym</string>
+<string name="choose_alarm_sound">Dzwięk alarmu</string>
 <string name="choose_primary_color">Kolor godziny</string>
 <string name="choose_secondary_color">Kolor tekstu</string>
 <string name="colors">Kolory</string>
@@ -63,7 +63,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">Stacja dokująca samochodowa</string>
 <string name="handle_power_desk">Stacja dokująca</string>
 <string name="handle_power_disconnection">Zatrzym automatycznie</string>
-<string name="handle_power_disconnection_summary">Zakoncz aplikacje po odlaczeniu od ladowarki</string>
+<string name="handle_power_disconnection_summary">Zakończ aplikacje po odłączeniu od ładowarki</string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">Bezprzewodowe ładowanie</string>
 <string name="hide_background_image_in_night_mode">Ukryj</string>
@@ -81,19 +81,26 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWebRadio">Kup licencje na webradio</string>
 <string name="radio_stream_enabled">Włącz</string>
 <string name="radio_stream_no_search_results">Brak rezultatów</string>
-<string name="radio_stream">Radio stream</string>
 <string name="radio_stream_query_hint">Szukaj</string>
+<string name="radio_stream">Radio stream</string>
+<string name="radio_stream_search">Szukaj</string>
 <string name="radio_stream_start">Zatrzymaj Stop</string>
 <string name="radio_stream_url">Adres URL</string>
 <string name="reactivate_on_ambient_light_value">Wartość światla otoczenia</string>
 <string name="reactivate_on_ambient_light_value_summary">Ekran zostanie reaktywowany jezeli wartość podświetlenia zostanie osiagnięta</string>
-<string name="reactivate_screen_on_noise">Obudz przez dźwiek otoczenia</string>
+<string name="reactivate_screen_on_noise">Obudź przez dźwiek otoczenia</string>
 <string name="recommend_app_desc">Wybierz aplikacje do udostępnienia </string>
 <string name="recommend_app_subject">Chciałem żeby zarekomendowaleś night clock app</string>
 <string name="recommend">Zarekomenduj</string>
+<string name="remaining">przypomnienie</string>
 <string name="reset_to_defaults">Przywrócenie ustawien domyślnych</string>
 <string name="restless_mode">Przesuwaj zegar na całym ekranie</string>
 <string name="review_request">Oceń aplikacje Dziękuje !</string>
+<string name="screen_orientation_automatic">Automatyczna orientacja ekranu</string>
+<string name="screen_orientation_landscape">Orientacja ekranu pionowa</string>
+<string name="screen_orientation_portrait">Orientacja ekranu pozioma</string>
+<string name="screen_orientation_reverse_landscape">Orientacja ekranu pionowa odwrócona</string>
+<string name="screen_orientation_reverse_portrait">Orientacja ekranu pozioma odwrócona</string>
 <string name="screenOrientation">Orientacja ekranu</string>
 <string name="select_alarm_sound">Wybierz dźwięk alarmu </string>
 <string name="set_alarm">Ustaw zegar</string>
@@ -101,8 +108,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Teperatura</string>
 <string name="show_weather">Pokaż lokalną temperturę</string>
 <string name="show_wind_speed">Szybkość wiatru</string>
-<string name="speedUnit">Jednostaka szybkości wiatru</string>
-<string name="temperatureUnit">Jednostaka temperatury</string>
+<string name="speedUnit">Jednostka szybkości wiatru</string>
+<string name="temperatureUnit">Jednostka temperatury</string>
 <string name="translations">Tłumaczenia</string>
 <string name="typeface_7_segment">7 segment LED</string>
 <string name="typeface_roboto_condensed">Robot </string>
