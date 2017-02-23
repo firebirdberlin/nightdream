@@ -162,8 +162,7 @@ public class NightDreamUI {
     public void onStart() {
         setAlpha(settingsIcon, .5f, 100);
         setAlpha(radioIcon, .5f, 100);
-        updateBatteryValue();
-        updateBatteryView();
+
         handler.postDelayed(moveAround, 30000);
     }
 
@@ -179,6 +178,9 @@ public class NightDreamUI {
         settings.reload();
         setScreenOrientation(settings.screenOrientation);
         updateWeatherData();
+        updateBatteryValue();
+        updateBatteryView();
+        controlsVisible = true;
 
         EventBus.getDefault().register(this);
         lightSensorEventListener = new LightSensorEventListener(mContext);
