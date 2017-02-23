@@ -81,6 +81,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="other_apps">Andere Apps</string>
 <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
 <string name="other_apps_tinytimetracker">Zeiterfassung</string>
+<string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
+<string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
 <string name="preview">Vorschau</string>
 <string name="purchaseWeatherData">Wetterdaten Lizenz kaufen</string>
 <string name="purchaseWebRadio">Web-Radio Lizenz kaufen</string>

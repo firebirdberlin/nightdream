@@ -140,6 +140,12 @@
                     android:defaultValue="true" />
 
                 <SwitchPreference
+                    android:key="persistentBatteryValueWhileCharging"
+                    android:title="@string/persistent_battery_value_while_charging"
+                    android:summary="@string/persistent_battery_value_while_charging_summary"
+                    android:defaultValue="true" />
+
+                <SwitchPreference
                     android:key="autoBrightness"
                     android:title="@string/auto_brightness"
                     android:defaultValue="false" />

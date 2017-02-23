@@ -516,7 +516,7 @@ public class NightDreamUI {
             setAlpha(radioIcon, v, millis);
         }
 
-        if ( controlsVisible || batteryView.shallBeVisible(this.batteryValue) ) {
+        if ( batteryViewShallBeVisible() ) {
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
         } else {
@@ -713,10 +713,17 @@ public class NightDreamUI {
        }
     };
 
-    private void hideBatteryView((int millis) {
-        if (!controlsVisible && ! batteryView.shallBeVisible(batteryValue) ) {
+    private void hideBatteryView(int millis) {
+        if (! batteryViewShallBeVisible() ) {
             setAlpha(batteryView, 0.f, millis);
         }
+    }
+
+    private boolean batteryViewShallBeVisible() {
+        return (controlsVisible ||
+                (settings.persistentBatteryValueWhileCharging &&
+                 batteryView.shallBeVisible(this.batteryValue))
+               );
     }
 
     public void onClockClicked() {

@@ -48,6 +48,7 @@ public class Settings {
     public boolean handle_power_wireless = false;
     public boolean hideBackgroundImage = true;
     public boolean muteRinger = false;
+    public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
     public boolean showDate = true;
     public boolean showWeather = false;
@@ -141,6 +142,7 @@ public class Settings {
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         radioStreamURL = settings.getString("radioStreamURL", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
+        persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
         secondaryColorNight = settings.getInt("secondaryColorNight", secondaryColor);

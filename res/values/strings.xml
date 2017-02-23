@@ -78,6 +78,8 @@ OR
     <string name="other_apps">Other apps</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="persistent_battery_value_while_charging">Persistent battery status</string>
+    <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
     <string name="preview">Preview</string>
     <string name="purchaseWeatherData">Buy a license</string>
     <string name="purchaseWebRadio">Buy a license</string>
