@@ -823,6 +823,10 @@ public class NightDreamUI {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                 float velocityY) {
+            int rect[] = new int[2];
+            clockLayoutContainer.getLocationOnScreen(rect);
+            if (e1.getY() < rect[1]) return false;
+
             if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH){
                 return false;
             }
@@ -838,6 +842,18 @@ public class NightDreamUI {
                 Log.w(TAG, "right swipe");
                 showSidePanel();
             }
+            return false;
+        }
+
+        @Override
+        public boolean onSingleTapUp (MotionEvent e) {
+            Log.w(TAG, "single tap up");
+                updateBatteryValue();
+                updateBatteryView();
+
+                showAlarmClock();
+                removeCallbacks(hideAlarmClock);
+                handler.postDelayed(hideAlarmClock, 20000);
             return false;
         }
     };
@@ -905,34 +921,26 @@ public class NightDreamUI {
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (utility == null) return false;
-        boolean event_consumed = false;
         Point click = new Point((int) e.getX(),(int) e.getY());
         Point size = utility.getDisplaySize();
 
+        boolean event_consumed = mGestureDetector.onTouchEvent(e);
 
-        mGestureDetector.onTouchEvent(e);
+        int rect[] = new int[2];
+        clockLayoutContainer.getLocationOnScreen(rect);
+
         // handle the visibility of the alarm clock
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (click.y >= 0.2 * size.y) {// upper 20% of the screen
+                if (click.y >= rect[1]) {// everything except the upper part of the screen
                     brightnessProgress.setVisibility(View.INVISIBLE);
                 }
-
-                updateBatteryValue();
-                updateBatteryView();
-
-                showAlarmClock();
-                event_consumed = true;
-                break;
-            case MotionEvent.ACTION_UP:
-                removeCallbacks(hideAlarmClock);
-                handler.postDelayed(hideAlarmClock, 20000);
                 event_consumed = true;
                 break;
         }
 
         // set the screen brightness factor
-        if (click.y < 0.2 * size.y) {// upper 20% of the screen
+        if (click.y < rect[1]) {// upper part of the screen
             switch (e.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     removeCallbacks(hideBrightnessLevel);
