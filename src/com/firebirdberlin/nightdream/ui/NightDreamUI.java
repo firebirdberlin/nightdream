@@ -743,12 +743,20 @@ public class NightDreamUI {
 
     }
     private void showSidePanel() {
-        sidePanel.animate().setDuration(250).x(0);
+        if (Build.VERSION.SDK_INT > 11) {
+            sidePanel.animate().setDuration(250).x(0);
+        } else {
+            sidePanel.setX(0);
+        }
     }
 
     private void hideSidePanel() {
         int w = sidePanel.getWidth();
-        sidePanel.animate().setDuration(250).x(-w);
+        if (Build.VERSION.SDK_INT > 11) {
+            sidePanel.animate().setDuration(250).x(-w);
+        } else {
+            sidePanel.setX(-w);
+        }
     }
 
     private void hideBatteryView(int millis) {
