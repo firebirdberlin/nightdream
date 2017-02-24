@@ -87,6 +87,7 @@ public class NightDreamUI {
     private AlarmClock alarmClock;
     private TextView alarmTime = null;
     private ImageView background_image;
+    private ImageView menuIcon;
     private ImageView settingsIcon;
     private ImageView radioIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
@@ -131,6 +132,7 @@ public class NightDreamUI {
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
+        menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
         radioIcon = (ImageView) rootView.findViewById(R.id.radio_icon);
 
@@ -167,7 +169,7 @@ public class NightDreamUI {
     }
 
     public void onStart() {
-        setAlpha(settingsIcon, .5f, 100);
+        setAlpha(menuIcon, .5f, 100);
         handler.postDelayed(moveAround, 30000);
     }
 
@@ -250,6 +252,7 @@ public class NightDreamUI {
         gmailNumber.setTextColor(textColor);
         twitterNumber.setTextColor(textColor);
         whatsappNumber.setTextColor(textColor);
+        menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         callIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         gmailIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
@@ -533,7 +536,7 @@ public class NightDreamUI {
                 setAlpha(alarmTime, v, millis);
             }
             v = to_range(v, 0.6f, 1.f);
-            setAlpha(settingsIcon, v, millis);
+            setAlpha(menuIcon, v, millis);
         }
 
         if ( batteryViewShallBeVisible() ) {
@@ -723,7 +726,7 @@ public class NightDreamUI {
            }
            controlsVisible = false;
            hideBatteryView(2000);
-           setAlpha(settingsIcon, 0.f, 2000);
+           setAlpha(menuIcon, 0.f, 2000);
            alarmClock.isVisible = false;
            alarmClock.setClickable(false);
            alarmTime.setClickable(false);
@@ -848,12 +851,12 @@ public class NightDreamUI {
         @Override
         public boolean onSingleTapUp (MotionEvent e) {
             Log.w(TAG, "single tap up");
-                updateBatteryValue();
-                updateBatteryView();
+            updateBatteryValue();
+            updateBatteryView();
 
-                showAlarmClock();
-                removeCallbacks(hideAlarmClock);
-                handler.postDelayed(hideAlarmClock, 20000);
+            showAlarmClock();
+            removeCallbacks(hideAlarmClock);
+            handler.postDelayed(hideAlarmClock, 20000);
             return false;
         }
     };

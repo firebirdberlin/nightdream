@@ -41,12 +41,12 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/settings_icon"
+                android:id="@+id/burger_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="settings"
                 android:alpha="0.0"
-                android:src="@drawable/ic_settings"
+                android:src="@drawable/ic_menu"
                 android:onClick="onSettingsClick"
                 android:clickable="true"/>
         </LinearLayout>

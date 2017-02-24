@@ -8,6 +8,15 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/settings_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="settings"
+        android:src="@drawable/ic_settings"
+        android:onClick="onSettingsClick"
+        android:clickable="true"/>
+
+    <ImageView
         android:id="@+id/radio_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

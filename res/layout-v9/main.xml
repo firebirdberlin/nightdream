@@ -45,31 +45,16 @@
                 android:ellipsize="marquee"
                 android:textSize="20sp"/>
         </LinearLayout>
-        <LinearLayout
+
+        <ImageView
+            android:id="@+id/burger_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/radio_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="radio"
-                android:alpha="0.0"
-                android:src="@drawable/ic_radio"
-                android:onClick="onRadioClick"
-                android:clickable="true"
-                android:visibility="gone"/>
-
-            <ImageView
-                android:id="@+id/settings_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:contentDescription="settings"
-                android:src="@drawable/ic_settings"
-                android:onClick="onSettingsClick"
-                android:clickable="true"/>
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:contentDescription="settings"
+            android:src="@drawable/ic_menu"
+            android:onClick="onSettingsClick"
+            android:clickable="true"/>
     </LinearLayout>
 
 
