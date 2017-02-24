@@ -8,22 +8,26 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/settings_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:clickable="true"
         android:contentDescription="settings"
-        android:src="@drawable/ic_settings"
+        android:id="@+id/settings_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:onClick="onSettingsClick"
-        android:clickable="true"/>
+        android:padding="5dp"
+        android:src="@drawable/ic_settings"
+        />
 
     <ImageView
-        android:id="@+id/radio_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="radio"
-        android:src="@drawable/ic_radio"
-        android:onClick="onRadioClick"
         android:clickable="true"
-        android:visibility="visible"/>
+        android:contentDescription="radio"
+        android:id="@+id/radio_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onRadioClick"
+        android:padding="5dp"
+        android:src="@drawable/ic_radio"
+        android:visibility="visible"
+        />
 
 </LinearLayout>
