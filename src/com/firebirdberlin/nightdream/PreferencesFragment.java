@@ -171,6 +171,7 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference donationPreference = (Preference) findPreference("donation_play");
         Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
         Preference purchaseWebRadioPreference = (Preference) findPreference("purchaseWebRadio");
+        Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
         Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
         Preference useRadioAlarmClockPreference = (Preference) findPreference("useRadioAlarmClock");
 
@@ -179,17 +180,27 @@ public class PreferencesFragment extends PreferenceFragment {
 
         if (purchased_donation) {
             PreferenceCategory category = (PreferenceCategory) findPreference("donation_screen");
-            category.removePreference(donationPreference);
+            if (category != null) {
+                category.removePreference(donationPreference);
+            }
         }
 
         if (purchased_weather_data) {
             PreferenceScreen screen = (PreferenceScreen) findPreference("weather_screen");
-            screen.removePreference(purchaseWeatherDataPreference);
+            if (screen != null) {
+                screen.removePreference(purchaseWeatherDataPreference);
+            }
         }
 
         if (purchased_web_radio) {
             PreferenceCategory categoryRadio = (PreferenceCategory) findPreference("category_radio_stream");
-            categoryRadio.removePreference(purchaseWebRadioPreference);
+            if (categoryRadio != null) {
+                categoryRadio.removePreference(purchaseWebRadioPreference);
+            }
+            PreferenceScreen screenRadio = (PreferenceScreen) findPreference("radio_screen");
+            if (screenRadio != null) {
+                screenRadio.removePreference(purchaseWebRadioUIPreference);
+            }
         }
     }
 

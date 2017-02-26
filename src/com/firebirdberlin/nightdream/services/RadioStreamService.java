@@ -54,27 +54,26 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG,"onStartCommand() called.");
 
-        Intent i = getStopIntent(this);
-        i.setAction(ACTION_STOP);
-        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
-
-        Notification note = new NotificationCompat.Builder(this)
-            .setContentTitle("Radio")
-            .setContentText(getString(R.string.notification_alarm))
-            .setSmallIcon(R.drawable.ic_radio)
-            .setContentIntent(pi)
-            .build();
-
-        note.flags |= Notification.FLAG_NO_CLEAR;
-        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-
-        startForeground(1337, note);
-
         settings = new Settings(this);
         isRunning = true;
 
         String action = intent.getAction();
         if ( ACTION_START.equals(action) ) {
+            Intent i = getStopIntent(this);
+            i.setAction(ACTION_STOP);
+            PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+
+            Notification note = new NotificationCompat.Builder(this)
+                .setContentTitle("Radio")
+                .setContentText(getString(R.string.notification_alarm))
+                .setSmallIcon(R.drawable.ic_radio)
+                .setContentIntent(pi)
+                .build();
+
+            note.flags |= Notification.FLAG_NO_CLEAR;
+            note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+
+            startForeground(1337, note);
             alarmIsRunning = true;
             setAlarmVolume(settings.alarmVolume);
             playStream(AudioManager.STREAM_ALARM);

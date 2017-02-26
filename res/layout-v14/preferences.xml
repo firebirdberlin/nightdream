@@ -284,7 +284,7 @@
 
                 <com.firebirdberlin.radiostreamapi.RadioStreamPreference
                     android:key="radioStreamURL"
-                    android:defaultValue="http://lush.wavestreamer.com:7309/"
+                    android:defaultValue=""
                     android:dependency="useRadioAlarmClock"
                     android:title="@string/radio_stream_url"/>
 
@@ -359,6 +359,22 @@
                 android:title="@string/weather_info_title"
                 android:dependency="showWeather"
                 android:key="weatherPreview"/>
+
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:title="@string/radio_stream"
+            android:key="radio_screen"
+            android:icon="@drawable/ic_radio">
+
+            <Preference
+                android:key="purchaseWebRadioUI"
+                android:icon="@drawable/ic_googleplay"
+                android:title="@string/purchaseWebRadio"/>
+
+            <com.firebirdberlin.radiostreamapi.RadioStreamPreference
+                android:key="radioStreamURLUi"
+                android:defaultValue=""
+                android:title="@string/radio_stream_url"/>
 
         </PreferenceScreen>
 

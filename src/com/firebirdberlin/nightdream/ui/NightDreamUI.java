@@ -282,12 +282,12 @@ public class NightDreamUI {
 
     public void setRadioIconActive() {
         int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
-        radioIcon.setColorFilter( accentColor, PorterDuff.Mode.MULTIPLY );
+        radioIcon.setColorFilter( accentColor, PorterDuff.Mode.SRC_ATOP );
     }
 
     public void setRadioIconInactive() {
         int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
-        radioIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        radioIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
     }
 
     private void setupBackgroundImage() {
