@@ -158,8 +158,11 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
     public void onRadioClick(View v) {
         if (! RadioStreamService.isRunning) {
-            RadioStreamService.start(this);
+            nightDreamUI.setRadioIconActive();
+            RadioStreamService.startStream(this);
+
         } else {
+            nightDreamUI.setRadioIconInactive();
             RadioStreamService.stop(this);
         }
     }

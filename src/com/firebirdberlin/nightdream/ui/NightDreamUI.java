@@ -145,6 +145,8 @@ public class NightDreamUI {
         whatsappNumber = (TextView) rootView.findViewById(R.id.whatsapp_number);
         twitterNumber = (TextView) rootView.findViewById(R.id.twitter_number);
 
+        menuIcon.setOnClickListener(onMenuItemClickListener);
+
         // prepare zoom-in effect
         // API level 11
         if (Build.VERSION.SDK_INT >= 12){
@@ -911,6 +913,12 @@ public class NightDreamUI {
         }
     };
 
+    OnClickListener onMenuItemClickListener = new OnClickListener() {
+        public void onClick(View v) {
+            toggleSidePanel();
+        }
+    };
+
     OnClickListener onStockAlarmTimeClickListener = new OnClickListener() {
         public void onClick(View v) {
             Log.i(TAG, "ACTION_SHOW_ALARMS");
@@ -1194,7 +1202,7 @@ public class NightDreamUI {
                 showcaseView.setBlockAllTouches(true);
                 break;
             case 1:
-                showcaseView.setShowcase(new ViewTarget(settingsIcon), true);
+                showcaseView.setShowcase(new ViewTarget(menuIcon), true);
                 showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title2));
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text2));
                 showcaseView.setBlockAllTouches(true);
