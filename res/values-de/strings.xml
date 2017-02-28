@@ -111,6 +111,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_weather">Wetter anzeigen</string>
 <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
 <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
+<string name="titlePrivacyPolicy">Datenschutzerklärung</string>
 <string name="temperatureUnit">Temperatureinheit</string>
 <string name="translations">Übersetzungen</string>
 <string name="typeface_7_segment">7 Segment LED</string>

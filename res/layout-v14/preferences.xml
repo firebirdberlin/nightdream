@@ -410,6 +410,12 @@
                 android:icon="@drawable/ic_share"
                 android:title="@string/recommend"/>
 
+            <Preference
+                android:title="@string/titlePrivacyPolicy">
+                <intent android:action="android.intent.action.VIEW"
+                    android:data="http://fhain.zzzz.io/apps/NightDream/privacy.html"/>
+            </Preference>
+
             <PreferenceCategory android:title="@string/contribute">
                 <Preference
                     android:icon="@drawable/ic_github"

@@ -113,6 +113,7 @@ OR
     <string name="show_weather">Show local weather</string>
     <string name="show_wind_speed">Show wind speed</string>
     <string name="speedUnit">Wind speed unit</string>
+    <string name="titlePrivacyPolicy">Privacy policy</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="translations">Translations</string>
     <string name="typeface_7_segment">7-segment LED</string>
