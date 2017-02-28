@@ -190,9 +190,11 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
         Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
         Preference useRadioAlarmClockPreference = (Preference) findPreference("useRadioAlarmClock");
+        Preference radioStreamURLUIPreference = (Preference) findPreference("radioStreamURLUI");
 
         enableWeatherDataPreference.setEnabled(purchased_weather_data);
         useRadioAlarmClockPreference.setEnabled(purchased_web_radio);
+        radioStreamURLUIPreference.setEnabled(purchased_web_radio);
 
         if (purchased_donation) {
             PreferenceCategory category = (PreferenceCategory) findPreference("donation_screen");
