@@ -285,28 +285,14 @@ public class PreferencesFragment extends PreferenceFragment {
         });
 
         Preference donationPreference = (Preference) findPreference("donation_play");
-        donationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
-                return true;
-            }
-        });
-
         Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
-        purchaseWeatherDataPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
-                return true;
-            }
-        });
-
         Preference purchaseWebRadioPreference = (Preference) findPreference("purchaseWebRadio");
-        purchaseWebRadioPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                purchaseIntent(ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
-                return true;
-            }
-        });
+        Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
+
+        donationPreference.setOnPreferenceClickListener(purchaseDonationPreferenceClickListener);
+        purchaseWeatherDataPreference.setOnPreferenceClickListener(purchaseWeatherDataPreferenceClickListener);
+        purchaseWebRadioPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
+        purchaseWebRadioUIPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
 
         Preference prefHandlePower = (Preference) findPreference("handle_power");
         Preference prefAmbientNoiseDetection = (Preference) findPreference("ambientNoiseDetection");
@@ -367,7 +353,7 @@ public class PreferencesFragment extends PreferenceFragment {
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 if (! RadioStreamService.isRunning) {
-                    RadioStreamService.startStream(context);
+                    RadioStreamService.start(context);
                 } else {
                     RadioStreamService.stop(context);
                 }
@@ -375,6 +361,30 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
     }
+
+    Preference.OnPreferenceClickListener purchaseWebRadioPreferenceClickListener =
+        new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                purchaseIntent(ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
+                return true;
+            }
+        };
+
+    Preference.OnPreferenceClickListener purchaseDonationPreferenceClickListener =
+        new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
+                return true;
+            }
+        };
+
+    Preference.OnPreferenceClickListener purchaseWeatherDataPreferenceClickListener =
+        new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
+                return true;
+            }
+        };
 
     Preference.OnPreferenceChangeListener recordAudioPrefChangeListener =
         new Preference.OnPreferenceChangeListener() {
