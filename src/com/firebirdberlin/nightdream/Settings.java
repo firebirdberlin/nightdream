@@ -82,6 +82,7 @@ public class Settings {
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
     public String radioStreamURL = "";
+    public String radioStreamURLUI = "";
     private String bgpath = "";
     public String backgroundImageURI = "";
     public Typeface typeface;
@@ -141,6 +142,7 @@ public class Settings {
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         radioStreamURL = settings.getString("radioStreamURL", "");
+        radioStreamURLUI = settings.getString("radioStreamURLUI", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);

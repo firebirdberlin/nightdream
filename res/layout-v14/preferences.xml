@@ -372,7 +372,7 @@
                 android:title="@string/purchaseWebRadio"/>
 
             <com.firebirdberlin.radiostreamapi.RadioStreamPreference
-                android:key="radioStreamURLUi"
+                android:key="radioStreamURLUI"
                 android:defaultValue=""
                 android:title="@string/radio_stream_url"/>
 

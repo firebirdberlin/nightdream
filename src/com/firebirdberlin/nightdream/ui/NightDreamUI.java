@@ -264,7 +264,7 @@ public class NightDreamUI {
         clockLayout.setPrimaryColor(accentColor);
         clockLayout.setSecondaryColor(textColor);
 
-        if ( RadioStreamService.isRunning ) {
+        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
             setRadioIconActive();
         } else {
             setRadioIconInactive();

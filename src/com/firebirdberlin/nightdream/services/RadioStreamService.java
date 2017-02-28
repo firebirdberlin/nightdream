@@ -38,6 +38,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private Settings settings = null;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
+    private String streamURL = "";
+
+    public enum StreamingMode {INACTIVE, ALARM, RADIO}
+    public static StreamingMode streamingMode = StreamingMode.INACTIVE;
 
 
     @Override
@@ -75,14 +79,19 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
             startForeground(1337, note);
             alarmIsRunning = true;
+            streamingMode = StreamingMode.ALARM;
             setAlarmVolume(settings.alarmVolume);
+            streamURL = settings.radioStreamURL;
             playStream(AudioManager.STREAM_ALARM);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
+            streamingMode = StreamingMode.RADIO;
+            streamURL = settings.radioStreamURLUI;
             playStream(AudioManager.STREAM_MUSIC);
         } else
         if ( ACTION_STOP.equals(action) ) {
             isRunning = false;
+            streamingMode = StreamingMode.INACTIVE;
             stopSelf();
         }
 
@@ -132,7 +141,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 
         try {
-            mMediaPlayer.setDataSource(settings.radioStreamURL);
+            mMediaPlayer.setDataSource(streamURL);
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
         } catch (IOException e) {
