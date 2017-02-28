@@ -21,8 +21,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarm">Alarma</string>
 <string name="alarmFadeIn">Volumen ascendente</string>
 <string name="alarmVolume">Volumen de la alarma</string>
-<string name="allow_screen_off">Apagar pantalla</string>
 <string name="allow_screen_off_summary">Apagar la pantalla durante la noche</string>
+<string name="allow_screen_off">Apagar pantalla</string>
 <string name="ambient_noise">Detección de sonidos ambientales</string>
 <string name="ambient_noise_summary">Debería el ruido ambiental impedir que el modo nocturno se active?</string>
 <string name="appearance">Apariencia</string>
@@ -81,8 +81,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWebRadio">Compra una licencia</string>
 <string name="radio_stream_enabled">Activado</string>
 <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
-<string name="radio_stream">Emisoras de radio</string>
 <string name="radio_stream_query_hint">Buscar enlace (string)</string>
+<string name="radio_stream">Emisoras de radio</string>
 <string name="radio_stream_start">Iniciar/detener emisoras</string>
 <string name="radio_stream_url">URL emisora de radio</string>
 <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
@@ -116,7 +116,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Abrir mapa climático de ciudades. deja vacío para detección automática de tu ciudad.</string>
 <string name="weather_city_id_title">Identificación de ciudad</string>
 <string name="weather_info_title">Información</string>
-<string name="weather_search_city_id">Buscar ciudad</string>
+<string name="weather_search_city_id">Córdoba</string>
 <string name="weather">Clima</string>
 <string name="welcome_screen_text1">¡Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
 <string name="welcome_screen_text2">¡Accede a las preferencias aquí!</string>
