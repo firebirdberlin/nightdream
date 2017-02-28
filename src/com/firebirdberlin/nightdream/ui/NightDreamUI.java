@@ -69,6 +69,7 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.BatteryView;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
+import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 
 
 public class NightDreamUI {
@@ -89,7 +90,7 @@ public class NightDreamUI {
     private ImageView background_image;
     private ImageView menuIcon;
     private ImageView settingsIcon;
-    private ImageView radioIcon;
+    private WebRadioImageView radioIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
     private FrameLayout clockLayoutContainer;
@@ -134,7 +135,7 @@ public class NightDreamUI {
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
-        radioIcon = (ImageView) rootView.findViewById(R.id.radio_icon);
+        radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
 
         callIcon = (ImageView) rootView.findViewById(R.id.call_icon);
         gmailIcon = (ImageView) rootView.findViewById(R.id.gmail_icon);

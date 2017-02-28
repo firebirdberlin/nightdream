@@ -169,7 +169,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             alarmClock.startAlarm();
             nightDreamUI.showAlarmClock();
         } else
-        if ( RadioStreamService.alarmIsRunning ) {
+        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM ) {
             setVolumeControlStream(AudioManager.STREAM_ALARM);
             nightDreamUI.showAlarmClock();
         }
@@ -264,7 +264,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onRadioClick(View v) {
-        if (! RadioStreamService.isRunning) {
+        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM ) {
+            alarmClock.stopRadioStream();
+        }
+
+        if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             nightDreamUI.setRadioIconActive();
             RadioStreamService.startStream(this);

@@ -18,7 +18,7 @@
         android:src="@drawable/ic_settings"
         />
 
-    <ImageView
+    <com.firebirdberlin.nightdream.ui.WebRadioImageView
         android:clickable="true"
         android:contentDescription="radio"
         android:id="@+id/radio_icon"
