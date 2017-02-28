@@ -8,7 +8,10 @@ import android.os.Build;
 
 
 public class PreferencesActivity extends PreferenceActivity {
+    public static final int PREFERENCES_SCREEN_WEB_RADIO_INDEX = 6;
+
     PreferencesFragment fragment = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,18 +19,35 @@ public class PreferencesActivity extends PreferenceActivity {
             setTheme(R.style.PreferencesTheme);
         }
         fragment = new PreferencesFragment();
+        Intent intent = getIntent();
+        if ( intent.hasExtra("preferenceScreenIndex") ) {
+            int index = intent.getIntExtra("preferenceScreenIndex", -1);
+            if ( index > -1 ) {
+                fragment.setInitialScreenIndex(index);
+            }
+        }
+
         getFragmentManager()
             .beginTransaction()
             .replace(android.R.id.content, fragment)
             .commit();
+
     }
 
     public static void start(Context context) {
         if (Build.VERSION.SDK_INT > 10) {
-            Intent myIntent = new Intent(context, PreferencesActivity.class);
-            context.startActivity(myIntent);
+            Intent intent = new Intent(context, PreferencesActivity.class);
+            context.startActivity(intent);
         } else {
             PreferencesActivityv9.start(context);
+        }
+    }
+
+    public static void start(Context context, int preferenceScreenIndex) {
+        if (Build.VERSION.SDK_INT > 10) {
+            Intent intent = new Intent(context, PreferencesActivity.class);
+            intent.putExtra("preferenceScreenIndex", preferenceScreenIndex);
+            context.startActivity(intent);
         }
     }
 

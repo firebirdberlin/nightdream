@@ -268,6 +268,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             alarmClock.stopRadioStream();
         }
 
+        if ( mySettings.radioStreamURLUI.isEmpty() ) {
+            PreferencesActivity.start(this, PreferencesActivity.PREFERENCES_SCREEN_WEB_RADIO_INDEX);
+            return;
+        }
+
         if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             nightDreamUI.setRadioIconActive();
@@ -303,8 +308,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     private boolean shallKeepScreenOn(int mode) {
-        if (mode > 0
-                || ! mySettings.allow_screen_off) return true;
+        if (mode > 0 || ! mySettings.allow_screen_off) return true;
 
         long now = Calendar.getInstance().getTimeInMillis();
         if ( (0 < mySettings.nextAlarmTime - now

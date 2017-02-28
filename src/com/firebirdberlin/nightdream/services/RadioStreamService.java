@@ -90,8 +90,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             playStream(AudioManager.STREAM_MUSIC);
         } else
         if ( ACTION_STOP.equals(action) ) {
-            isRunning = false;
-            streamingMode = StreamingMode.INACTIVE;
             stopSelf();
         }
 
@@ -107,6 +105,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         stopForeground(false); // bool: true = remove Notification
         isRunning = false;
         alarmIsRunning = false;
+        streamingMode = StreamingMode.INACTIVE;
     }
 
     private Runnable fadeIn = new Runnable() {

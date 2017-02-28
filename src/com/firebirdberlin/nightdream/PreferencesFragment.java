@@ -63,6 +63,8 @@ public class PreferencesFragment extends PreferenceFragment {
     public boolean purchased_weather_data = false;
     public boolean purchased_web_radio = false;
 
+    private int indexInitialScreen = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +73,20 @@ public class PreferencesFragment extends PreferenceFragment {
             new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
         getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (indexInitialScreen > 0 ) {
+            PreferenceScreen screen = getPreferenceScreen();
+            screen.onItemClick(null, null, indexInitialScreen, 0);
+        }
+    }
+
+    public void setInitialScreenIndex(int index) {
+        this.indexInitialScreen = index;
     }
 
     @Override

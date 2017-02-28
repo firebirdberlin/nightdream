@@ -161,6 +161,11 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
             alarmClock.stopRadioStream();
         }
 
+        if ( mySettings.radioStreamURLUI.isEmpty() ) {
+            PreferencesActivity.start(this, PreferencesActivity.PREFERENCES_SCREEN_WEB_RADIO_INDEX);
+            return;
+        }
+
         if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
             nightDreamUI.setRadioIconActive();
             RadioStreamService.startStream(this);
