@@ -170,12 +170,23 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if ( AlarmService.isRunning ) {
             alarmClock.startAlarm();
             nightDreamUI.showAlarmClock();
-        } else
-        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM ) {
-            setVolumeControlStream(AudioManager.STREAM_ALARM);
-            nightDreamUI.showAlarmClock();
         }
 
+        switch (RadioStreamService.streamingMode) {
+            case ALARM:
+                setVolumeControlStream(AudioManager.STREAM_ALARM);
+                nightDreamUI.showAlarmClock();
+                break;
+            case RADIO:
+                setVolumeControlStream(AudioManager.STREAM_MUSIC);
+                nightDreamUI.setRadioIconActive();
+                receiverRadioStreamStopped = registerReceiverRadioStreamStopped();
+                break;
+            default:
+                setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+                nightDreamUI.setRadioIconInactive();
+                break;
+        }
     }
 
     @Override
@@ -288,7 +299,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             nightDreamUI.setRadioIconActive();
             receiverRadioStreamStopped = registerReceiverRadioStreamStopped();
             RadioStreamService.startStream(this);
-
         } else {
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
             nightDreamUI.setRadioIconInactive();
