@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -92,7 +93,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
         // ask for active notifications
         if (Build.VERSION.SDK_INT >= 18){
-            Intent i = new Intent("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
+            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command","list");
             sendBroadcast(i);
         }
@@ -117,7 +118,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
         //stop notification listener service
         if (Build.VERSION.SDK_INT >= 18){
-            Intent i = new Intent("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
+            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command","release");
             sendBroadcast(i);
         }
@@ -139,7 +140,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     private NotificationReceiver registerNotificationReceiver(){
         NotificationReceiver receiver = new NotificationReceiver(getWindow());
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
+        filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
         registerReceiver(receiver,filter);
         return receiver;
     }

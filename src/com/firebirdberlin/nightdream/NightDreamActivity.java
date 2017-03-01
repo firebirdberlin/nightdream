@@ -46,9 +46,6 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
-    private static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
-    private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
-    private static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
     final private Handler handler = new Handler();
     AlarmClock alarmClock;
     ImageView background_image;
@@ -138,7 +135,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         if (Build.VERSION.SDK_INT >= 18){
             // ask for active notifications
-            Intent i = new Intent(ACTION_NOTIFICATION_LISTENER);
+            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command", "list");
             sendBroadcast(i);
         }
@@ -256,14 +253,14 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     private NotificationReceiver registerNotificationReceiver() {
         NotificationReceiver receiver = new NotificationReceiver(getWindow());
-        IntentFilter filter = new IntentFilter(ACTION_NOTIFICATION_LISTENER);
+        IntentFilter filter = new IntentFilter(Config.ACTION_NOTIFICATION_LISTENER);
         registerReceiver(receiver, filter);
         return receiver;
     }
 
     private ReceiverShutDown registerPowerDisconnectionReceiver() {
         ReceiverShutDown shutDownReceiver = new ReceiverShutDown();
-        IntentFilter pwrFilter = new IntentFilter(ACTION_SHUT_DOWN);
+        IntentFilter pwrFilter = new IntentFilter(Config.ACTION_SHUT_DOWN);
         registerReceiver(shutDownReceiver, pwrFilter);
         return shutDownReceiver;
     }
@@ -469,7 +466,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     private PendingIntent getShutdownIntent() {
-        Intent alarmIntent = new Intent(ACTION_SHUT_DOWN);
+        Intent alarmIntent = new Intent(Config.ACTION_SHUT_DOWN);
         return PendingIntent.getBroadcast(this,
                                           PENDING_INTENT_STOP_APP,
                                           alarmIntent,
