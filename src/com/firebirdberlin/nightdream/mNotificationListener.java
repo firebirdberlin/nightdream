@@ -18,7 +18,7 @@ public class mNotificationListener extends NotificationListenerService {
         nlservicereciver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.firebirdberlin.nightdream.NOTIFICATION_LISTENER");
-        registerReceiver(nlservicereciver,filter);
+        registerReceiver(nlservicereciver, filter);
         Log.i(TAG,"**********  Notification listener STARTED");
     }
 

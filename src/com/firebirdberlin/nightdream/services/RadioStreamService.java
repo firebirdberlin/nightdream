@@ -13,19 +13,23 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
+
 import java.io.IOException;
-import android.support.v4.app.NotificationCompat;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.HttpStatusCheckTask;
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
                                                            MediaPlayer.OnCompletionListener,
-                                                           MediaPlayer.OnPreparedListener {
+                                                           MediaPlayer.OnPreparedListener,
+                                                           HttpStatusCheckTask.AsyncResponse {
     private static String TAG = "NightDream.RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
@@ -80,14 +84,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             startForeground(1337, note);
             alarmIsRunning = true;
             streamingMode = StreamingMode.ALARM;
-            setAlarmVolume(settings.alarmVolume);
+            currentStreamType = AudioManager.STREAM_ALARM;
             streamURL = settings.radioStreamURL;
-            playStream(AudioManager.STREAM_ALARM);
+
+            setAlarmVolume(settings.alarmVolume);
+            new HttpStatusCheckTask(this).execute(streamURL);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
             streamingMode = StreamingMode.RADIO;
+            currentStreamType = AudioManager.STREAM_MUSIC;
             streamURL = settings.radioStreamURLUI;
-            playStream(AudioManager.STREAM_MUSIC);
+            new HttpStatusCheckTask(this).execute(streamURL);
         } else
         if ( ACTION_STOP.equals(action) ) {
             stopSelf();
@@ -106,6 +113,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         isRunning = false;
         alarmIsRunning = false;
         streamingMode = StreamingMode.INACTIVE;
+
+        Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
+        sendBroadcast(intent);
     }
 
     private Runnable fadeIn = new Runnable() {
@@ -126,17 +136,27 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
     }
 
-    private void playStream(int stream_type) {
+    public void onStatusCheckFinished(Boolean success) {
+        if ( success ) {
+            playStream();
+            return;
+        } else if ( alarmIsRunning ) {
+            AlarmService.startAlarm(this);
+        }
+
+        stopSelf();
+    }
+
+    private void playStream() {
         Log.i(TAG, "playStream()");
+
         stopPlaying();
-        currentStreamType = stream_type;
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setOnPreparedListener(this);
-        //mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mMediaPlayer.setAudioStreamType(stream_type);
+        mMediaPlayer.setAudioStreamType(currentStreamType);
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 
         try {
@@ -164,12 +184,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
         if ( alarmIsRunning ) {
             AlarmService.startAlarm(this);
-            isRunning = false;
             stopSelf();
             return true;
         }
         return false;
     }
+
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
@@ -192,7 +212,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.i(TAG, "onCompletion");
-        playStream(currentStreamType);
+        playStream();
     }
 
     public void stopPlaying(){

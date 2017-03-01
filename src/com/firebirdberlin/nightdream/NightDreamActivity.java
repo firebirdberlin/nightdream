@@ -28,6 +28,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -64,6 +65,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private Utility utility;
     private NotificationReceiver nReceiver = null;
     private ReceiverShutDown shutDownReceiver = null;
+    private ReceiverRadioStreamStopped receiverRadioStreamStopped = null;
     private PowerManager pm;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -189,6 +191,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         cancelShutdown();
         unregister(nReceiver);
         unregister(shutDownReceiver);
+        unregister(receiverRadioStreamStopped);
 
         if (mySettings.allow_screen_off && mode == 0 && !isScreenOn() ){ // screen off in night mode
             startBackgroundListener();
@@ -240,18 +243,25 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nReceiver  = null;
     }
 
-    private NotificationReceiver registerNotificationReceiver(){
+    private NotificationReceiver registerNotificationReceiver() {
         NotificationReceiver receiver = new NotificationReceiver(getWindow());
         IntentFilter filter = new IntentFilter(ACTION_NOTIFICATION_LISTENER);
         registerReceiver(receiver, filter);
         return receiver;
     }
 
-    private ReceiverShutDown registerPowerDisconnectionReceiver(){
+    private ReceiverShutDown registerPowerDisconnectionReceiver() {
         ReceiverShutDown shutDownReceiver = new ReceiverShutDown();
         IntentFilter pwrFilter = new IntentFilter(ACTION_SHUT_DOWN);
         registerReceiver(shutDownReceiver, pwrFilter);
         return shutDownReceiver;
+    }
+
+    private ReceiverRadioStreamStopped registerReceiverRadioStreamStopped() {
+        ReceiverRadioStreamStopped receiver = new ReceiverRadioStreamStopped();
+        IntentFilter filter = new IntentFilter(Config.ACTION_RADIO_STREAM_STOPPED);
+        registerReceiver(receiver, filter);
+        return receiver;
     }
 
     public boolean onTouch(View view, MotionEvent e) {
@@ -276,11 +286,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             nightDreamUI.setRadioIconActive();
+            receiverRadioStreamStopped = registerReceiverRadioStreamStopped();
             RadioStreamService.startStream(this);
 
         } else {
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
             nightDreamUI.setRadioIconInactive();
+            unregister(receiverRadioStreamStopped);
             RadioStreamService.stop(this);
         }
     }
@@ -403,6 +415,18 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             }
         }
     }
+
+    class ReceiverRadioStreamStopped extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ( intent.getAction().equals(Config.ACTION_RADIO_STREAM_STOPPED) ) {
+                setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
+                nightDreamUI.setRadioIconInactive();
+            }
+        }
+    }
+
 
     public void setKeepScreenOn(boolean keepScreenOn) {
         if( keepScreenOn ) {
