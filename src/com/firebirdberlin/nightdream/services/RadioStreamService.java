@@ -91,6 +91,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             new HttpStatusCheckTask(this).execute(streamURL);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
+            sendBroadcast( new Intent(Config.ACTION_RADIO_STREAM_STARTED) );
+
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
             streamURL = settings.radioStreamURLUI;
@@ -144,6 +146,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             AlarmService.startAlarm(this);
         }
 
+        Toast.makeText(this, "Radio stream failure ", Toast.LENGTH_SHORT).show();
         stopSelf();
     }
 

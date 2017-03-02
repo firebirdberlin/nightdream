@@ -62,7 +62,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private Utility utility;
     private NotificationReceiver nReceiver = null;
     private ReceiverShutDown shutDownReceiver = null;
-    private ReceiverRadioStreamStopped receiverRadioStreamStopped = null;
+    private ReceiverRadioStream receiverRadioStream = null;
     private PowerManager pm;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -132,6 +132,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
         shutDownReceiver = registerPowerDisconnectionReceiver();
+        receiverRadioStream = registerReceiverRadioStream();
 
         if (Build.VERSION.SDK_INT >= 18){
             // ask for active notifications
@@ -169,6 +170,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             nightDreamUI.showAlarmClock();
         }
 
+        setupRadioStreamUI();
+    }
+
+    void setupRadioStreamUI() {
         switch (RadioStreamService.streamingMode) {
             case ALARM:
                 setVolumeControlStream(AudioManager.STREAM_ALARM);
@@ -177,7 +182,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             case RADIO:
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
                 nightDreamUI.setRadioIconActive();
-                receiverRadioStreamStopped = registerReceiverRadioStreamStopped();
                 break;
             default:
                 setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
@@ -199,7 +203,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         cancelShutdown();
         unregister(nReceiver);
         unregister(shutDownReceiver);
-        unregister(receiverRadioStreamStopped);
+        unregister(receiverRadioStream);
 
         if (mySettings.allow_screen_off && mode == 0 && !isScreenOn() ){ // screen off in night mode
             startBackgroundListener();
@@ -265,9 +269,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return shutDownReceiver;
     }
 
-    private ReceiverRadioStreamStopped registerReceiverRadioStreamStopped() {
-        ReceiverRadioStreamStopped receiver = new ReceiverRadioStreamStopped();
-        IntentFilter filter = new IntentFilter(Config.ACTION_RADIO_STREAM_STOPPED);
+    private ReceiverRadioStream registerReceiverRadioStream() {
+        ReceiverRadioStream receiver = new ReceiverRadioStream();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
+        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         registerReceiver(receiver, filter);
         return receiver;
     }
@@ -292,14 +298,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
 
         if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
-            setVolumeControlStream(AudioManager.STREAM_MUSIC);
-            nightDreamUI.setRadioIconActive();
-            receiverRadioStreamStopped = registerReceiverRadioStreamStopped();
             RadioStreamService.startStream(this);
         } else {
-            setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
-            nightDreamUI.setRadioIconInactive();
-            unregister(receiverRadioStreamStopped);
             RadioStreamService.stop(this);
         }
     }
@@ -423,14 +423,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
     }
 
-    class ReceiverRadioStreamStopped extends BroadcastReceiver {
-
+    class ReceiverRadioStream extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if ( intent.getAction().equals(Config.ACTION_RADIO_STREAM_STOPPED) ) {
-                setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
-                nightDreamUI.setRadioIconInactive();
-            }
+            setupRadioStreamUI();
         }
     }
 
