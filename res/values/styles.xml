@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="PreferencesTheme" parent="android:Theme.Material">
-        <item name="android:background">#212121</item>
-        <item name="android:colorAccent">#3498db</item>
-        <item name="android:colorPrimary">#000000</item>
-        <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
-        <item name="android:colorPrimaryDark">#000000</item>
-        <item name="android:navigationBarColor">#000000</item>
+    <style name="PreferencesTheme">
+    </style>
+
+    <style name="DialogTheme" parent="android:Theme.Dialog">
     </style>
 </resources>

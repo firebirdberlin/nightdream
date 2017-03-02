@@ -15,9 +15,8 @@ public class PreferencesActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
-            setTheme(R.style.PreferencesTheme);
-        }
+        setTheme(R.style.PreferencesTheme);
+
         fragment = new PreferencesFragment();
         Intent intent = getIntent();
         if ( intent.hasExtra("preferenceScreenIndex") ) {

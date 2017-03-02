@@ -7,9 +7,11 @@ import de.greenrobot.event.EventBus;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -29,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -297,8 +300,32 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             return;
         }
 
+        toggleRadioStreamState();
+
+    }
+
+    private void toggleRadioStreamState() {
+        final Context context = this;
         if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
-            RadioStreamService.startStream(this);
+            if (Utility.hasNetworkConnection(this)) {
+                if ( Utility.hasFastNetworkConnection(this) ) {
+                    RadioStreamService.startStream(this);
+                } else {
+                    //new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                    new AlertDialog.Builder(this, R.style.DialogTheme)
+                        .setTitle("Mobile network connection.")
+                        .setMessage("Shall the radio stream be played on mobile network connections ?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                RadioStreamService.startStream(context);
+                            }
+                        })
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                }
+
+            }
         } else {
             RadioStreamService.stop(this);
         }
