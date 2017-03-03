@@ -114,7 +114,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         lightSensor = Utility.getLightSensor(this);
         if (lightSensor == null){
-            Toast.makeText(this, "No Light Sensor!", Toast.LENGTH_SHORT).show();
             last_ambient = 400.0f;
         }
 
@@ -400,8 +399,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if (lightSensor == null){
             last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
             SwitchModes(last_ambient, 0);
-            String msg = (mode == 0) ? "night mode enabled" : "day mode enabled";
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         }
     }
 
