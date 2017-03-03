@@ -311,20 +311,20 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                 if ( Utility.hasFastNetworkConnection(this) ) {
                     RadioStreamService.startStream(this);
                 } else {
-                    //new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
                     new AlertDialog.Builder(this, R.style.DialogTheme)
-                        .setTitle("Mobile network connection.")
-                        .setMessage("Shall the radio stream be played on mobile network connections ?")
+                        .setTitle(R.string.message_mobile_data_connection)
+                        .setMessage(R.string.message_mobile_data_connection_confirmation)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 RadioStreamService.startStream(context);
                             }
                         })
                     .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(R.drawable.ic_attention)
                         .show();
                 }
-
+            } else { // no network connection
+                Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_LONG).show();
             }
         } else {
             RadioStreamService.stop(this);

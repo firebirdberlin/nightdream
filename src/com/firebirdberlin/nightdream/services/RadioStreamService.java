@@ -231,7 +231,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     public static void start(Context context) {
         if ( ! Utility.hasNetworkConnection(context) ) {
-            Toast.makeText(context, "No network connection.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -242,7 +242,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     public static void startStream(Context context) {
         if ( ! Utility.hasNetworkConnection(context) ) {
-            Toast.makeText(context, "No network connection.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
             return;
         }
 

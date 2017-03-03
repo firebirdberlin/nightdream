@@ -70,6 +70,9 @@ OR
     <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="hour">h</string>
     <string name="location_time">location time</string>
+    <string name="message_no_data_connection">No data connection</string>
+    <string name="message_mobile_data_connection">Mobile data connection</string>
+    <string name="message_mobile_data_connection_confirmation">You are connected to a mobile network. Play the radio stream?</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Mute ringer</string>
     <string name="night_mode">Night mode</string>
