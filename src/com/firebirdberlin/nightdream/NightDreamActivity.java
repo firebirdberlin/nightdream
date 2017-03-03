@@ -181,6 +181,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             case ALARM:
                 setVolumeControlStream(AudioManager.STREAM_ALARM);
                 nightDreamUI.showAlarmClock();
+                nightDreamUI.setRadioIconInactive();
                 break;
             case RADIO:
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);

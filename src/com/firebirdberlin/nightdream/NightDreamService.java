@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream;
 
 import java.util.Calendar;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -41,6 +42,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     private double last_ambient_noise = 32000.;
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver;
+    private ReceiverRadioStream receiverRadioStream = null;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -77,6 +79,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         }
 
         nReceiver = registerNotificationReceiver();
+        receiverRadioStream = registerReceiverRadioStream();
 
         background_image = (ImageView)findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
@@ -88,7 +91,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
         nightDreamUI.onStart();
         nightDreamUI.onResume();
-
+        setupRadioStreamUI();
         EventBus.getDefault().register(this);
 
         // ask for active notifications
@@ -108,19 +111,22 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nightDreamUI.onPause();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
-        try {
-            if (nReceiver != null) {
-                unregisterReceiver(nReceiver);
-                nReceiver = null;
-            }
-        } catch (IllegalArgumentException e) {
-        }
+        unregister(nReceiver);
+        unregister(receiverRadioStream);
 
         //stop notification listener service
         if (Build.VERSION.SDK_INT >= 18){
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command","release");
             sendBroadcast(i);
+        }
+    }
+
+    private void unregister(BroadcastReceiver receiver) {
+        try {
+            unregisterReceiver(receiver);
+        } catch ( IllegalArgumentException e ) {
+
         }
     }
 
@@ -135,6 +141,33 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         Log.d("NightDreamService","onDetachedFromWindow() called.");
+    }
+
+    class ReceiverRadioStream extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setupRadioStreamUI();
+        }
+    }
+
+    void setupRadioStreamUI() {
+        switch (RadioStreamService.streamingMode) {
+            case RADIO:
+                nightDreamUI.setRadioIconActive();
+                break;
+            default:
+                nightDreamUI.setRadioIconInactive();
+                break;
+        }
+    }
+
+    private ReceiverRadioStream registerReceiverRadioStream() {
+        ReceiverRadioStream receiver = new ReceiverRadioStream();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
+        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
+        registerReceiver(receiver, filter);
+        return receiver;
     }
 
     private NotificationReceiver registerNotificationReceiver(){
