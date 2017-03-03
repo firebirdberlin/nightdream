@@ -755,6 +755,7 @@ public class NightDreamUI {
         } else {
             sidePanel.setX(0);
         }
+        handler.postDelayed(hideAlarmClock, 20000);
     }
 
     private void hideSidePanel() {
