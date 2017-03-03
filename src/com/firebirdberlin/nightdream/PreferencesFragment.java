@@ -65,6 +65,21 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private int indexInitialScreen = 0;
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity;
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -247,21 +262,6 @@ public class PreferencesFragment extends PreferenceFragment {
             .show();
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mContext = activity;
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -322,12 +322,6 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference prefFetchWeatherData = (Preference) findPreference("showWeather");
         prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
 
-        if ( Utility.getLightSensor(context) == null ) {
-            PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
-            Preference autoBrightness = (Preference) findPreference("autoBrightness");
-            colorScreen.removePreference(autoBrightness);
-        }
-
         prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object new_value) {
                 boolean on = Boolean.parseBoolean(new_value.toString());
@@ -344,6 +338,7 @@ public class PreferencesFragment extends PreferenceFragment {
                 return true;
             }
         });
+
 
         Preference resetToDefaults = (Preference) findPreference("reset_to_defaults");
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -378,6 +373,27 @@ public class PreferencesFragment extends PreferenceFragment {
                 return true;
             }
         });
+
+        setupLightSensorPreferences();
+
+    }
+
+    private void setupLightSensorPreferences() {
+        if ( Utility.getLightSensor(mContext) == null ) {
+            Log.d(TAG, "no light sensor");
+            PreferenceCategory cat = null;
+            Preference pref = null;
+
+            cat = (PreferenceCategory) findPreference("category_behaviour");
+            pref = (Preference) findPreference("autoBrightness");
+            cat.removePreference(pref);
+            pref = (Preference) findPreference("brightness_offset");
+            cat.removePreference(pref);
+
+            cat = (PreferenceCategory) findPreference("category_night_mode");
+            pref = (Preference) findPreference("reactivate_on_ambient_light_value");
+            cat.removePreference(pref);
+        }
     }
 
     Preference.OnPreferenceClickListener purchaseWebRadioPreferenceClickListener =
