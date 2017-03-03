@@ -189,6 +189,13 @@
                 android:title="@string/night_mode"
                 android:key="category_night_mode">
 
+                <ListPreference
+                    android:title="@string/night_mode_activation_mode"
+                    android:key="nightModeActivationMode"
+                    android:defaultValue="1"
+                    android:entryValues="@array/nightModeActivationModes"
+                    android:entries="@array/nightModeActivationValues"/>
+
                 <CheckBoxPreference
                     android:key="Night.muteRinger"
                     android:title="@string/mute_ringer"
