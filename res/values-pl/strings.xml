@@ -47,7 +47,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="colors">Kolory</string>
 <string name="confirm_reset_question">Czy napewno chcesz resetować ustawienia </string>
 <string name="confirm_reset">Reset</string>
-<string name="contribute">Przyczyn się</string>
+<string name="contribute">Przyczyń się</string>
 <string name="contribute_source_code">Kod źródłowy</string>
 <string name="contribute_translation">Tłumaczenie</string>
 <string name="credits">Autorzy</string>
@@ -57,7 +57,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Wspomóż</string>
 <string name="force_auto_rotation">Wymuś orientacje w Daydream</string>
-<string name="force_auto_rotation_summary">Wymuszenie orientacji ekranu kiedy jest uzywany jest Daydream</string>
+<string name="force_auto_rotation_summary">Wymuszenie orientacji ekranu kiedy jest uźywany Daydream</string>
 <string name="handle_power_ac">AC</string>
 <string name="handle_power">Autostart</string>
 <string name="handle_power_car">Stacja dokująca samochodowa</string>
@@ -76,6 +76,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="other_apps">Inne aplikacje</string>
 <string name="other_apps_tinytimetracker_summary">Śledź mój dzienny czas pracy</string>
 <string name="other_apps_tinytimetracker">Tiny Time Tracker</string>
+<string name="persistent_battery_value_while_charging">Status baterii</string>
+<string name="persistent_battery_value_while_charging_summary">Pokazuj status baterii cały czas podczas ładowania</string>
 <string name="preview">Podgląd</string>
 <string name="purchaseWeatherData">Kup licencje na pogode</string>
 <string name="purchaseWebRadio">Kup licencje na webradio</string>
@@ -92,8 +94,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend_app_desc">Wybierz aplikacje do udostępnienia </string>
 <string name="recommend_app_subject">Chciałem żeby zarekomendowaleś night clock app</string>
 <string name="recommend">Zarekomenduj</string>
-<string name="remaining">przypomnienie</string>
-<string name="reset_to_defaults">Przywrócenie ustawien domyślnych</string>
+<string name="remaining">Pozostało</string>
+<string name="reset_to_defaults">Przywrócenie ustawień domyślnych</string>
 <string name="restless_mode">Przesuwaj zegar na całym ekranie</string>
 <string name="review_request">Oceń aplikacje Dziękuje !</string>
 <string name="screen_orientation_automatic">Automatyczna orientacja ekranu</string>
@@ -109,6 +111,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_weather">Pokaż lokalną temperturę</string>
 <string name="show_wind_speed">Szybkość wiatru</string>
 <string name="speedUnit">Jednostka szybkości wiatru</string>
+<string name="titlePrivacyPolicy">Polityka prywatności</string>
 <string name="temperatureUnit">Jednostka temperatury</string>
 <string name="translations">Tłumaczenia</string>
 <string name="typeface_7_segment">7 segment LED</string>
