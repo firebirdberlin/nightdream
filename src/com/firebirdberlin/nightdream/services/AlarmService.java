@@ -59,7 +59,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
 
         Notification note = new NotificationCompat.Builder(this)
-            .setContentTitle("Alarm")
+            .setContentTitle(getString(R.string.alarm))
             .setContentText(getString(R.string.notification_alarm))
             .setSmallIcon(R.drawable.ic_audio)
             .setContentIntent(pi)

@@ -72,7 +72,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
 
             Notification note = new NotificationCompat.Builder(this)
-                .setContentTitle("Radio")
+                .setContentTitle(getString(R.string.radio))
                 .setContentText(getString(R.string.notification_alarm))
                 .setSmallIcon(R.drawable.ic_radio)
                 .setContentIntent(pi)

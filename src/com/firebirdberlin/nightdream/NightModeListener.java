@@ -75,7 +75,7 @@ public class NightModeListener extends Service {
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(this)
             .setSmallIcon(R.drawable.ic_nightdream)
-            .setContentTitle("NightDream")
+            .setContentTitle(getString(R.string.app_name))
             .setContentText("The night mode listener is active.")
             .setContentIntent(pi); //Required on Gingerbread and below
 

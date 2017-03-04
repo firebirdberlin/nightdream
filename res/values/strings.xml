@@ -86,6 +86,7 @@ OR
     <string name="preview">Preview</string>
     <string name="purchaseWeatherData">Buy a license</string>
     <string name="purchaseWebRadio">Buy a license</string>
+    <string name="radio">Radio</string>
     <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream_no_search_results">There were no search results.</string>
     <string name="radio_stream_query_hint">Search string</string>
