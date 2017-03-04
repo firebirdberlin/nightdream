@@ -29,7 +29,7 @@ public class BatteryView extends TextView {
 
     public void update(BatteryValue batteryValue, BatteryValue reference) {
         float percentage = batteryValue.getPercentage();
-        String percentage_string = String.format("%3d %%", (int) percentage);
+        String percentage_string = String.format("%3d%%", (int) percentage);
         String estimate_string = "";
         if (batteryValue.isCharging) {
             if (percentage < VALUE_FULLY_CHARGED){
