@@ -228,21 +228,11 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     public void onEvent(OnClockClicked event) {
         if (AlarmService.isRunning) alarmClock.stopAlarm();
 
-        if (lightSensor == null){ // in the emulator
-            switch (mode){
-                case 0:
-                    SwitchModes(18.f);
-                    break;
-                case 1:
-                    SwitchModes(39.f);
-                    break;
-                case 2:
-                    SwitchModes(50.f);
-                    break;
-                case 3:
-                    SwitchModes(4.0f);
-                    break;
-            }
+        // toggle the night mode manually
+        if ( lightSensor == null
+                || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
+            last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
+            SwitchModes(last_ambient);
         }
     }
 

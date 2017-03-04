@@ -29,6 +29,8 @@ public class Settings {
     public final static int BACKGROUND_BLACK = 1;
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
+    public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
+    public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
 
     Context mContext;
     SharedPreferences settings;
@@ -69,6 +71,7 @@ public class Settings {
     public int background_mode = 1;
     public int clockColor;
     public int clockColorNight;
+    public int nightModeActivationMode;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int secondaryColorNight;
@@ -161,6 +164,7 @@ public class Settings {
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
+        nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());

@@ -113,7 +113,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI.onStart();
 
         lightSensor = Utility.getLightSensor(this);
-        if (lightSensor == null){
+        if ( lightSensor == null ){
             last_ambient = 400.0f;
         }
 
@@ -160,7 +160,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                     last_ambient = mySettings.minIlluminance;
                     last_ambient_noise = 32000;
                     nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
-                    if (lightSensor == null) {
+                    if ( lightSensor == null ) {
                         handler.postDelayed(setScreenOff, 20000);
                     }
                 }
@@ -396,7 +396,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             alarmClock.stopAlarm();
         }
 
-        if (lightSensor == null){
+        // toggle the night mode manually
+        if ( lightSensor == null
+                || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
             last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
             SwitchModes(last_ambient, 0);
         }

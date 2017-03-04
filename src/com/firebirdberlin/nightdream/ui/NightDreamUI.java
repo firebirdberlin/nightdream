@@ -185,6 +185,7 @@ public class NightDreamUI {
 
         hideSystemUI();
         settings.reload();
+
         setScreenOrientation(settings.screenOrientation);
         updateWeatherData();
         updateBatteryValue();
@@ -192,8 +193,7 @@ public class NightDreamUI {
         controlsVisible = true;
 
         EventBus.getDefault().register(this);
-        lightSensorEventListener = new LightSensorEventListener(mContext);
-        lightSensorEventListener.register();
+        initLightSensor();
 
         brightnessProgress.setVisibility(View.INVISIBLE);
         setupClockLayout();
@@ -209,6 +209,16 @@ public class NightDreamUI {
         }
 
         showShowcase();
+    }
+
+    private void initLightSensor() {
+        if ( settings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_MANUAL
+                || settings.autoBrightness ) {
+            lightSensorEventListener = new LightSensorEventListener(mContext);
+            lightSensorEventListener.register();
+        } else {
+            lightSensorEventListener = null;
+        }
     }
 
     private long lastLocationRequest = 0L;
@@ -363,7 +373,9 @@ public class NightDreamUI {
 
     public void onPause() {
         EventBus.getDefault().unregister(this);
-        lightSensorEventListener.unregister();
+        if ( lightSensorEventListener != null ) {
+            lightSensorEventListener.unregister();
+        }
     }
 
     public void onStop() {
@@ -946,7 +958,6 @@ public class NightDreamUI {
 
     OnClickListener onStockAlarmTimeClickListener = new OnClickListener() {
         public void onClick(View v) {
-            Log.i(TAG, "ACTION_SHOW_ALARMS");
             if (Build.VERSION.SDK_INT < 19) return;
 
             Intent mClockIntent = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS);
@@ -1084,11 +1095,6 @@ public class NightDreamUI {
         }
     }
 
-    public void onEvent(OnNewLightSensorValue event){
-        last_ambient = event.value;
-        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
-    }
-
     public void onEvent(OnLocationUpdated event){
         if ( event == null ) return;
         if ( event.entry == null ) {
@@ -1099,6 +1105,11 @@ public class NightDreamUI {
     public void onEvent(OnWeatherDataUpdated event){
         settings.weatherEntry = event.entry;
         clockLayout.update(event.entry);
+    }
+
+    public void onEvent(OnNewLightSensorValue event){
+        last_ambient = event.value;
+        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
