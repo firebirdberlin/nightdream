@@ -19,15 +19,18 @@ public class WakeUpReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Settings settings = new Settings(context);
-        if (settings.useInternalAlarm ) {
-            if ( settings.useRadioAlarmClock && Utility.hasFastNetworkConnection(context) ) {
-                RadioStreamService.start(context);
-            } else {
-                AlarmService.startAlarm(context);
-            }
+        if ( !settings.useInternalAlarm ) return;
 
-            NightDreamActivity.start(context);
+        if ( settings.useRadioAlarmClock && Utility.hasFastNetworkConnection(context) ) {
+            RadioStreamService.start(context);
+        } else {
+            if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.INACTIVE ) {
+                RadioStreamService.stop(context);
+            }
+            AlarmService.startAlarm(context);
         }
+
+        NightDreamActivity.start(context);
     }
 
     public static void schedule(Context context) {
