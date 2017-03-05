@@ -102,7 +102,9 @@ public class RadioStreamPreference extends DialogPreference
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
                     startSearch();
+
                     return true;
                 }
                 return false;
@@ -161,7 +163,6 @@ public class RadioStreamPreference extends DialogPreference
         String query = queryText.getText().toString().trim();
         String country = getSelectedCountry();
         new StationRequestTask(this).execute(query, country);
-
 
         InputMethodManager imm =
                 (InputMethodManager) queryText.getContext()
