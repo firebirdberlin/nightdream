@@ -131,7 +131,7 @@ public class Settings {
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
         clockColor = settings.getInt("clockColor", Color.parseColor("#33B5E5"));
-        clockColorNight = settings.getInt("primaryColorNight", clockColor);
+        clockColorNight = settings.getInt("primaryColorNight", Color.parseColor("#33B5E5"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
         location_lat = settings.getFloat("location_lat", 0.f);
         location_lon = settings.getFloat("location_lon", 0.f);
@@ -147,7 +147,7 @@ public class Settings {
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor("#C2C2C2"));
-        secondaryColorNight = settings.getInt("secondaryColorNight", secondaryColor);
+        secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor("#C2C2C2"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);
