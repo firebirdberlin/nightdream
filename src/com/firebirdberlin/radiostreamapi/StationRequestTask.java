@@ -22,7 +22,8 @@ public class StationRequestTask extends AsyncTask<String, Void, List<RadioStatio
     @Override
     protected List<RadioStation> doInBackground(String... query) {
         String q = query[0];
-        return DirbleApi.fetchStations(q);
+        String country = query.length > 1 ? query[1] : null;
+        return DirbleApi.fetchStations(q, country);
     }
 
     @Override
