@@ -32,7 +32,6 @@ import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
@@ -152,10 +151,8 @@ public class NightDreamUI {
             menuIcon.setScaleY(.8f);
             clockLayout.setScaleX(.1f);
             clockLayout.setScaleY(.1f);
-            clockLayout.setOnTouchListener(mOnTouchListener);
-        } else {
-            clockLayout.setOnClickListener(mOnClickListener);
         }
+        clockLayout.setOnClickListener(mOnClickListener);
 
         utility = new Utility(context);
         settings = new Settings(context);
@@ -803,30 +800,6 @@ public class NightDreamUI {
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
-    private boolean multi_finger_gesture = false;
-    OnTouchListener mOnTouchListener = new OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    multi_finger_gesture = false;
-                    return true;
-                case MotionEvent.ACTION_POINTER_UP:
-                    multi_finger_gesture = true;
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    if (multi_finger_gesture == false) {
-                        EventBus.getDefault().post(new OnClockClicked());
-                        onClockClicked();
-                        return true;
-                    }
-                    multi_finger_gesture = false;
-                default:
-                    return mScaleDetector.onTouchEvent(event);
-            }
-        }
-    };
-
     private Configuration getConfiguration() {
         return mContext.getResources().getConfiguration();
     }
@@ -913,8 +886,9 @@ public class NightDreamUI {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float s = detector.getScaleFactor();
+            Log.i(TAG, String.format("onScale %f", s));
             applyScaleFactor(s);
-            return false;
+            return true;
         }
     };
 
@@ -943,6 +917,7 @@ public class NightDreamUI {
 
     OnClickListener mOnClickListener = new OnClickListener() {
         public void onClick(View v) {
+            EventBus.getDefault().post(new OnClockClicked());
             onClockClicked();
         }
     };
@@ -965,6 +940,7 @@ public class NightDreamUI {
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
+        mScaleDetector.onTouchEvent(e);
         return true;
     }
 
