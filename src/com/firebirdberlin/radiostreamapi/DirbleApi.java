@@ -10,6 +10,8 @@ import java.lang.StringBuilder;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class DirbleApi {
     private static String TAG = "NightDream.DirbleAPI";
     private static String BASEURL = "http://api.dirble.com/v2/search/";
     private static String TOKEN = "770f99fe4971232de187503040";
+    // mpo: used for developing/testing
+    //private static String TOKEN = "ef6dde09a01ea14d9a6d9569b2";
     private static int MAX_NUM_RESULTS = 100;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
@@ -33,9 +37,13 @@ public class DirbleApi {
         int responseCode = 0;
         String response = "";
         String responseText = "";
+
+
+//get request
+        /*
         String urlstring = BASEURL + queryString +
-                          "?token=" + TOKEN +
-                          "&per_page=" + String.valueOf(MAX_NUM_RESULTS);
+                "?token=" + TOKEN +
+                "&per_page=" + String.valueOf(MAX_NUM_RESULTS);
         Log.i(TAG, "requesting " + urlstring);
         try {
             URL url = new URL(urlstring);
@@ -57,6 +65,45 @@ public class DirbleApi {
             Log.e(TAG, Log.getStackTraceString(e));
             e.printStackTrace();
         }
+        */
+
+        //post request
+        try {
+            String urlstring = BASEURL + "?token=" + TOKEN + "&per_page=" + String.valueOf(MAX_NUM_RESULTS);
+            URL url = new URL(urlstring);
+            // this should escape the queryString properly and guarantee a valid json string
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("query", queryString);
+            String postDataString = jsonObject.toString();
+            byte[] postDataBytes = postDataString.getBytes(Charset.forName("UTF-8"));
+            int postDataLength = postDataBytes.length;
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            urlConnection.setReadTimeout(READ_TIMEOUT);
+            //enable post request
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("charset", "utf-8");
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+            urlConnection.getOutputStream().write(postDataBytes);
+
+            response = urlConnection.getResponseMessage();
+            responseCode = urlConnection.getResponseCode();
+            if ( responseCode == 200 ) {
+                responseText = getResponseText(urlConnection);
+            }
+            urlConnection.disconnect();
+        }
+        catch (SocketTimeoutException e) {
+            Log.e(TAG, "Http Timeout");
+            return stationList;
+        }
+        catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            e.printStackTrace();
+        }
+
 
         Log.i(TAG, " >> response " + response);
         if (responseCode == 200) {
