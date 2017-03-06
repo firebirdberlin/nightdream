@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -112,9 +111,6 @@ public class NightDreamUI {
 
     private ShowcaseView showcaseView = null;
 
-    private int dim_offset_init_x = 0;
-    private int dim_offset_curr_x = 0;
-    public boolean setDimOffset = false;
     private boolean daydreamMode = false;
     private float last_ambient = 4.0f;
 
@@ -152,6 +148,8 @@ public class NightDreamUI {
         // prepare zoom-in effect
         // API level 11
         if (Build.VERSION.SDK_INT >= 12){
+            menuIcon.setScaleX(.8f);
+            menuIcon.setScaleY(.8f);
             clockLayout.setScaleX(.1f);
             clockLayout.setScaleY(.1f);
             clockLayout.setOnTouchListener(mOnTouchListener);
@@ -864,6 +862,30 @@ public class NightDreamUI {
             handler.postDelayed(hideAlarmClock, 20000);
             return false;
         }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            int rect[] = new int[2];
+            clockLayoutContainer.getLocationOnScreen(rect);
+            if (e1.getY() < rect[1]) {
+                Point size = utility.getDisplaySize();
+                float dx = -2.f * (distanceX / size.x);
+                settings.dim_offset += dx;
+                settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
+
+                int value = (int) (100.f * (settings.dim_offset + 1.f));
+                brightnessProgress.setProgress(value);
+                brightnessProgress.setVisibility(View.VISIBLE);
+
+                setAlpha(brightnessProgress, 1.f, 0);
+                removeCallbacks(hideBrightnessLevel);
+                removeCallbacks(hideBrightnessView);
+                handler.postDelayed(hideBrightnessLevel, 1000);
+
+                dimScreen(0, last_ambient, settings.dim_offset);
+            }
+            return false;
+        }
     };
 
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
@@ -934,66 +956,8 @@ public class NightDreamUI {
     };
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
-        if (utility == null) return false;
-        Point click = new Point((int) e.getX(),(int) e.getY());
-        Point size = utility.getDisplaySize();
-
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
-
-        int rect[] = new int[2];
-        clockLayoutContainer.getLocationOnScreen(rect);
-
-        // handle the visibility of the alarm clock
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (click.y >= rect[1]) {// everything except the upper part of the screen
-                    brightnessProgress.setVisibility(View.INVISIBLE);
-                }
-                event_consumed = true;
-                break;
-        }
-
-        // set the screen brightness factor
-        if (click.y < rect[1]) {// upper part of the screen
-            switch (e.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    removeCallbacks(hideBrightnessLevel);
-                    removeCallbacks(hideBrightnessView);
-                    handler.postDelayed(hideBrightnessLevel, 1000);
-                    setDimOffset = true;
-                    dim_offset_init_x = click.x;
-                    return true;
-                case MotionEvent.ACTION_MOVE:
-                    if (setDimOffset == false) return false;
-                    dim_offset_curr_x = click.x;
-
-                    float dx = 2.f * (dim_offset_curr_x - dim_offset_init_x) / size.x;
-                    settings.dim_offset += dx;
-                    settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
-
-                    int value = (int) (100.f * (settings.dim_offset + 1.f));
-                    brightnessProgress.setProgress(value);
-                    brightnessProgress.setVisibility(View.VISIBLE);
-                    setAlpha(brightnessProgress, 1.f, 0);
-                    removeCallbacks(hideBrightnessLevel);
-                    removeCallbacks(hideBrightnessView);
-                    handler.postDelayed(hideBrightnessLevel, 1000);
-
-                    dim_offset_init_x = click.x;
-
-                    dimScreen(0, last_ambient, settings.dim_offset);
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    if (setDimOffset == true){
-                        setDimOffset = false;
-                        settings.setBrightnessOffset(settings.dim_offset);
-                        handler.postDelayed(hideBrightnessLevel, 1000);
-                        return true;
-                    }
-                    break;
-            }
-        }
-        return event_consumed;
+        return true;
     }
 
     public Drawable loadBackGroundImage() {
