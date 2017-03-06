@@ -216,13 +216,11 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nightDreamUI.onConfigurationChanged(newConfig);
     }
 
-    private void SwitchModes(float light_value){
-        int current_mode = mode;
-        mode = nightDreamUI.determineScreenMode(current_mode, light_value, last_ambient_noise);
+    private void setMode(int new_mode, float light_value) {
+        nightDreamUI.setMode(new_mode, light_value);
 
-        nightDreamUI.switchModes(light_value, last_ambient_noise);
-
-        setScreenBright(mode >= 2);
+        setScreenBright(new_mode >= 2);
+        mode = new_mode;
     }
 
     public void onEvent(OnClockClicked event) {
@@ -232,22 +230,26 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         if ( lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
             last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
-            SwitchModes(last_ambient);
+            int new_mode = ( mode == 0) ? 2 : 0;
+            setMode(new_mode, last_ambient);
         }
     }
 
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
-        SwitchModes(event.value);
+        int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
+        setMode(new_mode, last_ambient);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
-        SwitchModes(last_ambient);
+        int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
+        setMode(new_mode, last_ambient);
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {
         last_ambient_noise = event.value;
-        SwitchModes(last_ambient);
+        int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
+        setMode(new_mode, last_ambient);
     }
 }

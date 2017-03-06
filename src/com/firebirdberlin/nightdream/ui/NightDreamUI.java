@@ -171,7 +171,6 @@ public class NightDreamUI {
     }
 
     public void onStart() {
-        setAlpha(menuIcon, .5f, 100);
         handler.postDelayed(moveAround, 30000);
     }
 
@@ -180,9 +179,6 @@ public class NightDreamUI {
         if (Build.VERSION.SDK_INT >= 12){
             handler.postDelayed(zoomIn, 500);
         }
-        removeCallbacks(hideAlarmClock);
-        handler.postDelayed(hideAlarmClock, 20000);
-
         hideSystemUI();
         settings.reload();
 
@@ -199,8 +195,9 @@ public class NightDreamUI {
         setupClockLayout();
         setColor();
         setupBackgroundImage();
-        setupAlarmClock();
         setupScreenAnimation();
+
+        showAlarmClock();
 
         if (settings.useAmbientNoiseDetection()){
             soundmeter = new SoundMeter(isDebuggable);
@@ -212,7 +209,7 @@ public class NightDreamUI {
     }
 
     private void initLightSensor() {
-        if ( settings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_MANUAL
+        if ( Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC == settings.nightModeActivationMode
                 || settings.autoBrightness ) {
             lightSensorEventListener = new LightSensorEventListener(mContext);
             lightSensorEventListener.register();
@@ -508,7 +505,7 @@ public class NightDreamUI {
         return value;
     }
 
-    public void dimScreen(int millis, float light_value, float add_brightness){
+    private void dimScreen(int millis, float light_value, float add_brightness){
         LIGHT_VALUE_DARK = settings.minIlluminance;
         float v = 0.f;
         float brightness = 0.f;
@@ -627,18 +624,18 @@ public class NightDreamUI {
         return 3;
     }
 
-    public void switchModes(float light_value, double last_ambient_noise){
+    public void setMode(int new_mode, float light_value) {
+        Log.d(TAG, String.format("setMode %d -> %d", mode, new_mode));
         int current_mode = mode;
-        mode = determineScreenMode(current_mode, light_value, last_ambient_noise);
-
-        if ((mode == 0) && (current_mode != 0)){
+        mode = new_mode;
+        if ((new_mode == 0) && (current_mode != 0)){
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
             setColor();
             if ( settings.hideBackgroundImage ) {
                 background_image.setImageDrawable(bgblack);
             }
         } else
-        if ((mode != 0) && (current_mode == 0)){
+        if ((new_mode != 0) && (current_mode == 0)){
             restoreRingerMode();
             setColor();
             if ( settings.hideBackgroundImage ) {
@@ -647,17 +644,17 @@ public class NightDreamUI {
         }
 
         float dim_offset = settings.dim_offset;
-        if ((mode == 1) && (current_mode == 0)) {
+        if ((new_mode == 1) && (current_mode == 0)) {
             dim_offset += 0.1f;
         }
         dimScreen(screen_alpha_animation_duration, light_value, dim_offset);
 
         if (soundmeter != null) {
-            if (mode == 0 && soundmeter.isRunning() == false) {
+            if (new_mode == 0 && soundmeter.isRunning() == false) {
                 soundmeter.startMeasurement(3000);
-            } else if (mode == 1 && soundmeter.isRunning() == false){
+            } else if (new_mode == 1 && soundmeter.isRunning() == false){
                 soundmeter.startMeasurement(60000);
-            } else if (mode > 1) {
+            } else if (new_mode > 1) {
                 soundmeter.stopMeasurement();
             }
         }

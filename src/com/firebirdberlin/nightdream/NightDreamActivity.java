@@ -159,7 +159,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                 if (action.equals("start night mode")) {
                     last_ambient = mySettings.minIlluminance;
                     last_ambient_noise = 32000;
-                    nightDreamUI.dimScreen(0, last_ambient, mySettings.dim_offset);
+                    setMode(0);
                     if ( lightSensor == null ) {
                         handler.postDelayed(setScreenOff, 20000);
                     }
@@ -337,24 +337,24 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI.onConfigurationChanged(newConfig);
     }
 
+    private void setMode(int new_mode) {
+        nightDreamUI.setMode(new_mode, last_ambient);
 
-    private void SwitchModes(float light_value, double last_ambient_noise){
-        int current_mode = mode;
-        mode = nightDreamUI.determineScreenMode(current_mode, light_value, last_ambient_noise);
-
-        nightDreamUI.switchModes(light_value, last_ambient_noise);
-
-        if ((mode == 0) && (current_mode != 0)){
-            boolean on = shallKeepScreenOn(mode);
+        if ((new_mode == 0) && (mode != 0)){
+            boolean on = shallKeepScreenOn(new_mode);
             setKeepScreenOn(on); // allow the screen to go off
-        } else if ((mode > 0) && (current_mode != mode)) {
+        } else if ((new_mode > 0) && (new_mode != mode)) {
             setKeepScreenOn(true);
         }
-
+        mode = new_mode;
     }
 
     private boolean shallKeepScreenOn(int mode) {
-        if (mode > 0 || ! mySettings.allow_screen_off) return true;
+
+        if (mode > 0 || ! mySettings.allow_screen_off) {
+            Log.d(TAG, "shallKeepScreenOn() true");
+            return true;
+        }
 
         long now = Calendar.getInstance().getTimeInMillis();
         if ( (0 < mySettings.nextAlarmTime - now
@@ -372,7 +372,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
        @Override
        public void run() {
             handler.removeCallbacks(setScreenOff);
-            SwitchModes(last_ambient, last_ambient_noise);
+            int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
+            setMode(new_mode);
        }
     };
 
@@ -400,25 +401,33 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         if ( lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
             last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
-            SwitchModes(last_ambient, 0);
+            int new_mode = ( mode == 0) ? 2 : 0;
+            setMode(new_mode);
         }
     }
 
     public void onEvent(OnNewLightSensorValue event){
         Log.i(TAG, String.valueOf(event.value) + " lux, n=" + String.valueOf(event.n));
         last_ambient = event.value;
-        SwitchModes(last_ambient, last_ambient_noise);
+        handleBrightnessChange();
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
-        SwitchModes(last_ambient, last_ambient_noise);
+        handleBrightnessChange();
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {
         last_ambient_noise = event.value;
-        SwitchModes(last_ambient, last_ambient_noise);
+        handleBrightnessChange();
+    }
+
+    private void handleBrightnessChange() {
+        if (mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC) {
+            int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
+            setMode(new_mode);
+        }
     }
 
     public void onEvent(OnPowerDisconnected event) {
