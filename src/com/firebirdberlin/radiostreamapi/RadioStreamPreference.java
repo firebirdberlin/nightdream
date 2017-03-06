@@ -1,7 +1,9 @@
 package com.firebirdberlin.radiostreamapi;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,14 +24,16 @@ import android.widget.EditText;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.radiostreamapi.StationRequestTask;
+import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 public class RadioStreamPreference extends DialogPreference
-                                   implements StationRequestTask.AsyncResponse {
+                                   implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse {
     private final static String TAG = "NightDream.RadioStreamPreference";
     private Context mContext = null;
     private EditText queryText = null;
@@ -37,9 +41,11 @@ public class RadioStreamPreference extends DialogPreference
     private ArrayList<RadioStation> stations = new ArrayList<RadioStation>();
     private ArrayAdapter<RadioStation> adapter;
     private ListView stationListView;
+    private Spinner countrySpinner;
     private TextView noResultsText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
+    private Map<String, String> countryNameToCodeMap = null;
 
     public RadioStreamPreference(Context ctx) {
         this(ctx, null);
@@ -88,6 +94,7 @@ public class RadioStreamPreference extends DialogPreference
         queryText = ((EditText) v.findViewById(R.id.query_string));
         spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
         stationListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
+        countrySpinner = (Spinner) v.findViewById(R.id.countrySpinner);
         noResultsText = (TextView) v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
 
@@ -95,7 +102,9 @@ public class RadioStreamPreference extends DialogPreference
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
                     startSearch();
+
                     return true;
                 }
                 return false;
@@ -142,6 +151,8 @@ public class RadioStreamPreference extends DialogPreference
             }
         });
 
+        initCountrySpinner();
+
         return v;
     }
 
@@ -150,8 +161,8 @@ public class RadioStreamPreference extends DialogPreference
         stationListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
         String query = queryText.getText().toString().trim();
-        new StationRequestTask(this).execute(query);
-
+        String country = getSelectedCountry();
+        new StationRequestTask(this).execute(query, country);
 
         InputMethodManager imm =
                 (InputMethodManager) queryText.getContext()
@@ -172,6 +183,14 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     @Override
+    public void onCountryRequestFinished(List<Country> countries) {
+        //Log.i(TAG, "found " + countries.size() + " countries.");
+        updateCountryNameToCodeMap(countries);
+        updateCountrySpinner(countries);
+    }
+
+
+    @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         this.stations.clear();
@@ -186,5 +205,52 @@ public class RadioStreamPreference extends DialogPreference
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         setTitle(getTitle());
         setSummary(getPersistedString((String) defaultValue));
+    }
+
+    private void initCountrySpinner() {
+        Log.i(TAG, "starting country search");
+        new CountryRequestTask(this, mContext).execute();
+    }
+
+    private void updateCountryNameToCodeMap(List<Country> countries) {
+        countryNameToCodeMap = new HashMap<String, String>();
+        for (Country c : countries) {
+            countryNameToCodeMap.put(c.name, c.countryCode);
+        }
+
+    }
+
+    private void updateCountrySpinner(List<Country> countries) {
+
+        String locale = mContext.getResources().getConfiguration().locale.getCountry();
+
+        int selectionIndex = -1;
+        List<String> countryList = new ArrayList<String>();
+        int i = 0;
+        for (Country c : countries) {
+            countryList.add(c.name);
+            if (selectionIndex == -1 && c.countryCode != null && locale != null && c.countryCode.equals(locale)) {
+                selectionIndex = i;
+            }
+            i++;
+        }
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        countrySpinner.setAdapter(dataAdapter);
+        if (selectionIndex > -1) {
+            countrySpinner.setSelection(selectionIndex);
+        }
+    }
+
+    private String getSelectedCountry() {
+        //TODO handle special "any" entry
+        String item = (String)countrySpinner.getSelectedItem();
+        if (item != null) {
+            return countryNameToCodeMap.get(item);
+        } else {
+            return null;
+        }
+
     }
 }
