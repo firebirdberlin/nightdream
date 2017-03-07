@@ -26,6 +26,9 @@ clean:
 	ant -f Pro_build.xml clean
 	find . -name "*.sw*" -exec rm {} \;
 
+gitclean:
+	git branch -a --merged remotes/origin/master | grep -v master | grep "remotes/origin/" | cut -d "/" -f 3 | xargs -n 1 git push --delete origin
+
 clear-data:
 	adb $(OPT) shell pm clear com.firebirdberlin.nightdream
 
