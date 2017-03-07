@@ -10,21 +10,53 @@ import android.preference.Preference;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.TimePicker;
+import java.util.Calendar;
 import java.util.Date;
-
-import com.firebirdberlin.nightdream.models.SimpleTime;
 
 
 public class TimeRangePreference extends Preference {
     private static final String TIMERANGE = "timerange";
+
+    class SimpleTime {
+
+        public int hour = 0;
+        public int min = 0;
+
+        public SimpleTime(long millis){
+            if (millis < 0L) return;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(millis);
+            hour = calendar.get(Calendar.HOUR_OF_DAY);
+            min = calendar.get(Calendar.MINUTE);
+        }
+
+        public long getMillis() {
+            return getCalendar().getTimeInMillis();
+        }
+
+        public Calendar getCalendar() {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, hour);
+            cal.set(Calendar.MINUTE, min);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+
+            Calendar now = Calendar.getInstance();
+            if ( cal.before(now) ) {
+                cal.add(Calendar.DATE, 1);
+            }
+
+            return cal;
+        }
+    }
 
     private Context mContext = null;
     private String key_suffix_end = "";
     private String key_suffix_start = "";
     private String label_end_text = "";
     private String label_start_text = "";
-    private SimpleTime startTime = new SimpleTime();
-    private SimpleTime endTime = new SimpleTime();
+    private SimpleTime startTime;
+    private SimpleTime endTime;
     private String keyStart;
     private String keyEnd;
 
