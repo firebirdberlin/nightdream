@@ -58,7 +58,6 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.mAudioManager;
-import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnLocationUpdated;
@@ -89,6 +88,7 @@ public class NightDreamUI {
     private ImageView background_image;
     private ImageView menuIcon;
     private ImageView settingsIcon;
+    private ImageView nightModeIcon;
     private WebRadioImageView radioIcon;
     private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
@@ -131,6 +131,7 @@ public class NightDreamUI {
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
+        nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
 
         callIcon = (ImageView) rootView.findViewById(R.id.call_icon);
@@ -152,7 +153,6 @@ public class NightDreamUI {
             clockLayout.setScaleX(.1f);
             clockLayout.setScaleY(.1f);
         }
-        clockLayout.setOnClickListener(mOnClickListener);
 
         utility = new Utility(context);
         settings = new Settings(context);
@@ -250,6 +250,8 @@ public class NightDreamUI {
     }
 
     void setColor() {
+        setNightModeIcon();
+
         int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
 
@@ -259,6 +261,7 @@ public class NightDreamUI {
         twitterNumber.setTextColor(textColor);
         whatsappNumber.setTextColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
+        nightModeIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         callIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         gmailIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
@@ -292,6 +295,16 @@ public class NightDreamUI {
     public void setRadioIconInactive() {
         int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
         radioIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
+    }
+
+    private void setNightModeIcon() {
+        if (settings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL
+                || Utility.getLightSensor(mContext) != null) {
+            nightModeIcon.setVisibility(View.VISIBLE);
+        } else {
+            nightModeIcon.setVisibility(View.GONE);
+        }
+        nightModeIcon.setImageResource( (mode == 0) ? R.drawable.ic_moon : R.drawable.ic_sun );
     }
 
     private void setupBackgroundImage() {
@@ -784,13 +797,6 @@ public class NightDreamUI {
                );
     }
 
-    public void onClockClicked() {
-        brightnessProgress.setVisibility(View.INVISIBLE);
-        updateBatteryValue();
-        updateBatteryView();
-        showAlarmClock();
-    }
-
     public void showAlarmClock() {
         removeCallbacks(hideAlarmClock);
         handler.postDelayed(hideAlarmClock, 20000);
@@ -914,13 +920,6 @@ public class NightDreamUI {
         float factor_y = (float) clockLayoutContainer.getHeight() / clockLayout.getHeight();
         return (factor_x < factor_y ) ? factor_x : factor_y;
     }
-
-    OnClickListener mOnClickListener = new OnClickListener() {
-        public void onClick(View v) {
-            EventBus.getDefault().post(new OnClockClicked());
-            onClockClicked();
-        }
-    };
 
     OnClickListener onMenuItemClickListener = new OnClickListener() {
         public void onClick(View v) {
@@ -1177,7 +1176,10 @@ public class NightDreamUI {
                 showcaseView = null;
                 handler.postDelayed(moveAround, 30000);
                 handler.postDelayed(hideAlarmClock, 20000);
-                onClockClicked();
+                brightnessProgress.setVisibility(View.INVISIBLE);
+                updateBatteryValue();
+                updateBatteryView();
+                showAlarmClock();
                 break;
         }
     }

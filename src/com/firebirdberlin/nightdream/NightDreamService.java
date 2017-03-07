@@ -20,7 +20,6 @@ import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 
 import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
@@ -210,46 +209,46 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         }
     }
 
+    public void onNightModeClick(View v) {
+        // toggle the night mode manually
+        if ( lightSensor == null
+                || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
+            if ( lightSensor == null ) {
+                last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
+            }
+            int new_mode = ( mode == 0) ? 2 : 0;
+            setMode(new_mode);
+        }
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
         nightDreamUI.onConfigurationChanged(newConfig);
     }
 
-    private void setMode(int new_mode, float light_value) {
-        nightDreamUI.setMode(new_mode, light_value);
+    private void setMode(int new_mode) {
+        nightDreamUI.setMode(new_mode, last_ambient);
 
         setScreenBright(new_mode >= 2);
         mode = new_mode;
     }
 
-    public void onEvent(OnClockClicked event) {
-        if (AlarmService.isRunning) alarmClock.stopAlarm();
-
-        // toggle the night mode manually
-        if ( lightSensor == null
-                || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
-            last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
-            int new_mode = ( mode == 0) ? 2 : 0;
-            setMode(new_mode, last_ambient);
-        }
-    }
-
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
         int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
-        setMode(new_mode, last_ambient);
+        setMode(new_mode);
     }
 
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
-        setMode(new_mode, last_ambient);
+        setMode(new_mode);
     }
 
     public void onEvent(OnNewAmbientNoiseValue event) {
         last_ambient_noise = event.value;
         int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
-        setMode(new_mode, last_ambient);
+        setMode(new_mode);
     }
 }

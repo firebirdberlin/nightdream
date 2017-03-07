@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.events.OnClockClicked;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
@@ -304,6 +303,18 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     }
 
+    public void onNightModeClick(View v) {
+        // toggle the night mode manually
+        if ( lightSensor == null
+                || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
+            if ( lightSensor == null ) {
+                last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
+            }
+            int new_mode = ( mode == 0) ? 2 : 0;
+            setMode(new_mode);
+        }
+    }
+
     private void toggleRadioStreamState() {
         final Context context = this;
         if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
@@ -389,21 +400,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         startService(i);
 
         finish();
-    }
-
-    public void onEvent(OnClockClicked event){
-        if (AlarmService.isRunning) {
-            AlarmService.stop(this);
-            alarmClock.stopAlarm();
-        }
-
-        // toggle the night mode manually
-        if ( lightSensor == null
-                || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
-            last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
-            int new_mode = ( mode == 0) ? 2 : 0;
-            setMode(new_mode);
-        }
     }
 
     public void onEvent(OnNewLightSensorValue event){
