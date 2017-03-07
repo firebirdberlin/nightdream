@@ -2,7 +2,9 @@ package com.firebirdberlin.nightdream;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.preference.Preference;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -75,8 +77,8 @@ public class TimeRangePreference extends Preference {
                     showDialogEndTime();
 
                 }
-            }, startTime.hour, startTime.min, true);
-            mTimePicker.setTitle(label_start_text);
+            }, startTime.hour, startTime.min, DateFormat.is24HourFormat(mContext));
+            setDialogTitle(mTimePicker, label_start_text);
             mTimePicker.show();
     }
 
@@ -87,9 +89,23 @@ public class TimeRangePreference extends Preference {
                 public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                     updateTime(endTime, selectedHour, selectedMinute);
                 }
-            }, endTime.hour, endTime.min, true);
-            mTimePicker.setTitle(label_end_text);
+            }, endTime.hour, endTime.min, DateFormat.is24HourFormat(mContext));
+            setDialogTitle(mTimePicker, label_end_text);
             mTimePicker.show();
+    }
+
+    private void setDialogTitle(TimePickerDialog dialog, String title) {
+        /* Due to a bug in the TimePicker view we set the title to an empty string
+         * if the screen orientation is landscape
+         * https://code.google.com/p/android/issues/detail?id=201766
+         */
+        int orientation = mContext.getResources().getConfiguration().orientation;
+        if (Build.VERSION.SDK_INT > 19
+                && orientation == Configuration.ORIENTATION_LANDSCAPE ) {
+            dialog.setTitle("");
+        } else {
+            dialog.setTitle(title);
+        }
     }
 
     private void updateTime(SimpleTime time, int hour, int min) {
