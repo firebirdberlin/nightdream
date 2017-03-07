@@ -1,16 +1,13 @@
 package com.firebirdberlin.nightdream;
 
-import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.os.Bundle;
-import android.preference.DialogPreference;
+import android.preference.Preference;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -19,7 +16,7 @@ import java.util.Date;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
 
-public class TimeRangePreference extends DialogPreference {
+public class TimeRangePreference extends Preference {
     private static final String TIMERANGE = "timerange";
 
     private int dialogState = 0;
@@ -55,8 +52,6 @@ public class TimeRangePreference extends DialogPreference {
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
         settings = new Settings(mContext);
-        setPositiveButtonText(android.R.string.ok);
-        setNegativeButtonText(android.R.string.cancel);
 
         label_start_text = mContext.getResources().getString(R.string.autostart_timerange_label_start);
         label_end_text = mContext.getResources().getString(R.string.autostart_timerange_label_end);
@@ -73,161 +68,55 @@ public class TimeRangePreference extends DialogPreference {
     }
 
     @Override
-    protected View onCreateDialogView() {
+    public void onClick() {
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    updateTime(startTime, selectedHour, selectedMinute);
+                    showDialogEndTime();
 
-        LinearLayout layout = new LinearLayout(mContext);
-        verticalLayout1 = new LinearLayout(mContext);
+                }
+            }, startTime.hour, startTime.min, DateFormat.is24HourFormat(mContext));
+            setDialogTitle(mTimePicker, label_start_text);
+            mTimePicker.show();
+    }
 
-        verticalLayout1.setOrientation(LinearLayout.VERTICAL);
+    public void showDialogEndTime() {
+            TimePickerDialog mTimePicker;
+            mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    updateTime(endTime, selectedHour, selectedMinute);
+                }
+            }, endTime.hour, endTime.min, DateFormat.is24HourFormat(mContext));
+            setDialogTitle(mTimePicker, label_end_text);
+            mTimePicker.show();
+    }
 
-        verticalLayout1.setPadding(12,12,12,12);
-
+    private void setDialogTitle(TimePickerDialog dialog, String title) {
+        /* Due to a bug in the TimePicker view we set the title to an empty string
+         * if the screen orientation is landscape
+         * https://code.google.com/p/android/issues/detail?id=201766
+         */
         int orientation = mContext.getResources().getConfiguration().orientation;
-        layout.setOrientation( ( orientation == Configuration.ORIENTATION_PORTRAIT )
-                                ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
-
-        layout.setGravity(Gravity.CENTER);
-
-        timeLabel = new TextView(mContext);
-        timeLabel.setText(label_start_text);
-        timeLabel.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        verticalLayout1.addView(timeLabel);
-
-        picker = createTimePicker(mContext);
-        setPicker(startTime);
-
-        layout.addView(verticalLayout1);
-
-        return layout;
-    }
-
-    @Override
-    protected void onBindDialogView(View v) {
-        super.onBindDialogView(v);
-    }
-
-    @Override
-    protected void showDialog(Bundle state) {
-        super.showDialog(state);
-
-        dialogState = 0;
-        final AlertDialog dialog = (AlertDialog) getDialog();
-
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (dialogState == 0) {
-                            startTime.hour = getHour();
-                            startTime.min = getMinute();
-                            timeLabel.setText(label_end_text);
-                            timeLabel.invalidate();
-
-                            picker = createTimePicker(mContext);
-                            setPicker(endTime);
-                            verticalLayout1.invalidate();
-
-                            dialogState++;
-                        } else {
-                            endTime.hour = getHour();
-                            endTime.min = getMinute();
-                            dialog.dismiss();
-                            onDialogClosed(true);
-                        }
-                    }
-                });
-    }
-
-    private TimePicker createTimePicker(Context context) {
-        if (picker != null) {
-            verticalLayout1.removeView(picker);
-            picker = null;
-        }
-
-        picker = new TimePicker(context);
-
-         if (DateFormat.is24HourFormat(context) ) {
-             picker.setIs24HourView(true);
-         }
-
-        picker.setScaleX(0.95f);
-        picker.setScaleY(0.95f);
-
-        verticalLayout1.addView(picker);
-        return picker;
-    }
-
-    void setPicker(SimpleTime simpleTime) {
-        setHour(simpleTime.hour);
-        setMinute(simpleTime.min);
-        picker.invalidate();
-    }
-
-    private int getHour() {
-        if (Build.VERSION.SDK_INT < 23) return deprecatedGetHour();
-
-        return picker.getHour();
-    }
-
-    private int getMinute() {
-        if (Build.VERSION.SDK_INT < 23) return deprecatedGetMinute();
-
-        return picker.getMinute();
-    }
-
-    private void setHour(int val) {
-        if (Build.VERSION.SDK_INT < 23) {
-           deprecatedSetHour(val);
-           return;
-        }
-
-        picker.setHour(val);
-    }
-
-    private void setMinute(int val) {
-        if (Build.VERSION.SDK_INT < 23) {
-            deprecatedSetMinute(val);
-            return;
-        }
-
-        picker.setMinute(val);
-    }
-
-    @SuppressWarnings("deprecation")
-    private int deprecatedGetHour() {
-        return picker.getCurrentHour();
-    }
-
-    @SuppressWarnings("deprecation")
-    private void deprecatedSetHour(int val) {
-        picker.setCurrentHour(val);
-    }
-
-    @SuppressWarnings("deprecation")
-    private int deprecatedGetMinute() {
-        return picker.getCurrentMinute();
-    }
-
-    @SuppressWarnings("deprecation")
-    private void deprecatedSetMinute(int val) {
-        picker.setCurrentMinute(val);
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
-
-        if (positiveResult) {
-            setSummary(getSummary());
-            if (callChangeListener(startTime.getMillis())) {
-                settings.setAutoStartTime(startTime.getMillis(), endTime.getMillis());
-                notifyChanged();
-            }
+        if (Build.VERSION.SDK_INT > 19
+                && orientation == Configuration.ORIENTATION_LANDSCAPE ) {
+            dialog.setTitle("");
+        } else {
+            dialog.setTitle(title);
         }
     }
 
+    private void updateTime(SimpleTime time, int hour, int min) {
+        time.hour = hour;
+        time.min = min;
+        setSummary(getSummary());
+        if (callChangeListener(time.getMillis())) {
+            settings.setAutoStartTime(startTime.getMillis(), endTime.getMillis());
+            notifyChanged();
+        }
+    }
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return (a.getString(index));
