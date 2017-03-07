@@ -299,7 +299,7 @@ public class NightDreamUI {
 
     private void setNightModeIcon() {
         if (settings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL
-                || Utility.getLightSensor(mContext) != null) {
+                || Utility.getLightSensor(mContext) == null) {
             nightModeIcon.setVisibility(View.VISIBLE);
         } else {
             nightModeIcon.setVisibility(View.GONE);
@@ -543,8 +543,8 @@ public class NightDreamUI {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore a minimum value must be set to preserve the visibility of the clock.
 
-        Log.d(TAG, "light value : " + String.valueOf(light_value));
-        Log.d(TAG, "a : " + String.valueOf(v) + " | b : " + String.valueOf(brightness));
+        //Log.d(TAG, "light value : " + String.valueOf(light_value));
+        //Log.d(TAG, "a : " + String.valueOf(v) + " | b : " + String.valueOf(brightness));
 
         setBrightness(brightness);
 

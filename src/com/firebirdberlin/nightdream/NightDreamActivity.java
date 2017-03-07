@@ -304,7 +304,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onNightModeClick(View v) {
-        // toggle the night mode manually
         if ( lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
             if ( lightSensor == null ) {
