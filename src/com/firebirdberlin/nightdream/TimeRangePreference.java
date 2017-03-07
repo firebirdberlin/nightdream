@@ -4,12 +4,11 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.Preference;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import java.util.Date;
 
@@ -19,18 +18,15 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 public class TimeRangePreference extends Preference {
     private static final String TIMERANGE = "timerange";
 
-    private int dialogState = 0;
     private Context mContext = null;
     private String key_suffix_end = "";
     private String key_suffix_start = "";
     private String label_end_text = "";
     private String label_start_text = "";
-    private TimePicker picker = null;
-    private Settings settings = null;
     private SimpleTime startTime = new SimpleTime();
     private SimpleTime endTime = new SimpleTime();
-    private TextView timeLabel = null;
-    private LinearLayout verticalLayout1 = null;
+    private String keyStart;
+    private String keyEnd;
 
 
     public TimeRangePreference(Context ctxt) {
@@ -51,12 +47,14 @@ public class TimeRangePreference extends Preference {
 
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
-        settings = new Settings(mContext);
 
         label_start_text = mContext.getResources().getString(R.string.autostart_timerange_label_start);
         label_end_text = mContext.getResources().getString(R.string.autostart_timerange_label_end);
         key_suffix_start = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_start", "_start");
         key_suffix_end = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_end", "_end");
+
+        keyStart = getKey() + key_suffix_start;
+        keyEnd = getKey() + key_suffix_end;
     }
 
     private static String getAttributeStringValue(AttributeSet attrs, String namespace,
@@ -69,29 +67,29 @@ public class TimeRangePreference extends Preference {
 
     @Override
     public void onClick() {
-            TimePickerDialog mTimePicker;
-            mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                    updateTime(startTime, selectedHour, selectedMinute);
-                    showDialogEndTime();
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                updateTime(startTime, selectedHour, selectedMinute);
+                showDialogEndTime();
 
-                }
-            }, startTime.hour, startTime.min, DateFormat.is24HourFormat(mContext));
-            setDialogTitle(mTimePicker, label_start_text);
-            mTimePicker.show();
+            }
+        }, startTime.hour, startTime.min, DateFormat.is24HourFormat(mContext));
+        setDialogTitle(mTimePicker, label_start_text);
+        mTimePicker.show();
     }
 
     public void showDialogEndTime() {
-            TimePickerDialog mTimePicker;
-            mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                    updateTime(endTime, selectedHour, selectedMinute);
-                }
-            }, endTime.hour, endTime.min, DateFormat.is24HourFormat(mContext));
-            setDialogTitle(mTimePicker, label_end_text);
-            mTimePicker.show();
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                updateTime(endTime, selectedHour, selectedMinute);
+            }
+        }, endTime.hour, endTime.min, DateFormat.is24HourFormat(mContext));
+        setDialogTitle(mTimePicker, label_end_text);
+        mTimePicker.show();
     }
 
     private void setDialogTitle(TimePickerDialog dialog, String title) {
@@ -113,7 +111,11 @@ public class TimeRangePreference extends Preference {
         time.min = min;
         setSummary(getSummary());
         if (callChangeListener(time.getMillis())) {
-            settings.setAutoStartTime(startTime.getMillis(), endTime.getMillis());
+            SharedPreferences sharedPreferences = getSharedPreferences();
+            SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+            prefEditor.putLong(keyStart, startTime.getMillis());
+            prefEditor.putLong(keyEnd, endTime.getMillis());
+            prefEditor.commit();
             notifyChanged();
         }
     }
@@ -124,8 +126,9 @@ public class TimeRangePreference extends Preference {
 
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        long startInMillis = settings.autostartTimeRangeStart;
-        long endInMillis = settings.autostartTimeRangeEnd;
+        SharedPreferences sharedPreferences = getSharedPreferences();
+        long startInMillis = sharedPreferences.getLong(keyStart, -1L);
+        long endInMillis = sharedPreferences.getLong(keyEnd, -1L);
 
         startTime = new SimpleTime(startInMillis);
         endTime = new SimpleTime(endInMillis);

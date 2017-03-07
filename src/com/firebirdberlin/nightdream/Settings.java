@@ -276,15 +276,6 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public void setAutoStartTime(long start, long end) {
-        autostartTimeRangeStart = start;
-        autostartTimeRangeEnd = end;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("autostart_time_range_start", start);
-        prefEditor.putLong("autostart_time_range_end", end);
-        prefEditor.commit();
-    }
-
     public void setAlarmTime(long alarmTime) {
         nextAlarmTime = alarmTime;
         SharedPreferences.Editor prefEditor = settings.edit();
