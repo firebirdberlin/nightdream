@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -377,6 +378,10 @@ public class PreferencesFragment extends PreferenceFragment {
             removePreference(pref);
             pref = (Preference) findPreference("reactivate_on_ambient_light_value");
             removePreference(pref);
+
+            ListPreference nightModePref = (ListPreference) findPreference("nightModeActivationMode");
+            nightModePref.setEntries(new String[]{getString(R.string.night_mode_activation_manual)});
+            nightModePref.setEntryValues(new String[]{"0"});
         }
     }
 
