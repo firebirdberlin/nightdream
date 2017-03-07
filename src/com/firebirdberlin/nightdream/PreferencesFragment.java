@@ -30,7 +30,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceCategory;
+import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.MediaStore;
@@ -199,10 +199,6 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void togglePurchasePreferences() {
-        Preference donationPreference = (Preference) findPreference("donation_play");
-        Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
-        Preference purchaseWebRadioPreference = (Preference) findPreference("purchaseWebRadio");
-        Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
         Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
         Preference useRadioAlarmClockPreference = (Preference) findPreference("useRadioAlarmClock");
         Preference radioStreamURLUIPreference = (Preference) findPreference("radioStreamURLUI");
@@ -212,28 +208,20 @@ public class PreferencesFragment extends PreferenceFragment {
         radioStreamURLUIPreference.setEnabled(purchased_web_radio);
 
         if (purchased_donation) {
-            PreferenceCategory category = (PreferenceCategory) findPreference("donation_screen");
-            if (category != null) {
-                category.removePreference(donationPreference);
-            }
+            Preference donationPreference = (Preference) findPreference("donation_play");
+            removePreference(donationPreference);
         }
 
         if (purchased_weather_data) {
-            PreferenceScreen screen = (PreferenceScreen) findPreference("weather_screen");
-            if (screen != null) {
-                screen.removePreference(purchaseWeatherDataPreference);
-            }
+            Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
+            removePreference(purchaseWeatherDataPreference);
         }
 
         if (purchased_web_radio) {
-            PreferenceCategory categoryRadio = (PreferenceCategory) findPreference("category_radio_stream");
-            if (categoryRadio != null) {
-                categoryRadio.removePreference(purchaseWebRadioPreference);
-            }
-            PreferenceScreen screenRadio = (PreferenceScreen) findPreference("radio_screen");
-            if (screenRadio != null) {
-                screenRadio.removePreference(purchaseWebRadioUIPreference);
-            }
+            Preference purchaseWebRadioPreference = (Preference) findPreference("purchaseWebRadio");
+            Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
+            removePreference(purchaseWebRadioPreference);
+            removePreference(purchaseWebRadioUIPreference);
         }
     }
 
@@ -381,18 +369,14 @@ public class PreferencesFragment extends PreferenceFragment {
     private void setupLightSensorPreferences() {
         if ( Utility.getLightSensor(mContext) == null ) {
             Log.d(TAG, "no light sensor");
-            PreferenceCategory cat = null;
             Preference pref = null;
 
-            cat = (PreferenceCategory) findPreference("category_behaviour");
             pref = (Preference) findPreference("autoBrightness");
-            cat.removePreference(pref);
+            removePreference(pref);
             pref = (Preference) findPreference("brightness_offset");
-            cat.removePreference(pref);
-
-            cat = (PreferenceCategory) findPreference("category_night_mode");
+            removePreference(pref);
             pref = (Preference) findPreference("reactivate_on_ambient_light_value");
-            cat.removePreference(pref);
+            removePreference(pref);
         }
     }
 
@@ -652,4 +636,28 @@ public class PreferencesFragment extends PreferenceFragment {
                 }
             }
         };
+
+
+    private void removePreference(Preference preference) {
+        PreferenceGroup parent = getParent(getPreferenceScreen(), preference);
+        if ( parent != null ) {
+            parent.removePreference(preference);
+        }
+    }
+
+    private PreferenceGroup getParent(PreferenceGroup root, Preference preference) {
+        for (int i = 0; i < root.getPreferenceCount(); i++) {
+            Preference p = root.getPreference(i);
+            if (p == preference) {
+                return root;
+            }
+            if (PreferenceGroup.class.isInstance(p)) {
+                PreferenceGroup parent = getParent((PreferenceGroup)p, preference);
+                if (parent != null) {
+                    return parent;
+                }
+            }
+        }
+        return null;
+    }
 }
