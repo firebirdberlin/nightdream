@@ -200,29 +200,21 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void togglePurchasePreferences() {
-        Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
-        Preference useRadioAlarmClockPreference = (Preference) findPreference("useRadioAlarmClock");
-        Preference radioStreamURLUIPreference = (Preference) findPreference("radioStreamURLUI");
-
-        enableWeatherDataPreference.setEnabled(purchased_weather_data);
-        useRadioAlarmClockPreference.setEnabled(purchased_web_radio);
-        radioStreamURLUIPreference.setEnabled(purchased_web_radio);
+        enablePreference("showWeather", purchased_weather_data);
+        enablePreference("useRadioAlarmClock", purchased_web_radio);
+        enablePreference("radioStreamURLUI", purchased_web_radio);
 
         if (purchased_donation) {
-            Preference donationPreference = (Preference) findPreference("donation_play");
-            removePreference(donationPreference);
+            removePreference("donation_play");
         }
 
         if (purchased_weather_data) {
-            Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
-            removePreference(purchaseWeatherDataPreference);
+            removePreference("purchaseWeatherData");
         }
 
         if (purchased_web_radio) {
-            Preference purchaseWebRadioPreference = (Preference) findPreference("purchaseWebRadio");
-            Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
-            removePreference(purchaseWebRadioPreference);
-            removePreference(purchaseWebRadioUIPreference);
+            removePreference("purchaseWebRadio");
+            removePreference("purchaseWebRadioUI");
         }
     }
 
@@ -370,14 +362,10 @@ public class PreferencesFragment extends PreferenceFragment {
     private void setupLightSensorPreferences() {
         if ( Utility.getLightSensor(mContext) == null ) {
             Log.d(TAG, "no light sensor");
-            Preference pref = null;
 
-            pref = (Preference) findPreference("autoBrightness");
-            removePreference(pref);
-            pref = (Preference) findPreference("brightness_offset");
-            removePreference(pref);
-            pref = (Preference) findPreference("reactivate_on_ambient_light_value");
-            removePreference(pref);
+            removePreference("autoBrightness");
+            removePreference("brightness_offset");
+            removePreference("reactivate_on_ambient_light_value");
 
             ListPreference nightModePref = (ListPreference) findPreference("nightModeActivationMode");
             nightModePref.setEntries(new String[]{getString(R.string.night_mode_activation_manual)});
@@ -615,10 +603,8 @@ public class PreferencesFragment extends PreferenceFragment {
         String selection = prefs.getString("backgroundMode", "1");
         boolean on = selection.equals("3");
 
-        Preference chooseImage = (Preference) findPreference("chooseBackgroundImage");
-        Preference hideImage = (Preference) findPreference("hideBackgroundImage");
-        chooseImage.setEnabled(on);
-        hideImage.setEnabled(on);
+        enablePreference("chooseBackgroundImage", on);
+        enablePreference("hideBackgroundImage", on);
     }
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
@@ -642,6 +628,15 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         };
 
+    private void enablePreference(String key, boolean on) {
+        Preference preference = (Preference) findPreference(key);
+        preference.setEnabled(on);
+    }
+
+    private void removePreference(String key) {
+        Preference preference = (Preference) findPreference(key);
+        removePreference(preference);
+    }
 
     private void removePreference(Preference preference) {
         PreferenceGroup parent = getParent(getPreferenceScreen(), preference);
