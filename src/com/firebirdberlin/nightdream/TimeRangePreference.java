@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.Preference;
@@ -80,8 +81,24 @@ public class TimeRangePreference extends Preference {
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
 
-        label_start_text = mContext.getResources().getString(R.string.autostart_timerange_label_start);
-        label_end_text = mContext.getResources().getString(R.string.autostart_timerange_label_end);
+        Resources res = mContext.getResources();
+        String packageName = mContext.getPackageName();
+        String res_label_start_text = getAttributeStringValue(attrs, TIMERANGE, "start_text", "start time");
+        String res_label_end_text = getAttributeStringValue(attrs, TIMERANGE, "end_text", "end time");
+        int identifierStart = res.getIdentifier(res_label_start_text, null, packageName);
+        int identifierEnd = res.getIdentifier(res_label_end_text, null, packageName);
+        if (identifierStart != 0 ) {
+            label_start_text = res.getString(identifierStart);
+        } else {
+            label_start_text = "";
+        }
+
+        if (identifierEnd != 0 ) {
+            label_end_text = res.getString(identifierEnd);
+        } else {
+            label_end_text = "";
+        }
+
         key_suffix_start = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_start", "_start");
         key_suffix_end = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_end", "_end");
 

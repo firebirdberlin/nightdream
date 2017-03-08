@@ -36,6 +36,8 @@
                     android:key="autostart_time_range"
                     android:dependency="handle_power"
                     android:defaultValue="0"
+                    timerange:start_text="@string/autostart_timerange_label_start"
+                    timerange:end_text="@string/autostart_timerange_label_end"
                     timerange:key_suffix_start="_start"
                     timerange:key_suffix_end="_end" />
             </PreferenceCategory>
