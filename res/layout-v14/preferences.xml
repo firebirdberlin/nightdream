@@ -31,7 +31,7 @@
                 android:dependency="handle_power"
                 key="category_handle_power_autostart_time">
 
-                <com.firebirdberlin.nightdream.TimeRangePreference
+                <de.firebirdberlin.preference.TimeRangePreference
                     xmlns:timerange="timerange"
                     android:key="autostart_time_range"
                     android:dependency="handle_power"
