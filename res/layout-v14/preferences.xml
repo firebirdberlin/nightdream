@@ -31,11 +31,13 @@
                 android:dependency="handle_power"
                 key="category_handle_power_autostart_time">
 
-                <com.firebirdberlin.nightdream.TimeRangePreference
+                <de.firebirdberlin.preference.TimeRangePreference
                     xmlns:timerange="timerange"
                     android:key="autostart_time_range"
                     android:dependency="handle_power"
                     android:defaultValue="0"
+                    timerange:start_text="@string/autostart_timerange_label_start"
+                    timerange:end_text="@string/autostart_timerange_label_end"
                     timerange:key_suffix_start="_start"
                     timerange:key_suffix_end="_end" />
             </PreferenceCategory>
@@ -133,7 +135,10 @@
 
             </PreferenceCategory>
 
-            <PreferenceCategory android:title="@string/behaviour">
+            <PreferenceCategory
+                android:key="category_behaviour"
+                android:title="@string/behaviour">
+
                 <SwitchPreference
                     android:key="restlessMode"
                     android:title="@string/restless_mode"
@@ -184,7 +189,14 @@
 
             <PreferenceCategory
                 android:title="@string/night_mode"
-                key="category_night_mode">
+                android:key="category_night_mode">
+
+                <ListPreference
+                    android:title="@string/night_mode_activation_mode"
+                    android:key="nightModeActivationMode"
+                    android:defaultValue="1"
+                    android:entryValues="@array/nightModeActivationModes"
+                    android:entries="@array/nightModeActivationValues"/>
 
                 <CheckBoxPreference
                     android:key="Night.muteRinger"

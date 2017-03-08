@@ -76,6 +76,9 @@ OR
     <string name="minute">min</string>
     <string name="mute_ringer">Mute ringer</string>
     <string name="night_mode">Night mode</string>
+    <string name="night_mode_activation_mode">Activation mode</string>
+    <string name="night_mode_activation_manual">manual</string>
+    <string name="night_mode_activation_auto">automatic</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
     <string name="other_apps">Other apps</string>

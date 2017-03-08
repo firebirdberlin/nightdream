@@ -27,10 +27,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceCategory;
+import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.MediaStore;
@@ -64,6 +65,21 @@ public class PreferencesFragment extends PreferenceFragment {
     public boolean purchased_web_radio = false;
 
     private int indexInitialScreen = 0;
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity;
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -184,41 +200,21 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void togglePurchasePreferences() {
-        Preference donationPreference = (Preference) findPreference("donation_play");
-        Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
-        Preference purchaseWebRadioPreference = (Preference) findPreference("purchaseWebRadio");
-        Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
-        Preference enableWeatherDataPreference = (Preference) findPreference("showWeather");
-        Preference useRadioAlarmClockPreference = (Preference) findPreference("useRadioAlarmClock");
-        Preference radioStreamURLUIPreference = (Preference) findPreference("radioStreamURLUI");
-
-        enableWeatherDataPreference.setEnabled(purchased_weather_data);
-        useRadioAlarmClockPreference.setEnabled(purchased_web_radio);
-        radioStreamURLUIPreference.setEnabled(purchased_web_radio);
+        enablePreference("showWeather", purchased_weather_data);
+        enablePreference("useRadioAlarmClock", purchased_web_radio);
+        enablePreference("radioStreamURLUI", purchased_web_radio);
 
         if (purchased_donation) {
-            PreferenceCategory category = (PreferenceCategory) findPreference("donation_screen");
-            if (category != null) {
-                category.removePreference(donationPreference);
-            }
+            removePreference("donation_play");
         }
 
         if (purchased_weather_data) {
-            PreferenceScreen screen = (PreferenceScreen) findPreference("weather_screen");
-            if (screen != null) {
-                screen.removePreference(purchaseWeatherDataPreference);
-            }
+            removePreference("purchaseWeatherData");
         }
 
         if (purchased_web_radio) {
-            PreferenceCategory categoryRadio = (PreferenceCategory) findPreference("category_radio_stream");
-            if (categoryRadio != null) {
-                categoryRadio.removePreference(purchaseWebRadioPreference);
-            }
-            PreferenceScreen screenRadio = (PreferenceScreen) findPreference("radio_screen");
-            if (screenRadio != null) {
-                screenRadio.removePreference(purchaseWebRadioUIPreference);
-            }
+            removePreference("purchaseWebRadio");
+            removePreference("purchaseWebRadioUI");
         }
     }
 
@@ -245,21 +241,6 @@ public class PreferencesFragment extends PreferenceFragment {
             .setMessage(R.string.dialog_message_thank_you)
             .setPositiveButton(android.R.string.ok, null)
             .show();
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mContext = activity;
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-
     }
 
     @Override
@@ -322,12 +303,6 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference prefFetchWeatherData = (Preference) findPreference("showWeather");
         prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
 
-        if ( Utility.getLightSensor(context) == null ) {
-            PreferenceScreen colorScreen = (PreferenceScreen) findPreference("colors_screen");
-            Preference autoBrightness = (Preference) findPreference("autoBrightness");
-            colorScreen.removePreference(autoBrightness);
-        }
-
         prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object new_value) {
                 boolean on = Boolean.parseBoolean(new_value.toString());
@@ -344,6 +319,7 @@ public class PreferencesFragment extends PreferenceFragment {
                 return true;
             }
         });
+
 
         Preference resetToDefaults = (Preference) findPreference("reset_to_defaults");
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -378,6 +354,23 @@ public class PreferencesFragment extends PreferenceFragment {
                 return true;
             }
         });
+
+        setupLightSensorPreferences();
+
+    }
+
+    private void setupLightSensorPreferences() {
+        if ( Utility.getLightSensor(mContext) == null ) {
+            Log.d(TAG, "no light sensor");
+
+            removePreference("autoBrightness");
+            removePreference("brightness_offset");
+            removePreference("reactivate_on_ambient_light_value");
+
+            ListPreference nightModePref = (ListPreference) findPreference("nightModeActivationMode");
+            nightModePref.setEntries(new String[]{getString(R.string.night_mode_activation_manual)});
+            nightModePref.setEntryValues(new String[]{"0"});
+        }
     }
 
     Preference.OnPreferenceClickListener purchaseWebRadioPreferenceClickListener =
@@ -610,10 +603,8 @@ public class PreferencesFragment extends PreferenceFragment {
         String selection = prefs.getString("backgroundMode", "1");
         boolean on = selection.equals("3");
 
-        Preference chooseImage = (Preference) findPreference("chooseBackgroundImage");
-        Preference hideImage = (Preference) findPreference("hideBackgroundImage");
-        chooseImage.setEnabled(on);
-        hideImage.setEnabled(on);
+        enablePreference("chooseBackgroundImage", on);
+        enablePreference("hideBackgroundImage", on);
     }
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
@@ -636,4 +627,37 @@ public class PreferencesFragment extends PreferenceFragment {
                 }
             }
         };
+
+    private void enablePreference(String key, boolean on) {
+        Preference preference = (Preference) findPreference(key);
+        preference.setEnabled(on);
+    }
+
+    private void removePreference(String key) {
+        Preference preference = (Preference) findPreference(key);
+        removePreference(preference);
+    }
+
+    private void removePreference(Preference preference) {
+        PreferenceGroup parent = getParent(getPreferenceScreen(), preference);
+        if ( parent != null ) {
+            parent.removePreference(preference);
+        }
+    }
+
+    private PreferenceGroup getParent(PreferenceGroup root, Preference preference) {
+        for (int i = 0; i < root.getPreferenceCount(); i++) {
+            Preference p = root.getPreference(i);
+            if (p == preference) {
+                return root;
+            }
+            if (PreferenceGroup.class.isInstance(p)) {
+                PreferenceGroup parent = getParent((PreferenceGroup)p, preference);
+                if (parent != null) {
+                    return parent;
+                }
+            }
+        }
+        return null;
+    }
 }

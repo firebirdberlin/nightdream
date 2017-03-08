@@ -131,7 +131,7 @@
 
             <PreferenceCategory
                 android:title="@string/night_mode"
-                key="category_night_mode">
+                android:key="category_night_mode">
 
                 <CheckBoxPreference
                     android:key="Night.muteRinger"

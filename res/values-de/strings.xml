@@ -76,6 +76,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="minute">min</string>
 <string name="mute_ringer">lautlos</string>
 <string name="night_mode">Nachtmodus</string>
+<string name="night_mode_activation_mode">Aktivierungsmodus</string>
+<string name="night_mode_activation_manual">manuell</string>
+<string name="night_mode_activation_auto">automatisch</string>
 <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
 <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
 <string name="other_apps">Andere Apps</string>
