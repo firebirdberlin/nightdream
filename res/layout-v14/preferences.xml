@@ -360,8 +360,8 @@
                 android:dependency="showWeather"
                 android:defaultValue=""
                 android:title="@string/weather_city_id_title"
-                android:summary="@string/weather_city_id_summary"
-                owmapi:text_clear="@string/clear"
+                owmapi:textClear="@string/clear"
+                owmapi:textSummary="@string/weather_city_id_summary"
                 />
 
             <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference

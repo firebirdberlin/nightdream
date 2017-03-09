@@ -101,7 +101,7 @@ public class OpenWeatherMapApi {
                         .appendQueryParameter("q", query)
                         .appendQueryParameter("type", "like")
                         .appendQueryParameter("cnt", "15")
-                        //.appendQueryParameter("sort", "population")
+                        .appendQueryParameter("sort", "population")
                         .appendQueryParameter("APPID", APPID)
                         .build().toString();
         return new URL(url);

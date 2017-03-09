@@ -124,7 +124,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface">Type de caractère</string>
 <string name="use_internal_alarm">Alarmes rapides</string>
 <string name="weather_calculation_time">Prévisions récupérées le:</string>
-<string name="weather_city_id_summary">ID de la ville du OpenWeatherMap. Laissez vide pour une détection automatique de l\'emplacement.</string>
+<string name="weather_city_id_summary">Laissez vide pour une détection automatique de l\'emplacement.</string>
 <string name="weather_city_id_title">ID de la ville</string>
 <string name="weather_info_title">Information</string>
 <string name="weather">Météo</string>

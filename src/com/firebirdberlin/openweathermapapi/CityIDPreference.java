@@ -34,13 +34,13 @@ public class CityIDPreference extends DialogPreference
     private static final String NAMESPACE = "owmapi";
     private Context mContext = null;
     private EditText queryText = null;
-    private String selectedStream;
     private ArrayList<City> cities = new ArrayList<City>();
     private ArrayAdapter<City> adapter;
     private ListView cityListView;
     private TextView noResultsText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
+    private String textSummary;
 
     public CityIDPreference(Context ctx) {
         this(ctx, null);
@@ -60,13 +60,19 @@ public class CityIDPreference extends DialogPreference
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
         Resources res = mContext.getResources();
-        String res_clear = getAttributeStringValue(attrs, NAMESPACE, "text_clear", null);
-        int identifier = res.getIdentifier(res_clear, null, mContext.getPackageName());
+        String resClear = getAttributeStringValue(attrs, NAMESPACE, "textClear", null);
+        int identifier = res.getIdentifier(resClear, null, mContext.getPackageName());
         if (identifier != 0 ) {
             String label = res.getString(identifier);
             setPositiveButtonText(label);
         } else {
             setPositiveButtonText(android.R.string.cancel);
+        }
+
+        String resSummary = getAttributeStringValue(attrs, NAMESPACE, "textSummary", null);
+        int resSummaryID = res.getIdentifier(resSummary, null, mContext.getPackageName());
+        if (resSummaryID != 0 ) {
+            textSummary = res.getString(resSummaryID);
         }
     }
 
@@ -190,7 +196,7 @@ public class CityIDPreference extends DialogPreference
 
     protected void persist(String value) {
         persistString(value);
-        setSummary(value);
+        setSummary(String.format("%s\n%s", value, textSummary));
         notifyChanged();
     }
 
@@ -202,6 +208,8 @@ public class CityIDPreference extends DialogPreference
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         setTitle(getTitle());
-        setSummary(getPersistedString((String) defaultValue));
+        String def = (String) defaultValue;
+
+        setSummary(String.format("%s\n%s", getPersistedString(def), textSummary));
     }
 }
