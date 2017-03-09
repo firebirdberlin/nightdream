@@ -41,7 +41,7 @@ public class OpenWeatherMapApi {
     private static int CONNECT_TIMEOUT = 10000;
 
 
-    public static List<City> findCity() {
+    public static List<City> findCity(String query) {
 
         int responseCode = 0;
         String response = "";
@@ -51,7 +51,7 @@ public class OpenWeatherMapApi {
 
         URL url;
         try {
-            url = getUrlFindCity("Berlin Lichtenberg");
+            url = getUrlFindCity(query);
         } catch (MalformedURLException e) {
             Log.e(TAG, Log.getStackTraceString(e));
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class OpenWeatherMapApi {
                         .appendQueryParameter("q", query)
                         .appendQueryParameter("type", "like")
                         .appendQueryParameter("cnt", "15")
-                        .appendQueryParameter("sort", "population")
+                        //.appendQueryParameter("sort", "population")
                         .appendQueryParameter("APPID", APPID)
                         .build().toString();
         return new URL(url);

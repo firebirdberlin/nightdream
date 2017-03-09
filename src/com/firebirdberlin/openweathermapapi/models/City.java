@@ -11,12 +11,6 @@ public class City {
 
     @Override
     public String toString() {
-        return "City{" +
-                "name='" + name + '\'' +
-                "id='" + String.format("%d", id) + '\'' +
-                ", countryCode='" + countryCode + '\'' +
-                ", lat='" + String.format("%f", lat) + '\'' +
-                ", lon='" + String.format("%f", lon) + '\'' +
-                '}';
+        return String.format("%s (%s)\n%1.3f°; %1.3f°", name, countryCode, lat, lon);
     }
 }
