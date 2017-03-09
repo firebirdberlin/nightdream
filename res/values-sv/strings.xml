@@ -128,7 +128,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Öppna väderkarta stads ID. Lämna blankt för automatiskt detektion av plats.</string>
 <string name="weather_city_id_title">Stads ID</string>
 <string name="weather_info_title">Information</string>
-<string name="weather_search_city_id">Sök stads ID</string>
 <string name="weather">Väder</string>
 <string name="welcome_screen_text1">Välkommen till din nya nattklocksappen! Den här appen visar aktuell tid när din mobil laddas.</string>
 <string name="welcome_screen_text2">Öppna inställningar här!</string>

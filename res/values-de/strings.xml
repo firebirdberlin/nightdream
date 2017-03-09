@@ -44,6 +44,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_alarm_sound">Weckton</string>
 <string name="choose_primary_color">Akzentfarbe</string>
 <string name="choose_secondary_color">Textfarbe</string>
+<string name="clear">löschen</string>
 <string name="colors">Farben</string>
 <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
 <string name="confirm_reset">Zurücksetzen</string>
@@ -132,10 +133,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface">Schriftart</string>
 <string name="use_internal_alarm">Schnellalarm</string>
 <string name="weather_calculation_time">Zeit der Wetterdatenberechnung</string>
-<string name="weather_city_id_summary">OpenWeatherMap City ID. Frei lassen zur automatischen Standortbestimmung.</string>
-<string name="weather_city_id_title">City ID</string>
+<string name="weather_city_id_summary">Frei lassen zur automatischen Standortbestimmung.</string>
+<string name="weather_city_id_title">Standort suchen</string>
 <string name="weather_info_title">Informationen</string>
-<string name="weather_search_city_id">Suche City ID</string>
 <string name="weather">Wetter</string>
 <string name="welcome_screen_text1">Willkommen zu Ihrer neuen Nachtuhr! Diese App zeigt die Uhrzeit an während Ihr Telefon geladen wird - auf Wunsch auch mit Autostart.</string>
 <string name="welcome_screen_text2">Öffnen Sie die Einstellungen hier.</string>

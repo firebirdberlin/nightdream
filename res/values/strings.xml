@@ -44,6 +44,7 @@ OR
     <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
+    <string name="clear">clear</string>
     <string name="colors">Colors</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="confirm_reset">Reset</string>
@@ -132,10 +133,9 @@ OR
     <string name="typeface">Typeface</string>
     <string name="use_internal_alarm">Quick alarms</string>
     <string name="weather_calculation_time">weather calculation time</string>
-    <string name="weather_city_id_summary">OpenWeatherMap City ID. Leave empty for an automatic detection of the location.</string>
-    <string name="weather_city_id_title">City ID</string>
+    <string name="weather_city_id_summary">Leave empty for an automatic detection of the location.</string>
+    <string name="weather_city_id_title">Search location</string>
     <string name="weather_info_title">Information</string>
-    <string name="weather_search_city_id">Search City ID</string>
     <string name="weather">Weather</string>
     <string name="welcome_screen_text1">Welcome to your new night clock ! This app shows the current time while charging your mobile.</string>
     <string name="welcome_screen_text2">Open the preferences here !</string>

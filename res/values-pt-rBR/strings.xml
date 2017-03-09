@@ -135,7 +135,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Código OpenWeatherMap City. Deixe em branco para detecção automática.</string>
 <string name="weather_city_id_title">Código da cidade</string>
 <string name="weather_info_title">Informação</string>
-<string name="weather_search_city_id">Procurar código da cidade</string>
 <string name="weather">Clima</string>
 <string name="welcome_screen_text1">Bem vindo a seu novo relógio noturno! Esse aplicativo mostra o horário atual enquanto você recarrega seu aparelho.</string>
 <string name="welcome_screen_text2">Abra as preferências aqui!</string>

@@ -116,7 +116,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Identifikácia mesta v OpenWeatherMap. Ponechajte prázdne pre automatickú detekciu podľa lokality.</string>
 <string name="weather_city_id_title">Identifikácia mesta</string>
 <string name="weather_info_title">Informácie</string>
-<string name="weather_search_city_id">Vyhľadať mesto</string>
 <string name="weather">Počasie</string>
 <string name="welcome_screen_text1">Vitajte v aplikácii pre zobrazenie hodín v noci. Aktuálny čas sa zobrazuje pri nabíjaní vášho mobilného zariadenia.</string>
 <string name="welcome_screen_text2">Zmena nastavenia tu!</string>

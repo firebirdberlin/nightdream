@@ -125,7 +125,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Nyissa meg az időjárási térképet. Hagyja üresen az automatikus helyzet felismeréshez.</string>
 <string name="weather_city_id_title">Város azonosítója</string>
 <string name="weather_info_title">Információ</string>
-<string name="weather_search_city_id">Keresés város  azonosító alapján</string>
 <string name="weather">Időjárás</string>
 <string name="welcome_screen_text1">Üdvözli az Ön új éjszakai órája. Ez az alkalmazás megmutatja az aktuális időt mialatt tölti a telefont.</string>
 <string name="welcome_screen_text2">Nyissa meg a preferenciákat itt!</string>

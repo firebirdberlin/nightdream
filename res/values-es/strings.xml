@@ -132,10 +132,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface">Tipo de letra</string>
 <string name="use_internal_alarm">Alarmas rápidas</string>
 <string name="weather_calculation_time">Previsión climática</string>
-<string name="weather_city_id_summary">Abrir mapa climático de ciudades. deja vacío para detección automática de tu ciudad.</string>
+<string name="weather_city_id_summary">Deja vacío para detección automática de tu ciudad.</string>
 <string name="weather_city_id_title">Identificación de ciudad</string>
 <string name="weather_info_title">Información</string>
-<string name="weather_search_city_id">Córdoba</string>
 <string name="weather">Clima</string>
 <string name="welcome_screen_text1">¡Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
 <string name="welcome_screen_text2">¡Accede a las preferencias aquí!</string>

@@ -126,7 +126,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Otwórz weatherMap City Id. Zostaw puste dla automatycznego wykrycia lokalizacji</string>
 <string name="weather_city_id_title">Kod miasta</string>
 <string name="weather_info_title">Informacje</string>
-<string name="weather_search_city_id">Szukanie miasta</string>
 <string name="weather">Pogoda</string>
 <string name="welcome_screen_text1">Witam Ciebie w night clock ! Ta aplikacja pokaże Ci aktualny czas podczas podczas ładowania telefonu.</string>
 <string name="welcome_screen_text2">Otwórz ustawienia tu !</string>
