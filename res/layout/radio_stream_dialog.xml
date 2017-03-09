@@ -29,7 +29,7 @@
             android:id="@+id/start_search"
             style="@android:style/Widget.DeviceDefault.Button.Borderless"
             android:textAllCaps="true"
-            android:textColor="?android:attr/textColorLink" />
+            android:textColor="@color/primary_text_color_selector"/>
     </LinearLayout>
 
     <android.support.v4.widget.ContentLoadingProgressBar
