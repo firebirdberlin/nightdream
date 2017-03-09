@@ -1,18 +1,16 @@
 package com.firebirdberlin.openweathermapapi;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
@@ -33,6 +31,7 @@ import com.firebirdberlin.openweathermapapi.models.City;
 public class CityIDPreference extends DialogPreference
                               implements CityRequestTask.AsyncResponse {
     private final static String TAG = "NightDream.CityIDPreference";
+    private static final String NAMESPACE = "owmapi";
     private Context mContext = null;
     private EditText queryText = null;
     private String selectedStream;
@@ -50,7 +49,6 @@ public class CityIDPreference extends DialogPreference
 
     public CityIDPreference(Context ctx, AttributeSet attrs) {
         this(ctx, attrs, android.R.attr.dialogPreferenceStyle);
-        mContext = getContext();
         setValuesFromXml(attrs);
     }
 
@@ -61,14 +59,21 @@ public class CityIDPreference extends DialogPreference
 
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
-        //setPositiveButtonText(android.R.string.ok);
-        setNegativeButtonText(android.R.string.cancel);
+        Resources res = mContext.getResources();
+        String res_clear = getAttributeStringValue(attrs, NAMESPACE, "text_clear", null);
+        int identifier = res.getIdentifier(res_clear, null, mContext.getPackageName());
+        if (identifier != 0 ) {
+            String label = res.getString(identifier);
+            setPositiveButtonText(label);
+        } else {
+            setPositiveButtonText(android.R.string.cancel);
+        }
     }
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
-        builder.setPositiveButton(null, null);
+        builder.setNegativeButton(null, null);
     }
 
     private static String getAttributeStringValue(AttributeSet attrs, String namespace,
@@ -112,9 +117,7 @@ public class CityIDPreference extends DialogPreference
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 City city = (City) parent.getItemAtPosition(position);
                 String cityid = String.format("%d", city.id);
-                persistString(cityid);
-                setSummary(cityid);
-                notifyChanged();
+                persist(cityid);
                 getDialog().dismiss();
 
             }
@@ -169,7 +172,6 @@ public class CityIDPreference extends DialogPreference
     public void onRequestFinished(List<City> cities){
         this.cities.clear();
         this.cities.addAll(cities);
-        //Log.i(TAG, String.format("Request finished with %d entries", this.cities.size()));
         ((ArrayAdapter) cityListView.getAdapter()).notifyDataSetChanged();
         spinner.hide();
         cityListView.setVisibility((cities.size() == 0) ? View.GONE : View.VISIBLE);
@@ -180,6 +182,16 @@ public class CityIDPreference extends DialogPreference
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         this.cities.clear();
+        // the positive button is used to clear the contents.
+        if (positiveResult) {
+            persist("");
+        }
+    }
+
+    protected void persist(String value) {
+        persistString(value);
+        setSummary(value);
+        notifyChanged();
     }
 
     @Override

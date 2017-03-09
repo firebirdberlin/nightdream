@@ -44,6 +44,7 @@ OR
     <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
+    <string name="clear">clear</string>
     <string name="colors">Colors</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="confirm_reset">Reset</string>

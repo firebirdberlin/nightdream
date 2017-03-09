@@ -354,12 +354,14 @@
                 android:entryValues="@array/speedUnitValues"/>
 
             <com.firebirdberlin.openweathermapapi.CityIDPreference
+                xmlns:owmapi="owmapi"
                 android:icon="@drawable/ic_search"
                 android:key="weatherCityID"
                 android:dependency="showWeather"
                 android:defaultValue=""
                 android:title="@string/weather_city_id_title"
                 android:summary="@string/weather_city_id_summary"
+                owmapi:text_clear="@string/clear"
                 />
 
             <Preference
