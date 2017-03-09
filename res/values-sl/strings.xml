@@ -125,7 +125,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Odpri vremensko karto z kodo Mesta. Pusti prazno za avtomatkodetekcino lokacije.</string>
 <string name="weather_city_id_title">Koda Mesta</string>
 <string name="weather_info_title">Informacije</string>
-<string name="weather_search_city_id">Poisci kodo Mesta</string>
 <string name="weather">Vreme</string>
 <string name="welcome_screen_text1">Dobrodosel v tvoji novi aplikaciji nocna ura ! Ta aplikacija prikazuje trenutni cas med polnjenjem telefona.</string>
 <string name="welcome_screen_text2">Tukaj odpri nastavitve !</string>

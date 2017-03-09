@@ -114,7 +114,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Deschide OpenWeatherMap City ID. Lasă gol pentru detecția automata a locației. </string>
 <string name="weather_city_id_title">ID oras</string>
 <string name="weather_info_title">Informatii</string>
-<string name="weather_search_city_id">Cauta ID oras</string>
 <string name="weather">Vremea </string>
 <string name="welcome_screen_text1">Bine ai venit în aplicația ceas de noapte. Aceasta aplicație îți arată ora în timp ce telefonul mobil se încarcă </string>
 <string name="welcome_screen_text2">Deschide setările </string>

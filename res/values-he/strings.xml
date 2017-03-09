@@ -122,7 +122,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">OpenWeatherMap City ID. השאר ריק לזיהוי אוטומטי של המיקום</string>
 <string name="weather_city_id_title">מזהה עיר</string>
 <string name="weather_info_title">מידע</string>
-<string name="weather_search_city_id">חפש מזהה עיר</string>
 <string name="weather">מזג אוויר</string>
 <string name="welcome_screen_text1">ברוך הבא לשעון לילה החדש שלך! האפליקציה הזו מראה את השעה בזמן הטענת הסלולרי </string>
 <string name="welcome_screen_text2">פתח את ההעדפות כאן! </string>

@@ -364,13 +364,6 @@
                 owmapi:text_clear="@string/clear"
                 />
 
-            <Preference
-                android:title="@string/weather_search_city_id"
-                android:dependency="showWeather">
-                <intent android:action="android.intent.action.VIEW"
-                    android:data="http://openweathermap.org/find"/>
-            </Preference>
-
             <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
                 android:title="@string/weather_info_title"
                 android:dependency="showWeather"

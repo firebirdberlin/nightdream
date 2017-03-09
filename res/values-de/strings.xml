@@ -136,7 +136,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">OpenWeatherMap City ID. Frei lassen zur automatischen Standortbestimmung.</string>
 <string name="weather_city_id_title">City ID</string>
 <string name="weather_info_title">Informationen</string>
-<string name="weather_search_city_id">Suche City ID</string>
 <string name="weather">Wetter</string>
 <string name="welcome_screen_text1">Willkommen zu Ihrer neuen Nachtuhr! Diese App zeigt die Uhrzeit an während Ihr Telefon geladen wird - auf Wunsch auch mit Autostart.</string>
 <string name="welcome_screen_text2">Öffnen Sie die Einstellungen hier.</string>

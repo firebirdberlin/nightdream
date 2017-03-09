@@ -114,7 +114,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">OpenWeatherMap City ID. Ostavite prazno za automatsku detekciju lokacije.</string>
 <string name="weather_city_id_title">ID grada</string>
 <string name="weather_info_title">Informacije</string>
-<string name="weather_search_city_id">Pretraži ID grada</string>
 <string name="weather">Vrijeme</string>
 <string name="welcome_screen_text1">Dobrodošli u novi noćni sat! Ova aplikacija prikazuje točno vrijeme dok se Vaš mobilni uređaj puni.</string>
 <string name="welcome_screen_text2">Otvorite postavke ovdje!</string>

@@ -116,7 +116,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Openweathermap stad. Laat leeg voor automatisch bepalen van je locatie.</string>
 <string name="weather_city_id_title">Stad ID</string>
 <string name="weather_info_title">Informatie</string>
-<string name="weather_search_city_id">Zoek stad ID</string>
 <string name="weather">Weer</string>
 <string name="welcome_screen_text1">Welkom in de app Nachtklok! Deze app toont de huidige tijd tijdens het opladen van je telefoon.</string>
 <string name="welcome_screen_text2">Open de voorkeuren hier!</string>

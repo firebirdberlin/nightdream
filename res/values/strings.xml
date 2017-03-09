@@ -136,7 +136,6 @@ OR
     <string name="weather_city_id_summary">OpenWeatherMap City ID. Leave empty for an automatic detection of the location.</string>
     <string name="weather_city_id_title">City ID</string>
     <string name="weather_info_title">Information</string>
-    <string name="weather_search_city_id">Search City ID</string>
     <string name="weather">Weather</string>
     <string name="welcome_screen_text1">Welcome to your new night clock ! This app shows the current time while charging your mobile.</string>
     <string name="welcome_screen_text2">Open the preferences here !</string>

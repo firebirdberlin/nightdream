@@ -127,7 +127,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">ID de la ville du OpenWeatherMap. Laissez vide pour une détection automatique de l\'emplacement.</string>
 <string name="weather_city_id_title">ID de la ville</string>
 <string name="weather_info_title">Information</string>
-<string name="weather_search_city_id">Rechercher ID de la ville</string>
 <string name="weather">Météo</string>
 <string name="welcome_screen_text1">Bienvenue dans votre nouvelle horloge nocturne! Cette application affiche l\'heure actuelle pendant le chargement de votre mobile.</string>
 <string name="welcome_screen_text2">Accéder aux préférences ici !</string>

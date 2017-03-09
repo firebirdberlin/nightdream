@@ -116,7 +116,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">إسم المدينة في  (OpenWeatherMap) . اتركها خالية من أجل تحديد المكان تلقائياً</string>
 <string name="weather_city_id_title">إسم المدينة</string>
 <string name="weather_info_title">معلومات</string>
-<string name="weather_search_city_id">البحث عن إسم مدينة</string>
 <string name="weather">الطقس</string>
 <string name="welcome_screen_text1">مرحباً في ساعتك الليلية الجديدة ! هذا التطبيق يظهر التوقيت الحالي وانت تشحن هاتفك</string>
 <string name="welcome_screen_text2">افتح الخيارات هنا !</string>
