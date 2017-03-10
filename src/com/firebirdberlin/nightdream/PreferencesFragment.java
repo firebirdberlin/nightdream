@@ -413,8 +413,8 @@ public class PreferencesFragment extends PreferenceFragment {
         new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object new_value) {
                 boolean on = Boolean.parseBoolean(new_value.toString());
-                if (on && ! hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) ) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                if (on && ! hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ) {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                                        PERMISSIONS_REQUEST_ACCESS_LOCATION);
                 }
                 return true;
