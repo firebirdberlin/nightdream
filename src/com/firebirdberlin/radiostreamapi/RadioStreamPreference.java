@@ -1,5 +1,7 @@
 package com.firebirdberlin.radiostreamapi;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -210,6 +212,20 @@ public class RadioStreamPreference extends DialogPreference
     @Override
     public void onCountryRequestFinished(List<Country> countries) {
         //Log.i(TAG, "found " + countries.size() + " countries.");
+        // sort countries alphabetically
+        Collections.sort(countries, new Comparator<Country>() {
+            @Override
+            public int compare(Country lhs, Country rhs) {
+                if (lhs.name == null) {
+                    return -1;
+                }
+                if (rhs.name == null) {
+                    return 1;
+                }
+                return lhs.name.compareTo(rhs.name);
+            }
+        });
+
         updateCountryNameToCodeMap(countries);
         updateCountrySpinner(countries);
     }
