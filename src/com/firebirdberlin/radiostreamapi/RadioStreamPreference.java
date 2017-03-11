@@ -9,10 +9,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
@@ -245,7 +247,7 @@ public class RadioStreamPreference extends DialogPreference
 
     private void updateCountrySpinner(List<Country> countries) {
 
-        String locale = mContext.getResources().getConfiguration().locale.getCountry();
+        String selectedCountryCode = getSelectedCountryCode();
 
         int countryIndexOfCurrentLocale = -1;
         List<String> countryList = new ArrayList<String>();
@@ -287,7 +289,7 @@ public class RadioStreamPreference extends DialogPreference
         int i = 0;
         for (Country c : countries) {
             countryList.add(c.name);
-            if (countryIndexOfCurrentLocale == -1 && c.countryCode != null && locale != null && c.countryCode.equals(locale)) {
+            if (countryIndexOfCurrentLocale == -1 && c.countryCode != null && selectedCountryCode != null && c.countryCode.equals(selectedCountryCode)) {
                 countryIndexOfCurrentLocale = i;
             }
             i++;
@@ -296,12 +298,37 @@ public class RadioStreamPreference extends DialogPreference
         int selectedItemIndex = countryIndexOfCurrentLocale + 1;
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
-        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
         }
+    }
+
+    private String getSelectedCountryCode() {
+
+        String locale = null;
+
+        try {
+            TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+            if (tm != null) {
+                String simCountryCode = tm.getSimCountryIso();
+                if (simCountryCode != null && !simCountryCode.isEmpty()) {
+                    locale = simCountryCode.toUpperCase();
+                }
+                //Log.i(TAG, "iso country code is " + locale);
+            }
+        } catch (Throwable t) {
+
+        }
+
+        if (locale == null) {
+            locale = mContext.getResources().getConfiguration().locale.getCountry();
+        }
+
+        return locale;
     }
 
     private String getSelectedCountry() {
