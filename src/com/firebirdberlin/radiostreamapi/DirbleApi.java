@@ -34,9 +34,9 @@ public class DirbleApi {
     private static String TAG = "NightDream.DirbleAPI";
     private static String BASEURL = "http://api.dirble.com/v2/search/";
     private static String COUNTRY_REQUEST_BASE_URL = "http://api.dirble.com/v2/countries/";
-    //private static String TOKEN = "770f99fe4971232de187503040";
+    private static String TOKEN = "770f99fe4971232de187503040";
     // mpo: used for developing/testing
-    private static String TOKEN = "ef6dde09a01ea14d9a6d9569b2";
+    //private static String TOKEN = "ef6dde09a01ea14d9a6d9569b2";
     private static int MAX_NUM_RESULTS = 100;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
