@@ -6,6 +6,11 @@
     android:layout_height="wrap_content"
     android:padding="24dp">
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/countrySpinner" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -40,10 +45,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/countrySpinner" />
 
     <ListView
         android:id="@+id/radio_stream_list_view"

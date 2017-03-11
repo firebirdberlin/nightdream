@@ -39,7 +39,7 @@ public class RadioStreamPreference extends DialogPreference
     private EditText queryText = null;
     private String selectedStream;
     private ArrayList<RadioStation> stations = new ArrayList<RadioStation>();
-    private ArrayAdapter<RadioStation> adapter;
+    private ArrayList<String> stationTexts = new ArrayList<String>();
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
@@ -85,7 +85,10 @@ public class RadioStreamPreference extends DialogPreference
 
     @Override
     protected View onCreateDialogView() {
-        adapter = new ArrayAdapter<RadioStation>(mContext, android.R.layout.simple_list_item_1, stations);
+        //ArrayAdapter<RadioStation> adapter = new ArrayAdapter<RadioStation>(mContext, android.R.layout.simple_list_item_1, stations);
+        updateDisplayedRadioStationTexts();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, stationTexts);
+
         LayoutInflater inflater = (LayoutInflater)
             getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.radio_stream_dialog, null);
@@ -115,7 +118,8 @@ public class RadioStreamPreference extends DialogPreference
         stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RadioStation station = (RadioStation) parent.getItemAtPosition(position);
+                //RadioStation station = (RadioStation) parent.getItemAtPosition(position);
+                RadioStation station = stations.get(position);
                 persistString(station.stream);
                 setSummary(station.stream);
                 notifyChanged();
@@ -124,6 +128,18 @@ public class RadioStreamPreference extends DialogPreference
             }
         });
 
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                //Log.i(TAG, "country changed");
+                startSearch();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
         searchButton = ((Button) v.findViewById(R.id.start_search));
         searchButton.setEnabled(false);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -157,10 +173,16 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     private void startSearch() {
+
+        String query = queryText.getText().toString().trim();
+        if (query == null || query.isEmpty()) {
+            return;
+        }
+
         spinner.show();
         stationListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
-        String query = queryText.getText().toString().trim();
+
         String country = getSelectedCountry();
         new StationRequestTask(this).execute(query, country);
 
@@ -175,6 +197,7 @@ public class RadioStreamPreference extends DialogPreference
     public void onRequestFinished(List<RadioStation> stations){
         this.stations.clear();
         this.stations.addAll(stations);
+        updateDisplayedRadioStationTexts();
         //Log.i(TAG, String.format("Request finished with %d entries", this.stations.size()));
         ((ArrayAdapter) stationListView.getAdapter()).notifyDataSetChanged();
         spinner.hide();
@@ -224,33 +247,102 @@ public class RadioStreamPreference extends DialogPreference
 
         String locale = mContext.getResources().getConfiguration().locale.getCountry();
 
-        int selectionIndex = -1;
+        int countryIndexOfCurrentLocale = -1;
         List<String> countryList = new ArrayList<String>();
+
+
+        // first add empty entry meaning "any country"
+        countryList.add("All countries");
+
+        // find index of current country
+        /*
+        int selectedItemIndex = -1;
         int i = 0;
         for (Country c : countries) {
-            countryList.add(c.name);
-            if (selectionIndex == -1 && c.countryCode != null && locale != null && c.countryCode.equals(locale)) {
-                selectionIndex = i;
+            if (countryIndexOfCurrentLocale == -1 && c.countryCode != null && locale != null && c.countryCode.equals(locale)) {
+                countryIndexOfCurrentLocale = i;
+                break;
             }
             i++;
         }
 
+        // second add selected country
+        if (countryIndexOfCurrentLocale > -1) {
+            countryList.add(countries.get(countryIndexOfCurrentLocale).name);
+            selectedItemIndex = 1;
+        }
+
+
+        // add all remaining countries
+        int j = 0;
+        for (Country c : countries) {
+            if (j != countryIndexOfCurrentLocale) {
+                countryList.add(c.name);
+            }
+            j++;
+        }
+        */
+
+        // better leave current locale a its original position
+        int i = 0;
+        for (Country c : countries) {
+            countryList.add(c.name);
+            if (countryIndexOfCurrentLocale == -1 && c.countryCode != null && locale != null && c.countryCode.equals(locale)) {
+                countryIndexOfCurrentLocale = i;
+            }
+            i++;
+        }
+
+        int selectedItemIndex = countryIndexOfCurrentLocale + 1;
+
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         countrySpinner.setAdapter(dataAdapter);
-        if (selectionIndex > -1) {
-            countrySpinner.setSelection(selectionIndex);
+        if (selectedItemIndex > -1) {
+            countrySpinner.setSelection(selectedItemIndex);
         }
     }
 
     private String getSelectedCountry() {
-        //TODO handle special "any" entry
+
+        if (countrySpinner.getSelectedItemPosition() == 0) {
+            return null;
+        }
+
         String item = (String)countrySpinner.getSelectedItem();
-        if (item != null) {
+        if (item != null && !item.isEmpty()) {
             return countryNameToCodeMap.get(item);
         } else {
             return null;
         }
 
+    }
+
+    private boolean isCountrySelected() {
+        return (countrySpinner != null && countrySpinner.getSelectedItemPosition() > 0);
+    }
+
+    private void updateDisplayedRadioStationTexts() {
+        boolean countrySelected = isCountrySelected();
+        stationTexts.clear();
+        for (RadioStation station : stations) {
+            String stationTitle;
+            if (countrySelected) {
+                stationTitle = getDisplayedRadioStationText(station, false);
+            } else {
+                stationTitle = getDisplayedRadioStationText(station, true);
+            }
+            stationTexts.add(stationTitle);
+        }
+
+    }
+
+    private String getDisplayedRadioStationText(RadioStation station, boolean displayCountryCode) {
+        if (displayCountryCode) {
+            return String.format("%s %s (%d kbit/s)", station.countryCode, station.name, station.bitrate);
+        } else {
+            return String.format("%s (%d kbit/s)", station.name, station.bitrate);
+        }
     }
 }
