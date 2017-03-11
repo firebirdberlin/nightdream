@@ -247,55 +247,41 @@ public class RadioStreamPreference extends DialogPreference
 
     private void updateCountrySpinner(List<Country> countries) {
 
-        String selectedCountryCode = getSelectedCountryCode();
+        List<String> preferredCountryCodes = getPreferredCountryCodes();
 
-        int countryIndexOfCurrentLocale = -1;
         List<String> countryList = new ArrayList<String>();
 
-
         // first add empty entry meaning "any country"
-        countryList.add("All countries");
+        //countryList.add("All countries");
+        //empty string until localized
+        countryList.add("");
 
-        // find index of current country
-        /*
-        int selectedItemIndex = -1;
-        int i = 0;
-        for (Country c : countries) {
-            if (countryIndexOfCurrentLocale == -1 && c.countryCode != null && locale != null && c.countryCode.equals(locale)) {
-                countryIndexOfCurrentLocale = i;
-                break;
+        // add preferred countries first
+        if (preferredCountryCodes != null && !preferredCountryCodes.isEmpty()) {
+
+            for (Country c : countries) {
+                int numFound = 0;
+                for (String preferredCountry : preferredCountryCodes) {
+                    if (c.countryCode != null && c.countryCode.equals(preferredCountry)) {
+                        countryList.add(c.name);
+                        numFound++;
+                    }
+                }
+
+                if (numFound == preferredCountryCodes.size()) {
+                    break;
+                }
             }
-            i++;
-        }
-
-        // second add selected country
-        if (countryIndexOfCurrentLocale > -1) {
-            countryList.add(countries.get(countryIndexOfCurrentLocale).name);
-            selectedItemIndex = 1;
         }
 
 
-        // add all remaining countries
-        int j = 0;
-        for (Country c : countries) {
-            if (j != countryIndexOfCurrentLocale) {
-                countryList.add(c.name);
-            }
-            j++;
-        }
-        */
-
-        // better leave current locale a its original position
-        int i = 0;
+        // now add all countries (including preferred country, so they are duplicates, but no problem)
         for (Country c : countries) {
             countryList.add(c.name);
-            if (countryIndexOfCurrentLocale == -1 && c.countryCode != null && selectedCountryCode != null && c.countryCode.equals(selectedCountryCode)) {
-                countryIndexOfCurrentLocale = i;
-            }
-            i++;
         }
 
-        int selectedItemIndex = countryIndexOfCurrentLocale + 1;
+        // select as default: first preferred country, and "any country"
+        int selectedItemIndex = !preferredCountryCodes.isEmpty() ? 1 : 0;
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
 
@@ -307,16 +293,16 @@ public class RadioStreamPreference extends DialogPreference
         }
     }
 
-    private String getSelectedCountryCode() {
+    private List<String> getPreferredCountryCodes() {
 
-        String locale = null;
+        List<String> preferredCountryCodes = new ArrayList<>();
 
         try {
             TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
             if (tm != null) {
                 String simCountryCode = tm.getSimCountryIso();
                 if (simCountryCode != null && !simCountryCode.isEmpty()) {
-                    locale = simCountryCode.toUpperCase();
+                    preferredCountryCodes.add(simCountryCode.toUpperCase());
                 }
                 //Log.i(TAG, "iso country code is " + locale);
             }
@@ -324,15 +310,24 @@ public class RadioStreamPreference extends DialogPreference
 
         }
 
-        if (locale == null) {
-            locale = mContext.getResources().getConfiguration().locale.getCountry();
+        String locale = mContext.getResources().getConfiguration().locale.getCountry();
+        if (locale != null && !preferredCountryCodes.isEmpty() && !preferredCountryCodes.get(0).equals(locale)) {
+            preferredCountryCodes.add(locale);
         }
 
-        return locale;
+        //test: french people living in Canada :D
+        /*
+        preferredCountryCodes.clear();
+        preferredCountryCodes.add("CA");
+        preferredCountryCodes.add("FR");
+        */
+
+        return preferredCountryCodes;
     }
 
     private String getSelectedCountry() {
 
+        // first item means "all countries", no country restriction
         if (countrySpinner.getSelectedItemPosition() == 0) {
             return null;
         }
@@ -372,4 +367,6 @@ public class RadioStreamPreference extends DialogPreference
             return String.format("%s (%d kbit/s)", station.name, station.bitrate);
         }
     }
+
+
 }
