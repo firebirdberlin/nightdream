@@ -1,5 +1,7 @@
 package com.firebirdberlin.radiostreamapi;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -9,10 +11,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
@@ -39,7 +43,7 @@ public class RadioStreamPreference extends DialogPreference
     private EditText queryText = null;
     private String selectedStream;
     private ArrayList<RadioStation> stations = new ArrayList<RadioStation>();
-    private ArrayAdapter<RadioStation> adapter;
+    private ArrayList<String> stationTexts = new ArrayList<String>();
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
@@ -85,7 +89,10 @@ public class RadioStreamPreference extends DialogPreference
 
     @Override
     protected View onCreateDialogView() {
-        adapter = new ArrayAdapter<RadioStation>(mContext, android.R.layout.simple_list_item_1, stations);
+        //ArrayAdapter<RadioStation> adapter = new ArrayAdapter<RadioStation>(mContext, android.R.layout.simple_list_item_1, stations);
+        updateDisplayedRadioStationTexts();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, stationTexts);
+
         LayoutInflater inflater = (LayoutInflater)
             getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.radio_stream_dialog, null);
@@ -115,7 +122,8 @@ public class RadioStreamPreference extends DialogPreference
         stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RadioStation station = (RadioStation) parent.getItemAtPosition(position);
+                //RadioStation station = (RadioStation) parent.getItemAtPosition(position);
+                RadioStation station = stations.get(position);
                 persistString(station.stream);
                 setSummary(station.stream);
                 notifyChanged();
@@ -124,6 +132,18 @@ public class RadioStreamPreference extends DialogPreference
             }
         });
 
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                //Log.i(TAG, "country changed");
+                startSearch();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+
+        });
         searchButton = ((Button) v.findViewById(R.id.start_search));
         searchButton.setEnabled(false);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -157,10 +177,16 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     private void startSearch() {
+
+        String query = queryText.getText().toString().trim();
+        if (query == null || query.isEmpty()) {
+            return;
+        }
+
         spinner.show();
         stationListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
-        String query = queryText.getText().toString().trim();
+
         String country = getSelectedCountry();
         new StationRequestTask(this).execute(query, country);
 
@@ -175,6 +201,7 @@ public class RadioStreamPreference extends DialogPreference
     public void onRequestFinished(List<RadioStation> stations){
         this.stations.clear();
         this.stations.addAll(stations);
+        updateDisplayedRadioStationTexts();
         //Log.i(TAG, String.format("Request finished with %d entries", this.stations.size()));
         ((ArrayAdapter) stationListView.getAdapter()).notifyDataSetChanged();
         spinner.hide();
@@ -185,6 +212,20 @@ public class RadioStreamPreference extends DialogPreference
     @Override
     public void onCountryRequestFinished(List<Country> countries) {
         //Log.i(TAG, "found " + countries.size() + " countries.");
+        // sort countries alphabetically
+        Collections.sort(countries, new Comparator<Country>() {
+            @Override
+            public int compare(Country lhs, Country rhs) {
+                if (lhs.name == null) {
+                    return -1;
+                }
+                if (rhs.name == null) {
+                    return 1;
+                }
+                return lhs.name.compareTo(rhs.name);
+            }
+        });
+
         updateCountryNameToCodeMap(countries);
         updateCountrySpinner(countries);
     }
@@ -222,35 +263,126 @@ public class RadioStreamPreference extends DialogPreference
 
     private void updateCountrySpinner(List<Country> countries) {
 
-        String locale = mContext.getResources().getConfiguration().locale.getCountry();
+        List<String> preferredCountryCodes = getPreferredCountryCodes();
 
-        int selectionIndex = -1;
         List<String> countryList = new ArrayList<String>();
-        int i = 0;
-        for (Country c : countries) {
-            countryList.add(c.name);
-            if (selectionIndex == -1 && c.countryCode != null && locale != null && c.countryCode.equals(locale)) {
-                selectionIndex = i;
+
+        // first add empty entry meaning "any country"
+        //countryList.add("All countries");
+        //empty string until localized
+        countryList.add("");
+
+        // add preferred countries first
+        if (preferredCountryCodes != null && !preferredCountryCodes.isEmpty()) {
+
+            for (Country c : countries) {
+                int numFound = 0;
+                for (String preferredCountry : preferredCountryCodes) {
+                    if (c.countryCode != null && c.countryCode.equals(preferredCountry)) {
+                        countryList.add(c.name);
+                        numFound++;
+                    }
+                }
+
+                if (numFound == preferredCountryCodes.size()) {
+                    break;
+                }
             }
-            i++;
         }
 
+
+        // now add all countries (including preferred country, so they are duplicates, but no problem)
+        for (Country c : countries) {
+            countryList.add(c.name);
+        }
+
+        // select as default: first preferred country, and "any country"
+        int selectedItemIndex = !preferredCountryCodes.isEmpty() ? 1 : 0;
+
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
+
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         countrySpinner.setAdapter(dataAdapter);
-        if (selectionIndex > -1) {
-            countrySpinner.setSelection(selectionIndex);
+        if (selectedItemIndex > -1) {
+            countrySpinner.setSelection(selectedItemIndex);
         }
     }
 
+    private List<String> getPreferredCountryCodes() {
+
+        List<String> preferredCountryCodes = new ArrayList<>();
+
+        try {
+            TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+            if (tm != null) {
+                String simCountryCode = tm.getSimCountryIso();
+                if (simCountryCode != null && !simCountryCode.isEmpty()) {
+                    preferredCountryCodes.add(simCountryCode.toUpperCase());
+                }
+                //Log.i(TAG, "iso country code is " + locale);
+            }
+        } catch (Throwable t) {
+
+        }
+
+        String locale = mContext.getResources().getConfiguration().locale.getCountry();
+        if (locale != null && !preferredCountryCodes.isEmpty() && !preferredCountryCodes.get(0).equals(locale)) {
+            preferredCountryCodes.add(locale);
+        }
+
+        //test: french people living in Canada :D
+        /*
+        preferredCountryCodes.clear();
+        preferredCountryCodes.add("CA");
+        preferredCountryCodes.add("FR");
+        */
+
+        return preferredCountryCodes;
+    }
+
     private String getSelectedCountry() {
-        //TODO handle special "any" entry
+
+        // first item means "all countries", no country restriction
+        if (countrySpinner.getSelectedItemPosition() == 0) {
+            return null;
+        }
+
         String item = (String)countrySpinner.getSelectedItem();
-        if (item != null) {
+        if (item != null && !item.isEmpty()) {
             return countryNameToCodeMap.get(item);
         } else {
             return null;
         }
 
     }
+
+    private boolean isCountrySelected() {
+        return (countrySpinner != null && countrySpinner.getSelectedItemPosition() > 0);
+    }
+
+    private void updateDisplayedRadioStationTexts() {
+        boolean countrySelected = isCountrySelected();
+        stationTexts.clear();
+        for (RadioStation station : stations) {
+            String stationTitle;
+            if (countrySelected) {
+                stationTitle = getDisplayedRadioStationText(station, false);
+            } else {
+                stationTitle = getDisplayedRadioStationText(station, true);
+            }
+            stationTexts.add(stationTitle);
+        }
+
+    }
+
+    private String getDisplayedRadioStationText(RadioStation station, boolean displayCountryCode) {
+        if (displayCountryCode) {
+            return String.format("%s %s (%d kbit/s)", station.countryCode, station.name, station.bitrate);
+        } else {
+            return String.format("%s (%d kbit/s)", station.name, station.bitrate);
+        }
+    }
+
+
 }
