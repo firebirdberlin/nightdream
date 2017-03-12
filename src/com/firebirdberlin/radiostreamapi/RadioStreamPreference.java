@@ -16,7 +16,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
@@ -69,7 +68,6 @@ public class RadioStreamPreference extends DialogPreference
 
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
-        //setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);
     }
 
@@ -89,7 +87,6 @@ public class RadioStreamPreference extends DialogPreference
 
     @Override
     protected View onCreateDialogView() {
-        //ArrayAdapter<RadioStation> adapter = new ArrayAdapter<RadioStation>(mContext, android.R.layout.simple_list_item_1, stations);
         updateDisplayedRadioStationTexts();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, stationTexts);
 
@@ -122,7 +119,6 @@ public class RadioStreamPreference extends DialogPreference
         stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //RadioStation station = (RadioStation) parent.getItemAtPosition(position);
                 RadioStation station = stations.get(position);
                 persistString(station.stream);
                 setSummary(station.stream);
@@ -311,7 +307,7 @@ public class RadioStreamPreference extends DialogPreference
 
     private List<String> getPreferredCountryCodes() {
 
-        List<String> preferredCountryCodes = new ArrayList<>();
+        List<String> preferredCountryCodes = new ArrayList<String>();
 
         try {
             TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
@@ -348,7 +344,7 @@ public class RadioStreamPreference extends DialogPreference
             return null;
         }
 
-        String item = (String)countrySpinner.getSelectedItem();
+        String item = (String) countrySpinner.getSelectedItem();
         if (item != null && !item.isEmpty()) {
             return countryNameToCodeMap.get(item);
         } else {

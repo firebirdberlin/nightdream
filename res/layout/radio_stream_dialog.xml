@@ -6,10 +6,22 @@
     android:layout_height="wrap_content"
     android:padding="24dp">
 
-    <Spinner
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/countrySpinner" />
+        android:layout_height="match_parent">
+        <TextView
+            android:text="@string/country"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/primary_text_color_selector"/>
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/countrySpinner" />
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"

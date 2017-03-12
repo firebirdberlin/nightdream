@@ -51,7 +51,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute">Beitragen</string>
 <string name="contribute_source_code">Quellcode </string>
 <string name="contribute_translation">Übersetzungen </string>
-<string name="credits">Verdienste </string>
+<string name="country">Land</string>
+<string name="credits">Verdienste</string>
 <string name="date_format">Datumsformat</string>
 <string name="dialog_message_thank_you">Vielen Dank für Ihre Unterstützung.</string>
 <string name="dialog_title_thank_you">Dankeschön!</string>
