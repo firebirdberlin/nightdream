@@ -18,14 +18,19 @@ import android.location.LocationManager;
 import android.Manifest;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
+
+import org.json.JSONException;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
+    private final static String TAG = "NightDream.Settings";
     public final static int BACKGROUND_BLACK = 1;
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
@@ -430,6 +435,29 @@ public class Settings {
             this.weatherEntry.windDirection = settings.getInt("weather_wind_direction", this.weatherEntry.windDirection);
         }
         return this.weatherEntry;
+    }
+
+    public void setRadioStation(RadioStation station) {
+        try {
+            String json = station.toJson();
+            SharedPreferences.Editor prefEditor = settings.edit();
+            prefEditor.putString("radioStation", json);
+            prefEditor.commit();
+        } catch (Throwable t) {
+            Log.e(TAG, "error converting station to json", t);
+        }
+    }
+    public RadioStation getRadioStation() {
+        String json = settings.getString("radioStation",  null);
+        if (json != null) {
+            try {
+                RadioStation s = RadioStation.fromJson(json);
+                return s;
+            } catch (JSONException e) {
+                Log.e(TAG, "error converting json to station", e);
+            }
+        }
+        return null;
     }
 
     public String backgroundImagePath() {

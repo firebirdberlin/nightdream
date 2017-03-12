@@ -9,10 +9,12 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -32,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.radiostreamapi.StationRequestTask;
 import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -124,7 +127,8 @@ public class RadioStreamPreference extends DialogPreference
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //RadioStation station = (RadioStation) parent.getItemAtPosition(position);
                 RadioStation station = stations.get(position);
-                persistString(station.stream);
+                //persistString(station.stream);
+                persistRadioStation(station);
                 setSummary(station.stream);
                 notifyChanged();
                 getDialog().dismiss();
@@ -263,6 +267,12 @@ public class RadioStreamPreference extends DialogPreference
 
     private void updateCountrySpinner(List<Country> countries) {
 
+
+        RadioStation persistedRadioStation = getPersistedRadioStation();
+        String persistedCountryCode = persistedRadioStation != null ? persistedRadioStation.countryCode : null;
+        Log.i(TAG, "found persisted station: " + (persistedRadioStation !=  null ? persistedRadioStation.toString() : "null"));
+
+
         List<String> preferredCountryCodes = getPreferredCountryCodes();
 
         List<String> countryList = new ArrayList<String>();
@@ -271,6 +281,8 @@ public class RadioStreamPreference extends DialogPreference
         //countryList.add("All countries");
         //empty string until localized
         countryList.add("");
+
+        int selectedItemIndex = -1;
 
         // add preferred countries first
         if (preferredCountryCodes != null && !preferredCountryCodes.isEmpty()) {
@@ -281,6 +293,11 @@ public class RadioStreamPreference extends DialogPreference
                     if (c.countryCode != null && c.countryCode.equals(preferredCountry)) {
                         countryList.add(c.name);
                         numFound++;
+
+                        // if radio station is already configured selects its country as default
+                        if (persistedCountryCode != null && c.countryCode.equals(persistedRadioStation.countryCode)) {
+                            selectedItemIndex = countryList.size() - 1;
+                        }
                     }
                 }
 
@@ -294,12 +311,19 @@ public class RadioStreamPreference extends DialogPreference
         // now add all countries (including preferred country, so they are duplicates, but no problem)
         for (Country c : countries) {
             countryList.add(c.name);
+
+            // if radio station is already configured selects its country as default
+            if (persistedCountryCode != null && c.countryCode.equals(persistedRadioStation.countryCode)) {
+                selectedItemIndex = countryList.size() - 1;
+            }
         }
 
-        // select as default: first preferred country, and "any country"
-        int selectedItemIndex = !preferredCountryCodes.isEmpty() ? 1 : 0;
-
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
+
+        // select as default: first preferred country, and "any country"
+        if (selectedItemIndex == -1) {
+            selectedItemIndex = !preferredCountryCodes.isEmpty() ? 1 : 0;
+        }
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
@@ -384,5 +408,25 @@ public class RadioStreamPreference extends DialogPreference
         }
     }
 
+    private void persistRadioStation(RadioStation station) {
+        //save stream as separate field
+        persistString(station.stream);
+
+        //save complete station as json string
+        Settings settings = new Settings(getContext());
+        settings.setRadioStation(station);
+    }
+
+    private RadioStation getPersistedRadioStation() {
+
+        Settings settings = new Settings(getContext());
+        try {
+            RadioStation station = settings.getRadioStation();
+            return station;
+        } catch (Throwable t) {
+
+        }
+        return null;
+    }
 
 }
