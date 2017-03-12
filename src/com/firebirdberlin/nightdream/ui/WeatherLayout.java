@@ -6,6 +6,7 @@ import java.lang.Math;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -70,11 +71,12 @@ public class WeatherLayout extends LinearLayout {
         iconText.setText("");
         iconWind.setText("");
         temperatureText.setText("");
-        temperatureText.invalidate();
         windText.setText("");
-        windText.invalidate();
+
         iconText.invalidate();
         iconWind.invalidate();
+        temperatureText.invalidate();
+        windText.invalidate();
     }
 
     public void setTypeface(Typeface typeface) {
@@ -108,21 +110,21 @@ public class WeatherLayout extends LinearLayout {
     public void update(WeatherEntry entry) {
         if (iconText == null || temperatureText == null) return;
         long age = entry.ageMillis();
+        Log.d("NightDream.WeatherLayout", entry.toString());
+        Log.d("NightDream.WeatherLayout", formatTemperatureText(entry));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
             iconText.setText(iconToText(entry.weatherIcon));
             temperatureText.setText(formatTemperatureText(entry));
             iconWind.setText("F");
             windText.setText(formatWindText(entry));
+
+            temperatureText.invalidate();
+            windText.invalidate();
+            iconText.invalidate();
+            iconWind.invalidate();
         } else {
-            iconText.setText("");
-            iconWind.setText("");
-            temperatureText.setText("");
-            windText.setText("");
+            clear();
         }
-        temperatureText.invalidate();
-        windText.invalidate();
-        iconText.invalidate();
-        iconWind.invalidate();
     }
 
     private String iconToText(String code) {

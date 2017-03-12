@@ -39,4 +39,8 @@ public class WeatherEntry {
         long now = System.currentTimeMillis();
         return now - 1000 * timestamp;
     }
+
+    public String toString() {
+        return String.format("%2.2fK %2.2fm/s %d", temperature, windSpeed, timestamp);
+    }
 }

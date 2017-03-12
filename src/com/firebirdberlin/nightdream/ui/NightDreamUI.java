@@ -8,8 +8,10 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -62,6 +64,7 @@ import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnLocationUpdated;
 import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
+import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
@@ -107,6 +110,7 @@ public class NightDreamUI {
     private mAudioManager AudioManage = null;
     private ScaleGestureDetector mScaleDetector = null;
     private GestureDetector mGestureDetector = null;
+    private ReceiverWeatherUpdated receiverWeatherUpdated = null;
 
     private ShowcaseView showcaseView = null;
 
@@ -186,6 +190,7 @@ public class NightDreamUI {
         controlsVisible = true;
 
         EventBus.getDefault().register(this);
+        receiverWeatherUpdated = registerReceiverWeatherUpdated();
         initLightSensor();
 
         brightnessProgress.setVisibility(View.INVISIBLE);
@@ -230,6 +235,11 @@ public class NightDreamUI {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
             lastLocationRequest = now;
             WeatherService.start(mContext, settings.weatherCityID);
+        }
+
+        // handle outdated weather data
+        if (entry.timestamp == -1L || diff > 8 * 60 * 60 * 1000) {
+            clockLayout.clearWeather();
         }
     }
 
@@ -383,6 +393,7 @@ public class NightDreamUI {
         if ( lightSensorEventListener != null ) {
             lightSensorEventListener.unregister();
         }
+        unregister(receiverWeatherUpdated);
     }
 
     public void onStop() {
@@ -1074,9 +1085,28 @@ public class NightDreamUI {
         }
     }
 
-    public void onEvent(OnWeatherDataUpdated event){
-        settings.weatherEntry = event.entry;
-        clockLayout.update(event.entry);
+    class ReceiverWeatherUpdated extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            settings.weatherEntry = settings.getWeatherEntry();
+            clockLayout.update(settings.weatherEntry);
+        }
+    }
+
+    private ReceiverWeatherUpdated registerReceiverWeatherUpdated() {
+        ReceiverWeatherUpdated receiver = new ReceiverWeatherUpdated();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        mContext.registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    private void unregister(BroadcastReceiver receiver) {
+        try {
+            mContext.unregisterReceiver(receiver);
+        } catch ( IllegalArgumentException e ) {
+
+        }
     }
 
     public void onEvent(OnNewLightSensorValue event){
