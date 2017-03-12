@@ -19,8 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.greenrobot.event.EventBus;
-import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
+import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.Settings;
 
@@ -202,11 +201,10 @@ public class DownloadWeatherService extends IntentService {
         if (entry == null){
             return;
         }
-
         if ( entry.timestamp > WeatherEntry.INVALID ) {
             Settings settings = new Settings(mContext);
             settings.setWeatherEntry(entry);
-            EventBus.getDefault().post(new OnWeatherDataUpdated(entry));
+            broadcastResult();
         } else {
             Log.w(TAG, "entry.timestamp is INVALID!");
 
@@ -214,6 +212,11 @@ public class DownloadWeatherService extends IntentService {
 
         Log.d(TAG, "Download finished.");
 
+    }
+
+    private void broadcastResult() {
+        Intent i = new  Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        sendBroadcast(i);
     }
 
     public static void start(Context context, Location location) {

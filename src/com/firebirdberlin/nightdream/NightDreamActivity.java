@@ -461,7 +461,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
     }
 
-
     public void setKeepScreenOn(boolean keepScreenOn) {
         if( keepScreenOn ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

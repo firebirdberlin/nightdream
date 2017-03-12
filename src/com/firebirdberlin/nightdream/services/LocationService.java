@@ -47,14 +47,12 @@ public class LocationService extends Service {
         mContext = this;
 
         final Settings settings = new Settings(mContext);
-        if (!settings.hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) ) {
+        if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
             Log.w(TAG, "No location permissions granted !");
             stopSelf();
             return Service.START_REDELIVER_INTENT;
         }
 
-        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         knownLocation = getLastKnownLocation(settings);
         long now = System.currentTimeMillis();
@@ -75,21 +73,15 @@ public class LocationService extends Service {
                 public void onProviderDisabled(String provider) {}
             };
 
-            if (isNetworkEnabled) {
+            boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            //if (isNetworkEnabled || isGPSEnabled) {
+            if ( isLocationEnabled() ) {
                 Log.i(TAG, "Requesting network locations");
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-            }
-            if (isGPSEnabled) {
-                Log.i(TAG, "Requesting GPS locations");
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            }
-
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                stopSelf();
-            }
-            else
-            {
                 setTimeout(60000);
+            } else {
+                stopSelf();
             }
 
         }

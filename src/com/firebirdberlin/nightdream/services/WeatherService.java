@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import de.greenrobot.event.EventBus;
 import com.firebirdberlin.nightdream.events.OnLocationUpdated;
@@ -36,8 +37,8 @@ public class WeatherService extends Service {
     }
 
     public void onEvent(OnLocationUpdated event){
-        if ( event == null ) return;
-        if ( event.entry != null ) {
+        Log.i(TAG, "OnLocationUpdated");
+        if ( event != null && event.entry != null ) {
             DownloadWeatherService.start(mContext, event.entry);
         }
         stopSelf();
