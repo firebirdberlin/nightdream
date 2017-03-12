@@ -37,6 +37,8 @@ public class OpenWeatherMapApi {
     private static final String ENDPOINT = "http://api.openweathermap.org/data/2.5/find";
     private static String APPID = "645d3eb40425e8af8edc25ddbf153db8";
 
+    public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
+
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
