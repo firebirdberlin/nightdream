@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">O nama</string>
+<string name="alarm">Alarm</string>
+<string name="alarmFadeIn">Pojačanje  zvuka alarma</string>
+<string name="alarmVolume">Jačina zvuka</string>
+<string name="allow_screen_off_summary">Ugasiti ekran tokom noći</string>
+<string name="allow_screen_off">Ugasiti ekran</string>
+<string name="ambient_noise">Detekcija zvuka okoline</string>
+<string name="ambient_noise_summary">Kada je omogućeno, zvuci okoline sprečavaju noćni režim</string>
+<string name="appearance">Izgled</string>
+<string name="app_name">Noćni sat</string>
+<string name="auto_brightness">Automatsko osvetljenje</string>
+<string name="autostart_timerange_label_end">Vreme prestanka rada</string>
+<string name="autostart_timerange_label_start">Vreme početka rada</string>
+<string name="background">Pozadina</string>
+<string name="background_black">Crno</string>
+<string name="background_gradient">Gradijent</string>
+<string name="background_image">Slika</string>
+<string name="background_image_select">Izaberite sliku</string>
+<string name="behaviour">Ponašanje</string>
+<string name="brightness">Osvetljenje</string>
+<string name="brightness_offset">Ofset osvetljenja</string>
+<string name="buttonAccessibilitySettings">Prikazati notifikacije</string>
+<string name="category_handle_power">... kada je priključen na</string>
+<string name="category_handle_power_autostart_time">Započeti u vremenskom okviru</string>
+<string name="choose_alarm_sound">Zvuk alarma</string>
+<string name="choose_primary_color">Boja istaknutog teksta</string>
+<string name="choose_secondary_color">Boja teksta</string>
+<string name="colors">Boje</string>
+<string name="confirm_reset_question">Da li zaista želite da vratite sva podešavanja na početna?</string>
+<string name="confirm_reset">Vratiti na početna podešavanja</string>
+<string name="contribute">Priložiti</string>
+<string name="contribute_source_code">Izvorni kod</string>
+<string name="contribute_translation">Prevod</string>
+<string name="credits">Zasluge</string>
+<string name="date_format">Format datuma</string>
+<string name="dialog_message_thank_you">Puno Vam hvala!</string>
+<string name="dialog_title_thank_you">Hvala</string>
+<string name="donate_bitcoin">Bitkoin</string>
+<string name="donate">Donirajte</string>
+<string name="force_auto_rotation">Automatska rotacija ekrana kada je Daydream mod uključen</string>
+<string name="force_auto_rotation_summary">Primeniti orijentaciju ekrana kada je Daydream mod uključen.</string>
+<string name="handle_power_ac">Napajanje</string>
+<string name="handle_power">Automatsko pokretanje</string>
+<string name="handle_power_car">automobilska baza za napajanje</string>
+<string name="handle_power_desk">stona baza za napajanje</string>
+<string name="handle_power_disconnection">Automatsko zaustavljanje</string>
+<string name="handle_power_disconnection_summary">Isključiti aplikaciju kada se isključi s napajanja.</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">bežično napajanje</string>
+<string name="hide_background_image_in_night_mode">Sakriti</string>
+<string name="hide_background_image_in_night_mode_summary">Sakriti pozadinsku sliku u noćnom režimu.</string>
+<string name="hour">h</string>
+<string name="location_time">lokalno vreme</string>
+<string name="message_no_data_connection">Nema internet konekcije</string>
+<string name="message_mobile_data_connection">Internet konekcija preko mobilne mreže</string>
+<string name="message_mobile_data_connection_confirmation">Povezani ste preko mobilne mreže. Želite li da slušate radio?</string>
+<string name="minute">min</string>
+<string name="mute_ringer">Isključiti budilnik</string>
+<string name="night_mode">Noćni režim</string>
+<string name="night_mode_activation_mode">Aktiviranje</string>
+<string name="night_mode_activation_manual">ručno</string>
+<string name="night_mode_activation_auto">automatsko</string>
+<string name="noise_sensitivity">Osetljivost mikrofona</string>
+<string name="notification_alarm">Kliknite da zaustavite alarm.</string>
+<string name="other_apps">Ostale aplikacije</string>
+<string name="other_apps_tinytimetracker_summary">Pratite svoje dnevno radno vreme.</string>
+<string name="other_apps_tinytimetracker">Mini praćenje vremena</string>
+<string name="persistent_battery_value_while_charging">Stalno prikazivanje statusa baterije</string>
+<string name="persistent_battery_value_while_charging_summary">Stalno prikazivanje statusa baterije prilikom punjenja.</string>
+<string name="preview">Pregled</string>
+<string name="purchaseWeatherData">Kupiti licencu</string>
+<string name="purchaseWebRadio">Kupiti licencu</string>
+<string name="radio">Radio</string>
+<string name="radio_stream_enabled">Omogućeno</string>
+<string name="radio_stream_no_search_results">Nema rezultata pretrage.</string>
+<string name="radio_stream_query_hint">Niz za pretraživanje</string>
+<string name="radio_stream">Radio strimovi</string>
+<string name="radio_stream_search">Pretraživanje</string>
+<string name="radio_stream_start">Start/stop radio strim</string>
+<string name="radio_stream_url">Radio strim URL</string>
+<string name="reactivate_on_ambient_light_value">Prag osvetljenja</string>
+<string name="reactivate_on_ambient_light_value_summary">Ekran se rekativira ukoliko je prag osvetljenja prevaziđen.</string>
+<string name="reactivate_screen_on_noise">Aktivirati ekran na zvuk okoline</string>
+<string name="recommend_app_desc">Izaberite aplikaciju da podelite svoju preporuku.</string>
+<string name="recommend_app_subject">Želeo bih da Ti preporučim ovu Night Clock aplikaciju.</string>
+<string name="recommend">Preporučene aplikacije</string>
+<string name="remaining">preostalo</string>
+<string name="reset_to_defaults">Vratiti na početna podešavanja</string>
+<string name="restless_mode">Pomerati sat po ekranu</string>
+<string name="review_request">Molimo Vas daocenite ovu aplikaciju. Hvala!</string>
+<string name="screen_orientation_automatic">automatski</string>
+<string name="screen_orientation_landscape">horizontalno</string>
+<string name="screen_orientation_portrait">vertikalno</string>
+<string name="screen_orientation_reverse_landscape">obrnuto horizontalno</string>
+<string name="screen_orientation_reverse_portrait">obrnuto vertikalno</string>
+<string name="screenOrientation">Orijentacija ekrana</string>
+<string name="select_alarm_sound">Podesite zvuk alarma</string>
+<string name="set_alarm">podesite alarm</string>
+<string name="show_date">Prikazati datum</string>
+<string name="show_temperature">Prikazati temperaturu</string>
+<string name="show_weather">Prikazati lokalne vremenske prilike</string>
+<string name="show_wind_speed">Prikazati brzinu vetra</string>
+<string name="speedUnit">Jedinica za brzinu vetra</string>
+<string name="titlePrivacyPolicy">Pravila o privatnosti</string>
+<string name="temperatureUnit">Jedinica za temperaturu</string>
+<string name="translations">Prevodi</string>
+<string name="typeface_7_segment">7-segmentni LED</string>
+<string name="typeface_roboto_condensed">Roboto  skupljena</string>
+<string name="typeface_roboto_light">Roboto svetla</string>
+<string name="typeface_roboto_medium">Roboto srednja</string>
+<string name="typeface_roboto_regular">Roboto normalna</string>
+<string name="typeface_roboto_thin">Roboto tanka</string>
+<string name="typeface">Vrsta fonta</string>
+<string name="use_internal_alarm">Brzi alarmi</string>
+<string name="weather_calculation_time">ašuriranje na svakih</string>
+<string name="weather_city_id_summary">Ostaviti prazno za automatsku detekciju lokacije.</string>
+<string name="weather_city_id_title">ID grada</string>
+<string name="weather_info_title">Informacije</string>
+<string name="weather_search_city_id">Tražii ID grada</string>
+<string name="weather">Vremenske prilike</string>
+<string name="welcome_screen_text1">Dobrodošli u Vaš novi Nočni sat. Ova aplikacija prikazuje tačno vreme dok punite Vaš telefon.</string>
+<string name="welcome_screen_text2">Otvorite postavke ovde!</string>
+<string name="welcome_screen_text3">Kliknite i pomerajte za promenu osvetljenja ekrana. Pokušajte sada!</string>
+<string name="welcome_screen_text4">Promenite veličinu sata koristeši uvećanje pomoću dva prsta.</string>
+<string name="welcome_screen_title1">Noćni sat</string>
+<string name="welcome_screen_title2">Postavke</string>
+<string name="welcome_screen_title3">Osvetljenje ekrana</string>
+<string name="welcome_screen_title4">Veličina sata</string>
+</resources>
