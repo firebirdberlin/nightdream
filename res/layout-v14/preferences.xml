@@ -464,6 +464,13 @@
                     android:summary="stefan.fruhner@googlemail.com"/>
 
                 <Preference
+                    android:key="credits_pr"
+                    android:selectable="false"
+                    android:enabled="true"
+                    android:title="@string/credits_pull_requests"
+                    android:summary="Martin Poschmann"/>
+
+                <Preference
                     android:key="translations"
                     android:selectable="false"
                     android:enabled="true"
