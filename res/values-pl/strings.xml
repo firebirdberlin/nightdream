@@ -69,8 +69,13 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode">Ukryj</string>
 <string name="hide_background_image_in_night_mode_summary">Ukryj tło zdjęcia w trybie nocnym</string>
 <string name="location_time">Czas lokalny</string>
+<string name="message_no_data_connection">Nie połaczono</string>
+<string name="message_mobile_data_connection">Transfer danych mobilny</string>
+<string name="message_mobile_data_connection_confirmation">Jesteś podłączony do sieci. Włączyć radio?</string>
 <string name="mute_ringer">Wycisz dzwonek</string>
 <string name="night_mode">Tryb nocny</string>
+<string name="night_mode_activation_manual">Ręcznie</string>
+<string name="night_mode_activation_auto">Automatycznie</string>
 <string name="noise_sensitivity">Czułość mikrofonu</string>
 <string name="notification_alarm">Ķliknij aby zatrzymać alarm</string>
 <string name="other_apps">Inne aplikacje</string>
@@ -126,8 +131,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Otwórz weatherMap City Id. Zostaw puste dla automatycznego wykrycia lokalizacji</string>
 <string name="weather_city_id_title">Kod miasta</string>
 <string name="weather_info_title">Informacje</string>
+<string name="weather_search_city_id">Przeszukaj ID miasts</string>
 <string name="weather">Pogoda</string>
-<string name="welcome_screen_text1">Witam Ciebie w night clock ! Ta aplikacja pokaże Ci aktualny czas podczas podczas ładowania telefonu.</string>
+<string name="welcome_screen_text1">Witaj. Jestem twoim nocnym zegarkiem. Pokazuję aktualną godzinę, podczas ładowania twojego telefonu.</string>
 <string name="welcome_screen_text2">Otwórz ustawienia tu !</string>
 <string name="welcome_screen_text3">Klik i przeciągnij aby zmienic jasność ekranu. Sprawdź teraz !</string>
 <string name="welcome_screen_text4">Aby zmienić wielkośc zegara użyj dwóch palców</string>
