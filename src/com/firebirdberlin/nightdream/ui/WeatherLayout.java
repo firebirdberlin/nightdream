@@ -1,8 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 
-import java.lang.Math;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;

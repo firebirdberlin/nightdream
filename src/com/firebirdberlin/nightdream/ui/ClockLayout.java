@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.util.DisplayMetrics;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
+import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.R;
 
@@ -25,10 +26,12 @@ public class ClockLayout extends LinearLayout {
     private Context context = null;
     private TextView clock = null;
     private TextView clock_ampm = null;
+    private CustomAnalogClock analog_clock = null;
     private TextView date = null;
     private WeatherLayout weatherLayout = null;
     private LinearLayout infoLayout = null;
     private View divider = null;
+    private boolean digitalLayout = false;
 
     public ClockLayout(Context context) {
         super(context);
@@ -45,7 +48,12 @@ public class ClockLayout extends LinearLayout {
     private void init() {
         LayoutInflater inflater = (LayoutInflater)
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View child = inflater.inflate(R.layout.clock_layout, null);
+        View child;
+        if (digitalLayout) {
+            child = inflater.inflate(R.layout.clock_layout, null);
+        } else {
+            child = inflater.inflate(R.layout.analog_clock_layout, null);
+        }
         addView(child);
     }
 
@@ -63,18 +71,28 @@ public class ClockLayout extends LinearLayout {
         infoLayout = (LinearLayout) findViewById(R.id.info);
         weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
         divider = (View) findViewById(R.id.divider);
+        analog_clock = (CustomAnalogClock) findViewById(R.id.analog_clock);
     }
 
     public void setTypeface(Typeface typeface) {
-        if (clock == null) return;
-        clock.setTypeface(typeface);
-        clock_ampm.setTypeface(typeface);
+        if (clock != null) {
+            clock.setTypeface(typeface);
+        }
+        if ( clock_ampm != null ) {
+            clock_ampm.setTypeface(typeface);
+        }
     }
 
     public void setPrimaryColor(int color) {
-        if (clock == null) return;
-        clock.setTextColor(color);
-        clock_ampm.setTextColor(color);
+        if (clock != null) {
+            clock.setTextColor(color);
+        }
+        if ( clock_ampm != null ) {
+            clock_ampm.setTextColor(color);
+        }
+        if (analog_clock != null) {
+            analog_clock.setPrimaryColor(color);
+        }
     }
 
     public void setSecondaryColor(int color) {
@@ -86,6 +104,9 @@ public class ClockLayout extends LinearLayout {
         }
         if (divider != null) {
             divider.setBackgroundColor(color);
+        }
+        if (analog_clock != null) {
+            analog_clock.setSecondaryColor(color);
         }
     }
 
@@ -108,6 +129,7 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void toggleDivider() {
+        if (divider == null) return;
         if (date.getVisibility() != View.VISIBLE
                 && weatherLayout.getVisibility() != View.VISIBLE) {
 
@@ -120,19 +142,23 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void updateLayout(int parentWidth, Configuration config){
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                //setHorizontalLayout();
-                setVerticalLayout();
-                setDesiredWidth(clock, parentWidth, 0.3f, 300.f);
-                setDesiredWidth(date, parentWidth, 0.5f, 20.f);
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-            default:
-                setVerticalLayout();
-                setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-                setDesiredWidth(date, parentWidth, 0.9f, 25.f);
-                break;
+        if (digitalLayout) {
+            switch (config.orientation) {
+                case Configuration.ORIENTATION_LANDSCAPE:
+                    //setHorizontalLayout();
+                    setVerticalLayout();
+                    setDesiredWidth(clock, parentWidth, 0.3f, 300.f);
+                    setDesiredWidth(date, parentWidth, 0.5f, 20.f);
+                    break;
+                case Configuration.ORIENTATION_PORTRAIT:
+                default:
+                    setVerticalLayout();
+                    setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
+                    setDesiredWidth(date, parentWidth, 0.9f, 25.f);
+                    break;
+            }
+        } else {
+            setDesiredWidth(date, getWidth(), 0.45f, 18.f);
         }
         float textSize = date.getTextSize();
         weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
@@ -158,6 +184,7 @@ public class ClockLayout extends LinearLayout {
 
     private void setDesiredWidth(TextView view, int parentWidth, float desiredWidthPercent,
             float maxSp){
+        if (view == null) return;
         float desiredWidth = desiredWidthPercent * parentWidth;
 
         String text = view.getText().toString();
