@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">A proposito</string>
+<string name="alarm">Sveglia</string>
+<string name="alarmFadeIn">Volume incrementale</string>
+<string name="alarmVolume">Volume</string>
+<string name="allow_screen_off_summary">Di notte spegni lo schermo</string>
+<string name="allow_screen_off">Spegni lo schermo</string>
+<string name="ambient_noise">Rilevamento del rumore ambientale</string>
+<string name="ambient_noise_summary">Il rumore ambientale deve impedire la modalità \'notte\'?</string>
+<string name="appearance">Aspetto</string>
+<string name="app_name">Orologio notturno</string>
+<string name="auto_brightness">Luminosità automatica</string>
+<string name="autostart_timerange_label_end">Ora di arresto</string>
+<string name="autostart_timerange_label_start">Ora di avvio</string>
+<string name="background">Sfondo</string>
+<string name="background_black">Nero</string>
+<string name="background_gradient">Gradiente</string>
+<string name="background_image">Immagine</string>
+<string name="background_image_select">Seleziona un\'immagine</string>
+<string name="behaviour">Comportamento</string>
+<string name="brightness">Luminosità</string>
+<string name="buttonAccessibilitySettings">Mostra le notifiche</string>
+<string name="category_handle_power">... e se connesso a</string>
+<string name="category_handle_power_autostart_time">Avvia nell\'intervallo</string>
+<string name="choose_alarm_sound">Suono della sveglia</string>
+<string name="choose_secondary_color">Colore del testo</string>
+<string name="colors">Colori</string>
+<string name="confirm_reset_question">Vuoi davvero riportare alla configurazione iniziale?</string>
+<string name="confirm_reset">Reset</string>
+<string name="contribute">Contribuisci</string>
+<string name="contribute_source_code">Codice sorgente</string>
+<string name="contribute_translation">Traduzione</string>
+<string name="credits">Ringraziamenti</string>
+<string name="date_format">Formato della data</string>
+<string name="dialog_message_thank_you">Grazie mille!</string>
+<string name="dialog_title_thank_you">Grazie</string>
+<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate">Dona</string>
+<string name="force_auto_rotation">Forza l\'orientamento in Daydream</string>
+<string name="force_auto_rotation_summary">forza l\'orientamento dello schermo se Daydream è in uso</string>
+<string name="handle_power_ac">rete elettrica</string>
+<string name="handle_power">Autostart</string>
+<string name="handle_power_car">Caricatore per auto</string>
+<string name="handle_power_desk">Caricatore da tavolo</string>
+<string name="handle_power_disconnection">Smetti automaticamente</string>
+<string name="handle_power_disconnection_summary">Chiudi l\'applicazione alla disconnessione del caricatore</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">Caricatore wireless</string>
+<string name="hide_background_image_in_night_mode">Nascondi</string>
+<string name="hide_background_image_in_night_mode_summary">In modalità Notte, nascondi l\'immagine di sfondo</string>
+<string name="location_time">Ora locale</string>
+<string name="mute_ringer">Spegni la suoneria</string>
+<string name="night_mode">Modalità Notte</string>
+<string name="noise_sensitivity">Sensibilità del microfono</string>
+<string name="notification_alarm">Fai click per fermare la sveglia</string>
+<string name="other_apps">Altre app</string>
+<string name="other_apps_tinytimetracker_summary">Torni traccia del tuo tempo di lavoro quotidiano</string>
+<string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+<string name="persistent_battery_value_while_charging_summary">Mostra lo stato della batteria durante il caricamento</string>
+<string name="preview">Anteprima</string>
+<string name="purchaseWeatherData">Acquista una licenza</string>
+<string name="purchaseWebRadio">Acquista una licenza</string>
+<string name="radio_stream_enabled">Abilitato</string>
+<string name="radio_stream_no_search_results">La ricerca non ha dato risultati.</string>
+<string name="radio_stream_query_hint">Stringa di ricerca</string>
+<string name="radio_stream">Radio</string>
+<string name="radio_stream_search">Cerca</string>
+<string name="radio_stream_start">avvia/interrompi flusso radio</string>
+<string name="radio_stream_url">URL flusso radio</string>
+<string name="reactivate_on_ambient_light_value">Soglia luminanza</string>
+<string name="reactivate_on_ambient_light_value_summary">lo schermo viene riattivato se la soglia di luminanza viene superata </string>
+<string name="reactivate_screen_on_noise">Attiva al rumore ambientale</string>
+<string name="recommend_app_subject">Vorrei raccomandati questo orologio notturno</string>
+<string name="recommend">App raccomandata</string>
+<string name="reset_to_defaults">Reset ai valori predefiniti</string>
+<string name="restless_mode">sposta l\'orologio</string>
+<string name="review_request">valuta questa app.Grazie!</string>
+<string name="screenOrientation">orientamento schermo</string>
+<string name="select_alarm_sound">Seleziona suoneria sveglia</string>
+<string name="set_alarm">imposta allarme</string>
+<string name="show_date">Mostra data</string>
+<string name="show_temperature">Mostra temperatura</string>
+<string name="show_weather">Mostra meteo locale</string>
+<string name="show_wind_speed">Mostra velocità vento</string>
+<string name="speedUnit">Unità di misura del vento</string>
+<string name="temperatureUnit">unità di misura della temperatura</string>
+<string name="translations">Traduzione</string>
+<string name="typeface_7_segment">Led 7 segmenti</string>
+<string name="weather">Meteo</string>
+<string name="welcome_screen_text1">Benvenuto nel tuo nuovo orologio notturno! Questa app mostra l\'ora corrente mentre carichi il tuo smartphone.</string>
+<string name="welcome_screen_text3">Clicca e trascina per cambiare la luminosità dello schermo. Provalo ora!</string>
+<string name="welcome_screen_title2">Preferenze</string>
+<string name="welcome_screen_title3">Luminosità schermo</string>
+<string name="welcome_screen_title4">Dimensione orologio</string>
+</resources>
