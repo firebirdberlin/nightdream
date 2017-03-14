@@ -62,8 +62,6 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.events.OnLocationUpdated;
-import com.firebirdberlin.nightdream.events.OnWeatherDataUpdated;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
@@ -903,7 +901,6 @@ public class NightDreamUI {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float s = detector.getScaleFactor();
-            Log.i(TAG, String.format("onScale %f", s));
             applyScaleFactor(s);
             return true;
         }
@@ -1078,16 +1075,10 @@ public class NightDreamUI {
         }
     }
 
-    public void onEvent(OnLocationUpdated event){
-        if ( event == null ) return;
-        if ( event.entry == null ) {
-            clockLayout.clearWeather();
-        }
-    }
-
     class ReceiverWeatherUpdated extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v(TAG, "Weather data updated");
             settings.weatherEntry = settings.getWeatherEntry();
             clockLayout.update(settings.weatherEntry);
         }
