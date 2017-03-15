@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="clockLayoutValues">
+          <item>0</item>
+          <item>1</item>
+     </string-array>
+
+
+    <string-array name="clockLayout">
+        <item>@string/clock_layout_digital</item>
+        <item>@string/clock_layout_analog</item>
+     </string-array>
+</resources>

@@ -90,6 +90,14 @@
                     android:selectable="false"
                     />
 
+                <ListPreference
+                    android:title="@string/clock_layout"
+                    android:key="clockLayout"
+                    android:defaultValue="0"
+                    android:entries="@array/clockLayout"
+                    android:entryValues="@array/clockLayoutValues"/>
+
+
                 <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
                     android:key="colorSelection"
                     android:title="@string/colors"

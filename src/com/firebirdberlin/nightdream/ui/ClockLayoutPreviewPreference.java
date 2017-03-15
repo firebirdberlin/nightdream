@@ -63,6 +63,7 @@ public class ClockLayoutPreviewPreference extends Preference {
     protected void updateView() {
         Settings settings = new Settings(getContext());
 
+        clockLayout.setLayout(settings.clockLayout);
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
@@ -82,7 +83,6 @@ public class ClockLayoutPreviewPreference extends Preference {
                                         - preferenceView.getPaddingRight(),
                                  config);
         clockLayout.invalidate();
-
     }
 
     private WeatherEntry getWeatherEntry(Settings settings) {

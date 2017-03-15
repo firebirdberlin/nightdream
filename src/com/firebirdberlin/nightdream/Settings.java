@@ -72,6 +72,7 @@ public class Settings {
     public int background_mode = 1;
     public int clockColor;
     public int clockColorNight;
+    public int clockLayout;
     public int nightModeActivationMode;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
@@ -137,6 +138,7 @@ public class Settings {
         final String defaultColorString = "#33B5E5";
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
+        clockLayout = Integer.parseInt(settings.getString("clockLayout", "0"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
         location_lat = settings.getFloat("location_lat", 0.f);
         location_lon = settings.getFloat("location_lon", 0.f);

@@ -110,7 +110,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screen_orientation_automatic">automático</string>
 <string name="screen_orientation_landscape">paisagem</string>
 <string name="screen_orientation_portrait">retrato</string>
-<string name="screen_orientation_reverse_landscape">paisagem invertida</string>
+<string name="screen_orientation_reverse_landscape">SP</string>
 <string name="screen_orientation_reverse_portrait">retrato invertido</string>
 <string name="screenOrientation">Orientação da tela</string>
 <string name="select_alarm_sound">Selecione som de alarme</string>
@@ -132,8 +132,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface">Tipo de letra</string>
 <string name="use_internal_alarm">Alarmes rápidos</string>
 <string name="weather_calculation_time">tempo de cálculo do clima</string>
-<string name="weather_city_id_summary">Código OpenWeatherMap City. Deixe em branco para detecção automática.</string>
-<string name="weather_city_id_title">Código da cidade</string>
+<string name="weather_city_id_summary">São Paulo</string>
+<string name="weather_city_id_title">São Paulo</string>
 <string name="weather_info_title">Informação</string>
 <string name="weather">Clima</string>
 <string name="welcome_screen_text1">Bem vindo a seu novo relógio noturno! Esse aplicativo mostra o horário atual enquanto você recarrega seu aparelho.</string>

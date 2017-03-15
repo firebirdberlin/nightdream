@@ -1,32 +1,22 @@
 package com.firebirdberlin.nightdream;
 
+import java.lang.Math;
 import java.util.Calendar;
-import java.text.SimpleDateFormat;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.database.ContentObserver;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.provider.Settings;
-import android.text.format.DateFormat;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.TextView;
 import android.view.View;
-import android.graphics.RectF;
-import android.content.BroadcastReceiver;
-import android.content.Intent;
-import android.content.IntentFilter;
-
-import java.lang.Math;
 
 
 public class CustomAnalogClock extends View {
@@ -85,6 +75,7 @@ public class CustomAnalogClock extends View {
     }
 
     public void onDraw(Canvas canvas) {
+
         paint.setColorFilter(secondaryColorFilter);
         paint.setColor(Color.WHITE);
         paint.setAlpha(255);
@@ -121,9 +112,6 @@ public class CustomAnalogClock extends View {
                               (int) (center.y + .8 * radius * Math.sin(min_angle)));
         paint.setStrokeWidth(5.f);
         canvas.drawLine(center.x, center.y, min_end.x, min_end.y, paint);
-        //RectF rectF = new RectF(0, 0, w, h);
-        //canvas.drawArc(rectF, 0, 260, true, paint);
-
     }
 
     void setTimeTick() {
