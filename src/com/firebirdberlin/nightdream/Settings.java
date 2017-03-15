@@ -236,12 +236,12 @@ public class Settings {
 
     private String mapIntToTypefacePath(int typeface) {
         switch (typeface) {
-            case 1: return "roboto-regular";
-            case 2: return "roboto-light";
-            case 3: return "roboto-condensed";
-            case 4: return "roboto-thin";
-            case 5: return "roboto-medium";
-            case 5: return "7segment";
+            case 1: return "fonts/roboto_regular.ttf";
+            case 2: return "fonts/roboto_light.ttf";
+            case 3: return "fonts/roboto_condensed.ttf";
+            case 4: return "fonts/roboto_thin.ttf";
+            case 5: return "fonts/roboto_medium.ttf";
+            case 6: return "fonts/7segment.ttf";
             default: return null;
         }
     }
