@@ -234,27 +234,19 @@ public class Settings {
     }
 
     private Typeface loadTypeface() {
-        int typeface = 0;
-
-        if (Build.VERSION.SDK_INT >= 14){
-            typeface = Integer.parseInt(settings.getString("typeface", "1"));
-        }
-
-        if ( typeface < 6 ) {
-            String typefaceName = mapIntToTypefaceName(typeface);
-            return Typeface.create(typefaceName, Typeface.NORMAL);
-        }
-
-        return Typeface.createFromAsset(mContext.getAssets(), "fonts/7segment.ttf");
+        int typeface = Integer.parseInt(settings.getString("typeface", "1"));
+        String path = mapIntToTypefacePath(typeface);
+        return Typeface.createFromAsset(mContext.getAssets(), path);
     }
 
-    private String mapIntToTypefaceName(int typeface) {
+    private String mapIntToTypefacePath(int typeface) {
         switch (typeface) {
-            case 1: return "sans-serif";
-            case 2: return "sans-serif-light";
-            case 3: return "sans-serif-condensed";
-            case 4: return "sans-serif-thin";
-            case 5: return "sans-serif-medium";
+            case 1: return "roboto-regular";
+            case 2: return "roboto-light";
+            case 3: return "roboto-condensed";
+            case 4: return "roboto-thin";
+            case 5: return "roboto-medium";
+            case 5: return "7segment";
             default: return null;
         }
     }
