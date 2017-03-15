@@ -880,6 +880,7 @@ public class NightDreamUI {
                 handler.postDelayed(hideBrightnessLevel, 1000);
 
                 dimScreen(0, last_ambient, settings.dim_offset);
+                settings.setBrightnessOffset(settings.dim_offset);
             }
             return false;
         }
