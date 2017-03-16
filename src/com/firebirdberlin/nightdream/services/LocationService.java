@@ -73,9 +73,6 @@ public class LocationService extends Service {
                 public void onProviderDisabled(String provider) {}
             };
 
-            boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            //if (isNetworkEnabled || isGPSEnabled) {
             if ( isLocationEnabled() ) {
                 Log.i(TAG, "Requesting network locations");
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
@@ -123,6 +120,9 @@ public class LocationService extends Service {
         if (lastLocation.getTime() > -1L ) bestLocation = lastLocation;
 
         for (String provider : providers) {
+            if ( LocationManager.GPS_PROVIDER.equals(provider) ) {
+                continue;
+            }
             Location l = locationManager.getLastKnownLocation(provider);
             if (l != null && bestLocation != null && l.getTime() > bestLocation.getTime()) {
                 bestLocation = l;
