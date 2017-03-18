@@ -243,6 +243,32 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     @Override
+    public CharSequence getSummary () {
+        RadioStation station = getPersistedRadioStation();
+        if (station != null && station.name != null && !station.name.isEmpty()) {
+            String summary = station.name;
+            if (station.countryCode != null || station.bitrate > 0) {
+                summary += " (";
+                boolean hasCountry = false;
+                if (station.countryCode != null) {
+                    summary += station.countryCode;
+                    hasCountry = true;
+                }
+                if (station.bitrate > 0) {
+                    if (hasCountry) {
+                        summary += ", ";
+                    }
+                    summary += String.valueOf(station.bitrate) + " kbps";
+                }
+                summary += ")";
+            }
+            return summary;
+        } else {
+            return super.getSummary();
+        }
+    }
+
+    @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         setTitle(getTitle());
         setSummary(getPersistedString((String) defaultValue));
