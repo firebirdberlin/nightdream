@@ -31,12 +31,9 @@ public class RadioStation {
         station.countryCode = jsonStation.getString(JSON_COUNTRY);
         station.stream = jsonStation.getString(JSON_STREAM);
         String bitRateString = jsonStation.getString(JSON_BITRATE);
-        if (bitRateString != null && bitRateString.isEmpty()) {
+        if (bitRateString != null && !bitRateString.isEmpty()) {
             try {
-                Long val = Long.getLong(bitRateString);
-                if (val != null) {
-                    station.bitrate = val.longValue();
-                }
+                station.bitrate = jsonStation.getLong(JSON_BITRATE);
             } catch (Throwable t) {
 
             }
@@ -53,7 +50,7 @@ public class RadioStation {
         jsonStation.put(JSON_NAME, name);
         jsonStation.put(JSON_COUNTRY, countryCode);
         jsonStation.put(JSON_STREAM, stream);
-        jsonStation.put(JSON_BITRATE, stream);
+        jsonStation.put(JSON_BITRATE, bitrate);
         //jsonStation.put(JSON_STATUS, isOnline);
 
         return jsonStation.toString();
