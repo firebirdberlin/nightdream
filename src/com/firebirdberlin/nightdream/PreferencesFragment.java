@@ -99,6 +99,9 @@ public class PreferencesFragment extends PreferenceFragment {
             PreferenceScreen screen = getPreferenceScreen();
             screen.onItemClick(null, null, indexInitialScreen, 0);
         }
+
+        // InAppBillingService service dont seems to be available in emulator
+        activatePurchasesIfDebuggableAndEmulator();
     }
 
     public void setInitialScreenIndex(int index) {
@@ -659,5 +662,14 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         }
         return null;
+    }
+
+    private void activatePurchasesIfDebuggableAndEmulator() {
+        if ( Utility.isDebuggable(mContext) && Utility.isEmulator()) {
+            purchased_donation = true;
+            purchased_weather_data = true;
+            purchased_web_radio = true;
+            togglePurchasePreferences();
+        }
     }
 }
