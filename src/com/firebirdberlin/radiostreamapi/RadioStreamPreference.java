@@ -14,7 +14,6 @@ import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -33,10 +32,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.radiostreamapi.StationRequestTask;
 import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+
+import org.json.JSONException;
+
+
 
 public class RadioStreamPreference extends DialogPreference
                                    implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse {
@@ -246,22 +247,20 @@ public class RadioStreamPreference extends DialogPreference
     public CharSequence getSummary () {
         RadioStation station = getPersistedRadioStation();
         if (station != null && station.name != null && !station.name.isEmpty()) {
-            String summary = station.name;
-            if (station.countryCode != null || station.bitrate > 0) {
-                summary += " (";
-                boolean hasCountry = false;
-                if (station.countryCode != null) {
-                    summary += station.countryCode;
-                    hasCountry = true;
-                }
-                if (station.bitrate > 0) {
-                    if (hasCountry) {
-                        summary += ", ";
-                    }
-                    summary += String.valueOf(station.bitrate) + " kbps";
-                }
-                summary += ")";
+
+            final boolean hasCountry = (station.countryCode != null);
+            final boolean hasBitrate = (station.bitrate > 0);
+            String summary;
+            if (hasCountry && hasBitrate) {
+                summary = String.format("%s (%s, %d kbit/s)", station.name, station.countryCode, station.bitrate);
+            } else if (hasBitrate) {
+                summary = String.format("%s (%d kbit/s)", station.name, station.bitrate);
+            } else if (hasCountry){
+                summary = String.format("%s (%s)", station.name, station.countryCode);
+            } else {
+                summary = String.format("%s", station.name);
             }
+
             return summary;
         } else {
             return super.getSummary();
@@ -430,25 +429,42 @@ public class RadioStreamPreference extends DialogPreference
         }
     }
 
+    private String jsonKey() {
+        return String.format("%s_json", getKey());
+    }
+
     private void persistRadioStation(RadioStation station) {
         //save stream as separate field
         persistString(station.stream);
 
         //save complete station as json string
-        Settings settings = new Settings(getContext());
-        settings.setRadioStation(station);
+        try {
+            String json = station.toJson();
+            SharedPreferences prefs = getSharedPreferences();
+            SharedPreferences.Editor prefEditor = prefs.edit();
+            prefEditor.putString(jsonKey(), json);
+            prefEditor.commit();
+        } catch (Throwable t) {
+            Log.e(TAG, "error converting station to json", t);
+        }
+
     }
 
     private RadioStation getPersistedRadioStation() {
 
-        Settings settings = new Settings(getContext());
-        try {
-            RadioStation station = settings.getRadioStation();
-            return station;
-        } catch (Throwable t) {
-
+        SharedPreferences prefs = getSharedPreferences();
+        String json = prefs.getString(jsonKey(),  null);
+        if (json != null) {
+            try {
+                RadioStation s = RadioStation.fromJson(json);
+                return s;
+            } catch (JSONException e) {
+                Log.e(TAG, "error converting json to station", e);
+            }
         }
+
         return null;
+
     }
 
 }

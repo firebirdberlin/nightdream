@@ -429,29 +429,6 @@ public class Settings {
         return this.weatherEntry;
     }
 
-    public void setRadioStation(RadioStation station) {
-        try {
-            String json = station.toJson();
-            SharedPreferences.Editor prefEditor = settings.edit();
-            prefEditor.putString("radioStation", json);
-            prefEditor.commit();
-        } catch (Throwable t) {
-            Log.e(TAG, "error converting station to json", t);
-        }
-    }
-    public RadioStation getRadioStation() {
-        String json = settings.getString("radioStation",  null);
-        if (json != null) {
-            try {
-                RadioStation s = RadioStation.fromJson(json);
-                return s;
-            } catch (JSONException e) {
-                Log.e(TAG, "error converting json to station", e);
-            }
-        }
-        return null;
-    }
-
     public String backgroundImagePath() {
         if (hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             return bgpath;
