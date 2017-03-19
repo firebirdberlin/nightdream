@@ -43,6 +43,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
     private String streamURL = "";
+    private HttpStatusCheckTask statusCheckTask = null;
 
     public enum StreamingMode {INACTIVE, ALARM, RADIO}
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
@@ -88,7 +89,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             streamURL = settings.radioStreamURL;
 
             setAlarmVolume(settings.alarmVolume);
-            new HttpStatusCheckTask(this).execute(streamURL);
+            statusCheckTask = new HttpStatusCheckTask(this);
+            statusCheckTask.execute(streamURL);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
             sendBroadcast( new Intent(Config.ACTION_RADIO_STREAM_STARTED) );
@@ -96,7 +98,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
             streamURL = settings.radioStreamURLUI;
-            new HttpStatusCheckTask(this).execute(streamURL);
+            statusCheckTask = new HttpStatusCheckTask(this);
+            statusCheckTask.execute(streamURL);
         } else
         if ( ACTION_STOP.equals(action) ) {
             stopSelf();
@@ -108,6 +111,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onDestroy(){
         Log.d(TAG,"onDestroy() called.");
+
+        if (statusCheckTask != null) {
+            statusCheckTask.cancel(true);
+        }
 
         handler.removeCallbacks(fadeIn);
         stopPlaying();
