@@ -242,7 +242,7 @@ public class NightDreamUI {
     }
 
     private void setupClockLayout() {
-        sidePanel.setX(-1000);
+        initSidePanel();
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
@@ -779,7 +779,8 @@ public class NightDreamUI {
         if (Build.VERSION.SDK_INT > 11) {
             sidePanel.animate().setDuration(250).x(0);
         } else {
-            sidePanel.setX(0);
+            sidePanel.setVisibility(View.VISIBLE);
+            sidePanel.setClickable(true);
         }
         handler.postDelayed(hideAlarmClock, 20000);
     }
@@ -789,7 +790,17 @@ public class NightDreamUI {
         if (Build.VERSION.SDK_INT > 11) {
             sidePanel.animate().setDuration(250).x(-w);
         } else {
-            sidePanel.setX(-w);
+            sidePanel.setVisibility(View.INVISIBLE);
+            sidePanel.setClickable(false);
+        }
+    }
+
+    private void initSidePanel() {
+        if (Build.VERSION.SDK_INT > 11) {
+            sidePanel.setX(-1000);
+        } else {
+            sidePanel.setVisibility(View.INVISIBLE);
+            sidePanel.setClickable(false);
         }
     }
 
