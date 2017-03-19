@@ -107,7 +107,7 @@ public class DirbleApi {
                         if (streamObj.get("bitrate") != null) {
                             try {
                                 station.bitrate = streamObj.getLong("bitrate");
-                            } catch (Throwable t) {
+                            } catch (JSONException e) {
                             }
                         }
                         station.isOnline = streamObj.getLong("status") == 1L;
