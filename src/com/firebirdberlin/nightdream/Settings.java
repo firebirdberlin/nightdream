@@ -18,15 +18,11 @@ import android.location.LocationManager;
 import android.Manifest;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
-import com.firebirdberlin.radiostreamapi.models.RadioStation;
-
-import org.json.JSONException;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";

@@ -124,7 +124,6 @@ public class RadioStreamPreference extends DialogPreference
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RadioStation station = stations.get(position);
-                //persistString(station.stream);
                 persistRadioStation(station);
                 setSummary(station.stream);
                 notifyChanged();
@@ -444,8 +443,8 @@ public class RadioStreamPreference extends DialogPreference
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putString(jsonKey(), json);
             prefEditor.commit();
-        } catch (Throwable t) {
-            Log.e(TAG, "error converting station to json", t);
+        } catch (JSONException e) {
+            Log.e(TAG, "error converting station to json", e);
         }
 
     }
