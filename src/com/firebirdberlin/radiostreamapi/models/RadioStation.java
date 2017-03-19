@@ -1,5 +1,7 @@
 package com.firebirdberlin.radiostreamapi.models;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,8 +36,7 @@ public class RadioStation {
         if (bitRateString != null && !bitRateString.isEmpty()) {
             try {
                 station.bitrate = jsonStation.getLong(JSON_BITRATE);
-            } catch (Throwable t) {
-
+            } catch (JSONException e) {
             }
         }
 
