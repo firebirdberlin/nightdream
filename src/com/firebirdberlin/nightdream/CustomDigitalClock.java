@@ -159,11 +159,13 @@ public class CustomDigitalClock extends TextView {
     public void setFormat12Hour(String format) {
         this.m12 = format;
         setFormat();
+        updateTextView();
     }
 
     public void setFormat24Hour(String format) {
         this.m24 = format;
         setFormat();
+        updateTextView();
     }
 
 }

@@ -1,4 +1,4 @@
-<!--<?xml version="1.0" encoding="utf-8"?>-->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -27,11 +27,11 @@
             android:singleLine="true"
             android:text="00:00"
             android:textColor="#C2C2C2"
+            android:textSize="50sp"
             android:translationX="0sp"
             android:translationY="0sp"
             custom:format12Hr="h:mm"
-            custom:format24Hr="kk:mm"
-            />
+            custom:format24Hr="kk:mm"/>
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:clickable="true"
@@ -71,7 +71,6 @@
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:ellipsize="none"
             android:fontFamily="sans-serif-light"
-            android:gravity="center"
             android:id="@+id/date"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
@@ -81,8 +80,6 @@
             android:textColor="#C2C2C2"
             android:textStyle="bold"
             android:text="Sun, 30. October 2016"
-            android:translationX="0sp"
-            android:translationY="0sp"
             custom:format12Hr="dd. MMMM yyyy"
             custom:format24Hr="dd. MMMM yyyy"/>
 
