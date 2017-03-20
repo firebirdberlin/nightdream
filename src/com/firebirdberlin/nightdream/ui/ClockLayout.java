@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.lang.Runnable;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.util.DisplayMetrics;
 
@@ -246,16 +244,9 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void setDateFormat(String formatString) {
-        if (Build.VERSION.SDK_INT >= 17){
-            TextClock tdate  = (TextClock) date;
-            tdate.setFormat12Hour(formatString);
-            tdate.setFormat24Hour(formatString);
-
-        } else {
-            CustomDigitalClock tdate = (CustomDigitalClock) date;
-            tdate.setFormat12Hour(formatString);
-            tdate.setFormat24Hour(formatString);
-        }
+        CustomDigitalClock tdate = (CustomDigitalClock) date;
+        tdate.setFormat12Hour(formatString);
+        tdate.setFormat24Hour(formatString);
     }
 
     public void clearWeather() {

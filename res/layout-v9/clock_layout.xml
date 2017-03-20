@@ -66,21 +66,21 @@
 
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:translationX="0sp"
-            android:translationY="0sp"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:textStyle="bold"
-            android:textColor="#C2C2C2"
-            android:textSize="30sp"
+            android:id="@+id/date"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:paddingTop="5sp"
             android:singleLine="true"
-            android:ellipsize="end"
+            android:textColor="#C2C2C2"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:translationX="0sp"
+            android:translationY="0sp"
             custom:format12Hr="dd. MMMM yyyy"
             custom:format24Hr="dd. MMMM yyyy"
-            android:layout_gravity="center"
             />
 
         <com.firebirdberlin.nightdream.ui.WeatherLayout

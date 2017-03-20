@@ -14,21 +14,22 @@
             android:translationY="0px"
             />
 
-        <TextClock
+        <com.firebirdberlin.nightdream.CustomDigitalClock
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:ellipsize="none"
+            android:fontFamily="sans-serif-light"
             android:id="@+id/date"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:textStyle="bold"
-            android:format12Hour="dd. MMMM yyyy"
-            android:format24Hour="dd. MMMM yyyy"
-            android:textColor="#C2C2C2"
-            android:text="Sun, 30. October 2016"
-            android:textSize="20sp"
+            android:layout_width="wrap_content"
             android:singleLine="true"
-            android:ellipsize="none"
+            android:textColor="#C2C2C2"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Sun, 30. October 2016"
             android:translationY="0px"
+            custom:format12Hr="dd. MMMM yyyy"
+            custom:format24Hr="dd. MMMM yyyy"
             />
 
 <!--

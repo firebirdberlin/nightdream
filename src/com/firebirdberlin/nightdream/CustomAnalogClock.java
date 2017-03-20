@@ -13,7 +13,6 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
