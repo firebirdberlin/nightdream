@@ -1,33 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 <!--
         Date
 -->
-    <RelativeLayout
-        android:id="@+id/info"
-        android:orientation="vertical"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        >
-
         <com.firebirdberlin.nightdream.ui.WeatherLayout
             android:id="@+id/weatherLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="50dp"
+            android:layout_gravity="center"
+            android:translationY="0px"
             />
 
         <TextClock
             android:id="@+id/date"
             android:layout_gravity="center"
-            android:layout_centerInParent="true"
-            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
@@ -36,21 +25,22 @@
             android:format24Hour="dd. MMMM yyyy"
             android:textColor="#C2C2C2"
             android:text="Sun, 30. October 2016"
+            android:textSize="20sp"
             android:singleLine="true"
             android:ellipsize="none"
-            android:layout_marginBottom="50dp"
+            android:translationY="0px"
             />
 
-    </RelativeLayout>
 <!--
         time
 -->
     <com.firebirdberlin.nightdream.CustomAnalogClock
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/analog_clock"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="@android:color/transparent"
+        android:padding="0px"
         />
 </FrameLayout>

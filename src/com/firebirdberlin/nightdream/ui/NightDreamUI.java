@@ -182,6 +182,8 @@ public class NightDreamUI {
         settings.reload();
 
         setScreenOrientation(settings.screenOrientation);
+        setupClockLayout();
+
         updateWeatherData();
         updateBatteryValue();
         updateBatteryView();
@@ -192,7 +194,6 @@ public class NightDreamUI {
         initLightSensor();
 
         brightnessProgress.setVisibility(View.INVISIBLE);
-        setupClockLayout();
         setColor();
         setupBackgroundImage();
         setupScreenAnimation();
@@ -243,18 +244,21 @@ public class NightDreamUI {
 
     private void setupClockLayout() {
         initSidePanel();
-        clockLayout.setLayout(settings.clockLayout);
-        clockLayout.setDateFormat(settings.dateFormat);
-        clockLayout.showDate(settings.showDate);
-        clockLayout.showWeather(settings.showWeather);
 
         if ( !settings.restless_mode ) {
             centerClockLayout();
         }
 
+        clockLayout.setLayout(settings.clockLayout);
+        clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
+
+        clockLayout.showDate(settings.showDate);
+        clockLayout.showWeather(settings.showWeather);
+        Configuration config = getConfiguration();
+        clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
         clockLayout.update(settings.weatherEntry);
     }
 

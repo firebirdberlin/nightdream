@@ -1,6 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
-
+import java.lang.Runnable;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -86,12 +86,6 @@ public class ClockLayout extends LinearLayout {
         weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
         divider = (View) findViewById(R.id.divider);
         analog_clock = (CustomAnalogClock) findViewById(R.id.analog_clock);
-        if (weatherLayout != null ) {
-            weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
-        }
-        if (date != null ) {
-            date.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
-        }
     }
 
     public void setTypeface(Typeface typeface) {
@@ -163,25 +157,51 @@ public class ClockLayout extends LinearLayout {
 
     public void updateLayout(int parentWidth, Configuration config){
         if (layoutId == LAYOUT_ID_DIGITAL) {
+
+            setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             switch (config.orientation) {
                 case Configuration.ORIENTATION_LANDSCAPE:
-                    //setHorizontalLayout();
-                    //setVerticalLayout();
                     setDesiredWidth(clock, parentWidth, 0.3f, 300.f);
                     setDesiredWidth(date, parentWidth, 0.5f, 20.f);
                     break;
                 case Configuration.ORIENTATION_PORTRAIT:
                 default:
-                    //setVerticalLayout();
                     setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
                     setDesiredWidth(date, parentWidth, 0.9f, 25.f);
                     break;
             }
+            if (date.getVisibility() == View.VISIBLE) {
+                float textSize = date.getTextSize();
+                weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
+            }
         } else {
-            setDesiredWidth(date, getWidth(), 0.45f, 14.f);
+            int widgetSize = parentWidth/2;
+
+            switch (config.orientation) {
+                case Configuration.ORIENTATION_LANDSCAPE:
+                    widgetSize = parentWidth/4;
+                    break;
+                case Configuration.ORIENTATION_PORTRAIT:
+                default:
+                    widgetSize = parentWidth/2;
+                    break;
+            }
+            setSize(widgetSize, widgetSize);
+            setDesiredWidth(date, widgetSize, 0.5f, 18.f);
+            weatherLayout.setMaxWidth(widgetSize/2);
+            weatherLayout.setMaxFontSizeInPx(spToPx(18.f));
+            weatherLayout.update();
+
+            weatherLayout.setTranslationY(-0.2f * widgetSize);
+            date.setTranslationY(0.2f * widgetSize);
         }
-        float textSize = date.getTextSize();
-        weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
+
+    }
+
+    private void setSize(int width, int height) {
+        getLayoutParams().width = width;
+        getLayoutParams().height = height;
+        requestLayout();
     }
 
     public void setScaleFactor(float factor) {
@@ -210,6 +230,11 @@ public class ClockLayout extends LinearLayout {
     private float pixelsToSp(float px) {
         float density = context.getResources().getDisplayMetrics().density;
         return px/density;
+    }
+
+    private int dpToPx(float dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                                               context.getResources().getDisplayMetrics());
     }
     private int spToPx(float sp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,

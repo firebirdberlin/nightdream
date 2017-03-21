@@ -15,7 +15,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 
@@ -75,7 +74,7 @@ public class CustomAnalogClock extends View {
     }
 
     public void onDraw(Canvas canvas) {
-
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setColorFilter(secondaryColorFilter);
         paint.setColor(Color.WHITE);
         paint.setAlpha(255);
@@ -101,13 +100,14 @@ public class CustomAnalogClock extends View {
         double hour_angle = (double) hour/6. * Math.PI - Math.PI / 2.
                             + (double) min/60. * Math.PI / 6.;
         double min_angle = (double) min/30. * Math.PI - Math.PI / 2.;
-        Log.d(TAG, String.valueOf(hour_angle));
-        Log.d(TAG, String.valueOf(min_angle));
-        Point hour_end = new Point((int) (center.x + .6 * radius * Math.cos(hour_angle)),
-                              (int) (center.y + .6 * radius * Math.sin(hour_angle)));
+
+        // hour
+        Point hour_end = new Point((int) (center.x + .5 * radius * Math.cos(hour_angle)),
+                              (int) (center.y + .5 * radius * Math.sin(hour_angle)));
         paint.setStrokeWidth(5.f);
         canvas.drawLine(center.x, center.y, hour_end.x, hour_end.y, paint);
 
+        // minute
         Point min_end = new Point((int) (center.x + .8 * radius * Math.cos(min_angle)),
                               (int) (center.y + .8 * radius * Math.sin(min_angle)));
         paint.setStrokeWidth(5.f);
