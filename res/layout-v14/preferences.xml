@@ -115,6 +115,12 @@
                     android:title="@string/date_format"
                     android:key="dateFormat"/>
 
+                <com.firebirdberlin.nightdream.DateFormatPreference
+                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    custom:formatType="time"
+                    android:title="@string/timeFormat"
+                    android:key="timeFormat"/>
+
                 <ListPreference
                     android:title="@string/typeface"
                     android:key="typeface"

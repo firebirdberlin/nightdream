@@ -6,4 +6,7 @@
     </declare-styleable>
     <declare-styleable name="AutoAdjustTextView">
     </declare-styleable>
+    <declare-styleable name="DateFormatPreference">
+        <attr name="formatType" format="string"/>
+    </declare-styleable>
 </resources>

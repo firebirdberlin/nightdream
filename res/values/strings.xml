@@ -128,6 +128,7 @@ OR
     <string name="speedUnit">Wind speed unit</string>
     <string name="titlePrivacyPolicy">Privacy policy</string>
     <string name="temperatureUnit">Temperature unit</string>
+    <string name="timeFormat">Time format</string>
     <string name="translations">Translations</string>
     <string name="typeface_7_segment">7-segment LED</string>
     <string name="typeface_roboto_condensed">Roboto condensed</string>

@@ -243,6 +243,16 @@ public class ClockLayout extends LinearLayout {
         tdate.setFormat24Hour(formatString);
     }
 
+    public void setTimeFormat(String formatString, boolean is24HourFormat) {
+        if (clock == null) return;
+        CustomDigitalClock tclock = (CustomDigitalClock) clock;
+        if ( is24HourFormat ) {
+            tclock.setFormat24Hour(formatString);
+        } else {
+            tclock.setFormat12Hour(formatString);
+        }
+    }
+
     public void clearWeather() {
         weatherLayout.clear();
     }

@@ -71,6 +71,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
+        clockLayout.setTimeFormat(settings.timeFormat, settings.is24HourFormat());
         clockLayout.showDate(settings.showDate);
 
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);

@@ -124,6 +124,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
 <string name="titlePrivacyPolicy">Datenschutzerklärung</string>
 <string name="temperatureUnit">Temperatureinheit</string>
+<string name="timeFormat">Zeitformat</string>
 <string name="translations">Übersetzungen</string>
 <string name="typeface_7_segment">7 Segment LED</string>
 <string name="typeface_roboto_condensed">Roboto Eng</string>

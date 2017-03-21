@@ -92,6 +92,7 @@ public class Settings {
     public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
+    public String timeFormat;
     public BatteryValue batteryReferenceValue;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
@@ -171,6 +172,7 @@ public class Settings {
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
+        timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
         weatherCityID = settings.getString("weatherCityID", "");
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
@@ -221,6 +223,17 @@ public class Settings {
         }
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return ((SimpleDateFormat)formatter).toLocalizedPattern();
+    }
+
+    private String getDefaultTimeFormat() {
+        if ( is24HourFormat() ) {
+            return "kk:mm";
+        }
+        return "h:mm";
+    }
+
+    public boolean is24HourFormat() {
+        return android.text.format.DateFormat.is24HourFormat(mContext);
     }
 
     public long getDateAsLong(int year, int month, int day) {
