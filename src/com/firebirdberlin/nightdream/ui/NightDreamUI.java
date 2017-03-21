@@ -767,12 +767,20 @@ public class NightDreamUI {
     };
 
     private void toggleSidePanel() {
-       float x = sidePanel.getX();
-       if (x < 0.f ) {
-           showSidePanel();
-       } else {
-           hideSidePanel();
-       }
+        if (Build.VERSION.SDK_INT > 11) {
+           float x = sidePanel.getX();
+           if (x < 0.f ) {
+               showSidePanel();
+           } else {
+               hideSidePanel();
+           }
+        } else {
+            if ( sidePanel.getVisibility() == View.VISIBLE ) {
+               hideSidePanel();
+            } else {
+               showSidePanel();
+            }
+        }
 
     }
     private void showSidePanel() {
