@@ -4,4 +4,6 @@
         <attr name="format12Hr" format="string"/>
         <attr name="format24Hr" format="string"/>
     </declare-styleable>
+    <declare-styleable name="AutoAdjustTextView">
+    </declare-styleable>
 </resources>

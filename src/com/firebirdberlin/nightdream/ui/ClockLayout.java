@@ -12,13 +12,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.util.DisplayMetrics;
 
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
 public class ClockLayout extends LinearLayout {
     private static final String TAG = "NightDream.ClockLayout";
@@ -28,23 +28,21 @@ public class ClockLayout extends LinearLayout {
     private int layoutId = LAYOUT_ID_DIGITAL;
 
     private Context context = null;
-    private TextView clock = null;
-    private TextView clock_ampm = null;
+    private AutoAdjustTextView clock = null;
+    private AutoAdjustTextView clock_ampm = null;
     private CustomAnalogClock analog_clock = null;
-    private TextView date = null;
+    private AutoAdjustTextView date = null;
     private WeatherLayout weatherLayout = null;
     private View divider = null;
 
     public ClockLayout(Context context) {
         super(context);
         this.context = context;
-        init();
     }
 
     public ClockLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        init();
     }
 
     private void init() {
@@ -78,9 +76,9 @@ public class ClockLayout extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         Log.v(TAG, "onFinishInflate");
-        clock = (TextView) findViewById(R.id.clock);
-        clock_ampm = (TextView) findViewById(R.id.clock_ampm);
-        date = (TextView) findViewById(R.id.date);
+        clock = (AutoAdjustTextView) findViewById(R.id.clock);
+        clock_ampm = (AutoAdjustTextView) findViewById(R.id.clock_ampm);
+        date = (AutoAdjustTextView) findViewById(R.id.date);
         weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
         divider = (View) findViewById(R.id.divider);
         analog_clock = (CustomAnalogClock) findViewById(R.id.analog_clock);
@@ -154,23 +152,30 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void updateLayout(int parentWidth, Configuration config){
+        final float minFontSize = spToPx(10.f);
         if (layoutId == LAYOUT_ID_DIGITAL) {
 
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             switch (config.orientation) {
                 case Configuration.ORIENTATION_LANDSCAPE:
-                    setDesiredWidth(clock, parentWidth, 0.3f, 300.f);
-                    setDesiredWidth(date, parentWidth, 0.5f, 20.f);
+                    clock.setMaxWidth((int) (0.3f * parentWidth));
+                    clock.setMaxFontSizesInPx(minFontSize, spToPx(300.f));
+                    date.setMaxWidth(parentWidth/2);
+                    date.setMaxFontSizesInPx(minFontSize, spToPx(20.f));
+                    weatherLayout.setMaxWidth(parentWidth/2);
+                    weatherLayout.setMaxFontSizesInPx(minFontSize, spToPx(20.f));
+                    weatherLayout.update();
                     break;
                 case Configuration.ORIENTATION_PORTRAIT:
                 default:
-                    setDesiredWidth(clock, parentWidth, 0.6f, 300.f);
-                    setDesiredWidth(date, parentWidth, 0.9f, 25.f);
+                    clock.setMaxWidth((int) (0.6f * parentWidth));
+                    clock.setMaxFontSizesInPx(minFontSize, spToPx(300.f));
+                    date.setMaxWidth((int) (0.8f * parentWidth));
+                    date.setMaxFontSizesInPx(minFontSize, spToPx(25.f));
+                    weatherLayout.setMaxWidth((int) (0.8f * parentWidth));
+                    weatherLayout.setMaxFontSizesInPx(minFontSize, spToPx(25.f));
+                    weatherLayout.update();
                     break;
-            }
-            if (date.getVisibility() == View.VISIBLE) {
-                float textSize = date.getTextSize();
-                weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) textSize);
             }
         } else {
             int widgetSize = parentWidth/2;
@@ -185,15 +190,19 @@ public class ClockLayout extends LinearLayout {
                     break;
             }
             setSize(widgetSize, widgetSize);
-            setDesiredWidth(date, widgetSize, 0.5f, 18.f);
+            date.setMaxWidth(widgetSize/2);
+            date.setMaxFontSizesInPx(minFontSize, spToPx(18.f));
+
             weatherLayout.setMaxWidth(widgetSize/2);
-            weatherLayout.setMaxFontSizeInPx(spToPx(18.f));
+            weatherLayout.setMaxFontSizesInPx(minFontSize, spToPx(18.f));
             weatherLayout.update();
 
             weatherLayout.setTranslationY(-0.2f * widgetSize);
             date.setTranslationY(0.2f * widgetSize);
         }
 
+        if ( date != null ) date.invalidate();
+        if (clock != null ) clock.invalidate();
     }
 
     private void setSize(int width, int height) {
@@ -208,21 +217,6 @@ public class ClockLayout extends LinearLayout {
         setScaleX(factor);
         setScaleY(factor);
         invalidate();
-    }
-
-    private void setDesiredWidth(TextView view, int parentWidth, float desiredWidthPercent,
-            float maxSp){
-        if (view == null) return;
-        float desiredWidth = desiredWidthPercent * parentWidth;
-
-        String text = view.getText().toString();
-        int size = 1;
-        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        int maxPX = spToPx(maxSp);
-        do{
-            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
-        } while(size <= maxPX && view.getPaint().measureText(text) < desiredWidth);
-        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, --size);
     }
 
     private float pixelsToSp(float px) {

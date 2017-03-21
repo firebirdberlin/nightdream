@@ -59,12 +59,7 @@ public class ClockLayoutPreviewPreference extends Preference {
     @Override
     public void onBindView(View view) {
         super.onBindView(view);
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                updateView();
-            }
-        });
+        updateView();
     }
 
     protected void updateView() {
@@ -76,11 +71,14 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
+        clockLayout.showDate(settings.showDate);
+
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
-
-        clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
+
+        WeatherEntry entry = getWeatherEntry(settings);
+        clockLayout.update(entry);
 
         Utility utility = new Utility(getContext());
         Point size = utility.getDisplaySize();
@@ -89,8 +87,6 @@ public class ClockLayoutPreviewPreference extends Preference {
                                         - preferenceView.getPaddingRight(),
                                  config);
 
-        WeatherEntry entry = getWeatherEntry(settings);
-        clockLayout.update(entry);
 
         clockLayout.invalidate();
     }

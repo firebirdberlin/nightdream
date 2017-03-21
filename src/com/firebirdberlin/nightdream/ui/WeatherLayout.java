@@ -27,7 +27,8 @@ public class WeatherLayout extends LinearLayout {
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
     private int maxWidth = -1;
-    private float maxFontSizePx = -1;
+    private int minFontSizePx = -1;
+    private int maxFontSizePx = -1;
 
     public WeatherLayout(Context context) {
         super(context);
@@ -63,14 +64,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setMaxWidth(int width) {
-        Log.v(TAG, String.format("maxWidth = %d", width));
         this.maxWidth = width;
     }
 
-    public void setMaxFontSizeInPx(float maxSize) {
-        Log.v(TAG, String.format("maxFontSizePx = %f", maxSize));
-        this.maxFontSizePx = maxSize;
+    public void setMaxFontSizesInPx(float minSize, float maxSize) {
+        this.minFontSizePx = (int) minSize;
+        this.maxFontSizePx = (int) maxSize;
     }
+
     @Override
     protected void onFinishInflate() {
         iconText = (TextView) findViewById(R.id.iconText);
@@ -214,11 +215,14 @@ public class WeatherLayout extends LinearLayout {
 
     private void adjustTextSize() {
         if ( maxWidth == -1) return;
-        int size = 1;
-        do {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, ++size);
-        } while ( measureText() <= maxWidth && size <= maxFontSizePx);
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, --size);
+        if ( maxFontSizePx == -1 || minFontSizePx == -1) return;
+        for(int size = minFontSizePx; size <= maxFontSizePx; size++) {
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            if ( measureText() > maxWidth ) {
+                setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 1);
+                break;
+            }
+        }
     }
 
     public int measureText() {

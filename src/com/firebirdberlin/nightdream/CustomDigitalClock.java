@@ -11,28 +11,23 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
-public class CustomDigitalClock extends TextView {
+public class CustomDigitalClock extends AutoAdjustTextView {
 
     Context context = null;
     TimeReceiver timeReceiver;
     Calendar mCalendar;
+    String mFormat;
     private String m12 = "h:mm aa";
     private String m24 = "kk:mm";
     private FormatChangeObserver mFormatChangeObserver;
 
-    private Runnable mTicker;
-    private Handler mHandler;
-
-    private boolean mTickerStopped = false;
-
-    String mFormat;
 
     public CustomDigitalClock(Context context) {
         super(context);
@@ -102,33 +97,6 @@ public class CustomDigitalClock extends TextView {
             updateTextView();
         }
     }
-
-    //@Override
-    //protected void onAttachedToWindow() {
-        //mTickerStopped = false;
-        //super.onAttachedToWindow();
-        //mHandler = new Handler();
-        /**
-         * requests a tick on the next hard-second boundary
-         */
-        //mTicker = new Runnable() {
-                //public void run() {
-                    //if (mTickerStopped) return;
-                    //updateTextView();
-
-                    //long now = SystemClock.uptimeMillis();
-                    //long next = now + (1000 - now % 1000);
-                    //mHandler.postAtTime(mTicker, next);
-                //}
-            //};
-        //mTicker.run();
-    //}
-
-    //@Override
-    //protected void onDetachedFromWindow() {
-        //super.onDetachedFromWindow();
-        //mTickerStopped = true;
-    //}
 
     /**
      * Pulls 12/24 mode from system settings
