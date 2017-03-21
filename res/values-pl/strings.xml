@@ -71,12 +71,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_wireless">Bezprzewodowe ładowanie</string>
 <string name="hide_background_image_in_night_mode">Ukryj</string>
 <string name="hide_background_image_in_night_mode_summary">Ukryj tło zdjęcia w trybie nocnym</string>
-<string name="hour">Godzina</string>
+<string name="hour">h</string>
 <string name="location_time">Czas lokalny</string>
 <string name="message_no_data_connection">Nie połaczono</string>
 <string name="message_mobile_data_connection">Transfer danych mobilny</string>
 <string name="message_mobile_data_connection_confirmation">Jesteś podłączony do sieci. Włączyć radio?</string>
-<string name="minute">Minuty</string>
+<string name="minute">min</string>
 <string name="mute_ringer">Wycisz dzwonek</string>
 <string name="night_mode">Tryb nocny</string>
 <string name="night_mode_activation_mode">Tryb akywacji</string>
