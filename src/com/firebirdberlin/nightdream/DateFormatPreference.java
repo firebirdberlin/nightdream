@@ -96,15 +96,14 @@ public class DateFormatPreference extends ListPreference {
             valueList.add("KK:mm");
         }
 
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 9);
-        Date date1 = cal.getTime();
-        cal.set(Calendar.HOUR_OF_DAY, 12);
-        Date date2 = cal.getTime();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        Date date3 = cal.getTime();
         CharSequence[] values = valueList.toArray(new CharSequence[valueList.size()]);
         Arrays.sort(values);
+
+        Calendar cal = Calendar.getInstance();
+        Date date1 = setHour(cal, 9);
+        Date date2 = setHour(cal, 12);
+        Date date3 = setHour(cal, 0);
+
         for (CharSequence value : values) {
             if ( !is24Hour ) value += " a";
             String example = String.format("%s / %s / %s",
@@ -119,6 +118,11 @@ public class DateFormatPreference extends ListPreference {
 
         setEntries(cs);
         setEntryValues(values);
+    }
+
+    private Date setHour(Calendar cal, int hour) {
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        return cal.getTime();
     }
 
     private boolean is24HourFormat() {
