@@ -152,7 +152,7 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void updateLayout(int parentWidth, Configuration config){
-        final float minFontSize = spToPx(10.f);
+        final float minFontSize = spToPx(8.f);
         if (layoutId == LAYOUT_ID_DIGITAL) {
 
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
