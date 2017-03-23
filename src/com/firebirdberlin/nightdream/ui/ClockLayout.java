@@ -153,6 +153,9 @@ public class ClockLayout extends LinearLayout {
 
     public void updateLayout(int parentWidth, Configuration config){
         final float minFontSize = spToPx(8.f);
+        if (clock != null) {
+            clock.setSampleText("22:55");
+        }
         if (layoutId == LAYOUT_ID_DIGITAL) {
 
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

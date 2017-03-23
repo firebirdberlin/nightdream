@@ -25,6 +25,7 @@ public class AutoAdjustTextView extends TextView {
     private int maxWidth = -1;
     private int maxFontSizePx = -1;
     private int minFontSizePx = -1;
+    private String sampleText = null;
 
 
     public AutoAdjustTextView(Context context) {
@@ -87,8 +88,13 @@ public class AutoAdjustTextView extends TextView {
         }
     }
 
+    // this text may be used as a sample to determine the font size
+    public void setSampleText(String sample) {
+        this.sampleText = sample;
+    }
+
     private float measureText() {
-        String text = getText().toString();
+        String text = (sampleText != null ) ? sampleText : getText().toString();
         return getPaint().measureText(text);
     }
 }
