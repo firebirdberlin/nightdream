@@ -18,7 +18,6 @@
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:clickable="true"
             android:ellipsize="none"
-            android:fontFamily="sans-serif"
             android:id="@+id/clock"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
@@ -30,13 +29,13 @@
             android:textSize="50sp"
             android:translationX="0sp"
             android:translationY="0sp"
+            custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="h:mm"
             custom:format24Hr="kk:mm"/>
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:clickable="true"
             android:ellipsize="none"
-            android:fontFamily="sans-serif"
             android:id="@+id/clock_ampm"
             android:layout_gravity="top"
             android:layout_height="wrap_content"
@@ -45,6 +44,7 @@
             android:singleLine="true"
             android:textColor="#C2C2C2"
             android:textSize="20sp"
+            custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="a"
             custom:format24Hr=""
             />
@@ -70,7 +70,6 @@
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:ellipsize="none"
-            android:fontFamily="sans-serif"
             android:id="@+id/date"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
@@ -80,6 +79,7 @@
             android:textColor="#C2C2C2"
             android:textStyle="bold"
             android:text="Sun, 30. October 2016"
+            custom:fontPath="fonts/roboto_light.ttf"
             custom:format12Hr="dd. MMMM yyyy"
             custom:format24Hr="dd. MMMM yyyy"/>
 

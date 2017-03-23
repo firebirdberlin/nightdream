@@ -152,7 +152,7 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void updateLayout(int parentWidth, Configuration config){
-        final float minFontSize = spToPx(8.f);
+        final float minFontSize = 8.f; // in sp
         if (clock != null) {
             clock.setSampleText("22:55");
         }
@@ -162,21 +162,21 @@ public class ClockLayout extends LinearLayout {
             switch (config.orientation) {
                 case Configuration.ORIENTATION_LANDSCAPE:
                     clock.setMaxWidth((int) (0.3f * parentWidth));
-                    clock.setMaxFontSizesInPx(minFontSize, spToPx(300.f));
+                    clock.setMaxFontSizesInSp(minFontSize, (300.f));
                     date.setMaxWidth(parentWidth/2);
-                    date.setMaxFontSizesInPx(minFontSize, spToPx(20.f));
+                    date.setMaxFontSizesInSp(minFontSize, (20.f));
                     weatherLayout.setMaxWidth(parentWidth/2);
-                    weatherLayout.setMaxFontSizesInPx(minFontSize, spToPx(20.f));
+                    weatherLayout.setMaxFontSizesInPx(spToPx(minFontSize), spToPx(20.f));
                     weatherLayout.update();
                     break;
                 case Configuration.ORIENTATION_PORTRAIT:
                 default:
                     clock.setMaxWidth((int) (0.6f * parentWidth));
-                    clock.setMaxFontSizesInPx(minFontSize, spToPx(300.f));
+                    clock.setMaxFontSizesInSp(minFontSize, (300.f));
                     date.setMaxWidth((int) (0.8f * parentWidth));
-                    date.setMaxFontSizesInPx(minFontSize, spToPx(25.f));
+                    date.setMaxFontSizesInSp(minFontSize, (25.f));
                     weatherLayout.setMaxWidth((int) (0.8f * parentWidth));
-                    weatherLayout.setMaxFontSizesInPx(minFontSize, spToPx(25.f));
+                    weatherLayout.setMaxFontSizesInPx(spToPx(minFontSize), spToPx(25.f));
                     weatherLayout.update();
                     break;
             }
@@ -194,10 +194,10 @@ public class ClockLayout extends LinearLayout {
             }
             setSize(widgetSize, widgetSize);
             date.setMaxWidth(widgetSize/2);
-            date.setMaxFontSizesInPx(minFontSize, spToPx(18.f));
+            date.setMaxFontSizesInSp(minFontSize, (18.f));
 
             weatherLayout.setMaxWidth(widgetSize/2);
-            weatherLayout.setMaxFontSizesInPx(minFontSize, spToPx(18.f));
+            weatherLayout.setMaxFontSizesInPx(spToPx(minFontSize), spToPx(18.f));
             weatherLayout.update();
 
             weatherLayout.setTranslationY(-0.2f * widgetSize);
@@ -231,10 +231,12 @@ public class ClockLayout extends LinearLayout {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                                                context.getResources().getDisplayMetrics());
     }
+
     private int spToPx(float sp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
                                                context.getResources().getDisplayMetrics());
     }
+
     private int pixelsToDp(float px) {
         DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics );

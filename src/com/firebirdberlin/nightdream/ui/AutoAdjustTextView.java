@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.DateFormat;
@@ -23,8 +24,11 @@ public class AutoAdjustTextView extends TextView {
     private static final String TAG = "NightDream.AutoAdjustTextView";
     Context context = null;
     private int maxWidth = -1;
-    private int maxFontSizePx = -1;
-    private int minFontSizePx = -1;
+
+    private int maxFontSizeSp = -1;
+    private int minFontSizeSp = -1;
+
+    private String fontPath = null;
     private String sampleText = null;
 
 
@@ -40,8 +44,9 @@ public class AutoAdjustTextView extends TextView {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AutoAdjustTextView);
 
-        //m12 = a.getString(R.styleable.CustomDigitalClock_format12Hr);
-        //m24 = a.getString(R.styleable.CustomDigitalClock_format24Hr);
+        fontPath = a.getString(R.styleable.AutoAdjustTextView_fontPath);
+        minFontSizeSp = a.getInt(R.styleable.AutoAdjustTextView_minFontSizeSp, 8);
+        maxFontSizeSp = a.getInt(R.styleable.AutoAdjustTextView_maxFontSizeSp, 30);
 
         a.recycle();
 
@@ -49,6 +54,10 @@ public class AutoAdjustTextView extends TextView {
     }
 
     private void init(Context context) {
+        if (fontPath != null) {
+            Typeface typeface = Typeface.createFromAsset(context.getAssets(), fontPath);
+            setTypeface(typeface);
+        }
     }
 
     @Override
@@ -71,18 +80,18 @@ public class AutoAdjustTextView extends TextView {
         this.maxWidth = width;
     }
 
-    public void setMaxFontSizesInPx(float minSize, float maxSize) {
-        this.minFontSizePx = (int) minSize;
-        this.maxFontSizePx = (int) maxSize;
+    public void setMaxFontSizesInSp(float minSize, float maxSize) {
+        this.minFontSizeSp = (int) minSize;
+        this.maxFontSizeSp = (int) maxSize;
     }
 
     private void adjustTextSize() {
         if ( maxWidth == -1) return;
-        if ( maxFontSizePx == -1 || minFontSizePx == -1) return;
-        for(int size = minFontSizePx; size <= maxFontSizePx; size++) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        if ( maxFontSizeSp == -1 || minFontSizeSp == -1) return;
+        for(int size = minFontSizeSp; size <= maxFontSizeSp; size++) {
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
             if ( measureText() > maxWidth ) {
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 1);
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
                 break;
             }
         }
