@@ -322,7 +322,7 @@ public class NightDreamUI {
     }
 
     private void setupBackgroundImage() {
-        bgblack = new ColorDrawable(Color.parseColor("#000000"));
+        bgblack = new ColorDrawable(Color.BLACK);
         bgshape = bgblack;
         switch (settings.background_mode){
             case Settings.BACKGROUND_BLACK: {
@@ -344,6 +344,82 @@ public class NightDreamUI {
         } else {
             background_image.setImageDrawable(bgshape);
         }
+    }
+
+    public Drawable loadBackGroundImage() {
+        try{
+            Point display = utility.getDisplaySize();
+
+            Bitmap bgimage = loadBackgroundBitmap();
+
+            int nw = bgimage.getWidth();
+            int nh = bgimage.getHeight();
+            boolean scaling_needed =false;
+            if ( bgimage.getHeight() > display.y ){
+                nw = (int) ((display.y /(float) bgimage.getHeight()) * bgimage.getWidth());
+                nh = display.y;
+                scaling_needed = true;
+            }
+
+            if ( nw > display.x ){
+                nh = (int) ((display.x / (float) bgimage.getWidth()) * bgimage.getHeight());
+                nw = display.x;
+                scaling_needed = true;
+            }
+            if (scaling_needed){
+                bgimage = Bitmap.createScaledBitmap(bgimage,nw, nh, false);
+            }
+
+            return new BitmapDrawable(mContext.getResources(), bgimage);
+        } catch (OutOfMemoryError e){
+            Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
+                    Toast.LENGTH_LONG).show();
+            return new ColorDrawable(Color.BLACK);
+        } catch (Exception e) {
+            return new ColorDrawable(Color.BLACK);
+        }
+    }
+
+    private Bitmap loadBackgroundBitmap() throws Exception {
+        Bitmap bitmap = null;
+        Point display = utility.getDisplaySize();
+        if (settings.backgroundImageURI != "") {
+            // version for Android 4.4+ (KitKat)
+            Uri uri = Uri.parse(settings.backgroundImageURI);
+            ParcelFileDescriptor parcelFileDescriptor =
+                    mContext.getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+
+            // Calculate inSampleSize
+            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+
+                // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+            parcelFileDescriptor.close();
+            return bitmap;
+        } else
+        if (settings.backgroundImagePath() != "" ) {
+            // deprecated legacy version
+            String bgpath = settings.backgroundImagePath();
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(bgpath, options);
+
+            // Calculate inSampleSize
+            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            return bitmap = (BitmapFactory.decodeFile(bgpath, options));
+        }
+
+        return bitmap;
     }
 
     private int adjustAlpha(int color, float factor) {
@@ -555,18 +631,20 @@ public class NightDreamUI {
         }
 
         v = to_range(v, 0.05f, 1.f);
+        if (settings.background_mode == Settings.BACKGROUND_IMAGE) {
+            v = to_range(v, 0.5f, 1.f);
+        }
+
         brightness = to_range(brightness, 0.01f, 1.f);
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore a minimum value must be set to preserve the visibility of the clock.
-
-        //Log.d(TAG, "light value : " + String.valueOf(light_value));
-        //Log.d(TAG, "a : " + String.valueOf(v) + " | b : " + String.valueOf(brightness));
 
         setBrightness(brightness);
 
         if ( showcaseView == null ) {
             setAlpha(clockLayout, v, millis);
         }
+
         if ( alarmClock.isClickable() ) {
             setAlpha(alarmClock, v, millis);
             if ( showcaseView == null ) {
@@ -977,82 +1055,6 @@ public class NightDreamUI {
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
         mScaleDetector.onTouchEvent(e);
         return true;
-    }
-
-    public Drawable loadBackGroundImage() {
-        try{
-            Point display = utility.getDisplaySize();
-
-            Bitmap bgimage = loadBackgroundBitmap();
-
-            int nw = bgimage.getWidth();
-            int nh = bgimage.getHeight();
-            boolean scaling_needed =false;
-            if ( bgimage.getHeight() > display.y ){
-                nw = (int) ((display.y /(float) bgimage.getHeight()) * bgimage.getWidth());
-                nh = display.y;
-                scaling_needed = true;
-            }
-
-            if ( nw > display.x ){
-                nh = (int) ((display.x / (float) bgimage.getWidth()) * bgimage.getHeight());
-                nw = display.x;
-                scaling_needed = true;
-            }
-            if (scaling_needed){
-                bgimage = Bitmap.createScaledBitmap(bgimage,nw, nh, false);
-            }
-
-            return new BitmapDrawable(mContext.getResources(), bgimage);
-        } catch (OutOfMemoryError e){
-            Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
-                    Toast.LENGTH_LONG).show();
-            return new ColorDrawable(Color.parseColor("#000000"));
-        } catch (Exception e) {
-            return new ColorDrawable(Color.parseColor("#000000"));
-        }
-    }
-
-    private Bitmap loadBackgroundBitmap() throws Exception {
-        Bitmap bitmap = null;
-        Point display = utility.getDisplaySize();
-        if (settings.backgroundImageURI != "") {
-            // version for Android 4.4+ (KitKat)
-            Uri uri = Uri.parse(settings.backgroundImageURI);
-            ParcelFileDescriptor parcelFileDescriptor =
-                    mContext.getContentResolver().openFileDescriptor(uri, "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-
-
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
-
-            // Calculate inSampleSize
-            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
-
-                // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
-            parcelFileDescriptor.close();
-            return bitmap;
-        } else
-        if (settings.backgroundImagePath() != "" ) {
-            // deprecated legacy version
-            String bgpath = settings.backgroundImagePath();
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(bgpath, options);
-
-            // Calculate inSampleSize
-            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
-
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            return bitmap = (BitmapFactory.decodeFile(bgpath, options));
-        }
-
-        return bitmap;
     }
 
     private void checkForReviewRequest() {
