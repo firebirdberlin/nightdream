@@ -92,7 +92,8 @@ public class Settings {
     public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
-    public String timeFormat;
+    public String timeFormat12h;
+    public String timeFormat24h;
     public BatteryValue batteryReferenceValue;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
@@ -172,7 +173,8 @@ public class Settings {
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
-        timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
+        timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
+        timeFormat24h = settings.getString("timeFormat_24h", "kk:mm");
         weatherCityID = settings.getString("weatherCityID", "");
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
@@ -223,13 +225,6 @@ public class Settings {
         }
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return ((SimpleDateFormat)formatter).toLocalizedPattern();
-    }
-
-    private String getDefaultTimeFormat() {
-        if ( is24HourFormat() ) {
-            return "kk:mm";
-        }
-        return "h:mm";
     }
 
     public boolean is24HourFormat() {

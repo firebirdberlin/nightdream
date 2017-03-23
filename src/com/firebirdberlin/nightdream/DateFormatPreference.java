@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.os.Build;
 import android.os.Handler;
@@ -91,7 +92,7 @@ public class DateFormatPreference extends ListPreference {
             valueList.add("HH:mm");
         } else {
             valueList.add("h:mm");
-            valueList.add("h:mm");
+            valueList.add("hh:mm");
             valueList.add("K:mm");
             valueList.add("KK:mm");
         }
@@ -193,5 +194,25 @@ public class DateFormatPreference extends ListPreference {
                 initHourFormatType();
             }
         }
+    }
+
+    @Override
+    public void onDialogClosed(boolean positiveResult) {
+        super.onDialogClosed(positiveResult);
+        if (positiveResult && FORMAT_TYPE_HOUR.equals(formatType)) {
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putString(getTimeKey(), getValue());
+            editor.commit();
+        }
+    }
+
+    public String getTimeKey() {
+        if (FORMAT_TYPE_HOUR.equals(formatType)) {
+            return String.format("%s_%s",
+                                 super.getKey(),
+                                 (is24HourFormat()) ? "24h" : "12h");
+        }
+
+        return super.getKey();
     }
 }
