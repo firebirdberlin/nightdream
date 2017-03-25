@@ -72,6 +72,7 @@ public class Settings {
     public int background_mode = 1;
     public int clockColor;
     public int clockColorNight;
+    public int clockLayout;
     public int nightModeActivationMode;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
@@ -91,6 +92,8 @@ public class Settings {
     public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
+    public String timeFormat12h;
+    public String timeFormat24h;
     public BatteryValue batteryReferenceValue;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
@@ -137,6 +140,7 @@ public class Settings {
         final String defaultColorString = "#33B5E5";
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
+        clockLayout = Integer.parseInt(settings.getString("clockLayout", "0"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
         location_lat = settings.getFloat("location_lat", 0.f);
         location_lon = settings.getFloat("location_lon", 0.f);
@@ -169,6 +173,8 @@ public class Settings {
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
+        timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
+        timeFormat24h = settings.getString("timeFormat_24h", "kk:mm");
         weatherCityID = settings.getString("weatherCityID", "");
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
@@ -219,6 +225,10 @@ public class Settings {
         }
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return ((SimpleDateFormat)formatter).toLocalizedPattern();
+    }
+
+    public boolean is24HourFormat() {
+        return android.text.format.DateFormat.is24HourFormat(mContext);
     }
 
     public long getDateAsLong(int year, int month, int day) {

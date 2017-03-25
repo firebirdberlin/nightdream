@@ -3,39 +3,41 @@ package com.firebirdberlin.nightdream;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
-public class CustomDigitalClock extends TextView {
+public class CustomDigitalClock extends AutoAdjustTextView {
 
+    Context context = null;
+    TimeReceiver timeReceiver;
     Calendar mCalendar;
+    String mFormat;
     private String m12 = "h:mm aa";
     private String m24 = "kk:mm";
     private FormatChangeObserver mFormatChangeObserver;
 
-    private Runnable mTicker;
-    private Handler mHandler;
-
-    private boolean mTickerStopped = false;
-
-    String mFormat;
 
     public CustomDigitalClock(Context context) {
         super(context);
+        this.context = context;
         initClock(context);
     }
 
     public CustomDigitalClock(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomDigitalClock);
 
@@ -49,7 +51,6 @@ public class CustomDigitalClock extends TextView {
 
     private void initClock(Context context) {
         Resources r = context.getResources();
-
 
         mFormatChangeObserver = new FormatChangeObserver();
         getContext().getContentResolver().registerContentObserver(
@@ -73,30 +74,28 @@ public class CustomDigitalClock extends TextView {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        mTickerStopped = false;
-        super.onAttachedToWindow();
-        mHandler = new Handler();
-        /**
-         * requests a tick on the next hard-second boundary
-         */
-        mTicker = new Runnable() {
-                public void run() {
-                    if (mTickerStopped) return;
-                    updateTextView();
-
-                    long now = SystemClock.uptimeMillis();
-                    long next = now + (1000 - now % 1000);
-                    mHandler.postAtTime(mTicker, next);
-                }
-            };
-        mTicker.run();
+    public void onAttachedToWindow(){
+        setTimeTick();
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mTickerStopped = true;
+    public void onDetachedFromWindow(){
+        if (timeReceiver != null) {
+            context.unregisterReceiver(timeReceiver);
+            timeReceiver = null;
+        }
+    }
+
+    void setTimeTick() {
+        timeReceiver = new TimeReceiver();
+        context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+    }
+
+    class TimeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent arg1) {
+            updateTextView();
+        }
     }
 
     /**
@@ -128,11 +127,13 @@ public class CustomDigitalClock extends TextView {
     public void setFormat12Hour(String format) {
         this.m12 = format;
         setFormat();
+        updateTextView();
     }
 
     public void setFormat24Hour(String format) {
         this.m24 = format;
         setFormat();
+        updateTextView();
     }
 
 }

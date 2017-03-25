@@ -627,9 +627,20 @@ public class PreferencesFragment extends PreferenceFragment {
                 } else
                 if (key.equals("backgroundMode")) {
                     setupBackgroundImageControls(sharedPreferences);
+                } else
+                if (key.equals("clockLayout")) {
+                    resetScaleFactor(sharedPreferences);
                 }
             }
         };
+
+    private void resetScaleFactor(SharedPreferences sharedPreferences) {
+        SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+        prefEditor.putFloat("scaleClockLandscape", 1.5f);
+        prefEditor.putFloat("scaleClockPortrait", 1.f);
+        prefEditor.putFloat("scaleClock", 1.f);
+        prefEditor.commit();
+    }
 
     private void enablePreference(String key, boolean on) {
         Preference preference = (Preference) findPreference(key);

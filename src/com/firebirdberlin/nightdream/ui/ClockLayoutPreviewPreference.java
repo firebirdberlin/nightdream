@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
+import java.lang.Runnable;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -63,15 +65,19 @@ public class ClockLayoutPreviewPreference extends Preference {
     protected void updateView() {
         Settings settings = new Settings(getContext());
 
+        clockLayout.setLayout(settings.clockLayout);
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
+        clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
         clockLayout.showDate(settings.showDate);
-        clockLayout.showWeather(settings.showWeather);
+
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
+        clockLayout.showWeather(settings.showWeather);
+
         WeatherEntry entry = getWeatherEntry(settings);
         clockLayout.update(entry);
 
@@ -81,8 +87,9 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.updateLayout(size.x - preferenceView.getPaddingLeft()
                                         - preferenceView.getPaddingRight(),
                                  config);
-        clockLayout.invalidate();
 
+
+        clockLayout.invalidate();
     }
 
     private WeatherEntry getWeatherEntry(Settings settings) {

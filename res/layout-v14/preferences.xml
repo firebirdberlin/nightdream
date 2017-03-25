@@ -90,6 +90,14 @@
                     android:selectable="false"
                     />
 
+                <ListPreference
+                    android:title="@string/clock_layout"
+                    android:key="clockLayout"
+                    android:defaultValue="0"
+                    android:entries="@array/clockLayout"
+                    android:entryValues="@array/clockLayoutValues"/>
+
+
                 <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
                     android:key="colorSelection"
                     android:title="@string/colors"
@@ -106,6 +114,12 @@
                     android:dependency="showDate"
                     android:title="@string/date_format"
                     android:key="dateFormat"/>
+
+                <com.firebirdberlin.nightdream.DateFormatPreference
+                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    custom:formatType="time"
+                    android:title="@string/timeFormat"
+                    android:key="timeFormat"/>
 
                 <ListPreference
                     android:title="@string/typeface"

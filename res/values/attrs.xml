@@ -4,4 +4,12 @@
         <attr name="format12Hr" format="string"/>
         <attr name="format24Hr" format="string"/>
     </declare-styleable>
+    <declare-styleable name="AutoAdjustTextView">
+        <attr name="fontPath" format="string"/>
+        <attr name="minFontSizeSp" format="integer"/>
+        <attr name="maxFontSizeSp" format="integer"/>
+    </declare-styleable>
+    <declare-styleable name="DateFormatPreference">
+        <attr name="formatType" format="string"/>
+    </declare-styleable>
 </resources>

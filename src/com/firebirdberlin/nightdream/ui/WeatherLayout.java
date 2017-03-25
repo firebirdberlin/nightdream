@@ -1,11 +1,10 @@
 package com.firebirdberlin.nightdream.ui;
 
 
-import java.lang.Math;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +16,19 @@ import com.firebirdberlin.nightdream.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
 
+    private static final String TAG = "NightDream.WeatherLayout";
     private Context context = null;
     private TextView iconText = null;
     private TextView iconWind = null;
     private TextView temperatureText = null;
     private TextView windText = null;
+    private boolean showTemperature = false;
+    private boolean showWindSpeed = false;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
+    private int maxWidth = -1;
+    private int minFontSizePx = -1;
+    private int maxFontSizePx = -1;
 
     public WeatherLayout(Context context) {
         super(context);
@@ -45,15 +50,26 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTemperature(boolean on, int unit) {
+        this.showTemperature = on;
         this.temperatureUnit = unit;
         temperatureText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
     public void setWindSpeed(boolean on, int unit) {
+        this.showWindSpeed = on;
         this.speedUnit = unit;
 
         iconWind.setVisibility( (on) ? View.VISIBLE : View.GONE );
         windText.setVisibility( (on) ? View.VISIBLE : View.GONE );
+    }
+
+    public void setMaxWidth(int width) {
+        this.maxWidth = width;
+    }
+
+    public void setMaxFontSizesInPx(float minSize, float maxSize) {
+        this.minFontSizePx = (int) minSize;
+        this.maxFontSizePx = (int) maxSize;
     }
 
     @Override
@@ -118,6 +134,7 @@ public class WeatherLayout extends LinearLayout {
             iconWind.setText("F");
             windText.setText(formatWindText(entry));
 
+            adjustTextSize();
             temperatureText.invalidate();
             windText.invalidate();
             iconText.invalidate();
@@ -125,6 +142,15 @@ public class WeatherLayout extends LinearLayout {
         } else {
             clear();
         }
+    }
+
+    public void update() {
+        if (iconText == null || temperatureText == null) return;
+        adjustTextSize();
+        temperatureText.invalidate();
+        windText.invalidate();
+        iconText.invalidate();
+        iconWind.invalidate();
     }
 
     private String iconToText(String code) {
@@ -187,4 +213,34 @@ public class WeatherLayout extends LinearLayout {
         return mps  * 3.6;
     }
 
+    private void adjustTextSize() {
+        if ( maxWidth == -1) return;
+        if ( maxFontSizePx == -1 || minFontSizePx == -1) return;
+        for(int size = minFontSizePx; size <= maxFontSizePx; size++) {
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            if ( measureText() > maxWidth ) {
+                setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 1);
+                break;
+            }
+        }
+    }
+
+    public int measureText() {
+        int textSize = 0;
+        textSize += measureText(iconText);
+        if ( showTemperature ) {
+            textSize += measureText(temperatureText);
+        }
+        if ( showWindSpeed ) {
+            textSize += measureText(iconWind);
+            textSize += measureText(windText);
+        }
+        Log.v(TAG, String.format("%d < %d", textSize, maxWidth));
+        return textSize;
+    }
+
+    private float measureText(TextView view) {
+        String text = view.getText().toString();
+        return view.getPaint().measureText(text);
+    }
 }

@@ -10,44 +10,47 @@
     <LinearLayout
         android:id="@+id/time_layout"
         android:orientation="horizontal"
+        android:padding="0px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
         <com.firebirdberlin.nightdream.CustomDigitalClock
-            xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:clickable="true"
+            android:ellipsize="none"
             android:id="@+id/clock"
-            android:layout_width="wrap_content"
+            android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:translationX="0sp"
-            android:translationY="0sp"
-            android:fontFamily="sans-serif"
+            android:layout_width="wrap_content"
+            android:padding="0px"
+            android:singleLine="true"
+            android:text="00:00"
             android:textColor="#C2C2C2"
             android:textSize="50sp"
-            android:clickable="true"
-            android:singleLine="true"
-            android:ellipsize="none"
+            android:translationX="0sp"
+            android:translationY="0sp"
+            custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="h:mm"
             custom:format24Hr="kk:mm"/>
         <com.firebirdberlin.nightdream.CustomDigitalClock
-            xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:clickable="true"
-            android:fontFamily="sans-serif"
-            custom:format12Hr="a"
-            custom:format24Hr=""
+            android:ellipsize="none"
             android:id="@+id/clock_ampm"
             android:layout_gravity="top"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:padding="0px"
+            android:singleLine="true"
             android:textColor="#C2C2C2"
             android:textSize="20sp"
-            android:singleLine="true"
-            android:ellipsize="none"
+            custom:fontPath="fonts/roboto_thin.ttf"
+            custom:format12Hr="a"
+            custom:format24Hr=""
             />
     </LinearLayout>
 <!--
-        divider
+    divider
 -->
     <View
         android:id="@+id/divider"
@@ -55,33 +58,30 @@
         android:layout_height="2dip"
         android:background="#C2C2C2" />
 <!--
-        Date
+    Date
 -->
     <LinearLayout
         android:id="@+id/info"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:ellipsize="none"
             android:id="@+id/date"
-            android:layout_width="wrap_content"
+            android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:translationX="0sp"
-            android:translationY="0sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="bold"
-            android:textColor="#C2C2C2"
-            android:textSize="30sp"
+            android:layout_width="wrap_content"
             android:paddingTop="5sp"
             android:singleLine="true"
-            android:ellipsize="end"
+            android:textColor="#C2C2C2"
+            android:textStyle="bold"
+            android:text="Sun, 30. October 2016"
+            custom:fontPath="fonts/roboto_light.ttf"
             custom:format12Hr="dd. MMMM yyyy"
-            custom:format24Hr="dd. MMMM yyyy"
-            android:layout_gravity="center"
-            />
+            custom:format24Hr="dd. MMMM yyyy"/>
 
         <com.firebirdberlin.nightdream.ui.WeatherLayout
             android:id="@+id/weatherLayout"
