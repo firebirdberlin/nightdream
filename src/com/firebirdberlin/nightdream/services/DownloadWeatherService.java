@@ -109,7 +109,8 @@ public class DownloadWeatherService extends IntentService {
         entry.windSpeed = getValue(jsonWind, "speed", 0.);
         entry.windDirection = getValue(jsonWind, "deg", 0);
 
-        if ( jsonWeather.length() > 0 ) {
+        entry.weatherIcon = "";
+        if ( jsonWeather != null && jsonWeather.length() > 0 ) {
             JSONObject weatherObj = getJSONObject(jsonWeather, 0);
             entry.weatherIcon = getValue(weatherObj, "icon", "");
         }
