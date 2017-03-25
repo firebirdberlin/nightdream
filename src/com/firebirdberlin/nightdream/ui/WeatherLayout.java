@@ -235,7 +235,6 @@ public class WeatherLayout extends LinearLayout {
             textSize += measureText(iconWind);
             textSize += measureText(windText);
         }
-        Log.v(TAG, String.format("%d < %d", textSize, maxWidth));
         return textSize;
     }
 
