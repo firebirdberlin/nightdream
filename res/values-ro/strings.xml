@@ -21,6 +21,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarm">Alarmă</string>
 <string name="alarmFadeIn">Volumul crescendo</string>
 <string name="alarmVolume">Volum</string>
+<string name="allow_screen_off_summary">Inchide ecranul pe timpul noptii</string>
 <string name="allow_screen_off">Stingere ecran</string>
 <string name="ambient_noise">Detectare zgomot de fond</string>
 <string name="ambient_noise_summary">Ar trebui ca zgomotul de fond sa previna ca modul de noapte sa fie activat?</string>
@@ -64,13 +65,19 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">Dock maşină</string>
 <string name="handle_power_desk">Dock birou</string>
 <string name="handle_power_disconnection">Oprire automată</string>
+<string name="handle_power_disconnection_summary">Inchide aplicatia la deconectarea sursei de curen</string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">Încărcare wireless</string>
 <string name="hide_background_image_in_night_mode">Ascunde</string>
 <string name="hide_background_image_in_night_mode_summary">Ascunde imaginea de fundal în modul noapte</string>
+<string name="hour">ora</string>
 <string name="location_time">Timp - locatie</string>
+<string name="message_no_data_connection">Fara conexiune</string>
+<string name="message_mobile_data_connection">Date mobil</string>
+<string name="minute">min</string>
 <string name="mute_ringer">Sonerie muta</string>
 <string name="night_mode">Mod noapte</string>
+<string name="night_mode_activation_mode">Modul Activare</string>
 <string name="night_mode_activation_auto">Automat</string>
 <string name="noise_sensitivity">Sensibilitate microfon</string>
 <string name="notification_alarm">Apasă pentru a oprire alarmă</string>
@@ -86,6 +93,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_no_search_results">Nu s-au găsit înregistrări</string>
 <string name="radio_stream_query_hint">Cauta cuvant</string>
 <string name="radio_stream">Canale radio</string>
+<string name="radio_stream_search">Cautare</string>
 <string name="radio_stream_start">Start/Stop canal radio</string>
 <string name="radio_stream_url">URL canal radio</string>
 <string name="reactivate_on_ambient_light_value">Limita iluminării</string>
@@ -97,7 +105,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="reset_to_defaults">Revenire la setările inițiale</string>
 <string name="restless_mode">Misca ceasul împrejur</string>
 <string name="review_request">Te rog da nota aplicației. Merci!</string>
-<string name="screen_orientation_reverse_landscape">Ilfov</string>
+<string name="screen_orientation_landscape">Rasturnat</string>
+<string name="screen_orientation_reverse_landscape">Mod Oglinda</string>
 <string name="screenOrientation">Orientarea ecranului</string>
 <string name="select_alarm_sound">Alege sunet de alarma</string>
 <string name="set_alarm">Setează alarma</string>
@@ -106,6 +115,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_weather">Arata vremea locala</string>
 <string name="show_wind_speed">Viteza vântului</string>
 <string name="speedUnit">Unitate viteza vântului</string>
+<string name="titlePrivacyPolicy">Licenta Politica</string>
 <string name="temperatureUnit">Unitate temperatura</string>
 <string name="translations">Traduceri</string>
 <string name="typeface_7_segment">LED 7-segmente</string>
@@ -117,6 +127,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface">Fonturi</string>
 <string name="use_internal_alarm">Alarme rapide</string>
 <string name="weather_calculation_time">Timpul de calcul al vremii</string>
+<string name="weather_city_id_title">Cauta Locatie</string>
 <string name="weather_info_title">Informatii</string>
 <string name="weather">Vremea</string>
 <string name="welcome_screen_text1">Bine ai venit în aplicația ceas de noapte. Aceasta aplicație îți arată ora în timp ce telefonul mobil se încarcă</string>

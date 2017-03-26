@@ -45,12 +45,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import com.firebirdberlin.nightdream.AlarmClock;
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
@@ -108,7 +110,7 @@ public class NightDreamUI {
     private mAudioManager AudioManage = null;
     private ScaleGestureDetector mScaleDetector = null;
     private GestureDetector mGestureDetector = null;
-    private ReceiverWeatherUpdated receiverWeatherUpdated = null;
+    private NightDreamBroadcastReceiver broadcastReceiver = null;
 
     private ShowcaseView showcaseView = null;
 
@@ -190,7 +192,7 @@ public class NightDreamUI {
         controlsVisible = true;
 
         EventBus.getDefault().register(this);
-        receiverWeatherUpdated = registerReceiverWeatherUpdated();
+        broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
 
         brightnessProgress.setVisibility(View.INVISIBLE);
@@ -206,7 +208,7 @@ public class NightDreamUI {
             soundmeter = null;
         }
 
-        showShowcase();
+        setupShowcase();
     }
 
     private void initLightSensor() {
@@ -473,7 +475,7 @@ public class NightDreamUI {
         if ( lightSensorEventListener != null ) {
             lightSensorEventListener.unregister();
         }
-        unregister(receiverWeatherUpdated);
+        unregister(broadcastReceiver);
     }
 
     public void onStop() {
@@ -1105,19 +1107,31 @@ public class NightDreamUI {
         }
     }
 
-    class ReceiverWeatherUpdated extends BroadcastReceiver {
+    class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.v(TAG, "Weather data updated");
-            settings.weatherEntry = settings.getWeatherEntry();
-            clockLayout.update(settings.weatherEntry);
+            String action = intent.getAction();
+            if ( OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action) ) {
+                Log.v(TAG, "Weather data updated");
+                settings.weatherEntry = settings.getWeatherEntry();
+                clockLayout.update(settings.weatherEntry);
+            } else
+            if ( Config.ACTION_ALARM_SET.equals(action) ) {
+                if (showcaseView != null) showcaseView.hide();
+                setupShowcaseForAlarmDeletion();
+            } else
+            if ( Config.ACTION_ALARM_DELETED.equals(action) ) {
+                if (showcaseView != null) showcaseView.hide();
+            }
         }
     }
 
-    private ReceiverWeatherUpdated registerReceiverWeatherUpdated() {
-        ReceiverWeatherUpdated receiver = new ReceiverWeatherUpdated();
+    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        filter.addAction(Config.ACTION_ALARM_SET);
+        filter.addAction(Config.ACTION_ALARM_DELETED);
         mContext.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -1141,8 +1155,10 @@ public class NightDreamUI {
     }
 
     static int showcaseCounter = 0;
-
-    private void showShowcase() {
+    static final int SHOWCASE_ID_ONBOARDING = 1;
+    static final int SHOWCASE_ID_ALARMS = 2;
+    static final int SHOWCASE_ID_ALARM_DELETION = 3;
+    private void setupShowcase() {
         // daydreams cannot be cast to an activity
         if ( showcaseView != null || daydreamMode) {
             return;
@@ -1170,20 +1186,13 @@ public class NightDreamUI {
             .blockAllTouches()
             .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
             .setContentText(mContext.getString(R.string.welcome_screen_text1))
+            .setShowcaseEventListener(showcaseViewEventListener)
             .setOnClickListener(showCaseOnClickListener)
-            .singleShot(1)
+            .singleShot(SHOWCASE_ID_ONBOARDING)
             .build();
-
-        showcaseView.show();
-
-        if (showcaseView.isShowing()) {
-            removeCallbacks(moveAround);
-            removeCallbacks(hideAlarmClock);
-            setAlpha(clockLayout, 0.2f, 0);
-            setAlpha(alarmTime, 0.2f, 0);
-        } else {
-            showcaseView = null;
-        }
+        showShowcase();
+        setupShowcaseForQuickAlarms();
+        setupShowcaseForAlarmDeletion();
     }
 
     View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
@@ -1206,7 +1215,8 @@ public class NightDreamUI {
                 showcaseView.setShowcase(new ViewTarget(menuIcon), true);
                 showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title2));
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text2));
-                showcaseView.setBlockAllTouches(true);
+                showcaseView.setBlockAllTouches(false);
+                showcaseView.setBlocksTouches(true);
                 break;
             case 2:
                 Point size = utility.getDisplaySize();
@@ -1220,18 +1230,97 @@ public class NightDreamUI {
                 showcaseView.setShowcase(new ViewTarget(clockLayout), true);
                 showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text4));
-                showcaseView.setBlockAllTouches(true);
+                showcaseView.setBlockAllTouches(false);
+                showcaseView.setBlocksTouches(true);
+                //showcaseView.setBlockAllTouches(true);
                 break;
             default:
                 showcaseView.hide();
-                showcaseView = null;
-                handler.postDelayed(moveAround, 30000);
-                handler.postDelayed(hideAlarmClock, 20000);
-                brightnessProgress.setVisibility(View.INVISIBLE);
-                updateBatteryValue();
-                updateBatteryView();
-                showAlarmClock();
                 break;
         }
     }
+
+    private void setupShowcaseForQuickAlarms() {
+        if ( showcaseView != null ) return;
+
+        if (settings.useInternalAlarm) {
+            Point size = utility.getDisplaySize();
+            showcaseView = new ShowcaseView.Builder((Activity) mContext)
+                .setTarget(new PointTarget(0, size.y))
+                .hideOnTouchOutside()
+                .setContentTitle(mContext.getString(R.string.use_internal_alarm))
+                .setContentText(mContext.getString(R.string.showcase_text_set_alarms))
+                .setShowcaseEventListener(showcaseViewEventListener)
+                .singleShot(SHOWCASE_ID_ALARMS)
+                .build();
+            showcaseView.hideButton();
+            showShowcase();
+        }
+
+    }
+
+    private void setupShowcaseForAlarmDeletion() {
+        if ( showcaseView != null ) return;
+
+        if ( alarmClock.isAlarmSet() ) {
+            Point size = utility.getDisplaySize();
+            showcaseView = new ShowcaseView.Builder((Activity) mContext)
+                .setTarget(new PointTarget(size.x, size.y))
+                .hideOnTouchOutside()
+                .setContentTitle(mContext.getString(R.string.use_internal_alarm))
+                .setContentText(mContext.getString(R.string.showcase_text_delete_alarms))
+                .setShowcaseEventListener(showcaseViewEventListener)
+                .singleShot(SHOWCASE_ID_ALARM_DELETION)
+                .build();
+            showcaseView.hideButton();
+            showShowcase();
+        }
+
+    }
+
+    private void showShowcase() {
+        showcaseView.show();
+        if ( !showcaseView.isShowing()) {
+            showcaseView = null;
+        }
+    }
+
+    OnShowcaseEventListener showcaseViewEventListener = new OnShowcaseEventListener() {
+        @Override
+        public void onShowcaseViewHide(ShowcaseView view) {
+            Log.i(TAG, "onShowcaseViewHide()");
+
+        }
+
+        @Override
+        public void onShowcaseViewDidHide(ShowcaseView view) {
+            Log.i(TAG, "onShowcaseViewDidHide()");
+            showcaseView = null;
+            handler.postDelayed(moveAround, 30000);
+            handler.postDelayed(hideAlarmClock, 20000);
+            brightnessProgress.setVisibility(View.INVISIBLE);
+            updateBatteryValue();
+            updateBatteryView();
+            showAlarmClock();
+
+            setupShowcaseForQuickAlarms();
+            setupShowcaseForAlarmDeletion();
+        }
+
+        @Override
+        public void onShowcaseViewShow(ShowcaseView view) {
+            Log.i(TAG, "onShowcaseViewShow()");
+            removeCallbacks(moveAround);
+            removeCallbacks(hideAlarmClock);
+            setAlpha(clockLayout, 0.2f, 0);
+            setAlpha(alarmTime, 0.2f, 0);
+        }
+
+        @Override
+        public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+            Log.i(TAG, "onShowcaseViewTouchBlocked()");
+
+        }
+    };
+
 }

@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmService;
@@ -157,6 +159,7 @@ public class AlarmClock extends View {
                 if (FingerDownDeleteAlarm == true) {
                     FingerDownDeleteAlarm = false;
                     cancelAlarm();
+                    ctx.sendBroadcast( new Intent(Config.ACTION_ALARM_DELETED) );
                     this.invalidate();
                     return true;
                 }
@@ -323,6 +326,7 @@ public class AlarmClock extends View {
         SimpleTime alarmTime = new SimpleTime(hour, min);
         settings.setAlarmTime(alarmTime.getMillis());
         WakeUpReceiver.schedule(ctx);
+        ctx.sendBroadcast( new Intent(Config.ACTION_ALARM_SET) );
     }
 
     public void cancelAlarm(){
