@@ -20,18 +20,24 @@ public class TimeRange {
     }
 
     public TimeRange(Calendar start, Calendar end){
-        this.start = fixDate(start);
-        this.end = fixDate(end);
+        this.start = start;
+        this.end = end;
+        this.start = fixDate(this.start);
+        this.end = fixDate(this.end);
     }
 
     private Calendar fixDate(Calendar cal) {
         Calendar now = Calendar.getInstance();
+        // we're only interested in the time, the date shall be today.
+        cal.set(Calendar.YEAR, now.get(Calendar.YEAR));
+        cal.set(Calendar.MONTH, now.get(Calendar.MONTH));
+        cal.set(Calendar.DAY_OF_MONTH, now.get(Calendar.DAY_OF_MONTH));
+
         if ( cal.before(now) ) {
             cal.add(Calendar.DATE, 1);
         }
         return cal;
     }
-
 
     public boolean inRange() {
         Calendar now = Calendar.getInstance();
@@ -50,11 +56,7 @@ public class TimeRange {
     public Calendar getCalendar(long time) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(time);
-        Calendar now = Calendar.getInstance();
-        if ( cal.before(now) ) {
-            cal.add(Calendar.DATE, 1);
-        }
-        return cal;
+        return fixDate(cal);
     }
 
     public Calendar getNextEvent() {

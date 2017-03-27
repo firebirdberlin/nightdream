@@ -191,10 +191,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         TimeRange timerange = new TimeRange(start, end);
         int new_mode = ( timerange.inRange() ) ? 0 : 2;
-        if ( lightSensor == null ) {
-            last_ambient = ( new_mode == 2 ) ? 400.f : mySettings.minIlluminance;
-        }
-        setMode(new_mode);
+        toggleNightMode(new_mode);
         NightModeReceiver.schedule(this, timerange);
     }
 
@@ -333,12 +330,16 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public void onNightModeClick(View v) {
         if ( lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
-            if ( lightSensor == null ) {
-                last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
-            }
             int new_mode = ( mode == 0) ? 2 : 0;
-            setMode(new_mode);
+            toggleNightMode(new_mode);
         }
+    }
+
+    private void toggleNightMode(int new_mode) {
+        if ( lightSensor == null ) {
+            last_ambient = ( new_mode == 2 ) ? 400.f : mySettings.minIlluminance;
+        }
+        setMode(new_mode);
     }
 
     private void toggleRadioStreamState() {

@@ -616,6 +616,8 @@ public class PreferencesFragment extends PreferenceFragment {
         Log.i(TAG, "setupNightModePreferences " + String.valueOf(nightModeActivationMode));
         enablePreference("nightmode_timerange",
                          nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED);
+        enablePreference("ambientNoiseDetection",
+                         nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC);
     }
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
