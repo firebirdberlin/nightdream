@@ -42,9 +42,9 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
+import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener,
@@ -178,6 +178,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         setupNightMode();
         setupRadioStreamUI();
+    }
+
+    public void onSwitchNightMode() {
+        setupNightMode();
     }
 
     void setupNightMode() {
@@ -483,11 +487,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             setupRadioStreamUI();
         }
     }
-
-    public void onSwitchNightMode() {
-        setupNightMode();
-    }
-
 
     public void setKeepScreenOn(boolean keepScreenOn) {
         if( keepScreenOn ) {
