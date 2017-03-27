@@ -37,8 +37,9 @@ import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
-import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -48,6 +49,7 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 public class NightDreamActivity extends Activity implements View.OnTouchListener {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
+    private static int PENDING_INTENT_SWITCH_MODES = 2;
     final private Handler handler = new Handler();
     AlarmClock alarmClock;
     ImageView background_image;
@@ -63,6 +65,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver = null;
+    private ReceiverSwitchNightMode nightModeReceiver = null;
     private ReceiverShutDown shutDownReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
     private PowerManager pm;
@@ -132,8 +135,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         scheduleShutdown();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
+        nightModeReceiver = registerNightModeReceiver();
         shutDownReceiver = registerPowerDisconnectionReceiver();
         receiverRadioStream = registerReceiverRadioStream();
+
 
         if (Build.VERSION.SDK_INT >= 18){
             // ask for active notifications
@@ -171,7 +176,22 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             nightDreamUI.showAlarmClock();
         }
 
+        setupNightMode();
         setupRadioStreamUI();
+    }
+
+    void setupNightMode() {
+        if (mySettings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_SCHEDULED) return;
+        Calendar start = new SimpleTime(mySettings.nightModeTimeRangeStart).getCalendar();
+        Calendar end = new SimpleTime(mySettings.nightModeTimeRangeEnd).getCalendar();
+
+        TimeRange timerange = new TimeRange(start, end);
+        int new_mode = ( timerange.inRange() ) ? 0 : 2;
+        if ( lightSensor == null ) {
+            last_ambient = ( new_mode == 2 ) ? 400.f : mySettings.minIlluminance;
+        }
+        setMode(new_mode);
+        scheduleNightMode(timerange);
     }
 
     void setupRadioStreamUI() {
@@ -203,7 +223,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         handler.removeCallbacks(finishApp);
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
+        cancelScheduledNightMode();
         unregister(nReceiver);
+        unregister(nightModeReceiver);
         unregister(shutDownReceiver);
         unregister(receiverRadioStream);
 
@@ -253,6 +275,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         //audiomanage.setRingerMode(currentRingerMode);
 
         utility  = null;
+        nightModeReceiver = null;
         shutDownReceiver = null;
         nReceiver  = null;
     }
@@ -260,6 +283,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private NotificationReceiver registerNotificationReceiver() {
         NotificationReceiver receiver = new NotificationReceiver(getWindow());
         IntentFilter filter = new IntentFilter(Config.ACTION_NOTIFICATION_LISTENER);
+        registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    private ReceiverSwitchNightMode registerNightModeReceiver() {
+        ReceiverSwitchNightMode receiver = new ReceiverSwitchNightMode();
+        IntentFilter filter = new IntentFilter(Config.ACTION_SWITCH_NIGHT_MODE);
         registerReceiver(receiver, filter);
         return receiver;
     }
@@ -461,6 +491,14 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
     }
 
+    class ReceiverSwitchNightMode extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setupNightMode();
+        }
+
+    }
+
     public void setKeepScreenOn(boolean keepScreenOn) {
         if( keepScreenOn ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -523,6 +561,31 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
 
     }
+
+    private void scheduleNightMode(TimeRange timerange) {
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = getSwitchNightModeIntent();
+        alarmManager.cancel(pendingIntent);
+
+        Calendar time = timerange.getNextEvent();
+        if (Build.VERSION.SDK_INT >= 19) {
+            alarmManager.setExact(AlarmManager.RTC, time.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC, time.getTimeInMillis(), pendingIntent);
+        }
+    }
+
+    private void cancelScheduledNightMode() {
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = getSwitchNightModeIntent();
+        alarmManager.cancel(pendingIntent);
+    }
+
+    private PendingIntent getSwitchNightModeIntent() {
+        Intent intent = new Intent(Config.ACTION_SWITCH_NIGHT_MODE);
+        return PendingIntent.getBroadcast(this, PENDING_INTENT_SWITCH_MODES, intent, 0);
+    }
+
 
     @SuppressWarnings("deprecation")
     private void deprecatedSetAlarm(Calendar calendar, PendingIntent pendingIntent) {

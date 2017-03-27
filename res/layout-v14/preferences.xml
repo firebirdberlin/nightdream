@@ -212,6 +212,16 @@
                     android:entryValues="@array/nightModeActivationModes"
                     android:entries="@array/nightModeActivationValues"/>
 
+                <de.firebirdberlin.preference.TimeRangePreference
+                    xmlns:timerange="timerange"
+                    android:key="nightmode_timerange"
+                    android:enabled="false"
+                    android:defaultValue="0"
+                    timerange:start_text="@string/night_mode_timerange_label_start"
+                    timerange:end_text="@string/night_mode_timerange_label_end"
+                    timerange:key_suffix_start="_start"
+                    timerange:key_suffix_end="_end" />
+
                 <CheckBoxPreference
                     android:key="Night.muteRinger"
                     android:title="@string/mute_ringer"

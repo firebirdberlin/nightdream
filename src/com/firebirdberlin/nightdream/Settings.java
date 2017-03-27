@@ -32,6 +32,7 @@ public class Settings {
     public final static int BACKGROUND_IMAGE = 3;
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
+    public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
 
     Context mContext;
     SharedPreferences settings;
@@ -83,6 +84,8 @@ public class Settings {
     public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     public long autostartTimeRangeStart = -1L;
     public long autostartTimeRangeEnd = -1L;
+    public long nightModeTimeRangeStart = -1L;
+    public long nightModeTimeRangeEnd = -1L;
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
     public String AlarmToneUri = "";
@@ -149,6 +152,8 @@ public class Settings {
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
+        nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", nightModeTimeRangeStart);
+        nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", nightModeTimeRangeEnd);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         radioStreamURL = settings.getString("radioStreamURL", "");
         radioStreamURLUI = settings.getString("radioStreamURLUI", "");
