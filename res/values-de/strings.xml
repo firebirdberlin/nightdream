@@ -81,6 +81,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode_activation_mode">Aktivierungsmodus</string>
 <string name="night_mode_activation_manual">manuell</string>
 <string name="night_mode_activation_auto">automatisch</string>
+<string name="night_mode_activation_scheduled">nach Zeitplan</string>
+<string name="night_mode_timerange_title">Nachtzeit</string>
+<string name="night_mode_timerange_label_end">Endzeit</string>
+<string name="night_mode_timerange_label_start">Startzeit</string>
 <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
 <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
 <string name="other_apps">Andere Apps</string>
