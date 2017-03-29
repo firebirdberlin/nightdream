@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.DateFormat;
@@ -86,6 +87,7 @@ public class AutoAdjustTextView extends TextView {
     }
 
     private void adjustTextSize() {
+        if (Build.VERSION.SDK_INT < 14) return;
         if ( maxWidth == -1) return;
         if ( maxFontSizeSp == -1 || minFontSizeSp == -1) return;
         for(int size = minFontSizeSp; size <= maxFontSizeSp; size++) {

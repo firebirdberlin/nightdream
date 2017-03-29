@@ -177,38 +177,43 @@ public class NightDreamUI {
 
     public void onResume() {
 
-        if (Build.VERSION.SDK_INT >= 12){
-            handler.postDelayed(zoomIn, 500);
-        }
         hideSystemUI();
         settings.reload();
 
         setScreenOrientation(settings.screenOrientation);
-        setupClockLayout();
-
-        updateWeatherData();
+        initSidePanel();
         updateBatteryValue();
         updateBatteryView();
-        controlsVisible = true;
+        setupScreenAnimation();
+        clockLayoutContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= 12){
+                    handler.postDelayed(zoomIn, 500);
+                }
+                setupClockLayout();
+                setColor();
+                updateWeatherData();
+                controlsVisible = true;
+
+                brightnessProgress.setVisibility(View.INVISIBLE);
+                setupBackgroundImage();
+
+                showAlarmClock();
+                setupShowcase();
+            }
+        });
+
 
         EventBus.getDefault().register(this);
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
-
-        brightnessProgress.setVisibility(View.INVISIBLE);
-        setColor();
-        setupBackgroundImage();
-        setupScreenAnimation();
-
-        showAlarmClock();
-
         if (settings.useAmbientNoiseDetection()){
             soundmeter = new SoundMeter(isDebuggable);
         } else {
             soundmeter = null;
         }
 
-        setupShowcase();
     }
 
     private void initLightSensor() {
@@ -245,7 +250,6 @@ public class NightDreamUI {
     }
 
     private void setupClockLayout() {
-        initSidePanel();
 
         if ( !settings.restless_mode ) {
             centerClockLayout();
@@ -314,8 +318,13 @@ public class NightDreamUI {
     }
 
     private void setNightModeIcon() {
+        if (Build.VERSION.SDK_INT < 14) {
+            nightModeIcon.setVisibility(View.GONE);
+            return;
+        }
+
         if (settings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL
-                || Utility.getLightSensor(mContext) == null) {
+                || Utility.getLightSensor(mContext) == null ) {
             nightModeIcon.setVisibility(View.VISIBLE);
         } else {
             nightModeIcon.setVisibility(View.GONE);

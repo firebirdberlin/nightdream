@@ -37,15 +37,18 @@ import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
-import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
+import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
+import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 
-public class NightDreamActivity extends Activity implements View.OnTouchListener {
+public class NightDreamActivity extends Activity implements View.OnTouchListener,
+                                                            NightModeReceiver.Event {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
@@ -63,6 +66,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private NightDreamUI nightDreamUI = null;
     private Utility utility;
     private NotificationReceiver nReceiver = null;
+    private NightModeReceiver nightModeReceiver = null;
     private ReceiverShutDown shutDownReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
     private PowerManager pm;
@@ -132,6 +136,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         scheduleShutdown();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
+        nightModeReceiver = NightModeReceiver.register(this, this);
         shutDownReceiver = registerPowerDisconnectionReceiver();
         receiverRadioStream = registerReceiverRadioStream();
 
@@ -171,7 +176,23 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             nightDreamUI.showAlarmClock();
         }
 
+        setupNightMode();
         setupRadioStreamUI();
+    }
+
+    public void onSwitchNightMode() {
+        setupNightMode();
+    }
+
+    void setupNightMode() {
+        if (mySettings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_SCHEDULED) return;
+        Calendar start = new SimpleTime(mySettings.nightModeTimeRangeStart).getCalendar();
+        Calendar end = new SimpleTime(mySettings.nightModeTimeRangeEnd).getCalendar();
+
+        TimeRange timerange = new TimeRange(start, end);
+        int new_mode = ( timerange.inRange() ) ? 0 : 2;
+        toggleNightMode(new_mode);
+        NightModeReceiver.schedule(this, timerange);
     }
 
     void setupRadioStreamUI() {
@@ -203,7 +224,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         handler.removeCallbacks(finishApp);
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
+        NightModeReceiver.cancel(this);
         unregister(nReceiver);
+        unregister(nightModeReceiver);
         unregister(shutDownReceiver);
         unregister(receiverRadioStream);
 
@@ -253,6 +276,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         //audiomanage.setRingerMode(currentRingerMode);
 
         utility  = null;
+        nightModeReceiver = null;
         shutDownReceiver = null;
         nReceiver  = null;
     }
@@ -306,12 +330,16 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public void onNightModeClick(View v) {
         if ( lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {
-            if ( lightSensor == null ) {
-                last_ambient = ( mode == 0 ) ? 400.f : mySettings.minIlluminance;
-            }
             int new_mode = ( mode == 0) ? 2 : 0;
-            setMode(new_mode);
+            toggleNightMode(new_mode);
         }
+    }
+
+    private void toggleNightMode(int new_mode) {
+        if ( lightSensor == null ) {
+            last_ambient = ( new_mode == 2 ) ? 400.f : mySettings.minIlluminance;
+        }
+        setMode(new_mode);
     }
 
     private void toggleRadioStreamState() {

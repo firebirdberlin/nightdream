@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="customBackgroundColor">#000000</color>
     <style name="PreferencesTheme">
     </style>
 
     <style name="DialogTheme" parent="android:Theme.Dialog">
+    </style>
+    <style name="ActivityTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@color/customBackgroundColor</item>
     </style>
 </resources>

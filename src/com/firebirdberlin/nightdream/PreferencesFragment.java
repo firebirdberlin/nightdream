@@ -263,6 +263,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
         setupBrightnessControls(prefs);
         setupBackgroundImageControls(prefs);
+        setupNightModePreferences(prefs);
 
         Preference goToSettings = (Preference) findPreference("startNotificationService");
         goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -610,6 +611,15 @@ public class PreferencesFragment extends PreferenceFragment {
         enablePreference("hideBackgroundImage", on);
     }
 
+    private void setupNightModePreferences(SharedPreferences prefs) {
+        int nightModeActivationMode = Integer.parseInt(prefs.getString("nightModeActivationMode", "1"));
+        Log.i(TAG, "setupNightModePreferences " + String.valueOf(nightModeActivationMode));
+        enablePreference("nightmode_timerange",
+                         nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED);
+        enablePreference("ambientNoiseDetection",
+                         nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC);
+    }
+
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
         new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -630,6 +640,9 @@ public class PreferencesFragment extends PreferenceFragment {
                 } else
                 if (key.equals("clockLayout")) {
                     resetScaleFactor(sharedPreferences);
+                } else
+                if (key.equals("nightModeActivationMode")) {
+                    setupNightModePreferences(sharedPreferences);
                 }
             }
         };

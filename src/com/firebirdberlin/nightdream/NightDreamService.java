@@ -23,12 +23,16 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
+import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 
-public class NightDreamService extends DreamService implements View.OnTouchListener {
+public class NightDreamService extends DreamService implements View.OnTouchListener,
+                                                               NightModeReceiver.Event {
 
     AlarmClock alarmClock;
     ImageView background_image;
@@ -41,6 +45,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     private double last_ambient_noise = 32000.;
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver;
+    private NightModeReceiver nightModeReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -77,6 +82,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
             last_ambient = 30.0f;
         }
 
+        nightModeReceiver = NightModeReceiver.register(this, this);
         nReceiver = registerNotificationReceiver();
         receiverRadioStream = registerReceiverRadioStream();
 
@@ -90,6 +96,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
         nightDreamUI.onStart();
         nightDreamUI.onResume();
+        setupNightMode();
         setupRadioStreamUI();
         EventBus.getDefault().register(this);
 
@@ -110,6 +117,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nightDreamUI.onPause();
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
+        unregister(nightModeReceiver);
         unregister(nReceiver);
         unregister(receiverRadioStream);
 
@@ -140,6 +148,24 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         Log.d("NightDreamService","onDetachedFromWindow() called.");
+    }
+
+    public void onSwitchNightMode() {
+        setupNightMode();
+    }
+
+    void setupNightMode() {
+        if (mySettings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_SCHEDULED) return;
+        Calendar start = new SimpleTime(mySettings.nightModeTimeRangeStart).getCalendar();
+        Calendar end = new SimpleTime(mySettings.nightModeTimeRangeEnd).getCalendar();
+
+        TimeRange timerange = new TimeRange(start, end);
+        int new_mode = ( timerange.inRange() ) ? 0 : 2;
+        if ( lightSensor == null ) {
+            last_ambient = ( new_mode == 2 ) ? 400.f : mySettings.minIlluminance;
+        }
+        setMode(new_mode);
+        NightModeReceiver.schedule(this, timerange);
     }
 
     class ReceiverRadioStream extends BroadcastReceiver {
