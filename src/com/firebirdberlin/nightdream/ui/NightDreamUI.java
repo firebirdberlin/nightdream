@@ -318,8 +318,13 @@ public class NightDreamUI {
     }
 
     private void setNightModeIcon() {
+        if (Build.VERSION.SDK_INT < 14) {
+            nightModeIcon.setVisibility(View.GONE);
+            return;
+        }
+
         if (settings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL
-                || Utility.getLightSensor(mContext) == null) {
+                || Utility.getLightSensor(mContext) == null ) {
             nightModeIcon.setVisibility(View.VISIBLE);
         } else {
             nightModeIcon.setVisibility(View.GONE);
