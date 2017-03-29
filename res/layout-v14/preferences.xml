@@ -215,6 +215,7 @@
                 <de.firebirdberlin.preference.TimeRangePreference
                     xmlns:timerange="timerange"
                     android:key="nightmode_timerange"
+                    android:title="@string/night_mode_timerange_title"
                     android:enabled="false"
                     android:defaultValue="0"
                     timerange:start_text="@string/night_mode_timerange_label_start"
