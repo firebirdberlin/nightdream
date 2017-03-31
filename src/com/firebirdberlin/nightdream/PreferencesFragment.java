@@ -372,8 +372,11 @@ public class PreferencesFragment extends PreferenceFragment {
             removePreference("reactivate_on_ambient_light_value");
 
             ListPreference nightModePref = (ListPreference) findPreference("nightModeActivationMode");
-            nightModePref.setEntries(new String[]{getString(R.string.night_mode_activation_manual)});
-            nightModePref.setEntryValues(new String[]{"0"});
+            nightModePref.setEntries(new String[]{
+                                        getString(R.string.night_mode_activation_manual),
+                                        getString(R.string.night_mode_activation_scheduled),
+            });
+            nightModePref.setEntryValues(new String[]{"0", "2"});
         }
     }
 
