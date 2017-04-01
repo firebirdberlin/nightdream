@@ -21,8 +21,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarm">منبه</string>
 <string name="alarmFadeIn">صوت تصاعدي</string>
 <string name="alarmVolume">مستوى الصوت</string>
-<string name="allow_screen_off">قفل الشاشة</string>
 <string name="allow_screen_off_summary">قفل الشاشة أثناء الليل</string>
+<string name="allow_screen_off">قفل الشاشة</string>
 <string name="ambient_noise">الكشف عن الضوضاء المحيطة</string>
 <string name="ambient_noise_summary">هل تريد منع تفعيل الوضع الليلي بواسطة الضوضاء المحيطة ؟</string>
 <string name="appearance">المظهر</string>
@@ -50,6 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute">المساهمة</string>
 <string name="contribute_source_code">شفرة المصدر</string>
 <string name="contribute_translation">الترجمة</string>
+<string name="country">البلد</string>
 <string name="credits">بواسطة</string>
 <string name="date_format">شكل التاريخ</string>
 <string name="dialog_message_thank_you">شكراً جزيلاً!</string>
@@ -68,9 +69,14 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_wireless">شحن لاسلكي</string>
 <string name="hide_background_image_in_night_mode">إخفاء</string>
 <string name="hide_background_image_in_night_mode_summary">إخفاء صورة الخلفية في الوضع الليلي</string>
+<string name="hour">الساعة</string>
 <string name="location_time">وقت المكان</string>
+<string name="message_no_data_connection">البيانات غير متوفرة</string>
+<string name="minute">دقائق</string>
 <string name="mute_ringer">نغمة صامتة</string>
 <string name="night_mode">الوضع الليلي</string>
+<string name="night_mode_activation_manual">يدوي</string>
+<string name="night_mode_activation_auto">آلي</string>
 <string name="noise_sensitivity">إحساس الميكروفون</string>
 <string name="notification_alarm">إضغط لإيقاف المنبه</string>
 <string name="other_apps">تطبيقات أخرى</string>
@@ -81,8 +87,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWebRadio">اشتري ترخيص</string>
 <string name="radio_stream_enabled">تمكين</string>
 <string name="radio_stream_no_search_results">لا يوجد نتائج للبحث</string>
-<string name="radio_stream">موجات الراديو</string>
 <string name="radio_stream_query_hint">البحث بـ</string>
+<string name="radio_stream">موجات الراديو</string>
 <string name="radio_stream_start">بدء/وقف موجة الراديو</string>
 <string name="radio_stream_url">رابط موجة الراديو</string>
 <string name="reactivate_on_ambient_light_value">درجة الإحساس بالضوء</string>
@@ -94,6 +100,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="reset_to_defaults">إعادة الضبط الافتراضي</string>
 <string name="restless_mode">تَحَرُك الساعة حول الشاشة</string>
 <string name="review_request">من فضلك قيم هذا التطبيق ، شكراً !</string>
+<string name="screen_orientation_automatic">آلي</string>
+<string name="screen_orientation_landscape">أفقي</string>
 <string name="screenOrientation">تدوير الشاشة</string>
 <string name="select_alarm_sound">إختر صوت المنبه</string>
 <string name="set_alarm">ضبط المنبه</string>
