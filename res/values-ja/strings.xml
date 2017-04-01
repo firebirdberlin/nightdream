@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">およそ</string>
+<string name="alarm">アラーム</string>
+<string name="alarmFadeIn">ボリュームの増加</string>
+<string name="alarmVolume">ボリューム</string>
+<string name="allow_screen_off_summary">夜間に画面をオフにする</string>
+<string name="allow_screen_off">画面をオフにする</string>
+<string name="ambient_noise">周囲ノイズ検出</string>
+<string name="ambient_noise_summary">周囲の騒音によって夜間モードが有効にならないようにしますか？</string>
+<string name="appearance">外観</string>
+<string name="app_name">夜の時計</string>
+<string name="auto_brightness">自動明るさ</string>
+<string name="autostart_timerange_label_end">終了時間</string>
+<string name="autostart_timerange_label_start">開始時間</string>
+<string name="background">バックグラウンド</string>
+<string name="background_black">黒</string>
+<string name="background_gradient">勾配</string>
+<string name="background_image">画像</string>
+<string name="background_image_select">画像を選択</string>
+<string name="behaviour">動作</string>
+<string name="brightness">輝度</string>
+<string name="brightness_offset">明るさオフセット</string>
+<string name="buttonAccessibilitySettings">通知を表示する</string>
+<string name="category_handle_power">...と接続したとき</string>
+<string name="category_handle_power_autostart_time">時間範囲内で開始する</string>
+<string name="choose_alarm_sound">アラーム音</string>
+<string name="choose_primary_color">アクセントの色</string>
+<string name="choose_secondary_color">テキストの色</string>
+<string name="clear">クリア</string>
+<string name="clock_layout">配置</string>
+<string name="clock_layout_digital">デジタル</string>
+<string name="clock_layout_analog">アナログ</string>
+<string name="colors">色</string>
+<string name="confirm_reset_question">本当にすべての設定をリセットしますか？</string>
+<string name="confirm_reset">リセット</string>
+<string name="contribute">貢献</string>
+<string name="contribute_source_code">ソースコード</string>
+<string name="contribute_translation">翻訳</string>
+<string name="country">国</string>
+<string name="credits">クレジット</string>
+<string name="credits_pull_requests">プルリクエスト</string>
+<string name="date_format">日付形式</string>
+<string name="dialog_message_thank_you">どうもありがとうございました！</string>
+<string name="dialog_title_thank_you">ありがとう</string>
+<string name="donate_bitcoin">ビットコイン</string>
+<string name="donate">寄付する</string>
+<string name="force_auto_rotation">デイドリームでのオリエンテーションの強制</string>
+<string name="force_auto_rotation_summary">デイドリームが使用されている場合は、画面の向きを強制します。</string>
+<string name="handle_power_ac">AC電源</string>
+<string name="handle_power">自動スタート</string>
+<string name="handle_power_car">カードック</string>
+<string name="handle_power_desk">デスクドック</string>
+<string name="handle_power_disconnection">自動停止</string>
+<string name="handle_power_disconnection_summary">電源を切断するときは、アプリケーションを終了してください。</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">ワイヤレス充電器</string>
+<string name="hide_background_image_in_night_mode">隠す</string>
+<string name="hide_background_image_in_night_mode_summary">夜間モードで背景画像を非表示にします。</string>
+<string name="hour">時</string>
+<string name="location_time">場所時間</string>
+<string name="message_no_data_connection">データ接続なし</string>
+<string name="message_mobile_data_connection">モバイルデータ接続</string>
+<string name="message_mobile_data_connection_confirmation">あなたはモバイルネットワークに接続しています。ラジオストリームを再生しますか？</string>
+<string name="minute">分</string>
+<string name="mute_ringer">無着信音</string>
+<string name="night_mode">夜間モード</string>
+<string name="night_mode_activation_mode">起動モード起動モード</string>
+<string name="night_mode_activation_manual">マニュアル</string>
+<string name="night_mode_activation_auto">自動</string>
+<string name="night_mode_activation_scheduled">スケジュール</string>
+<string name="night_mode_timerange_title">夜間</string>
+<string name="night_mode_timerange_label_end">終了時間</string>
+<string name="night_mode_timerange_label_start">開始時間</string>
+<string name="noise_sensitivity">マイク感度</string>
+<string name="notification_alarm">クリックするとアラームが停止します</string>
+<string name="other_apps">他のアプリ</string>
+<string name="other_apps_tinytimetracker_summary">あなたの毎日の勤務時間を追跡します</string>
+<string name="other_apps_tinytimetracker">タイニータイムトラッカー</string>
+<string name="persistent_battery_value_while_charging">永続的なバッテリ状態</string>
+<string name="persistent_battery_value_while_charging_summary">充電中にバッテリの状態を常に表示します。</string>
+<string name="preview">プレビュー</string>
+<string name="purchaseWeatherData">ライセンスを購入する</string>
+<string name="purchaseWebRadio">ライセンスを購入する</string>
+<string name="radio">ラジオ</string>
+<string name="radio_stream_enabled">有効</string>
+<string name="radio_stream_no_search_results">検索結果はありませんでした。</string>
+<string name="radio_stream_query_hint">検索文字列</string>
+<string name="radio_stream">ラジオストリーム</string>
+<string name="radio_stream_search">サーチ</string>
+<string name="radio_stream_start">ラジオストリームの開始/停止</string>
+<string name="radio_stream_url">ラジオストリームURL</string>
+<string name="reactivate_on_ambient_light_value">照度しきい値</string>
+<string name="reactivate_on_ambient_light_value_summary">照度しきい値を超えると画面が再起動されます</string>
+<string name="reactivate_screen_on_noise">周囲音で起きる</string>
+<string name="recommend_app_desc">おすすめを共有するアプリを選択する</string>
+<string name="recommend_app_subject">私はあなたにこの夜の時計のアプリをお勧めしたいと思います</string>
+<string name="recommend">アプリを薦める</string>
+<string name="remaining">残り</string>
+<string name="reset_to_defaults">初期設定にリセット</string>
+<string name="restless_mode">時計を動かす</string>
+<string name="review_request">このアプリケーションを評価してください。ありがとう！</string>
+<string name="screen_orientation_automatic">自動</string>
+<string name="screen_orientation_landscape">景観</string>
+<string name="screen_orientation_portrait">ポートレート</string>
+<string name="screen_orientation_reverse_landscape">逆景観</string>
+<string name="screen_orientation_reverse_portrait">逆ポートレート</string>
+<string name="screenOrientation">画面の向き</string>
+<string name="select_alarm_sound">アラーム音を選択</string>
+<string name="set_alarm">アラームセット</string>
+<string name="showcase_text_set_alarms">タッチして指をスライドさせると、ワンタイムアラームがすぐに設定されます</string>
+<string name="showcase_text_delete_alarms">アラームを削除または停止するには、ここをクリックしてください</string>
+<string name="show_date">日付を表示する</string>
+<string name="show_temperature">温度を表示する</string>
+<string name="show_weather">現在地の天気を表示</string>
+<string name="show_wind_speed">風速を表示する</string>
+<string name="speedUnit">風速単位</string>
+<string name="titlePrivacyPolicy">個人情報保護方針</string>
+<string name="temperatureUnit">温度単位</string>
+<string name="timeFormat">時間形式</string>
+<string name="translations">翻訳</string>
+<string name="typeface_7_segment">7セグメントLED</string>
+<string name="typeface_roboto_condensed">ロボット凝縮</string>
+<string name="typeface_roboto_light">ロボットライト</string>
+<string name="typeface_roboto_medium">ロボット中</string>
+<string name="typeface_roboto_regular">ロボット定常</string>
+<string name="typeface_roboto_thin">ロボット薄い</string>
+<string name="typeface">書体</string>
+<string name="use_internal_alarm">クイックアラーム</string>
+<string name="weather_calculation_time">天気予報時​​間</string>
+<string name="weather_city_id_summary">場所を自動的に検出するために空のままにする</string>
+<string name="weather_city_id_title">場所を検索</string>
+<string name="weather_info_title">情報</string>
+<string name="weather">天気</string>
+<string name="welcome_screen_text1">新しい夜の時計へようこそ！このアプリはあなたの携帯電話を充電中の現在の時間を表示します</string>
+<string name="welcome_screen_text2">ここで環境設定を開きます！</string>
+<string name="welcome_screen_text3">画面の明るさを変更するには、クリックしてスライドします。やってみよう ！</string>
+<string name="welcome_screen_text4">2フィンガーズームを使用してクロックのサイズを変更する</string>
+<string name="welcome_screen_title1">夜の時計</string>
+<string name="welcome_screen_title2">設定</string>
+<string name="welcome_screen_title3">画面の明るさ</string>
+<string name="welcome_screen_title4">時計のサイズ</string>
+</resources>
