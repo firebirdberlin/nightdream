@@ -90,6 +90,7 @@ public class NightDreamUI {
     private TextView alarmTime = null;
     private ImageView background_image;
     private ImageView menuIcon;
+    private ImageView batteryIcon;
     private ImageView settingsIcon;
     private ImageView nightModeIcon;
     private WebRadioImageView radioIcon;
@@ -134,6 +135,7 @@ public class NightDreamUI {
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
+        batteryIcon = (ImageView) rootView.findViewById(R.id.battery_icon);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
         nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
@@ -154,6 +156,8 @@ public class NightDreamUI {
         if (Build.VERSION.SDK_INT >= 12){
             menuIcon.setScaleX(.8f);
             menuIcon.setScaleY(.8f);
+            batteryIcon.setScaleX(.7f);
+            batteryIcon.setScaleY(.7f);
             clockLayout.setScaleX(.1f);
             clockLayout.setScaleY(.1f);
         }
@@ -281,6 +285,7 @@ public class NightDreamUI {
         twitterNumber.setTextColor(textColor);
         whatsappNumber.setTextColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
+        batteryIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         nightModeIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         callIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
@@ -532,6 +537,22 @@ public class NightDreamUI {
     public void updateBatteryView() {
         BatteryValue reference = settings.loadBatteryReference();
         batteryView.update(batteryValue, reference);
+
+        //update battery icon
+        //float percentage = reference.getPercentage();
+        float percentage = 20f;
+        if (percentage < 5) {
+            batteryIcon.setImageResource(R.drawable.ic_battery_0);
+        } else if (percentage <= 20) {
+            batteryIcon.setImageResource(R.drawable.ic_battery_20);
+        } else if (percentage <= 50) {
+            batteryIcon.setImageResource(R.drawable.ic_battery_50);
+        } else if (percentage <= 85) {
+            batteryIcon.setImageResource(R.drawable.ic_battery_80);
+        } else {
+            batteryIcon.setImageResource(R.drawable.ic_battery_100);
+        }
+
     }
 
     public void updateBatteryValue() {
