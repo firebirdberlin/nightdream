@@ -31,7 +31,7 @@
             android:translationY="0sp"
             custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="h:mm"
-            custom:format24Hr="kk:mm"/>
+            custom:format24Hr="HH:mm"/>
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:clickable="true"

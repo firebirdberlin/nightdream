@@ -86,15 +86,15 @@ public class DateFormatPreference extends ListPreference {
         HashSet<CharSequence> valueList = new HashSet<CharSequence>();
         boolean is24Hour = is24HourFormat();
         if ( is24Hour ) {
-            valueList.add("k:mm");
-            valueList.add("kk:mm");
+            //valueList.add("k:mm");
+            //valueList.add("kk:mm");
             valueList.add("H:mm");
             valueList.add("HH:mm");
         } else {
             valueList.add("h:mm");
             valueList.add("hh:mm");
-            valueList.add("K:mm");
-            valueList.add("KK:mm");
+            //valueList.add("K:mm");
+            //valueList.add("KK:mm");
         }
 
         CharSequence[] values = valueList.toArray(new CharSequence[valueList.size()]);

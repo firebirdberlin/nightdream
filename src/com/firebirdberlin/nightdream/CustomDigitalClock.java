@@ -25,7 +25,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     Calendar mCalendar;
     String mFormat;
     private String m12 = "h:mm aa";
-    private String m24 = "kk:mm";
+    private String m24 = "HH:mm";
     private FormatChangeObserver mFormatChangeObserver;
 
 

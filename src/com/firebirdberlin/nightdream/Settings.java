@@ -179,7 +179,7 @@ public class Settings {
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
-        timeFormat24h = settings.getString("timeFormat_24h", "kk:mm");
+        timeFormat24h = settings.getString("timeFormat_24h", "HH:mm");
         weatherCityID = settings.getString("weatherCityID", "");
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
