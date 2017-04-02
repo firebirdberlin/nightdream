@@ -341,8 +341,8 @@ public class RadioStreamPreference extends DialogPreference
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
 
         // select as default: first preferred country, and "any country"
-        if (selectedItemIndex == -1) {
-            selectedItemIndex = !preferredCountryCodes.isEmpty() ? 1 : 0;
+        if (selectedItemIndex == -1 && !countryList.isEmpty()) {
+            selectedItemIndex = (!preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
         }
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

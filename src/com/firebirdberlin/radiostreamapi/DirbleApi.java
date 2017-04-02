@@ -15,6 +15,7 @@ import java.lang.StringBuilder;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -161,8 +162,12 @@ public class DirbleApi {
             Log.e(TAG, "Http Timeout");
             return countries;
         }
+        catch (UnknownHostException e) {
+            Log.e(TAG, "Unknown host");
+            return countries;
+        }
         catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
+            Log.e(TAG, Log.getStackTraceString(e), e);
             e.printStackTrace();
         }
 
