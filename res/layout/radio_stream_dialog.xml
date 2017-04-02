@@ -73,4 +73,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/radio_stream_no_search_results"
         />
+    <TextView
+        android:id="@+id/no_data_connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/message_no_data_connection"
+        />
 </LinearLayout>

@@ -5,11 +5,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.telephony.TelephonyManager;
@@ -32,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
@@ -50,6 +53,7 @@ public class RadioStreamPreference extends DialogPreference
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
+    private TextView noDataConnectionText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
     private Map<String, String> countryNameToCodeMap = null;
@@ -105,6 +109,15 @@ public class RadioStreamPreference extends DialogPreference
         countrySpinner = (Spinner) v.findViewById(R.id.countrySpinner);
         noResultsText = (TextView) v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
+        noDataConnectionText = (TextView) v.findViewById(R.id.no_data_connection);
+        noDataConnectionText.setVisibility(View.GONE);
+        //for german and english display this text in parantheses, otherwise the default message_no_data_connection is displayed
+        if ("de".equals(Locale.getDefault().getLanguage()) || "en".equals(Locale.getDefault().getLanguage())) {
+            try {
+                noDataConnectionText.setText(String.format("(%s)", mContext.getResources().getString(R.string.message_no_data_connection)));
+            } catch (Resources.NotFoundException e) {
+            }
+        }
 
         queryText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
@@ -186,6 +199,7 @@ public class RadioStreamPreference extends DialogPreference
         spinner.show();
         stationListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
+        noDataConnectionText.setVisibility(View.GONE);
 
         String country = getSelectedCountry();
         new StationRequestTask(this).execute(query, country);
@@ -207,6 +221,11 @@ public class RadioStreamPreference extends DialogPreference
         spinner.hide();
         stationListView.setVisibility((stations.size() == 0) ? View.GONE : View.VISIBLE);
         noResultsText.setVisibility((stations.size() == 0) ? View.VISIBLE : View.GONE);
+        if (stations.size() == 0 && !Utility.hasNetworkConnection(mContext)) {
+            noDataConnectionText.setVisibility(View.VISIBLE);
+        } else {
+            noDataConnectionText.setVisibility(View.GONE);
+        }
     }
 
     @Override
