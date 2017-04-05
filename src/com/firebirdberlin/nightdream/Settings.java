@@ -88,6 +88,7 @@ public class Settings {
     public long nightModeTimeRangeEnd = -1L;
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
+    public long snoozeTimeInMillis = 300000; // 5 min
     public String AlarmToneUri = "";
     public String radioStreamURL = "";
     public String radioStreamURLUI = "";
@@ -171,6 +172,7 @@ public class Settings {
         showWeather = settings.getBoolean("showWeather", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
+        snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
@@ -187,6 +189,17 @@ public class Settings {
 
         typeface = loadTypeface();
         weatherEntry = getWeatherEntry();
+    }
+
+    private boolean is24HourMode() {
+        return android.text.format.DateFormat.is24HourFormat(mContext);
+    }
+
+    public String getTimeFormat() {
+        if (is24HourMode() ) {
+            return timeFormat24h;
+        }
+        return timeFormat12h;
     }
 
     public BatteryValue loadBatteryReference() {
@@ -289,6 +302,10 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlarmTime", alarmTime);
         prefEditor.commit();
+    }
+
+    public void updateNextAlarmTime() {
+        nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
     }
 
     public Calendar getAlarmTime() {

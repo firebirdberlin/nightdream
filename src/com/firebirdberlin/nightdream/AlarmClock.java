@@ -12,6 +12,8 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -26,9 +28,7 @@ import java.util.Locale;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.models.SimpleTime;
-import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
-import com.firebirdberlin.nightdream.services.AlarmService;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
@@ -45,29 +45,38 @@ public class AlarmClock extends View {
     private int customcolor = Color.parseColor("#33B5E5");
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
     private int display_height;
-    private int hour, min;
+    SimpleTime time;
     private int w;
     private Paint paint = new Paint();
     private Settings settings = null;
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
+    private ColorFilter customColorFilter;
+    private ColorFilter customColorFilterImage;
+    private ColorFilter secondaryColorFilter;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
+        initColorFilters();
     }
 
     public void setSettings(Settings s) {
         settings = s;
-        SimpleTime time = new SimpleTime(s.nextAlarmTime);
-        hour = time.hour;
-        min = time.min;
+        time = new SimpleTime(s.nextAlarmTime);
     }
 
     public void setCustomColor(int primary, int secondary) {
         customcolor = primary;
         customSecondaryColor = secondary;
+        initColorFilters();
         this.invalidate();
+    }
+
+    private void initColorFilters() {
+        customColorFilter = new LightingColorFilter(customcolor, 1);
+        customColorFilterImage = new PorterDuffColorFilter(customSecondaryColor, PorterDuff.Mode.SRC_ATOP);
+        secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
     }
 
     public boolean isInteractive() {
@@ -83,9 +92,6 @@ public class AlarmClock extends View {
     }
 
     public boolean onTouchEvent(MotionEvent e) {
-        if (AlarmService.isRunning) stopAlarm();
-        if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM) stopRadioStream();
-
         // the view should be visible before the user interacts with it
         if (! isVisible ) return false;
 
@@ -158,9 +164,8 @@ public class AlarmClock extends View {
             case MotionEvent.ACTION_UP:
                 if (FingerDownDeleteAlarm == true) {
                     FingerDownDeleteAlarm = false;
-                    cancelAlarm();
+                    stopAlarm();
                     ctx.sendBroadcast( new Intent(Config.ACTION_ALARM_DELETED) );
-                    this.invalidate();
                     return true;
                 }
                 return false;
@@ -180,15 +185,13 @@ public class AlarmClock extends View {
 
         int hours = (int) (x/w * 24);
         int mins = (int) ((y/h * 60)) / 5 * 5;
-        hour = (hours >= 24) ? 23 : hours;
-        min = (mins >= 60) ? 0 : mins;
+        time.hour = (hours >= 24) ? 23 : hours;
+        time.min = (mins >= 60) ? 0 : mins;
     }
 
     @Override
     protected void onDraw(Canvas canvas){
         if ( !isVisible ) return;
-        ColorFilter customColorFilter = new LightingColorFilter(customcolor, 1);
-        ColorFilter secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
         paint.setColorFilter(customColorFilter);
 
         int w = getWidth();
@@ -228,7 +231,7 @@ public class AlarmClock extends View {
 
         // right corner
         if (isAlarmSet() || userChangesAlarmTime){
-            Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarmclock);
+            Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarm_clock);
             Bitmap ic_no_audio = BitmapFactory.decodeResource(res, R.drawable.ic_no_audio);
 
             paint.setColor(Color.WHITE);
@@ -252,7 +255,7 @@ public class AlarmClock extends View {
 
             String l = "";
             if ( userChangesAlarmTime ) {
-                l = getTimeFormatted(new SimpleTime(hour, min).getCalendar());
+                l = getTimeFormatted(time.getCalendar());
             } else
             if ( isAlarmSet() ) {
                 l = getTimeFormatted(settings.getAlarmTime());
@@ -268,6 +271,7 @@ public class AlarmClock extends View {
             }
 
             if ((touch_zone_radius) > 100){ // no image on on small screens
+                paint.setColorFilter(customColorFilterImage);
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(ic_alarmclock, touch_zone_radius-60, touch_zone_radius-60, false);
                 canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
             }
@@ -291,47 +295,32 @@ public class AlarmClock extends View {
         return hourDateFormat.format(calendar.getTime());
     }
 
-    public boolean isAlarmSet(){
+    public boolean isAlarmSet() {
         return (settings.nextAlarmTime > 0L);
     }
 
-    public void startAlarm(){
-        Log.i(TAG, "startAlarm()");
-        handler.postDelayed(stopRunningAlarm, 120000); // stop it after 2 mins
-    }
-
     public void stopAlarm(){
-        handler.post(stopRunningAlarm);
+        AlarmHandlerService.stop(ctx);
     }
 
-    public void stopRadioStream(){
-        RadioStreamService.stop(ctx);
-        cancelAlarm();
-        invalidate();
+    public void snooze() {
+        AlarmHandlerService.snooze(ctx);
     }
-
-    private Runnable stopRunningAlarm = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(stopRunningAlarm);
-
-            AlarmService.stop(ctx);
-            cancelAlarm();
-            invalidate();
-        }
-    };
 
     private void setAlarm() {
-        cancelAlarm();
-        SimpleTime alarmTime = new SimpleTime(hour, min);
-        settings.setAlarmTime(alarmTime.getMillis());
-        WakeUpReceiver.schedule(ctx);
-        ctx.sendBroadcast( new Intent(Config.ACTION_ALARM_SET) );
+        setAlarm(time.getMillis());
+    }
+
+    private void setAlarm(long alarmTimeInMillis) {
+        settings.nextAlarmTime = alarmTimeInMillis;
+        AlarmHandlerService.set(ctx, alarmTimeInMillis);
     }
 
     public void cancelAlarm(){
-        settings.setAlarmTime(0L);
-        WakeUpReceiver.cancelAlarm(ctx);
+        if (settings.nextAlarmTime > 0L) {
+            AlarmHandlerService.cancel(ctx);
+            settings.nextAlarmTime = 0L;
+        }
     }
 
     public String getNextSystemAlarmTime() {

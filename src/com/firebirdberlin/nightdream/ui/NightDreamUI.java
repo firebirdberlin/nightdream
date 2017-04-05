@@ -65,7 +65,7 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
-import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.BatteryView;
@@ -162,6 +162,7 @@ public class NightDreamUI {
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
+        alarmClock.setSettings(settings);
         checkForReviewRequest();
         isDebuggable = utility.isDebuggable();
     }
@@ -849,7 +850,7 @@ public class NightDreamUI {
     private Runnable hideAlarmClock = new Runnable() {
        @Override
        public void run() {
-           if ( alarmClock.isInteractive() || AlarmService.isRunning) {
+           if ( alarmClock.isInteractive() || AlarmHandlerService.alarmIsRunning() ) {
                handler.postDelayed(hideAlarmClock, 20000);
                return;
            }
@@ -975,6 +976,10 @@ public class NightDreamUI {
             showAlarmClock();
             removeCallbacks(hideAlarmClock);
             handler.postDelayed(hideAlarmClock, 20000);
+
+            if ( AlarmHandlerService.alarmIsRunning() ) {
+                alarmClock.snooze();
+            }
             return false;
         }
 
@@ -1130,9 +1135,25 @@ public class NightDreamUI {
             if ( Config.ACTION_ALARM_SET.equals(action) ) {
                 if (showcaseView != null) showcaseView.hide();
                 setupShowcaseForAlarmDeletion();
+                if (intent.hasExtra("alarmTime")) {
+                    settings.nextAlarmTime = intent.getLongExtra("alarmTime", 0L);
+                    Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
+                    alarmClock.setSettings(settings);
+                    alarmClock.invalidate();
+                }
+            } else
+            if ( Config.ACTION_ALARM_STOPPED.equals(action) ) {
+                settings.updateNextAlarmTime();
+                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
+                alarmClock.setSettings(settings);
+                alarmClock.invalidate();
             } else
             if ( Config.ACTION_ALARM_DELETED.equals(action) ) {
                 if (showcaseView != null) showcaseView.hide();
+                settings.updateNextAlarmTime();
+                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
+                alarmClock.setSettings(settings);
+                alarmClock.invalidate();
             }
         }
     }
@@ -1142,6 +1163,7 @@ public class NightDreamUI {
         IntentFilter filter = new IntentFilter();
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         filter.addAction(Config.ACTION_ALARM_SET);
+        filter.addAction(Config.ACTION_ALARM_STOPPED);
         filter.addAction(Config.ACTION_ALARM_DELETED);
         mContext.registerReceiver(receiver, filter);
         return receiver;

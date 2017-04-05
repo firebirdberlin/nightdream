@@ -40,6 +40,7 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -52,7 +53,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
-    AlarmClock alarmClock;
     ImageView background_image;
 
     Sensor lightSensor = null;
@@ -101,9 +101,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         background_image = (ImageView) findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
-
-        alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
-        alarmClock.setSettings(mySettings);
     }
 
     @Override
@@ -131,7 +128,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         setKeepScreenOn(true);
         mySettings = new Settings(this);
-        alarmClock.setSettings(mySettings);
 
         scheduleShutdown();
         nightDreamUI.onResume();
@@ -171,8 +167,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             }
         }
 
-        if ( AlarmService.isRunning ) {
-            alarmClock.startAlarm();
+        if ( AlarmHandlerService.alarmIsRunning() ) {
             nightDreamUI.showAlarmClock();
         }
 
@@ -314,8 +309,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     public void onRadioClick(View v) {
-        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM ) {
-            alarmClock.stopRadioStream();
+        if ( AlarmHandlerService.alarmIsRunning() ) {
+            AlarmHandlerService.stop(this);
         }
 
         if ( mySettings.radioStreamURLUI.isEmpty() ) {
@@ -344,28 +339,29 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     private void toggleRadioStreamState() {
         final Context context = this;
-        if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
-            if (Utility.hasNetworkConnection(this)) {
-                if ( Utility.hasFastNetworkConnection(this) ) {
-                    RadioStreamService.startStream(this);
-                } else {
-                    new AlertDialog.Builder(this, R.style.DialogTheme)
-                        .setTitle(R.string.message_mobile_data_connection)
-                        .setMessage(R.string.message_mobile_data_connection_confirmation)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                RadioStreamService.startStream(context);
-                            }
-                        })
+        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
+            RadioStreamService.stop(this);
+            return;
+        }
+
+        if (Utility.hasNetworkConnection(this)) {
+            if ( Utility.hasFastNetworkConnection(this) ) {
+                RadioStreamService.startStream(this);
+            } else {
+                new AlertDialog.Builder(this, R.style.DialogTheme)
+                    .setTitle(R.string.message_mobile_data_connection)
+                    .setMessage(R.string.message_mobile_data_connection_confirmation)
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(R.drawable.ic_attention)
-                        .show();
-                }
-            } else { // no network connection
-                Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_LONG).show();
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            RadioStreamService.startStream(context);
+                        }
+                    })
+                .show();
             }
-        } else {
-            RadioStreamService.stop(this);
+        } else { // no network connection
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_LONG).show();
         }
     }
 
