@@ -465,8 +465,10 @@ public class NightDreamUI {
                 nextAlarm = mContext.getString(R.string.set_alarm);
             }
             alarmTime.setText(nextAlarm);
-            alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
-            alarmTime.setClickable(true);
+            if (! daydreamMode) {
+                alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
+                alarmTime.setClickable(true);
+            }
         } else {
             alarmTime.setOnClickListener(null);
             alarmTime.setClickable(false);

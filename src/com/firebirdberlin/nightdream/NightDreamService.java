@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
@@ -47,6 +48,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     private NotificationReceiver nReceiver;
     private NightModeReceiver nightModeReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
+    private TextView alarmTime = null;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -72,6 +74,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
 
         alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
+        alarmTime = (TextView) findViewById(R.id.textview_alarm_time);
         alarmClock.setSettings(mySettings);
 
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
@@ -88,7 +91,24 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
         background_image = (ImageView)findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
+
+        alarmTime.setClickable(false);
+        if ( !mySettings.useInternalAlarm && Build.VERSION.SDK_INT >= 19 ) {
+            alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
+            alarmTime.setClickable(true);
+        }
     }
+
+    View.OnClickListener onStockAlarmTimeClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (Build.VERSION.SDK_INT < 19) return;
+
+            Intent mClockIntent = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS);
+            mClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(mClockIntent);
+            finish();
+        }
+    };
 
     @Override
     public void onDreamingStarted() {
