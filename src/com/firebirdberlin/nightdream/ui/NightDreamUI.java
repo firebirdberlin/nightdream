@@ -1252,7 +1252,9 @@ public class NightDreamUI {
     }
 
     private void setupShowcaseForQuickAlarms() {
-        if ( showcaseView != null ) return;
+        if ( showcaseView != null || daydreamMode) {
+            return;
+        }
 
         if (settings.useInternalAlarm) {
             Point size = utility.getDisplaySize();
@@ -1271,7 +1273,9 @@ public class NightDreamUI {
     }
 
     private void setupShowcaseForAlarmDeletion() {
-        if ( showcaseView != null ) return;
+        if ( showcaseView != null || daydreamMode) {
+            return;
+        }
 
         if ( alarmClock.isAlarmSet() ) {
             Point size = utility.getDisplaySize();
