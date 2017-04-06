@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.AlarmClock;
+import com.firebirdberlin.nightdream.BatteryIconView;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
@@ -138,7 +139,8 @@ public class NightDreamUI {
     };
     private SoundMeter soundmeter;
     private ProgressBar brightnessProgress = null;
-    private BatteryView batteryView = null;
+    private BatteryIconView batteryIconView = null;
+
     private Utility utility = null;
     private View rootView = null;
     private Window window = null;
@@ -199,7 +201,6 @@ public class NightDreamUI {
             setupScreenAnimation();
 
             hideBatteryView(2000);
-            updateBatteryView();
 
             updateClockPosition();
             updateWeatherData();
@@ -278,7 +279,6 @@ public class NightDreamUI {
         public boolean onSingleTapUp(MotionEvent e) {
             Log.w(TAG, "single tap up");
             updateBatteryValue();
-            updateBatteryView();
 
             showAlarmClock();
             removeCallbacks(hideAlarmClock);
@@ -336,7 +336,6 @@ public class NightDreamUI {
             handler.postDelayed(hideAlarmClock, 20000);
             brightnessProgress.setVisibility(View.INVISIBLE);
             updateBatteryValue();
-            updateBatteryView();
             showAlarmClock();
 
             setupShowcaseForQuickAlarms();
@@ -406,7 +405,7 @@ public class NightDreamUI {
         rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
         brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
-        batteryView = (BatteryView) rootView.findViewById(R.id.batteryView);
+        batteryIconView = (BatteryIconView) rootView.findViewById(R.id.batteryIconView);
         clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
@@ -459,7 +458,6 @@ public class NightDreamUI {
 
         initSidePanel();
         updateBatteryValue();
-        updateBatteryView();
         setupScreenAnimation();
         lockUI(this.locked);
 
@@ -547,7 +545,7 @@ public class NightDreamUI {
         int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
 
         alarmTime.setTextColor(textColor);
-        batteryView.setTextColor(textColor);
+        batteryIconView.setColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         nightModeIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
@@ -801,11 +799,6 @@ public class NightDreamUI {
         handler.postDelayed(fixConfig, 200);
     }
 
-    public void updateBatteryView() {
-        BatteryValue reference = settings.loadBatteryReference();
-        batteryView.update(batteryValue, reference);
-    }
-
     public void updateBatteryValue() {
         Log.d(TAG, "updating battery value");
         BatteryStats battery = new BatteryStats(mContext);
@@ -944,7 +937,7 @@ public class NightDreamUI {
 
         if ( batteryViewShallBeVisible() ) {
             v = to_range(v, 0.6f, 1.f);
-            setAlpha(batteryView, v, millis);
+            setAlpha(batteryIconView, v, millis);
         } else {
             hideBatteryView(millis);
         }
@@ -1116,7 +1109,7 @@ public class NightDreamUI {
 
     private void initSidePanel() {
         if (Build.VERSION.SDK_INT > 11) {
-            sidePanel.setX(-1000);
+            sidePanel.setX(-1000f);
         } else {
             sidePanel.setVisibility(View.INVISIBLE);
             sidePanel.setClickable(false);
@@ -1125,14 +1118,14 @@ public class NightDreamUI {
 
     private void hideBatteryView(int millis) {
         if (! batteryViewShallBeVisible() ) {
-            setAlpha(batteryView, 0.f, millis);
+            setAlpha(batteryIconView, 0.f, millis);
         }
     }
 
     private boolean batteryViewShallBeVisible() {
         return (controlsVisible ||
                 (settings.persistentBatteryValueWhileCharging &&
-                 batteryView.shallBeVisible(this.batteryValue))
+                 batteryIconView.shallBeVisible())
                );
     }
 
@@ -1218,7 +1211,7 @@ public class NightDreamUI {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
             setAlpha(notificationbar, 1.f, 250);
-            setAlpha(batteryView, 1.f, 250);
+            setAlpha(batteryIconView, 1.f, 250);
             setAlpha(alarmTime, 1.f, 250);
             controlsVisible = true;
             handler.postDelayed(hideAlarmClock, 5000);

@@ -7,6 +7,7 @@ public class BatteryValue {
 
     public int level = 0;
     public int scale = -1;
+    public float levelNormalized;
     public long time = 0L;
     public int chargingMethod = -1;
     public int status = -1;
@@ -26,6 +27,7 @@ public class BatteryValue {
         this.time = System.currentTimeMillis();
         this.chargingMethod = chargingMethod;
         this.status = status;
+        this.levelNormalized = level / (float) scale;
     }
 
     public float getPercentage() {

@@ -29,11 +29,14 @@ public class BatteryView extends TextView {
 
     public void update(BatteryValue batteryValue, BatteryValue reference) {
         float percentage = batteryValue.getPercentage();
-        String percentage_string = String.format("%3d%%", (int) percentage);
+        //String percentage_string = String.format("%3d%%", (int) percentage);
+        // need always 3 digits? otherwise cant get it nearer to the batterie icon view
+        String percentage_string = String.format("%d%%", (int) percentage);
         String estimate_string = "";
         if (batteryValue.isCharging) {
             if (percentage < VALUE_FULLY_CHARGED){
-                long est = batteryValue.getEstimateMillis(reference)/1000; // estimated seconds
+                //long est = batteryValue.getEstimateMillis(reference)/1000; // estimated seconds
+                long est = 300;
                 estimate_string = formatEstimate(est);
             }
         } else { // not charging
@@ -70,3 +73,4 @@ public class BatteryView extends TextView {
         return true;
     }
 }
+
