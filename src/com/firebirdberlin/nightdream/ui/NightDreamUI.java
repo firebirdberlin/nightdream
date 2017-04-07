@@ -1201,6 +1201,7 @@ public class NightDreamUI {
             .setOnClickListener(showCaseOnClickListener)
             .singleShot(SHOWCASE_ID_ONBOARDING)
             .build();
+        showcaseView.showButton();
         showShowcase();
         setupShowcaseForQuickAlarms();
         setupShowcaseForAlarmDeletion();
@@ -1221,6 +1222,7 @@ public class NightDreamUI {
                 showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title1));
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text1));
                 showcaseView.setBlockAllTouches(true);
+                showcaseView.showButton();
                 break;
             case 1:
                 showcaseView.setShowcase(new ViewTarget(menuIcon), true);
@@ -1228,6 +1230,7 @@ public class NightDreamUI {
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text2));
                 showcaseView.setBlockAllTouches(false);
                 showcaseView.setBlocksTouches(true);
+                showcaseView.showButton();
                 break;
             case 2:
                 Point size = utility.getDisplaySize();
@@ -1235,6 +1238,7 @@ public class NightDreamUI {
                 showcaseView.setBlockAllTouches(false);
                 showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title3));
                 showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text3));
+                showcaseView.showButton();
                 break;
             case 3:
                 setAlpha(clockLayout, 1.f, 500);
@@ -1244,6 +1248,7 @@ public class NightDreamUI {
                 showcaseView.setBlockAllTouches(false);
                 showcaseView.setBlocksTouches(true);
                 //showcaseView.setBlockAllTouches(true);
+                showcaseView.showButton();
                 break;
             default:
                 showcaseView.hide();
