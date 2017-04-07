@@ -1166,9 +1166,9 @@ public class NightDreamUI {
     }
 
     static int showcaseCounter = 0;
-    static final int SHOWCASE_ID_ONBOARDING = 1;
-    static final int SHOWCASE_ID_ALARMS = 2;
-    static final int SHOWCASE_ID_ALARM_DELETION = 3;
+    static final long SHOWCASE_ID_ONBOARDING = 1;
+    static final long SHOWCASE_ID_ALARMS = 2;
+    static final long SHOWCASE_ID_ALARM_DELETION = 3;
     private void setupShowcase() {
         // daydreams cannot be cast to an activity
         if ( showcaseView != null || daydreamMode) {
@@ -1201,6 +1201,8 @@ public class NightDreamUI {
             .setOnClickListener(showCaseOnClickListener)
             .singleShot(SHOWCASE_ID_ONBOARDING)
             .build();
+
+        showcaseView.setShowcaseTag(SHOWCASE_ID_ONBOARDING);
         showcaseView.showButton();
         showShowcase();
         setupShowcaseForQuickAlarms();
@@ -1216,6 +1218,8 @@ public class NightDreamUI {
     };
 
     void setupShowcaseView() {
+        if (showcaseView.getShowcaseTag() != SHOWCASE_ID_ONBOARDING) return;
+
         switch(showcaseCounter) {
             case 0:
                 showcaseView.setShowcase(Target.NONE, true);
