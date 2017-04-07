@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
 import com.firebirdberlin.nightdream.R;
@@ -73,7 +74,12 @@ public class AutoAdjustTextView extends TextView {
 
     @Override
     public void invalidate() {
-        adjustTextSize();
+        try {
+            adjustTextSize();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Could not adjust the text size");
+            e.printStackTrace();
+        }
         super.invalidate();
     }
 
