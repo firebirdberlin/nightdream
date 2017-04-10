@@ -1,0 +1,49 @@
+Title:
+------
+Night clock (Daydream clock)
+
+Short description:
+------------------
+a simple DayDream clock that dims at night, but is bright during the day.
+
+Long Description:
+------------------
+
+<b>NightDream</b>
+
+... a desk clock that is also suitable for the night. In dock mode this app provides a simple digital clock that automatically adjusts its brightness. During the day the display is bright, but in the night it dims to a minimum brightness. Simply adjust the font size using a two-finger-zoom gesture.
+
+<b>Daydream</b>
+This app can be used as a Daydream from Android 4.2 on.
+
+<b>Quick alarms</b>
+Using a swipe from the left, you can set the alarm clock. Delete it by tapping on the lower right corner.
+
+<b>Battery</b>
+
+While charging your mobile device an estimate time is calculated until the battery is full.
+
+<b>Notifications</b>
+You can enable notifications for missed phone calls, GMail, WhatsApp and twitter. On Android 4.3+ go to Settings > Security > Notification access > enable NightDream.
+
+ In earlier versions of Android go to Settings > Accessibility > enable NightDream.
+
+<b>In-App Payments</b>
+
+The current weather conditions can be shown below the time.  This feature purchased within the app
+
+The project is open source. If you want to send a donation you can do this via in-app purchase.
+
+<b>Permissions</b>
+
+<i>android.permission.MODIFY_AUDIO_SETTINGS</i>
+This permissions allows to siilence the device during the night mode.
+
+<i>android.permission.RECORD_AUDIO</i>
+During the night mode the screen may be deactivated. It can be switched on again if a certain ambient noise level is reached. Therefore the app continuously records audio. The app does not store audio data,
+
+<i>android.permission.WAKE_LOCK</i>
+The app is allowed to wake the device from sleep in order to enable the screen and to keep the screen on.
+
+<i>android.permission.READ_EXTERNAL_STORAGE</i>
+The permission is necessary to read background images from the external storage.

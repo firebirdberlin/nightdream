@@ -1,0 +1,51 @@
+Title:
+------
+Nachtuhr (Daydream Uhr)
+
+Short description:
+------------------
+... eine Uhr für den Schreibtisch und eine Nachtuhr. Open Source und werbefrei.
+
+Long Description:
+------------------
+
+Diese Uhr wird eingeblendet sobald Sie ihr Telefon aufladen und dient so als praktische Nachtuhr oder Schreibtischuhr. Die Helligkeit lässt sich manuell einstellen oder automatisch regeln - ganz wie Sie mögen
+
+Die Schriftgröße lässt sich über eine einfach 2-Finger-Zoom-Geste einstellen.
+
+Wichtige Informationen, wie der Ladestand des Akkus und das Datum werden ebenfalls angezeigt. Benachrichtigungen über verpasste Anrufe sowie neue Nachrichten per Google Mail, Twitter und WhatsApp können eingeblendet werden.
+
+<b>Nachtmodus</b>
+Um nachts den Bildschirm abzuschalten, müssen Daydreams deaktiviert sein (Einstellungen > Display > DayDream). Die Uhr wird reaktiviert bei Licht bzw. sobald der Geräuschpegel im Raum einen bestimmten Wert überschreitet.
+
+<b>Schnellwecker</b>
+Mit einem Wisch von links unten wird der Wecker aktiviert. Ein Klick unten rechts löscht den Wecker wieder.
+Ist der Schnellwecker deaktiviert, dann wird die nächste Weckzeit angezeigt.
+
+<b>Benachrichtigungszugriff</b>
+Android 4.3+:
+Die Benachrichtigungen müssen aktiviert werden unter Einstellungen > Sicherheit > Benachrichtigungszugriff > NightDream aktivieren.
+
+Android 4.2 und kleiner:
+Einstellungen > Bedienungshilfen > NightDream
+
+<b>In-App Käufe</b>
+Dieses Projekt ist Open Source und das Produkt eines Android-Enthusiasten. Wenn Sie das Projekt unterstützen möchten, dann können Sie via In-App Kauf eine Spende an den Entwickler senden.
+
+<b>Berechtigungen</b>
+
+<i>android.permission.MODIFY_AUDIO_SETTINGS : Audio-Einstellungen ändern</i>
+
+Damit die Lautstärke nachts leise gestellt werden kann.
+
+<i>android.permission.RECORD_AUDIO : Audio aufnehmen</i>
+
+Der Nachtmodus wird optional nur aktiviert, wenn es dunkel und hinreichend ruhig im Raum ist. Dazu wird die Lautstärke mit dem Mikrofon gemessen. Es werden keine Aufzeichnungen angefertigt. Bitte beachten Sie auch, dass die App nicht die Berechtigung besitzt mit dem Internet zu kommunizieren. Ihre Privatsphäre ist also sicher.
+
+<i>android.permission.WAKE_LOCK : Standby-Modus deaktivieren</i>
+
+Die App darf das Gerät aus dem Schlaf aufwecken, also z.B. das Display einschalten und eingeschaltet lassen.
+
+<i>android.permission.READ_EXTERNAL_STORAGE : Auf externen Speicher zugreifen</i>
+
+Diese Berechtigung wird benötigt, um Hintergrundbilder von SD-Karte lesen zu können.
