@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">О программе</string>
+<string name="alarm">Будильник</string>
+<string name="alarmFadeIn">Нарастание громкости</string>
+<string name="alarmVolume">Громкость</string>
+<string name="allow_screen_off_summary">Выключать экран в ночное время</string>
+<string name="allow_screen_off">Выключить экран</string>
+<string name="ambient_noise">Определение шума</string>
+<string name="ambient_noise_summary">Должен ли внешний шум предотвращать переход в ночной режим?</string>
+<string name="appearance">Внешний вид</string>
+<string name="app_name">Ночные часы</string>
+<string name="auto_brightness">Авторегулировка яркости</string>
+<string name="autostart_timerange_label_end">Время окончания</string>
+<string name="autostart_timerange_label_start">Время начала</string>
+<string name="background">Задний фон</string>
+<string name="background_black">Черный</string>
+<string name="background_gradient">Градиент</string>
+<string name="background_image">Рисунок</string>
+<string name="background_image_select">Выбор рисунка</string>
+<string name="behaviour">Поведение</string>
+<string name="brightness">Яркость</string>
+<string name="brightness_offset">Предельная яркость</string>
+<string name="buttonAccessibilitySettings">Показывать оповещения</string>
+<string name="category_handle_power">... и когда подключен к</string>
+<string name="category_handle_power_autostart_time">Запуск в промежуток времени</string>
+<string name="choose_alarm_sound">Мелодия будидьника</string>
+<string name="choose_primary_color">Цвет акцента</string>
+<string name="choose_secondary_color">Цвет текста</string>
+<string name="clear">очистить</string>
+<string name="clock_layout">Тип часов</string>
+<string name="clock_layout_digital">цифровые</string>
+<string name="clock_layout_analog">аналоговые</string>
+<string name="colors">Цвета</string>
+<string name="confirm_reset_question">Вы уверены в сбросе всех настроек?</string>
+<string name="confirm_reset">Сброс</string>
+<string name="contribute">Внести свой вклад</string>
+<string name="contribute_source_code">Исходный код</string>
+<string name="contribute_translation">Перевести</string>
+<string name="country">Страна</string>
+<string name="credits">Разработчики</string>
+<string name="credits_pull_requests">Pull requests</string>
+<string name="date_format">Формат даты</string>
+<string name="dialog_message_thank_you">Огромное Вам спасибо!</string>
+<string name="dialog_title_thank_you">Спасибо</string>
+<string name="donate_bitcoin">Биткоин</string>
+<string name="donate">Пожертвовать</string>
+<string name="force_auto_rotation">Принудительная ориентация в Daydream</string>
+<string name="force_auto_rotation_summary">Принудительная ориентация экрана в режиме Daydream</string>
+<string name="handle_power_ac">электросети</string>
+<string name="handle_power">Автозапуск</string>
+<string name="handle_power_car">автомобильному доку</string>
+<string name="handle_power_desk">настольному доку</string>
+<string name="handle_power_disconnection">Автоматическое завершение</string>
+<string name="handle_power_disconnection_summary">Закрыть приложение при отключении от зарядки</string>
+<string name="handle_power_usb">USB</string>
+<string name="handle_power_wireless">беспроводной зарядке</string>
+<string name="hide_background_image_in_night_mode">Скрыть</string>
+<string name="hide_background_image_in_night_mode_summary">Скрыть фон в ночном режиме</string>
+<string name="hour">ч</string>
+<string name="location_time">Местное время</string>
+<string name="message_no_data_connection">Нет подключения к Интернету</string>
+<string name="message_mobile_data_connection">Мобильный Интернет</string>
+<string name="message_mobile_data_connection_confirmation">Вы подключены к сотовой сети. Запустить радио?</string>
+<string name="minute">мин</string>
+<string name="mute_ringer">Мелодия выкл.</string>
+<string name="night_mode">Ночной режим</string>
+<string name="night_mode_activation_mode">Способ включения</string>
+<string name="night_mode_activation_manual">ручной</string>
+<string name="night_mode_activation_auto">автоматический</string>
+<string name="night_mode_activation_scheduled">по расписанию</string>
+<string name="night_mode_timerange_title">Ночные часы</string>
+<string name="night_mode_timerange_label_end">Время окончания</string>
+<string name="night_mode_timerange_label_start">Время начала</string>
+<string name="noise_sensitivity">Чувствительность микрофона</string>
+<string name="notification_alarm">Нажмите для остановки будильника</string>
+<string name="other_apps">Другие приложения</string>
+<string name="other_apps_tinytimetracker_summary">Отслеживайте ваше рабочее время</string>
+<string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+<string name="persistent_battery_value_while_charging">Всегда отображать заряд</string>
+<string name="persistent_battery_value_while_charging_summary">Показывать статус батареи во время зарядки</string>
+<string name="preview">Предпросмотр</string>
+<string name="purchaseWeatherData">Купить лицензию</string>
+<string name="purchaseWebRadio">Купить лицензию</string>
+<string name="radio">Радио</string>
+<string name="radio_stream_enabled">Вкл.</string>
+<string name="radio_stream_no_search_results">Поиск не дал результатов</string>
+<string name="radio_stream_query_hint">Поиск строки</string>
+<string name="radio_stream">Потоковое радио</string>
+<string name="radio_stream_search">Поиск</string>
+<string name="radio_stream_start">Старт/стоп радио</string>
+<string name="radio_stream_url">URL потокового радио</string>
+<string name="reactivate_on_ambient_light_value">Предел освещения</string>
+<string name="reactivate_on_ambient_light_value_summary">Включить экран если превышен предел освещения</string>
+<string name="reactivate_screen_on_noise">Включать при шуме</string>
+<string name="recommend_app_desc">Выберите приложение чтобы поделиться рекомендациями</string>
+<string name="recommend_app_subject">Я хотел бы порекомендовать Вам это приложение-часы</string>
+<string name="recommend">Рекомендовые приложения</string>
+<string name="remaining">ост.</string>
+<string name="reset_to_defaults">Сброс настроек</string>
+<string name="restless_mode">Перемещать часы по экрану</string>
+<string name="review_request">Пожалуйста, оцените это приложение. Спасибо!</string>
+<string name="screen_orientation_automatic">автоматически</string>
+<string name="screen_orientation_landscape">ландшафт</string>
+<string name="screen_orientation_portrait">портрет</string>
+<string name="screen_orientation_reverse_landscape">перевернутый ландшафт</string>
+<string name="screen_orientation_reverse_portrait">перевернутый портрет</string>
+<string name="screenOrientation">Ориентация экрана</string>
+<string name="select_alarm_sound">Выбрать мелодию будильника</string>
+<string name="set_alarm">Установка будильника</string>
+<string name="showcase_text_set_alarms">Нажмите и проведите пальцем</string>
+<string name="showcase_text_delete_alarms">Нажмите здесь чтобы удалить или выключить будильник</string>
+<string name="show_date">Показывать дату</string>
+<string name="show_temperature">Показывать температуру</string>
+<string name="show_weather">Показывать местную погоду</string>
+<string name="show_wind_speed">Показывать скорость ветра</string>
+<string name="speedUnit">Ед. скорости ветра</string>
+<string name="titlePrivacyPolicy">Политика конфиденциальности</string>
+<string name="temperatureUnit">Ед. температуры</string>
+<string name="timeFormat">Формат времени</string>
+<string name="translations">Переводы</string>
+<string name="typeface_7_segment">7-ми сегментый LED</string>
+<string name="typeface_roboto_condensed">Roboto condensed</string>
+<string name="typeface_roboto_light">Roboto light</string>
+<string name="typeface_roboto_medium">Roboto medium</string>
+<string name="typeface_roboto_regular">Roboto regular</string>
+<string name="typeface_roboto_thin">Roboto thin</string>
+<string name="typeface">Шрифт</string>
+<string name="use_internal_alarm">Быстрый будильник</string>
+<string name="weather_calculation_time">время подсчета погоды</string>
+<string name="weather_city_id_summary">Оставьте пустым для автоопределения местоположения</string>
+<string name="weather_city_id_title">Поиск местоположения</string>
+<string name="weather_info_title">Информация</string>
+<string name="weather">Погода</string>
+<string name="welcome_screen_text1">Представляем Ваши новые ночные часы! Это приложение показывает текущее время при зарядке устройства.</string>
+<string name="welcome_screen_text2">Откройте настройки здесь!</string>
+<string name="welcome_screen_text3">Нажмите и проведите пальцем для изменения яркости экрана. Попробуйте сейчас!</string>
+<string name="welcome_screen_text4">Измените размер часов "щипком" двумя пальцами</string>
+<string name="welcome_screen_title1">Ночные часы</string>
+<string name="welcome_screen_title2">Настройки</string>
+<string name="welcome_screen_title3">Яркость экрана</string>
+<string name="welcome_screen_title4">Размер часов</string>
+</resources>
