@@ -113,6 +113,7 @@ public class AlarmClock extends View {
     }
 
     private boolean handleAlarmSetEvents(MotionEvent e) {
+        if ( alarmIsRunning() ) return false;
         float tX = e.getX();
         float tY = e.getY();
 
@@ -201,21 +202,17 @@ public class AlarmClock extends View {
     @Override
     protected void onDraw(Canvas canvas){
         if ( !isVisible ) return;
+        Resources res = getResources();
+
         paint.setColorFilter(customColorFilter);
 
         int w = getWidth();
         int h = getHeight();
-        // touch zones
 
-        // set size of the touch zone
+        // touch zones
         touch_zone_radius = (w < h) ? w : h;
         quiet_zone_size = touch_zone_radius/4;
 
-        int tzr2 = (int) (0.93 * touch_zone_radius);
-        int tzr3 = (int) (0.86 * touch_zone_radius);
-        int tzr4 = (int) (0.6  * touch_zone_radius);
-
-        Resources res = getResources();
         // left corner
         {
             cornerLeft.setPosition(0, h);
@@ -259,9 +256,13 @@ public class AlarmClock extends View {
         }
     }
 
+    private boolean alarmIsRunning() {
+        return AlarmHandlerService.alarmIsRunning();
+    }
+
     public void activateAlarmUI() {
         handler.removeCallbacks(blink);
-        if (AlarmHandlerService.alarmIsRunning()) {
+        if (alarmIsRunning()) {
             handler.postDelayed(blink, 1000);
         }
     }
@@ -271,7 +272,7 @@ public class AlarmClock extends View {
             handler.removeCallbacks(blink);
             blinkStateOn = !blinkStateOn;
             invalidate();
-            if (AlarmHandlerService.alarmIsRunning()) {
+            if (alarmIsRunning()) {
                 handler.postDelayed(blink, 1000);
             }
         }
@@ -357,6 +358,7 @@ public class AlarmClock extends View {
         int radius4;
         boolean activated = false;
         Bitmap icon;
+        Bitmap scaledIcon;
         Position position = Position.LEFT;
 
         public HotCorner(Position position) {
@@ -380,10 +382,14 @@ public class AlarmClock extends View {
 
 
         public void setRadius(int radius) {
+            if (radius == this.radius) return;
             this.radius = radius;
             this.radius2 = (int) (0.93 * radius);
             this.radius3 = (int) (0.86 * radius);
             this.radius4 = (int) (0.6  * radius);
+            if (this.icon != null) {
+                this.scaledIcon = Bitmap.createScaledBitmap(this.icon, radius4, radius4, false);
+            }
         }
 
         public void setIconResource(Resources res, int iconID) {
@@ -402,11 +408,10 @@ public class AlarmClock extends View {
             paint.setAlpha( ( activated ) ? 153 : 102 );
             canvas.drawCircle(center.x, center.y, radius3, paint);
 
-            Bitmap resizedIcon = Bitmap.createScaledBitmap(icon, radius4, radius4, false);
             if (position == Position.LEFT) {
-                canvas.drawBitmap(resizedIcon, 5, center.y - radius4 - 5, paint);
+                canvas.drawBitmap(scaledIcon, 5, center.y - radius4 - 5, paint);
             } else {
-                canvas.drawBitmap(resizedIcon, center.x - radius4 - 5, center.y - radius4 - 5, paint);
+                canvas.drawBitmap(scaledIcon, center.x - radius4 - 5, center.y - radius4 - 5, paint);
             }
         }
     }
