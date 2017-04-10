@@ -36,6 +36,8 @@ import static android.text.format.DateFormat.is24HourFormat;
 
 public class AlarmClock extends View {
     private static String TAG ="NightDream.AlarmClock";
+    private static enum Position { LEFT, RIGHT }
+
     final private Handler handler = new Handler();
     public boolean isVisible = false;
     private boolean FingerDown;
@@ -54,10 +56,17 @@ public class AlarmClock extends View {
     private ColorFilter customColorFilter;
     private ColorFilter customColorFilterImage;
     private ColorFilter secondaryColorFilter;
+    private HotCorner cornerLeft;
+    private HotCorner cornerRight;
+    private boolean blinkStateOn = false;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
+        cornerLeft = new HotCorner(Position.LEFT);
+        cornerLeft.setIconResource(getResources(), R.drawable.ic_audio);
+        cornerRight = new HotCorner(Position.RIGHT);
+        cornerRight.setIconResource(getResources(), R.drawable.ic_no_audio);
         initColorFilters();
     }
 
@@ -209,47 +218,18 @@ public class AlarmClock extends View {
         Resources res = getResources();
         // left corner
         {
-            paint.setColor(Color.WHITE);
-            if (FingerDown == true) paint.setAlpha(255);
-            else paint.setAlpha(153);
-
-            canvas.drawCircle(0, h, touch_zone_radius, paint);
-
-            paint.setColor(Color.BLACK);
-            canvas.drawCircle(0, h, tzr2, paint);
-
-            paint.setColor(Color.WHITE);
-            if (FingerDown == true) paint.setAlpha(153);
-            else paint.setAlpha(102);
-
-            canvas.drawCircle(0, h, tzr3, paint);
-
-            Bitmap ic_audio = BitmapFactory.decodeResource(res, R.drawable.ic_audio);
-            Bitmap resizedIcon = Bitmap.createScaledBitmap(ic_audio, tzr4, tzr4, false);
-            canvas.drawBitmap(resizedIcon, 5, h - tzr4 - 5, paint);
+            cornerLeft.setPosition(0, h);
+            cornerLeft.setRadius(touch_zone_radius);
+            cornerLeft.setActive(FingerDown);
+            cornerLeft.draw(canvas, paint);
         }
 
         // right corner
         if (isAlarmSet() || userChangesAlarmTime){
-            Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarm_clock);
-            Bitmap ic_no_audio = BitmapFactory.decodeResource(res, R.drawable.ic_no_audio);
-
-            paint.setColor(Color.WHITE);
-            if (FingerDownDeleteAlarm == true) paint.setAlpha(255);
-            else paint.setAlpha(153);
-            canvas.drawCircle(w, h, touch_zone_radius, paint);
-
-            paint.setColor(Color.BLACK);
-            canvas.drawCircle(w, h, tzr2, paint);
-
-            paint.setColor(Color.WHITE);
-            if (FingerDownDeleteAlarm == true) paint.setAlpha(153);
-            else paint.setAlpha(102);
-
-            canvas.drawCircle(w, h, tzr3, paint);
-
-            Bitmap resizedIcon = Bitmap.createScaledBitmap(ic_no_audio, tzr4, tzr4, false);
-            canvas.drawBitmap(resizedIcon, w - tzr4 - 5, h - tzr4 - 5, paint);
+            cornerRight.setPosition(w, h);
+            cornerRight.setRadius(touch_zone_radius);
+            cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
+            cornerRight.draw(canvas, paint);
 
             paint.setColorFilter(secondaryColorFilter);
 
@@ -272,11 +252,30 @@ public class AlarmClock extends View {
 
             if ((touch_zone_radius) > 100){ // no image on on small screens
                 paint.setColorFilter(customColorFilterImage);
+                Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarm_clock);
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(ic_alarmclock, touch_zone_radius-60, touch_zone_radius-60, false);
                 canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
             }
         }
     }
+
+    public void activateAlarmUI() {
+        handler.removeCallbacks(blink);
+        if (AlarmHandlerService.alarmIsRunning()) {
+            handler.postDelayed(blink, 1000);
+        }
+    }
+
+    Runnable blink = new Runnable() {
+        public void run() {
+            handler.removeCallbacks(blink);
+            blinkStateOn = !blinkStateOn;
+            invalidate();
+            if (AlarmHandlerService.alarmIsRunning()) {
+                handler.postDelayed(blink, 1000);
+            }
+        }
+    };
 
     private String getTimeFormatted(Calendar calendar) {
         String localPattern  = "";
@@ -300,10 +299,12 @@ public class AlarmClock extends View {
     }
 
     public void stopAlarm(){
+        this.blinkStateOn = false;
         AlarmHandlerService.stop(ctx);
     }
 
     public void snooze() {
+        this.blinkStateOn = false;
         AlarmHandlerService.snooze(ctx);
     }
 
@@ -312,6 +313,7 @@ public class AlarmClock extends View {
     }
 
     private void setAlarm(long alarmTimeInMillis) {
+        this.blinkStateOn = false;
         settings.nextAlarmTime = alarmTimeInMillis;
         AlarmHandlerService.set(ctx, alarmTimeInMillis);
     }
@@ -342,5 +344,67 @@ public class AlarmClock extends View {
          return android.provider.Settings.System.getString(
                  ctx.getContentResolver(),
                  android.provider.Settings.System.NEXT_ALARM_FORMATTED);
+    }
+
+    class HotCorner {
+        Point center;
+        int radius;
+        int radius2;
+        int radius3;
+        int radius4;
+        boolean activated = false;
+        Bitmap icon;
+        Position position = Position.LEFT;
+
+        public HotCorner(Position position) {
+            this.center = new Point();
+            this.setRadius(100);
+            this.position = position;
+        }
+
+        public void setActive(boolean activated) {
+            this.activated = activated;
+        }
+
+        public void setPosition(Point center) {
+            this.center = center;
+        }
+
+        public void setPosition(int x, int y) {
+            this.center.x = x;
+            this.center.y = y;
+        }
+
+
+        public void setRadius(int radius) {
+            this.radius = radius;
+            this.radius2 = (int) (0.93 * radius);
+            this.radius3 = (int) (0.86 * radius);
+            this.radius4 = (int) (0.6  * radius);
+        }
+
+        public void setIconResource(Resources res, int iconID) {
+            this.icon = BitmapFactory.decodeResource(res, iconID);
+        }
+
+        public void draw(Canvas canvas, Paint paint) {
+            paint.setColor(Color.WHITE);
+            paint.setAlpha( ( activated ) ? 255 : 153 );
+            canvas.drawCircle(center.x, center.y, radius, paint);
+
+            paint.setColor(Color.BLACK);
+            canvas.drawCircle(center.x, center.y, radius2, paint);
+
+            paint.setColor(Color.WHITE);
+            paint.setAlpha( ( activated ) ? 153 : 102 );
+            canvas.drawCircle(center.x, center.y, radius3, paint);
+
+            Bitmap resizedIcon = Bitmap.createScaledBitmap(icon, radius4, radius4, false);
+            if (position == Position.LEFT) {
+                canvas.drawBitmap(resizedIcon, 5, center.y - radius4 - 5, paint);
+            } else {
+                canvas.drawBitmap(resizedIcon, center.x - radius4 - 5, center.y - radius4 - 5, paint);
+            }
+        }
     }
 }

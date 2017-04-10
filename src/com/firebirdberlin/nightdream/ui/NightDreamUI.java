@@ -931,6 +931,9 @@ public class NightDreamUI {
         controlsVisible = true;
         setupAlarmClock();
         alarmClock.invalidate();
+        if ( AlarmHandlerService.alarmIsRunning() ) {
+            alarmClock.activateAlarmUI();
+        }
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
