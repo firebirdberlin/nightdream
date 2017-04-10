@@ -299,11 +299,13 @@ public class AlarmClock extends View {
     }
 
     public void stopAlarm(){
+        handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         AlarmHandlerService.stop(ctx);
     }
 
     public void snooze() {
+        handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         AlarmHandlerService.snooze(ctx);
     }
@@ -313,6 +315,7 @@ public class AlarmClock extends View {
     }
 
     private void setAlarm(long alarmTimeInMillis) {
+        handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         settings.nextAlarmTime = alarmTimeInMillis;
         AlarmHandlerService.set(ctx, alarmTimeInMillis);
