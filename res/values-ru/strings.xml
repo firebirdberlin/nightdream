@@ -33,8 +33,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="background">Задний фон</string>
 <string name="background_black">Черный</string>
 <string name="background_gradient">Градиент</string>
-<string name="background_image">Рисунок</string>
-<string name="background_image_select">Выбор рисунка</string>
+<string name="background_image">Изображение</string>
+<string name="background_image_select">Выбор изображения</string>
 <string name="behaviour">Поведение</string>
 <string name="brightness">Яркость</string>
 <string name="brightness_offset">Предельная яркость</string>
@@ -53,7 +53,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="confirm_reset">Сброс</string>
 <string name="contribute">Внести свой вклад</string>
 <string name="contribute_source_code">Исходный код</string>
-<string name="contribute_translation">Перевести</string>
+<string name="contribute_translation">Перевести на другой язык</string>
 <string name="country">Страна</string>
 <string name="credits">Разработчики</string>
 <string name="credits_pull_requests">Pull requests</string>
@@ -80,7 +80,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="message_mobile_data_connection">Мобильный Интернет</string>
 <string name="message_mobile_data_connection_confirmation">Вы подключены к сотовой сети. Запустить радио?</string>
 <string name="minute">мин</string>
-<string name="mute_ringer">Мелодия выкл.</string>
+<string name="mute_ringer">Приглушить звонки</string>
 <string name="night_mode">Ночной режим</string>
 <string name="night_mode_activation_mode">Способ включения</string>
 <string name="night_mode_activation_manual">ручной</string>
@@ -112,7 +112,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="reactivate_screen_on_noise">Включать при шуме</string>
 <string name="recommend_app_desc">Выберите приложение чтобы поделиться рекомендациями</string>
 <string name="recommend_app_subject">Я хотел бы порекомендовать Вам это приложение-часы</string>
-<string name="recommend">Рекомендовые приложения</string>
+<string name="recommend">Рекомендовать приложение</string>
 <string name="remaining">ост.</string>
 <string name="reset_to_defaults">Сброс настроек</string>
 <string name="restless_mode">Перемещать часы по экрану</string>
@@ -124,8 +124,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screen_orientation_reverse_portrait">перевернутый портрет</string>
 <string name="screenOrientation">Ориентация экрана</string>
 <string name="select_alarm_sound">Выбрать мелодию будильника</string>
-<string name="set_alarm">Установка будильника</string>
-<string name="showcase_text_set_alarms">Нажмите и проведите пальцем</string>
+<string name="set_alarm">установка будильника</string>
+<string name="showcase_text_set_alarms">Нажмите и проведите пальцем чтобы быстро установить разовый будильник</string>
 <string name="showcase_text_delete_alarms">Нажмите здесь чтобы удалить или выключить будильник</string>
 <string name="show_date">Показывать дату</string>
 <string name="show_temperature">Показывать температуру</string>
@@ -143,7 +143,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_regular">Roboto regular</string>
 <string name="typeface_roboto_thin">Roboto thin</string>
 <string name="typeface">Шрифт</string>
-<string name="use_internal_alarm">Быстрый будильник</string>
+<string name="use_internal_alarm">Использовать будильник</string>
 <string name="weather_calculation_time">время подсчета погоды</string>
 <string name="weather_city_id_summary">Оставьте пустым для автоопределения местоположения</string>
 <string name="weather_city_id_title">Поиск местоположения</string>
