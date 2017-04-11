@@ -18,7 +18,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-public class Utility{
+public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static String TAG ="NightDreamActivity";
 
