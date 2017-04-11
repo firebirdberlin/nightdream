@@ -129,6 +129,9 @@ public class PreferencesFragment extends PreferenceFragment {
         catch (IllegalArgumentException e) {
 
         }
+        catch (NullPointerException e) {
+
+        }
     }
 
     ServiceConnection mServiceConn = new ServiceConnection() {
