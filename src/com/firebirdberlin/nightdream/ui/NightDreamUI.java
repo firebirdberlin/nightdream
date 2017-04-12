@@ -186,12 +186,10 @@ public class NightDreamUI {
         updateBatteryValue();
         updateBatteryView();
         setupScreenAnimation();
+
         clockLayoutContainer.post(new Runnable() {
             @Override
             public void run() {
-                if (Build.VERSION.SDK_INT >= 12){
-                    handler.postDelayed(zoomIn, 500);
-                }
                 setupClockLayout();
                 setColor();
                 updateWeatherData();
@@ -204,7 +202,9 @@ public class NightDreamUI {
                 setupShowcase();
             }
         });
-
+        if (Build.VERSION.SDK_INT >= 12){
+            clockLayoutContainer.post(zoomIn);
+        }
 
         EventBus.getDefault().register(this);
         broadcastReceiver = registerBroadcastReceiver();
