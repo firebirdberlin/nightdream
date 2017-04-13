@@ -304,10 +304,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     // click on the settings icon
+    @SuppressWarnings("UnusedParameters")
     public void onSettingsClick(View v) {
         PreferencesActivity.start(this);
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void onRadioClick(View v) {
         if ( AlarmHandlerService.alarmIsRunning() ) {
             AlarmHandlerService.stop(this);
@@ -322,6 +324,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void onNightModeClick(View v) {
         if ( lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {

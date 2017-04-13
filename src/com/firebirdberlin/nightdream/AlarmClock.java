@@ -204,6 +204,7 @@ public class AlarmClock extends View {
         if ( !isVisible ) return;
         Resources res = getResources();
 
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setColorFilter(customColorFilter);
 
         int w = getWidth();
@@ -230,13 +231,7 @@ public class AlarmClock extends View {
 
             paint.setColorFilter(secondaryColorFilter);
 
-            String l = "";
-            if ( userChangesAlarmTime ) {
-                l = getTimeFormatted(time.getCalendar());
-            } else
-            if ( isAlarmSet() ) {
-                l = getTimeFormatted(settings.getAlarmTime());
-            }
+            String l = getAlarmTimeFormatted();
 
             paint.setTextSize(touch_zone_radius * .5f);
             float lw = paint.measureText(l);
@@ -256,6 +251,16 @@ public class AlarmClock extends View {
         }
     }
 
+    private String getAlarmTimeFormatted() {
+        if ( userChangesAlarmTime ) {
+            return getTimeFormatted(time.getCalendar());
+        } else
+        if ( isAlarmSet() ) {
+            return getTimeFormatted(settings.getAlarmTime());
+        }
+        return "";
+    }
+
     private boolean alarmIsRunning() {
         return AlarmHandlerService.alarmIsRunning();
     }
@@ -270,10 +275,13 @@ public class AlarmClock extends View {
     Runnable blink = new Runnable() {
         public void run() {
             handler.removeCallbacks(blink);
-            blinkStateOn = !blinkStateOn;
-            invalidate();
             if (alarmIsRunning()) {
+                blinkStateOn = !blinkStateOn;
+                invalidate();
                 handler.postDelayed(blink, 1000);
+            } else {
+                blinkStateOn = false;
+                invalidate();
             }
         }
     };
