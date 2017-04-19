@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +20,7 @@ import android.util.Log;
 import java.io.IOException;
 import android.support.v4.app.NotificationCompat;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 
@@ -36,9 +36,11 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private float currentVolume = 0.f;
+    private Context context;
 
     @Override
     public void onCreate(){
+        context = this;
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
@@ -55,25 +57,21 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() called.");
 
-        Intent i = getStopIntent(this);
-        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
-
         Notification note = new NotificationCompat.Builder(this)
             .setContentTitle(getString(R.string.alarm))
-            .setContentText(getString(R.string.notification_alarm))
             .setSmallIcon(R.drawable.ic_audio)
-            .setContentIntent(pi)
+            .setPriority(NotificationCompat.PRIORITY_MIN)
             .build();
 
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-
         startForeground(1337, note);
+
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
             if ( intent.hasExtra("stop alarm") ){
-                handler.post(timeout);
+                stopAlarm();
             } else
             if ( intent.hasExtra("start alarm") ){
                 settings = new Settings(this);
@@ -85,6 +83,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         return Service.START_REDELIVER_INTENT;
     }
+
 
     @Override
     public void onDestroy(){
@@ -98,14 +97,22 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     }
 
+
+    public void stopAlarm() {
+        handler.removeCallbacks(timeout);
+        handler.removeCallbacks(fadeIn);
+        AlarmStop();
+        sendBroadcast(new Intent(Config.ACTION_ALARM_STOPPED));
+        stopForeground(false); // bool: true = remove Notification
+        stopSelf();
+    }
+
     private Runnable timeout = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(timeout);
             handler.removeCallbacks(fadeIn);
-            AlarmStop();
-            stopForeground(false); // bool: true = remove Notification
-            stopSelf();
+            AlarmHandlerService.snooze(context);
         }
     };
 

@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import java.lang.IllegalArgumentException;
 import java.lang.Math;
 import java.util.Calendar;
 
@@ -49,13 +50,19 @@ public class CustomAnalogClock extends View {
 
     @Override
     public void onAttachedToWindow(){
+        super.onAttachedToWindow();
         setTimeTick();
     }
 
     @Override
     public void onDetachedFromWindow(){
+        super.onDetachedFromWindow();
         if (timeReceiver != null) {
-            context.unregisterReceiver(timeReceiver);
+            try {
+                context.unregisterReceiver(timeReceiver);
+            } catch (IllegalArgumentException e) {
+                // receiver was not registered,
+            }
             timeReceiver = null;
         }
     }

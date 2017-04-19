@@ -19,9 +19,9 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.HttpStatusCheckTask;
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.HttpStatusCheckTask;
+import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 
@@ -68,15 +68,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         String action = intent.getAction();
         if ( ACTION_START.equals(action) ) {
-            Intent i = getStopIntent(this);
-            i.setAction(ACTION_STOP);
-            PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
-
             Notification note = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.radio))
-                .setContentText(getString(R.string.notification_alarm))
                 .setSmallIcon(R.drawable.ic_radio)
-                .setContentIntent(pi)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
                 .build();
 
             note.flags |= Notification.FLAG_NO_CLEAR;
@@ -114,6 +109,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         if (statusCheckTask != null) {
             statusCheckTask.cancel(true);
+        }
+
+        if (streamingMode == StreamingMode.ALARM) {
+            Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
+            sendBroadcast(intent);
         }
 
         handler.removeCallbacks(fadeIn);

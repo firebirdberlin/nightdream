@@ -20,7 +20,7 @@ installdebugemulator:
 	adb -e install -r bin/Pro/NightDream-debug.apk
 
 uninstall:
-	adb $(OPT) -d uninstall com.firebirdberlin.nightdream
+	adb $(OPT) uninstall com.firebirdberlin.nightdream
 
 clean:
 	ant -f Pro_build.xml clean

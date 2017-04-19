@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="@CONFIG.PACKAGENAME@"
-    android:versionCode="142"
-    android:versionName="2.5.6">
+    android:versionCode="147"
+    android:versionName="2.5.9">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -59,6 +59,7 @@
 
     <service android:enabled="true" android:name=".NightModeListener" />
     <service android:enabled="true" android:name=".services.AlarmService" />
+    <service android:enabled="true" android:name=".services.AlarmHandlerService" />
     <service android:enabled="true" android:name=".services.DownloadWeatherService" />
     <service android:enabled="true" android:name=".services.LocationService" />
     <service android:enabled="true" android:name=".services.RadioStreamService" />

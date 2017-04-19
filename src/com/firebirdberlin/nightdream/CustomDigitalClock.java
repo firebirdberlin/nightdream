@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import java.lang.IllegalArgumentException;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
@@ -14,7 +15,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
@@ -75,13 +75,19 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
     @Override
     public void onAttachedToWindow(){
+        super.onAttachedToWindow();
         setTimeTick();
     }
 
     @Override
     public void onDetachedFromWindow(){
+        super.onDetachedFromWindow();
         if (timeReceiver != null) {
-            context.unregisterReceiver(timeReceiver);
+            try {
+                context.unregisterReceiver(timeReceiver);
+            } catch (IllegalArgumentException e) {
+                // receiver was not registered,
+            }
             timeReceiver = null;
         }
     }

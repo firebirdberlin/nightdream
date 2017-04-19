@@ -18,6 +18,8 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">Über</string>
+<string name="action_snooze">Schlummern</string>
+<string name="action_stop">Beenden</string>
 <string name="alarm">Wecker</string>
 <string name="alarmFadeIn">ansteigende Lautstärke</string>
 <string name="alarmVolume">Lautstärke</string>
@@ -28,6 +30,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Aussehen</string>
 <string name="app_name">Nachtuhr</string>
 <string name="auto_brightness">Automatische Helligkeit</string>
+<string name="autostart_message_disabled">Bitte deaktivieren Sie Bildschirmschoner (Daydream), um die Autostart-Option zu aktivieren.</string>
 <string name="autostart_timerange_label_end">Endzeit</string>
 <string name="autostart_timerange_label_start">Startzeit</string>
 <string name="background">Hintergrund</string>
@@ -122,11 +125,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="select_alarm_sound">Weckton auswählen</string>
 <string name="set_alarm">Alarm einstellen</string>
 <string name="showcase_text_set_alarms">Tippen Sie hier und verschieben Sie Ihren Finger, um einen einmaligen Alarm zu stellen.</string>
-<string name="showcase_text_delete_alarms">Tippen Sie hier, um einen Alarm zu löschen oder zu beenden.</string>
+<string name="showcase_text_delete_alarms">Tippen Sie hier, um einen Alarm zu löschen oder zu beenden. Tippen Sie auf die Uhrzeit, um die Schlummerfunktion zu aktivieren.</string>
 <string name="show_date">Datum anzeigen</string>
 <string name="show_temperature">Temperatur anzeigen</string>
 <string name="show_weather">Wetter anzeigen</string>
 <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
+<string name="snoozeTime">Schlummerzeit</string>
 <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
 <string name="titlePrivacyPolicy">Datenschutzerklärung</string>
 <string name="temperatureUnit">Temperatureinheit</string>

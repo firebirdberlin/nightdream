@@ -19,11 +19,13 @@ import android.content.pm.PackageManager;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.Manifest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
@@ -58,6 +60,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 5;
     private Settings settings = null;
     private Context mContext = null;
+    DaydreamSettingsObserver daydreamSettingsObserver = null;
 
     IInAppBillingService mService;
     public boolean purchased_donation = false;
@@ -78,7 +81,6 @@ public class PreferencesFragment extends PreferenceFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-
     }
 
     @Override
@@ -102,6 +104,11 @@ public class PreferencesFragment extends PreferenceFragment {
 
         // InAppBillingService service dont seems to be available in emulator
         activatePurchasesIfDebuggableAndEmulator();
+        daydreamSettingsObserver = new DaydreamSettingsObserver( new Handler() );
+        mContext.getContentResolver().registerContentObserver(
+                android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
+                true,
+                daydreamSettingsObserver);
     }
 
     public void setInitialScreenIndex(int index) {
@@ -114,6 +121,16 @@ public class PreferencesFragment extends PreferenceFragment {
         // unbind the in-app billing service
         if (mService != null) {
             getActivity().unbindService(mServiceConn);
+        }
+
+        try {
+            mContext.getContentResolver().unregisterContentObserver(daydreamSettingsObserver);
+        }
+        catch (IllegalArgumentException e) {
+
+        }
+        catch (NullPointerException e) {
+
         }
     }
 
@@ -256,6 +273,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void init() {
         final Context context = mContext;
+
         settings = new Settings(mContext);
 
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -360,6 +378,7 @@ public class PreferencesFragment extends PreferenceFragment {
         });
 
         setupLightSensorPreferences();
+        setupDaydreamPreferences();
 
     }
 
@@ -697,6 +716,28 @@ public class PreferencesFragment extends PreferenceFragment {
             purchased_weather_data = true;
             purchased_web_radio = true;
             togglePurchasePreferences();
+        }
+    }
+
+
+    private void setupDaydreamPreferences() {
+        if (!isAdded() ) return;
+        enablePreference("autostart",  !Utility.isDaydreamEnabled(mContext) );
+        Preference pref = (Preference) findPreference("autostart");
+        String summary = pref.isEnabled() ? "" : getString(R.string.autostart_message_disabled);
+        pref.setSummary(summary);
+    }
+
+    public class DaydreamSettingsObserver extends ContentObserver {
+
+        public DaydreamSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            setupDaydreamPreferences();
         }
     }
 }

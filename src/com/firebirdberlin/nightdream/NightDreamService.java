@@ -2,8 +2,10 @@ package com.firebirdberlin.nightdream;
 
 import java.util.Calendar;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -26,7 +28,7 @@ import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
-import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -236,8 +238,8 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     }
 
     public void onRadioClick(View v) {
-        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM ) {
-            alarmClock.stopRadioStream();
+        if ( AlarmHandlerService.alarmIsRunning() ) {
+            AlarmHandlerService.stop(this);
         }
 
         if ( mySettings.radioStreamURLUI.isEmpty() ) {
@@ -245,16 +247,22 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
             return;
         }
 
-        if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.RADIO ) {
-            nightDreamUI.setRadioIconActive();
-            RadioStreamService.startStream(this);
-
-        } else {
-            nightDreamUI.setRadioIconInactive();
-            RadioStreamService.stop(this);
-        }
+        toggleRadioStreamState();
     }
 
+    private void toggleRadioStreamState() {
+        final Context context = this;
+        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
+            RadioStreamService.stop(this);
+            return;
+        }
+
+        if (Utility.hasNetworkConnection(this)) {
+            RadioStreamService.startStream(this);
+        } else { // no network connection
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_LONG).show();
+        }
+    }
     public void onNightModeClick(View v) {
         // toggle the night mode manually
         if ( lightSensor == null

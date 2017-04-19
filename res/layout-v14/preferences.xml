@@ -303,6 +303,17 @@
                 android:title="@string/alarmFadeIn"
                 android:defaultValue="true" />
 
+            <de.firebirdberlin.preference.InlineSeekBarPreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:key="snoozeTimeInMinutes"
+                android:title="@string/snoozeTime"
+                android:defaultValue="5"
+                android:max="60"
+                seekbar:min="5"
+                seekbar:interval="1"
+                seekbar:unitsLeft=""
+                seekbar:unitsRight="min"/>
+
             <PreferenceCategory
                 android:title="@string/radio_stream"
                 android:key="category_radio_stream">
@@ -518,6 +529,7 @@ hu - Szabados János\n
 nl - Leo van der Meulen et. al.\n
 pl - Wojciech Mudyn et. al.\n
 ro - Lucian Balaj\n
+ru - Denis Korotkov et. al.\n
 sk - Martin Renko\n
 sr - Vladimir Milić\n
 sv - Johnny Wahlberg"/>
