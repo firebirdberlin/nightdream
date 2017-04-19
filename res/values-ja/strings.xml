@@ -17,9 +17,9 @@ Please preserve the xml tags and the utf8 encoding.
 
 
 <resources>
-<string name="about">およそ</string>
+<string name="about">このプログラムについて</string>
 <string name="alarm">アラーム</string>
-<string name="alarmFadeIn">ボリュームの増加</string>
+<string name="alarmFadeIn">ボリュームアップ</string>
 <string name="alarmVolume">ボリューム</string>
 <string name="allow_screen_off_summary">夜間に画面をオフにする</string>
 <string name="allow_screen_off">画面をオフにする</string>
@@ -27,19 +27,19 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="ambient_noise_summary">周囲の騒音によって夜間モードが有効にならないようにしますか？</string>
 <string name="appearance">外観</string>
 <string name="app_name">夜の時計</string>
-<string name="auto_brightness">自動明るさ</string>
+<string name="auto_brightness">明るさ自動</string>
 <string name="autostart_timerange_label_end">終了時間</string>
 <string name="autostart_timerange_label_start">開始時間</string>
 <string name="background">バックグラウンド</string>
 <string name="background_black">黒</string>
-<string name="background_gradient">勾配</string>
+<string name="background_gradient">傾斜</string>
 <string name="background_image">画像</string>
 <string name="background_image_select">画像を選択</string>
 <string name="behaviour">動作</string>
 <string name="brightness">輝度</string>
 <string name="brightness_offset">明るさオフセット</string>
 <string name="buttonAccessibilitySettings">通知を表示する</string>
-<string name="category_handle_power">...と接続したとき</string>
+<string name="category_handle_power">接続したとき</string>
 <string name="category_handle_power_autostart_time">時間範囲内で開始する</string>
 <string name="choose_alarm_sound">アラーム音</string>
 <string name="choose_primary_color">アクセントの色</string>
@@ -51,7 +51,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="colors">色</string>
 <string name="confirm_reset_question">本当にすべての設定をリセットしますか？</string>
 <string name="confirm_reset">リセット</string>
-<string name="contribute">貢献</string>
+<string name="contribute">謝辞</string>
 <string name="contribute_source_code">ソースコード</string>
 <string name="contribute_translation">翻訳</string>
 <string name="country">国</string>
