@@ -201,22 +201,21 @@ public class AlarmClock extends View {
         // the coordinate is negative outside the view
         y *= -1.f;
 
-        int hours = (int) (x/w * 24);
-        int minsFiveMinuteInterval = (int) ((y/h * 60)) / 5 * 5;
-        int minsOneMinuteInterval = (int) ((y/h * 60));
         // adjust time in 5-minute intervals when dragging upwards, and 1-minute interval when dragging downwards.
-        int mins;
+        int roundTo = (movingDown) ? 1 : 5;
+        int hours = (int) (x/w * 24);
+        int mins = (int) ((y/h * 60)) / roundTo * roundTo;
         if (movingDown) {
            // make sure time never increases while dragging downwards
-           mins = Math.min(minsOneMinuteInterval, lastMinSinceDragStart);
+           mins = Math.min(mins, lastMinSinceDragStart);
         } else {
            // make sure time never decreases while dragging upwards
-           mins = Math.max(minsFiveMinuteInterval, lastMinSinceDragStart);
+           mins = Math.max(mins, lastMinSinceDragStart);
         }
         lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
 
         time.hour = (hours >= 24) ? 23 : hours;
-        time.min = (mins >= 60) ? mins - 60 : mins;
+        time.min = (mins >= 60 || mins < 0) ? 0 : mins;
     }
 
     @Override
