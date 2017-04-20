@@ -61,6 +61,7 @@ public class Settings {
     public boolean useInternalAlarm = true;
     public boolean useRadioAlarmClock = false;
     public float dim_offset = 0.8f;
+    public float nightModeBrightness = 0.1f;
     public float location_lon = 0.f;
     public float location_lat = 0.f;
     public long location_time = -1L;
@@ -153,6 +154,7 @@ public class Settings {
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
+        nightModeBrightness = settings.getFloat("nightModeBrightness", nightModeBrightness);
         nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", nightModeTimeRangeStart);
         nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", nightModeTimeRangeEnd);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
@@ -287,6 +289,13 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("dimOffset", value);
         prefEditor.putInt("brightness_offset", (int) (value * 100));
+        prefEditor.commit();
+    }
+
+    public void setNightModeBrightness(float value){
+        nightModeBrightness = value;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putFloat("nightModeBrightness", value);
         prefEditor.commit();
     }
 

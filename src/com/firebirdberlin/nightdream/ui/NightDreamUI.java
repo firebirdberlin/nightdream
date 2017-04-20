@@ -625,7 +625,7 @@ public class NightDreamUI {
         LIGHT_VALUE_DARK = settings.minIlluminance;
         float v = 0.f;
         float brightness = 0.f;
-        if (settings.autoBrightness && Utility.getLightSensor(mContext) != null) {
+        if (mode != 0 && settings.autoBrightness && Utility.getLightSensor(mContext) != null) {
             float luminance_offset = LIGHT_VALUE_BRIGHT * add_brightness;
             if (light_value > LIGHT_VALUE_BRIGHT && add_brightness > 0.f) {
                 luminance_offset = LIGHT_VALUE_DAYLIGHT * add_brightness;
@@ -635,8 +635,14 @@ public class NightDreamUI {
 
             brightness = (light_value + luminance_offset - LIGHT_VALUE_BRIGHT)/(LIGHT_VALUE_DAYLIGHT - LIGHT_VALUE_BRIGHT);
         } else {
-            v = 1.f + add_brightness;
-            brightness = add_brightness;
+            if (mode == 0) {
+                v = 1.f + settings.nightModeBrightness;
+                brightness = settings.nightModeBrightness;
+
+            } else {
+                v = 1.f + add_brightness;
+                brightness = add_brightness;
+            }
 
             if ( daydreamMode ) {
                 v *= 0.5f;
@@ -644,15 +650,16 @@ public class NightDreamUI {
             }
         }
 
+        float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.05f);
         v = to_range(v, 0.05f, 1.f);
         if (settings.background_mode == Settings.BACKGROUND_IMAGE) {
             v = to_range(v, 0.5f, 1.f);
         }
 
-        brightness = to_range(brightness, 0.01f, 1.f);
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore a minimum value must be set to preserve the visibility of the clock.
-
+        minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
+        brightness = to_range(brightness, minBrightness, 1.f);
         setBrightness(brightness);
 
         if ( showcaseView == null ) {
@@ -993,11 +1000,12 @@ public class NightDreamUI {
             if (e1.getY() < rect[1]) {
                 Point size = utility.getDisplaySize();
                 float dx = -2.f * (distanceX / size.x);
-                settings.dim_offset += dx;
-                settings.dim_offset = to_range(settings.dim_offset, -1.f, 1.f);
+                float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                value += dx;
+                value = to_range(value, -1.f, 1.f);
 
-                int value = (int) (100.f * (settings.dim_offset + 1.f));
-                brightnessProgress.setProgress(value);
+                int intValue = (int) (100.f * (value + 1.f));
+                brightnessProgress.setProgress(intValue);
                 brightnessProgress.setVisibility(View.VISIBLE);
 
                 setAlpha(brightnessProgress, 1.f, 0);
@@ -1005,8 +1013,12 @@ public class NightDreamUI {
                 removeCallbacks(hideBrightnessView);
                 handler.postDelayed(hideBrightnessLevel, 1000);
 
-                dimScreen(0, last_ambient, settings.dim_offset);
-                settings.setBrightnessOffset(settings.dim_offset);
+                dimScreen(0, last_ambient, value);
+                if (mode != 0) {
+                    settings.setBrightnessOffset(value);
+                } else {
+                    settings.setNightModeBrightness(value);
+                }
             }
             return false;
         }
