@@ -61,7 +61,7 @@ public class Settings {
     public boolean useInternalAlarm = true;
     public boolean useRadioAlarmClock = false;
     public float dim_offset = 0.8f;
-    public float nightModeBrightness = 0.1f;
+    public float nightModeBrightness = -0.5f;
     public float location_lon = 0.f;
     public float location_lat = 0.f;
     public long location_time = -1L;
