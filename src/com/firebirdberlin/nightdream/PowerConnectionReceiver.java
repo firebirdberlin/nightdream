@@ -41,7 +41,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     public static boolean shallAutostart(Context context, Settings settings) {
         if (settings.handle_power == false) return false;
-        if (Utility.isDaydreamEnabled(context)) return false;
+        if (Utility.isConfiguredAsDaydream(context)) return false;
 
         Calendar now = new GregorianCalendar();
         Calendar start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();

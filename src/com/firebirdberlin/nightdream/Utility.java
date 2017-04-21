@@ -15,11 +15,13 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings.System;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
+    private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
     private static String TAG ="NightDreamActivity";
 
     private Context mContext;
@@ -155,6 +157,30 @@ public class Utility {
 
     public static boolean isDaydreamEnabledOnSleep(final Context c) {
         return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), "screensaver_activate_on_sleep", -1);
+    }
+
+    public static String getSelectedDaydreamClassName(final Context c) {
+        String names = android.provider.Settings.Secure.getString(c.getContentResolver(), SCREENSAVER_COMPONENTS);
+        return names == null ? null : componentsFromString(names)[0].getClassName();
+    }
+
+    private static ComponentName[] componentsFromString(String names) {
+        String[] namesArray = names.split(",");
+        ComponentName[] componentNames = new ComponentName[namesArray.length];
+        for (int i = 0; i < namesArray.length; i++) {
+            componentNames[i] = ComponentName.unflattenFromString(namesArray[i]);
+        }
+        return componentNames;
+    }
+
+    public static boolean isConfiguredAsDaydream(final Context c) {
+        if(Build.VERSION.SDK_INT < 17) return false;
+        if (1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1)) {
+            String classname = getSelectedDaydreamClassName(c);
+            Log.i(TAG, "Daydream is active " + classname);
+            return "com.firebirdberlin.nightdream.NightDreamService".equals(classname);
+        }
+        return false;
     }
 
     static public void toggleComponentState(Context context, Class component, boolean on){

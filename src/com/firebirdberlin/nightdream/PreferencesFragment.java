@@ -109,6 +109,10 @@ public class PreferencesFragment extends PreferenceFragment {
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
                 true,
                 daydreamSettingsObserver);
+        mContext.getContentResolver().registerContentObserver(
+                android.provider.Settings.Secure.getUriFor("screensaver_components"),
+                true,
+                daydreamSettingsObserver);
     }
 
     public void setInitialScreenIndex(int index) {
@@ -722,7 +726,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void setupDaydreamPreferences() {
         if (!isAdded() ) return;
-        enablePreference("autostart",  !Utility.isDaydreamEnabled(mContext) );
+        enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
         Preference pref = (Preference) findPreference("autostart");
         String summary = pref.isEnabled() ? "" : getString(R.string.autostart_message_disabled);
         pref.setSummary(summary);

@@ -57,7 +57,7 @@ public class PreferencesActivityv9 extends PreferenceActivity {
         Preference prefHandlePower = (Preference) findPreference("handle_power");
         Preference prefAllowScreenOff = (Preference) findPreference("allow_screen_off");
 
-        boolean enabled = Utility.isDaydreamEnabled(this);
+        boolean enabled = Utility.isConfiguredAsDaydream(this);
         prefAllowScreenOff.setEnabled( ! enabled );
 
         if ( Utility.getLightSensor(this) == null ) {
