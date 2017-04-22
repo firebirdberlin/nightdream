@@ -651,7 +651,8 @@ public class NightDreamUI {
         }
 
         float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.05f);
-        v = to_range(v, 0.05f, 1.f);
+
+        v = to_range(v, minBrightness, 1.f);
         if (settings.background_mode == Settings.BACKGROUND_IMAGE) {
             v = to_range(v, 0.5f, 1.f);
         }
@@ -659,7 +660,8 @@ public class NightDreamUI {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore a minimum value must be set to preserve the visibility of the clock.
         minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
-        brightness = to_range(brightness, minBrightness, 1.f);
+        float maxBrightness = settings.autoBrightness ? Math.min(settings.maxBrightness, 1.f) : 1.f;
+        brightness = to_range(brightness, minBrightness, maxBrightness);
         setBrightness(brightness);
 
         if ( showcaseView == null ) {
@@ -696,6 +698,7 @@ public class NightDreamUI {
     }
 
     private void setBrightness(float value) {
+        Log.i(TAG, String.format("new brightness value %.2f", value));
         LayoutParams layout = window.getAttributes();
         layout.screenBrightness = value;
         layout.buttonBrightness = LayoutParams.BRIGHTNESS_OVERRIDE_OFF;

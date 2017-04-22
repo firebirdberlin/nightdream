@@ -33,6 +33,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
@@ -627,6 +628,20 @@ public class PreferencesFragment extends PreferenceFragment {
             title = getString(R.string.brightness_offset);
         }
         brightnessOffset.setTitle(title);
+
+        if (on) {
+            PreferenceCategory category = (PreferenceCategory) findPreference("category_brightness");
+            InlineSeekBarPreference pref = new InlineSeekBarPreference(mContext);
+            pref.setKey("maxBrightness");
+            pref.setTitle(getString(R.string.maxBrightness));
+            pref.setSummary("");
+            pref.setRange(1, 100);
+            pref.setDefaultValue(50);
+
+            category.addPreference(pref);
+        } else {
+            removePreference("maxBrightness");
+        }
     }
 
     private void setupBackgroundImageControls(SharedPreferences prefs) {

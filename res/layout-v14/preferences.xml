@@ -149,52 +149,57 @@
 
             </PreferenceCategory>
 
-            <PreferenceCategory
-                android:key="category_behaviour"
-                android:title="@string/behaviour">
+        <PreferenceCategory
+            android:key="category_brightness"
+            android:title="@string/brightness">
 
-                <SwitchPreference
-                    android:key="restlessMode"
-                    android:title="@string/restless_mode"
-                    android:defaultValue="true" />
+            <SwitchPreference
+                android:key="autoBrightness"
+                android:title="@string/auto_brightness"
+                android:defaultValue="false" />
 
-                <SwitchPreference
-                    android:key="persistentBatteryValueWhileCharging"
-                    android:title="@string/persistent_battery_value_while_charging"
-                    android:summary="@string/persistent_battery_value_while_charging_summary"
-                    android:defaultValue="true" />
-
-                <SwitchPreference
-                    android:key="autoBrightness"
-                    android:title="@string/auto_brightness"
-                    android:defaultValue="false" />
-
-                <de.firebirdberlin.preference.InlineSeekBarPreference
-                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                    android:key="brightness_offset"
-                    android:title="@string/brightness_offset"
-                    android:defaultValue="80"
-                    android:max="100"
-                    seekbar:min="-100"
-                    seekbar:interval="1"
-                    seekbar:unitsLeft=""
-                    seekbar:unitsRight=""/>
-
-                <ListPreference
-                    android:title="@string/screenOrientation"
-                    android:key="screenOrientation"
-                    android:defaultValue="-1"
-                    android:entries="@array/screenOrientation"
-                    android:entryValues="@array/screenOrientationValues"/>
-
-                <SwitchPreference
-                    android:key="force_auto_rotation"
-                    android:title="@string/force_auto_rotation"
-                    android:summary="@string/force_auto_rotation_summary"
-                    android:defaultValue="false" />
+            <de.firebirdberlin.preference.InlineSeekBarPreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:key="brightness_offset"
+                android:title="@string/brightness_offset"
+                android:defaultValue="80"
+                android:max="100"
+                seekbar:min="-100"
+                seekbar:interval="1"
+                seekbar:unitsLeft=""
+                seekbar:unitsRight=""/>
         </PreferenceCategory>
 
-        </PreferenceScreen>
+        <PreferenceCategory
+            android:key="category_behaviour"
+            android:title="@string/behaviour">
+
+            <SwitchPreference
+                android:key="restlessMode"
+                android:title="@string/restless_mode"
+                android:defaultValue="true" />
+
+            <SwitchPreference
+                android:key="persistentBatteryValueWhileCharging"
+                android:title="@string/persistent_battery_value_while_charging"
+                android:summary="@string/persistent_battery_value_while_charging_summary"
+                android:defaultValue="true" />
+
+            <ListPreference
+                android:title="@string/screenOrientation"
+                android:key="screenOrientation"
+                android:defaultValue="-1"
+                android:entries="@array/screenOrientation"
+                android:entryValues="@array/screenOrientationValues"/>
+
+            <SwitchPreference
+                android:key="force_auto_rotation"
+                android:title="@string/force_auto_rotation"
+                android:summary="@string/force_auto_rotation_summary"
+                android:defaultValue="false" />
+        </PreferenceCategory>
+
+    </PreferenceScreen>
 
         <PreferenceScreen
             android:title="@string/night_mode"
