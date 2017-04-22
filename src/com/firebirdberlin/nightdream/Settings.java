@@ -62,6 +62,7 @@ public class Settings {
     public boolean useRadioAlarmClock = false;
     public float dim_offset = 0.8f;
     public float nightModeBrightness = -0.5f;
+    public float maxBrightness = 1.f;
     public float location_lon = 0.f;
     public float location_lat = 0.f;
     public long location_time = -1L;
@@ -155,6 +156,7 @@ public class Settings {
         muteRinger = settings.getBoolean("Night.muteRinger", false);
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         nightModeBrightness = settings.getFloat("nightModeBrightness", nightModeBrightness);
+        maxBrightness = 0.01f * settings.getInt("maxBrightness", 100);
         nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", nightModeTimeRangeStart);
         nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", nightModeTimeRangeEnd);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
