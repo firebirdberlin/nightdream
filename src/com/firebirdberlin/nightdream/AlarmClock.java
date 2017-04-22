@@ -59,6 +59,8 @@ public class AlarmClock extends View {
     private HotCorner cornerLeft;
     private HotCorner cornerRight;
     private boolean blinkStateOn = false;
+    private Float lastMoveEventY = null;
+    private int lastMinSinceDragStart = 0;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -128,6 +130,8 @@ public class AlarmClock extends View {
                 if (dist > quiet_zone_size && dist < touch_zone_radius) { // left corner
                     FingerDown = true;
                     this.invalidate();
+                    this.lastMoveEventY = tY;
+                    this.lastMinSinceDragStart = 0;
                     return true;
                 }
                 return false;
@@ -142,6 +146,7 @@ public class AlarmClock extends View {
                     userChangesAlarmTime = false;
                 }
                 this.invalidate();
+                this.lastMoveEventY = tY;
                 break;
             case MotionEvent.ACTION_UP:
                 if (FingerDown == false) return false;
@@ -152,6 +157,7 @@ public class AlarmClock extends View {
                 FingerDown = false;
                 userChangesAlarmTime = false;
                 this.invalidate();
+                this.lastMoveEventY = null;
                 break;
         }
         return false;
@@ -187,16 +193,29 @@ public class AlarmClock extends View {
         int w = getWidth() - 2 * touch_zone_radius;
         int h = new Utility(ctx).getDisplaySize().y - 2 * touch_zone_radius;
 
+        final boolean movingDown = (lastMoveEventY != null && y > lastMoveEventY.floatValue());
+
         x -= touch_zone_radius;
         x = (x < 0) ? 0 : x;
 
         // the coordinate is negative outside the view
         y *= -1.f;
 
+        // adjust time in 5-minute intervals when dragging upwards, and 1-minute interval when dragging downwards.
+        int roundTo = (movingDown) ? 1 : 5;
         int hours = (int) (x/w * 24);
-        int mins = (int) ((y/h * 60)) / 5 * 5;
+        int mins = (int) ((y/h * 60)) / roundTo * roundTo;
+        if (movingDown) {
+           // make sure time never increases while dragging downwards
+           mins = Math.min(mins, lastMinSinceDragStart);
+        } else {
+           // make sure time never decreases while dragging upwards
+           mins = Math.max(mins, lastMinSinceDragStart);
+        }
+        lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
+
         time.hour = (hours >= 24) ? 23 : hours;
-        time.min = (mins >= 60) ? 0 : mins;
+        time.min = (mins >= 60 || mins < 0) ? 0 : mins;
     }
 
     @Override
