@@ -9,6 +9,7 @@ import com.android.vending.billing.IInAppBillingService;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -287,6 +288,7 @@ public class PreferencesFragment extends PreferenceFragment {
         setupBrightnessControls(prefs);
         setupBackgroundImageControls(prefs);
         setupNightModePreferences(prefs);
+        initUseDeviceLockPreference();
 
         Preference goToSettings = (Preference) findPreference("startNotificationService");
         goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -347,6 +349,13 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
+        Preference uninstallApp = (Preference) findPreference("uninstallApp");
+        uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                uninstallApplication();
+                return true;
+            }
+        });
 
         Preference resetToDefaults = (Preference) findPreference("reset_to_defaults");
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -684,9 +693,58 @@ public class PreferencesFragment extends PreferenceFragment {
                 } else
                 if (key.equals("nightModeActivationMode")) {
                     setupNightModePreferences(sharedPreferences);
+                } else
+                if (key.equals("useDeviceLock")) {
+                    setupDeviceAdministratorPermissions(sharedPreferences);
                 }
             }
         };
+
+    private void initUseDeviceLockPreference() {
+        SwitchPreference pref = (SwitchPreference) findPreference("useDeviceLock");
+
+        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(mContext.DEVICE_POLICY_SERVICE);
+        ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
+        if (pref.isChecked() && !mgr.isAdminActive(cn) ) {
+            pref.setChecked(false);
+        }
+    }
+
+    private void setupDeviceAdministratorPermissions(SharedPreferences sharedPreferences) {
+        if (!isAdded() ) return;
+        boolean on = sharedPreferences.getBoolean("useDeviceLock", false);
+        if (on) {
+            DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(mContext.DEVICE_POLICY_SERVICE);
+            ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
+            if ( !mgr.isAdminActive(cn)) {
+                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, cn);
+                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                                getString(R.string.useDeviceLockExplanation));
+                startActivity(intent);
+            }
+
+        } else {
+            removeActiveAdmin();
+        }
+    }
+
+    private void removeActiveAdmin() {
+        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(mContext.DEVICE_POLICY_SERVICE);
+        ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
+        if ( mgr.isAdminActive(cn)) {
+            mgr.removeActiveAdmin(cn);
+        }
+
+    }
+
+    private void uninstallApplication() {
+        removeActiveAdmin();
+        Uri packageURI = Uri.parse("package:" + NightDreamActivity.class.getPackage().getName());
+        Intent intent = new Intent(Intent.ACTION_DELETE, packageURI);
+        startActivity(intent);
+
+    }
 
     private void resetScaleFactor(SharedPreferences sharedPreferences) {
         SharedPreferences.Editor prefEditor = sharedPreferences.edit();

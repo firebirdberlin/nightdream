@@ -148,7 +148,10 @@ OR
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
+    <string name="uninstall">Uninstall application</string>
     <string name="use_internal_alarm">Quick alarms</string>
+    <string name="useDeviceLock">Lock device</string>
+    <string name="useDeviceLockExplanation">Lock the device while the Night Clock is active.</string>
     <string name="weather_calculation_time">weather calculation time</string>
     <string name="weather_city_id_summary">Leave empty for an automatic detection of the location.</string>
     <string name="weather_city_id_title">Search location</string>

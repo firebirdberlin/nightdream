@@ -126,8 +126,8 @@ public class Utility {
                                                         System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
     }
 
-    public int getScreenOffTimeout(){
-        return System.getInt(mContext.getContentResolver(), System.SCREEN_OFF_TIMEOUT, -1);
+    public static int getScreenOffTimeout(Context context){
+        return System.getInt(context.getContentResolver(), System.SCREEN_OFF_TIMEOUT, -1);
     }
 
     public void setManualBrightnessMode(){

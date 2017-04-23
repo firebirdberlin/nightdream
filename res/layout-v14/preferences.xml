@@ -175,6 +175,11 @@
             android:title="@string/behaviour">
 
             <SwitchPreference
+                android:key="useDeviceLock"
+                android:title="@string/useDeviceLock"
+                android:defaultValue="false" />
+
+            <SwitchPreference
                 android:key="restlessMode"
                 android:title="@string/restless_mode"
                 android:defaultValue="true" />
@@ -435,11 +440,6 @@
             android:title="@string/buttonAccessibilitySettings"
             android:icon="@drawable/ic_menu"/>
 
-        <Preference
-            android:key="reset_to_defaults"
-            android:icon="@drawable/ic_undo"
-            android:title="@string/reset_to_defaults"/>
-
         <PreferenceScreen
             android:key="about_screen"
             android:icon="@drawable/ic_about"
@@ -458,6 +458,16 @@
                 android:key="recommendApp"
                 android:icon="@drawable/ic_share"
                 android:title="@string/recommend"/>
+
+            <Preference
+                android:key="reset_to_defaults"
+                android:icon="@drawable/ic_undo"
+                android:title="@string/reset_to_defaults"/>
+
+            <Preference
+                android:key="uninstallApp"
+                android:icon="@drawable/ic_delete"
+                android:title="@string/uninstall"/>
 
             <Preference
                 android:title="@string/titlePrivacyPolicy">

@@ -6,11 +6,14 @@ import java.lang.IllegalArgumentException;
 import de.greenrobot.event.EventBus;
 
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -76,7 +79,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     private Settings mySettings = null;
     private boolean isChargingWireless = false;
-
+    private DevicePolicyManager mgr = null;
+    private ComponentName cn = null;
+    protected PowerManager.WakeLock wakelock;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         background_image = (ImageView) findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
+        mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        cn = new ComponentName(this, AdminReceiver.class);
     }
 
     @Override
@@ -128,6 +135,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         setKeepScreenOn(true);
         mySettings = new Settings(this);
+        handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
 
         scheduleShutdown();
         nightDreamUI.onResume();
@@ -217,6 +225,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         nightDreamUI.onPause();
 
         handler.removeCallbacks(finishApp);
+        handler.removeCallbacks(lockDevice);
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         NightModeReceiver.cancel(this);
@@ -230,6 +239,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         } else {
             nightDreamUI.restoreRingerMode();
         }
+        releaseWakeLock();
     }
 
     private void unregister(BroadcastReceiver receiver) {
@@ -420,6 +430,45 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
            finish();
        }
     };
+
+    private Runnable lockDevice = new Runnable() {
+       @Override
+       public void run() {
+           if (mgr.isAdminActive(cn)) {
+               if( !isLocked() && mySettings.useDeviceLock) {
+                   mgr.lockNow();
+                   acquireWakeLock();
+               }
+           } else {
+               Intent intent = new Intent(
+                       DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+               intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, cn);
+               intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                                getString(R.string.useDeviceLockExplanation));
+               startActivity(intent);
+           }
+       }
+    };
+
+    public void acquireWakeLock() {
+        //this.wakelock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+        this.wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
+                                            | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
+        this.wakelock.acquire();
+    }
+
+    public void releaseWakeLock() {
+        if (wakelock == null) return;
+        if (wakelock.isHeld()) {
+            this.wakelock.release();
+        }
+    }
+
+    private boolean isLocked() {
+        KeyguardManager myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        return myKM.inKeyguardRestrictedInputMode();
+    }
+
 
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
