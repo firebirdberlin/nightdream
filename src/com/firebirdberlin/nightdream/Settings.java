@@ -58,6 +58,7 @@ public class Settings {
     public boolean showWeather = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
+    public boolean useDeviceLock = false;
     public boolean useInternalAlarm = true;
     public boolean useRadioAlarmClock = false;
     public float dim_offset = 0.8f;
@@ -177,9 +178,10 @@ public class Settings {
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
-        temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
+        temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
+        useDeviceLock = settings.getBoolean("useDeviceLock", false);
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);

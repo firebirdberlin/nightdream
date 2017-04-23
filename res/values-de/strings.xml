@@ -144,7 +144,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_regular">Roboto Normal</string>
 <string name="typeface_roboto_thin">Roboto Dünn</string>
 <string name="typeface">Schriftart</string>
+<string name="uninstall">Anwendung deinstallieren</string>
 <string name="use_internal_alarm">Schnellalarm</string>
+<string name="useDeviceLock">Gerät sperren</string>
+<string name="useDeviceLockExplanation">Gerät sperren während die Nachtuhr aktiv ist.</string>
 <string name="weather_calculation_time">Zeit der Wetterdatenberechnung</string>
 <string name="weather_city_id_summary">Frei lassen zur automatischen Standortbestimmung.</string>
 <string name="weather_city_id_title">Standort suchen</string>
