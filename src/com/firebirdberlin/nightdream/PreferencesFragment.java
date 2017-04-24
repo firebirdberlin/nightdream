@@ -19,7 +19,6 @@ import android.content.IntentSender.SendIntentException;
 import android.content.pm.PackageManager;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.Manifest;
@@ -33,7 +32,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
@@ -46,8 +44,9 @@ import de.firebirdberlin.preference.InlineSeekBarPreference;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 
+@SuppressWarnings("NewAPI")
 public class PreferencesFragment extends PreferenceFragment {
-    public static final String TAG = "NightDream.PreferencesFragment";
+    public static final String TAG = "PreferencesFragment";
     public static final String ITEM_DONATION = "donation";
     public static final String ITEM_WEATHER_DATA = "weather_data";
     public static final String ITEM_WEB_RADIO = "web_radio";
@@ -132,10 +131,7 @@ public class PreferencesFragment extends PreferenceFragment {
         try {
             mContext.getContentResolver().unregisterContentObserver(daydreamSettingsObserver);
         }
-        catch (IllegalArgumentException e) {
-
-        }
-        catch (NullPointerException e) {
+        catch (IllegalArgumentException | NullPointerException ignored) {
 
         }
     }
@@ -167,7 +163,7 @@ public class PreferencesFragment extends PreferenceFragment {
             return;
         }
 
-        Bundle ownedItems = null;
+        Bundle ownedItems;
         try {
             ownedItems = mService.getPurchases(3, getActivity().getPackageName(), "inapp", null);
         } catch (RemoteException e) {
@@ -192,15 +188,15 @@ public class PreferencesFragment extends PreferenceFragment {
                 String signature = signatureList.get(i);
                 String sku = ownedSkus.get(i);
 
-                if (sku.equals(ITEM_DONATION)) {
+                if (ITEM_DONATION.equals(sku)) {
                     purchased_donation = true;
                     purchased_weather_data = true;
                     purchased_web_radio = true;
                 }
-                if (sku.equals(ITEM_WEATHER_DATA)) {
+                if (ITEM_WEATHER_DATA.equals(sku)) {
                     purchased_weather_data = true;
                 }
-                if (sku.equals(ITEM_WEB_RADIO)) {
+                if (ITEM_WEB_RADIO.equals(sku)) {
                     purchased_web_radio = true;
                 }
 
@@ -252,12 +248,8 @@ public class PreferencesFragment extends PreferenceFragment {
                                                            sku, "inapp",developerPayload);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
-                    REQUEST_CODE, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
-                    Integer.valueOf(0));
-        } catch (RemoteException e1) {
-            return;
-        } catch (SendIntentException e2) {
-            return;
+                    REQUEST_CODE, new Intent(), 0, 0, 0);
+        } catch (RemoteException | SendIntentException ignored) {
         }
     }
 
@@ -290,7 +282,7 @@ public class PreferencesFragment extends PreferenceFragment {
         setupNightModePreferences(prefs);
         initUseDeviceLockPreference();
 
-        Preference goToSettings = (Preference) findPreference("startNotificationService");
+        Preference goToSettings = findPreference("startNotificationService");
         goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 if (Build.VERSION.SDK_INT < 18){
@@ -304,7 +296,7 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
-        Preference chooseImage = (Preference) findPreference("chooseBackgroundImage");
+        Preference chooseImage = findPreference("chooseBackgroundImage");
         chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 checkPermissionAndSelectBackgroundImage();
@@ -312,24 +304,24 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
-        Preference donationPreference = (Preference) findPreference("donation_play");
-        Preference purchaseWeatherDataPreference = (Preference) findPreference("purchaseWeatherData");
-        Preference purchaseWebRadioPreference = (Preference) findPreference("purchaseWebRadio");
-        Preference purchaseWebRadioUIPreference = (Preference) findPreference("purchaseWebRadioUI");
+        Preference donationPreference = findPreference("donation_play");
+        Preference purchaseWeatherDataPreference = findPreference("purchaseWeatherData");
+        Preference purchaseWebRadioPreference = findPreference("purchaseWebRadio");
+        Preference purchaseWebRadioUIPreference = findPreference("purchaseWebRadioUI");
 
         donationPreference.setOnPreferenceClickListener(purchaseDonationPreferenceClickListener);
         purchaseWeatherDataPreference.setOnPreferenceClickListener(purchaseWeatherDataPreferenceClickListener);
         purchaseWebRadioPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
         purchaseWebRadioUIPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
 
-        Preference prefHandlePower = (Preference) findPreference("handle_power");
-        Preference prefAmbientNoiseDetection = (Preference) findPreference("ambientNoiseDetection");
-        Preference prefAmbientNoiseReactivation = (Preference) findPreference("reactivate_screen_on_noise");
+        Preference prefHandlePower = findPreference("handle_power");
+        Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
+        Preference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
 
         prefAmbientNoiseDetection.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
         prefAmbientNoiseReactivation.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
 
-        Preference prefFetchWeatherData = (Preference) findPreference("showWeather");
+        Preference prefFetchWeatherData = findPreference("showWeather");
         prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
 
         prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -341,7 +333,7 @@ public class PreferencesFragment extends PreferenceFragment {
         });
 
 
-        Preference recommendApp = (Preference) findPreference("recommendApp");
+        Preference recommendApp = findPreference("recommendApp");
         recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 recommendApp();
@@ -349,7 +341,7 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
-        Preference uninstallApp = (Preference) findPreference("uninstallApp");
+        Preference uninstallApp = findPreference("uninstallApp");
         uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 uninstallApplication();
@@ -357,7 +349,7 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
-        Preference resetToDefaults = (Preference) findPreference("reset_to_defaults");
+        Preference resetToDefaults = findPreference("reset_to_defaults");
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 new AlertDialog.Builder(mContext)
@@ -379,7 +371,7 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
-        Preference startAudioStream = (Preference) findPreference("startAudioStream");
+        Preference startAudioStream = findPreference("startAudioStream");
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 if (! RadioStreamService.isRunning) {
@@ -519,14 +511,19 @@ public class PreferencesFragment extends PreferenceFragment {
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
             cursor = getActivity().getContentResolver().query(contentUri,  proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
+            int column_index;
+            if (cursor != null) {
+                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            }
+
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
+        return null;
     }
 
     private void checkPermissionAndSelectBackgroundImage() {
@@ -559,19 +556,11 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private boolean hasPermissionReadExternalStorage() {
-        if (Build.VERSION.SDK_INT >= 23 ) {
-            return ( getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED );
-        }
-        return true;
+        return Build.VERSION.SDK_INT < 23 || (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
     private boolean hasPermission(String permission) {
-        if (Build.VERSION.SDK_INT >= 23 ) {
-            return ( getActivity().checkSelfPermission(permission)
-                    == PackageManager.PERMISSION_GRANTED );
-        }
-        return true;
+        return Build.VERSION.SDK_INT < 23 || (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
@@ -630,7 +619,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void setupBrightnessControls(SharedPreferences prefs) {
         if (!isAdded() ) return;
-        Preference brightnessOffset = (Preference) findPreference("brightness_offset");
+        Preference brightnessOffset = findPreference("brightness_offset");
         boolean on = prefs.getBoolean("autoBrightness", false);
         String title = getString(R.string.brightness);
         if (on) {
@@ -674,28 +663,30 @@ public class PreferencesFragment extends PreferenceFragment {
         new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals("brightness_offset")) {
-                    int offsetInt = sharedPreferences.getInt("brightness_offset", 0);
-                    settings.setBrightnessOffset(offsetInt/100.f);
-                } else
-                if (key.equals("autoBrightness")) {
-                    InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
-                    // reset the brightness level
-                    settings.setBrightnessOffset(0.8f);
-                    pref.setProgress(80);
-                    setupBrightnessControls(sharedPreferences);
-                } else
-                if (key.equals("backgroundMode")) {
-                    setupBackgroundImageControls(sharedPreferences);
-                } else
-                if (key.equals("clockLayout")) {
-                    resetScaleFactor(sharedPreferences);
-                } else
-                if (key.equals("nightModeActivationMode")) {
-                    setupNightModePreferences(sharedPreferences);
-                } else
-                if (key.equals("useDeviceLock")) {
-                    setupDeviceAdministratorPermissions(sharedPreferences);
+                switch (key) {
+                    case "brightness_offset":
+                        int offsetInt = sharedPreferences.getInt("brightness_offset", 0);
+                        settings.setBrightnessOffset(offsetInt / 100.f);
+                        break;
+                    case "autoBrightness":
+                        InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
+                        // reset the brightness level
+                        settings.setBrightnessOffset(0.8f);
+                        pref.setProgress(80);
+                        setupBrightnessControls(sharedPreferences);
+                        break;
+                    case "backgroundMode":
+                        setupBackgroundImageControls(sharedPreferences);
+                        break;
+                    case "clockLayout":
+                        resetScaleFactor(sharedPreferences);
+                        break;
+                    case "nightModeActivationMode":
+                        setupNightModePreferences(sharedPreferences);
+                        break;
+                    case "useDeviceLock":
+                        setupDeviceAdministratorPermissions(sharedPreferences);
+                        break;
                 }
             }
         };
@@ -703,7 +694,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private void initUseDeviceLockPreference() {
         SwitchPreference pref = (SwitchPreference) findPreference("useDeviceLock");
 
-        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(mContext.DEVICE_POLICY_SERVICE);
+        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
         ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
         if (pref.isChecked() && !mgr.isAdminActive(cn) ) {
             pref.setChecked(false);
@@ -714,7 +705,7 @@ public class PreferencesFragment extends PreferenceFragment {
         if (!isAdded() ) return;
         boolean on = sharedPreferences.getBoolean("useDeviceLock", false);
         if (on) {
-            DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(mContext.DEVICE_POLICY_SERVICE);
+            DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
             ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
             if ( !mgr.isAdminActive(cn)) {
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
@@ -730,7 +721,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void removeActiveAdmin() {
-        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(mContext.DEVICE_POLICY_SERVICE);
+        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
         ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
         if ( mgr.isAdminActive(cn)) {
             mgr.removeActiveAdmin(cn);
@@ -755,12 +746,12 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void enablePreference(String key, boolean on) {
-        Preference preference = (Preference) findPreference(key);
+        Preference preference = findPreference(key);
         preference.setEnabled(on);
     }
 
     private void removePreference(String key) {
-        Preference preference = (Preference) findPreference(key);
+        Preference preference = findPreference(key);
         removePreference(preference);
     }
 
@@ -800,12 +791,25 @@ public class PreferencesFragment extends PreferenceFragment {
     private void setupDaydreamPreferences() {
         if (!isAdded() ) return;
         enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
-        Preference pref = (Preference) findPreference("autostart");
-        String summary = pref.isEnabled() ? "" : getString(R.string.autostart_message_disabled);
+        Preference pref = findPreference("autostart");
+        boolean on = pref.isEnabled();
+        String summary = on ? "" : getString(R.string.autostart_message_disabled);
         pref.setSummary(summary);
+
+
+        PreferenceCategory category = (PreferenceCategory) findPreference("category_behaviour");
+        removePreference("force_auto_rotation");
+        if (!on) {
+            SwitchPreference forceAutoRotation = new SwitchPreference(mContext);
+            forceAutoRotation.setKey("force_auto_rotation");
+            forceAutoRotation.setTitle(getString(R.string.force_auto_rotation));
+            forceAutoRotation.setSummary(getString(R.string.force_auto_rotation_summary));
+            forceAutoRotation.setDefaultValue(false);
+            category.addPreference(forceAutoRotation);
+        }
     }
 
-    public class DaydreamSettingsObserver extends ContentObserver {
+    private class DaydreamSettingsObserver extends ContentObserver {
 
         public DaydreamSettingsObserver(Handler handler) {
             super(handler);
