@@ -29,12 +29,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
@@ -60,22 +57,17 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     Sensor lightSensor = null;
     int mode = 2;
-    int currentRingerMode;
     mAudioManager AudioManage = null;
 
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
 
     private NightDreamUI nightDreamUI = null;
-    private Utility utility;
     private NotificationReceiver nReceiver = null;
     private NightModeReceiver nightModeReceiver = null;
     private ReceiverShutDown shutDownReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
     private PowerManager pm;
-
-    private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
-    private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
 
     private Settings mySettings = null;
     private boolean isChargingWireless = false;
@@ -92,7 +84,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         Window window = getWindow();
 
         nightDreamUI = new NightDreamUI(this, window);
-        utility = new Utility(this);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
 
@@ -150,9 +141,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             i.putExtra("command", "list");
             sendBroadcast(i);
         }
-
-        NOISE_AMPLITUDE_SLEEP *= mySettings.sensitivity;
-        NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -280,7 +268,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         // after the dream has ended
         //audiomanage.setRingerMode(currentRingerMode);
 
-        utility  = null;
         nightModeReceiver = null;
         shutDownReceiver = null;
         nReceiver  = null;
@@ -434,24 +421,14 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private Runnable lockDevice = new Runnable() {
        @Override
        public void run() {
-           if (mgr.isAdminActive(cn)) {
-               if( !isLocked() && mySettings.useDeviceLock) {
+           if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
                    mgr.lockNow();
                    acquireWakeLock();
-               }
-           } else {
-               Intent intent = new Intent(
-                       DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-               intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, cn);
-               intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                                getString(R.string.useDeviceLockExplanation));
-               startActivity(intent);
            }
        }
     };
 
     public void acquireWakeLock() {
-        //this.wakelock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
         this.wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
                                             | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
         this.wakelock.acquire();
