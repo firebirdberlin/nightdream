@@ -7,22 +7,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import de.greenrobot.event.EventBus;
 
-import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnScreenOn;
+import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
+
+import de.greenrobot.event.EventBus;
 
 public class NightModeListener extends Service {
-    private static String TAG = "NightDream.NightModeListener";
+    private static String TAG = "NightModeListener";
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     final private Handler handler = new Handler();
     private SoundMeter soundmeter;
@@ -32,10 +31,8 @@ public class NightModeListener extends Service {
     private boolean reactivate_on_noise = false;
     private int reactivate_on_ambient_light_value = 30;
 
-    private boolean running = false;
     private boolean error_on_microphone = false;
     PowerManager.WakeLock wakelock;
-    private PowerManager pm = null;
 
 
     private double maxAmplitude = Config.NOISE_AMPLITUDE_WAKE;
@@ -45,7 +42,7 @@ public class NightModeListener extends Service {
 
     @Override
     public void onCreate(){
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
         Settings settings = new Settings(this);
@@ -63,8 +60,6 @@ public class NightModeListener extends Service {
         if (debug){
             Log.d(TAG,"onStartCommand() called.");
         }
-
-        running = true;
 
         pwrReceiver = registerPowerDisconnectionReceiver();
 

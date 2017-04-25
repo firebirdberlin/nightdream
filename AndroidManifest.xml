@@ -75,6 +75,7 @@
     <service android:enabled="true" android:name=".services.DownloadWeatherService" />
     <service android:enabled="true" android:name=".services.LocationService" />
     <service android:enabled="true" android:name=".services.RadioStreamService" />
+    <service android:enabled="true" android:name=".services.ScreenWatcherService" />
     <service android:enabled="true" android:name=".services.WeatherService" />
 
     <activity android:name=".PreferencesActivity"></activity>
@@ -106,7 +107,7 @@
         android:name=".ChargingStateChangeReceiver"
         android:enabled="true">
         <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
             <action android:name="android.intent.action.AIRPLANE_MODE"/>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
             <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
@@ -119,10 +120,13 @@
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".BootReceiver">
+    <receiver
+        android:name=".receivers.BootReceiver"
+        android:enabled="true">
         <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            <action android:name="android.intent.action.PACKAGE_REPLACED"></action>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+            <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
         </intent-filter>
     </receiver>
 </application>

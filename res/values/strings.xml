@@ -42,7 +42,7 @@ OR
     <string name="brightness">Brightness</string>
     <string name="brightness_offset">Brightness offset</string>
     <string name="buttonAccessibilitySettings">Show notifications</string>
-    <string name="category_handle_power">... and when connected to</string>
+    <string name="category_handle_power">… and when connected to</string>
     <string name="category_handle_power_autostart_time">Start within the time range</string>
     <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_primary_color">Accent color</string>
@@ -65,6 +65,7 @@ OR
     <string name="dialog_title_thank_you">Thanks</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donate</string>
+    <string name="expertPreferences">Expert preferences</string>
     <string name="force_auto_rotation">Force orientation in Daydream</string>
     <string name="force_auto_rotation_summary">Enforce the screen orientation if the Daydream is used.</string>
     <string name="handle_power_ac">AC</string>
@@ -137,6 +138,11 @@ OR
     <string name="show_wind_speed">Show wind speed</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="speedUnit">Wind speed unit</string>
+    <string name="standbyEnabledWhileConnectedTitle">Standby Mode</string>
+    <string name="standbyEnabledWhileConnectedSummary">Activate when the screen turns off.</string>
+    <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
+    <string name="standbyEnabledWhileDisconnectedSummary">This feature quickly drains your battery!</string>
+    <string name="standbyNotificationText">Standby service is running.</string>
     <string name="titlePrivacyPolicy">Privacy policy</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="timeFormat">Time format</string>

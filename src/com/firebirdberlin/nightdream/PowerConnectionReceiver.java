@@ -30,7 +30,8 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         wakelock.acquire();
 
         settings = new Settings(context);
-        if (shallAutostart(context, settings)) {
+        if ( ! settings.standbyEnabledWhileConnected // postpone autostart until screen turns off
+                && shallAutostart(context, settings)) {
             NightDreamActivity.start(context);
         }
 

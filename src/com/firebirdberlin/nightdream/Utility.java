@@ -13,6 +13,7 @@ import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings.System;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -23,9 +24,8 @@ public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
     private static String TAG ="NightDreamActivity";
-
-    private Context mContext;
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+    private Context mContext;
 
     // constructor
     public Utility(Context context){
@@ -36,40 +36,6 @@ public class Utility {
     static public Sensor getLightSensor(Context context) {
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-    }
-
-    public Point getDisplaySize(){
-        Point size = new Point();
-        if(Build.VERSION.SDK_INT < 13) {
-            size = getDisplaySizeV12();
-        } else if (Build.VERSION.SDK_INT < 17) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.getDefaultDisplay().getMetrics(metrics);
-            size.x = metrics.widthPixels;
-            size.y = metrics.heightPixels;
-        } else {
-            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            display.getSize(size);
-        }
-
-        return size;
-    }
-
-    @TargetApi(12)
-    @SuppressWarnings("deprecation")
-    public Point getDisplaySizeV12() {
-        Point size = new Point();
-        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        size.x = display.getWidth();
-        size.y = display.getHeight();
-        return size;
-    }
-
-    public boolean isDebuggable(){
-        return ( 0 != ( mContext.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
     }
 
     public static boolean isDebuggable(Context context){
@@ -86,16 +52,6 @@ public class Utility {
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                 || "google_sdk".equals(Build.PRODUCT);
     }
-
-    public int getStatusBarHeight() {
-      int result = 0;
-      int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
-      if (resourceId > 0) {
-          result = mContext.getResources().getDimensionPixelSize(resourceId);
-      }
-      return result;
-    }
-
 
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -120,30 +76,8 @@ public class Utility {
         return inSampleSize;
     }
 
-    public void getSystemBrightnessMode(){
-        system_brightness_mode = System.getInt(mContext.getContentResolver(),
-                                                        System.SCREEN_BRIGHTNESS_MODE,
-                                                        System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
-    }
-
     public static int getScreenOffTimeout(Context context){
         return System.getInt(context.getContentResolver(), System.SCREEN_OFF_TIMEOUT, -1);
-    }
-
-    public void setManualBrightnessMode(){
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-    }
-
-    public void setAutoBrightnessMode(){
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
-    }
-
-
-    public void restoreSystemBrightnessMode(){
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                system_brightness_mode);
     }
 
     public static boolean isDaydreamEnabled(final Context c) {
@@ -219,6 +153,85 @@ public class Utility {
         return ( hasNetworkConnection(context) &&
                 ( activeNetwork.getType() == ConnectivityManager.TYPE_WIFI ||
                   activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET));
+    }
+
+    public static void turnScreenOn(Context c) {
+        try {
+            @SuppressWarnings("deprecation")
+            PowerManager.WakeLock wl =
+                    ((PowerManager) c.getSystemService(Context.POWER_SERVICE))
+                            .newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                            PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                                    "WAKE_LOCK_TAG");
+            wl.acquire();
+            wl.release();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Point getDisplaySize() {
+        Point size = new Point();
+        if (Build.VERSION.SDK_INT < 13) {
+            size = getDisplaySizeV12();
+        } else if (Build.VERSION.SDK_INT < 17) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            size.x = metrics.widthPixels;
+            size.y = metrics.heightPixels;
+        } else {
+            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            display.getSize(size);
+        }
+
+        return size;
+    }
+
+    @TargetApi(12)
+    @SuppressWarnings("deprecation")
+    public Point getDisplaySizeV12() {
+        Point size = new Point();
+        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        size.x = display.getWidth();
+        size.y = display.getHeight();
+        return size;
+    }
+
+    public boolean isDebuggable() {
+        return (0 != (mContext.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE));
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = mContext.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    public void getSystemBrightnessMode() {
+        system_brightness_mode = System.getInt(mContext.getContentResolver(),
+                System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+    }
+
+    public void setManualBrightnessMode() {
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+    }
+
+    public void setAutoBrightnessMode() {
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+    }
+
+    public void restoreSystemBrightnessMode() {
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                system_brightness_mode);
     }
 
 }

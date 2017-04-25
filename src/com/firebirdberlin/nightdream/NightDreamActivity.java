@@ -37,10 +37,12 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
+import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
+import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 import java.util.Calendar;
@@ -65,6 +67,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             return true;
         }
     };
+    private Context context = null;
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
     private NightDreamUI nightDreamUI = null;
@@ -95,10 +98,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private Runnable lockDevice = new Runnable() {
         @Override
         public void run() {
-            if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
-                mgr.lockNow();
-                acquireWakeLock();
-            }
+           if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
+                   mgr.lockNow();
+               Utility.turnScreenOn(context);
+           }
         }
     };
 
@@ -107,18 +110,24 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     static public void start(Context context, Bundle extras) {
-        Intent intent = new Intent(context, NightDreamActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent intent = getDefaultIntent(context);
         if (extras != null) {
             intent.putExtras(extras);
         }
         context.startActivity(intent);
     }
 
+    static private Intent getDefaultIntent(Context context) {
+        Intent intent = new Intent(context, NightDreamActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         setContentView(R.layout.main);
 
         Log.i(TAG, "onCreate()");
@@ -131,8 +140,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
         // allow the app to be displayed above the keyguard
-        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
         setKeepScreenOn(true);
 
@@ -141,6 +149,10 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
+
+        if (mySettings.standbyEnabledWhileConnected || mySettings.standbyEnabledWhileDisconnected) {
+            ScreenWatcherService.start(context);
+        }
     }
 
     @Override
@@ -193,6 +205,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             if (action != null) {
                 Log.i(TAG, "action: " + action);
 
+                if ("start standby mode".equals(action)) {
+                    nightDreamUI.setLocked(true);
+                }
 
                 if (action.equals("start night mode")) {
                     last_ambient = mySettings.minIlluminance;
@@ -269,7 +284,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         } else {
             nightDreamUI.restoreRingerMode();
         }
-        releaseWakeLock();
     }
 
     private void unregister(BroadcastReceiver receiver) {
@@ -380,7 +394,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     private void toggleRadioStreamState() {
-        final Context context = this;
         if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
             RadioStreamService.stop(this);
             return;
@@ -417,18 +430,14 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private void setMode(int new_mode) {
         nightDreamUI.setMode(new_mode, last_ambient);
 
-        if ((new_mode == 0) && (mode != 0)){
-            boolean on = shallKeepScreenOn(new_mode);
-            setKeepScreenOn(on); // allow the screen to go off
-        } else if ((new_mode > 0) && (new_mode != mode)) {
-            setKeepScreenOn(true);
-        }
+        setKeepScreenOn(shallKeepScreenOn(new_mode)); // allow the screen to go off
         mode = new_mode;
     }
 
     private boolean shallKeepScreenOn(int mode) {
-
-        if (mode > 0 || ! mySettings.allow_screen_off) {
+        if (mode > 0
+                || ! mySettings.allow_screen_off
+                || ScreenReceiver.shallActivateStandby(context, mySettings)) {
             Log.d(TAG, "shallKeepScreenOn() true");
             return true;
         }
@@ -443,20 +452,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
         Log.d(TAG, "shallKeepScreenOn() false");
         return false;
-    }
-
-    public void acquireWakeLock() {
-        //noinspection deprecation
-        this.wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
-                                            | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
-        this.wakelock.acquire();
-    }
-
-    public void releaseWakeLock() {
-        if (wakelock == null) return;
-        if (wakelock.isHeld()) {
-            this.wakelock.release();
-        }
     }
 
     private boolean isLocked() {
@@ -547,7 +542,8 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             return;
         }
 
-        if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
+        if ( ! mySettings.standbyEnabledWhileConnected
+                && PowerConnectionReceiver.shallAutostart(this, mySettings)) {
             PendingIntent pendingIntent = getShutdownIntent();
             Calendar calendar = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
