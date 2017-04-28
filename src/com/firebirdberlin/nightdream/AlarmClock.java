@@ -40,6 +40,7 @@ public class AlarmClock extends View {
 
     final private Handler handler = new Handler();
     public boolean isVisible = false;
+    private boolean locked = false;
     private boolean FingerDown;
     private boolean userChangesAlarmTime = false;
     private boolean FingerDownDeleteAlarm;
@@ -70,6 +71,10 @@ public class AlarmClock extends View {
         cornerRight = new HotCorner(Position.RIGHT);
         cornerRight.setIconResource(getResources(), R.drawable.ic_no_audio);
         initColorFilters();
+    }
+
+    public void setLocked(boolean on) {
+        locked = on;
     }
 
     public void setSettings(Settings s) {
@@ -105,6 +110,7 @@ public class AlarmClock extends View {
     public boolean onTouchEvent(MotionEvent e) {
         // the view should be visible before the user interacts with it
         if (! isVisible ) return false;
+        if (locked) return false;
 
         boolean eventCancelAlarm = handleAlarmCancelling(e);
         if (eventCancelAlarm) return true;
@@ -285,6 +291,7 @@ public class AlarmClock extends View {
     }
 
     public void activateAlarmUI() {
+        if (locked) return;
         handler.removeCallbacks(blink);
         if (alarmIsRunning()) {
             handler.postDelayed(blink, 1000);
