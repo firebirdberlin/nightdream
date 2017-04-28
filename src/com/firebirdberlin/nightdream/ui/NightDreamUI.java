@@ -1114,6 +1114,9 @@ public class NightDreamUI {
             if (AlarmHandlerService.alarmIsRunning()) {
                 blinkIfLocked();
             }
+            if (locked) {
+                hideSidePanel();
+            }
             return true;
         }
     };
