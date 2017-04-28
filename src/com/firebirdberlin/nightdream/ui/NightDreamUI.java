@@ -1,9 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.io.FileDescriptor;
-import java.util.Calendar;
-import java.util.Random;
-
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -28,8 +24,8 @@ import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
@@ -43,34 +39,35 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.greenrobot.event.EventBus;
 
+import com.firebirdberlin.nightdream.AlarmClock;
+import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.LightSensorEventListener;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.SoundMeter;
+import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.nightdream.repositories.BatteryStats;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
+import com.firebirdberlin.nightdream.services.WeatherService;
+import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
-import com.firebirdberlin.nightdream.AlarmClock;
-import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.models.BatteryValue;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
-import com.firebirdberlin.nightdream.LightSensorEventListener;
-import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.repositories.BatteryStats;
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.SoundMeter;
-import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.mAudioManager;
-import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
-import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
-import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.nightdream.services.WeatherService;
-import com.firebirdberlin.nightdream.ui.BatteryView;
-import com.firebirdberlin.nightdream.ui.ClockLayout;
-import com.firebirdberlin.nightdream.ui.WebRadioImageView;
+import java.io.FileDescriptor;
+import java.util.Calendar;
+import java.util.Random;
+
+import de.greenrobot.event.EventBus;
 
 
 public class NightDreamUI {
@@ -115,6 +112,7 @@ public class NightDreamUI {
     private ShowcaseView showcaseView = null;
 
     private boolean daydreamMode = false;
+    private boolean locked = false;
     private float last_ambient = 4.0f;
 
     public NightDreamUI(Context context, Window window) {
@@ -148,6 +146,7 @@ public class NightDreamUI {
         twitterNumber = (TextView) rootView.findViewById(R.id.twitter_number);
 
         menuIcon.setOnClickListener(onMenuItemClickListener);
+        menuIcon.setOnLongClickListener(onMenuItemLongClickListener);
 
         // prepare zoom-in effect
         // API level 11
@@ -942,11 +941,38 @@ public class NightDreamUI {
         setupAlarmClock();
         alarmClock.invalidate();
         if ( AlarmHandlerService.alarmIsRunning() ) {
-            alarmClock.activateAlarmUI();
+             blinkIfLocked();
         }
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
+    public void blinkIfLocked() {
+        handler.removeCallbacks(blink);
+        if (locked && AlarmHandlerService.alarmIsRunning()) {
+            handler.postDelayed(blink, 1000);
+        } else {
+            if (AlarmHandlerService.alarmIsRunning()) {
+                alarmClock.activateAlarmUI();
+            }
+            blinkStateOn = false;
+            setAlpha(menuIcon, 1.f, 0);
+        }
+    }
+
+    private boolean blinkStateOn = false;
+    Runnable blink = new Runnable() {
+        public void run() {
+            handler.removeCallbacks(blink);
+            if (AlarmHandlerService.alarmIsRunning()) {
+                blinkStateOn = !blinkStateOn;
+                float alpha = (blinkStateOn) ? 1.f : 0.5f;
+                setAlpha(menuIcon, alpha, 0);
+                handler.postDelayed(blink, 1000);
+            } else {
+                blinkStateOn = false;
+            }
+        }
+    };
     private Configuration getConfiguration() {
         return mContext.getResources().getConfiguration();
     }
@@ -1073,7 +1099,22 @@ public class NightDreamUI {
 
     OnClickListener onMenuItemClickListener = new OnClickListener() {
         public void onClick(View v) {
+            if (locked) return;
             toggleSidePanel();
+        }
+    };
+
+    private View.OnLongClickListener onMenuItemLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            locked = ! locked;
+            alarmClock.setLocked(locked);
+            int resId = locked ? R.drawable.ic_lock : R.drawable.ic_menu;
+            menuIcon.setImageDrawable(getDrawable(resId));
+            if (AlarmHandlerService.alarmIsRunning()) {
+                blinkIfLocked();
+            }
+            return true;
         }
     };
 
@@ -1088,6 +1129,12 @@ public class NightDreamUI {
     };
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
+        if (locked) {
+            handler.removeCallbacks(hideAlarmClock);
+            setAlpha(menuIcon, 1.f, 250);
+            handler.postDelayed(hideAlarmClock, 5000);
+            return true;
+        }
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
         mScaleDetector.onTouchEvent(e);
         return true;
