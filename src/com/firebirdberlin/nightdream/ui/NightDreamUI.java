@@ -179,12 +179,15 @@ public class NightDreamUI {
 
         hideSystemUI();
         settings.reload();
+        this.locked = settings.isUIlocked;
 
         setScreenOrientation(settings.screenOrientation);
+
         initSidePanel();
         updateBatteryValue();
         updateBatteryView();
         setupScreenAnimation();
+        lockUI(settings.isUIlocked);
 
         clockLayoutContainer.post(new Runnable() {
             @Override
@@ -1108,18 +1111,23 @@ public class NightDreamUI {
         @Override
         public boolean onLongClick(View v) {
             locked = ! locked;
-            alarmClock.setLocked(locked);
-            int resId = locked ? R.drawable.ic_lock : R.drawable.ic_menu;
-            menuIcon.setImageDrawable(getDrawable(resId));
-            if (AlarmHandlerService.alarmIsRunning()) {
-                blinkIfLocked();
-            }
+            settings.setUILocked(locked);
+            lockUI(locked);
             if (locked) {
                 hideSidePanel();
             }
             return true;
         }
     };
+
+    private void lockUI(boolean on) {
+        alarmClock.setLocked(on);
+        int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
+        menuIcon.setImageDrawable(getDrawable(resId));
+        if (AlarmHandlerService.alarmIsRunning()) {
+            blinkIfLocked();
+        }
+    }
 
     OnClickListener onStockAlarmTimeClickListener = new OnClickListener() {
         public void onClick(View v) {
@@ -1135,6 +1143,8 @@ public class NightDreamUI {
         if (locked) {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
+            setAlpha(batteryView, 1.f, 250);
+
             handler.postDelayed(hideAlarmClock, 5000);
             return true;
         }
