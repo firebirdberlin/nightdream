@@ -464,11 +464,15 @@ public class NightDreamUI {
 
             if ( Build.VERSION.SDK_INT >= 19
                     && nextAlarm != null
-                    && nextAlarm.isEmpty() ) {
+                    && nextAlarm.isEmpty()
+                    && ! locked ) {
                 nextAlarm = mContext.getString(R.string.set_alarm);
             }
             alarmTime.setText(nextAlarm);
-            if (! daydreamMode) {
+            if (locked) {
+                alarmTime.setOnClickListener(null);
+                alarmTime.setClickable(false);
+            } else if (! daydreamMode) {
                 alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
                 alarmTime.setClickable(true);
             }
@@ -479,6 +483,7 @@ public class NightDreamUI {
 
         int visibility = settings.useInternalAlarm ? View.GONE : View.VISIBLE;
         alarmTime.setVisibility(visibility);
+        alarmTime.invalidate();
         alarmClock.isVisible = settings.useInternalAlarm;
         alarmClock.setClickable(true);
     }
@@ -683,7 +688,7 @@ public class NightDreamUI {
             v = to_range(v, 0.6f, 1.f);
             setAlpha(batteryView, v, millis);
         } else {
-            setAlpha(batteryView, 0.0f, millis);
+            hideBatteryView(millis);
         }
 
         if ( mode == 0 ) {
@@ -1122,6 +1127,7 @@ public class NightDreamUI {
 
     private void lockUI(boolean on) {
         alarmClock.setLocked(on);
+        showAlarmClock();
         int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
         menuIcon.setImageDrawable(getDrawable(resId));
         if (AlarmHandlerService.alarmIsRunning()) {
@@ -1144,7 +1150,8 @@ public class NightDreamUI {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
             setAlpha(batteryView, 1.f, 250);
-
+            setAlpha(alarmTime, 1.f, 250);
+            controlsVisible = true;
             handler.postDelayed(hideAlarmClock, 5000);
             return true;
         }
