@@ -53,28 +53,68 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
+    protected PowerManager.WakeLock wakelock;
     ImageView background_image;
-
     Sensor lightSensor = null;
     int mode = 2;
     mAudioManager AudioManage = null;
-
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            finish();
+            return true;
+        }
+    };
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
-
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
     private NightModeReceiver nightModeReceiver = null;
     private ReceiverShutDown shutDownReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
     private PowerManager pm;
-
     private Settings mySettings = null;
     private boolean isChargingWireless = false;
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
-    protected PowerManager.WakeLock wakelock;
     private GestureDetector mGestureDetector = null;
+    private Runnable setScreenOff = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(setScreenOff);
+            int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
+            setMode(new_mode);
+        }
+    };
+    private Runnable finishApp = new Runnable() {
+        @Override
+        public void run() {
+            finish();
+        }
+    };
+    private Runnable lockDevice = new Runnable() {
+        @Override
+        public void run() {
+            if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
+                mgr.lockNow();
+                acquireWakeLock();
+            }
+        }
+    };
+
+    static public void start(Context context) {
+        NightDreamActivity.start(context, null);
+    }
+
+    static public void start(Context context, Bundle extras) {
+        Intent intent = new Intent(context, NightDreamActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -347,10 +387,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
 
         if (Utility.hasNetworkConnection(this)) {
-            if ( Utility.hasFastNetworkConnection(this) ) {
+            if (Utility.hasFastNetworkConnection(this)) {
                 RadioStreamService.startStream(this);
-            } else
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 new AlertDialog.Builder(this, R.style.DialogTheme)
                         .setTitle(R.string.message_mobile_data_connection)
                         .setMessage(R.string.message_mobile_data_connection_confirmation)
@@ -406,32 +445,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return false;
     }
 
-    private Runnable setScreenOff = new Runnable() {
-       @Override
-       public void run() {
-            handler.removeCallbacks(setScreenOff);
-            int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
-            setMode(new_mode);
-       }
-    };
-
-    private Runnable finishApp = new Runnable() {
-       @Override
-       public void run() {
-           finish();
-       }
-    };
-
-    private Runnable lockDevice = new Runnable() {
-       @Override
-       public void run() {
-           if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
-                   mgr.lockNow();
-                   acquireWakeLock();
-           }
-       }
-    };
-
     public void acquireWakeLock() {
         //noinspection deprecation
         this.wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
@@ -450,7 +463,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         KeyguardManager myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         return myKM.inKeyguardRestrictedInputMode();
     }
-
 
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
@@ -501,24 +513,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
     }
 
-    class ReceiverShutDown extends BroadcastReceiver{
-        // this receiver is needed to shutdown the app at the end of the autostart time range
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent == null) return;
-            if ( mySettings.handle_power_disconnection ) {
-                finish();
-            }
-        }
-    }
-
-    class ReceiverRadioStream extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setupRadioStreamUI();
-        }
-    }
-
     public void setKeepScreenOn(boolean keepScreenOn) {
         if( keepScreenOn ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -533,20 +527,6 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         setIntent(intent);
         Log.i(TAG, "new intent received");
         //now getIntent() should always return the last received intent
-    }
-
-    static public void start(Context context) {
-        NightDreamActivity.start(context, null);
-    }
-
-    static public void start(Context context, Bundle extras) {
-        Intent intent = new Intent(context, NightDreamActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        if (extras != null) {
-            intent.putExtras(extras);
-        }
-        context.startActivity(intent);
     }
 
     private PendingIntent getShutdownIntent() {
@@ -593,13 +573,22 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         pendingIntent.cancel();
     }
 
-
-    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+    class ReceiverShutDown extends BroadcastReceiver {
+        // this receiver is needed to shutdown the app at the end of the autostart time range
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            finish();
-            return true;
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null) return;
+            if (mySettings.handle_power_disconnection) {
+                finish();
+            }
         }
-    };
+    }
+
+    class ReceiverRadioStream extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setupRadioStreamUI();
+        }
+    }
 
     }
