@@ -61,6 +61,7 @@ public class Settings {
     public boolean useDeviceLock = false;
     public boolean useInternalAlarm = true;
     public boolean useRadioAlarmClock = false;
+    public boolean isUIlocked = false;
     public float dim_offset = 0.8f;
     public float nightModeBrightness = -0.5f;
     public float maxBrightness = 1.f;
@@ -185,6 +186,7 @@ public class Settings {
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
+        isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
         timeFormat24h = settings.getString("timeFormat_24h", "HH:mm");
@@ -279,6 +281,13 @@ public class Settings {
             case 6: return "fonts/7segment.ttf";
             default: return null;
         }
+    }
+
+    public void setUILocked(boolean on) {
+        isUIlocked = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("isUIlocked", on);
+        prefEditor.apply();
     }
 
     public void setUseInternalAlarm(boolean on) {
