@@ -63,7 +63,7 @@ public class Settings {
     public boolean useRadioAlarmClock = false;
     public boolean isUIlocked = false;
     public float dim_offset = 0.8f;
-    public float nightModeBrightness = -0.5f;
+    public float nightModeBrightness = 0.f;
     public float maxBrightness = 1.f;
     public float location_lon = 0.f;
     public float location_lat = 0.f;
