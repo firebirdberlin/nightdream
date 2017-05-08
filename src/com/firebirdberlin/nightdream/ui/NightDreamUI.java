@@ -74,6 +74,7 @@ public class NightDreamUI {
     static final long SHOWCASE_ID_ONBOARDING = 1;
     static final long SHOWCASE_ID_ALARMS = 2;
     static final long SHOWCASE_ID_ALARM_DELETION = 3;
+    static final long SHOWCASE_ID_SCREEN_LOCK = 4;
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
@@ -1332,6 +1333,7 @@ public class NightDreamUI {
         showShowcase();
         setupShowcaseForQuickAlarms();
         setupShowcaseForAlarmDeletion();
+        setupShowcaseForScreenLock();
     }
 
     void setupShowcaseView() {
@@ -1419,6 +1421,25 @@ public class NightDreamUI {
 
     }
 
+    private void setupShowcaseForScreenLock() {
+        if ( showcaseView != null || daydreamMode) {
+            return;
+        }
+
+        if ( this.locked ) {
+            showcaseView = new ShowcaseView.Builder((Activity) mContext)
+                .setTarget(new ViewTarget(menuIcon))
+                .hideOnTouchOutside()
+                .setContentTitle(mContext.getString(R.string.showcase_title_screen_lock))
+                .setContentText(mContext.getString(R.string.showcase_text_screen_lock))
+                .setShowcaseEventListener(showcaseViewEventListener)
+                .singleShot(SHOWCASE_ID_SCREEN_LOCK)
+                .build();
+            showcaseView.hideButton();
+            showShowcase();
+        }
+
+    }
     private void showShowcase() {
         showcaseView.show();
         if ( !showcaseView.isShowing()) {
