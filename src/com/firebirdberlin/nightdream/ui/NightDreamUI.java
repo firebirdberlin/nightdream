@@ -117,8 +117,12 @@ public class NightDreamUI {
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
-        mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
+
         mGestureDetector = new GestureDetector(mContext, mSimpleOnGestureListener);
+        if (Build.VERSION.SDK_INT >= 11) {
+            mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
+        }
+
 
         this.window = window;
         rootView = window.getDecorView().findViewById(android.R.id.content);
@@ -1064,6 +1068,7 @@ public class NightDreamUI {
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
+            if (Build.VERSION.SDK_INT < 11) return;
             float s = clockLayout.getScaleX();
             Configuration config = getConfiguration();
             settings.setScaleClock(s, config.orientation);
@@ -1071,11 +1076,13 @@ public class NightDreamUI {
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
+            if (Build.VERSION.SDK_INT < 11) return false;
             return true;
         }
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
+            if (Build.VERSION.SDK_INT < 11) return false;
             float s = detector.getScaleFactor();
             applyScaleFactor(s);
             return true;
@@ -1156,7 +1163,9 @@ public class NightDreamUI {
             return true;
         }
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
-        mScaleDetector.onTouchEvent(e);
+        if (mScaleDetector != null) {
+            mScaleDetector.onTouchEvent(e);
+        }
         return true;
     }
 
