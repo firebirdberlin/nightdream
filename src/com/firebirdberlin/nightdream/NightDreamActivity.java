@@ -63,8 +63,11 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            finish();
-            return true;
+            if (mySettings.doubleTapToFinish) {
+                finish();
+                return true;
+            }
+            return false;
         }
     };
     private Context context = null;

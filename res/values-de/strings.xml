@@ -61,6 +61,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Dankeschön!</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Spenden</string>
+<string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
+<string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
 <string name="expertPreferences">Experteneinstellungen</string>
 <string name="force_auto_rotation">Erzwinge Ausrichtung im DayDream</string>
 <string name="force_auto_rotation_summary">Bei Verwendung des Daydreams die festgelegte Ausrichtung erzwingen.</string>

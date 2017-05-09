@@ -44,6 +44,7 @@ public class Settings {
     public boolean standbyEnabledWhileConnected = false;
     public boolean standbyEnabledWhileDisconnected = false;
     public boolean autoBrightness = false;
+    public boolean doubleTapToFinish = false;
     public boolean force_auto_rotation = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
@@ -135,6 +136,7 @@ public class Settings {
         standbyEnabledWhileConnected = settings.getBoolean("standbyEnabledWhileConnected", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
+        doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", autostartTimeRangeStart);
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", autostartTimeRangeEnd);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));

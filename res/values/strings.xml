@@ -65,6 +65,8 @@ OR
     <string name="dialog_title_thank_you">Thanks</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donate</string>
+    <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
+    <string name="doubleTapToFinishTitle">Double tap to finish</string>
     <string name="expertPreferences">Expert preferences</string>
     <string name="force_auto_rotation">Force orientation in Daydream</string>
     <string name="force_auto_rotation_summary">Enforce the screen orientation if the Daydream is used.</string>

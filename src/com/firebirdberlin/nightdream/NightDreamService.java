@@ -48,8 +48,11 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            finish();
-            return true;
+            if (mySettings.doubleTapToFinish) {
+                finish();
+                return true;
+            }
+            return false;
         }
     };
 
