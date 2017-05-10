@@ -176,7 +176,11 @@ public class NightDreamUI {
             showAlarmClock();
             setupShowcase();
             if (Build.VERSION.SDK_INT >= 12){
-                clockLayout.post(zoomIn);
+                clockLayout.post(new Runnable() {
+                    public void run() {
+                        handler.postDelayed(zoomIn, 500);
+                    }
+                });
             }
         }
     };
@@ -1174,7 +1178,12 @@ public class NightDreamUI {
         float s = settings.getScaleClock(config.orientation);
         float max = getMaxScaleFactor();
         Log.d(TAG, String.format("getScaleFactor > %f %f", s, max));
-        return Math.min(s, max);
+
+        s = Math.min(s, max);
+        if (s > 0.f && !Float.isNaN(s) && !Float.isInfinite(s)) {
+            return s;
+        }
+        return 1.f;
     }
 
     private float getMaxScaleFactor() {
