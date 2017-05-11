@@ -18,6 +18,8 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">O autorach</string>
+<string name="action_snooze">Drzemka</string>
+<string name="action_stop">Stop</string>
 <string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Zwiększenie głośności</string>
 <string name="alarmVolume">Głosność</string>
@@ -28,6 +30,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Wygląd</string>
 <string name="app_name">Nocny zegar</string>
 <string name="auto_brightness">Auto jasność</string>
+<string name="autostart_message_disabled">Proszę wyłącz wygaszacz ekranu (Daydream)  żeby aktywowac opcje autostartu</string>
 <string name="autostart_timerange_label_end">Koniec</string>
 <string name="autostart_timerange_label_start">Początek</string>
 <string name="background">Tło</string>
@@ -76,6 +79,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">Ukryj tło zdjęcia w trybie nocnym</string>
 <string name="hour">h</string>
 <string name="location_time">Czas lokalny</string>
+<string name="maxBrightness">Maksymalna jasność podświetlenia</string>
 <string name="message_no_data_connection">Nie połaczono</string>
 <string name="message_mobile_data_connection">Transfer danych mobilny</string>
 <string name="message_mobile_data_connection_confirmation">Jesteś podłączony do sieci. Włączyć radio?</string>
@@ -131,6 +135,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Teperatura</string>
 <string name="show_weather">Pokaż lokalną temperturę</string>
 <string name="show_wind_speed">Szybkość wiatru</string>
+<string name="snoozeTime">Czas trwania drzemki</string>
 <string name="speedUnit">Jednostka szybkości wiatru</string>
 <string name="titlePrivacyPolicy">Polityka prywatności</string>
 <string name="temperatureUnit">Jednostka temperatury</string>
@@ -143,7 +148,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_regular">Robot regular</string>
 <string name="typeface_roboto_thin">Robot thin</string>
 <string name="typeface">Typ czcionki</string>
+<string name="uninstall">Odinstaluj aplikacje</string>
 <string name="use_internal_alarm">Szybkie alarmy</string>
+<string name="useDeviceLock">Zablokuj urządzenie</string>
+<string name="useDeviceLockExplanation">Zablokuj urządzenie kiedy Nocny Zegar jest aktywny</string>
 <string name="weather_calculation_time">Częstotliwość odswieżania pogody</string>
 <string name="weather_city_id_summary">Otwórz weatherMap City Id. Zostaw puste dla automatycznego wykrycia lokalizacji</string>
 <string name="weather_city_id_title">Kod miasta</string>

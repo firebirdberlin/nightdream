@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="152"
-    android:versionName="2.5.14">
+    android:versionCode="154"
+    android:versionName="2.5.16">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -75,6 +75,7 @@
     <service android:enabled="true" android:name=".services.DownloadWeatherService" />
     <service android:enabled="true" android:name=".services.LocationService" />
     <service android:enabled="true" android:name=".services.RadioStreamService" />
+    <service android:enabled="true" android:name=".services.ScreenWatcherService" />
     <service android:enabled="true" android:name=".services.WeatherService" />
 
     <activity android:name=".PreferencesActivity"></activity>
@@ -106,7 +107,7 @@
         android:name=".ChargingStateChangeReceiver"
         android:enabled="true">
         <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
             <action android:name="android.intent.action.AIRPLANE_MODE"/>
             <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
             <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
@@ -119,10 +120,13 @@
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".BootReceiver">
+    <receiver
+        android:name=".receivers.BootReceiver"
+        android:enabled="true">
         <intent-filter>
-            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            <action android:name="android.intent.action.PACKAGE_REPLACED"></action>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+            <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
         </intent-filter>
     </receiver>
 </application>

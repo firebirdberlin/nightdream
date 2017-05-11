@@ -14,6 +14,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.service.dreams.DreamService;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,6 +45,17 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     Sensor lightSensor;
     int mode;
 
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (mySettings.doubleTapToFinish) {
+                finish();
+                return true;
+            }
+            return false;
+        }
+    };
+
     private float last_ambient;
     private double last_ambient_noise = 32000.;
     private NightDreamUI nightDreamUI = null;
@@ -55,6 +67,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     private Settings mySettings = null;
+    private GestureDetector mGestureDetector = null;
 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -79,6 +92,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         alarmTime = (TextView) findViewById(R.id.textview_alarm_time);
         alarmClock.setSettings(mySettings);
 
+        mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         if (lightSensor == null){
@@ -226,7 +240,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     }
 
     public boolean onTouch(View view, MotionEvent e) {
-        return nightDreamUI.onTouch(view, e, last_ambient);
+        return mGestureDetector.onTouchEvent(e) || nightDreamUI.onTouch(view, e, last_ambient);
     }
 
     // click on the settings icon

@@ -1,28 +1,28 @@
 package com.firebirdberlin.nightdream;
 
-import java.util.Calendar;
-import java.util.Locale;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
+import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
-import android.Manifest;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.WeatherEntry;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
@@ -41,7 +41,10 @@ public class Settings {
     private boolean reactivate_screen_on_noise = false;
     public boolean alarmFadeIn = true;
     private boolean ambientNoiseDetection;
+    public boolean standbyEnabledWhileConnected = false;
+    public boolean standbyEnabledWhileDisconnected = false;
     public boolean autoBrightness = false;
+    public boolean doubleTapToFinish = false;
     public boolean force_auto_rotation = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
@@ -130,7 +133,10 @@ public class Settings {
         alarmVolume = settings.getInt("alarmVolume", 3);
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
+        standbyEnabledWhileConnected = settings.getBoolean("standbyEnabledWhileConnected", false);
+        standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
+        doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", autostartTimeRangeStart);
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", autostartTimeRangeEnd);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));

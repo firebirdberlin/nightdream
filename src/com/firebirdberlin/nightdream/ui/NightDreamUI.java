@@ -71,16 +71,32 @@ import de.greenrobot.event.EventBus;
 
 
 public class NightDreamUI {
+    static final long SHOWCASE_ID_ONBOARDING = 1;
+    static final long SHOWCASE_ID_ALARMS = 2;
+    static final long SHOWCASE_ID_ALARM_DELETION = 3;
+    static final long SHOWCASE_ID_SCREEN_LOCK = 4;
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    static int showcaseCounter = 0;
     private static String TAG ="NightDreamUI";
+    final private Handler handler = new Handler();
     private int screen_alpha_animation_duration = 3000;
     private int screen_transition_animation_duration = 10000;
-
-    final private Handler handler = new Handler();
     private int mode = 2;
     private boolean isDebuggable;
     private boolean controlsVisible = false;
     private BatteryValue batteryValue;
     private Context mContext;
+    OnClickListener onStockAlarmTimeClickListener = new OnClickListener() {
+        public void onClick(View v) {
+            if (Build.VERSION.SDK_INT < 19) return;
+
+            Intent mClockIntent = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS);
+            mClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(mClockIntent);
+        }
+    };
     private Drawable bgshape;
     private Drawable bgblack;
     private AlarmClock alarmClock;
@@ -97,6 +113,29 @@ public class NightDreamUI {
     private LinearLayout notificationbar;
     private LinearLayout sidePanel;
     private Settings settings = null;
+    OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            if (Build.VERSION.SDK_INT < 11) return;
+            float s = clockLayout.getScaleX();
+            Configuration config = getConfiguration();
+            settings.setScaleClock(s, config.orientation);
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            if (Build.VERSION.SDK_INT < 11) return false;
+            return true;
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            if (Build.VERSION.SDK_INT < 11) return false;
+            float s = detector.getScaleFactor();
+            applyScaleFactor(s);
+            return true;
+        }
+    };
     private SoundMeter soundmeter;
     private ProgressBar brightnessProgress = null;
     private BatteryView batteryView = null;
@@ -108,12 +147,247 @@ public class NightDreamUI {
     private ScaleGestureDetector mScaleDetector = null;
     private GestureDetector mGestureDetector = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
-
     private ShowcaseView showcaseView = null;
-
+    View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showcaseCounter++;
+            setupShowcaseView();
+        }
+    };
     private boolean daydreamMode = false;
     private boolean locked = false;
     private float last_ambient = 4.0f;
+    private long lastLocationRequest = 0L;
+    private float LIGHT_VALUE_DARK = 4.2f;
+    private float LIGHT_VALUE_BRIGHT = 40.0f;
+    private float LIGHT_VALUE_DAYLIGHT = 300.0f;
+    private Runnable initClockLayout = new Runnable() {
+        @Override
+        public void run() {
+            setupClockLayout();
+            setColor();
+            updateWeatherData();
+            controlsVisible = true;
+
+            brightnessProgress.setVisibility(View.INVISIBLE);
+            setupBackgroundImage();
+
+            showAlarmClock();
+            setupShowcase();
+            if (Build.VERSION.SDK_INT >= 12){
+                clockLayout.post(new Runnable() {
+                    public void run() {
+                        handler.postDelayed(zoomIn, 500);
+                    }
+                });
+            }
+        }
+    };
+    // only called for apilevel >= 12
+    private Runnable zoomIn = new Runnable() {
+        @Override
+        public void run() {
+            Configuration config = getConfiguration();
+            clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
+            //clockLayout.update(settings.weatherEntry);
+
+            float s = getScaleFactor(config);
+            clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
+            if (! daydreamMode ) {
+                Utility.turnScreenOn(mContext);
+            }
+        }
+    };
+    private Runnable hideBrightnessView = new Runnable() {
+        @Override
+        public void run() {
+            brightnessProgress.setVisibility(View.INVISIBLE);
+        }
+    };
+    private Runnable hideBrightnessLevel = new Runnable() {
+        @Override
+        public void run() {
+            setAlpha(brightnessProgress, 0.f, 2000);
+            handler.postDelayed(hideBrightnessView, 2010);
+        }
+    };
+    // move the clock randomly around
+    private Runnable moveAround = new Runnable() {
+        @Override
+        public void run() {
+            removeCallbacks(hideBrightnessLevel);
+            updateBatteryValue();
+            setupScreenAnimation();
+
+            hideBatteryView(2000);
+            updateBatteryView();
+
+            updateClockPosition();
+            updateWeatherData();
+
+            handler.postDelayed(this, 60000);
+        }
+    };
+    private Runnable hideAlarmClock = new Runnable() {
+        @Override
+        public void run() {
+            if (alarmClock.isInteractive() || AlarmHandlerService.alarmIsRunning()) {
+                handler.postDelayed(hideAlarmClock, 20000);
+                return;
+            }
+            controlsVisible = false;
+            hideBatteryView(2000);
+            setAlpha(menuIcon, 0.f, 2000);
+            alarmClock.isVisible = false;
+            alarmClock.setClickable(false);
+            alarmTime.setClickable(false);
+            setAlpha(alarmClock, 0.f, 2000);
+            setAlpha(alarmTime, 0.f, 2000);
+            hideSidePanel();
+        }
+    };
+    OnClickListener onMenuItemClickListener = new OnClickListener() {
+        public void onClick(View v) {
+            if (locked) return;
+            toggleSidePanel();
+        }
+    };
+    private boolean blinkStateOn = false;
+    Runnable blink = new Runnable() {
+        public void run() {
+            handler.removeCallbacks(blink);
+            if (AlarmHandlerService.alarmIsRunning()) {
+                blinkStateOn = !blinkStateOn;
+                float alpha = (blinkStateOn) ? 1.f : 0.5f;
+                setAlpha(menuIcon, alpha, 0);
+                handler.postDelayed(blink, 1000);
+            } else {
+                blinkStateOn = false;
+            }
+        }
+    };
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                               float velocityY) {
+            int rect[] = new int[2];
+            clockLayoutContainer.getLocationOnScreen(rect);
+            if (e1.getY() < rect[1]) return false;
+
+            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
+                return false;
+            }
+            // right to left swipe
+            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                Log.w(TAG, "left swipe");
+                hideSidePanel();
+            }
+            // left to right swipe
+            else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                Log.w(TAG, "right swipe");
+                showSidePanel();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.w(TAG, "single tap up");
+            updateBatteryValue();
+            updateBatteryView();
+
+            showAlarmClock();
+            removeCallbacks(hideAlarmClock);
+            handler.postDelayed(hideAlarmClock, 20000);
+
+            if (AlarmHandlerService.alarmIsRunning()) {
+                alarmClock.snooze();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            int rect[] = new int[2];
+            clockLayoutContainer.getLocationOnScreen(rect);
+            if (e1.getY() < rect[1]) {
+                Point size = utility.getDisplaySize();
+                float dx = -2.f * (distanceX / size.x);
+                float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                value += dx;
+                value = to_range(value, -1.f, 1.f);
+
+                int intValue = (int) (100.f * (value + 1.f));
+                brightnessProgress.setProgress(intValue);
+                brightnessProgress.setVisibility(View.VISIBLE);
+
+                setAlpha(brightnessProgress, 1.f, 0);
+                removeCallbacks(hideBrightnessLevel);
+                removeCallbacks(hideBrightnessView);
+                handler.postDelayed(hideBrightnessLevel, 1000);
+
+                dimScreen(0, last_ambient, value);
+                if (mode != 0) {
+                    settings.setBrightnessOffset(value);
+                } else {
+                    settings.setNightModeBrightness(value);
+                }
+            }
+            return false;
+        }
+    };
+    OnShowcaseEventListener showcaseViewEventListener = new OnShowcaseEventListener() {
+        @Override
+        public void onShowcaseViewHide(ShowcaseView view) {
+            Log.i(TAG, "onShowcaseViewHide()");
+
+        }
+
+        @Override
+        public void onShowcaseViewDidHide(ShowcaseView view) {
+            Log.i(TAG, "onShowcaseViewDidHide()");
+            showcaseView = null;
+            handler.postDelayed(moveAround, 30000);
+            handler.postDelayed(hideAlarmClock, 20000);
+            brightnessProgress.setVisibility(View.INVISIBLE);
+            updateBatteryValue();
+            updateBatteryView();
+            showAlarmClock();
+
+            setupShowcaseForQuickAlarms();
+            setupShowcaseForAlarmDeletion();
+        }
+
+        @Override
+        public void onShowcaseViewShow(ShowcaseView view) {
+            Log.i(TAG, "onShowcaseViewShow()");
+            removeCallbacks(moveAround);
+            removeCallbacks(hideAlarmClock);
+            setAlpha(clockLayout, 0.2f, 0);
+            setAlpha(alarmTime, 0.2f, 0);
+        }
+
+        @Override
+        public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+            Log.i(TAG, "onShowcaseViewTouchBlocked()");
+
+        }
+    };
+    private View.OnLongClickListener onMenuItemLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            locked = !locked;
+            settings.setUILocked(locked);
+            lockUI(locked);
+            if (locked) {
+                hideSidePanel();
+            }
+            return true;
+        }
+    };
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
@@ -180,7 +454,7 @@ public class NightDreamUI {
     }
 
     public void onResume() {
-
+        Log.d(TAG, "onResume()");
         hideSystemUI();
         settings.reload();
         this.locked = settings.isUIlocked;
@@ -191,26 +465,9 @@ public class NightDreamUI {
         updateBatteryValue();
         updateBatteryView();
         setupScreenAnimation();
-        lockUI(settings.isUIlocked);
+        lockUI(this.locked);
 
-        clockLayoutContainer.post(new Runnable() {
-            @Override
-            public void run() {
-                setupClockLayout();
-                setColor();
-                updateWeatherData();
-                controlsVisible = true;
-
-                brightnessProgress.setVisibility(View.INVISIBLE);
-                setupBackgroundImage();
-
-                showAlarmClock();
-                setupShowcase();
-            }
-        });
-        if (Build.VERSION.SDK_INT >= 12){
-            clockLayoutContainer.post(zoomIn);
-        }
+        clockLayoutContainer.post(initClockLayout);
 
         EventBus.getDefault().register(this);
         broadcastReceiver = registerBroadcastReceiver();
@@ -233,7 +490,6 @@ public class NightDreamUI {
         }
     }
 
-    private long lastLocationRequest = 0L;
     private void updateWeatherData() {
         if (! settings.showWeather ) return;
 
@@ -492,7 +748,6 @@ public class NightDreamUI {
         alarmClock.setClickable(true);
     }
 
-
     public void onPause() {
         EventBus.getDefault().unregister(this);
         if ( lightSensorEventListener != null ) {
@@ -504,6 +759,7 @@ public class NightDreamUI {
     public void onStop() {
         removeCallbacks(moveAround);
         removeCallbacks(hideAlarmClock);
+        removeCallbacks(initClockLayout);
         removeCallbacks(zoomIn);
         if (soundmeter != null){
             soundmeter.stopMeasurement();
@@ -615,10 +871,6 @@ public class NightDreamUI {
             clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
         }
     }
-
-    private float LIGHT_VALUE_DARK = 4.2f;
-    private float LIGHT_VALUE_BRIGHT = 40.0f;
-    private float LIGHT_VALUE_DAYLIGHT = 300.0f;
 
     private int to_range(int value, int min, int max){
         if (value > max) return max;
@@ -822,71 +1074,6 @@ public class NightDreamUI {
         if (settings.muteRinger) AudioManage.restoreRingerMode();
     }
 
-    // only called for apilevel >= 12
-    private Runnable zoomIn = new Runnable() {
-        @Override
-        public void run() {
-            Configuration config = getConfiguration();
-            clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
-            //clockLayout.update(settings.weatherEntry);
-
-            float s = getScaleFactor(config);
-            clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
-       }
-    };
-
-    // move the clock randomly around
-    private Runnable moveAround = new Runnable() {
-       @Override
-       public void run() {
-           removeCallbacks(hideBrightnessLevel);
-           updateBatteryValue();
-           setupScreenAnimation();
-
-           hideBatteryView(2000);
-           updateBatteryView();
-
-           updateClockPosition();
-           updateWeatherData();
-
-           handler.postDelayed(this, 60000);
-       }
-    };
-
-    private Runnable hideBrightnessLevel = new Runnable() {
-       @Override
-       public void run() {
-           setAlpha(brightnessProgress, 0.f, 2000);
-           handler.postDelayed(hideBrightnessView, 2010);
-       }
-    };
-
-    private Runnable hideBrightnessView = new Runnable() {
-       @Override
-       public void run() {
-           brightnessProgress.setVisibility(View.INVISIBLE);
-       }
-    };
-
-    private Runnable hideAlarmClock = new Runnable() {
-       @Override
-       public void run() {
-           if ( alarmClock.isInteractive() || AlarmHandlerService.alarmIsRunning() ) {
-               handler.postDelayed(hideAlarmClock, 20000);
-               return;
-           }
-           controlsVisible = false;
-           hideBatteryView(2000);
-           setAlpha(menuIcon, 0.f, 2000);
-           alarmClock.isVisible = false;
-           alarmClock.setClickable(false);
-           alarmTime.setClickable(false);
-           setAlpha(alarmClock, 0.f, 2000);
-           setAlpha(alarmTime, 0.f, 2000);
-           hideSidePanel();
-       }
-    };
-
     private void toggleSidePanel() {
         if (Build.VERSION.SDK_INT > 11) {
            float x = sidePanel.getX();
@@ -904,6 +1091,7 @@ public class NightDreamUI {
         }
 
     }
+
     private void showSidePanel() {
         if (Build.VERSION.SDK_INT > 11) {
             sidePanel.animate().setDuration(250).x(0);
@@ -971,123 +1159,9 @@ public class NightDreamUI {
         }
     }
 
-    private boolean blinkStateOn = false;
-    Runnable blink = new Runnable() {
-        public void run() {
-            handler.removeCallbacks(blink);
-            if (AlarmHandlerService.alarmIsRunning()) {
-                blinkStateOn = !blinkStateOn;
-                float alpha = (blinkStateOn) ? 1.f : 0.5f;
-                setAlpha(menuIcon, alpha, 0);
-                handler.postDelayed(blink, 1000);
-            } else {
-                blinkStateOn = false;
-            }
-        }
-    };
     private Configuration getConfiguration() {
         return mContext.getResources().getConfiguration();
     }
-
-    private static final int SWIPE_MIN_DISTANCE = 120;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                float velocityY) {
-            int rect[] = new int[2];
-            clockLayoutContainer.getLocationOnScreen(rect);
-            if (e1.getY() < rect[1]) return false;
-
-            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH){
-                return false;
-            }
-            // right to left swipe
-            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                Log.w(TAG, "left swipe");
-                hideSidePanel();
-            }
-            // left to right swipe
-            else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                Log.w(TAG, "right swipe");
-                showSidePanel();
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onSingleTapUp (MotionEvent e) {
-            Log.w(TAG, "single tap up");
-            updateBatteryValue();
-            updateBatteryView();
-
-            showAlarmClock();
-            removeCallbacks(hideAlarmClock);
-            handler.postDelayed(hideAlarmClock, 20000);
-
-            if ( AlarmHandlerService.alarmIsRunning() ) {
-                alarmClock.snooze();
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            int rect[] = new int[2];
-            clockLayoutContainer.getLocationOnScreen(rect);
-            if (e1.getY() < rect[1]) {
-                Point size = utility.getDisplaySize();
-                float dx = -2.f * (distanceX / size.x);
-                float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
-                value += dx;
-                value = to_range(value, -1.f, 1.f);
-
-                int intValue = (int) (100.f * (value + 1.f));
-                brightnessProgress.setProgress(intValue);
-                brightnessProgress.setVisibility(View.VISIBLE);
-
-                setAlpha(brightnessProgress, 1.f, 0);
-                removeCallbacks(hideBrightnessLevel);
-                removeCallbacks(hideBrightnessView);
-                handler.postDelayed(hideBrightnessLevel, 1000);
-
-                dimScreen(0, last_ambient, value);
-                if (mode != 0) {
-                    settings.setBrightnessOffset(value);
-                } else {
-                    settings.setNightModeBrightness(value);
-                }
-            }
-            return false;
-        }
-    };
-
-    OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            if (Build.VERSION.SDK_INT < 11) return;
-            float s = clockLayout.getScaleX();
-            Configuration config = getConfiguration();
-            settings.setScaleClock(s, config.orientation);
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            if (Build.VERSION.SDK_INT < 11) return false;
-            return true;
-        }
-
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            if (Build.VERSION.SDK_INT < 11) return false;
-            float s = detector.getScaleFactor();
-            applyScaleFactor(s);
-            return true;
-        }
-    };
 
     private void applyScaleFactor(float factor) {
         int screen_width = clockLayoutContainer.getWidth();
@@ -1103,34 +1177,28 @@ public class NightDreamUI {
     private float getScaleFactor(Configuration config) {
         float s = settings.getScaleClock(config.orientation);
         float max = getMaxScaleFactor();
-        return ( s < max ) ? s : max;
+        Log.d(TAG, String.format("getScaleFactor > %f %f", s, max));
+
+        s = Math.min(s, max);
+        if (s > 0.f && !Float.isNaN(s) && !Float.isInfinite(s)) {
+            return s;
+        }
+        return 1.f;
     }
 
     private float getMaxScaleFactor() {
+        Log.d(TAG, String.format("getMaxScaleFactor > %d %d",
+                                  clockLayoutContainer.getWidth(),
+                                  clockLayout.getWidth()));
         float factor_x = (float) clockLayoutContainer.getWidth() / clockLayout.getWidth();
         float factor_y = (float) clockLayoutContainer.getHeight() / clockLayout.getHeight();
-        return (factor_x < factor_y ) ? factor_x : factor_y;
+        return Math.min(factor_x, factor_y);
     }
 
-    OnClickListener onMenuItemClickListener = new OnClickListener() {
-        public void onClick(View v) {
-            if (locked) return;
-            toggleSidePanel();
-        }
-    };
-
-    private View.OnLongClickListener onMenuItemLongClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-            locked = ! locked;
-            settings.setUILocked(locked);
-            lockUI(locked);
-            if (locked) {
-                hideSidePanel();
-            }
-            return true;
-        }
-    };
+    public void setLocked(boolean on) {
+        this.locked = on;
+        lockUI(on);
+    }
 
     private void lockUI(boolean on) {
         alarmClock.setLocked(on);
@@ -1141,16 +1209,6 @@ public class NightDreamUI {
             blinkIfLocked();
         }
     }
-
-    OnClickListener onStockAlarmTimeClickListener = new OnClickListener() {
-        public void onClick(View v) {
-            if (Build.VERSION.SDK_INT < 19) return;
-
-            Intent mClockIntent = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS);
-            mClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(mClockIntent);
-        }
-    };
 
     public boolean onTouch(View view, MotionEvent e, float last_ambient) {
         if (locked) {
@@ -1175,7 +1233,7 @@ public class NightDreamUI {
         // ask only once
         if (settings.lastReviewRequestTime != 0L) return;
 
-        long firstInstallTime = utility.getFirstInstallTime(mContext);
+        long firstInstallTime = Utility.getFirstInstallTime(mContext);
         Log.i(TAG, "First install time: " + String.valueOf(firstInstallTime));
         Calendar install_time = Calendar.getInstance();
         install_time.setTimeInMillis(firstInstallTime);
@@ -1207,48 +1265,13 @@ public class NightDreamUI {
                 .build();
 
             NotificationManager notificationManager =
-                (NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
             notificationManager.notify(0, n);
 
         }
         else {
             /* handle your error case: the device has no way to handle market urls */
-        }
-    }
-
-    class NightDreamBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if ( OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action) ) {
-                Log.v(TAG, "Weather data updated");
-                settings.weatherEntry = settings.getWeatherEntry();
-                clockLayout.update(settings.weatherEntry);
-            } else
-            if ( Config.ACTION_ALARM_SET.equals(action) ) {
-                if (showcaseView != null) showcaseView.hide();
-                setupShowcaseForAlarmDeletion();
-                if (intent.hasExtra("alarmTime")) {
-                    settings.nextAlarmTime = intent.getLongExtra("alarmTime", 0L);
-                    Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
-                    alarmClock.setSettings(settings);
-                    alarmClock.invalidate();
-                }
-            } else
-            if ( Config.ACTION_ALARM_STOPPED.equals(action) ) {
-                settings.updateNextAlarmTime();
-                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
-                alarmClock.setSettings(settings);
-                alarmClock.invalidate();
-            } else
-            if ( Config.ACTION_ALARM_DELETED.equals(action) ) {
-                if (showcaseView != null) showcaseView.hide();
-                settings.updateNextAlarmTime();
-                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
-                alarmClock.setSettings(settings);
-                alarmClock.invalidate();
-            }
         }
     }
 
@@ -1281,17 +1304,13 @@ public class NightDreamUI {
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
-    static int showcaseCounter = 0;
-    static final long SHOWCASE_ID_ONBOARDING = 1;
-    static final long SHOWCASE_ID_ALARMS = 2;
-    static final long SHOWCASE_ID_ALARM_DELETION = 3;
     private void setupShowcase() {
         // daydreams cannot be cast to an activity
         if ( showcaseView != null || daydreamMode) {
             return;
         }
 
-        long firstInstallTime = utility.getFirstInstallTime(mContext);
+        long firstInstallTime = Utility.getFirstInstallTime(mContext);
         Calendar install_time = Calendar.getInstance();
         install_time.setTimeInMillis(firstInstallTime);
 
@@ -1323,15 +1342,8 @@ public class NightDreamUI {
         showShowcase();
         setupShowcaseForQuickAlarms();
         setupShowcaseForAlarmDeletion();
+        setupShowcaseForScreenLock();
     }
-
-    View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showcaseCounter++;
-            setupShowcaseView();
-        }
-    };
 
     void setupShowcaseView() {
         if (showcaseView.getShowcaseTag() != SHOWCASE_ID_ONBOARDING) return;
@@ -1418,6 +1430,25 @@ public class NightDreamUI {
 
     }
 
+    private void setupShowcaseForScreenLock() {
+        if ( showcaseView != null || daydreamMode) {
+            return;
+        }
+
+        if ( this.locked ) {
+            showcaseView = new ShowcaseView.Builder((Activity) mContext)
+                .setTarget(new ViewTarget(menuIcon))
+                .hideOnTouchOutside()
+                .setContentTitle(mContext.getString(R.string.showcase_title_screen_lock))
+                .setContentText(mContext.getString(R.string.showcase_text_screen_lock))
+                .setShowcaseEventListener(showcaseViewEventListener)
+                .singleShot(SHOWCASE_ID_SCREEN_LOCK)
+                .build();
+            showcaseView.hideButton();
+            showShowcase();
+        }
+
+    }
     private void showShowcase() {
         showcaseView.show();
         if ( !showcaseView.isShowing()) {
@@ -1425,42 +1456,36 @@ public class NightDreamUI {
         }
     }
 
-    OnShowcaseEventListener showcaseViewEventListener = new OnShowcaseEventListener() {
+    class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
-        public void onShowcaseViewHide(ShowcaseView view) {
-            Log.i(TAG, "onShowcaseViewHide()");
-
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
+                Log.v(TAG, "Weather data updated");
+                settings.weatherEntry = settings.getWeatherEntry();
+                clockLayout.update(settings.weatherEntry);
+            } else if (Config.ACTION_ALARM_SET.equals(action)) {
+                if (showcaseView != null) showcaseView.hide();
+                setupShowcaseForAlarmDeletion();
+                if (intent.hasExtra("alarmTime")) {
+                    settings.nextAlarmTime = intent.getLongExtra("alarmTime", 0L);
+                    Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
+                    alarmClock.setSettings(settings);
+                    alarmClock.invalidate();
+                }
+            } else if (Config.ACTION_ALARM_STOPPED.equals(action)) {
+                settings.updateNextAlarmTime();
+                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
+                alarmClock.setSettings(settings);
+                alarmClock.invalidate();
+            } else if (Config.ACTION_ALARM_DELETED.equals(action)) {
+                if (showcaseView != null) showcaseView.hide();
+                settings.updateNextAlarmTime();
+                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
+                alarmClock.setSettings(settings);
+                alarmClock.invalidate();
+            }
         }
-
-        @Override
-        public void onShowcaseViewDidHide(ShowcaseView view) {
-            Log.i(TAG, "onShowcaseViewDidHide()");
-            showcaseView = null;
-            handler.postDelayed(moveAround, 30000);
-            handler.postDelayed(hideAlarmClock, 20000);
-            brightnessProgress.setVisibility(View.INVISIBLE);
-            updateBatteryValue();
-            updateBatteryView();
-            showAlarmClock();
-
-            setupShowcaseForQuickAlarms();
-            setupShowcaseForAlarmDeletion();
-        }
-
-        @Override
-        public void onShowcaseViewShow(ShowcaseView view) {
-            Log.i(TAG, "onShowcaseViewShow()");
-            removeCallbacks(moveAround);
-            removeCallbacks(hideAlarmClock);
-            setAlpha(clockLayout, 0.2f, 0);
-            setAlpha(alarmTime, 0.2f, 0);
-        }
-
-        @Override
-        public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
-            Log.i(TAG, "onShowcaseViewTouchBlocked()");
-
-        }
-    };
+    }
 
 }

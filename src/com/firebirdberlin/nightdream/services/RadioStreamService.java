@@ -1,15 +1,11 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -17,37 +13,78 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.IOException;
-
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.HttpStatusCheckTask;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 
+import java.io.IOException;
+
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
                                                            MediaPlayer.OnCompletionListener,
                                                            MediaPlayer.OnPreparedListener,
                                                            HttpStatusCheckTask.AsyncResponse {
+    static public boolean isRunning = false;
+    static public boolean alarmIsRunning = false;
+    public static StreamingMode streamingMode = StreamingMode.INACTIVE;
     private static String TAG = "NightDream.RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
     final private Handler handler = new Handler();
-
-    static public boolean isRunning = false;
-    static public boolean alarmIsRunning = false;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
     private String streamURL = "";
     private HttpStatusCheckTask statusCheckTask = null;
+    private Runnable fadeIn = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeIn);
+            if (mMediaPlayer == null) return;
+            currentVolume += 0.01;
+            if (currentVolume < 1.) {
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeIn, 50);
+            }
+        }
+    };
 
-    public enum StreamingMode {INACTIVE, ALARM, RADIO}
-    public static StreamingMode streamingMode = StreamingMode.INACTIVE;
+    public static void start(Context context) {
+        if (!Utility.hasNetworkConnection(context)) {
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setAction(ACTION_START);
+        context.startService(i);
+    }
+
+    public static void startStream(Context context) {
+        if (!Utility.hasNetworkConnection(context)) {
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setAction(ACTION_START_STREAM);
+        context.startService(i);
+    }
+
+    public static void stop(Context context) {
+        Intent i = getStopIntent(context);
+        context.stopService(i);
+    }
+
+    private static Intent getStopIntent(Context context) {
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return i;
+    }
 
     @Override
     public void onCreate(){
@@ -66,18 +103,20 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         settings = new Settings(this);
         isRunning = true;
 
-        String action = intent.getAction();
-        if ( ACTION_START.equals(action) ) {
-            Notification note = new NotificationCompat.Builder(this)
+        Notification note = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.radio))
                 .setSmallIcon(R.drawable.ic_radio)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .build();
 
-            note.flags |= Notification.FLAG_NO_CLEAR;
-            note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+        note.flags |= Notification.FLAG_NO_CLEAR;
+        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
-            startForeground(1337, note);
+        startForeground(1337, note);
+
+        String action = intent.getAction();
+        if (ACTION_START.equals(action)) {
+
             alarmIsRunning = true;
             streamingMode = StreamingMode.ALARM;
             currentStreamType = AudioManager.STREAM_ALARM;
@@ -126,19 +165,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
         sendBroadcast(intent);
     }
-
-    private Runnable fadeIn = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(fadeIn);
-            if ( mMediaPlayer == null ) return;
-            currentVolume += 0.01;
-            if ( currentVolume < 1. ) {
-                mMediaPlayer.setVolume(currentVolume, currentVolume);
-                handler.postDelayed(fadeIn, 50);
-            }
-        }
-    };
 
     public void setAlarmVolume(int volume) {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -200,7 +226,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         return false;
     }
 
-
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
         Log.e(TAG, "onBufferingUpdate " + String.valueOf(percent));
@@ -211,7 +236,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         if ( settings.alarmFadeIn ) {
             currentVolume = 0.f;
             handler.post(fadeIn);
-        };
+        }
         try {
             mp.start();
         } catch (IllegalStateException e) {
@@ -236,36 +261,5 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     }
 
-    public static void start(Context context) {
-        if ( ! Utility.hasNetworkConnection(context) ) {
-            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Intent i = new Intent(context, RadioStreamService.class);
-        i.setAction(ACTION_START);
-        context.startService(i);
-    }
-
-    public static void startStream(Context context) {
-        if ( ! Utility.hasNetworkConnection(context) ) {
-            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Intent i = new Intent(context, RadioStreamService.class);
-        i.setAction(ACTION_START_STREAM);
-        context.startService(i);
-    }
-
-    public static void stop(Context context) {
-        Intent i = getStopIntent(context);
-        context.stopService(i);
-    }
-
-    private static Intent getStopIntent(Context context) {
-        Intent i = new Intent(context, RadioStreamService.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        return i;
-    }
+    public enum StreamingMode {INACTIVE, ALARM, RADIO}
 }

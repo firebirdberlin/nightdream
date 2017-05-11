@@ -18,6 +18,8 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">O nama</string>
+<string name="action_snooze">Odlaganje alarma</string>
+<string name="action_stop">Zaustavljanje</string>
 <string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Pojačanje  zvuka alarma</string>
 <string name="alarmVolume">Jačina zvuka</string>
@@ -28,6 +30,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Izgled</string>
 <string name="app_name">Noćni sat</string>
 <string name="auto_brightness">Automatsko osvetljenje</string>
+<string name="autostart_message_disabled">Molim vas onemogućite Daydream da bi aktivirali automatsko pokretanje.</string>
 <string name="autostart_timerange_label_end">Vreme prestanka rada</string>
 <string name="autostart_timerange_label_start">Vreme početka rada</string>
 <string name="background">Pozadina</string>
@@ -44,13 +47,19 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_alarm_sound">Zvuk alarma</string>
 <string name="choose_primary_color">Boja istaknutog teksta</string>
 <string name="choose_secondary_color">Boja teksta</string>
+<string name="clear">Obrisati</string>
+<string name="clock_layout">Izgled</string>
+<string name="clock_layout_digital">Digitalni</string>
+<string name="clock_layout_analog">Klasičan</string>
 <string name="colors">Boje</string>
 <string name="confirm_reset_question">Da li zaista želite da vratite sva podešavanja na početna?</string>
 <string name="confirm_reset">Vratiti na početna podešavanja</string>
 <string name="contribute">Priložiti</string>
 <string name="contribute_source_code">Izvorni kod</string>
 <string name="contribute_translation">Prevod</string>
+<string name="country">Drzava</string>
 <string name="credits">Zasluge</string>
+<string name="credits_pull_requests">Povući zahtev</string>
 <string name="date_format">Format datuma</string>
 <string name="dialog_message_thank_you">Puno Vam hvala!</string>
 <string name="dialog_title_thank_you">Hvala</string>
@@ -70,6 +79,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">Sakriti pozadinsku sliku u noćnom režimu.</string>
 <string name="hour">h</string>
 <string name="location_time">lokalno vreme</string>
+<string name="maxBrightness">Maksimalno osvetljenje ekrana</string>
 <string name="message_no_data_connection">Nema internet konekcije</string>
 <string name="message_mobile_data_connection">Internet konekcija preko mobilne mreže</string>
 <string name="message_mobile_data_connection_confirmation">Povezani ste preko mobilne mreže. Želite li da slušate radio?</string>
@@ -79,6 +89,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode_activation_mode">Aktiviranje</string>
 <string name="night_mode_activation_manual">ručno</string>
 <string name="night_mode_activation_auto">automatsko</string>
+<string name="night_mode_activation_scheduled">Zakazano</string>
+<string name="night_mode_timerange_title">Period noci</string>
+<string name="night_mode_timerange_label_end">Vreme zavrsetka</string>
+<string name="night_mode_timerange_label_start">Pocetno vreme</string>
 <string name="noise_sensitivity">Osetljivost mikrofona</string>
 <string name="notification_alarm">Kliknite da zaustavite alarm.</string>
 <string name="other_apps">Ostale aplikacije</string>
@@ -106,7 +120,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="remaining">preostalo</string>
 <string name="reset_to_defaults">Vratiti na početna podešavanja</string>
 <string name="restless_mode">Pomerati sat po ekranu</string>
-<string name="review_request">Molimo Vas daocenite ovu aplikaciju. Hvala!</string>
+<string name="review_request">Molimo Vas ocenite ovu aplikaciju. Hvala!</string>
 <string name="screen_orientation_automatic">automatski</string>
 <string name="screen_orientation_landscape">horizontalno</string>
 <string name="screen_orientation_portrait">vertikalno</string>
@@ -115,13 +129,17 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Orijentacija ekrana</string>
 <string name="select_alarm_sound">Podesite zvuk alarma</string>
 <string name="set_alarm">podesite alarm</string>
+<string name="showcase_text_set_alarms">Dodirni i povuci svoj prst da postaviš funciju alarma brzo.</string>
+<string name="showcase_text_delete_alarms">Tapni ovde da obrišes ili zaustaviš alarm. Tapni bilo koje drugo mesto da odložiš alarm.</string>
 <string name="show_date">Prikazati datum</string>
 <string name="show_temperature">Prikazati temperaturu</string>
 <string name="show_weather">Prikazati lokalne vremenske prilike</string>
 <string name="show_wind_speed">Prikazati brzinu vetra</string>
+<string name="snoozeTime">Vreme odlaganja</string>
 <string name="speedUnit">Jedinica za brzinu vetra</string>
 <string name="titlePrivacyPolicy">Pravila o privatnosti</string>
 <string name="temperatureUnit">Jedinica za temperaturu</string>
+<string name="timeFormat">Format za vreme</string>
 <string name="translations">Prevodi</string>
 <string name="typeface_7_segment">7-segmentni LED</string>
 <string name="typeface_roboto_condensed">Roboto  skupljena</string>
@@ -130,7 +148,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_regular">Roboto normalna</string>
 <string name="typeface_roboto_thin">Roboto tanka</string>
 <string name="typeface">Vrsta fonta</string>
+<string name="uninstall">Deinstalacija aplikacije</string>
 <string name="use_internal_alarm">Brzi alarmi</string>
+<string name="useDeviceLock">Zaključavanje uređaja</string>
+<string name="useDeviceLockExplanation">Zaključaj uređaj dok je Night Clock aktivan.</string>
 <string name="weather_calculation_time">ašuriranje na svakih</string>
 <string name="weather_city_id_summary">Ostaviti prazno za automatsku detekciju lokacije.</string>
 <string name="weather_city_id_title">ID grada</string>

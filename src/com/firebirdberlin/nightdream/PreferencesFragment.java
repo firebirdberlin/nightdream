@@ -1,27 +1,20 @@
 package com.firebirdberlin.nightdream;
 
-import java.util.ArrayList;
-
-import org.json.JSONObject;
-import org.json.JSONException;
-
-import com.android.vending.billing.IInAppBillingService;
-
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.admin.DevicePolicyManager;
 import android.app.PendingIntent;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.content.pm.PackageManager;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.Manifest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,8 +24,8 @@ import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceCategory;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
@@ -40,9 +33,17 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
-import de.firebirdberlin.preference.InlineSeekBarPreference;
+import com.android.vending.billing.IInAppBillingService;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
+import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 @SuppressWarnings("NewAPI")
 public class PreferencesFragment extends PreferenceFragment {
@@ -687,6 +688,10 @@ public class PreferencesFragment extends PreferenceFragment {
                     case "useDeviceLock":
                         setupDeviceAdministratorPermissions(sharedPreferences);
                         break;
+                    case "standbyEnabledWhileConnected":
+                    case "standbyEnabledWhileDisconnected":
+                        setupStandByService(sharedPreferences);
+                        break;
                 }
             }
         };
@@ -698,6 +703,26 @@ public class PreferencesFragment extends PreferenceFragment {
         ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
         if (pref.isChecked() && !mgr.isAdminActive(cn) ) {
             pref.setChecked(false);
+        }
+    }
+
+    private void setupStandByService(SharedPreferences sharedPreferences) {
+        //if (!isAdded()) return;
+        boolean on = sharedPreferences.getBoolean("standbyEnabledWhileConnected", false) ||
+                         sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false);
+        int newState = on ?
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+
+        if (!on) {
+            ScreenWatcherService.stop(mContext);
+        }
+        PackageManager pm = mContext.getPackageManager();
+        pm.setComponentEnabledSetting(new ComponentName(mContext, ScreenWatcherService.class),
+                newState, PackageManager.DONT_KILL_APP);
+
+        if (on) {
+            ScreenWatcherService.start(mContext);
         }
     }
 
