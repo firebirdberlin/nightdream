@@ -25,8 +25,7 @@ import java.util.List;
 public class OpenWeatherMapApi {
 
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
-    private static final String ENDPOINT = "http://api.openweathermap.org/data/2.5/find";
-    private static String BASEURL = "http://api.openweathermap.org/data/2.5/weather?";
+    private static final String ENDPOINT = "http://api.openweathermap.org/data/2.5";
     private static String TAG = "OpenWeatherMapApi";
     private static String APPID = "645d3eb40425e8af8edc25ddbf153db8";
     private static int READ_TIMEOUT = 10000;
@@ -37,18 +36,10 @@ public class OpenWeatherMapApi {
         int responseCode = 0;
         String response = "";
         String responseText = "";
-        String urlstring = BASEURL;
-        if (!cityID.isEmpty()) {
-            urlstring += "id=" + cityID + "&";
-        } else {
-            urlstring += "lat=" + String.valueOf(lat) + "&" +
-                    "lon=" + String.valueOf(lon) + "&";
-        }
-        urlstring += "appid=" + APPID;
 
-        Log.i(TAG, "requesting " + urlstring);
         try {
-            URL url = new URL(urlstring);
+            URL url = getUrlWeather(cityID, lat, lon);
+            Log.i(TAG, "requesting " + url.toString());
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             response = urlConnection.getResponseMessage();
             responseCode = urlConnection.getResponseCode();
@@ -230,15 +221,37 @@ public class OpenWeatherMapApi {
 
     private static URL getUrlFindCity(String query) throws MalformedURLException {
         query = query.replace(" ", "");
-        String url = Uri.parse(ENDPOINT).buildUpon()
+        Uri.Builder builder = getPathBuilder("find");
+        String url = builder
                         .appendQueryParameter("q", query)
                         .appendQueryParameter("type", "like")
                         .appendQueryParameter("cnt", "15")
                         .appendQueryParameter("sort", "population")
-                        .appendQueryParameter("APPID", APPID)
                         .build().toString();
         return new URL(url);
     }
+
+    private static URL getUrlWeather(String cityId, float lat, float lon) throws MalformedURLException {
+        Uri.Builder builder = getPathBuilder("weather");
+
+        if (!cityId.isEmpty()) {
+            builder = builder.appendQueryParameter("id", cityId);
+        } else {
+            builder = builder
+                    .appendQueryParameter("lat", String.valueOf(lat))
+                    .appendQueryParameter("lon", String.valueOf(lon));
+        }
+
+        String url = builder.build().toString();
+        return new URL(url);
+    }
+
+    private static Uri.Builder getPathBuilder(String endpoint) {
+        return Uri.parse(ENDPOINT).buildUpon()
+                .appendPath(endpoint)
+                .appendQueryParameter("appid", APPID);
+    }
+
 
     private static List<City> decodeCitiesJsonResponse(String responseText) throws JSONException {
         List<City> cities = new ArrayList<>();
