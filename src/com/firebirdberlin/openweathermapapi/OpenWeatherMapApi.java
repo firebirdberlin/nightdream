@@ -1,55 +1,43 @@
 package com.firebirdberlin.openweathermapapi;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.String;
-import java.lang.StringBuilder;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.SocketTimeoutException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import android.net.Uri;
 import android.util.Log;
+
+import com.firebirdberlin.openweathermapapi.models.City;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.firebirdberlin.openweathermapapi.models.City;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OpenWeatherMapApi {
 
-    private static String TAG = "NightDream.OpenWeatherMapApi";
-    private static final String ENDPOINT = "http://api.openweathermap.org/data/2.5/find";
-    private static String APPID = "645d3eb40425e8af8edc25ddbf153db8";
-
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
-
+    private static final String ENDPOINT = "http://api.openweathermap.org/data/2.5/find";
+    private static String TAG = "OpenWeatherMapApi";
+    private static String APPID = "645d3eb40425e8af8edc25ddbf153db8";
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
 
-    public static List<City> findCity(String query) {
+    static List<City> findCity(String query) {
 
         int responseCode = 0;
         String response = "";
         String responseText = "";
 
-        List<City> cities = new ArrayList<City>();
+        List<City> cities = new ArrayList<>();
 
         URL url;
         try {
@@ -110,7 +98,7 @@ public class OpenWeatherMapApi {
     }
 
     private static List<City> decodeCitiesJsonResponse(String responseText) throws JSONException {
-        List<City> cities = new ArrayList<City>();
+        List<City> cities = new ArrayList<>();
 
         JSONObject json = new JSONObject(responseText);
         JSONArray jsonArray = json.getJSONArray("list");
@@ -137,7 +125,7 @@ public class OpenWeatherMapApi {
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
-            sb.append(line+"\n");
+            sb.append(line).append("\n");
         }
         br.close();
         return sb.toString();

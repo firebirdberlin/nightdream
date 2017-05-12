@@ -1,30 +1,31 @@
 package com.firebirdberlin.nightdream.services;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.String;
-import java.lang.StringBuilder;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
-import com.firebirdberlin.nightdream.Settings;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class DownloadWeatherService extends IntentService {
-    private static String TAG = "NightDream.DownloadWeatherService";
+    private static String TAG = "DownloadWeatherService";
     private static String BASEURL = "http://api.openweathermap.org/data/2.5/weather?";
     private static String APPID = "645d3eb40425e8af8edc25ddbf153db8";
     private Context mContext = null;
@@ -39,6 +40,19 @@ public class DownloadWeatherService extends IntentService {
 
     public DownloadWeatherService(String name) {
         super(name);
+    }
+
+    public static void start(Context context, Location location) {
+        Intent i = new Intent(context, DownloadWeatherService.class);
+        i.putExtra("lat", (float) location.getLatitude());
+        i.putExtra("lon", (float) location.getLongitude());
+        context.startService(i);
+    }
+
+    public static void start(Context context, String cityID) {
+        Intent i = new Intent(context, DownloadWeatherService.class);
+        i.putExtra("cityID", cityID);
+        context.startService(i);
     }
 
     @Override
@@ -60,7 +74,7 @@ public class DownloadWeatherService extends IntentService {
         String response = "";
         String responseText = "";
         String urlstring = BASEURL;
-        if (cityID != "") {
+        if (!cityID.isEmpty()) {
             urlstring += "id=" + cityID + "&";
         } else {
             urlstring += "lat=" + String.valueOf(lat) + "&" +
@@ -191,7 +205,7 @@ public class DownloadWeatherService extends IntentService {
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
-            sb.append(line+"\n");
+            sb.append(line).append("\n");
         }
         br.close();
         return sb.toString();
@@ -218,18 +232,5 @@ public class DownloadWeatherService extends IntentService {
     private void broadcastResult() {
         Intent i = new  Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         sendBroadcast(i);
-    }
-
-    public static void start(Context context, Location location) {
-        Intent i = new Intent(context, DownloadWeatherService.class);
-        i.putExtra("lat", (float) location.getLatitude());
-        i.putExtra("lon", (float) location.getLongitude());
-        context.startService(i);
-    }
-
-    public static void start(Context context, String cityID) {
-        Intent i = new Intent(context, DownloadWeatherService.class);
-        i.putExtra("cityID", cityID);
-        context.startService(i);
     }
 }
