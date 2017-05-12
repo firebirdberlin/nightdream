@@ -15,7 +15,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,21 +26,15 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
-    private final static String TAG = "NightDream.Settings";
     public final static int BACKGROUND_BLACK = 1;
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
-
-    Context mContext;
-    SharedPreferences settings;
-
+    private final static String TAG = "NightDream.Settings";
     public boolean allow_screen_off = false;
-    private boolean reactivate_screen_on_noise = false;
     public boolean alarmFadeIn = true;
-    private boolean ambientNoiseDetection;
     public boolean standbyEnabledWhileConnected = false;
     public boolean standbyEnabledWhileDisconnected = false;
     public boolean autoBrightness = false;
@@ -99,7 +93,6 @@ public class Settings {
     public String AlarmToneUri = "";
     public String radioStreamURL = "";
     public String radioStreamURLUI = "";
-    private String bgpath = "";
     public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
@@ -108,9 +101,13 @@ public class Settings {
     public BatteryValue batteryReferenceValue;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
-
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
+    Context mContext;
+    SharedPreferences settings;
+    private boolean reactivate_screen_on_noise = false;
+    private boolean ambientNoiseDetection;
+    private String bgpath = "";
 
 
     public Settings(Context context){
@@ -325,13 +322,6 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public void setAlarmTime(long alarmTime) {
-        nextAlarmTime = alarmTime;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlarmTime", alarmTime);
-        prefEditor.commit();
-    }
-
     public void updateNextAlarmTime() {
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
     }
@@ -340,6 +330,13 @@ public class Settings {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(nextAlarmTime);
         return calendar;
+    }
+
+    public void setAlarmTime(long alarmTime) {
+        nextAlarmTime = alarmTime;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("nextAlarmTime", alarmTime);
+        prefEditor.commit();
     }
 
     public void setBackgroundImage(String uri) {
@@ -429,6 +426,14 @@ public class Settings {
         prefEditor.commit();
     }
 
+    public Location getLocation() {
+        Location l = new Location(location_provider);
+        l.setLongitude(location_lon);
+        l.setLatitude(location_lat);
+        l.setTime(location_time);
+        return l;
+    }
+
     public void setLocation(Location location) {
         location_lon = (float) location.getLongitude();
         location_lat = (float) location.getLatitude();
@@ -442,12 +447,22 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public Location getLocation() {
-        Location l = new Location(location_provider);
-        l.setLongitude(location_lon);
-        l.setLatitude(location_lat);
-        l.setTime(location_time);
-        return l;
+    public WeatherEntry getWeatherEntry() {
+        this.weatherEntry = new WeatherEntry();
+        this.weatherEntry.timestamp = settings.getLong("weather_time", -1L);
+        if (this.weatherEntry.timestamp > -1L) {
+            this.weatherEntry.lon = settings.getFloat("weather_lon", this.weatherEntry.lon);
+            this.weatherEntry.lat = settings.getFloat("weather_lat", this.weatherEntry.lat);
+            this.weatherEntry.sunriseTime = settings.getLong("weather_sunrise_time", this.weatherEntry.sunriseTime);
+            this.weatherEntry.sunsetTime = settings.getLong("weather_sunset_time", this.weatherEntry.sunsetTime);
+            this.weatherEntry.weatherIcon = settings.getString("weather_icon", this.weatherEntry.weatherIcon);
+            this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
+            this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
+            this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
+            this.weatherEntry.windSpeed = settings.getFloat("weather_wind_speed", (float) this.weatherEntry.windSpeed);
+            this.weatherEntry.windDirection = settings.getInt("weather_wind_direction", this.weatherEntry.windDirection);
+        }
+        return this.weatherEntry;
     }
 
     public void setWeatherEntry(WeatherEntry entry) {
@@ -465,24 +480,6 @@ public class Settings {
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
         prefEditor.putInt("weather_wind_direction", entry.windDirection);
         prefEditor.commit();
-    }
-
-    public WeatherEntry getWeatherEntry() {
-        this.weatherEntry = new WeatherEntry();
-        this.weatherEntry.timestamp = settings.getLong("weather_time", -1L);
-        if ( this.weatherEntry.timestamp > -1L ) {
-            this.weatherEntry.lon = settings.getFloat("weather_lon", this.weatherEntry.lon);
-            this.weatherEntry.lat = settings.getFloat("weather_lat", this.weatherEntry.lat);
-            this.weatherEntry.sunriseTime = settings.getLong("weather_sunrise_time", this.weatherEntry.sunriseTime);
-            this.weatherEntry.sunsetTime = settings.getLong("weather_sunset_time", this.weatherEntry.sunsetTime);
-            this.weatherEntry.weatherIcon = settings.getString("weather_icon", this.weatherEntry.weatherIcon);
-            this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
-            this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
-            this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
-            this.weatherEntry.windSpeed = settings.getFloat("weather_wind_speed", (float) this.weatherEntry.windSpeed);
-            this.weatherEntry.windDirection = settings.getInt("weather_wind_direction", this.weatherEntry.windDirection);
-        }
-        return this.weatherEntry;
     }
 
     public String backgroundImagePath() {

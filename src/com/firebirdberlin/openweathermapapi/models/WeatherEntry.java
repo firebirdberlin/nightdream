@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream.models;
+package com.firebirdberlin.openweathermapapi.models;
 
 public class WeatherEntry {
     public static final int CELSIUS = 1;

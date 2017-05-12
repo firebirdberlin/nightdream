@@ -1,24 +1,20 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.util.Date;
-import java.text.DateFormat;
-
 import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Point;
 import android.preference.Preference;
 import android.util.AttributeSet;
-import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.ui.ClockLayout;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 public class WeatherPreviewPreference extends Preference {
     private View preferenceView = null;

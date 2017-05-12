@@ -4,8 +4,8 @@ package com.firebirdberlin.openweathermapapi;
 import android.net.Uri;
 import android.util.Log;
 
-import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;

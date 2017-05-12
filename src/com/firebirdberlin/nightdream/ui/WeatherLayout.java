@@ -4,15 +4,15 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
 
@@ -74,6 +74,7 @@ public class WeatherLayout extends LinearLayout {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         iconText = (TextView) findViewById(R.id.iconText);
         iconWind = (TextView) findViewById(R.id.iconWind);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
@@ -126,8 +127,8 @@ public class WeatherLayout extends LinearLayout {
     public void update(WeatherEntry entry) {
         if (iconText == null || temperatureText == null) return;
         long age = entry.ageMillis();
-        Log.d("NightDream.WeatherLayout", entry.toString());
-        Log.d("NightDream.WeatherLayout", formatTemperatureText(entry));
+        Log.d("WeatherLayout", entry.toString());
+        Log.d("WeatherLayout", formatTemperatureText(entry));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
             iconText.setText(iconToText(entry.weatherIcon));
             temperatureText.setText(formatTemperatureText(entry));

@@ -10,18 +10,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class DownloadWeatherService extends IntentService {
     private static String TAG = "DownloadWeatherService";
 
     private Context mContext = null;
-
-    private float lat;
-    private float lon;
-    private String cityID;
 
     public DownloadWeatherService() {
         super("DownloadWeatherService");
@@ -50,9 +46,9 @@ public class DownloadWeatherService extends IntentService {
         Log.d(TAG, TAG + " started");
 
         Bundle bundle = intent.getExtras();
-        lat = bundle.getFloat("lat");
-        lon = bundle.getFloat("lon");
-        cityID = bundle.getString("cityID", "");
+        float lat = bundle.getFloat("lat");
+        float lon = bundle.getFloat("lon");
+        String cityID = bundle.getString("cityID", "");
         WeatherEntry entry = OpenWeatherMapApi.fetchWeatherData(cityID, lat, lon);
         onPostExecute(entry);
     }
