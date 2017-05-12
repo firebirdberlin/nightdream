@@ -32,7 +32,6 @@ public class OpenWeatherMapApi {
     private static int CONNECT_TIMEOUT = 10000;
 
     public static WeatherEntry fetchWeatherData(String cityID, float lat, float lon) {
-        WeatherEntry entry = new WeatherEntry();
         int responseCode = 0;
         String response = "";
         String responseText = "";
@@ -55,12 +54,16 @@ public class OpenWeatherMapApi {
         Log.i(TAG, " >> response " + response);
         if (responseCode != 200) {
             Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
-            return entry;
+            return new WeatherEntry();
         } else {
             Log.i(TAG, " >> responseText " + responseText);
         }
 
+        return getWeatherEntryFromResponseText(responseText);
+    }
 
+    private static WeatherEntry getWeatherEntryFromResponseText(String responseText) {
+        WeatherEntry entry = new WeatherEntry();
         JSONObject json = getJSONObject(responseText);
         JSONObject jsonMain = getJSONObject(json, "main");
         JSONObject jsonWind = getJSONObject(json, "wind");
