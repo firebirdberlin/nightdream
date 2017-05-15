@@ -78,7 +78,7 @@ public class OpenWeatherMapApi {
         entry.sunsetTime = getValue(jsonSys, "sunset", 0L);
 
         entry.windSpeed = getValue(jsonWind, "speed", 0.);
-        entry.windDirection = getValue(jsonWind, "deg", 0);
+        entry.windDirection = getValue(jsonWind, "deg", -1);
 
         entry.weatherIcon = "";
         if (jsonWeather != null && jsonWeather.length() > 0) {

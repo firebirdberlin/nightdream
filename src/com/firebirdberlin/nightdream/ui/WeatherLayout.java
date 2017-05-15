@@ -20,6 +20,7 @@ public class WeatherLayout extends LinearLayout {
     private Context context = null;
     private TextView iconText = null;
     private TextView iconWind = null;
+    private DirectionIconView iconWindDirection = null;
     private TextView temperatureText = null;
     private TextView windText = null;
     private boolean showTemperature = false;
@@ -60,6 +61,8 @@ public class WeatherLayout extends LinearLayout {
         this.speedUnit = unit;
 
         iconWind.setVisibility( (on) ? View.VISIBLE : View.GONE );
+        iconWindDirection.setVisibility((on) ? View.VISIBLE : View.GONE);
+
         windText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
@@ -77,6 +80,7 @@ public class WeatherLayout extends LinearLayout {
         super.onFinishInflate();
         iconText = (TextView) findViewById(R.id.iconText);
         iconWind = (TextView) findViewById(R.id.iconWind);
+        iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
         windText = (TextView) findViewById(R.id.windText);
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
@@ -87,11 +91,13 @@ public class WeatherLayout extends LinearLayout {
     public void clear() {
         iconText.setText("");
         iconWind.setText("");
+        iconWindDirection.setDirection(DirectionIconView.INVALID);
         temperatureText.setText("");
         windText.setText("");
 
         iconText.invalidate();
         iconWind.invalidate();
+        iconWindDirection.invalidate();
         temperatureText.invalidate();
         windText.invalidate();
     }
@@ -116,6 +122,9 @@ public class WeatherLayout extends LinearLayout {
         if (iconWind != null) {
             iconWind.setTextColor(color);
         }
+        if (iconWindDirection != null) {
+            iconWindDirection.setColor(color);
+        }
         if (temperatureText != null) {
             temperatureText.setTextColor(color);
         }
@@ -133,13 +142,20 @@ public class WeatherLayout extends LinearLayout {
             iconText.setText(iconToText(entry.weatherIcon));
             temperatureText.setText(formatTemperatureText(entry));
             iconWind.setText("F");
+            iconWindDirection.setDirection(entry.windDirection);
             windText.setText(formatWindText(entry));
 
             adjustTextSize();
+
             temperatureText.invalidate();
             windText.invalidate();
             iconText.invalidate();
+            if (this.showWindSpeed) {
+                iconWind.setVisibility((entry.windDirection >= 0) ? View.GONE : View.VISIBLE);
+                iconWindDirection.setVisibility((entry.windDirection >= 0) ? View.VISIBLE : View.GONE);
+            }
             iconWind.invalidate();
+            iconWindDirection.invalidate();
         } else {
             clear();
         }
@@ -148,6 +164,7 @@ public class WeatherLayout extends LinearLayout {
     public void update() {
         if (iconText == null || temperatureText == null) return;
         adjustTextSize();
+        fixIconWindDirectionSize();
         temperatureText.invalidate();
         windText.invalidate();
         iconText.invalidate();
@@ -224,6 +241,13 @@ public class WeatherLayout extends LinearLayout {
                 break;
             }
         }
+    }
+
+    private void fixIconWindDirectionSize() {
+        int height = temperatureText.getHeight();
+        iconWindDirection.setLayoutParams(new LinearLayout.LayoutParams(height, height));
+        iconWindDirection.requestLayout();
+        iconWindDirection.invalidate();
     }
 
     public int measureText() {
