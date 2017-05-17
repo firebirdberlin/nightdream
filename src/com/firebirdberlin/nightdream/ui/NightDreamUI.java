@@ -495,15 +495,11 @@ public class NightDreamUI {
         if (! settings.showWeather ) return;
 
         WeatherEntry entry = settings.weatherEntry;
-        long now = System.currentTimeMillis();
-        long requestAge = now - lastLocationRequest;
         long diff = entry.ageMillis();
 
-        Log.d(TAG, "Weather: data age " + diff );
-        Log.d(TAG, "Time since last request " + requestAge );
-        if (diff < 0L || ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000)) {
+        if (shallUpdateWeatherData(entry)) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
-            lastLocationRequest = now;
+            lastLocationRequest = System.currentTimeMillis();
             WeatherService.start(mContext, settings.weatherCityID);
         }
 
@@ -512,6 +508,17 @@ public class NightDreamUI {
             clockLayout.clearWeather();
         }
     }
+
+    private boolean shallUpdateWeatherData(WeatherEntry entry) {
+        long requestAge = System.currentTimeMillis() - lastLocationRequest;
+        long diff = entry.ageMillis();
+
+        Log.d(TAG, "Weather: data age " + diff );
+        Log.d(TAG, "Time since last request " + requestAge );
+        return (diff < 0L
+                || (!settings.weatherCityID.isEmpty() && ! settings.weatherCityID.equals(entry.cityID))
+                || ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000));
+        }
 
     private void setupClockLayout() {
 
