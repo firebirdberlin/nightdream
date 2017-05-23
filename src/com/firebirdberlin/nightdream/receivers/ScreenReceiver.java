@@ -10,17 +10,13 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.events.OnScreenOn;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
-
-import de.greenrobot.event.EventBus;
 
 public class ScreenReceiver extends BroadcastReceiver {
     private static final String TAG = "ScreenReceiver";
 
     public static ScreenReceiver register(Context ctx) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         ScreenReceiver receiver = new ScreenReceiver();
         ctx.registerReceiver(receiver, filter);
@@ -38,9 +34,6 @@ public class ScreenReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             Log.i(TAG, "ACTION_SCREEN_OFF");
             conditionallyActivateAlwaysOn(context);
-
-        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-            EventBus.getDefault().post(new OnScreenOn());
         }
     }
 
