@@ -30,6 +30,7 @@ public class WeatherLayout extends LinearLayout {
     private int maxWidth = -1;
     private int minFontSizePx = -1;
     private int maxFontSizePx = -1;
+    private WeatherEntry weatherEntry = null;
 
     public WeatherLayout(Context context) {
         super(context);
@@ -134,6 +135,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void update(WeatherEntry entry) {
+        this.weatherEntry = entry;
         if (iconText == null || temperatureText == null) return;
         long age = entry.ageMillis();
         Log.d("WeatherLayout", entry.toString());
@@ -144,18 +146,7 @@ public class WeatherLayout extends LinearLayout {
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(formatWindText(entry));
-
-            adjustTextSize();
-
-            temperatureText.invalidate();
-            windText.invalidate();
-            iconText.invalidate();
-            if (this.showWindSpeed) {
-                iconWind.setVisibility((entry.windDirection >= 0) ? View.GONE : View.VISIBLE);
-                iconWindDirection.setVisibility((entry.windDirection >= 0) ? View.VISIBLE : View.GONE);
-            }
-            iconWind.invalidate();
-            iconWindDirection.invalidate();
+            update();
         } else {
             clear();
         }
@@ -164,8 +155,12 @@ public class WeatherLayout extends LinearLayout {
     public void update() {
         if (iconText == null || temperatureText == null) return;
         adjustTextSize();
-        fixIconWindDirectionSize();
         temperatureText.invalidate();
+        if (this.showWindSpeed && weatherEntry != null) {
+            iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
+            iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
+        }
+        fixIconWindDirectionSize();
         windText.invalidate();
         iconText.invalidate();
         iconWind.invalidate();
@@ -244,10 +239,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void fixIconWindDirectionSize() {
-        int height = temperatureText.getHeight();
-        iconWindDirection.setLayoutParams(new LinearLayout.LayoutParams(height, height));
-        iconWindDirection.requestLayout();
-        iconWindDirection.invalidate();
+        temperatureText.post(new Runnable() {
+            public void run() {
+                int height = temperatureText.getHeight();
+                iconWindDirection.setLayoutParams(new LinearLayout.LayoutParams(height, height));
+                iconWindDirection.requestLayout();
+                iconWindDirection.invalidate();
+            }
+        });
     }
 
     public int measureText() {
