@@ -290,6 +290,7 @@ public class NightDreamUI {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            if (clockLayoutContainer == null) return false;
             int rect[] = new int[2];
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) {
@@ -1355,6 +1356,7 @@ public class NightDreamUI {
     }
 
     void setupShowcaseView() {
+        if (showcaseView == null) return;
         if (showcaseView.getShowcaseTag() != SHOWCASE_ID_ONBOARDING) return;
 
         switch(showcaseCounter) {
