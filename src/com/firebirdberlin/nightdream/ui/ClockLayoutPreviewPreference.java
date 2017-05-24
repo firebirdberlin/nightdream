@@ -1,7 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.lang.Runnable;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -13,19 +11,15 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.ui.ClockLayout;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayoutPreviewPreference extends Preference {
+    private static PreviewMode previewMode = PreviewMode.DAY;
     private ClockLayout clockLayout = null;
     private View preferenceView = null;
     private Context context = null;
-
-    public enum PreviewMode {DAY, NIGHT}
-    private static PreviewMode previewMode = PreviewMode.DAY;
-
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -34,6 +28,10 @@ public class ClockLayoutPreviewPreference extends Preference {
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
+    }
+
+    public static void setPreviewMode(PreviewMode previewMode) {
+        ClockLayoutPreviewPreference.previewMode = previewMode;
     }
 
     @Override
@@ -100,7 +98,5 @@ public class ClockLayoutPreviewPreference extends Preference {
         return entry;
     }
 
-    public static void setPreviewMode(PreviewMode previewMode) {
-        ClockLayoutPreviewPreference.previewMode = previewMode;
-    }
+    public enum PreviewMode {DAY, NIGHT}
 }

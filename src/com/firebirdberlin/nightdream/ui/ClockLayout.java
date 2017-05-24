@@ -1,30 +1,29 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.TypedValue;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.util.DisplayMetrics;
 
-import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.CustomAnalogClock;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayout extends LinearLayout {
-    private static final String TAG = "NightDream.ClockLayout";
-
     public static final int LAYOUT_ID_DIGITAL = 0;
     public static final int LAYOUT_ID_ANALOG = 1;
+    private static final String TAG = "NightDream.ClockLayout";
     private int layoutId = LAYOUT_ID_DIGITAL;
 
     private Context context = null;
@@ -75,12 +74,13 @@ public class ClockLayout extends LinearLayout {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         Log.v(TAG, "onFinishInflate");
         clock = (AutoAdjustTextView) findViewById(R.id.clock);
         clock_ampm = (AutoAdjustTextView) findViewById(R.id.clock_ampm);
         date = (AutoAdjustTextView) findViewById(R.id.date);
         weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
-        divider = (View) findViewById(R.id.divider);
+        divider = findViewById(R.id.divider);
         analog_clock = (CustomAnalogClock) findViewById(R.id.analog_clock);
     }
 
@@ -152,6 +152,7 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void updateLayout(int parentWidth, Configuration config){
         final float minFontSize = 8.f; // in sp
 

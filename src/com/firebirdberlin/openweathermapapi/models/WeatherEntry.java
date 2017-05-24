@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream.models;
+package com.firebirdberlin.openweathermapapi.models;
 
 public class WeatherEntry {
     public static final int CELSIUS = 1;
@@ -19,7 +19,7 @@ public class WeatherEntry {
     public float lat = 0.0f;
     public float lon = 0.0f;
     public double windSpeed = 0.;
-    public int windDirection = 0;
+    public int windDirection = -1;
 
     public WeatherEntry() {
 
@@ -41,6 +41,6 @@ public class WeatherEntry {
     }
 
     public String toString() {
-        return String.format("%2.2fK %2.2fm/s %d", temperature, windSpeed, timestamp);
+        return String.format("%2.2fK %2.2fm/s %d° %d", temperature, windSpeed, windDirection, timestamp);
     }
 }

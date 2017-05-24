@@ -15,7 +15,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.events.OnScreenOn;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 
 import de.greenrobot.event.EventBus;
@@ -27,7 +26,6 @@ public class NightModeListener extends Service {
     private SoundMeter soundmeter;
     private ReceiverPowerDisconnected pwrReceiver = null;
     private LightSensorEventListener lightSensorEventListener = null;
-    private ScreenReceiver screenReceiver = null;
     private boolean reactivate_on_noise = false;
     private int reactivate_on_ambient_light_value = 30;
 
@@ -39,6 +37,17 @@ public class NightModeListener extends Service {
     private static int measurementMillis = 5000;
 
     private boolean debug = true;
+    private ScreenOnBroadcastReceiver broadcastReceiver = null;
+
+    class ScreenOnBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                Log.d(TAG, "Screen turned on ... stopSelf();");
+                stopService();
+            }
+        }
+    }
 
     @Override
     public void onCreate(){
@@ -62,6 +71,7 @@ public class NightModeListener extends Service {
         }
 
         pwrReceiver = registerPowerDisconnectionReceiver();
+        broadcastReceiver = registerScreenOnBroadcastReceiver();
 
         Intent i = new Intent(this, NightDreamActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -70,6 +80,7 @@ public class NightModeListener extends Service {
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(this)
             .setSmallIcon(R.drawable.ic_nightdream)
+            .setOngoing(true)
             .setContentTitle(getString(R.string.app_name))
             .setContentText("The night mode listener is active.")
             .setContentIntent(pi); //Required on Gingerbread and below
@@ -83,12 +94,18 @@ public class NightModeListener extends Service {
             handler.postDelayed(startRecording, 1000);
         }
 
-        EventBus.getDefault().register(this);
+        registerEventBus();
+
         lightSensorEventListener = new LightSensorEventListener(this);
         lightSensorEventListener.register();
-        screenReceiver = ScreenReceiver.register(this);
 
         return Service.START_REDELIVER_INTENT;
+    }
+
+    private void registerEventBus() {
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
@@ -109,7 +126,7 @@ public class NightModeListener extends Service {
 
         EventBus.getDefault().unregister(this);
         unregisterReceiver(pwrReceiver);
-        unregisterReceiver(screenReceiver);
+        unregister(broadcastReceiver);
         lightSensorEventListener.unregister();
 
         if (wakelock.isHeld()){
@@ -184,16 +201,26 @@ public class NightModeListener extends Service {
         return pwrReceiver;
     }
 
+    private ScreenOnBroadcastReceiver registerScreenOnBroadcastReceiver(){
+        Log.d(TAG, "registerScreenOnBroadcastReceiver()");
+        ScreenOnBroadcastReceiver receiver = new ScreenOnBroadcastReceiver();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    private void unregister(BroadcastReceiver receiver) {
+        try {
+            unregisterReceiver(receiver);
+        } catch ( IllegalArgumentException e ) {
+
+        }
+    }
+
     public void onEvent(OnNewLightSensorValue event){
         if (event.value > (float) reactivate_on_ambient_light_value) {
             Log.d(TAG,"It's getting bright ... stopSelf();");
             stopService();
         }
     }
-
-    public void onEvent(OnScreenOn event){
-        Log.d(TAG,"Screen turned on ... stopSelf();");
-        stopService();
-    }
-
 }

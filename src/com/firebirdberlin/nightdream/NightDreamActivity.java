@@ -427,7 +427,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
-        nightDreamUI.onConfigurationChanged(newConfig);
+        if (nightDreamUI != null) {
+            nightDreamUI.onConfigurationChanged(newConfig);
+        }
     }
 
     private void setMode(int new_mode) {

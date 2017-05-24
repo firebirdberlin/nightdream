@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -51,12 +52,12 @@ import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.models.BatteryValue;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
@@ -124,8 +125,7 @@ public class NightDreamUI {
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            if (Build.VERSION.SDK_INT < 11) return false;
-            return true;
+            return Build.VERSION.SDK_INT >= 11;
         }
 
         @Override
@@ -162,30 +162,9 @@ public class NightDreamUI {
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
     private float LIGHT_VALUE_DAYLIGHT = 300.0f;
-    private Runnable initClockLayout = new Runnable() {
-        @Override
-        public void run() {
-            setupClockLayout();
-            setColor();
-            updateWeatherData();
-            controlsVisible = true;
-
-            brightnessProgress.setVisibility(View.INVISIBLE);
-            setupBackgroundImage();
-
-            showAlarmClock();
-            setupShowcase();
-            if (Build.VERSION.SDK_INT >= 12){
-                clockLayout.post(new Runnable() {
-                    public void run() {
-                        handler.postDelayed(zoomIn, 500);
-                    }
-                });
-            }
-        }
-    };
     // only called for apilevel >= 12
     private Runnable zoomIn = new Runnable() {
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
         @Override
         public void run() {
             Configuration config = getConfiguration();
@@ -311,6 +290,7 @@ public class NightDreamUI {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            if (clockLayoutContainer == null) return false;
             int rect[] = new int[2];
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) {
@@ -374,6 +354,28 @@ public class NightDreamUI {
         public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
             Log.i(TAG, "onShowcaseViewTouchBlocked()");
 
+        }
+    };
+    private Runnable initClockLayout = new Runnable() {
+        @Override
+        public void run() {
+            setupClockLayout();
+            setColor();
+            updateWeatherData();
+            controlsVisible = true;
+
+            brightnessProgress.setVisibility(View.INVISIBLE);
+            setupBackgroundImage();
+
+            showAlarmClock();
+            setupShowcase();
+            if (Build.VERSION.SDK_INT >= 12) {
+                clockLayout.post(new Runnable() {
+                    public void run() {
+                        handler.postDelayed(zoomIn, 500);
+                    }
+                });
+            }
         }
     };
     private View.OnLongClickListener onMenuItemLongClickListener = new View.OnLongClickListener() {
@@ -494,15 +496,11 @@ public class NightDreamUI {
         if (! settings.showWeather ) return;
 
         WeatherEntry entry = settings.weatherEntry;
-        long now = System.currentTimeMillis();
-        long requestAge = now - lastLocationRequest;
         long diff = entry.ageMillis();
 
-        Log.d(TAG, "Weather: data age " + diff );
-        Log.d(TAG, "Time since last request " + requestAge );
-        if (diff < 0L || ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000)) {
+        if (shallUpdateWeatherData(entry)) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
-            lastLocationRequest = now;
+            lastLocationRequest = System.currentTimeMillis();
             WeatherService.start(mContext, settings.weatherCityID);
         }
 
@@ -511,6 +509,17 @@ public class NightDreamUI {
             clockLayout.clearWeather();
         }
     }
+
+    private boolean shallUpdateWeatherData(WeatherEntry entry) {
+        long requestAge = System.currentTimeMillis() - lastLocationRequest;
+        long diff = entry.ageMillis();
+
+        Log.d(TAG, "Weather: data age " + diff );
+        Log.d(TAG, "Time since last request " + requestAge );
+        return (diff < 0L
+                || (!settings.weatherCityID.isEmpty() && ! settings.weatherCityID.equals(entry.cityID))
+                || ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000));
+        }
 
     private void setupClockLayout() {
 
@@ -1163,6 +1172,7 @@ public class NightDreamUI {
         return mContext.getResources().getConfiguration();
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void applyScaleFactor(float factor) {
         int screen_width = clockLayoutContainer.getWidth();
         int screen_height = clockLayoutContainer.getHeight();
@@ -1346,6 +1356,7 @@ public class NightDreamUI {
     }
 
     void setupShowcaseView() {
+        if (showcaseView == null) return;
         if (showcaseView.getShowcaseTag() != SHOWCASE_ID_ONBOARDING) return;
 
         switch(showcaseCounter) {

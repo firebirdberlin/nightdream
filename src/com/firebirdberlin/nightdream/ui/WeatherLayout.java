@@ -4,15 +4,15 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.models.WeatherEntry;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
 
@@ -20,6 +20,7 @@ public class WeatherLayout extends LinearLayout {
     private Context context = null;
     private TextView iconText = null;
     private TextView iconWind = null;
+    private DirectionIconView iconWindDirection = null;
     private TextView temperatureText = null;
     private TextView windText = null;
     private boolean showTemperature = false;
@@ -29,6 +30,7 @@ public class WeatherLayout extends LinearLayout {
     private int maxWidth = -1;
     private int minFontSizePx = -1;
     private int maxFontSizePx = -1;
+    private WeatherEntry weatherEntry = null;
 
     public WeatherLayout(Context context) {
         super(context);
@@ -60,6 +62,8 @@ public class WeatherLayout extends LinearLayout {
         this.speedUnit = unit;
 
         iconWind.setVisibility( (on) ? View.VISIBLE : View.GONE );
+        iconWindDirection.setVisibility((on) ? View.VISIBLE : View.GONE);
+
         windText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
@@ -74,8 +78,10 @@ public class WeatherLayout extends LinearLayout {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         iconText = (TextView) findViewById(R.id.iconText);
         iconWind = (TextView) findViewById(R.id.iconWind);
+        iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
         windText = (TextView) findViewById(R.id.windText);
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
@@ -86,11 +92,13 @@ public class WeatherLayout extends LinearLayout {
     public void clear() {
         iconText.setText("");
         iconWind.setText("");
+        iconWindDirection.setDirection(DirectionIconView.INVALID);
         temperatureText.setText("");
         windText.setText("");
 
         iconText.invalidate();
         iconWind.invalidate();
+        iconWindDirection.invalidate();
         temperatureText.invalidate();
         windText.invalidate();
     }
@@ -115,6 +123,9 @@ public class WeatherLayout extends LinearLayout {
         if (iconWind != null) {
             iconWind.setTextColor(color);
         }
+        if (iconWindDirection != null) {
+            iconWindDirection.setColor(color);
+        }
         if (temperatureText != null) {
             temperatureText.setTextColor(color);
         }
@@ -124,21 +135,18 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void update(WeatherEntry entry) {
+        this.weatherEntry = entry;
         if (iconText == null || temperatureText == null) return;
         long age = entry.ageMillis();
-        Log.d("NightDream.WeatherLayout", entry.toString());
-        Log.d("NightDream.WeatherLayout", formatTemperatureText(entry));
+        Log.d("WeatherLayout", entry.toString());
+        Log.d("WeatherLayout", formatTemperatureText(entry));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
             iconText.setText(iconToText(entry.weatherIcon));
             temperatureText.setText(formatTemperatureText(entry));
             iconWind.setText("F");
+            iconWindDirection.setDirection(entry.windDirection);
             windText.setText(formatWindText(entry));
-
-            adjustTextSize();
-            temperatureText.invalidate();
-            windText.invalidate();
-            iconText.invalidate();
-            iconWind.invalidate();
+            update();
         } else {
             clear();
         }
@@ -148,6 +156,11 @@ public class WeatherLayout extends LinearLayout {
         if (iconText == null || temperatureText == null) return;
         adjustTextSize();
         temperatureText.invalidate();
+        if (this.showWindSpeed && weatherEntry != null) {
+            iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
+            iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
+        }
+        fixIconWindDirectionSize();
         windText.invalidate();
         iconText.invalidate();
         iconWind.invalidate();
@@ -223,6 +236,17 @@ public class WeatherLayout extends LinearLayout {
                 break;
             }
         }
+    }
+
+    private void fixIconWindDirectionSize() {
+        temperatureText.post(new Runnable() {
+            public void run() {
+                int height = temperatureText.getHeight();
+                iconWindDirection.setLayoutParams(new LinearLayout.LayoutParams(height, height));
+                iconWindDirection.requestLayout();
+                iconWindDirection.invalidate();
+            }
+        });
     }
 
     public int measureText() {

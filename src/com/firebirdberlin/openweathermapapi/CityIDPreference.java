@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -123,7 +124,7 @@ public class CityIDPreference extends DialogPreference
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 City city = (City) parent.getItemAtPosition(position);
                 String cityid = String.format("%d", city.id);
-                persist(cityid);
+                persist(cityid, city.name);
                 getDialog().dismiss();
 
             }
@@ -190,13 +191,20 @@ public class CityIDPreference extends DialogPreference
         this.cities.clear();
         // the positive button is used to clear the contents.
         if (positiveResult) {
-            persist("");
+            persist("", "");
         }
     }
 
-    protected void persist(String value) {
+    protected void persist(String value, String cityName) {
         persistString(value);
-        setSummary(String.format("%s\n%s", value, textSummary));
+
+        String keyName = String.format("%s_name", getKey());
+        SharedPreferences prefs = getSharedPreferences();
+        SharedPreferences.Editor prefEditor = prefs.edit();
+        prefEditor.putString(keyName, cityName);
+        prefEditor.apply();
+
+        setSummary(getSummaryText(value, cityName));
         notifyChanged();
     }
 
@@ -208,8 +216,27 @@ public class CityIDPreference extends DialogPreference
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         setTitle(getTitle());
-        String def = (String) defaultValue;
 
-        setSummary(String.format("%s\n%s", getPersistedString(def), textSummary));
+        String def = (String) defaultValue;
+        String name = getCityName();
+
+        setSummary(getSummaryText(getPersistedString(def), name));
+    }
+
+    private String getCityName() {
+        SharedPreferences prefs = getSharedPreferences();
+        String keyName = getKeyForCityName();
+        return prefs.getString(keyName, "");
+    }
+
+    private String getKeyForCityName() {
+        return String.format("%s_name", getKey());
+    }
+
+    private String getSummaryText(String id, String cityName) {
+        if (cityName.isEmpty() ) {
+            return String.format("%s\n%s", id, textSummary);
+        }
+        return String.format("%s (%s)\n%s", cityName, id, textSummary);
     }
 }
