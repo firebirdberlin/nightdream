@@ -171,8 +171,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
     }
 
-    public void onStatusCheckFinished(Boolean success) {
+    public void onStatusCheckFinished(Boolean success, String url, int numRedirects) {
         if ( success ) {
+            streamURL = url;
             playStream();
             return;
         } else if ( alarmIsRunning ) {
