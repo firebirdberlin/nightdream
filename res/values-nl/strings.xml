@@ -18,6 +18,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">Over</string>
+<string name="action_snooze">Sluimer</string>
 <string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Volume harder</string>
 <string name="alarmVolume">Volume</string>
@@ -28,6 +29,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Uiterlijk</string>
 <string name="app_name">Nachtklok</string>
 <string name="auto_brightness">Automatische helderheid</string>
+<string name="autostart_message_disabled">Zet de screensaver uit</string>
 <string name="autostart_timerange_label_end">Eindtijd</string>
 <string name="autostart_timerange_label_start">Begintijd</string>
 <string name="background">Achtergrond</string>
@@ -131,6 +133,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Temperatuur</string>
 <string name="show_weather">Toon lokaal weer</string>
 <string name="show_wind_speed">Windsnelheid</string>
+<string name="snoozeTime">Sluimer tijd</string>
 <string name="speedUnit">Eenheid windsnelheid</string>
 <string name="titlePrivacyPolicy">Privacy beleid</string>
 <string name="temperatureUnit">Temperatuur eenheid</string>
