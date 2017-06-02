@@ -18,6 +18,8 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">О программе</string>
+<string name="action_snooze">Дремать</string>
+<string name="action_stop">Стоп</string>
 <string name="alarm">Будильник</string>
 <string name="alarmFadeIn">Нарастание громкости</string>
 <string name="alarmVolume">Громкость</string>
@@ -28,6 +30,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Внешний вид</string>
 <string name="app_name">Ночные часы</string>
 <string name="auto_brightness">Авторегулировка яркости</string>
+<string name="autostart_message_disabled">Пожалуйста, отключите заставки (Daydream) для включения автозапуска</string>
 <string name="autostart_timerange_label_end">Время окончания</string>
 <string name="autostart_timerange_label_start">Время начала</string>
 <string name="background">Задний фон</string>
@@ -37,7 +40,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="background_image_select">Выбор изображения</string>
 <string name="behaviour">Поведение</string>
 <string name="brightness">Яркость</string>
-<string name="brightness_offset">Предельная яркость</string>
+<string name="brightness_offset">Предел яркостьи</string>
 <string name="buttonAccessibilitySettings">Показывать оповещения</string>
 <string name="category_handle_power">... и когда подключен к</string>
 <string name="category_handle_power_autostart_time">Запуск в промежуток времени</string>
@@ -62,6 +65,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Спасибо</string>
 <string name="donate_bitcoin">Биткоин</string>
 <string name="donate">Пожертвовать</string>
+<string name="doubleTapToFinishSummary">Дважды коснитесь экрана, что бы выйти из приложения</string>
+<string name="doubleTapToFinishTitle">Двойное косание для завершения</string>
+<string name="expertPreferences">Экспертные настройки</string>
 <string name="force_auto_rotation">Принудительная ориентация в Daydream</string>
 <string name="force_auto_rotation_summary">Принудительная ориентация экрана в режиме Daydream</string>
 <string name="handle_power_ac">электросети</string>
@@ -76,6 +82,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">Скрыть фон в ночном режиме</string>
 <string name="hour">ч</string>
 <string name="location_time">Местное время</string>
+<string name="maxBrightness">Максимальная яркость экрана</string>
 <string name="message_no_data_connection">Нет подключения к Интернету</string>
 <string name="message_mobile_data_connection">Мобильный Интернет</string>
 <string name="message_mobile_data_connection_confirmation">Вы подключены к сотовой сети. Запустить радио?</string>
@@ -127,11 +134,19 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="set_alarm">установка будильника</string>
 <string name="showcase_text_set_alarms">Нажмите и проведите пальцем чтобы быстро установить разовый будильник</string>
 <string name="showcase_text_delete_alarms">Нажмите здесь чтобы удалить или выключить будильник</string>
+<string name="showcase_text_screen_lock">Экран заблокирован. Длительное нажатие на иконку для разблокирования</string>
+<string name="showcase_title_screen_lock">Экран заблокирован</string>
 <string name="show_date">Показывать дату</string>
 <string name="show_temperature">Показывать температуру</string>
 <string name="show_weather">Показывать местную погоду</string>
 <string name="show_wind_speed">Показывать скорость ветра</string>
+<string name="snoozeTime">Время повтора</string>
 <string name="speedUnit">Ед. скорости ветра</string>
+<string name="standbyEnabledWhileConnectedTitle">Режим ожидания</string>
+<string name="standbyEnabledWhileConnectedSummary">Активировать при выключении экрана.</string>
+<string name="standbyEnabledWhileDisconnectedTitle">Режим ожидания при разряде.</string>
+<string name="standbyEnabledWhileDisconnectedSummary">Это ускорит разряд батареи!</string>
+<string name="standbyNotificationText">Режим ожидания запущен.</string>
 <string name="titlePrivacyPolicy">Политика конфиденциальности</string>
 <string name="temperatureUnit">Ед. температуры</string>
 <string name="timeFormat">Формат времени</string>
@@ -143,7 +158,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_regular">Roboto regular</string>
 <string name="typeface_roboto_thin">Roboto thin</string>
 <string name="typeface">Шрифт</string>
+<string name="uninstall">Удалить приложение</string>
 <string name="use_internal_alarm">Использовать будильник</string>
+<string name="useDeviceLock">Заблокировать устройство</string>
+<string name="useDeviceLockExplanation">Заблокировать устройство когда Night Clock запущен.</string>
 <string name="weather_calculation_time">время подсчета погоды</string>
 <string name="weather_city_id_summary">Оставьте пустым для автоопределения местоположения</string>
 <string name="weather_city_id_title">Поиск местоположения</string>
