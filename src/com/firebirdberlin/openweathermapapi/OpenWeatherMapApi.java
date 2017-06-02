@@ -42,7 +42,7 @@ public class OpenWeatherMapApi {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             response = urlConnection.getResponseMessage();
             responseCode = urlConnection.getResponseCode();
-            if (responseCode == 200) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseText = getResponseText(urlConnection);
             }
             urlConnection.disconnect();
@@ -52,7 +52,7 @@ public class OpenWeatherMapApi {
         }
 
         Log.i(TAG, " >> response " + response);
-        if (responseCode != 200) {
+        if (responseCode != HttpURLConnection.HTTP_OK) {
             Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
             return new WeatherEntry();
         } else {
@@ -192,7 +192,7 @@ public class OpenWeatherMapApi {
             urlConnection.setReadTimeout(READ_TIMEOUT);
             response = urlConnection.getResponseMessage();
             responseCode = urlConnection.getResponseCode();
-            if ( responseCode == 200 ) {
+            if ( responseCode == HttpURLConnection.HTTP_OK ) {
                 responseText = getResponseText(urlConnection.getInputStream());
             }
             urlConnection.disconnect();
@@ -207,7 +207,7 @@ public class OpenWeatherMapApi {
         }
 
         Log.i(TAG, " >> response " + response);
-        if (responseCode == 200) {
+        if (responseCode == HttpURLConnection.HTTP_OK) {
             Log.i(TAG, " >> responseText " + responseText);
             try {
                 cities = decodeCitiesJsonResponse(responseText);
