@@ -1248,10 +1248,10 @@ public class NightDreamUI {
         Calendar install_time = Calendar.getInstance();
         install_time.setTimeInMillis(firstInstallTime);
 
-        Calendar two_months_ago = Calendar.getInstance();
-        two_months_ago.add(Calendar.DATE, -60);
+        Calendar twenty_days_ago = Calendar.getInstance();
+        twenty_days_ago.add(Calendar.DATE, -20);
 
-        if (install_time.before(two_months_ago)) {
+        if (install_time.before(twenty_days_ago)) {
             sendReviewRequest();
             settings.setLastReviewRequestTime(Calendar.getInstance().getTimeInMillis());
         }
