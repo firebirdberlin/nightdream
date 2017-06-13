@@ -393,8 +393,7 @@ public class PreferencesFragment extends PreferenceFragment {
         if ( Utility.getLightSensor(mContext) == null ) {
             Log.d(TAG, "no light sensor");
 
-            removePreference("autoBrightness");
-            removePreference("brightness_offset");
+            removePreference("category_brightness");
             removePreference("reactivate_on_ambient_light_value");
 
             ListPreference nightModePref = (ListPreference) findPreference("nightModeActivationMode");
