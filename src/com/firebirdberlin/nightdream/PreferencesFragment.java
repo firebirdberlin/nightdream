@@ -630,16 +630,30 @@ public class PreferencesFragment extends PreferenceFragment {
 
         if (on) {
             PreferenceCategory category = (PreferenceCategory) findPreference("category_brightness");
-            InlineSeekBarPreference pref = new InlineSeekBarPreference(mContext);
-            pref.setKey("maxBrightness");
-            pref.setTitle(getString(R.string.maxBrightness));
-            pref.setSummary("");
-            pref.setRange(1, 100);
-            pref.setDefaultValue(50);
+            InlineSeekBarPreference prefMaxBrightness = new InlineSeekBarPreference(mContext);
+            prefMaxBrightness.setKey("maxBrightness");
+            prefMaxBrightness.setTitle(getString(R.string.maxBrightness));
+            prefMaxBrightness.setSummary("");
+            prefMaxBrightness.setRange(1, 100);
+            prefMaxBrightness.setDefaultValue(50);
 
-            category.addPreference(pref);
+            float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
+            SharedPreferences.Editor prefEditor = prefs.edit();
+            prefEditor.putInt("minBrightness", (int) (100 * nightModeBrightness));
+            prefEditor.commit();
+
+            InlineSeekBarPreference prefMinBrightness = new InlineSeekBarPreference(mContext);
+            prefMinBrightness.setKey("minBrightness");
+            prefMinBrightness.setTitle(getString(R.string.minBrightness));
+            prefMinBrightness.setSummary("");
+            prefMinBrightness.setRange(-100, 100);
+            prefMinBrightness.setDefaultValue(0);
+
+            category.addPreference(prefMaxBrightness);
+            category.addPreference(prefMinBrightness);
         } else {
             removePreference("maxBrightness");
+            removePreference("minBrightness");
         }
     }
 
@@ -675,6 +689,10 @@ public class PreferencesFragment extends PreferenceFragment {
                         settings.setBrightnessOffset(0.8f);
                         pref.setProgress(80);
                         setupBrightnessControls(sharedPreferences);
+                        break;
+                    case "minBrightness":
+                        int value = sharedPreferences.getInt("minBrightness", 1);
+                        settings.setNightModeBrightness(value/100.f);
                         break;
                     case "backgroundMode":
                         setupBackgroundImageControls(sharedPreferences);
