@@ -440,11 +440,12 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     private String getDisplayedRadioStationText(RadioStation station, boolean displayCountryCode) {
-        if (displayCountryCode) {
-            return String.format("%s %s (%d kbit/s)", station.countryCode, station.name, station.bitrate);
-        } else {
-            return String.format("%s (%d kbit/s)", station.name, station.bitrate);
-        }
+        String countryCode = (displayCountryCode) ? String.format("%s ", station.countryCode) : "";
+        String streamOffline = (station.isOnline) ? ""
+            : String.format(" - %s",
+                            mContext.getResources().getString(R.string.radio_stream_offline));
+        return String.format("%s%s (%d kbit/s)%s",
+                             countryCode, station.name, station.bitrate, streamOffline);
     }
 
     private String jsonKey() {

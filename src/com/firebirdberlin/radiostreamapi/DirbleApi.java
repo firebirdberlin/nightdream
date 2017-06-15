@@ -112,7 +112,8 @@ public class DirbleApi {
                             }
                         }
                         station.isOnline = streamObj.getLong("status") == 1L;
-                        if ( station.isOnline ) stationList.add(station);
+                        //if ( station.isOnline )
+                        stationList.add(station);
                     }
                 }
             } catch (JSONException e) {
