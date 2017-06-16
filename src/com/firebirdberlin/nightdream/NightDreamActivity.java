@@ -59,6 +59,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     ImageView background_image;
     Sensor lightSensor = null;
     int mode = 2;
+    private boolean screenWasOn = false;
     mAudioManager AudioManage = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -181,6 +182,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         super.onResume();
         Log.i(TAG, "onResume()");
 
+        screenWasOn = false;
         setKeepScreenOn(true);
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
@@ -282,7 +284,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         unregister(shutDownReceiver);
         unregister(receiverRadioStream);
 
-        if (mySettings.allow_screen_off && mode == 0 && !isScreenOn() ){ // screen off in night mode
+        if (mySettings.allow_screen_off && mode == 0 && screenWasOn && !isScreenOn() ){ // screen off in night mode
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
@@ -440,6 +442,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     }
 
     private boolean shallKeepScreenOn(int mode) {
+        screenWasOn = screenWasOn || isScreenOn();
+
+        Log.d(TAG, "screenWasOn = " + String.valueOf(screenWasOn));
         if (mode > 0
                 || ! mySettings.allow_screen_off
                 || ScreenReceiver.shallActivateStandby(context, mySettings)) {
