@@ -513,12 +513,17 @@ public class NightDreamUI {
     private boolean shallUpdateWeatherData(WeatherEntry entry) {
         long requestAge = System.currentTimeMillis() - lastLocationRequest;
         long diff = entry.ageMillis();
-
-        Log.d(TAG, "Weather: data age " + diff );
-        Log.d(TAG, "Time since last request " + requestAge );
+        final int maxDiff = 90 * 60 * 1000;
+        final int maxRequestAge = 15 * 60 * 1000;
+        final String cityID = String.valueOf(entry.cityID);
+        Log.d(TAG, String.format("Weather: data age %d => %b", diff, diff > maxDiff));
+        Log.d(TAG, String.format("Time since last request %d => %b", requestAge, requestAge > maxRequestAge));
+        Log.d(TAG, String.format("City ID changed => %b (%s =?= %s)",
+                    (!settings.weatherCityID.isEmpty() && ! settings.weatherCityID.equals(cityID)),
+                     settings.weatherCityID, cityID));
         return (diff < 0L
-                || (!settings.weatherCityID.isEmpty() && ! settings.weatherCityID.equals(entry.cityID))
-                || ( diff > 90 * 60 * 1000 && requestAge > 15 * 60 * 1000));
+                || (!settings.weatherCityID.isEmpty() && ! settings.weatherCityID.equals(cityID))
+                || ( diff > maxDiff && requestAge > maxRequestAge));
         }
 
     private void setupClockLayout() {
