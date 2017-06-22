@@ -72,6 +72,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 if (intent.getStringExtra("action").equals("added")){
                     String temp = intent.getStringExtra("tickertext");
                     int num = intent.getIntExtra("number", 1);
+                    WhatsappIcon.setImageDrawable(icon);
                     WhatsappIcon.setVisibility(View.VISIBLE);
                     WhatsappCount++;
                     if (Build.VERSION.SDK_INT >= 18 && num > 0) WhatsappNumber.setText(String.valueOf(num));
@@ -87,10 +88,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     String temp = intent.getStringExtra("tickertext");
                     int num = intent.getIntExtra("number", 1);
 
-                    if (icon != null) {
-                        Log.i(TAG, "twitter icon is set");
-                        TwitterIcon.setImageDrawable(icon);
-                    }
+                    TwitterIcon.setImageDrawable(icon);
                     TwitterIcon.setVisibility(View.VISIBLE);
                     TwitterIcon.invalidate();
                     TwitterCount++;
@@ -100,7 +98,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 } else if (intent.getStringExtra("action").equals("removed")){
                     TwitterIcon.setVisibility(View.INVISIBLE);
-                    TwitterIcon.setImageDrawable(icon);
                     TwitterNumber.setVisibility(View.INVISIBLE);
                     TwitterCount = 0;
                 }
@@ -109,6 +106,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     String temp = intent.getStringExtra("tickertext");
                     int num = intent.getIntExtra("number", 1);
 
+                    EmailIcon.setImageDrawable(icon);
                     EmailIcon.setVisibility(View.VISIBLE);
                     EmailCount++;
                     if (Build.VERSION.SDK_INT >= 18 && num > 0)
@@ -123,6 +121,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 }
             }else if (intent.getStringExtra("what").equals("phone")){
                 if (intent.getStringExtra("action").equals("added")){
+                    CallIcon.setImageDrawable(icon);
                     String temp = intent.getStringExtra("tickertext");
                     CallIcon.setVisibility(View.VISIBLE);
                 } else if (intent.getStringExtra("action").equals("removed")){
