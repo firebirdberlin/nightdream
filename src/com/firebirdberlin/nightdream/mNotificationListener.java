@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,44 +36,31 @@ public class mNotificationListener extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
 
         Log.i(TAG,"++++ notification posted ++++");
-        Log.i(TAG,"ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText + "\t" + sbn.getPackageName());
+        Notification notification = sbn.getNotification();
+        Log.i(TAG,"ID :" + sbn.getId() + "\t" + notification.tickerText + "\t" + sbn.getPackageName());
 
+        Intent i = getIntentForBroadCast(sbn);
 
         // Filter out whatsapp
         if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.whatsapp")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","whatsapp");
             i.putExtra("action","added");
-            i.putExtra("tickertext",sbn.getNotification().tickerText);
-            i.putExtra("number",sbn.getNotification().number);
             sendBroadcast(i);
         } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.twitter.android")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","twitter");
             i.putExtra("action","added");
-            i.putExtra("tickertext",sbn.getNotification().tickerText);
-            i.putExtra("number",sbn.getNotification().number);
             sendBroadcast(i);
         } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.google.android.gm")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","gmail");
             i.putExtra("action","added");
-            i.putExtra("tickertext",sbn.getNotification().tickerText);
-            i.putExtra("number",sbn.getNotification().number);
             sendBroadcast(i);
         } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.android.phone")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","phone");
             i.putExtra("action","added");
-            i.putExtra("tickertext",sbn.getNotification().tickerText);
-            i.putExtra("number",sbn.getNotification().number);
             sendBroadcast(i);
         } else{
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","onNotificationPosted :" + sbn.getPackageName() + "n");
             i.putExtra("action","added");
-            i.putExtra("tickertext",sbn.getNotification().tickerText);
-            i.putExtra("number",sbn.getNotification().number);
             sendBroadcast(i);
         }
 
@@ -83,32 +71,41 @@ public class mNotificationListener extends NotificationListenerService {
         Log.i(TAG,"++++ notification removed ++++");
         Log.i(TAG,"ID :" + sbn.getId() + "\t" + sbn.getNotification().tickerText +"\t" + sbn.getPackageName());
 
+        Intent i = getIntentForBroadCast(sbn);
         if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.whatsapp")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","whatsapp");
             i.putExtra("action","removed");
             sendBroadcast(i);
         } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.twitter.android")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","twitter");
             i.putExtra("action","removed");
             sendBroadcast(i);
         } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.google.android.gm")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","gmail");
             i.putExtra("action","removed");
             sendBroadcast(i);
         } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.android.phone")){
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what","phone");
             i.putExtra("action","removed");
             sendBroadcast(i);
         } else{
-            Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("what",sbn.getPackageName());
             i.putExtra("action","removed");
             sendBroadcast(i);
         }
+    }
+
+    private Intent getIntentForBroadCast(StatusBarNotification sbn) {
+        Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+        i.putExtra("packageName", sbn.getPackageName());
+        Notification notification = sbn.getNotification();
+        if (notification != null) {
+            //i.putExtra("iconId", notification.icon);
+            i.putExtra("iconId", notification.extras.getInt(Notification.EXTRA_SMALL_ICON));
+            i.putExtra("tickertext", notification.tickerText);
+            i.putExtra("number", notification.number);
+        }
+        return i;
     }
 
     class NLServiceReceiver extends BroadcastReceiver{
@@ -122,32 +119,24 @@ public class mNotificationListener extends NotificationListenerService {
             else if(intent.getStringExtra("command").equals("list")){
                 for (StatusBarNotification sbn : mNotificationListener.this.getActiveNotifications()) {
                      if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.whatsapp")){
-                        Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                        Intent i = getIntentForBroadCast(sbn);
                         i.putExtra("what","whatsapp");
                         i.putExtra("action","added");
-                        i.putExtra("tickertext",sbn.getNotification().tickerText);
-                        i.putExtra("number",sbn.getNotification().number);
                         sendBroadcast(i);
                     } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.twitter.android")){
-                        Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                        Intent i = getIntentForBroadCast(sbn);
                         i.putExtra("what","twitter");
                         i.putExtra("action","added");
-                        i.putExtra("tickertext",sbn.getNotification().tickerText);
-                        i.putExtra("number",sbn.getNotification().number);
                         sendBroadcast(i);
                     } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.google.android.gm")){
-                        Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                        Intent i = getIntentForBroadCast(sbn);
                         i.putExtra("what","gmail");
                         i.putExtra("action","added");
-                        i.putExtra("tickertext",sbn.getNotification().tickerText);
-                        i.putExtra("number",sbn.getNotification().number);
                         sendBroadcast(i);
                     } else if (sbn!=null && sbn.getPackageName().equalsIgnoreCase("com.android.phone")){
-                        Intent i = new  Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                        Intent i = getIntentForBroadCast(sbn);
                         i.putExtra("what","phone");
                         i.putExtra("action","added");
-                        i.putExtra("tickertext",sbn.getNotification().tickerText);
-                        i.putExtra("number",sbn.getNotification().number);
                         sendBroadcast(i);
                     }
                 }

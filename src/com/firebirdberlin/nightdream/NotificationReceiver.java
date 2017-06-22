@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,6 +63,10 @@ public class NotificationReceiver extends BroadcastReceiver {
             Log.d(TAG, "Broadcast received.");
             dumpIntent(intent);
         }
+        String packageName = intent.getStringExtra("packageName");
+        int iconId = intent.getIntExtra("iconId", -1);
+        Log.i(TAG, String.format("%s: %d", packageName, iconId));
+        Drawable icon = getNotificationIcon(context, packageName, iconId);
         try{
             if (intent.getStringExtra("what").equals("whatsapp")){
                 if (intent.getStringExtra("action").equals("added")){
@@ -80,7 +87,12 @@ public class NotificationReceiver extends BroadcastReceiver {
                     String temp = intent.getStringExtra("tickertext");
                     int num = intent.getIntExtra("number", 1);
 
+                    if (icon != null) {
+                        Log.i(TAG, "twitter icon is set");
+                        TwitterIcon.setImageDrawable(icon);
+                    }
                     TwitterIcon.setVisibility(View.VISIBLE);
+                    TwitterIcon.invalidate();
                     TwitterCount++;
                     if (Build.VERSION.SDK_INT >= 18 && num > 0) TwitterNumber.setText(String.valueOf(num));
                     else TwitterNumber.setText(String.valueOf(TwitterCount));
@@ -88,6 +100,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 } else if (intent.getStringExtra("action").equals("removed")){
                     TwitterIcon.setVisibility(View.INVISIBLE);
+                    TwitterIcon.setImageDrawable(icon);
                     TwitterNumber.setVisibility(View.INVISIBLE);
                     TwitterCount = 0;
                 }
@@ -119,6 +132,18 @@ public class NotificationReceiver extends BroadcastReceiver {
         } catch (Exception e) {};
     }
 
+    private Drawable getNotificationIcon(Context context, String packageName, int id) {
+        if (packageName == null || id == -1) return null;
+        //String pack= "com.whatsapp" // ex. for whatsapp;
+        try {
+            Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
+            return remotePackageContext.getResources().getDrawable(id);
+        } catch (NameNotFoundException e) {
+            return null;
+        } catch (Resources.NotFoundException e) {
+            return null;
+        }
+    }
 
     public static void dumpIntent(Intent i){
         Bundle bundle = i.getExtras();
