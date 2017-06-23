@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -103,7 +104,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (packageName == null || id == -1) return null;
         try {
             Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
-            return remotePackageContext.getResources().getDrawable(id);
+            return ContextCompat.getDrawable(remotePackageContext, id);
         } catch (NameNotFoundException e) {
             return null;
         } catch (Resources.NotFoundException e) {

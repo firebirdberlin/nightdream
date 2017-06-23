@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -280,7 +281,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         NightModeReceiver.cancel(this);
-        unregister(nReceiver);
+        unregisterLocalReceiver(nReceiver);
         unregister(nightModeReceiver);
         unregister(shutDownReceiver);
         unregister(receiverRadioStream);
@@ -295,6 +296,14 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private void unregister(BroadcastReceiver receiver) {
         try {
             unregisterReceiver(receiver);
+        } catch ( IllegalArgumentException ignored) {
+
+        }
+    }
+
+    private void unregisterLocalReceiver(BroadcastReceiver receiver) {
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         } catch ( IllegalArgumentException ignored) {
 
         }
@@ -338,7 +347,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private NotificationReceiver registerNotificationReceiver() {
         NotificationReceiver receiver = new NotificationReceiver(getWindow());
         IntentFilter filter = new IntentFilter(Config.ACTION_NOTIFICATION_LISTENER);
-        registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         return receiver;
     }
 

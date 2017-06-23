@@ -8,9 +8,9 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import java.util.HashSet;
-
 import com.firebirdberlin.nightdream.Config;
 
 public class mNotificationListener extends NotificationListenerService {
@@ -104,7 +104,7 @@ public class mNotificationListener extends NotificationListenerService {
             Intent i = getIntentForBroadCast(sbn);
             if (i != null) {
                 i.putExtra("action", "added");
-                sendBroadcast(i);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(i);
             }
         }
     }
@@ -162,6 +162,6 @@ public class mNotificationListener extends NotificationListenerService {
     private void clearNotificationUI() {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("action", "clear");
-        sendBroadcast(i);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }
 }
