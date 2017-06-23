@@ -107,7 +107,6 @@ public class NightDreamUI {
     private ImageView settingsIcon;
     private ImageView nightModeIcon;
     private WebRadioImageView radioIcon;
-    private ImageView callIcon, gmailIcon, twitterIcon, whatsappIcon;
     private LightSensorEventListener lightSensorEventListener = null;
     private FrameLayout clockLayoutContainer;
     private ClockLayout clockLayout;
@@ -139,7 +138,6 @@ public class NightDreamUI {
     private SoundMeter soundmeter;
     private ProgressBar brightnessProgress = null;
     private BatteryView batteryView = null;
-    private TextView gmailNumber, twitterNumber, whatsappNumber;
     private Utility utility = null;
     private View rootView = null;
     private Window window = null;
@@ -223,6 +221,9 @@ public class NightDreamUI {
             alarmTime.setClickable(false);
             setAlpha(alarmClock, 0.f, 2000);
             setAlpha(alarmTime, 0.f, 2000);
+            if (mode == 0) {
+                setAlpha(notificationbar, 0.f, 2000);
+            }
             hideSidePanel();
         }
     };
@@ -416,15 +417,6 @@ public class NightDreamUI {
         nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
 
-        callIcon = (ImageView) rootView.findViewById(R.id.call_icon);
-        gmailIcon = (ImageView) rootView.findViewById(R.id.gmail_icon);
-        whatsappIcon = (ImageView) rootView.findViewById(R.id.whatsapp_icon);
-        twitterIcon = (ImageView) rootView.findViewById(R.id.twitter_icon);
-
-        gmailNumber = (TextView) rootView.findViewById(R.id.gmail_number);
-        whatsappNumber = (TextView) rootView.findViewById(R.id.whatsapp_number);
-        twitterNumber = (TextView) rootView.findViewById(R.id.twitter_number);
-
         menuIcon.setOnClickListener(onMenuItemClickListener);
         menuIcon.setOnLongClickListener(onMenuItemLongClickListener);
 
@@ -554,16 +546,9 @@ public class NightDreamUI {
 
         alarmTime.setTextColor(textColor);
         batteryView.setTextColor(textColor);
-        gmailNumber.setTextColor(textColor);
-        twitterNumber.setTextColor(textColor);
-        whatsappNumber.setTextColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         nightModeIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
-        callIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
-        gmailIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
-        twitterIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
-        whatsappIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
         alarmClock.setCustomColor(accentColor, textColor);
         clockLayout.setPrimaryColor(accentColor);
         clockLayout.setSecondaryColor(textColor);
@@ -961,7 +946,7 @@ public class NightDreamUI {
             hideBatteryView(millis);
         }
 
-        if ( mode == 0 ) {
+        if ( mode == 0 && ! controlsVisible) {
             setAlpha(notificationbar, 0.0f, millis);
         } else {
             // increase minimum alpha value for the notification bar
@@ -1229,6 +1214,7 @@ public class NightDreamUI {
         if (locked) {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
+            setAlpha(notificationbar, 1.f, 250);
             setAlpha(batteryView, 1.f, 250);
             setAlpha(alarmTime, 1.f, 250);
             controlsVisible = true;

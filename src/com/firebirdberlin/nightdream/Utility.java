@@ -17,6 +17,7 @@ import android.os.PowerManager;
 import android.provider.Settings.System;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -234,4 +235,13 @@ public class Utility {
                 system_brightness_mode);
     }
 
+    public static int pixelsToDp(Context context, float px) {
+        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
+        return (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics );
+    }
+
+    public static int dpToPx(Context context, float dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                                               context.getResources().getDisplayMetrics());
+    }
 }

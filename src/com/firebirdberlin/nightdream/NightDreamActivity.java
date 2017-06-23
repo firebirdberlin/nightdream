@@ -194,8 +194,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         shutDownReceiver = registerPowerDisconnectionReceiver();
         receiverRadioStream = registerReceiverRadioStream();
 
+        nReceiver.setColor(mySettings.secondaryColor);
+        // ask for active notifications
         if (Build.VERSION.SDK_INT >= 18){
-            // ask for active notifications
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command", "list");
             sendBroadcast(i);

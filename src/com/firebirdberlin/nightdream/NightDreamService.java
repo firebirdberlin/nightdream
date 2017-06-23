@@ -105,6 +105,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nReceiver = registerNotificationReceiver();
         receiverRadioStream = registerReceiverRadioStream();
 
+        nReceiver.setColor(mySettings.secondaryColor);
         background_image = (ImageView)findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
 
