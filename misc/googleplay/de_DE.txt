@@ -1,6 +1,6 @@
 Title:
 ------
-Nachtuhr (Daydream Uhr)
+Nachtuhr
 
 Short description:
 ------------------
@@ -9,18 +9,17 @@ Short description:
 Long Description:
 ------------------
 
-Diese Uhr wird eingeblendet sobald Sie ihr Telefon aufladen und dient so als praktische Nachtuhr oder Schreibtischuhr. Die Helligkeit lässt sich manuell einstellen oder automatisch regeln - ganz wie Sie mögen
+Diese Uhr wird eingeblendet sobald Sie ihr Telefon aufladen und dient so als praktische Nachtuhr oder Schreibtischuhr. Die Helligkeit lässt sich manuell einstellen oder automatisch regeln - ganz wie Sie mögen. Wichtige Informationen, wie der Ladestand des Akkus und das Datum werden ebenfalls angezeigt. Für ungelesene Benachrichtigungen werden entsprechende Symbole eingeblendet. Im Nachtmodus ist das Display so dunkel wie möglich. Vollkommenes Schwarz wird nur auf AMOLED-Displays erreicht. Die Schriftgröße lässt sich über eine einfache 2-Finger-Zoom-Geste einstellen.
 
-Die Schriftgröße lässt sich über eine einfach 2-Finger-Zoom-Geste einstellen.
+Optional können Sie die aktuellen Wetterbedingungen anzeigen. Als Datenquelle wird OpenWeatherMap verwendet.
 
-Wichtige Informationen, wie der Ladestand des Akkus und das Datum werden ebenfalls angezeigt. Benachrichtigungen über verpasste Anrufe sowie neue Nachrichten per Google Mail, Twitter und WhatsApp können eingeblendet werden.
+Sie können mit dieser App ihren Lieblingradiosender hören und diesen Sender als Wecker verwenden. Dazu muss die Option Schnellwecker aktiviert sein.
 
 <b>Nachtmodus</b>
 Um nachts den Bildschirm abzuschalten, müssen Daydreams deaktiviert sein (Einstellungen > Display > DayDream). Die Uhr wird reaktiviert bei Licht bzw. sobald der Geräuschpegel im Raum einen bestimmten Wert überschreitet.
 
 <b>Schnellwecker</b>
-Mit einem Wisch von links unten wird der Wecker aktiviert. Ein Klick unten rechts löscht den Wecker wieder.
-Ist der Schnellwecker deaktiviert, dann wird die nächste Weckzeit angezeigt.
+Mit einem Wisch von links unten wird der Wecker aktiviert. Die Horizontale stellt die Stunde ein, die Vertikale die Minuten. Ein Klick unten rechts löscht den Wecker wieder.
 
 <b>Benachrichtigungszugriff</b>
 Android 4.3+:
@@ -30,7 +29,7 @@ Android 4.2 und kleiner:
 Einstellungen > Bedienungshilfen > NightDream
 
 <b>In-App Käufe</b>
-Dieses Projekt ist Open Source und das Produkt eines Android-Enthusiasten. Wenn Sie das Projekt unterstützen möchten, dann können Sie via In-App Kauf eine Spende an den Entwickler senden.
+Dieses Projekt ist Open Source und das Produkt eines Android-Enthusiasten. Wenn Sie das Projekt unterstützen möchten, dann können Sie via In-App Kauf eine Spende an den Entwickler senden. Die Anzeige der Wetterdaten und die Funktion als Internetradio können in der App erworben werden.
 
 <b>Berechtigungen</b>
 
