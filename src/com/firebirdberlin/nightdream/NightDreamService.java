@@ -13,6 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.service.dreams.DreamService;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -105,6 +106,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nReceiver = registerNotificationReceiver();
         receiverRadioStream = registerReceiverRadioStream();
 
+        nReceiver.setColor(mySettings.secondaryColor);
         background_image = (ImageView)findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
 
@@ -154,7 +156,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nightDreamUI.onStop();
         EventBus.getDefault().unregister(this);
         unregister(nightModeReceiver);
-        unregister(nReceiver);
+        unregisterLocalReceiver(nReceiver);
         unregister(receiverRadioStream);
 
         //stop notification listener service
@@ -169,6 +171,14 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         try {
             unregisterReceiver(receiver);
         } catch ( IllegalArgumentException e ) {
+
+        }
+    }
+
+    private void unregisterLocalReceiver(BroadcastReceiver receiver) {
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        } catch ( IllegalArgumentException ignored) {
 
         }
     }
@@ -235,7 +245,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         NotificationReceiver receiver = new NotificationReceiver(getWindow());
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
-        registerReceiver(receiver,filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         return receiver;
     }
 

@@ -1,56 +1,39 @@
 package com.firebirdberlin.nightdream;
 
+import java.lang.ClassCastException;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
     private static boolean isDebuggable = true;
-
-    ImageView CallIcon;
-    ImageView EmailIcon;
-    ImageView TwitterIcon;
-    ImageView WhatsappIcon;
-    TextView EmailNumber;
-    TextView TwitterNumber;
-    TextView WhatsappNumber;
-
-    private int EmailCount;
-    private int TwitterCount;
-    private int WhatsappCount;
+    private LinearLayout notificationBar;
+    private int color;
 
     public NotificationReceiver(Window window) {
         View v = window.getDecorView().findViewById(android.R.id.content);
-        CallIcon = (ImageView) v.findViewById(R.id.call_icon);
-        EmailIcon = (ImageView) v.findViewById(R.id.gmail_icon);
-        EmailNumber = (TextView) v.findViewById(R.id.gmail_number);
-        TwitterIcon = (ImageView) v.findViewById(R.id.twitter_icon);
-        TwitterNumber = (TextView) v.findViewById(R.id.twitter_number);
-        WhatsappIcon = (ImageView) v.findViewById(R.id.whatsapp_icon);
-        WhatsappNumber = (TextView) v.findViewById(R.id.whatsapp_number);
+        notificationBar = (LinearLayout) v.findViewById(R.id.notificationbar);
+    }
 
-        CallIcon.setVisibility(View.INVISIBLE);
-        EmailIcon.setVisibility(View.INVISIBLE);
-        EmailNumber.setVisibility(View.INVISIBLE);
-        TwitterIcon.setVisibility(View.INVISIBLE);
-        TwitterNumber.setVisibility(View.INVISIBLE);
-        WhatsappIcon.setVisibility(View.INVISIBLE);
-        WhatsappNumber.setVisibility(View.INVISIBLE);
-        WhatsappIcon.setVisibility(View.INVISIBLE);
-
-        EmailCount = 0;
-        TwitterCount = 0;
-        WhatsappCount = 0;
+    public void setColor(int color) {
+        this.color = color;
     }
 
     @Override
@@ -60,65 +43,74 @@ public class NotificationReceiver extends BroadcastReceiver {
             Log.d(TAG, "Broadcast received.");
             dumpIntent(intent);
         }
-        try{
-            if (intent.getStringExtra("what").equals("whatsapp")){
-                if (intent.getStringExtra("action").equals("added")){
-                    String temp = intent.getStringExtra("tickertext");
-                    int num = intent.getIntExtra("number", 1);
-                    WhatsappIcon.setVisibility(View.VISIBLE);
-                    WhatsappCount++;
-                    if (Build.VERSION.SDK_INT >= 18 && num > 0) WhatsappNumber.setText(String.valueOf(num));
-                    else WhatsappNumber.setText(String.valueOf(WhatsappCount));
-                    WhatsappNumber.setVisibility(View.VISIBLE);
-                } else if (intent.getStringExtra("action").equals("removed")){
-                    WhatsappIcon.setVisibility(View.INVISIBLE);
-                    WhatsappNumber.setVisibility(View.INVISIBLE);
-                    WhatsappCount = 0;
-                }
-            }else if (intent.getStringExtra("what").equals("twitter")){
-                if (intent.getStringExtra("action").equals("added")){
-                    String temp = intent.getStringExtra("tickertext");
-                    int num = intent.getIntExtra("number", 1);
 
-                    TwitterIcon.setVisibility(View.VISIBLE);
-                    TwitterCount++;
-                    if (Build.VERSION.SDK_INT >= 18 && num > 0) TwitterNumber.setText(String.valueOf(num));
-                    else TwitterNumber.setText(String.valueOf(TwitterCount));
-                    TwitterNumber.setVisibility(View.VISIBLE);
+        String action = intent.getStringExtra("action");
+        action = (action == null) ? "" : action;
 
-                } else if (intent.getStringExtra("action").equals("removed")){
-                    TwitterIcon.setVisibility(View.INVISIBLE);
-                    TwitterNumber.setVisibility(View.INVISIBLE);
-                    TwitterCount = 0;
-                }
-            }else if (intent.getStringExtra("what").equals("gmail")){
-                if (intent.getStringExtra("action").equals("added")){
-                    String temp = intent.getStringExtra("tickertext");
-                    int num = intent.getIntExtra("number", 1);
+        if (action.equals("clear")) {
+            notificationBar.removeAllViews();
+            return;
+        }
 
-                    EmailIcon.setVisibility(View.VISIBLE);
-                    EmailCount++;
-                    if (Build.VERSION.SDK_INT >= 18 && num > 0)
-                        EmailNumber.setText(String.valueOf(num));
-                    else
-                        EmailNumber.setText(String.valueOf(EmailCount));
-                    EmailNumber.setVisibility(View.VISIBLE);
-                } else if (intent.getStringExtra("action").equals("removed")){
-                    EmailIcon.setVisibility(View.INVISIBLE);
-                    EmailNumber.setVisibility(View.INVISIBLE);
-                    EmailCount = 0;
-                }
-            }else if (intent.getStringExtra("what").equals("phone")){
-                if (intent.getStringExtra("action").equals("added")){
-                    String temp = intent.getStringExtra("tickertext");
-                    CallIcon.setVisibility(View.VISIBLE);
-                } else if (intent.getStringExtra("action").equals("removed")){
-                    CallIcon.setVisibility(View.INVISIBLE);
-                }
+        String packageName = intent.getStringExtra("packageName");
+        int iconId = intent.getIntExtra("iconId", -1);
+        Drawable icon = getNotificationIcon(context, packageName, iconId);
+        if (icon != null) {
+            int size = getNotificationIconSize(context);
+            Log.i(TAG, String.format("new size is %d", size));
+            try {
+                icon = resize(context, icon, size);
+            } catch (ClassCastException e) {
+                // AnimationDrawable cannot be cast to BitmapDrawable
+                icon = null;
             }
-        } catch (Exception e) {};
+        }
+
+        if (action.equals("added")) {
+            IconView myImage = new IconView(context);
+            int padding = Utility.dpToPx(context, 5);
+            myImage.setPadding(padding, 0, 0, 0);
+            myImage.setImageDrawable(icon);
+            myImage.setColorFilter( color, PorterDuff.Mode.SRC_ATOP );
+            notificationBar.addView(myImage);
+        }
     }
 
+    private int getNotificationIconSize(Context context) {
+        switch (context.getResources().getDisplayMetrics().densityDpi) {
+            case DisplayMetrics.DENSITY_LOW:
+                return 18;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                return 24;
+            case DisplayMetrics.DENSITY_HIGH:
+                return 36;
+            case DisplayMetrics.DENSITY_XHIGH:
+                return 48;
+            case DisplayMetrics.DENSITY_XXHIGH:
+                return 72;
+            case DisplayMetrics.DENSITY_XXXHIGH:
+            default:
+                return 96;
+        }
+    }
+
+    private Drawable resize(Context context, Drawable image, int size) {
+        Bitmap b = ((BitmapDrawable) image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, size, size, false);
+        return new BitmapDrawable(context.getResources(), bitmapResized);
+    }
+
+    private Drawable getNotificationIcon(Context context, String packageName, int id) {
+        if (packageName == null || id == -1) return null;
+        try {
+            Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
+            return ContextCompat.getDrawable(remotePackageContext, id);
+        } catch (NameNotFoundException e) {
+            return null;
+        } catch (Resources.NotFoundException e) {
+            return null;
+        }
+    }
 
     public static void dumpIntent(Intent i){
         Bundle bundle = i.getExtras();
@@ -129,6 +121,26 @@ public class NotificationReceiver extends BroadcastReceiver {
                 Log.d(TAG, String.format("%s %s (%s)", key,
                             value.toString(), value.getClass().getName()));
             }
+        }
+    }
+    private class IconView extends ImageView {
+
+        private Context context;
+        private String packageName;
+
+        public IconView(Context context) {
+            super(context);
+            this.context = context;
+            init();
+        }
+
+        public IconView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+            this.context = context;
+            init();
+        }
+
+        void init() {
         }
     }
 
