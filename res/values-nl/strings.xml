@@ -64,6 +64,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Bedankt</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Doneer</string>
+<string name="expertPreferences">Expert voorkeuren</string>
 <string name="force_auto_rotation">Forceer schermorientatie tijdens dagdromen</string>
 <string name="force_auto_rotation_summary">Forceer schermorientatie tijdens gebruik Nachtklok</string>
 <string name="handle_power_ac">AC</string>
@@ -78,6 +79,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">Verberg de achtergrond in de nachtmode</string>
 <string name="hour">U</string>
 <string name="location_time">Plaatselijke tijd</string>
+<string name="maxBrightness">Maximale helderheid</string>
+<string name="minBrightness">Minimale helderheid</string>
 <string name="message_no_data_connection">Geen internet verbinding</string>
 <string name="message_mobile_data_connection">Mobiele data</string>
 <string name="message_mobile_data_connection_confirmation">Je bent verbonden met een mobiele dataverbinding, radio stream afspelen?</string>
@@ -129,12 +132,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="set_alarm">Stel alarm in</string>
 <string name="showcase_text_set_alarms">Tik en schuif je vinger om een eenmalig alarm in te stellen.</string>
 <string name="showcase_text_delete_alarms">Tik hier om een alarm te stoppen of te verwijderen.</string>
+<string name="showcase_title_screen_lock">Schermslot</string>
 <string name="show_date">Toon datum</string>
 <string name="show_temperature">Temperatuur</string>
 <string name="show_weather">Toon lokaal weer</string>
 <string name="show_wind_speed">Windsnelheid</string>
 <string name="snoozeTime">Sluimer tijd</string>
 <string name="speedUnit">Eenheid windsnelheid</string>
+<string name="standbyEnabledWhileConnectedTitle">Standby</string>
+<string name="standbyEnabledWhileDisconnectedTitle">Standby tijdens ontladen</string>
 <string name="titlePrivacyPolicy">Privacy beleid</string>
 <string name="temperatureUnit">Temperatuur eenheid</string>
 <string name="timeFormat">Tijdseenheid</string>
@@ -146,6 +152,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_regular">Roboto gewoon</string>
 <string name="typeface_roboto_thin">Roboto dun</string>
 <string name="typeface">Lettertype</string>
+<string name="uninstall">Verwijder applicatie</string>
 <string name="use_internal_alarm">Snelle alarmen</string>
 <string name="weather_calculation_time">Weerberekeningstijdstip</string>
 <string name="weather_city_id_summary">Open houden voor een automatische locatie berekening</string>

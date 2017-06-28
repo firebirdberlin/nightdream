@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">درباره</string>
+<string name="action_stop">ایست</string>
+<string name="alarm">هشدار</string>
+<string name="alarmFadeIn">افزایش آوا</string>
+<string name="alarmVolume">صدا</string>
+<string name="allow_screen_off_summary">هنگام شب صفحه نمایش را خاموش کنید</string>
+<string name="allow_screen_off">صفحه نمایش را خاموش کنید</string>
+<string name="ambient_noise">آشکارسازی صدای نابهنجار محیط</string>
+<string name="ambient_noise_summary">آیا صدای زمینه نابهنجار از فعالیت حالت شبانه جلوگیری میکند</string>
+<string name="appearance">رخ نما</string>
+<string name="app_name">ساعت شبانه </string>
+<string name="auto_brightness">روشنایی خودکار</string>
+<string name="autostart_message_disabled">خواهشمند است برای نگهداشتن حالت آماده بکار محافظ صفحه نمایش را از کار بیاندازید </string>
+<string name="autostart_timerange_label_end">زمان پایان</string>
+<string name="autostart_timerange_label_start">زمان آغاز</string>
+<string name="background">پس زمینه</string>
+<string name="background_black">سیاه</string>
+<string name="background_gradient">درجه دار</string>
+<string name="background_image">تصویر</string>
+<string name="background_image_select">انتخاب تصویر</string>
+<string name="behaviour">رفتار</string>
+<string name="brightness">روشنایی</string>
+<string name="buttonAccessibilitySettings">نمایش هشدارها</string>
+<string name="category_handle_power">...و هنگامی که متصل میشود</string>
+<string name="category_handle_power_autostart_time">آغاز میان دوره زمانی:</string>
+<string name="choose_alarm_sound">زنگ هشدار</string>
+<string name="choose_primary_color">تشدید رنگ</string>
+<string name="choose_secondary_color">رنگ متن</string>
+<string name="clear">آشکار</string>
+<string name="clock_layout">زمینه</string>
+<string name="clock_layout_digital">دیجیتال</string>
+<string name="clock_layout_analog">آنالوگ</string>
+<string name="colors">رنگ ها</string>
+<string name="confirm_reset_question">آیا میخواهید همه تنطیمات را به پیشفرض برگردانید</string>
+<string name="confirm_reset">بازگرداندن به پیش فرض</string>
+<string name="contribute">سهیم شدن</string>
+<string name="contribute_source_code">کد منبع برنامه</string>
+<string name="contribute_translation">ترجمه</string>
+<string name="country">کشور</string>
+<string name="date_format">شکل تاریخ</string>
+<string name="dialog_message_thank_you">سپاس فراوان از شما</string>
+<string name="dialog_title_thank_you">سپاس</string>
+<string name="donate_bitcoin">بیت کوین</string>
+<string name="donate">کمک کردن</string>
+<string name="doubleTapToFinishSummary">با دو ضربه روی صفحه برنامه را خاتمه دهید</string>
+<string name="doubleTapToFinishTitle">دو ضربه بزنید تا تمام شود</string>
+<string name="expertPreferences">تنظیمات حرفه ای</string>
+<string name="force_auto_rotation"> جهت گیری صفحه در طی رویاپردازی اعمال شود</string>
+<string name="force_auto_rotation_summary"> جهت گیری صفحه اگر رویاپردازی استفاده شد، اعمال گردد</string>
+<string name="handle_power">شروع خودکار</string>
+<string name="handle_power_car">ساعت ماشین</string>
+<string name="handle_power_desk">ساعت رومیزی</string>
+<string name="handle_power_disconnection">توقف خودکار</string>
+<string name="handle_power_disconnection_summary">اتمام برنامه در صورت جداشدن از منبع انرژی</string>
+<string name="handle_power_wireless">شارژر بی سیم</string>
+<string name="hide_background_image_in_night_mode">مخفی کن</string>
+<string name="hide_background_image_in_night_mode_summary">تصویر پس زمینه را در حالت شبانگاهی مخفی کن</string>
+<string name="hour">ساعت</string>
+<string name="location_time">زمان موقعیت</string>
+<string name="maxBrightness">حداکثر نور صفحه</string>
+<string name="minBrightness">حداقل نور صفحه</string>
+<string name="message_no_data_connection">ارتباط داده ها موجود نیست</string>
+<string name="message_mobile_data_connection">ارتباط داده ی موبایل</string>
+<string name="message_mobile_data_connection_confirmation">شما به یک شبکه ی موبایل متصل هستید. آیا جریان رادیو پخش شود؟</string>
+<string name="minute">دقیقه</string>
+<string name="mute_ringer">زنگ بی صدا</string>
+<string name="night_mode">حالت شبانگاهی</string>
+<string name="night_mode_activation_mode">حالت فعالسازی</string>
+<string name="night_mode_activation_manual">دستی</string>
+<string name="night_mode_activation_auto">خودکار</string>
+<string name="night_mode_activation_scheduled">برنامه ریزی شده</string>
+<string name="night_mode_timerange_title">زمان شبانگاهی</string>
+<string name="night_mode_timerange_label_end">زمان اتمام</string>
+<string name="night_mode_timerange_label_start">زمان شروع</string>
+<string name="noise_sensitivity">حساسیت میکروفون</string>
+<string name="notification_alarm">برای توقف هشدار کلیک کن.</string>
+<string name="other_apps">برنامه های دیگر</string>
+<string name="other_apps_tinytimetracker_summary">زمان فعالیت روزانه ی خود را پیگیری کن.</string>
+<string name="other_apps_tinytimetracker">پیگیری کننده ی زمان کوچک</string>
+<string name="persistent_battery_value_while_charging">نشانگر مداوم وضعیت باطری</string>
+<string name="persistent_battery_value_while_charging_summary">وضعیت باطری را طی شارژ کردن به طور مداوم نشان بده</string>
+<string name="preview">پیش نمایش</string>
+<string name="purchaseWeatherData">خرید اشتراک</string>
+<string name="purchaseWebRadio">خرید اشتراک</string>
+<string name="radio">رادیو</string>
+<string name="radio_stream_enabled">فعال</string>
+<string name="radio_stream_no_search_results">نتیجه ای برای جستجو وجود نداشت.</string>
+</resources>

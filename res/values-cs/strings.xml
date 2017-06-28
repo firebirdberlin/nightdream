@@ -44,6 +44,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_alarm_sound">Zvuk budíku</string>
 <string name="choose_primary_color">Barva času</string>
 <string name="choose_secondary_color">Barva textu</string>
+<string name="clear">Vyčistit</string>
+<string name="clock_layout">Rozložení hodín</string>
 <string name="colors">Barvy</string>
 <string name="confirm_reset_question">Opravu chcete obnovit výchozí nastavení?</string>
 <string name="confirm_reset">Obnova</string>
@@ -56,6 +58,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Poděkování</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Darovat</string>
+<string name="doubleTapToFinishSummary">Ukončit aplikaci dvojitým kliknutím</string>
+<string name="expertPreferences">Nastavení pro experty</string>
 <string name="force_auto_rotation">Vynucení orientace</string>
 <string name="force_auto_rotation_summary">Vynutit orientaci obrazovky při spuštěném spořiči displeje</string>
 <string name="handle_power_ac">externímu napájení</string>
@@ -72,13 +76,14 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="location_time">místní čas</string>
 <string name="message_no_data_connection">Žádné datové připojení</string>
 <string name="message_mobile_data_connection">Datové připojení</string>
-<string name="message_mobile_data_connection_confirmation">Jste připojeni k datové pripojení. Chcete zapnout rádio?</string>
+<string name="message_mobile_data_connection_confirmation">Jste připojeni k datovému připojení. Chcete zapnout rádio?</string>
 <string name="minute">min</string>
 <string name="mute_ringer">Ztlumit vyzvánění</string>
 <string name="night_mode">Noční režim</string>
 <string name="night_mode_activation_mode">Režim aktivace</string>
 <string name="night_mode_activation_manual">manuál</string>
 <string name="night_mode_activation_auto">automatický</string>
+<string name="night_mode_activation_scheduled">Naplánován</string>
 <string name="noise_sensitivity">Citlivost mikrofonu</string>
 <string name="notification_alarm">Kliknout pro zastavení budíku</string>
 <string name="other_apps">Ostatní aplikace</string>
@@ -135,7 +140,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Ponechte prázdné pro automatickou detekci podle lokality.</string>
 <string name="weather_city_id_title">Identifikace města</string>
 <string name="weather_info_title">Informace</string>
-<string name="weather_search_city_id">Vyhledat město</string>
 <string name="weather">Počasí</string>
 <string name="welcome_screen_text1">Vítejte v aplikaci pro zobrazení hodin v noci. Aktuální čas se zobrazuje při nabíjení vašeho mobilního zařízení.</string>
 <string name="welcome_screen_text2">Změna nastavení zde !</string>
