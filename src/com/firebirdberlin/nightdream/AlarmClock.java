@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -18,8 +19,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TimePicker;
 import java.lang.Math;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,7 +46,7 @@ public class AlarmClock extends View {
     private boolean locked = false;
     private boolean FingerDown;
     private boolean userChangesAlarmTime = false;
-    private boolean FingerDownDeleteAlarm;
+    private boolean FingerDownDeleteAlarm = false;
     private Context ctx;
     private int customcolor = Color.parseColor("#33B5E5");
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
@@ -62,10 +65,40 @@ public class AlarmClock extends View {
     private boolean blinkStateOn = false;
     private Float lastMoveEventY = null;
     private int lastMinSinceDragStart = 0;
+    GestureDetector mGestureDetector = null;
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
+
+    class LocalSimpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            Log.w(TAG, "single tap");
+
+            Point click = getClickedPoint(e);
+            if (cornerLeft.isInside(click)) {
+                TimePickerDialog mTimePicker;
+                int hour = (isAlarmSet()) ? time.hour : 7;
+                int min = (isAlarmSet()) ? time.min : 0;
+
+                mTimePicker = new TimePickerDialog(ctx, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        time.hour = selectedHour;
+                        time.min = selectedMinute;
+                        setAlarm();
+                        invalidate();
+                    }
+                }, hour, min, Utility.is24HourFormat(ctx));
+                mTimePicker.show();
+                return true;
+            }
+            return false;
+        }
+    };
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
+        mGestureDetector = new GestureDetector(context, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
         cornerLeft.setIconResource(getResources(), R.drawable.ic_audio);
         cornerRight = new HotCorner(Position.RIGHT);
@@ -112,6 +145,9 @@ public class AlarmClock extends View {
         if (! isVisible ) return false;
         if (locked) return false;
 
+        boolean event_consumed = mGestureDetector.onTouchEvent(e);
+        if (event_consumed) return true;
+
         boolean eventCancelAlarm = handleAlarmCancelling(e);
         if (eventCancelAlarm) return true;
 
@@ -133,7 +169,7 @@ public class AlarmClock extends View {
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // Allow start only in the lower left corner
-                if (dist > quiet_zone_size && dist < touch_zone_radius) { // left corner
+                if (dist > quiet_zone_size && cornerLeft.isInside(click)) { // left corner
                     FingerDown = true;
                     this.invalidate();
                     this.lastMoveEventY = tY;
@@ -177,7 +213,7 @@ public class AlarmClock extends View {
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 float dist = distance(click, lr);
-                if (dist > quiet_zone_size && dist < touch_zone_radius) { // right corner
+                if (dist > quiet_zone_size && cornerRight.isInside(click)) { // right corner
                     FingerDownDeleteAlarm = true;
                     this.invalidate();
                     return true;
@@ -241,7 +277,7 @@ public class AlarmClock extends View {
 
         // left corner
         if (! locked) {
-            cornerLeft.setPosition(0, h);
+            cornerLeft.setCenter(0, h);
             cornerLeft.setRadius(touch_zone_radius);
             cornerLeft.setActive(FingerDown);
             cornerLeft.draw(canvas, paint);
@@ -250,7 +286,7 @@ public class AlarmClock extends View {
         // right corner
         if (isAlarmSet() || userChangesAlarmTime) {
             if (! locked) {
-                cornerRight.setPosition(w, h);
+                cornerRight.setCenter(w, h);
                 cornerRight.setRadius(touch_zone_radius);
                 cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
                 cornerRight.draw(canvas, paint);
@@ -406,11 +442,11 @@ public class AlarmClock extends View {
             this.activated = activated;
         }
 
-        public void setPosition(Point center) {
+        public void setCenter(Point center) {
             this.center = center;
         }
 
-        public void setPosition(int x, int y) {
+        public void setCenter(int x, int y) {
             this.center.x = x;
             this.center.y = y;
         }
@@ -425,6 +461,11 @@ public class AlarmClock extends View {
             if (this.icon != null) {
                 this.scaledIcon = Bitmap.createScaledBitmap(this.icon, radius4, radius4, false);
             }
+        }
+
+        public boolean isInside(Point p) {
+            int dist = (int) distance(p, center);
+            return (dist < this.radius);
         }
 
         public void setIconResource(Resources res, int iconID) {

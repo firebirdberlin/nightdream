@@ -12,7 +12,7 @@ public class SimpleTime {
 
     }
 
-    public SimpleTime(long millis){
+    public SimpleTime( long millis ) {
         if (millis < 0L) return;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);

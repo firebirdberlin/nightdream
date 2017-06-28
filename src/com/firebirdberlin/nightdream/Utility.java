@@ -34,6 +34,10 @@ public class Utility {
         getSystemBrightnessMode();
     }
 
+    static public boolean is24HourFormat(Context context) {
+        return android.text.format.DateFormat.is24HourFormat(context);
+    }
+
     static public Sensor getLightSensor(Context context) {
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
