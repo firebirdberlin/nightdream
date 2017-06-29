@@ -40,8 +40,10 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if ( running ) {
+            Log.i(TAG, "LocationService starts NOT");
             return Service.START_REDELIVER_INTENT;
         }
+        Log.i(TAG, "LocationService starts");
         running = true;
 
         mContext = this;
@@ -143,6 +145,7 @@ public class LocationService extends Service {
     }
 
     private void release() {
+        running = false;
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }

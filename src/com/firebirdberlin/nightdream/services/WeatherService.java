@@ -26,8 +26,10 @@ public class WeatherService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if ( running ) {
+            Log.i(TAG, "WeatherService starts NOT");
             return Service.START_REDELIVER_INTENT;
         }
+        Log.i(TAG, "WeatherService starts");
         running = true;
         mContext = this;
 
@@ -51,6 +53,7 @@ public class WeatherService extends Service {
 
     @Override
     public void onDestroy(){
+        running = false;
         EventBus.getDefault().unregister(this);
     }
 
