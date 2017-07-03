@@ -81,7 +81,15 @@ public class mNotificationListener extends NotificationListenerService {
         clearNotificationUI();
         HashSet<String> groupKeys = new HashSet<String>();
 
-        for (StatusBarNotification sbn : mNotificationListener.this.getActiveNotifications()) {
+        StatusBarNotification[] notificationList = null;
+        try {
+            notificationList = mNotificationListener.this.getActiveNotifications();
+        } catch (SecurityException e) {
+            //Notification listener service is not yet registered.
+        }
+        if (notificationList == null) return;
+
+        for (StatusBarNotification sbn : notificationList) {
             Notification notification = sbn.getNotification();
             if (notification == null) continue;
 
