@@ -18,8 +18,7 @@ import android.provider.Settings.Secure;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
-import de.greenrobot.event.EventBus;
-import com.firebirdberlin.nightdream.events.OnLocationUpdated;
+import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 import com.firebirdberlin.nightdream.Settings;
 
 public class LocationService extends Service {
@@ -98,7 +97,6 @@ public class LocationService extends Service {
     Runnable gpsTimeout = new Runnable() {
         public void run() {
             storeLocation(knownLocation);
-            EventBus.getDefault().post(new OnLocationUpdated(knownLocation));
             stopSelf();
         }
     };
@@ -112,7 +110,7 @@ public class LocationService extends Service {
 
         Log.i(TAG, "storing location: " + String.valueOf(lon) + ", " + String.valueOf(lat));
         settings.setLocation(location);
-        EventBus.getDefault().post(new OnLocationUpdated(location));
+        LocationUpdateReceiver.send(this);
     }
 
     private Location getLastKnownLocation(Settings settings) {

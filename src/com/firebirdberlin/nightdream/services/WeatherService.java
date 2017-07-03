@@ -5,22 +5,22 @@ import java.lang.String;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
+import com.firebirdberlin.nightdream.Settings;
 
-import de.greenrobot.event.EventBus;
-import com.firebirdberlin.nightdream.events.OnLocationUpdated;
-
-public class WeatherService extends Service {
+public class WeatherService extends Service
+                            implements LocationUpdateReceiver.AsyncResponse {
     private static String TAG = "NightDream.WeatherService";
 
     private Context mContext = null;
     private boolean running = false;
+    private static LocationUpdateReceiver locationReceiver = null;
 
     @Override
     public void onCreate(){
-        EventBus.getDefault().register(this);
+        locationReceiver = LocationUpdateReceiver.register(this, this);
     }
 
     @Override
@@ -38,11 +38,10 @@ public class WeatherService extends Service {
         return Service.START_REDELIVER_INTENT;
     }
 
-    public void onEvent(OnLocationUpdated event){
-        Log.i(TAG, "OnLocationUpdated");
-        if ( event != null && event.entry != null ) {
-            DownloadWeatherService.start(mContext, event.entry);
-        }
+    public void onLocationUpdated() {
+        Log.i(TAG, "location updated");
+        final Settings settings = new Settings(mContext);
+        DownloadWeatherService.start(mContext, settings.getLocation());
         stopSelf();
     }
 
@@ -54,7 +53,7 @@ public class WeatherService extends Service {
     @Override
     public void onDestroy(){
         running = false;
-        EventBus.getDefault().unregister(this);
+        LocationUpdateReceiver.unregister(this, locationReceiver);
     }
 
     public static void start(Context context) {
