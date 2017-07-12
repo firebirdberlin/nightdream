@@ -38,6 +38,7 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
+import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
@@ -45,6 +46,7 @@ import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
+import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
 import java.util.Calendar;
 
@@ -52,12 +54,14 @@ import de.greenrobot.event.EventBus;
 
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener,
-                                                            NightModeReceiver.Event {
+                                                            NightModeReceiver.Event,
+                                                            LocationUpdateReceiver.AsyncResponse {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
     protected PowerManager.WakeLock wakelock;
-    ImageView background_image;
+    private ImageView background_image;
+    private ImageView weatherIcon;
     Sensor lightSensor = null;
     int mode = 2;
     private boolean screenWasOn = false;
@@ -77,8 +81,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private double last_ambient_noise = 32000; // something loud
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
+    private LocationUpdateReceiver locationReceiver = null;
     private NightModeReceiver nightModeReceiver = null;
-    private ReceiverShutDown shutDownReceiver = null;
+    private NightDreamBroadcastReceiver broadcastReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
     private PowerManager pm;
     private Settings mySettings = null;
@@ -149,6 +154,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
         setKeepScreenOn(true);
 
+        weatherIcon = (ImageView) findViewById(R.id.icon_weather_forecast);
         background_image = (ImageView) findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -189,11 +195,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
 
         scheduleShutdown();
+        setupWeatherForecastIcon();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
         nightModeReceiver = NightModeReceiver.register(this, this);
-        shutDownReceiver = registerPowerDisconnectionReceiver();
+        broadcastReceiver = registerBroadcastReceiver();
         receiverRadioStream = registerReceiverRadioStream();
+        locationReceiver = LocationUpdateReceiver.register(this, this);
 
         nReceiver.setColor(mySettings.secondaryColor);
         // ask for active notifications
@@ -283,8 +291,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         NightModeReceiver.cancel(this);
         unregisterLocalReceiver(nReceiver);
         unregister(nightModeReceiver);
-        unregister(shutDownReceiver);
+        unregister(broadcastReceiver);
         unregister(receiverRadioStream);
+        LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if (mySettings.allow_screen_off && mode == 0 && screenWasOn && !isScreenOn() ){ // screen off in night mode
             startBackgroundListener();
@@ -340,7 +349,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         //audiomanage.setRingerMode(currentRingerMode);
 
         nightModeReceiver = null;
-        shutDownReceiver = null;
+        broadcastReceiver = null;
         nReceiver  = null;
     }
 
@@ -351,11 +360,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         return receiver;
     }
 
-    private ReceiverShutDown registerPowerDisconnectionReceiver() {
-        ReceiverShutDown shutDownReceiver = new ReceiverShutDown();
-        IntentFilter pwrFilter = new IntentFilter(Config.ACTION_SHUT_DOWN);
-        registerReceiver(shutDownReceiver, pwrFilter);
-        return shutDownReceiver;
+    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
+        IntentFilter filter = new IntentFilter(Config.ACTION_SHUT_DOWN);
+        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        registerReceiver(receiver, filter);
+        return receiver;
     }
 
     private ReceiverRadioStream registerReceiverRadioStream() {
@@ -389,6 +399,32 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
 
         toggleRadioStreamState();
+
+    }
+
+    public void onLocationFailure() { }
+    public void onLocationUpdated() {
+        // we need to reload the location
+        mySettings = new Settings(this);
+    }
+
+    private void setupWeatherForecastIcon() {
+        String cityID = mySettings.getValidCityID();
+        if (Build.VERSION.SDK_INT < 14
+                || ! mySettings.showWeather
+                || cityID == null
+                || cityID.isEmpty() ) {
+            weatherIcon.setVisibility(View.GONE);
+        } else {
+            weatherIcon.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void onWeatherForecastClick(View v) {
+        String cityID = mySettings.getValidCityID();
+        if (cityID != null && !cityID.isEmpty()) {
+            WeatherForecastActivity.start(this, cityID);
+        }
 
     }
 
@@ -589,13 +625,20 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         pendingIntent.cancel();
     }
 
-    class ReceiverShutDown extends BroadcastReceiver {
-        // this receiver is needed to shutdown the app at the end of the autostart time range
+    class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent == null) return;
-            if (mySettings.handle_power_disconnection) {
-                finish();
+            String action = intent.getAction();
+            if (Config.ACTION_SHUT_DOWN.equals(action)) {
+                // this receiver is needed to shutdown the app at the end of the autostart time range
+                if (mySettings.handle_power_disconnection) {
+                    finish();
+                }
+            } else
+            if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
+                mySettings = new Settings(context);
+                setupWeatherForecastIcon();
             }
         }
     }

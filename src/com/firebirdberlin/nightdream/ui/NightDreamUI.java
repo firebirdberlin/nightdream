@@ -105,6 +105,7 @@ public class NightDreamUI {
     private ImageView background_image;
     private ImageView menuIcon;
     private ImageView settingsIcon;
+    private ImageView weatherIcon;
     private ImageView nightModeIcon;
     private WebRadioImageView radioIcon;
     private LightSensorEventListener lightSensorEventListener = null;
@@ -414,6 +415,7 @@ public class NightDreamUI {
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
         settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
+        weatherIcon = (ImageView) rootView.findViewById(R.id.icon_weather_forecast);
         nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
 
@@ -549,6 +551,7 @@ public class NightDreamUI {
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         nightModeIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
+        weatherIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
         alarmClock.setCustomColor(accentColor, textColor);
         clockLayout.setPrimaryColor(accentColor);
         clockLayout.setSecondaryColor(textColor);

@@ -32,6 +32,18 @@
 
     <ImageView
         android:clickable="true"
+        android:contentDescription="weather forecast"
+        android:id="@+id/icon_weather_forecast"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="onWeatherForecastClick"
+        android:padding="5dp"
+        android:src="@drawable/ic_cloud"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:clickable="true"
         android:contentDescription="night mode toggle"
         android:id="@+id/night_mode_icon"
         android:layout_height="wrap_content"

@@ -45,6 +45,11 @@ public class WeatherService extends Service
         stopSelf();
     }
 
+    public void onLocationFailure() {
+        Log.i(TAG, "location failure");
+        stopSelf();
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;

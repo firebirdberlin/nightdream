@@ -59,12 +59,56 @@ public class OpenWeatherMapApi {
             Log.i(TAG, " >> responseText " + responseText);
         }
 
-        return getWeatherEntryFromResponseText(responseText);
+        JSONObject json = getJSONObject(responseText);
+        return getWeatherEntryFromJSONObject(json);
     }
 
-    private static WeatherEntry getWeatherEntryFromResponseText(String responseText) {
-        WeatherEntry entry = new WeatherEntry();
+    public static List<WeatherEntry> fetchWeatherForecast(String cityID, float lat, float lon) {
+        int responseCode = 0;
+        String response = "";
+        String responseText = "";
+
+        List<WeatherEntry> forecast = new ArrayList<WeatherEntry>();
+
+        try {
+            URL url = getUrlForecast(cityID, lat, lon);
+            Log.i(TAG, "requesting " + url.toString());
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            response = urlConnection.getResponseMessage();
+            responseCode = urlConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                responseText = getResponseText(urlConnection);
+            }
+            urlConnection.disconnect();
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, " >> response " + response);
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
+            return forecast;
+        } else {
+            Log.i(TAG, " >> responseText " + responseText);
+        }
         JSONObject json = getJSONObject(responseText);
+        JSONObject jsonCity = getJSONObject(json, "city");
+        String cityName = getValue(jsonCity, "name", "");
+        int cityIDint = getValue(jsonCity, "id", 0);
+        JSONArray jsonList = getJSONArray(json, "list");
+        for(int i=0; i< jsonList.length(); i++){
+            JSONObject jsonEntry = getJSONObject(jsonList, i);
+            WeatherEntry entry = getWeatherEntryFromJSONObject(jsonEntry);
+            entry.cityID = cityIDint;
+            entry.cityName = cityName;
+            forecast.add(entry);
+        }
+        return forecast;
+    }
+
+    private static WeatherEntry getWeatherEntryFromJSONObject(JSONObject json) {
+        WeatherEntry entry = new WeatherEntry();
         JSONObject jsonMain = getJSONObject(json, "main");
         JSONObject jsonWind = getJSONObject(json, "wind");
         JSONObject jsonSys = getJSONObject(json, "sys");
@@ -236,6 +280,21 @@ public class OpenWeatherMapApi {
 
     private static URL getUrlWeather(String cityId, float lat, float lon) throws MalformedURLException {
         Uri.Builder builder = getPathBuilder("weather");
+
+        if (!cityId.isEmpty()) {
+            builder = builder.appendQueryParameter("id", cityId);
+        } else {
+            builder = builder
+                    .appendQueryParameter("lat", String.valueOf(lat))
+                    .appendQueryParameter("lon", String.valueOf(lon));
+        }
+
+        String url = builder.build().toString();
+        return new URL(url);
+    }
+
+    private static URL getUrlForecast(String cityId, float lat, float lon) throws MalformedURLException {
+        Uri.Builder builder = getPathBuilder("forecast");
 
         if (!cityId.isEmpty()) {
             builder = builder.appendQueryParameter("id", cityId);
