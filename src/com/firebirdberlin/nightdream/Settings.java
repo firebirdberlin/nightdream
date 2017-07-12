@@ -269,7 +269,7 @@ public class Settings {
     }
 
     private Typeface loadTypeface() {
-        int typeface = Integer.parseInt(settings.getString("typeface", "1"));
+        int typeface = Integer.parseInt(settings.getString("typeface", "6"));
         String path = mapIntToTypefacePath(typeface);
         return Typeface.createFromAsset(mContext.getAssets(), path);
     }
@@ -445,6 +445,15 @@ public class Settings {
         prefEditor.putLong("location_time", location.getTime());
         prefEditor.putString("location_provider", location.getProvider());
         prefEditor.commit();
+    }
+
+    public String getValidCityID() {
+        if (this.weatherCityID != null && !this.weatherCityID.isEmpty()) {
+            return this.weatherCityID;
+        } else if (this.weatherEntry != null && this.weatherEntry.cityID > 0) {
+            return String.valueOf(this.weatherEntry.cityID);
+        }
+        return null;
     }
 
     public WeatherEntry getWeatherEntry() {

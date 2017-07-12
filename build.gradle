@@ -3,15 +3,15 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:2.3.3'
     }
 }
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile (project(':externals:ShowcaseView:library')) {
-      exclude module: 'support-v4'
-      exclude module: 'support-annotations'
+    compile(project(':externals:ShowcaseView:library')) {
+        exclude module: 'support-v4'
+        exclude module: 'support-annotations'
     }
     compile project(':externals:android-preferences')
     compile fileTree(include: '*.jar', dir: 'libs')

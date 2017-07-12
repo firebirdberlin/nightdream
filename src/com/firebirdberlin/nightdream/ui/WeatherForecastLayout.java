@@ -2,10 +2,10 @@ package com.firebirdberlin.nightdream.ui;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,31 +14,31 @@ import android.widget.TextView;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
-public class WeatherLayout extends LinearLayout {
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-    private static final String TAG = "NightDream.WeatherLayout";
+public class WeatherForecastLayout extends LinearLayout {
+
+    private static final String TAG = "NightDream.WeatherForecastLayout";
     private Context context = null;
+    private TextView timeView = null;
     private TextView iconText = null;
     private TextView iconWind = null;
+    private String timeFormat = "HH:mm";
     private DirectionIconView iconWindDirection = null;
     private TextView temperatureText = null;
     private TextView windText = null;
-    private boolean showTemperature = false;
-    private boolean showWindSpeed = false;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
-    private int maxWidth = -1;
-    private int minFontSizePx = -1;
-    private int maxFontSizePx = -1;
     private WeatherEntry weatherEntry = null;
 
-    public WeatherLayout(Context context) {
+    public WeatherForecastLayout(Context context) {
         super(context);
         this.context = context;
         init();
     }
 
-    public WeatherLayout(Context context, AttributeSet attrs) {
+    public WeatherForecastLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         init();
@@ -47,9 +47,10 @@ public class WeatherLayout extends LinearLayout {
     private void init() {
         LayoutInflater inflater = (LayoutInflater)
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View child = inflater.inflate(R.layout.weather_layout, null);
+        View child = inflater.inflate(R.layout.weather_forecast_layout, null);
         addView(child);
 
+        timeView = (TextView) findViewById(R.id.timeView);
         iconText = (TextView) findViewById(R.id.iconText);
         iconWind = (TextView) findViewById(R.id.iconWind);
         iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
@@ -60,14 +61,16 @@ public class WeatherLayout extends LinearLayout {
         iconWind.setTypeface(typeface);
     }
 
+    public void setTimeFormat(String format) {
+        timeFormat = format;
+    }
+
     public void setTemperature(boolean on, int unit) {
-        this.showTemperature = on;
         this.temperatureUnit = unit;
         temperatureText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
     public void setWindSpeed(boolean on, int unit) {
-        this.showWindSpeed = on;
         this.speedUnit = unit;
 
         iconWind.setVisibility( (on) ? View.VISIBLE : View.GONE );
@@ -76,22 +79,14 @@ public class WeatherLayout extends LinearLayout {
         windText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
-    public void setMaxWidth(int width) {
-        this.maxWidth = width;
-    }
-
-    public void setMaxFontSizesInPx(float minSize, float maxSize) {
-        this.minFontSizePx = (int) minSize;
-        this.maxFontSizePx = (int) maxSize;
-    }
-
     public void clear() {
+        timeView.setText("");
         iconText.setText("");
         iconWind.setText("");
         iconWindDirection.setDirection(DirectionIconView.INVALID);
         temperatureText.setText("");
         windText.setText("");
-
+        timeView.invalidate();
         iconText.invalidate();
         iconWind.invalidate();
         iconWindDirection.invalidate();
@@ -104,62 +99,31 @@ public class WeatherLayout extends LinearLayout {
         windText.setTypeface(typeface);
     }
 
-    public void setTextSize(int unit, int size) {
-        iconText.setTextSize(unit, size);
-        iconWind.setTextSize(unit, size);
-        windText.setTextSize(unit, size);
-        temperatureText.setTextSize(unit, size);
-        invalidate();
-    }
-
-    public void setColor(int color) {
-        if (iconText != null) {
-            iconText.setTextColor(color);
-        }
-        if (iconWind != null) {
-            iconWind.setTextColor(color);
-        }
-        if (iconWindDirection != null) {
-            iconWindDirection.setColor(color);
-        }
-        if (temperatureText != null) {
-            temperatureText.setTextColor(color);
-        }
-        if (windText != null) {
-            windText.setTextColor(color);
-        }
-    }
-
     public void update(WeatherEntry entry) {
+        Log.d("WeatherForecastLayout", entry.toString());
+        Log.d("WeatherForecastLayout", formatTemperatureText(entry));
         this.weatherEntry = entry;
         if (iconText == null || temperatureText == null) return;
-        long age = entry.ageMillis();
-        Log.d("WeatherLayout", entry.toString());
-        Log.d("WeatherLayout", formatTemperatureText(entry));
-        if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
-            iconText.setText(iconToText(entry.weatherIcon));
-            temperatureText.setText(formatTemperatureText(entry));
-            iconWind.setText("F");
-            iconWindDirection.setDirection(entry.windDirection);
-            windText.setText(formatWindText(entry));
-            update();
-        } else {
-            clear();
-        }
-    }
+        iconWindDirection.setColor(Color.WHITE);
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.setTimeInMillis(entry.timestamp * 1000);
 
-    public void update() {
-        if (iconText == null || temperatureText == null) return;
-        adjustTextSize();
-        temperatureText.invalidate();
-        if (this.showWindSpeed && weatherEntry != null) {
+        SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
+        String text = sdf.format(mCalendar.getTime());
+        timeView.setText(text);
+        long age = entry.ageMillis();
+
+        iconText.setText(iconToText(entry.weatherIcon));
+        temperatureText.setText(formatTemperatureText(entry));
+        iconWind.setText("F");
+        iconWindDirection.setDirection(entry.windDirection);
+        windText.setText(formatWindText(entry));
+
+        if (weatherEntry != null) {
             iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
             iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
         }
         fixIconWindDirectionSize();
-        windText.invalidate();
-        iconText.invalidate();
-        iconWind.invalidate();
     }
 
     private String iconToText(String code) {
@@ -191,7 +155,7 @@ public class WeatherLayout extends LinearLayout {
             case WeatherEntry.FAHRENHEIT:
                 return String.format("%.0f°F", toDegreesFahrenheit(entry.temperature));
             default:
-                return String.format("%.0fK", entry.temperature);
+                return String.format("%.0f K", entry.temperature);
         }
     }
     private double toDegreesCelcius(double kelvin) {
@@ -205,12 +169,12 @@ public class WeatherLayout extends LinearLayout {
     private String formatWindText(WeatherEntry entry) {
         switch (speedUnit) {
             case WeatherEntry.MILES_PER_HOUR:
-                return String.format("%.1fmi/h", toMilesPerHour(entry.windSpeed));
+                return String.format("%.1f mi/h", toMilesPerHour(entry.windSpeed));
             case WeatherEntry.KM_PER_HOUR:
-                return String.format("%.1fkm/h", toKilometersPerHour(entry.windSpeed));
+                return String.format("%.1f km/h", toKilometersPerHour(entry.windSpeed));
             case WeatherEntry.METERS_PER_SECOND:
             default:
-                return String.format("%.1fm/s", entry.windSpeed);
+                return String.format("%.1f m/s", entry.windSpeed);
         }
     }
 
@@ -222,18 +186,6 @@ public class WeatherLayout extends LinearLayout {
         return mps  * 3.6;
     }
 
-    private void adjustTextSize() {
-        if ( maxWidth == -1) return;
-        if ( maxFontSizePx == -1 || minFontSizePx == -1) return;
-        for(int size = minFontSizePx; size <= maxFontSizePx; size++) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            if ( measureText() > maxWidth ) {
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 1);
-                break;
-            }
-        }
-    }
-
     private void fixIconWindDirectionSize() {
         temperatureText.post(new Runnable() {
             public void run() {
@@ -243,23 +195,5 @@ public class WeatherLayout extends LinearLayout {
                 iconWindDirection.invalidate();
             }
         });
-    }
-
-    public int measureText() {
-        int textSize = 0;
-        textSize += measureText(iconText);
-        if ( showTemperature ) {
-            textSize += measureText(temperatureText);
-        }
-        if ( showWindSpeed ) {
-            textSize += measureText(iconWind);
-            textSize += measureText(windText);
-        }
-        return textSize;
-    }
-
-    private float measureText(TextView view) {
-        String text = view.getText().toString();
-        return view.getPaint().measureText(text);
     }
 }

@@ -50,6 +50,7 @@ public class LocationService extends Service {
         final Settings settings = new Settings(mContext);
         if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
             Log.w(TAG, "No location permissions granted !");
+            LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
             stopSelf();
             return Service.START_REDELIVER_INTENT;
         }
@@ -79,6 +80,7 @@ public class LocationService extends Service {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
                 setTimeout(60000);
             } else {
+                LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
                 stopSelf();
             }
 
@@ -96,13 +98,20 @@ public class LocationService extends Service {
 
     Runnable gpsTimeout = new Runnable() {
         public void run() {
+            Log.i(TAG, "gpsTimeout.run()");
             storeLocation(knownLocation);
             stopSelf();
         }
     };
 
     private void storeLocation(Location location) {
-        if (location == null) return;
+        Log.w(TAG, "storeLocation()");
+        if (location == null) {
+            Log.w(TAG, "location is NULL !");
+            LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
+            return;
+        }
+
         final Settings settings = new Settings(mContext);
         float lon = (float) location.getLongitude();
         float lat = (float) location.getLatitude();
@@ -144,6 +153,7 @@ public class LocationService extends Service {
 
     private void release() {
         running = false;
+        new Handler().removeCallbacksAndMessages(null);
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }

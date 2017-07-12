@@ -140,7 +140,7 @@
                     custom:formatType="time" />
 
                 <ListPreference
-                    android:defaultValue="1"
+                    android:defaultValue="6"
                     android:entries="@array/typeFaces"
                     android:entryValues="@array/typeFaceValues"
                     android:key="typeface"
