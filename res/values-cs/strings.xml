@@ -76,7 +76,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="location_time">místní čas</string>
 <string name="message_no_data_connection">Žádné datové připojení</string>
 <string name="message_mobile_data_connection">Datové připojení</string>
-<string name="message_mobile_data_connection_confirmation">Jste připojeni k datovému připojení. Chcete zapnout rádio?</string>
+<string name="message_mobile_data_connection_confirmation">Jste připojeni k datové pripojení. Chcete zapnout rádio?</string>
 <string name="minute">min</string>
 <string name="mute_ringer">Ztlumit vyzvánění</string>
 <string name="night_mode">Noční režim</string>
