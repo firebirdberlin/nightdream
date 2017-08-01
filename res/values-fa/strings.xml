@@ -18,6 +18,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">درباره</string>
+<string name="action_snooze">تعویق انداختن</string>
 <string name="action_stop">ایست</string>
 <string name="alarm">هشدار</string>
 <string name="alarmFadeIn">افزایش آوا</string>
@@ -66,11 +67,13 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="expertPreferences">تنظیمات حرفه ای</string>
 <string name="force_auto_rotation"> جهت گیری صفحه در طی رویاپردازی اعمال شود</string>
 <string name="force_auto_rotation_summary"> جهت گیری صفحه اگر رویاپردازی استفاده شد، اعمال گردد</string>
+<string name="handle_power_ac">شارژ</string>
 <string name="handle_power">شروع خودکار</string>
 <string name="handle_power_car">ساعت ماشین</string>
 <string name="handle_power_desk">ساعت رومیزی</string>
 <string name="handle_power_disconnection">توقف خودکار</string>
 <string name="handle_power_disconnection_summary">اتمام برنامه در صورت جداشدن از منبع انرژی</string>
+<string name="handle_power_usb">اتصال یو اس بی</string>
 <string name="handle_power_wireless">شارژر بی سیم</string>
 <string name="hide_background_image_in_night_mode">مخفی کن</string>
 <string name="hide_background_image_in_night_mode_summary">تصویر پس زمینه را در حالت شبانگاهی مخفی کن</string>
@@ -104,4 +107,35 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio">رادیو</string>
 <string name="radio_stream_enabled">فعال</string>
 <string name="radio_stream_no_search_results">نتیجه ای برای جستجو وجود نداشت.</string>
+<string name="radio_stream_search">جستوجو</string>
+<string name="radio_stream_offline">افلاین</string>
+<string name="reactivate_on_ambient_light_value_summary">اگر مقدار آستانه نور خورشید بیش از حد باشد، صفحه نمایش دوباره فعال می شود</string>
+<string name="reactivate_screen_on_noise">بیدار شدن در سر و صدا محیط</string>
+<string name="recommend_app_desc">یک برنامه را انتخاب کنید تا پیشنهاد شما را به اشتراک بگذارید</string>
+<string name="recommend_app_subject">من می خواهم این برنامه ساعت شبانه را به شما توصیه کنم.</string>
+<string name="recommend">پیشنهاد برنامه</string>
+<string name="reset_to_defaults">برگشت به حالت اولیه</string>
+<string name="restless_mode">ساعت را در اطراف حرکت دهید</string>
+<string name="review_request">لطفا به این برنامه امتیاز دهید.ممنون ! </string>
+<string name="screen_orientation_automatic">اتوماتیک</string>
+<string name="select_alarm_sound">انتخاب صدای آلارم</string>
+<string name="set_alarm">انتخاب آلارم</string>
+<string name="showcase_title_screen_lock">قفل صفحه</string>
+<string name="show_date">نمایش تاریخ</string>
+<string name="show_temperature">نمایش دما</string>
+<string name="show_weather">نمایش آب و هوای محلی</string>
+<string name="show_wind_speed">نمایش سرعت باد</string>
+<string name="snoozeTime">زمان تعویق</string>
+<string name="standbyEnabledWhileConnectedTitle">حالت انتظار</string>
+<string name="standbyEnabledWhileDisconnectedSummary">این ویژگی به سرعت باطری را تخلیه میکند</string>
+<string name="standbyNotificationText">حالت انتظار فعال است</string>
+<string name="timeFormat">نحوه نمایش ساعت</string>
+<string name="uninstall">حذف نرم افزار</string>
+<string name="use_internal_alarm">آلارم کوتاه</string>
+<string name="weather_city_id_title">جستوجوی موقعیت</string>
+<string name="weather_info_title">اطلاعات</string>
+<string name="weather">آب و هوا</string>
+<string name="welcome_screen_title1">ساعت حالت شب</string>
+<string name="welcome_screen_title3">روشنایی تصویر</string>
+<string name="welcome_screen_title4">اندازه ساعت</string>
 </resources>
