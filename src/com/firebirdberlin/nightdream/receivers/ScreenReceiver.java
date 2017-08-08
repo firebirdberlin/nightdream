@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
-import com.firebirdberlin.nightdream.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 

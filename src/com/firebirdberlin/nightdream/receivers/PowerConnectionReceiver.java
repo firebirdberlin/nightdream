@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.receivers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.PowerManager;
 
+import com.firebirdberlin.nightdream.NightDreamActivity;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.DockState;
 import com.firebirdberlin.nightdream.models.SimpleTime;

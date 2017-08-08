@@ -113,7 +113,7 @@
         </activity>
 
         <receiver
-            android:name=".PowerConnectionReceiver"
+            android:name=".receivers.PowerConnectionReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
@@ -122,7 +122,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".ChargingStateChangeReceiver"
+            android:name=".receivers.ChargingStateChangeReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
