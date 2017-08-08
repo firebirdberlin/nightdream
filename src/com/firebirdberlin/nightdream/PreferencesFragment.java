@@ -266,7 +266,7 @@ public class PreferencesFragment extends PreferenceFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
-        addPreferencesFromResource(R.layout.preferences);
+        addPreferencesFromResource(R.xml.preferences);
         init();
     }
 
@@ -362,7 +362,7 @@ public class PreferencesFragment extends PreferenceFragment {
                             settings.clear();
                             getPreferenceScreen().removeAll();
                             WakeUpReceiver.cancelAlarm(mContext);
-                            addPreferencesFromResource(R.layout.preferences);
+                            addPreferencesFromResource(R.xml.preferences);
                             init();
                             togglePurchasePreferences();
                         }

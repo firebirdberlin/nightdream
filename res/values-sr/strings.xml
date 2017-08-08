@@ -156,7 +156,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_summary">Ostaviti prazno za automatsku detekciju lokacije.</string>
 <string name="weather_city_id_title">ID grada</string>
 <string name="weather_info_title">Informacije</string>
-<string name="weather_search_city_id">Tražii ID grada</string>
 <string name="weather">Vremenske prilike</string>
 <string name="welcome_screen_text1">Dobrodošli u Vaš novi Nočni sat. Ova aplikacija prikazuje tačno vreme dok punite Vaš telefon.</string>
 <string name="welcome_screen_text2">Otvorite postavke ovde!</string>

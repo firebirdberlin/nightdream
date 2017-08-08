@@ -30,7 +30,7 @@ public class PreferencesActivityv9 extends PreferenceActivity {
 
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
 
-        addPreferencesFromResource(R.layout.preferences);
+        addPreferencesFromResource(R.xml.preferences);
 
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
