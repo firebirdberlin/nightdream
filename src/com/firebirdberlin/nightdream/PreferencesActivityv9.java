@@ -4,16 +4,17 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.MediaStore;
 import android.widget.Toast;
+
+import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
+
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 @TargetApi(10)
@@ -30,7 +31,7 @@ public class PreferencesActivityv9 extends PreferenceActivity {
 
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
 
-        addPreferencesFromResource(R.layout.preferences);
+        addPreferencesFromResource(R.xml.preferences);
 
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);

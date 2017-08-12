@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.firebirdberlin.nightdream.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 

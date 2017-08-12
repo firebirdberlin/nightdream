@@ -44,4 +44,14 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+
+    buildTypes {
+        release {
+            lintOptions {
+                disable 'MissingTranslation'
+            }
+            proguardFile '/home/stefan/android/projects/nightdream/proguard-project.txt'
+            minifyEnabled true
+        }
+    }
 }

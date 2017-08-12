@@ -37,3 +37,8 @@
 -keepclassmembers class ** {
     public void onEvent*(**);
 }
+
+-ignorewarnings
+-keep class * {
+    public private *;
+}

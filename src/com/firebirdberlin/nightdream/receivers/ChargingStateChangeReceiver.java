@@ -1,9 +1,10 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -12,9 +13,6 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import de.greenrobot.event.EventBus;
 
 public class ChargingStateChangeReceiver extends BroadcastReceiver {
-    private static int PENDING_INTENT_START_APP = 0;
-
-    private Settings settings = null;
 
     @Override
     public void onReceive(Context context, Intent intent) {
