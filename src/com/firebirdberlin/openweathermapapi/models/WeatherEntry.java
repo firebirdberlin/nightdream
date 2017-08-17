@@ -12,6 +12,8 @@ public class WeatherEntry {
     public long timestamp = INVALID;
     public int cityID = 0;
     public String cityName = "";
+    public int clouds = -1;
+    public double rain3h = -1.f;
     public double temperature = 0.f;
     public long sunriseTime = 0L;
     public long sunsetTime = 0L;

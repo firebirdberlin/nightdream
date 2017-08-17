@@ -110,14 +110,18 @@ public class OpenWeatherMapApi {
     private static WeatherEntry getWeatherEntryFromJSONObject(JSONObject json) {
         WeatherEntry entry = new WeatherEntry();
         JSONObject jsonMain = getJSONObject(json, "main");
+        JSONObject jsonClouds = getJSONObject(json, "clouds");
+        JSONObject jsonRain = getJSONObject(json, "rain");
         JSONObject jsonWind = getJSONObject(json, "wind");
         JSONObject jsonSys = getJSONObject(json, "sys");
         JSONArray jsonWeather = getJSONArray(json, "weather");
 
         entry.cityID = getValue(json, "id", 0);
         entry.cityName = getValue(json, "name", "");
+        entry.clouds = getValue(jsonClouds, "all", 0);
         entry.timestamp = getValue(json, "dt", 0L);
         entry.temperature = getValue(jsonMain, "temp", 0.);
+        entry.rain3h = getValue(jsonRain, "3h", -1.);
         entry.sunriseTime = getValue(jsonSys, "sunrise", 0L);
         entry.sunsetTime = getValue(jsonSys, "sunset", 0L);
 

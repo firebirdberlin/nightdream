@@ -22,12 +22,16 @@ public class WeatherForecastLayout extends LinearLayout {
     private static final String TAG = "NightDream.WeatherForecastLayout";
     private Context context = null;
     private TextView timeView = null;
+    private TextView iconClouds = null;
     private TextView iconText = null;
     private TextView iconWind = null;
+    private TextView iconRain3h = null;
     private String timeFormat = "HH:mm";
     private DirectionIconView iconWindDirection = null;
+    private TextView cloudText = null;
     private TextView temperatureText = null;
     private TextView windText = null;
+    private TextView rainText = null;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
     private WeatherEntry weatherEntry = null;
@@ -53,12 +57,18 @@ public class WeatherForecastLayout extends LinearLayout {
         timeView = (TextView) findViewById(R.id.timeView);
         iconText = (TextView) findViewById(R.id.iconText);
         iconWind = (TextView) findViewById(R.id.iconWind);
+        iconRain3h = (TextView) findViewById(R.id.iconRain3h);
+        iconClouds = (TextView) findViewById(R.id.iconClouds);
         iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
+        cloudText = (TextView) findViewById(R.id.cloudText);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
+        rainText = (TextView) findViewById(R.id.rainText);
         windText = (TextView) findViewById(R.id.windText);
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
+        iconClouds.setTypeface(typeface);
         iconText.setTypeface(typeface);
         iconWind.setTypeface(typeface);
+        iconRain3h.setTypeface(typeface);
     }
 
     public void setTimeFormat(String format) {
@@ -81,10 +91,14 @@ public class WeatherForecastLayout extends LinearLayout {
 
     public void clear() {
         timeView.setText("");
+        iconClouds.setText("");
+        iconRain3h.setText("");
         iconText.setText("");
         iconWind.setText("");
         iconWindDirection.setDirection(DirectionIconView.INVALID);
+        cloudText.setText("");
         temperatureText.setText("");
+        rainText.setText("");
         windText.setText("");
         timeView.invalidate();
         iconText.invalidate();
@@ -97,6 +111,7 @@ public class WeatherForecastLayout extends LinearLayout {
     public void setTypeface(Typeface typeface) {
         temperatureText.setTypeface(typeface);
         windText.setTypeface(typeface);
+        rainText.setTypeface(typeface);
     }
 
     public void update(WeatherEntry entry) {
@@ -116,8 +131,25 @@ public class WeatherForecastLayout extends LinearLayout {
         iconText.setText(iconToText(entry.weatherIcon));
         temperatureText.setText(formatTemperatureText(entry));
         iconWind.setText("F");
+
         iconWindDirection.setDirection(entry.windDirection);
         windText.setText(formatWindText(entry));
+
+        if (entry != null && entry.rain3h >= 0.) {
+            iconRain3h.setText("R");
+            rainText.setText(formatRainText(entry));
+        } else {
+            iconRain3h.setText("");
+            rainText.setText("");
+        }
+
+        if (entry != null && entry.clouds >= 0) {
+            iconClouds.setText("Y");
+            cloudText.setText(formatCloudsText(entry));
+        } else {
+            iconClouds.setText("");
+            cloudText.setText("");
+        }
 
         if (weatherEntry != null) {
             iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
@@ -164,6 +196,14 @@ public class WeatherForecastLayout extends LinearLayout {
 
     private double toDegreesFahrenheit(double kelvin) {
         return kelvin * 1.8 - 459.67;
+    }
+
+    private String formatRainText(WeatherEntry entry) {
+        return String.format("%.1f mm", entry.rain3h);
+    }
+
+    private String formatCloudsText(WeatherEntry entry) {
+        return String.format("%3d %%", entry.clouds);
     }
 
     private String formatWindText(WeatherEntry entry) {
