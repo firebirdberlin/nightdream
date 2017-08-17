@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="167"
-    android:versionName="2.5.24">
+    android:versionCode="168"
+    android:versionName="2.5.25">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -54,11 +54,11 @@
 
         <receiver
             android:name=".AdminReceiver"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:description="@string/useDeviceLockExplanation">
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
-
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>

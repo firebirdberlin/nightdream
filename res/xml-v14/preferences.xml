@@ -195,7 +195,8 @@
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="useDeviceLock"
-                android:title="@string/useDeviceLock" />
+                android:title="@string/useDeviceLock"
+                android:summary="@string/useDeviceLockDescription"/>
 
             <SwitchPreference
                 android:defaultValue="true"

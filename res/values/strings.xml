@@ -164,7 +164,8 @@ OR
     <string name="uninstall">Uninstall application</string>
     <string name="use_internal_alarm">Quick alarms</string>
     <string name="useDeviceLock">Lock device</string>
-    <string name="useDeviceLockExplanation">Lock the device while the Night Clock is active.</string>
+    <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>
+    <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
     <string name="weather_calculation_time">weather calculation time</string>
     <string name="weather_city_id_summary">Leave empty for an automatic detection of the location.</string>
     <string name="weather_city_id_title">Search location</string>

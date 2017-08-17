@@ -66,6 +66,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="expertPreferences">Experteneinstellungen</string>
 <string name="force_auto_rotation">Erzwinge Ausrichtung im DayDream</string>
 <string name="force_auto_rotation_summary">Bei Verwendung des Daydreams die festgelegte Ausrichtung erzwingen.</string>
+<string name="forecast">5-Tage-Vorhersage</string>
 <string name="handle_power_ac">einem Ladegerät</string>
 <string name="handle_power">Autostart</string>
 <string name="handle_power_car">Dock (Auto)</string>
@@ -160,7 +161,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="uninstall">Anwendung deinstallieren</string>
 <string name="use_internal_alarm">Schnellalarm</string>
 <string name="useDeviceLock">Gerät sperren</string>
-<string name="useDeviceLockExplanation">Gerät sperren während die Nachtuhr aktiv ist.</string>
+<string name="useDeviceLockDescription">Diese Funktion benötigt die Berechtigung als Geräteadministrator. Falls Sie die App deinstallieren möchten, muss diese Funktion deaktiviert werden.</string>
+<string name="useDeviceLockExplanation">Gerät sperren während die Nachtuhr aktiv ist. Falls Sie die App deinstallieren möchten, muss diese Berechtigung zuvor entzogen werden.</string>
 <string name="weather_calculation_time">Zeit der Wetterdatenberechnung</string>
 <string name="weather_city_id_summary">Frei lassen zur automatischen Standortbestimmung.</string>
 <string name="weather_city_id_title">Standort suchen</string>
@@ -174,5 +176,4 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Einstellungen</string>
 <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
 <string name="welcome_screen_title4">Größe</string>
-<string name="forecast">5-Tage-Vorhersage</string>
 </resources>
