@@ -52,7 +52,11 @@ public class WeatherForecastLayout extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater)
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View child = inflater.inflate(R.layout.weather_forecast_layout, null);
-        addView(child);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                       );
+        addView(child, lp);
 
         timeView = (TextView) findViewById(R.id.timeView);
         iconText = (TextView) findViewById(R.id.iconText);
