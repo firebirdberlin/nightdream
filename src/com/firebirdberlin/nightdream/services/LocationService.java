@@ -77,8 +77,14 @@ public class LocationService extends Service {
 
             if ( isLocationEnabled() ) {
                 Log.i(TAG, "Requesting network locations");
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-                setTimeout(60000);
+                try {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                    setTimeout(60000);
+                } catch (IllegalArgumentException e) {
+                    //java.lang.IllegalArgumentException: provider doesn't exist: network
+                    LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
+                    stopSelf();
+                }
             } else {
                 LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
                 stopSelf();

@@ -2,44 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:baselineAligned="false"
     android:paddingBottom="10dp"
     android:paddingLeft="5dp"
     android:paddingStart="5dp"
     android:paddingTop="5sp"
-    android:visibility="visible">
+    android:visibility="visible"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/timeView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|start"
-        android:gravity="top|start"
+        android:layout_weight="1"
         android:text="TimeView"
+        android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/iconText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:ellipsize="none"
-        android:maxLines="1"
-        android:paddingLeft="5dp"
-        android:text="m"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-        android:textSize="55sp" />
 
     <GridLayout
 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="2"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:columnCount="3"
         android:orientation="horizontal"
-
+        android:rowCount="2"
         android:useDefaultMargins="true">
+
+        <TextView
+            android:id="@+id/iconText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_rowSpan="2"
+            android:layout_weight="1"
+            android:ellipsize="none"
+            android:maxLines="1"
+            android:text="m"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+            android:textSize="55sp" />
 
         <TextView
             android:id="@+id/temperatureText"
@@ -103,7 +105,7 @@
 
             <TextView
                 android:id="@+id/cloudText"
-                android:layout_width="60sp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
                 android:maxLines="1"
