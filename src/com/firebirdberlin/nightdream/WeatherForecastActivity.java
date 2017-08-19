@@ -53,6 +53,9 @@ public class WeatherForecastActivity extends Activity
         scrollView.removeAllViews();
         Settings settings = new Settings(this);
 
+        String timeFormat = settings.getTimeFormat();
+        if ( !is24HourFormat() ) timeFormat += " a";
+
         if (entries.size() > 0 ) {
             WeatherEntry firstEntry = entries.get(0);
             actionBarSetup(firstEntry.cityName);
@@ -80,7 +83,7 @@ public class WeatherForecastActivity extends Activity
             }
 
             WeatherForecastLayout layout = new WeatherForecastLayout(this);
-            layout.setTimeFormat(settings.getTimeFormat());
+            layout.setTimeFormat(timeFormat);
             layout.setTemperature(true, settings.temperatureUnit);
             layout.setWindSpeed(true, settings.speedUnit);
             layout.update(entry);
@@ -97,5 +100,9 @@ public class WeatherForecastActivity extends Activity
         } else {
             setTitle(R.string.forecast);
         }
+    }
+
+    private boolean is24HourFormat() {
+        return android.text.format.DateFormat.is24HourFormat(this);
     }
 }
