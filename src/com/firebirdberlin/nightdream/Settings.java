@@ -83,6 +83,8 @@ public class Settings {
     public int temperatureUnit = WeatherEntry.CELSIUS;
     public int speedUnit = WeatherEntry.METERS_PER_SECOND;
     public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    public int autostartTimeRangeStartInMinutes = -1;
+    public int autostartTimeRangeEndInMinutes = -1;
     public long autostartTimeRangeStart = -1L;
     public long autostartTimeRangeEnd = -1L;
     public long nightModeTimeRangeStart = -1L;
@@ -134,8 +136,10 @@ public class Settings {
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
-        autostartTimeRangeStart = settings.getLong("autostart_time_range_start", autostartTimeRangeStart);
-        autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", autostartTimeRangeEnd);
+        autostartTimeRangeStartInMinutes = settings.getInt("autostart_time_range_start_minutes", -1);
+        autostartTimeRangeEndInMinutes = settings.getInt("autostart_time_range_end_minutes", -1);
+        autostartTimeRangeStart = settings.getLong("autostart_time_range_start", -1L); // deprecated
+        autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", -1L); // deprecated
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
         handle_power = settings.getBoolean("handle_power", false);

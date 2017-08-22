@@ -1,3 +1,4 @@
+
 package com.firebirdberlin.nightdream.receivers;
 
 import android.app.AlarmManager;
@@ -30,8 +31,18 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         Calendar now = new GregorianCalendar();
-        Calendar start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
-        Calendar end = new SimpleTime(settings.autostartTimeRangeEnd).getCalendar();
+        Calendar start;
+        Calendar end;
+        if (settings.autostartTimeRangeStartInMinutes > -1) {
+            start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
+        } else { // deprecated
+            start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
+        }
+        if (settings.autostartTimeRangeEndInMinutes > -1) {
+            end = new SimpleTime(settings.autostartTimeRangeEndInMinutes).getCalendar();
+        } else { // deprecated
+            end = new SimpleTime(settings.autostartTimeRangeEnd).getCalendar();
+        }
 
         boolean shall_auto_start = true;
         if (end.before(start)){
