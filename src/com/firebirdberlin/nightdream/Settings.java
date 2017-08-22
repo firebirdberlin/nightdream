@@ -85,10 +85,13 @@ public class Settings {
     public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     public int autostartTimeRangeStartInMinutes = -1;
     public int autostartTimeRangeEndInMinutes = -1;
-    public long autostartTimeRangeStart = -1L;
-    public long autostartTimeRangeEnd = -1L;
-    public long nightModeTimeRangeStart = -1L;
-    public long nightModeTimeRangeEnd = -1L;
+    public int nightModeTimeRangeStartInMinutes = -1;
+    public int nightModeTimeRangeEndInMinutes = -1;
+
+    public long autostartTimeRangeStart = -1L; // deprecated
+    public long autostartTimeRangeEnd = -1L; // deprecated
+    public long nightModeTimeRangeStart = -1L; // deprecated
+    public long nightModeTimeRangeEnd = -1L; // deprecated
     public long nextAlarmTime = 0L;
     public long lastReviewRequestTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
@@ -166,8 +169,10 @@ public class Settings {
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         nightModeBrightness = settings.getFloat("nightModeBrightness", nightModeBrightness);
         maxBrightness = 0.01f * settings.getInt("maxBrightness", 100);
-        nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", nightModeTimeRangeStart);
-        nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", nightModeTimeRangeEnd);
+        nightModeTimeRangeStartInMinutes = settings.getLong("nightmode_timerange_start_minutes", -1);
+        nightModeTimeRangeEndInMinutes = settings.getLong("nightmode_timerange_end_mintes", -1);
+        nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", -1L); // deprecated
+        nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", -1L); // deprecated
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         radioStreamURL = settings.getString("radioStreamURL", "");
         radioStreamURLUI = settings.getString("radioStreamURLUI", "");
