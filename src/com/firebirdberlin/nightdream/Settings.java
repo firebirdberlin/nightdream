@@ -169,8 +169,8 @@ public class Settings {
         nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
         nightModeBrightness = settings.getFloat("nightModeBrightness", nightModeBrightness);
         maxBrightness = 0.01f * settings.getInt("maxBrightness", 100);
-        nightModeTimeRangeStartInMinutes = settings.getLong("nightmode_timerange_start_minutes", -1);
-        nightModeTimeRangeEndInMinutes = settings.getLong("nightmode_timerange_end_mintes", -1);
+        nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
+        nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_mintes", -1);
         nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", -1L); // deprecated
         nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", -1L); // deprecated
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
