@@ -3,7 +3,7 @@
 -->
 
 <FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res/com.firebirdberlin.nightdream"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -47,16 +47,19 @@
 
             <com.firebirdberlin.nightdream.BatteryIconView
                 android:id="@+id/batteryIconView"
-                android:layout_width="match_parent"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                />
+
+            <com.firebirdberlin.nightdream.ui.BatteryView
+                android:id="@+id/batteryView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="monospace"
                 android:textColor="#C2C2C2"
                 android:text=""
                 android:singleLine="true"
                 android:ellipsize="marquee"
-                android:textSize="20sp"
-                />
-
+                android:textSize="20sp"/>
         </LinearLayout>
 
     </LinearLayout>

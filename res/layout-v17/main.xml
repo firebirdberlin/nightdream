@@ -43,6 +43,8 @@
                     android:id="@+id/batteryIconView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:fontFamily="monospace"
                     android:textColor="#C2C2C2"
                     android:text=""

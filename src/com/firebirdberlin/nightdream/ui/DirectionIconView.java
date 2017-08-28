@@ -64,7 +64,8 @@ public class DirectionIconView extends View {
         height = heigthWithoutPadding;
         Log.i(TAG, "onMeasure " + String.valueOf(height) + " " + String.valueOf(getHeight()) );
 
-        setMeasuredDimension(height + getPaddingLeft() + getPaddingRight(), height + getPaddingTop() + getPaddingBottom());
+        setMeasuredDimension(height + getPaddingLeft() + getPaddingRight(),
+                height + getPaddingTop() + getPaddingBottom());
     }
 
     public void setDirection(float direction) {
