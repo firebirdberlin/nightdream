@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 import android.util.Log;
@@ -51,7 +52,9 @@ public class BatteryIconView extends View {
 
         //init text view layout
         batteryTextLayout = new LinearLayout(context); //delegates attributes to text subview
+        //todo: clone attrs, remove padding left/right
         batteryTextView = new TextView(context, attrs);
+        batteryTextView.setPadding(0, 0, 0, 0); // no padding for sub view
         batteryTextView.setVisibility(View.VISIBLE);
         batteryTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         batteryTextLayout.addView(batteryTextView);
@@ -102,25 +105,18 @@ public class BatteryIconView extends View {
         batteryTextLayout.measure(widthMeasureSpec, heightMeasureSpec);
 
         final float aspectRatio = 0.35f;
-        //final float aspectRatio = 0.5f;
-        //batteryIconHeight = batteryTextLayout.getMeasuredHeight();
 
-        Paint.FontMetrics fm = batteryTextView.getPaint().getFontMetrics();
-
-        //batteryIconHeight = (int) (fm.descent - fm.ascent);
-        //batteryIconHeight = (int) -fm.ascent;
+        final Paint.FontMetrics fm = batteryTextView.getPaint().getFontMetrics();
         batteryIconHeight = (fm.bottom - fm.ascent); // (fm.top decreases upwards and is negative)
-        //batteryIconHeight = (int) batteryTextView.getPaint().getTextSize();
         batteryIconWidth =  (aspectRatio * batteryIconHeight);
 
         // round to nearest even number
         batteryIconWidth = Utility.getNearestEvenIntValue(batteryIconWidth);
 
-        final int marginRight = 3;
-        batteryTextOffsetX = batteryIconWidth + marginRight;
+        batteryTextOffsetX = batteryIconWidth + getPaddingLeft() + getPaddingRight();
         final int measuredWidth = (int) (batteryTextLayout.getMeasuredWidth() + batteryTextOffsetX);
 
-        setMeasuredDimension(measuredWidth, batteryTextLayout.getMeasuredHeight());
+        setMeasuredDimension(measuredWidth, batteryTextLayout.getMeasuredHeight()) ;
     }
 
     @Override
@@ -150,35 +146,72 @@ public class BatteryIconView extends View {
     private void drawBatteryIcon(Canvas canvas) {
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setColorFilter(colorFilter);
-        paint.setColor(Color.WHITE);
+
         paint.setAlpha(255);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3.f);
 
-        //int top = (int) (0.15 * batteryIconHeight);
-        Paint.FontMetrics fm = batteryTextView.getPaint().getFontMetrics();
-        //int top = (int) (batteryIconHeight - fm.bottom);
-        //int main_height = batteryIconHeight - top;
-        //int main_height = batteryIconHeight;
-        //canvas.drawRect((int) (0.5 * batteryIconWidth - 0.1 * batteryIconWidth), 0, (int) (0.5 * batteryIconWidth + 0.1 * batteryIconWidth), top, paint);
-        //canvas.drawRect(0, top, batteryIconWidth, main_height, paint);
+        final Paint.FontMetrics fm = batteryTextView.getPaint().getFontMetrics();
+        final float iconBottom = canvas.getHeight() - fm.bottom; // baseline
+        final float iconTop = canvas.getHeight() - (-fm.ascent); // upper y (fm.top decreases upwards)
+        final float iconHeight = iconBottom - iconTop;
 
-        //metrics
-        float iconBottom = canvas.getHeight() - fm.bottom; // baseline
-        //canvas.drawLine(0, yTextBaseline, 10, yTextBaseline, paint);
-        float iconTop = canvas.getHeight() - (-fm.ascent); // upper y (fm.top decreases upwards)
-        float iconHeight = iconBottom - iconTop;
 
-        //canvas.drawLine(0, yTextTop, 10, yTextTop, paint);
-
-        canvas.drawRect(0, iconTop, batteryIconWidth, iconBottom, paint);
-        // draw pluspol
-        canvas.drawRect((int) (0.5 * batteryIconWidth - 0.1 * batteryIconWidth), iconTop - (0.1f * batteryIconHeight), (int) (0.5 * batteryIconWidth + 0.1 * batteryIconWidth), iconTop, paint);
-
+        // if charging, fill with gray color and draw lightning symbol over it
+        if (batteryValue.isCharging) {
+            //paint.setColor(Color.DKGRAY);
+            paint.setColor(Color.GRAY);
+        }
         paint.setStyle(Paint.Style.FILL);
 
-        int filled = (int) (batteryValue.levelNormalized * iconHeight);
-        canvas.drawRect(0, iconBottom - filled, batteryIconWidth, iconBottom, paint);
+        // fill part of the rect to visualize battery level
+        final int filled = (int) (batteryValue.levelNormalized * iconHeight);
+        canvas.drawRect(getPaddingLeft(), iconBottom - filled, getPaddingLeft() + batteryIconWidth, iconBottom, paint);
+
+        // draw battery border
+        paint.setStyle(Paint.Style.STROKE);
+        if (batteryValue.levelNormalized < 0.1 && !batteryValue.isCharging) {
+            paint.setColor(Color.RED);
+        } else {
+            paint.setColor(Color.WHITE);
+        }
+        canvas.drawRect(getPaddingLeft(), iconTop, getPaddingLeft() + batteryIconWidth, iconBottom, paint);
+
+        final int poleDistance = (int)batteryIconWidth / 3;
+        final float poleLeft = getPaddingLeft() + poleDistance;
+        final float poleRight = getPaddingLeft() + (int)batteryIconWidth - poleDistance;
+        final float poleTop = iconTop - (0.1f * batteryIconHeight);
+        final float poleBottom = iconTop;
+
+        // draw pluspol
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        canvas.drawRect(poleLeft, poleTop, poleRight, poleBottom, paint);
+
+        // if charging, draw lightning symbol using paths
+        if (batteryValue.isCharging) {
+            // draw stroke using a path
+            final float iconLeft = getPaddingLeft();
+            paint.setStyle(Paint.Style.STROKE);
+            // upper part of stroke (nearly a parallelogram)
+            Path p = new Path();
+            p.moveTo(iconLeft + 0.4f * batteryIconWidth, iconTop + 0.1f * batteryIconHeight);
+            p.lineTo(iconLeft + 0.6f * batteryIconWidth, iconTop + 0.1f * batteryIconHeight);
+            p.lineTo(iconLeft + 0.45f * batteryIconWidth, iconTop + 0.25f * batteryIconHeight);
+            p.lineTo(iconLeft + 0.3f * batteryIconWidth, iconTop + 0.25f * batteryIconHeight);
+            p.lineTo(iconLeft + 0.4f * batteryIconWidth, iconTop + 0.1f * batteryIconHeight);
+            canvas.drawPath(p, paint);
+
+            // lower part (a triangle)
+            p = new Path();
+            float lowerOffsetTop = 0.15f;
+            float lowerOffsetLeft = 0.05f;
+            p.moveTo(iconLeft + (0.4f + lowerOffsetLeft) * batteryIconWidth, iconTop + (0.1f + lowerOffsetTop) * batteryIconHeight);
+            p.lineTo(iconLeft + (0.6f + lowerOffsetLeft) * batteryIconWidth, iconTop + (0.1f + lowerOffsetTop) * batteryIconHeight);
+            p.lineTo(iconLeft + (0.3f + lowerOffsetLeft) * batteryIconWidth, iconTop + (0.3f + lowerOffsetTop) * batteryIconHeight);
+            p.lineTo(iconLeft + (0.4f + lowerOffsetLeft) * batteryIconWidth, iconTop + (0.1f + lowerOffsetTop) * batteryIconHeight);
+            canvas.drawPath(p, paint);
+        }
+
     }
 
     private void drawBatteryTextView(Canvas canvas) {
