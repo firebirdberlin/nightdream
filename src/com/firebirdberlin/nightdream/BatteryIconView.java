@@ -11,8 +11,8 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.view.View;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,7 +42,6 @@ public class BatteryIconView extends View {
         super(context, attrs);
 
         settings = new Settings(context);
-
         init(context, attrs);
     }
 
@@ -52,13 +51,13 @@ public class BatteryIconView extends View {
 
         //init text view layout
         batteryTextLayout = new LinearLayout(context); //delegates attributes to text subview
-        //todo: clone attrs, remove padding left/right
         batteryTextView = new TextView(context, attrs);
         batteryTextView.setPadding(0, 0, 0, 0); // no padding for sub view
-        batteryTextView.setVisibility(View.VISIBLE);
-        batteryTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        batteryTextView.setTextColor(customcolor);
+        batteryTextView.setLayoutParams(
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
         batteryTextLayout.addView(batteryTextView);
-
     }
 
     @Override
@@ -81,21 +80,10 @@ public class BatteryIconView extends View {
         context.registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
-    class BatteryReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            BatteryStats batteryStats = new BatteryStats(context, intent);
-            batteryValue = batteryStats.getBatteryValue();
-            updateBatteryViewText();
-
-            Log.i(TAG, String.format("battery level: %d, scale: %d, percent: %f", batteryValue.level, batteryValue.scale, batteryValue.getPercentage()));
-        }
-    }
-
     public void setColor(int color) {
         customcolor = color;
         colorFilter = new LightingColorFilter(customcolor, 1);
+        batteryTextView.setTextColor(customcolor);
         invalidate();
     }
 
@@ -105,17 +93,13 @@ public class BatteryIconView extends View {
         batteryTextLayout.measure(widthMeasureSpec, heightMeasureSpec);
 
         final float aspectRatio = 0.35f;
-
         final Paint.FontMetrics fm = batteryTextView.getPaint().getFontMetrics();
-        batteryIconHeight = (fm.bottom - fm.ascent); // (fm.top decreases upwards and is negative)
-        batteryIconWidth =  (aspectRatio * batteryIconHeight);
 
-        // round to nearest even number
-        batteryIconWidth = Utility.getNearestEvenIntValue(batteryIconWidth);
+        batteryIconHeight = (fm.bottom - fm.ascent); // (fm.top decreases upwards and is negative)
+        batteryIconWidth = Utility.getNearestEvenIntValue((aspectRatio * batteryIconHeight));
 
         batteryTextOffsetX = batteryIconWidth + getPaddingLeft() + getPaddingRight();
         final int measuredWidth = (int) (batteryTextLayout.getMeasuredWidth() + batteryTextOffsetX);
-
         setMeasuredDimension(measuredWidth, batteryTextLayout.getMeasuredHeight()) ;
     }
 
@@ -123,7 +107,7 @@ public class BatteryIconView extends View {
     public void onDraw(Canvas canvas) {
 
         if (batteryValue == null) {
-                return;
+            return;
         }
 
         drawBatteryIcon(canvas);
@@ -138,9 +122,8 @@ public class BatteryIconView extends View {
         }
 
         if (! batteryValue.isCharging ) return false;
-        if ( batteryValue.getPercentage() >= VALUE_FULLY_CHARGED ) return false;
+        return batteryValue.getPercentage() < VALUE_FULLY_CHARGED;
 
-        return true;
     }
 
     private void drawBatteryIcon(Canvas canvas) {
@@ -156,36 +139,25 @@ public class BatteryIconView extends View {
         final float iconTop = canvas.getHeight() - (-fm.ascent); // upper y (fm.top decreases upwards)
         final float iconHeight = iconBottom - iconTop;
 
-
-        // if charging, fill with gray color and draw lightning symbol over it
-        if (batteryValue.isCharging) {
-            //paint.setColor(Color.DKGRAY);
-            paint.setColor(Color.GRAY);
-        }
-        paint.setStyle(Paint.Style.FILL);
-
         // fill part of the rect to visualize battery level
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor((batteryValue.isCharging) ? Color.GRAY : Color.WHITE);
         final int filled = (int) (batteryValue.levelNormalized * iconHeight);
         canvas.drawRect(getPaddingLeft(), iconBottom - filled, getPaddingLeft() + batteryIconWidth, iconBottom, paint);
 
         // draw battery border
         paint.setStyle(Paint.Style.STROKE);
-        if (batteryValue.levelNormalized < 0.1 && !batteryValue.isCharging) {
-            paint.setColor(Color.RED);
-        } else {
-            paint.setColor(Color.WHITE);
-        }
+        paint.setColor(Color.WHITE);
         canvas.drawRect(getPaddingLeft(), iconTop, getPaddingLeft() + batteryIconWidth, iconBottom, paint);
 
-        final int poleDistance = (int)batteryIconWidth / 3;
+        // draw positive pole
+        final int poleDistance = (int) batteryIconWidth / 3;
         final float poleLeft = getPaddingLeft() + poleDistance;
         final float poleRight = getPaddingLeft() + (int)batteryIconWidth - poleDistance;
         final float poleTop = iconTop - (0.1f * batteryIconHeight);
-        final float poleBottom = iconTop;
 
-        // draw pluspol
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        canvas.drawRect(poleLeft, poleTop, poleRight, poleBottom, paint);
+        canvas.drawRect(poleLeft, poleTop, poleRight, iconTop, paint);
 
         // if charging, draw lightning symbol using paths
         if (batteryValue.isCharging) {
@@ -211,11 +183,11 @@ public class BatteryIconView extends View {
             p.lineTo(iconLeft + (0.4f + lowerOffsetLeft) * batteryIconWidth, iconTop + (0.1f + lowerOffsetTop) * batteryIconHeight);
             canvas.drawPath(p, paint);
         }
-
     }
 
     private void drawBatteryTextView(Canvas canvas) {
         batteryTextLayout.layout(0, 0, canvas.getWidth(), canvas.getHeight());
+
         // move text view behind batterie icon
         canvas.translate(batteryTextOffsetX, 0);
         batteryTextLayout.draw(canvas);
@@ -233,8 +205,7 @@ public class BatteryIconView extends View {
 
         if (batteryValue.isCharging) {
             if (percentage < VALUE_FULLY_CHARGED){
-                //long est = batteryValue.getEstimateMillis(reference)/1000; // estimated seconds
-                long est = 300;
+                long est = batteryValue.getEstimateMillis(reference) / 1000; // estimated seconds
                 estimate_string = formatEstimate(est);
             }
         } else { // not charging
@@ -242,12 +213,14 @@ public class BatteryIconView extends View {
             estimate_string = formatEstimate(est);
         }
 
-        batteryTextView.setText(percentage_string + estimate_string);
+        batteryTextView.setText(String.format("%s%s", percentage_string, estimate_string));
+        requestLayout();
+        batteryTextView.invalidate();
         invalidate();
     }
 
     private String formatEstimate(long est) {
-        Log.i(TAG, String.valueOf(est));
+        Log.i(TAG, String.format("estimate in millis: %d", est));
         if (est > 0){
             long h = est / 3600;
             long m  = ( est % 3600 ) / 60;
@@ -263,5 +236,19 @@ public class BatteryIconView extends View {
             return String.format(" (%s%s%s)", hour, min, context.getString(R.string.remaining));
         }
         return "";
+    }
+
+    class BatteryReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            BatteryStats batteryStats = new BatteryStats(context, intent);
+            batteryValue = batteryStats.getBatteryValue();
+
+            updateBatteryViewText();
+
+            Log.i(TAG, String.format("battery level: %d, scale: %d, percent: %f", batteryValue.level, batteryValue.scale, batteryValue.getPercentage()));
+
+        }
     }
 }
