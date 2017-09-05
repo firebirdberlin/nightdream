@@ -10,16 +10,27 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.DockState;
 
 public class BatteryStats {
-    Context mContext;
+    private final Context mContext;
+    private final Intent receivedBatteryIntent;
     public BatteryValue reference = null;
 
+    /** use this to retrieve battery values using a sticky intent ACTION_BATTERY_CHANGED  */
     public BatteryStats(Context context){
         this.mContext = context;
+        this.receivedBatteryIntent = null;
+        reference = getBatteryValue();
+    }
+
+    /** use this to retrieve battery values from a real ACTION_BATTERY_CHANGED receiver */
+    public BatteryStats(Context context, Intent receivedBatteryIntent){
+        this.mContext = context;
+        this.receivedBatteryIntent = receivedBatteryIntent;
         reference = getBatteryValue();
     }
 
     public BatteryValue getBatteryValue() {
-        Intent batteryIntent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        final Intent batteryIntent = receivedBatteryIntent != null ?
+                                    receivedBatteryIntent : mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);

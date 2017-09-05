@@ -246,6 +246,14 @@ public class Utility {
 
     public static int dpToPx(Context context, float dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                                               context.getResources().getDisplayMetrics());
+                context.getResources().getDisplayMetrics());
+    }
+
+    public static int getNearestEvenIntValue(float value) {
+        int r = (int)Math.ceil(value);
+        if (r % 2 != 0) {
+            r = (int)Math.floor(value);
+        }
+        return r;
     }
 }
