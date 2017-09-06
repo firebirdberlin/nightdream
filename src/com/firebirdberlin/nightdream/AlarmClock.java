@@ -23,15 +23,14 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TimePicker;
-import java.lang.Math;
+
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-
-import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.models.SimpleTime;
-import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
@@ -39,10 +38,13 @@ import static android.text.format.DateFormat.is24HourFormat;
 
 public class AlarmClock extends View {
     private static String TAG ="NightDream.AlarmClock";
-    private static enum Position { LEFT, RIGHT }
-
     final private Handler handler = new Handler();
     public boolean isVisible = false;
+    public int touch_zone_radius = 150;
+    public int quiet_zone_size = 60;
+    SimpleTime time;
+    GestureDetector mGestureDetector = null;
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
     private boolean locked = false;
     private boolean FingerDown;
     private boolean userChangesAlarmTime = false;
@@ -51,49 +53,30 @@ public class AlarmClock extends View {
     private int customcolor = Color.parseColor("#33B5E5");
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
     private int display_height;
-    SimpleTime time;
     private int w;
     private Paint paint = new Paint();
     private Settings settings = null;
-    public int touch_zone_radius = 150;
-    public int quiet_zone_size = 60;
     private ColorFilter customColorFilter;
     private ColorFilter customColorFilterImage;
     private ColorFilter secondaryColorFilter;
     private HotCorner cornerLeft;
     private HotCorner cornerRight;
     private boolean blinkStateOn = false;
-    private Float lastMoveEventY = null;
-    private int lastMinSinceDragStart = 0;
-    GestureDetector mGestureDetector = null;
-    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
-
-    class LocalSimpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.w(TAG, "single tap");
-
-            Point click = getClickedPoint(e);
-            if (cornerLeft.isInside(click)) {
-                TimePickerDialog mTimePicker;
-                int hour = (isAlarmSet()) ? time.hour : 7;
-                int min = (isAlarmSet()) ? time.min : 0;
-
-                mTimePicker = new TimePickerDialog(ctx, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        time.hour = selectedHour;
-                        time.min = selectedMinute;
-                        setAlarm();
-                        invalidate();
-                    }
-                }, hour, min, Utility.is24HourFormat(ctx));
-                mTimePicker.show();
-                return true;
+    Runnable blink = new Runnable() {
+        public void run() {
+            handler.removeCallbacks(blink);
+            if (alarmIsRunning()) {
+                blinkStateOn = !blinkStateOn;
+                invalidate();
+                handler.postDelayed(blink, 1000);
+            } else {
+                blinkStateOn = false;
+                invalidate();
             }
-            return false;
         }
     };
+    private Float lastMoveEventY = null;
+    private int lastMinSinceDragStart = 0;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -112,7 +95,8 @@ public class AlarmClock extends View {
 
     public void setSettings(Settings s) {
         settings = s;
-        time = new SimpleTime(s.nextAlarmTime);
+        time = new SimpleTime(s.nextAlarmTimeMinutes);
+        Log.d(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
     }
 
     public void setCustomColor(int primary, int secondary) {
@@ -152,8 +136,7 @@ public class AlarmClock extends View {
         if (eventCancelAlarm) return true;
 
         boolean eventAlarmSet = handleAlarmSetEvents(e);
-        if (eventAlarmSet) return true;
-        return false;
+        return eventAlarmSet;
     }
 
     private boolean handleAlarmSetEvents(MotionEvent e) {
@@ -220,7 +203,7 @@ public class AlarmClock extends View {
                 }
                 return false;
             case MotionEvent.ACTION_UP:
-                if (FingerDownDeleteAlarm == true) {
+                if (FingerDownDeleteAlarm) {
                     FingerDownDeleteAlarm = false;
                     stopAlarm();
                     ctx.sendBroadcast( new Intent(Config.ACTION_ALARM_DELETED) );
@@ -235,7 +218,7 @@ public class AlarmClock extends View {
         int w = getWidth() - 2 * touch_zone_radius;
         int h = new Utility(ctx).getDisplaySize().y - 2 * touch_zone_radius;
 
-        final boolean movingDown = (lastMoveEventY != null && y > lastMoveEventY.floatValue());
+        final boolean movingDown = (lastMoveEventY != null && y > lastMoveEventY);
 
         x -= touch_zone_radius;
         x = (x < 0) ? 0 : x;
@@ -335,20 +318,6 @@ public class AlarmClock extends View {
         }
     }
 
-    Runnable blink = new Runnable() {
-        public void run() {
-            handler.removeCallbacks(blink);
-            if (alarmIsRunning()) {
-                blinkStateOn = !blinkStateOn;
-                invalidate();
-                handler.postDelayed(blink, 1000);
-            } else {
-                blinkStateOn = false;
-                invalidate();
-            }
-        }
-    };
-
     private String getTimeFormatted(Calendar calendar) {
         String localPattern  = "";
         if (Build.VERSION.SDK_INT >= 18){
@@ -367,7 +336,7 @@ public class AlarmClock extends View {
     }
 
     public boolean isAlarmSet() {
-        return (settings.nextAlarmTime > 0L);
+        return (settings.nextAlarmTimeMinutes > 0L);
     }
 
     public void stopAlarm(){
@@ -383,20 +352,20 @@ public class AlarmClock extends View {
     }
 
     private void setAlarm() {
-        setAlarm(time.getMillis());
+        setAlarm(time.toMinutes());
     }
 
-    private void setAlarm(long alarmTimeInMillis) {
+    private void setAlarm(int alarmTimeMinutes) {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
-        settings.nextAlarmTime = alarmTimeInMillis;
-        AlarmHandlerService.set(ctx, alarmTimeInMillis);
+        settings.nextAlarmTimeMinutes = alarmTimeMinutes;
+        AlarmHandlerService.set(ctx, alarmTimeMinutes);
     }
 
     public void cancelAlarm(){
-        if (settings.nextAlarmTime > 0L) {
+        if (settings.nextAlarmTimeMinutes > 0) {
             AlarmHandlerService.cancel(ctx);
-            settings.nextAlarmTime = 0L;
+            settings.nextAlarmTimeMinutes = 0;
         }
     }
 
@@ -419,6 +388,35 @@ public class AlarmClock extends View {
          return android.provider.Settings.System.getString(
                  ctx.getContentResolver(),
                  android.provider.Settings.System.NEXT_ALARM_FORMATTED);
+    }
+
+    private enum Position {LEFT, RIGHT}
+
+    class LocalSimpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            Log.w(TAG, "single tap");
+
+            Point click = getClickedPoint(e);
+            if (cornerLeft.isInside(click)) {
+                TimePickerDialog mTimePicker;
+                int hour = (isAlarmSet()) ? time.hour : 7;
+                int min = (isAlarmSet()) ? time.min : 0;
+
+                mTimePicker = new TimePickerDialog(ctx, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        time.hour = selectedHour;
+                        time.min = selectedMinute;
+                        setAlarm();
+                        invalidate();
+                    }
+                }, hour, min, Utility.is24HourFormat(ctx));
+                mTimePicker.show();
+                return true;
+            }
+            return false;
+        }
     }
 
     class HotCorner {

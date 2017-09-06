@@ -1473,20 +1473,17 @@ public class NightDreamUI {
                 if (showcaseView != null) showcaseView.hide();
                 setupShowcaseForAlarmDeletion();
                 if (intent.hasExtra("alarmTime")) {
-                    settings.nextAlarmTime = intent.getLongExtra("alarmTime", 0L);
-                    Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
+                    settings.updateNextAlarmTime();
                     alarmClock.setSettings(settings);
                     alarmClock.invalidate();
                 }
             } else if (Config.ACTION_ALARM_STOPPED.equals(action)) {
                 settings.updateNextAlarmTime();
-                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
                 alarmClock.setSettings(settings);
                 alarmClock.invalidate();
             } else if (Config.ACTION_ALARM_DELETED.equals(action)) {
                 if (showcaseView != null) showcaseView.hide();
                 settings.updateNextAlarmTime();
-                Log.w(TAG, String.format("alarm time: %d", settings.nextAlarmTime));
                 alarmClock.setSettings(settings);
                 alarmClock.invalidate();
             }

@@ -54,8 +54,8 @@
 
         <receiver
             android:name=".AdminReceiver"
-            android:permission="android.permission.BIND_DEVICE_ADMIN"
-            android:description="@string/useDeviceLockExplanation">
+            android:description="@string/useDeviceLockExplanation"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
@@ -154,6 +154,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 

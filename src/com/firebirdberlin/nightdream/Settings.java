@@ -15,6 +15,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.DateFormat;
@@ -92,7 +93,7 @@ public class Settings {
     public long autostartTimeRangeEnd = -1L; // deprecated
     public long nightModeTimeRangeStart = -1L; // deprecated
     public long nightModeTimeRangeEnd = -1L; // deprecated
-    public long nextAlarmTime = 0L;
+    public int nextAlarmTimeMinutes = 0;
     public long lastReviewRequestTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
     public String AlarmToneUri = "";
@@ -166,7 +167,8 @@ public class Settings {
         location_provider = settings.getString("location_provider", LocationManager.NETWORK_PROVIDER);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
         muteRinger = settings.getBoolean("Night.muteRinger", false);
-        nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
+
+        initNextAlarmTime();
         nightModeBrightness = settings.getFloat("nightModeBrightness", nightModeBrightness);
         maxBrightness = 0.01f * settings.getInt("maxBrightness", 100);
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
@@ -331,21 +333,30 @@ public class Settings {
         prefEditor.commit();
     }
 
+    private void initNextAlarmTime() {
+        long nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
+        nextAlarmTimeMinutes = 0;
+        if (nextAlarmTime > 0L) {
+            nextAlarmTimeMinutes = new SimpleTime(nextAlarmTime).toMinutes();
+        } else {
+            nextAlarmTimeMinutes = settings.getInt("nextAlarmTimeMinutes", 0);
+        }
+    }
+
     public void updateNextAlarmTime() {
-        nextAlarmTime = settings.getLong("nextAlarmTime", 0L);
+        initNextAlarmTime();
     }
 
     public Calendar getAlarmTime() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(nextAlarmTime);
-        return calendar;
+        return new SimpleTime(nextAlarmTimeMinutes).getCalendar();
     }
 
-    public void setAlarmTime(long alarmTime) {
-        nextAlarmTime = alarmTime;
+    public void setAlarmTime(int alarmTimeMinutes) {
+        nextAlarmTimeMinutes = alarmTimeMinutes;
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlarmTime", alarmTime);
-        prefEditor.commit();
+        prefEditor.putLong("nextAlarmTime", 0L); // deprecated
+        prefEditor.putInt("nextAlarmTimeMinutes", alarmTimeMinutes);
+        prefEditor.apply();
     }
 
     public void setBackgroundImage(String uri) {

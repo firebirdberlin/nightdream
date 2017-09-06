@@ -1,31 +1,72 @@
 package com.firebirdberlin.nightdream.receivers;
 
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.os.Build;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.Utility;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WakeUpReceiver extends BroadcastReceiver {
-
+    private final static String TAG = "WakeUpReceiver";
     private Settings settings;
+
+    public static void schedule(Context context) {
+        Settings settings = new Settings(context);
+        if (settings.nextAlarmTimeMinutes == 0) return;
+        setAlarm(context, settings.nextAlarmTimeMinutes);
+    }
+
+    public static void cancelAlarm(Context context) {
+        PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
+        AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
+        am.cancel(pI);
+    }
+
+    public static PendingIntent getPendingIntent(Context context) {
+        Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
+        intent.putExtra("action", "start alarm");
+        //return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
+        // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
+        // already cancelled alarm times afterwards.
+        return PendingIntent.getBroadcast(context, 0, intent, 0);
+    }
+
+    private static void setAlarm(Context context, int nextAlarmTimeMinutes) {
+        PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(pI);
+
+        long nextAlarmTime = new SimpleTime(nextAlarmTimeMinutes).getMillis();
+        if (Build.VERSION.SDK_INT >= 21) {
+            AlarmManager.AlarmClockInfo info =
+                    new AlarmManager.AlarmClockInfo(nextAlarmTime, pI);
+            am.setAlarmClock(info, pI);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            am.setExact(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI);
+        } else {
+            am.set(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI);
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         settings = new Settings(context);
@@ -84,7 +125,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
         Notification notification = note.build();
         NotificationManager notificationManager =
-            (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(Config.NOTIFICATION_ID_DISMISS_ALARMS, notification);
 
         return notification;
@@ -98,43 +139,5 @@ public class WakeUpReceiver extends BroadcastReceiver {
     private String dateAsString(String format, Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
-    }
-
-    public static void schedule(Context context) {
-        Settings settings = new Settings(context);
-        if (settings.nextAlarmTime == 0L) return;
-        setAlarm(context, settings.nextAlarmTime);
-    }
-
-    public static void cancelAlarm(Context context) {
-        PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
-        AlarmManager am = (AlarmManager) (context.getSystemService( Context.ALARM_SERVICE ));
-        am.cancel(pI);
-    }
-
-    public static PendingIntent getPendingIntent(Context context) {
-        Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
-        intent.putExtra("action", "start alarm");
-        //return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
-        // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
-        // already cancelled alarm times afterwards.
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
-    }
-
-    private static void setAlarm(Context context, long nextAlarmTime) {
-        PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.cancel(pI);
-        if (Build.VERSION.SDK_INT >= 21) {
-            AlarmManager.AlarmClockInfo info =
-                new AlarmManager.AlarmClockInfo(nextAlarmTime, pI);
-            am.setAlarmClock(info, pI);
-        } else
-        if (Build.VERSION.SDK_INT >= 19) {
-            am.setExact(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI );
-        } else {
-            am.set(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI );
-        }
     }
 }

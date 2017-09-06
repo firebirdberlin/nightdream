@@ -37,8 +37,8 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
-import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
+import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -61,22 +61,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
     protected PowerManager.WakeLock wakelock;
-    private ImageView background_image;
-    private ImageView weatherIcon;
     Sensor lightSensor = null;
     int mode = 2;
-    private boolean screenWasOn = false;
     mAudioManager AudioManage = null;
-    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (mySettings.doubleTapToFinish) {
-                finish();
-                return true;
-            }
-            return false;
-        }
-    };
+    private ImageView background_image;
+    private ImageView weatherIcon;
+    private boolean screenWasOn = false;
     private Context context = null;
     private float last_ambient = 4.0f;
     private double last_ambient_noise = 32000; // something loud
@@ -88,6 +78,16 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     private ReceiverRadioStream receiverRadioStream = null;
     private PowerManager pm;
     private Settings mySettings = null;
+    GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (mySettings.doubleTapToFinish) {
+                finish();
+                return true;
+            }
+            return false;
+        }
+    };
     private boolean isChargingWireless = false;
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
@@ -511,8 +511,9 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
 
         long now = Calendar.getInstance().getTimeInMillis();
-        if ( (0 < mySettings.nextAlarmTime - now
-                && mySettings.nextAlarmTime - now < 600000)
+        long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
+        if ((0 < nextAlarmTime - now
+                && nextAlarmTime - now < 600000)
                 || AlarmService.isRunning
                 || RadioStreamService.isRunning ) {
             Log.d(TAG, "shallKeepScreenOn() true");

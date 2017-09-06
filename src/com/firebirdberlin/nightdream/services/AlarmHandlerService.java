@@ -1,24 +1,21 @@
 package com.firebirdberlin.nightdream.services;
 
-import java.lang.String;
-import java.util.Calendar;
-
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
-import com.firebirdberlin.nightdream.services.AlarmService;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
+
+import java.util.Calendar;
 
 
 public class AlarmHandlerService extends IntentService {
-    private static String TAG = "NightDream.AlarmHandlerService";
+    private static String TAG = "AlarmHandlerService";
     private static String ACTION_CANCEL_ALARM = "com.firebirdberlin.nightdream.ACTION_CANCEL_ALARM";
     private static String ACTION_SET_ALARM = "com.firebirdberlin.nightdream.ACTION_SET_ALARM";
     private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
@@ -34,6 +31,48 @@ public class AlarmHandlerService extends IntentService {
         super(name);
     }
 
+    public static boolean alarmIsRunning() {
+        return (AlarmService.isRunning
+                || RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM);
+    }
+
+    public static void stop(Context context) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.setAction(ACTION_STOP_ALARM);
+        context.startService(i);
+    }
+
+    public static void snooze(Context context) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.setAction(ACTION_SNOOZE_ALARM);
+        context.startService(i);
+    }
+
+    public static void cancel(Context context) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.setAction(ACTION_CANCEL_ALARM);
+        context.startService(i);
+    }
+
+    public static void set(Context context, int alarmTimeMinutes) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.setAction(ACTION_SET_ALARM);
+        i.putExtra("alarmTimeMinutes", alarmTimeMinutes);
+        context.startService(i);
+    }
+
+    public static Intent getStopIntent(Context context) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.setAction(ACTION_STOP_ALARM);
+        return i;
+    }
+
+    public static Intent getSnoozeIntent(Context context) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.setAction(ACTION_SNOOZE_ALARM);
+        return i;
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         context = this;
@@ -45,8 +84,8 @@ public class AlarmHandlerService extends IntentService {
         }
         else
         if (ACTION_SET_ALARM.equals(action) ) {
-            long millis = intent.getLongExtra("alarmTimeInMillis", 0L);
-            setNewAlarm(millis);
+            int minutes = intent.getIntExtra("alarmTimeMinutes", 0);
+            setNewAlarm(minutes);
         }
         else
         if (ACTION_CANCEL_ALARM.equals(action) ) {
@@ -57,7 +96,6 @@ public class AlarmHandlerService extends IntentService {
             snoozeAlarm();
         }
     }
-
 
     public void stopAlarm(){
         boolean isRunning = alarmIsRunning();
@@ -85,71 +123,30 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void cancelAlarm() {
-        settings.setAlarmTime(0L);
+        settings.setAlarmTime(0);
         WakeUpReceiver.cancelAlarm(context);
     }
 
     public void snoozeAlarm() {
         stopAlarm();
-
         Calendar now = Calendar.getInstance();
         long nextAlarmTime = now.getTimeInMillis() + settings.snoozeTimeInMillis;
-        setAlarm(nextAlarmTime);
+
+        int nextAlarmTimeMinutes = new SimpleTime(nextAlarmTime).toMinutes();
+        setAlarm(nextAlarmTimeMinutes);
     }
 
-    private void setNewAlarm(long alarmTimeInMillis) {
+    private void setNewAlarm(int alarmTimeMinutes) {
         cancelAlarm();
-        setAlarm(alarmTimeInMillis);
+        setAlarm(alarmTimeMinutes);
     }
 
-    private void setAlarm(long alarmTimeInMillis) {
-        settings.setAlarmTime(alarmTimeInMillis);
+    private void setAlarm(int alarmTimeMinutes) {
+        settings.setAlarmTime(alarmTimeMinutes);
         WakeUpReceiver.schedule(context);
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        intent.putExtra("alarmTime", alarmTimeInMillis);
+        intent.putExtra("alarmTime", alarmTimeMinutes);
         context.sendBroadcast(intent);
-    }
-
-    public static boolean alarmIsRunning() {
-        return (AlarmService.isRunning
-                || RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM);
-    }
-
-    public static void stop(Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_STOP_ALARM);
-        context.startService(i);
-    }
-
-    public static void snooze(Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_SNOOZE_ALARM);
-        context.startService(i);
-    }
-
-    public static void cancel(Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_CANCEL_ALARM);
-        context.startService(i);
-    }
-
-    public static void set(Context context, long alarmTimeInMillis) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_SET_ALARM);
-        i.putExtra("alarmTimeInMillis", alarmTimeInMillis);
-        context.startService(i);
-    }
-
-    public static Intent getStopIntent(Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_STOP_ALARM);
-        return i;
-    }
-
-    public static Intent getSnoozeIntent(Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_SNOOZE_ALARM);
-        return i;
     }
 }
