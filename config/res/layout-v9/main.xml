@@ -45,21 +45,19 @@
             android:layout_weight="1"
             android:layout_height="wrap_content">
 
-            <com.firebirdberlin.nightdream.BatteryIconView
+            <com.firebirdberlin.nightdream.ui.BatteryIconView
                 android:id="@+id/batteryIconView"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                />
-
-            <com.firebirdberlin.nightdream.ui.BatteryView
-                android:id="@+id/batteryView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#C2C2C2"
+                android:ellipsize="none"
+                android:fontFamily="monospace"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
                 android:text=""
-                android:singleLine="true"
-                android:ellipsize="marquee"
-                android:textSize="20sp"/>
+                android:textColor="#C2C2C2"
+                android:textSize="20sp"
+                />
         </LinearLayout>
 
     </LinearLayout>

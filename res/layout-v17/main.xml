@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <com.firebirdberlin.nightdream.BatteryIconView
+                <com.firebirdberlin.nightdream.ui.BatteryIconView
                     android:id="@+id/batteryIconView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
