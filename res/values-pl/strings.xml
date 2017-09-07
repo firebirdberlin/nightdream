@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -68,6 +67,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Zakończ działanie aplikacji przez podwójnie puknięcie w ekran.</string>
 <string name="doubleTapToFinishTitle">Podwójnie puknij w ekrany aby zakończyć.</string>
 <string name="expertPreferences">Ustawienia expert</string>
+<string name="forecast">Prognoza na 5 dni</string>
 <string name="force_auto_rotation">Wymuś orientacje w Daydream</string>
 <string name="force_auto_rotation_summary">Wymuszenie orientacji ekranu kiedy jest uźywany Daydream</string>
 <string name="handle_power_ac">AC</string>
