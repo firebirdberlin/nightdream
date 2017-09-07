@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -59,6 +58,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute_translation">Traducción</string>
 <string name="country">Pais</string>
 <string name="credits">Créditos</string>
+<string name="credits_pull_requests">Solicitar extracción</string>
 <string name="date_format">Formato de fecha</string>
 <string name="dialog_message_thank_you">¡Muchas gracias!</string>
 <string name="dialog_title_thank_you">Gracias</string>
@@ -67,6 +67,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
 <string name="doubleTapToFinishTitle">Doble clic para salir</string>
 <string name="expertPreferences">Preferencias de experto</string>
+<string name="forecast">Previsión para 5 días</string>
 <string name="force_auto_rotation">Forzar la orientación de la pantalla en modo daydream</string>
 <string name="force_auto_rotation_summary">Forzar la orientación de la pantalla si el modo Daydream está en uso.</string>
 <string name="handle_power_ac">Corriente alterna</string>
@@ -114,6 +115,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_search">Buscar</string>
 <string name="radio_stream_start">Iniciar/detener radio</string>
 <string name="radio_stream_url">Emisora de radio</string>
+<string name="radio_stream_offline">Emisora fuera de línea</string>
+<string name="radio_stream_failure">Fallo de emisión</string>
 <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
 <string name="reactivate_on_ambient_light_value_summary">La pantalla se reactivará si el límite de la iluminación es excedido.</string>
 <string name="reactivate_screen_on_noise">Despertar en ambiente ruidoso</string>
@@ -170,7 +173,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_text1">¡Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
 <string name="welcome_screen_text2">¡Accede a las preferencias aquí!</string>
 <string name="welcome_screen_text3">Selecciona y desliza para cambiar el brillo de la pantalla. ¡Pruébalo ahora!</string>
-<string name="welcome_screen_text4">Cambia el tamaño del reloj con zoom de dos dedos.</string>
+<string name="welcome_screen_text4">Cambia el tamaño del reloj con zoom de dos dedos</string>
 <string name="welcome_screen_title1">Reloj Nocturno</string>
 <string name="welcome_screen_title2">Preferencias</string>
 <string name="welcome_screen_title3">Brillo de pantalla</string>
