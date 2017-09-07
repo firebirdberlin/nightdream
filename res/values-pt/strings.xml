@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -68,6 +67,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Faça duplo toque no ecrã para fechar a Aplicação</string>
 <string name="doubleTapToFinishTitle">Duplo toque para terminar</string>
 <string name="expertPreferences">Preferências avançadas</string>
+<string name="forecast">Previsão temporal para 5 dias</string>
 <string name="force_auto_rotation">Obrigue a orientação no Protetor de Tela</string>
 <string name="force_auto_rotation_summary">Obrigue a orientação da tela caso o Protetor de Tela for utilizado.</string>
 <string name="handle_power_ac">Cabo de força</string>
@@ -163,9 +163,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface">Tipo de letra</string>
 <string name="uninstall">Desinstalar aplicação</string>
 <string name="use_internal_alarm">Alarmes rápidos</string>
-<string name="weather_calculation_time">tempo de cálculo do clima</string>
 <string name="useDeviceLock">Bloquear dispositivo.</string>
 <string name="useDeviceLockExplanation">Bloquear dispositivo enquanto Nigth Clock estiver ativo.</string>
+<string name="weather_calculation_time">tempo de cálculo do clima</string>
 <string name="weather_city_id_summary">Deixe em branco se quiser detecção automática da cidade.</string>
 <string name="weather_city_id_title">Procurar cidade</string>
 <string name="weather_info_title">Informação</string>
