@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -18,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">À propos</string>
+<string name="action_stop">Stop</string>
 <string name="alarm">Alarme</string>
 <string name="alarmFadeIn">Volume progressif</string>
 <string name="alarmVolume">Volume</string>
@@ -44,12 +44,17 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_alarm_sound">Tonalité d\'alarme</string>
 <string name="choose_primary_color">Couleur principale</string>
 <string name="choose_secondary_color">Couleur du texte</string>
+<string name="clear">Nettoyer</string>
+<string name="clock_layout">Type d\'horloge</string>
+<string name="clock_layout_digital">Numérique</string>
+<string name="clock_layout_analog">Analogique</string>
 <string name="colors">Couleurs</string>
 <string name="confirm_reset_question">Voulez-vous vraiment réinitialiser tous les paramètres?</string>
 <string name="confirm_reset">Réinitialiser</string>
 <string name="contribute">Contribuer</string>
 <string name="contribute_source_code">Code source</string>
 <string name="contribute_translation">Traduction</string>
+<string name="country">Pays</string>
 <string name="credits">Crédits</string>
 <string name="date_format">Format de la date</string>
 <string name="dialog_message_thank_you">Merci beaucoup!</string>
@@ -73,6 +78,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="minute"> min</string>
 <string name="mute_ringer">Mettre la sourdine</string>
 <string name="night_mode">Mode nuit</string>
+<string name="night_mode_activation_mode">Activation du mode nuit</string>
 <string name="noise_sensitivity">Sensibilité du micro</string>
 <string name="notification_alarm">Cliquer pour arrêter l\'alarme</string>
 <string name="other_apps">Autres applications</string>
