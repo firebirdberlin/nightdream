@@ -551,7 +551,8 @@ de - Stefan Fruhner et. al.\n
 es - Romina Ramírez et. al.\n
 fr - Michel Dumont\n
 he - Nati Rubinstein\n
-hr - Tomislav Gal"
+hr - Tomislav Gal\n
+hu - Szabados János"
                     android:title="@string/translations" />
 
                 <Preference
@@ -559,14 +560,14 @@ hr - Tomislav Gal"
                     android:key="translations2"
                     android:selectable="false"
                     android:summary="
-hu - Szabados János\n
 nl - Leo van der Meulen et. al.\n
 pl - Wojciech Mudyn et. al.\n
 ro - Lucian Balaj\n
 ru - Denis Korotkov et. al.\n
 sk - Martin Renko\n
 sr - Vladimir Milić\n
-sv - Johnny Wahlberg"/>
+sv - Johnny Wahlberg\n
+uk - Ernest Feynman"/>
 
                 <Preference
                     android:icon="@drawable/ic_icons8"

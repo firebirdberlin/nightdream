@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="alarm">Χυπνητηρι</string>
+<string name="alarmFadeIn">Ανεβάζω ενταση</string>
+<string name="alarmVolume">Ένταση</string>
+<string name="allow_screen_off">Κατάργηση οθονη</string>
+<string name="ambient_noise">Ένταση περιβαλλοντος</string>
+<string name="ambient_noise_summary">Να αποτρέπει η ένταση περιβάλλοντος τον νυχτερινή λειτουργία? </string>
+<string name="appearance">Εμφάνιση </string>
+<string name="app_name">Νύχτα ρολοι</string>
+<string name="auto_brightness">Αυτόματη φωτεινότητα </string>
+<string name="autostart_timerange_label_end">Τέλος χρονου</string>
+<string name="autostart_timerange_label_start">Αρχή χρονου</string>
+<string name="background">Φόντο </string>
+<string name="background_black">Μαυρο</string>
+<string name="background_gradient">Βαθμιδα</string>
+<string name="background_image">Εικονα</string>
+<string name="background_image_select">Επιλέξτε μια εικονα</string>
+<string name="behaviour">Συμπεριφορά </string>
+<string name="brightness">φωτεινότητα</string>
+<string name="brightness_offset">Αντιστάθμιση φωτεινότητα</string>
+<string name="buttonAccessibilitySettings">Ξεκινήστε την κοινοποίηση ακροατης</string>
+<string name="category_handle_power">Και όταν είνε συνδεδεμένο με</string>
+<string name="category_handle_power_autostart_time">Ξεκινήσε εντός του χρονου</string>
+<string name="choose_alarm_sound">Χυπνητηρι ήχου </string>
+<string name="choose_primary_color">Χρώμα εμφασης</string>
+<string name="choose_secondary_color">Χρώμα κειμενου</string>
+<string name="colors">Χρώματα </string>
+<string name="confirm_reset_question">Θέλετε πραγματικά να επαναφέρετε όλες τις ρυθμίσεις </string>
+<string name="confirm_reset">Επαναφορά </string>
+<string name="contribute">Συμβαλλω</string>
+<string name="contribute_source_code">Προέλευση κωδικος</string>
+<string name="contribute_translation">Μετάφραση </string>
+<string name="credits">Έπαινος </string>
+<string name="date_format">Ημερομηνία </string>
+<string name="dialog_message_thank_you">Σας ευχαριστώ πάρα πολύ </string>
+<string name="dialog_title_thank_you">Ευχαριστώ </string>
+<string name="donate_bitcoin">Βιτcoin</string>
+<string name="donate">Δωριζω</string>
+</resources>
