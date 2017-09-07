@@ -12,54 +12,61 @@
     <include layout="@layout/background" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <include layout="@layout/progressbar" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/burger_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="settings"
                 android:alpha="0.0"
-                android:src="@drawable/ic_menu"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:contentDescription="settings"
+                android:src="@drawable/ic_menu" />
 
+            <!-- android:background="@drawable/border" -->
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content">
-                <com.firebirdberlin.nightdream.ui.BatteryView
-                    android:id="@+id/batteryView"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <com.firebirdberlin.nightdream.ui.BatteryIconView
+                    android:id="@+id/batteryIconView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="none"
                     android:fontFamily="monospace"
-                    android:textColor="#C2C2C2"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     android:text=""
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:textSize="20sp"/>
+                    android:textColor="#C2C2C2"
+                    android:textSize="20sp"
+                    />
+
+
             </LinearLayout>
 
         </LinearLayout>
 
         <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_width="match_parent">
+            android:layout_weight="1">
 
             <FrameLayout
                 android:id="@+id/clockLayoutContainer"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <include layout="@layout/notification_bar" />
 
@@ -69,13 +76,13 @@
                 <com.firebirdberlin.nightdream.ui.ClockLayout
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/clockLayout"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:translationX="0sp"
-                    android:translationY="0sp"
                     android:layout_gravity="center"
                     android:background="#44000000"
+                    android:orientation="vertical"
+                    android:translationX="0sp"
+                    android:translationY="0sp"
                     />
             </FrameLayout>
 
