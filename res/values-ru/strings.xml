@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -47,15 +46,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_alarm_sound">Мелодия будидьника</string>
 <string name="choose_primary_color">Основной цвет</string>
 <string name="choose_secondary_color">Цвет текста</string>
-<string name="clear">очистить</string>
+<string name="clear">Очистить</string>
 <string name="clock_layout">Тип часов</string>
-<string name="clock_layout_digital">цифровые</string>
-<string name="clock_layout_analog">аналоговые</string>
+<string name="clock_layout_digital">Цифровые</string>
+<string name="clock_layout_analog">Аналоговые</string>
 <string name="colors">Цвета</string>
 <string name="confirm_reset_question">Вы уверены в сбросе всех настроек?</string>
 <string name="confirm_reset">Сброс</string>
-<string name="contribute">Внести свой вклад</string>
-<string name="contribute_source_code">Исходный код</string>
+<string name="contribute">Внести свой вклад в проект</string>
+<string name="contribute_source_code">Исходный код проекта</string>
 <string name="contribute_translation">Перевести на другой язык</string>
 <string name="country">Страна</string>
 <string name="credits">Разработчики</string>
@@ -63,26 +62,28 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="date_format">Формат даты</string>
 <string name="dialog_message_thank_you">Огромное вам спасибо!</string>
 <string name="dialog_title_thank_you">Спасибо</string>
-<string name="donate_bitcoin">Бит-монеты</string>
-<string name="donate">Пожертвовать</string>
+<string name="donate_bitcoin">Биткоины</string>
+<string name="donate">Профинансировать</string>
 <string name="doubleTapToFinishSummary">Дважды коснитесь экрана, что бы выйти из приложения</string>
 <string name="doubleTapToFinishTitle">Двойное косание для завершения</string>
 <string name="expertPreferences">Экспертные настройки</string>
+<string name="forecast">5 дневный погодный подкаст</string>
 <string name="force_auto_rotation">Принудительная ориентация в Daydream</string>
 <string name="force_auto_rotation_summary">Принудительная ориентация экрана в режиме Daydream</string>
 <string name="handle_power_ac">ЗУ</string>
 <string name="handle_power">Автозапуск</string>
-<string name="handle_power_car">автомобильная док-станция</string>
-<string name="handle_power_desk">настольная док-станция</string>
+<string name="handle_power_car">Автомобильная док-станция</string>
+<string name="handle_power_desk">Настольная док-станция</string>
 <string name="handle_power_disconnection">Автоматическое завершение</string>
-<string name="handle_power_disconnection_summary">Закрыть приложение при отключении от зарядки</string>
+<string name="handle_power_disconnection_summary">Закрыть приложение при завершении зарядки</string>
 <string name="handle_power_usb">USB</string>
-<string name="handle_power_wireless">беспроводная зарядка</string>
+<string name="handle_power_wireless">Беспроводная зарядка</string>
 <string name="hide_background_image_in_night_mode">Скрыть</string>
 <string name="hide_background_image_in_night_mode_summary">Скрыть фон в ночном режиме</string>
 <string name="hour">ч.</string>
 <string name="location_time">Местное время</string>
 <string name="maxBrightness">Максимальная яркость экрана</string>
+<string name="minBrightness">Минимальная яркость экрана</string>
 <string name="message_no_data_connection">Нет подключения к Интернету</string>
 <string name="message_mobile_data_connection">Подключение к Интернету</string>
 <string name="message_mobile_data_connection_confirmation">Вы подключены к сотовой сети. Запустить радио?</string>
@@ -90,16 +91,16 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="mute_ringer">Приглушить звонки</string>
 <string name="night_mode">Ночной режим</string>
 <string name="night_mode_activation_mode">Способ включения</string>
-<string name="night_mode_activation_manual">ручной</string>
-<string name="night_mode_activation_auto">автоматический</string>
-<string name="night_mode_activation_scheduled">по расписанию</string>
+<string name="night_mode_activation_manual">Ручной</string>
+<string name="night_mode_activation_auto">Автоматический</string>
+<string name="night_mode_activation_scheduled">По расписанию</string>
 <string name="night_mode_timerange_title">Ночные часы</string>
 <string name="night_mode_timerange_label_end">Время окончания</string>
 <string name="night_mode_timerange_label_start">Время начала</string>
 <string name="noise_sensitivity">Чувствительность микрофона</string>
 <string name="notification_alarm">Нажмите для остановки будильника</string>
-<string name="other_apps">Другие приложения</string>
-<string name="other_apps_tinytimetracker_summary">Отслеживайте ваше рабочее время</string>
+<string name="other_apps">Рекомендуем</string>
+<string name="other_apps_tinytimetracker_summary">Следите за своим рабочим временем</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
 <string name="persistent_battery_value_while_charging">Всегда отображать заряд</string>
 <string name="persistent_battery_value_while_charging_summary">Показывать статус батареи во время зарядки</string>
@@ -112,15 +113,17 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_query_hint">Строка поиска</string>
 <string name="radio_stream">Потоковое радио</string>
 <string name="radio_stream_search">Поиск</string>
-<string name="radio_stream_start">Старт/стоп радио</string>
+<string name="radio_stream_start">Запустить/отключить радио</string>
 <string name="radio_stream_url">URL потокового радио</string>
+<string name="radio_stream_offline">Отключено</string>
+<string name="radio_stream_failure">Поток неожиданно остановлен</string>
 <string name="reactivate_on_ambient_light_value">Предел освещения</string>
 <string name="reactivate_on_ambient_light_value_summary">Включить экран, если превышен предел освещения</string>
 <string name="reactivate_screen_on_noise">Включать при шуме</string>
 <string name="recommend_app_desc">Выберите приложение чтобы поделиться рекомендациями</string>
-<string name="recommend_app_subject">Я хотел бы порекомендовать Вам это приложение-часы</string>
+<string name="recommend_app_subject">Я хочу порекомендовать Вам это приложение-часы</string>
 <string name="recommend">Рекомендовать приложение</string>
-<string name="remaining">ост.</string>
+<string name="remaining">осталось</string>
 <string name="reset_to_defaults">Сброс настроек</string>
 <string name="restless_mode">Перемещать часы по экрану</string>
 <string name="review_request">Пожалуйста, оцените это приложение. Спасибо!</string>
