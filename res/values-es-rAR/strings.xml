@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -67,6 +66,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
 <string name="doubleTapToFinishTitle">Doble pulsación para finalizar</string>
 <string name="expertPreferences">Preferencias avanzadas</string>
+<string name="forecast">Prediccion de 5 dias</string>
 <string name="force_auto_rotation">Forzar la orientación de la pantalla en modo daydream</string>
 <string name="force_auto_rotation_summary">Forzar la orientación de la pantalla si el modo Daydream está en uso.</string>
 <string name="handle_power_ac">Corriente alterna</string>
@@ -82,6 +82,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">h</string>
 <string name="location_time">Hora local</string>
 <string name="maxBrightness">Máximo brillo de pantalla</string>
+<string name="minBrightness">Brillo de pantalla minomo</string>
 <string name="message_no_data_connection">No hay conexión de datos</string>
 <string name="message_mobile_data_connection">Conexión datos móviles</string>
 <string name="message_mobile_data_connection_confirmation">Estás conectado a una red de datos móviles. Reproducir emisoras de radio?</string>
@@ -113,6 +114,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_search">Buscar</string>
 <string name="radio_stream_start">Iniciar/detener radio</string>
 <string name="radio_stream_url">Emisora de radio</string>
+<string name="radio_stream_offline">Fuera de linea</string>
+<string name="radio_stream_failure">Falla de stream de radio</string>
 <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
 <string name="reactivate_on_ambient_light_value_summary">La pantalla se reactivará si el límite de la iluminación es excedido.</string>
 <string name="reactivate_screen_on_noise">Despertar en ambiente ruidoso</string>
