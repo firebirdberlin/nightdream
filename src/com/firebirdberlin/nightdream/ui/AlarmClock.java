@@ -1,4 +1,4 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.ui;
 
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
@@ -24,6 +24,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TimePicker;
 
+import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 
@@ -126,17 +130,9 @@ public class AlarmClock extends View {
 
     public boolean onTouchEvent(MotionEvent e) {
         // the view should be visible before the user interacts with it
-        if (! isVisible ) return false;
-        if (locked) return false;
+        if (!isVisible || locked ) return false;
 
-        boolean event_consumed = mGestureDetector.onTouchEvent(e);
-        if (event_consumed) return true;
-
-        boolean eventCancelAlarm = handleAlarmCancelling(e);
-        if (eventCancelAlarm) return true;
-
-        boolean eventAlarmSet = handleAlarmSetEvents(e);
-        return eventAlarmSet;
+        return mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e)|| handleAlarmSetEvents(e);
     }
 
     private boolean handleAlarmSetEvents(MotionEvent e) {
@@ -161,7 +157,7 @@ public class AlarmClock extends View {
                 }
                 return false;
             case MotionEvent.ACTION_MOVE:
-                if (FingerDown == false) return false;
+                if (!FingerDown) return false;
                 if ( dist > touch_zone_radius ) {
                     userChangesAlarmTime = true;
                     cancelAlarm();
@@ -174,7 +170,7 @@ public class AlarmClock extends View {
                 this.lastMoveEventY = tY;
                 break;
             case MotionEvent.ACTION_UP:
-                if (FingerDown == false) return false;
+                if (!FingerDown) return false;
                 if ( dist > touch_zone_radius ) {
                     XYtotime(tX,tY);
                     setAlarm();

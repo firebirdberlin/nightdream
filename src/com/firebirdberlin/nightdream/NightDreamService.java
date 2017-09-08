@@ -2,10 +2,8 @@ package com.firebirdberlin.nightdream;
 
 import java.util.Calendar;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
 
-import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
@@ -33,6 +30,7 @@ import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
+import com.firebirdberlin.nightdream.ui.AlarmClock;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 
 

@@ -98,7 +98,7 @@
         <include layout="@layout/side_panel" />
     </FrameLayout>
 
-    <com.firebirdberlin.nightdream.AlarmClock
+    <com.firebirdberlin.nightdream.ui.AlarmClock
         android:id="@+id/AlarmClock"
         android:layout_width="match_parent"
         android:layout_height="60dp"
