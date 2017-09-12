@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -103,6 +104,13 @@ public class StockAlarmLayout extends RelativeLayout {
 
         SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
         return hourDateFormat.format(calendar.getTime());
+    }
+
+    @Override
+    public void setClickable(boolean clickable) {
+        Log.w("StockAlarmLayout", "setClickable " + (clickable ? "true" : "false"));
+        super.setClickable(clickable);
+        textView.setOnClickListener(clickable ? onStockAlarmTimeClickListener : null);
     }
 
 }

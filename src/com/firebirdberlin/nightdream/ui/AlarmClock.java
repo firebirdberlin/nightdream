@@ -43,7 +43,6 @@ import static android.text.format.DateFormat.is24HourFormat;
 public class AlarmClock extends View {
     private static String TAG ="NightDream.AlarmClock";
     final private Handler handler = new Handler();
-    public boolean isVisible = false;
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
     SimpleTime time;
@@ -130,7 +129,7 @@ public class AlarmClock extends View {
 
     public boolean onTouchEvent(MotionEvent e) {
         // the view should be visible before the user interacts with it
-        if (!isVisible || locked ) return false;
+        if (!isClickable() || locked ) return false;
 
         return mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e)|| handleAlarmSetEvents(e);
     }
@@ -241,7 +240,7 @@ public class AlarmClock extends View {
 
     @Override
     protected void onDraw(Canvas canvas){
-        if ( !isVisible ) return;
+        if ( !isClickable() ) return;
         Resources res = getResources();
 
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);

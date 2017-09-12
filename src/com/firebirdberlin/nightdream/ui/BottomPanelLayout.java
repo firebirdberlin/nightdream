@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -48,5 +49,15 @@ public class BottomPanelLayout extends FrameLayout {
     public AlarmClock getAlarmClock() {
         return view;
     }
+
+    @Override
+    public void setClickable(boolean clickable) {
+        Log.w("BottomPanelLayout", "setClickable " + ((clickable) ? "true" : "false"));
+        super.setClickable(clickable);
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).setClickable(clickable);
+        }
+    }
+
 }
 
