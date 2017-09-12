@@ -3,13 +3,14 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 public class BottomPanelLayout extends FrameLayout {
     private Context context;
+    private AttributeSet attrs;
     private StockAlarmLayout stockAlarmView = null;
+    private int accentColor;
+    private int textColor;
     private AlarmClock view = null;
     public boolean isVisible = false;
 
@@ -22,19 +23,22 @@ public class BottomPanelLayout extends FrameLayout {
     public BottomPanelLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        stockAlarmView = new StockAlarmLayout(context, attrs);
+        this.attrs = attrs;
         view = new AlarmClock(context, attrs);
         addView(view);
 
     }
 
     public void setCustomColor(int accentColor, int textColor) {
+        this.accentColor = accentColor;
+        this.textColor = textColor;
         view.setCustomColor(accentColor, textColor);
-        stockAlarmView.setCustomColor(accentColor, textColor);
     }
 
     public void showStockAlarmView() {
         removeAllViews();
+        stockAlarmView = new StockAlarmLayout(context, attrs);
+        stockAlarmView.setCustomColor(accentColor, textColor);
         stockAlarmView.setText();
         addView(stockAlarmView);
         invalidate();
@@ -42,6 +46,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     public void showAlarmView() {
         removeAllViews();
+        stockAlarmView = null;
         addView(view);
         invalidate();
     }

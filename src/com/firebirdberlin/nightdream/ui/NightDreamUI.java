@@ -1103,7 +1103,6 @@ public class NightDreamUI {
         controlsVisible = true;
         setupAlarmClock();
         bottomPanelLayout.invalidate();
-        alarmClock.invalidate();
         if ( AlarmHandlerService.alarmIsRunning() ) {
              blinkIfLocked();
         }
