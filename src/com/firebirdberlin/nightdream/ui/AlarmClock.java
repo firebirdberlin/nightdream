@@ -365,26 +365,7 @@ public class AlarmClock extends View {
         }
     }
 
-    public String getNextSystemAlarmTime() {
-        if ( Build.VERSION.SDK_INT < 21 ) {
-            return deprecatedGetNextSystemAlarmTime();
-        }
-        AlarmManager am = (AlarmManager) (ctx.getSystemService( Context.ALARM_SERVICE ));
-        AlarmManager.AlarmClockInfo info = am.getNextAlarmClock();
-        if (info != null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(info.getTriggerTime());
-            return getTimeFormatted(cal);
-        }
-        return "";
-    }
 
-    @SuppressWarnings("deprecation")
-    private String deprecatedGetNextSystemAlarmTime() {
-         return android.provider.Settings.System.getString(
-                 ctx.getContentResolver(),
-                 android.provider.Settings.System.NEXT_ALARM_FORMATTED);
-    }
 
     private enum Position {LEFT, RIGHT}
 

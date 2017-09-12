@@ -88,7 +88,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
 
         //alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
-        alarmTime = (TextView) findViewById(R.id.textview_alarm_time);
+        //alarmTime = (TextView) findViewById(R.id.textview_alarm_time);
         //alarmClock.setSettings(mySettings);
 
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
@@ -107,12 +107,13 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nReceiver.setColor(mySettings.secondaryColor);
         background_image = (ImageView)findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
-
+/*
         alarmTime.setClickable(false);
         if ( !mySettings.useInternalAlarm && Build.VERSION.SDK_INT >= 19 ) {
             alarmTime.setOnClickListener(onStockAlarmTimeClickListener);
             alarmTime.setClickable(true);
         }
+*/
     }
 
     View.OnClickListener onStockAlarmTimeClickListener = new View.OnClickListener() {
