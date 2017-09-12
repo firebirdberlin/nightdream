@@ -73,8 +73,14 @@ public class BatteryIconView extends View {
     public void onDetachedFromWindow(){
         super.onDetachedFromWindow();
         if (batteryReceiver != null) {
-            context.unregisterReceiver(batteryReceiver);
-            batteryReceiver = null;
+            try {
+                context.unregisterReceiver(batteryReceiver);
+            } catch (IllegalArgumentException e) {
+                // never mind battery receiver was not registered
+            }
+            finally {
+                batteryReceiver = null;
+            }
         }
     }
 
