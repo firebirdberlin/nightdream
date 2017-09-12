@@ -112,6 +112,7 @@ public class NightDreamUI {
     private ClockLayout clockLayout;
     private LinearLayout notificationbar;
     private LinearLayout sidePanel;
+    private BottomPanelLayout bottomPanelLayout;
     private Settings settings = null;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
@@ -215,10 +216,11 @@ public class NightDreamUI {
             controlsVisible = false;
             hideBatteryView(2000);
             setAlpha(menuIcon, 0.f, 2000);
-            alarmClock.isVisible = false;
-            alarmClock.setClickable(false);
+
+            bottomPanelLayout.isVisible = false;
+            bottomPanelLayout.setClickable(false);
             alarmTime.setClickable(false);
-            setAlpha(alarmClock, 0.f, 2000);
+            setAlpha(bottomPanelLayout, 0.f, 2000);
             setAlpha(alarmTime, 0.f, 2000);
             if (mode == 0) {
                 setAlpha(notificationbar, 0.f, 2000);
@@ -387,7 +389,8 @@ public class NightDreamUI {
         batteryIconView = (BatteryIconView) rootView.findViewById(R.id.batteryIconView);
         clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
-        alarmClock = (AlarmClock) rootView.findViewById(R.id.AlarmClock);
+        bottomPanelLayout = (BottomPanelLayout) rootView.findViewById(R.id.bottomPanel);
+        alarmClock = bottomPanelLayout.getAlarmClock();
         alarmTime = (TextView) rootView.findViewById(R.id.textview_alarm_time);
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
@@ -741,8 +744,12 @@ public class NightDreamUI {
         int visibility = settings.useInternalAlarm ? View.GONE : View.VISIBLE;
         alarmTime.setVisibility(visibility);
         alarmTime.invalidate();
+
         alarmClock.isVisible = settings.useInternalAlarm;
         alarmClock.setClickable(true);
+
+        bottomPanelLayout.isVisible = true;
+        bottomPanelLayout.setClickable(true);
     }
 
     public void onPause() {
@@ -923,8 +930,8 @@ public class NightDreamUI {
             setAlpha(clockLayout, v, millis);
         }
 
-        if ( alarmClock.isClickable() ) {
-            setAlpha(alarmClock, v, millis);
+        if ( bottomPanelLayout.isClickable() ) {
+            setAlpha(bottomPanelLayout, v, millis);
             if ( showcaseView == null ) {
                 setAlpha(alarmTime, v, millis);
             }
@@ -1131,6 +1138,7 @@ public class NightDreamUI {
         handler.postDelayed(hideAlarmClock, 20000);
         controlsVisible = true;
         setupAlarmClock();
+        bottomPanelLayout.invalidate();
         alarmClock.invalidate();
         if ( AlarmHandlerService.alarmIsRunning() ) {
              blinkIfLocked();

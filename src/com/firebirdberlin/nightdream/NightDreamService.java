@@ -87,9 +87,9 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         NOISE_AMPLITUDE_SLEEP *= mySettings.sensitivity;
         NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
 
-        alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
+        //alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
         alarmTime = (TextView) findViewById(R.id.textview_alarm_time);
-        alarmClock.setSettings(mySettings);
+        //alarmClock.setSettings(mySettings);
 
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
