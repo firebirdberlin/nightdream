@@ -6,13 +6,13 @@ import android.util.Log;
 import android.widget.FrameLayout;
 
 public class BottomPanelLayout extends FrameLayout {
+    public boolean isVisible = false;
     private Context context;
     private AttributeSet attrs;
     private StockAlarmLayout stockAlarmView = null;
     private int accentColor;
     private int textColor;
     private AlarmClock view = null;
-    public boolean isVisible = false;
 
     public BottomPanelLayout(Context context) {
         super(context);
@@ -49,6 +49,11 @@ public class BottomPanelLayout extends FrameLayout {
         stockAlarmView = null;
         addView(view);
         invalidate();
+    }
+
+    public void setLocked(boolean locked) {
+        view.setLocked(locked);
+        if (stockAlarmView != null) stockAlarmView.setLocked(locked);
     }
 
     public AlarmClock getAlarmClock() {

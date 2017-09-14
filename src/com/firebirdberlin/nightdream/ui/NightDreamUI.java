@@ -1163,7 +1163,7 @@ public class NightDreamUI {
     }
 
     private void lockUI(boolean on) {
-        alarmClock.setLocked(on);
+        bottomPanelLayout.setLocked(on);
         showAlarmClock();
         int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
         menuIcon.setImageDrawable(getDrawable(resId));

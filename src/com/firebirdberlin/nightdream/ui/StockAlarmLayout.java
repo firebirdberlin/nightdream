@@ -22,9 +22,9 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
 
 public class StockAlarmLayout extends RelativeLayout {
+    public boolean locked = false;
     private Context context;
     private TextView textView;
-    public boolean locked = false;
     private OnClickListener onStockAlarmTimeClickListener = new OnClickListener() {
         public void onClick(View v) {
             if (Build.VERSION.SDK_INT < 19) return;
@@ -55,6 +55,10 @@ public class StockAlarmLayout extends RelativeLayout {
 
     public void setCustomColor(int accentColor, int textColor) {
         textView.setTextColor(textColor);
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     protected void setText() {
