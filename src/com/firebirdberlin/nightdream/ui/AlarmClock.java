@@ -1,9 +1,10 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.app.AlarmManager;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -80,10 +81,13 @@ public class AlarmClock extends View {
     };
     private Float lastMoveEventY = null;
     private int lastMinSinceDragStart = 0;
+    private NightDreamBroadcastReceiver broadcastReceiver = null;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
+        settings = new Settings(this.ctx);
+        updateTime();
         mGestureDetector = new GestureDetector(context, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
         cornerLeft.setIconResource(getResources(), R.drawable.ic_audio);
@@ -92,13 +96,45 @@ public class AlarmClock extends View {
         initColorFilters();
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        broadcastReceiver = registerBroadcastReceiver();
+    }
+
+    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_ALARM_SET);
+        filter.addAction(Config.ACTION_ALARM_STOPPED);
+        filter.addAction(Config.ACTION_ALARM_DELETED);
+        ctx.registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        unregister(broadcastReceiver);
+    }
+
+    private void unregister(BroadcastReceiver receiver) {
+        try {
+            ctx.unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+
     public void setLocked(boolean on) {
         locked = on;
     }
 
-    public void setSettings(Settings s) {
-        settings = s;
-        time = new SimpleTime(s.nextAlarmTimeMinutes);
+    private void updateTime() {
+        settings.updateNextAlarmTime();
+        time = new SimpleTime(settings.nextAlarmTimeMinutes);
+        invalidate();
         Log.d(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
     }
 
@@ -465,4 +501,21 @@ public class AlarmClock extends View {
             }
         }
     }
+
+    class NightDreamBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Config.ACTION_ALARM_SET.equals(action)) {
+                if (intent.hasExtra("alarmTime")) {
+                    updateTime();
+                }
+            } else if (Config.ACTION_ALARM_STOPPED.equals(action)) {
+                updateTime();
+            } else if (Config.ACTION_ALARM_DELETED.equals(action)) {
+                updateTime();
+            }
+        }
+    }
+
 }

@@ -38,7 +38,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
@@ -422,7 +421,6 @@ public class NightDreamUI {
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
-        alarmClock.setSettings(settings);
         checkForReviewRequest();
         isDebuggable = utility.isDebuggable();
     }
@@ -1244,9 +1242,6 @@ public class NightDreamUI {
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
-        filter.addAction(Config.ACTION_ALARM_SET);
-        filter.addAction(Config.ACTION_ALARM_STOPPED);
-        filter.addAction(Config.ACTION_ALARM_DELETED);
         mContext.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -1435,18 +1430,14 @@ public class NightDreamUI {
                 setupShowcaseForAlarmDeletion();
                 if (intent.hasExtra("alarmTime")) {
                     settings.updateNextAlarmTime();
-                    alarmClock.setSettings(settings);
-                    alarmClock.invalidate();
+
                 }
             } else if (Config.ACTION_ALARM_STOPPED.equals(action)) {
                 settings.updateNextAlarmTime();
-                alarmClock.setSettings(settings);
-                alarmClock.invalidate();
+
             } else if (Config.ACTION_ALARM_DELETED.equals(action)) {
                 if (showcaseView != null) showcaseView.hide();
                 settings.updateNextAlarmTime();
-                alarmClock.setSettings(settings);
-                alarmClock.invalidate();
             }
         }
     }
