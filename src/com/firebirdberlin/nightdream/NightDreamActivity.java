@@ -275,15 +275,13 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             case ALARM:
                 setVolumeControlStream(AudioManager.STREAM_ALARM);
                 nightDreamUI.showAlarmClock();
-                nightDreamUI.setRadioIconInactive();
+
                 break;
             case RADIO:
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
-                nightDreamUI.setRadioIconActive();
                 break;
             default:
                 setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
-                nightDreamUI.setRadioIconInactive();
                 break;
         }
     }
@@ -474,6 +472,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 RadioStreamService.startStream(context);
+                                nightDreamUI.hideSystemUI();
                             }
                         })
                         .show();

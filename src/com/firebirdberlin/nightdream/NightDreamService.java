@@ -60,8 +60,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver;
     private NightModeReceiver nightModeReceiver = null;
-    private ReceiverRadioStream receiverRadioStream = null;
-    private TextView alarmTime = null;
 
     private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
@@ -87,10 +85,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         NOISE_AMPLITUDE_SLEEP *= mySettings.sensitivity;
         NOISE_AMPLITUDE_WAKE  *= mySettings.sensitivity;
 
-        //alarmClock = (AlarmClock) findViewById(R.id.AlarmClock);
-        //alarmTime = (TextView) findViewById(R.id.textview_alarm_time);
-        //alarmClock.setSettings(mySettings);
-
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -102,7 +96,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
         nightModeReceiver = NightModeReceiver.register(this, this);
         nReceiver = registerNotificationReceiver();
-        receiverRadioStream = registerReceiverRadioStream();
 
         nReceiver.setColor(mySettings.secondaryColor);
         background_image = (ImageView)findViewById(R.id.background_view);
@@ -134,7 +127,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         nightDreamUI.onStart();
         nightDreamUI.onResume();
         setupNightMode();
-        setupRadioStreamUI();
         EventBus.getDefault().register(this);
 
         // ask for active notifications
@@ -156,7 +148,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         EventBus.getDefault().unregister(this);
         unregister(nightModeReceiver);
         unregisterLocalReceiver(nReceiver);
-        unregister(receiverRadioStream);
 
         //stop notification listener service
         if (Build.VERSION.SDK_INT >= 18){
@@ -211,33 +202,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         }
         setMode(new_mode);
         NightModeReceiver.schedule(this, timerange);
-    }
-
-    class ReceiverRadioStream extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setupRadioStreamUI();
-        }
-    }
-
-    void setupRadioStreamUI() {
-        switch (RadioStreamService.streamingMode) {
-            case RADIO:
-                nightDreamUI.setRadioIconActive();
-                break;
-            default:
-                nightDreamUI.setRadioIconInactive();
-                break;
-        }
-    }
-
-    private ReceiverRadioStream registerReceiverRadioStream() {
-        ReceiverRadioStream receiver = new ReceiverRadioStream();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
-        registerReceiver(receiver, filter);
-        return receiver;
     }
 
     private NotificationReceiver registerNotificationReceiver(){

@@ -18,6 +18,7 @@ import com.firebirdberlin.nightdream.HttpStatusCheckTask;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.io.IOException;
 
@@ -29,7 +30,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
-    private static String TAG = "NightDream.RadioStreamService";
+    private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
@@ -263,4 +264,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     public enum StreamingMode {INACTIVE, ALARM, RADIO}
+
+    public static RadioStation getCurrentRadioStation(Context context) {
+        if ( streamingMode != StreamingMode.INACTIVE ) {
+            Settings settings = new Settings(context);
+            return settings.getCurrentRadioStation();
+        }
+        return null;
+    }
 }

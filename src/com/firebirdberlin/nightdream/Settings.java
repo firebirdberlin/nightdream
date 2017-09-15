@@ -13,10 +13,14 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
+
+import org.json.JSONException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -523,4 +527,17 @@ public class Settings {
                  == PackageManager.PERMISSION_GRANTED);
     }
 
+    public RadioStation getCurrentRadioStation() {
+        String json = settings.getString("radioStreamURLUI_json", null);
+        if (json != null) {
+            Log.i(TAG, json);
+            try {
+                RadioStation s = RadioStation.fromJson(json);
+                return s;
+            } catch (JSONException e) {
+                Log.e(TAG, "error converting json to station", e);
+            }
+        }
+        return null;
+    }
 }

@@ -942,7 +942,7 @@ public class NightDreamUI {
         }
     }
 
-    private void hideSystemUI() {
+    public void hideSystemUI() {
         if (Build.VERSION.SDK_INT >= 19){
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(
@@ -1102,7 +1102,8 @@ public class NightDreamUI {
         setupAlarmClock();
         bottomPanelLayout.invalidate();
         if ( AlarmHandlerService.alarmIsRunning() ) {
-             blinkIfLocked();
+            setRadioIconInactive();
+            blinkIfLocked();
         }
         dimScreen(0, last_ambient, settings.dim_offset);
     }
@@ -1242,6 +1243,8 @@ public class NightDreamUI {
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
+        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         mContext.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -1425,19 +1428,15 @@ public class NightDreamUI {
                 Log.v(TAG, "Weather data updated");
                 settings.weatherEntry = settings.getWeatherEntry();
                 clockLayout.update(settings.weatherEntry);
-            } else if (Config.ACTION_ALARM_SET.equals(action)) {
-                if (showcaseView != null) showcaseView.hide();
-                setupShowcaseForAlarmDeletion();
-                if (intent.hasExtra("alarmTime")) {
-                    settings.updateNextAlarmTime();
-
-                }
-            } else if (Config.ACTION_ALARM_STOPPED.equals(action)) {
-                settings.updateNextAlarmTime();
-
-            } else if (Config.ACTION_ALARM_DELETED.equals(action)) {
-                if (showcaseView != null) showcaseView.hide();
-                settings.updateNextAlarmTime();
+            } else
+            if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
+                bottomPanelLayout.showWebRadioView();
+                setRadioIconActive();
+            }
+            else
+            if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
+                setupAlarmClock();
+                setRadioIconInactive();
             }
         }
     }
