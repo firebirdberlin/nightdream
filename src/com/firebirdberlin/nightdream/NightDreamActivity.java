@@ -47,6 +47,7 @@ import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
+import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
 import java.util.Calendar;
@@ -56,7 +57,8 @@ import de.greenrobot.event.EventBus;
 
 public class NightDreamActivity extends Activity implements View.OnTouchListener,
                                                             NightModeReceiver.Event,
-                                                            LocationUpdateReceiver.AsyncResponse {
+        LocationUpdateReceiver.AsyncResponse,
+        SleepTimerDialogFragment.SleepTimerDialogListener {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
@@ -637,6 +639,16 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         pendingIntent.cancel();
     }
 
+    @Override
+    public void onSleepTimeSelected(int minutes) {
+        nightDreamUI.hideSystemUI();
+    }
+
+    @Override
+    public void onSleepTimeDismissed() {
+        nightDreamUI.hideSystemUI();
+    }
+
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -661,5 +673,4 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
             setupRadioStreamUI();
         }
     }
-
-    }
+}

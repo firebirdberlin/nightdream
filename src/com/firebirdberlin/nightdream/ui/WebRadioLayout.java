@@ -1,10 +1,13 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +44,14 @@ public class WebRadioLayout extends RelativeLayout {
         buttonSleepTimer.setImageResource(R.drawable.ic_nightmode);
         int padding = Utility.dpToPx(context, 10.f);
         buttonSleepTimer.setPadding(padding, padding, padding, padding);
+        buttonSleepTimer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                SleepTimerDialogFragment dialog = new SleepTimerDialogFragment();
+                dialog.show(fm, "sleep_timer");
+            }
+        });
         RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -54,7 +65,7 @@ public class WebRadioLayout extends RelativeLayout {
     public void setCustomColor(int accentColor, int textColor) {
         Drawable bg = getBackground();
         bg.setColorFilter( accentColor, PorterDuff.Mode.MULTIPLY );
-        buttonSleepTimer.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        buttonSleepTimer.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
         textView.setTextColor(textColor);
     }
 
@@ -76,5 +87,4 @@ public class WebRadioLayout extends RelativeLayout {
     public void setClickable(boolean clickable) {
         super.setClickable(clickable);
     }
-
 }

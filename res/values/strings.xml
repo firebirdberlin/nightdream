@@ -145,6 +145,7 @@ OR
     <string name="show_wind_speed">Show wind speed</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="speedUnit">Wind speed unit</string>
+    <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="standbyEnabledWhileConnectedTitle">Standby Mode</string>
     <string name="standbyEnabledWhileConnectedSummary">Activate when the screen turns off.</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
