@@ -5,10 +5,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class BottomPanelLayout extends FrameLayout {
-    public boolean isVisible = false;
+    public boolean isVisible = true;
     public boolean useInternalAlarm = false;
     private Context context;
     private AttributeSet attrs;
@@ -29,20 +30,52 @@ public class BottomPanelLayout extends FrameLayout {
         this.context = context;
         this.attrs = attrs;
         view = new AlarmClock(context, attrs);
-        addView(view);
+    }
 
+    public void hide() {
+        isVisible = false;
+        setClickable(false);
+    }
+
+    public void show() {
+        isVisible = true;
+        setClickable(true);
     }
 
     public void setCustomColor(int accentColor, int textColor) {
         this.accentColor = accentColor;
         this.textColor = textColor;
         view.setCustomColor(accentColor, textColor);
+        if (stockAlarmView != null) stockAlarmView.setCustomColor(accentColor, textColor);
+        if (webRadioLayout != null) webRadioLayout.setCustomColor(accentColor, textColor);
     }
 
-    public void showStockAlarmView() {
+    public void setup() {
+        if (AlarmHandlerService.alarmIsRunning()) {
+            showAlarmView();
+        } else if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
+            showWebRadioView();
+        } else if (!useInternalAlarm) {
+            showStockAlarmView();
+        } else {
+            showAlarmView();
+        }
+        show();
+        invalidate();
+    }
+
+    private void clearViews() {
+        stockAlarmView = null;
+        webRadioLayout = null;
+    }
+
+    private void showStockAlarmView() {
+        if (stockAlarmView != null) return; // already visible
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) return;
         
         removeAllViews();
+        clearViews();
+        view.cancelAlarm();
         stockAlarmView = new StockAlarmLayout(context, attrs);
         stockAlarmView.setCustomColor(accentColor, textColor);
         stockAlarmView.setText();
@@ -50,8 +83,10 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
-    public void showWebRadioView() {
+    private void showWebRadioView() {
+        if (webRadioLayout != null) return; // already visible
         removeAllViews();
+        clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
         webRadioLayout.setText();
@@ -59,22 +94,12 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
-    public void showAlarmView() {
+    private void showAlarmView() {
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) return;
-
         removeAllViews();
-        stockAlarmView = null;
+        clearViews();
         addView(view);
         invalidate();
-    }
-
-    public void setup() {
-        if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO){
-            showWebRadioView();
-        } else {
-
-
-        }
     }
 
     public void setLocked(boolean locked) {

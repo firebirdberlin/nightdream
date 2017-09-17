@@ -207,8 +207,7 @@ public class NightDreamUI {
             hideBatteryView(2000);
             setAlpha(menuIcon, 0.f, 2000);
 
-            bottomPanelLayout.isVisible = false;
-            bottomPanelLayout.setClickable(false);
+            bottomPanelLayout.hide();
             setAlpha(bottomPanelLayout, 0.f, 2000);
             if (mode == 0) {
                 setAlpha(notificationbar, 0.f, 2000);
@@ -443,6 +442,8 @@ public class NightDreamUI {
         setScreenOrientation(settings.screenOrientation);
 
         initSidePanel();
+        bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
+        bottomPanelLayout.setup();
         updateBatteryValue();
         setupScreenAnimation();
         lockUI(this.locked);
@@ -706,15 +707,9 @@ public class NightDreamUI {
     }
 
     private void setupAlarmClock() {
-        if ( ! settings.useInternalAlarm ) {
-            alarmClock.cancelAlarm(); //remove any internal alarms first
-            bottomPanelLayout.showStockAlarmView();
-        } else {
-            bottomPanelLayout.showAlarmView();
-        }
-
-        bottomPanelLayout.isVisible = true;
-        bottomPanelLayout.setClickable(true);
+        bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
+        bottomPanelLayout.setup();
+        bottomPanelLayout.show();
     }
 
     public void onPause() {
@@ -1100,7 +1095,6 @@ public class NightDreamUI {
         handler.postDelayed(hideAlarmClock, 20000);
         controlsVisible = true;
         setupAlarmClock();
-        bottomPanelLayout.invalidate();
         if ( AlarmHandlerService.alarmIsRunning() ) {
             setRadioIconInactive();
             blinkIfLocked();
@@ -1430,7 +1424,7 @@ public class NightDreamUI {
                 clockLayout.update(settings.weatherEntry);
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
-                bottomPanelLayout.showWebRadioView();
+                bottomPanelLayout.setup();
                 setRadioIconActive();
             }
             else

@@ -50,6 +50,7 @@ public class StockAlarmLayout extends RelativeLayout {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
         textView.setOnClickListener(onStockAlarmTimeClickListener);
         addView(textView, lp);
+        invalidate();
 
     }
 
