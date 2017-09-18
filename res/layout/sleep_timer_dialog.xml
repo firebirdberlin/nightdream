@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="26dp">
+    android:padding="26dp"
+    android:theme="@style/DialogTheme">
 
     <EditText
         android:id="@+id/minuteText"
@@ -13,7 +14,8 @@
         android:ems="10"
         android:hint="@string/minute"
         android:inputType="number"
-        android:singleLine="true" />
+
+        android:maxLines="1" />
 
 
 </LinearLayout>
