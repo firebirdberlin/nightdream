@@ -3,15 +3,18 @@ package com.firebirdberlin.nightdream.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
+
+import java.util.Calendar;
 
 public class SleepTimerDialogFragment extends DialogFragment {
 
@@ -65,6 +68,10 @@ public class SleepTimerDialogFragment extends DialogFragment {
                         if (!minuteText.isEmpty()) {
                             minutes += Integer.parseInt(minuteText);
                         }
+                        Calendar now = Calendar.getInstance();
+                        now.add(Calendar.MINUTE, minutes);
+                        long millis = now.getTimeInMillis();
+                        RadioStreamSleepTimeReceiver.schedule(getContext(), millis);
 
                         mListener.onSleepTimeSelected(minutes);
                     }
