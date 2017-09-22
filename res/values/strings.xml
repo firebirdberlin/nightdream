@@ -60,6 +60,7 @@ OR
     <string name="credits">Credits</string>
     <string name="credits_pull_requests">Pull requests</string>
     <string name="date_format">Date format</string>
+    <string name="delete">delete</string>
     <string name="dialog_message_thank_you">Thank you very much!</string>
     <string name="dialog_title_thank_you">Thanks</string>
     <string name="donate_bitcoin">Bitcoin</string>

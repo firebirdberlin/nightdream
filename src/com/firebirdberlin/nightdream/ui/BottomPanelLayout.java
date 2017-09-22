@@ -121,5 +121,8 @@ public class BottomPanelLayout extends FrameLayout {
         }
     }
 
+    public void invalidate() {
+        setCustomColor(accentColor, textColor);
+    }
 }
 

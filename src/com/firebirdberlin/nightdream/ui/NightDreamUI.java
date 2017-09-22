@@ -712,6 +712,11 @@ public class NightDreamUI {
         bottomPanelLayout.show();
     }
 
+    public void reconfigure() {
+        hideSystemUI();
+        bottomPanelLayout.invalidate();
+    }
+
     public void onPause() {
         EventBus.getDefault().unregister(this);
         if ( lightSensorEventListener != null ) {

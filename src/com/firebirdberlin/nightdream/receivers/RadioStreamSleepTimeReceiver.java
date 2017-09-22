@@ -14,11 +14,13 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class RadioStreamSleepTimeReceiver extends BroadcastReceiver {
     private final static String TAG = "RadioStreamSleepTimeReceiver";
+    private static long sleepTimeMillis = -1L;
 
-    public static void cancelAlarm(Context context) {
+    public static void cancel(Context context) {
         PendingIntent pI = RadioStreamSleepTimeReceiver.getPendingIntent(context);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
         am.cancel(pI);
+        sleepTimeMillis = -1L;
     }
 
     public static PendingIntent getPendingIntent(Context context) {
@@ -40,12 +42,21 @@ public class RadioStreamSleepTimeReceiver extends BroadcastReceiver {
         } else {
             deprecatedSetAlarm(context, millis, pI);
         }
+        sleepTimeMillis = millis;
     }
 
     @SuppressWarnings("deprecation")
     private static void deprecatedSetAlarm(Context context, long millis, PendingIntent pendingIntent) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, millis, pendingIntent);
+    }
+
+    public static boolean isSleepTimeSet() {
+        return (sleepTimeMillis > -1L);
+    }
+
+    public static long getSleepTime() {
+        return sleepTimeMillis;
     }
 
     @Override

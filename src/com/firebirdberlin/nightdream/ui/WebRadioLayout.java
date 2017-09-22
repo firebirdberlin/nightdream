@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
@@ -65,7 +66,11 @@ public class WebRadioLayout extends RelativeLayout {
     public void setCustomColor(int accentColor, int textColor) {
         Drawable bg = getBackground();
         bg.setColorFilter( accentColor, PorterDuff.Mode.MULTIPLY );
-        buttonSleepTimer.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+
+        buttonSleepTimer.setColorFilter(
+                RadioStreamSleepTimeReceiver.isSleepTimeSet() ? accentColor : textColor,
+                PorterDuff.Mode.SRC_ATOP
+        );
         textView.setTextColor(textColor);
     }
 
@@ -86,5 +91,6 @@ public class WebRadioLayout extends RelativeLayout {
     @Override
     public void setClickable(boolean clickable) {
         super.setClickable(clickable);
+        buttonSleepTimer.setClickable(clickable);
     }
 }

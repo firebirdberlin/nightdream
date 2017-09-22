@@ -71,17 +71,35 @@ public class SleepTimerDialogFragment extends DialogFragment {
                         Calendar now = Calendar.getInstance();
                         now.add(Calendar.MINUTE, minutes);
                         long millis = now.getTimeInMillis();
-                        RadioStreamSleepTimeReceiver.schedule(getContext(), millis);
+                        RadioStreamSleepTimeReceiver.schedule((Context) mListener, millis);
 
                         mListener.onSleepTimeSelected(minutes);
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        SleepTimerDialogFragment.this.getDialog().cancel();
                         mListener.onSleepTimeDismissed();
                     }
                 });
+
+        if (RadioStreamSleepTimeReceiver.isSleepTimeSet()) {
+            long sleepTimeMillis = RadioStreamSleepTimeReceiver.getSleepTime();
+            long now = Calendar.getInstance().getTimeInMillis();
+
+            long diffInMinutes = (sleepTimeMillis - now) / 1000L / 60L;
+            if (diffInMinutes > 0L) {
+                minuteTextEdit.setText(String.valueOf(diffInMinutes));
+            }
+
+            builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    RadioStreamSleepTimeReceiver.cancel((Context) mListener);
+                    mListener.onSleepTimeDismissed();
+                    SleepTimerDialogFragment.this.getDialog().cancel();
+                }
+            });
+        }
 
         return builder.create();
     }

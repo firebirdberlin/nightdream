@@ -641,12 +641,12 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
 
     @Override
     public void onSleepTimeSelected(int minutes) {
-        nightDreamUI.hideSystemUI();
+        nightDreamUI.reconfigure();
     }
 
     @Override
     public void onSleepTimeDismissed() {
-        nightDreamUI.hideSystemUI();
+        nightDreamUI.reconfigure();
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
