@@ -11,6 +11,7 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 public class BottomPanelLayout extends FrameLayout {
     public boolean isVisible = true;
     public boolean useInternalAlarm = false;
+    public boolean daydreamMode = false;
     private Context context;
     private AttributeSet attrs;
     private StockAlarmLayout stockAlarmView = null;
@@ -53,7 +54,7 @@ public class BottomPanelLayout extends FrameLayout {
     public void setup() {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
-        } else if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
+        } else if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO & !daydreamMode) {
             showWebRadioView();
         } else if (!useInternalAlarm) {
             showStockAlarmView();

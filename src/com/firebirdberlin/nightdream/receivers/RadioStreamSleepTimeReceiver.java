@@ -62,8 +62,9 @@ public class RadioStreamSleepTimeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Config.ACTION_START_SLEEP_TIME.equals(intent.getAction())) {
+            sleepTimeMillis = -1L;
             RadioStreamService.startSleepTime(context);
+            NightDreamActivity.start(context);
         }
-        NightDreamActivity.start(context);
     }
 }

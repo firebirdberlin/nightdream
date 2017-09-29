@@ -443,6 +443,7 @@ public class NightDreamUI {
 
         initSidePanel();
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
+        bottomPanelLayout.daydreamMode = daydreamMode;
         bottomPanelLayout.setup();
         updateBatteryValue();
         setupScreenAnimation();
@@ -707,6 +708,7 @@ public class NightDreamUI {
     }
 
     private void setupAlarmClock() {
+        bottomPanelLayout.daydreamMode = daydreamMode;
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setup();
         bottomPanelLayout.show();
