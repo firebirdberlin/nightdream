@@ -1,35 +1,28 @@
 package com.firebirdberlin.radiostreamapi;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,6 +33,15 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 public class RadioStreamPreference extends DialogPreference
@@ -53,6 +55,9 @@ public class RadioStreamPreference extends DialogPreference
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
+    private TextView directInputHintText;
+    private EditText directInputUrl = null;
+    private EditText directInputDescription = null;
     private TextView noDataConnectionText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
@@ -74,6 +79,14 @@ public class RadioStreamPreference extends DialogPreference
         setValuesFromXml(attrs);
     }
 
+    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
+                                                  String name, String defaultValue) {
+        String value = attrs.getAttributeValue(namespace, name);
+        if (value == null) value = defaultValue;
+
+        return value;
+    }
+
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
         setNegativeButtonText(android.R.string.cancel);
@@ -83,14 +96,6 @@ public class RadioStreamPreference extends DialogPreference
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         builder.setPositiveButton(null, null);
-    }
-
-    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
-                                                  String name, String defaultValue) {
-        String value = attrs.getAttributeValue(namespace, name);
-        if (value == null) value = defaultValue;
-
-        return value;
     }
 
     @Override
@@ -109,6 +114,16 @@ public class RadioStreamPreference extends DialogPreference
         countrySpinner = (Spinner) v.findViewById(R.id.countrySpinner);
         noResultsText = (TextView) v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
+        directInputHintText = (TextView) v.findViewById(R.id.direct_input_hint);
+        //directInputHintText.setVisibility(View.GONE);
+        directInputHintText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(mContext, "Hello", Toast.LENGTH_SHORT).show();
+                showManualInputDialog();
+            }
+        });
+
         noDataConnectionText = (TextView) v.findViewById(R.id.no_data_connection);
         noDataConnectionText.setVisibility(View.GONE);
         //for german and english display this text in parantheses, otherwise the default message_no_data_connection is displayed
@@ -199,6 +214,7 @@ public class RadioStreamPreference extends DialogPreference
         spinner.show();
         stationListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
+        directInputHintText.setVisibility(View.GONE);
         noDataConnectionText.setVisibility(View.GONE);
 
         String country = getSelectedCountry();
@@ -221,6 +237,7 @@ public class RadioStreamPreference extends DialogPreference
         spinner.hide();
         stationListView.setVisibility((stations.size() == 0) ? View.GONE : View.VISIBLE);
         noResultsText.setVisibility((stations.size() == 0) ? View.VISIBLE : View.GONE);
+        directInputHintText.setVisibility((stations.size() == 0) ? View.VISIBLE : View.GONE);
         if (stations.size() == 0 && !Utility.hasNetworkConnection(mContext)) {
             noDataConnectionText.setVisibility(View.VISIBLE);
         } else {
@@ -263,10 +280,11 @@ public class RadioStreamPreference extends DialogPreference
 
     @Override
     public CharSequence getSummary () {
+
         RadioStation station = getPersistedRadioStation();
         if (station != null && station.name != null && !station.name.isEmpty()) {
 
-            final boolean hasCountry = (station.countryCode != null);
+            final boolean hasCountry = (station.countryCode != null && !station.countryCode.isEmpty());
             final boolean hasBitrate = (station.bitrate > 0);
             String summary;
             if (hasCountry && hasBitrate) {
@@ -486,4 +504,81 @@ public class RadioStreamPreference extends DialogPreference
 
     }
 
+    private void showManualInputDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.radio_stream_manual_input_hint);
+
+        LayoutInflater inflater = (LayoutInflater)
+                getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.radio_stream_manual_input_dialog, null);
+
+        final EditText inputUrl = (EditText) v.findViewById(R.id.radio_stream_manual_input_url);
+        final EditText inputDescription = (EditText) v.findViewById(R.id.radio_stream_manual_input_description);
+        //test urlan description
+        inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
+        inputDescription.setText("Radio Berlin 88,8");
+
+        builder.setView(v);
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface manualInputDialog, int which) {
+                // do nothing here, but below
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        final AlertDialog manualInputDialog = builder.create();
+        manualInputDialog.show();
+        // set OK button click handler here, so closing of the dialog can be prevented if invalid url was entered
+        manualInputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String urlString = inputUrl.getText().toString();
+                String description = inputDescription.getText().toString();
+
+                if (urlString != null && !urlString.isEmpty()) {
+                    URL url = validateUrlInput(urlString);
+                    if (url != null) {
+
+                        //Todo: optional support m3u,pls : extract stream and infos from it (overwrites description input)
+
+                        RadioStation station = new RadioStation();
+                        station.isManualInput = true;
+                        station.isOnline = true;
+                        station.name = (description != null && !description.isEmpty() ? description : url.getHost());
+                        station.stream = urlString;
+                        station.bitrate = 0;
+                        station.countryCode = ""; // empty string, otherwise invalid json
+                        persistRadioStation(station);
+                        setSummary(station.stream);
+                        manualInputDialog.dismiss();
+
+                        //also finish parent dialog (RadioStreamPreference)
+                        notifyChanged();
+                        getDialog().dismiss();
+
+                    }
+                }
+
+                //TODO: show error message (unreachable, invalid url, invalid format etc)
+            }
+        });
+    }
+
+    private URL validateUrlInput(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            // todo: check if stream is online/reachable?
+            return url;
+        } catch (MalformedURLException e) {
+
+        }
+        return null;
+    }
 }

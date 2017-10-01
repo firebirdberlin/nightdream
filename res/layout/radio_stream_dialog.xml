@@ -1,50 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="24dp">
 
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
         <TextView
-            android:text="@string/country"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/country"
             android:textColor="@color/primary_text_color_selector"/>
         <Spinner
+            android:id="@+id/countrySpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/countrySpinner" />
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/query_string"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:hint="@string/radio_stream_query_hint"
-            android:inputType="text"
             android:imeOptions="actionSearch"
-            android:layout_weight="1" />
+            android:inputType="text" />
 
         <Button
-            android:background="?android:attr/selectableItemBackground"
-            android:text="@string/radio_stream_search"
-            android:drawableLeft="@drawable/ic_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/start_search"
             style="@android:style/Widget.DeviceDefault.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableLeft="@drawable/ic_search"
+            android:text="@string/radio_stream_search"
             android:textAllCaps="true"
             android:textColor="@color/primary_text_color_selector"/>
     </LinearLayout>
@@ -52,10 +51,10 @@
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleLarge"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
 
     <ListView
@@ -70,15 +69,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/radio_stream_no_search_results"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         />
+    <TextView
+        android:id="@+id/direct_input_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:text="@string/radio_stream_manual_input_hint"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
     <TextView
         android:id="@+id/no_data_connection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/message_no_data_connection"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         />
+
+
 </LinearLayout>

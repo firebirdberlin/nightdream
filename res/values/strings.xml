@@ -121,6 +121,9 @@ OR
     <string name="radio_stream_failure">Radio stream failure</string>
     <string name="radio_stream_no_search_results">There were no search results.</string>
     <string name="radio_stream_offline">offline</string>
+    <string name="radio_stream_manual_input_hint">Enter a stream URL.</string>
+    <string name="radio_stream_manual_input_url">URL</string>
+    <string name="radio_stream_manual_input_description">Description (optional)</string>
     <string name="radio_stream_query_hint">Search string</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_search">Search</string>

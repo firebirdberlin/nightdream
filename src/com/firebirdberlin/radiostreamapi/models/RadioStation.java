@@ -1,22 +1,9 @@
 package com.firebirdberlin.radiostreamapi.models;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RadioStation {
-
-    public long id;
-    public String name;
-    public String countryCode;
-    public String stream;
-    public boolean isOnline;
-    public long bitrate;
-
-    public String toString() {
-        return String.format("%s %s (%d kbit/s)", this.countryCode, this.name, this.bitrate);
-    }
 
     private static final String JSON_ID = "id";
     private static final String JSON_NAME = "name";
@@ -24,6 +11,13 @@ public class RadioStation {
     private static final String JSON_STREAM = "stream";
     private static final String JSON_BITRATE = "bitrate";
     private static final String JSON_STATUS = "status";
+    public long id;
+    public String name;
+    public String countryCode;
+    public String stream;
+    public boolean isOnline;
+    public long bitrate;
+    public boolean isManualInput = false;
 
     public static RadioStation fromJson(String json) throws JSONException {
         JSONObject jsonStation = new JSONObject(json);
@@ -43,6 +37,10 @@ public class RadioStation {
         //station.isOnline = jsonStation.getLong(JSON_STATUS) == 1L;
 
         return station;
+    }
+
+    public String toString() {
+        return String.format("%s %s (%d kbit/s)", this.countryCode, this.name, this.bitrate);
     }
 
     public String toJson() throws JSONException {
