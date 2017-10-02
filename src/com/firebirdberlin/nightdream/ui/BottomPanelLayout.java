@@ -11,7 +11,7 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 public class BottomPanelLayout extends FrameLayout {
     public boolean isVisible = true;
     public boolean useInternalAlarm = false;
-    public boolean daydreamMode = false;
+    private boolean daydreamMode = false;
     private Context context;
     private AttributeSet attrs;
     private StockAlarmLayout stockAlarmView = null;
@@ -23,7 +23,6 @@ public class BottomPanelLayout extends FrameLayout {
     public BottomPanelLayout(Context context) {
         super(context);
         this.context = context;
-
     }
 
     public BottomPanelLayout(Context context, AttributeSet attrs) {
@@ -31,6 +30,11 @@ public class BottomPanelLayout extends FrameLayout {
         this.context = context;
         this.attrs = attrs;
         view = new AlarmClock(context, attrs);
+    }
+
+    public void setDaydreamMode(boolean enabled) {
+        this.daydreamMode = enabled;
+        view.setDaydreamMode(enabled);
     }
 
     public void hide() {

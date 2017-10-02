@@ -49,6 +49,7 @@ public class AlarmClock extends View {
     SimpleTime time;
     GestureDetector mGestureDetector = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
+    private boolean daydreamMode = false;
     private boolean locked = false;
     private boolean FingerDown;
     private boolean userChangesAlarmTime = false;
@@ -94,6 +95,10 @@ public class AlarmClock extends View {
         cornerRight = new HotCorner(Position.RIGHT);
         cornerRight.setIconResource(getResources(), R.drawable.ic_no_audio);
         initColorFilters();
+    }
+
+    public void setDaydreamMode(boolean enabled) {
+        this.daydreamMode = enabled;
     }
 
     @Override
@@ -410,7 +415,7 @@ public class AlarmClock extends View {
             Log.w(TAG, "single tap");
 
             Point click = getClickedPoint(e);
-            if (cornerLeft.isInside(click)) {
+            if (cornerLeft.isInside(click) && !daydreamMode) {
                 TimePickerDialog mTimePicker;
                 int hour = (isAlarmSet()) ? time.hour : 7;
                 int min = (isAlarmSet()) ? time.min : 0;
