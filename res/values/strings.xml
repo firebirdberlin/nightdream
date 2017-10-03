@@ -125,6 +125,8 @@ OR
     <string name="radio_stream_manual_input_url">URL</string>
     <string name="radio_stream_manual_input_description">Description (optional)</string>
     <string name="radio_stream_invalid_url">The URL is invalid.</string>
+    <string name="radio_stream_unreachable_url">The URL is unreachable.</string>
+    <string name="radio_stream_no_internet">No internet connection.</string>
     <string name="radio_stream_query_hint">Search string</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_search">Search</string>

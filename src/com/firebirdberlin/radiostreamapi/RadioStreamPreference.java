@@ -522,9 +522,11 @@ public class RadioStreamPreference extends DialogPreference
         //inputDescription.setText("Radio Berlin 88,8");
 
         // test playlist
-        inputUrl.setText("http://www.radioberlin.de/live.m3u");
+        //inputUrl.setText("http://www.radioberlin.de/live.m3u");
+        inputUrl.setText("http://www.radioberlin.de/live.pls");
 
         final TextView invalidUrlMessage = (TextView) v.findViewById(R.id.invalid_url);
+        invalidUrlMessage.setText(R.string.radio_stream_invalid_url); //reset to default error message
         invalidUrlMessage.setVisibility(View.GONE);
 
         // hide error message when url is edited
@@ -565,75 +567,115 @@ public class RadioStreamPreference extends DialogPreference
         manualInputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String urlString = inputUrl.getText().toString();
-                String description = inputDescription.getText().toString();
+                final String urlString = inputUrl.getText().toString();
+                final String description = inputDescription.getText().toString();
+
+                boolean networkConnection = Utility.hasNetworkConnection(mContext);
 
                 if (urlString != null && !urlString.isEmpty()) {
-                    URL url = validateUrlInput(urlString);
+                    final URL url = validateUrlInput(urlString);
                     if (url != null) {
 
-                        if (PlaylistParser.isPlaylistUrl(url)) {
+                        if (networkConnection) {
 
-                            Log.e(TAG, "is playlist");
+                            if (PlaylistParser.isPlaylistUrl(url)) {
 
-                            PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
-                                @Override
-                                public void onRequestFinished(PlaylistInfo result) {
+                                Log.e(TAG, "is playlist");
 
-                                    if (result.valid) {
+                                PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                                    @Override
+                                    public void onRequestFinished(PlaylistInfo result) {
 
-                                        RadioStation station = new RadioStation();
-                                        station.isManualInput = true;
-                                        station.isOnline = true;
-                                        station.name = result.description;
-                                        station.stream = result.streamUrl;
-                                        station.bitrate = (result.bitrateHint != null ? result.bitrateHint.intValue() : 0);
-                                        station.countryCode = ""; // empty string, otherwise invalid json
-                                        persistRadioStation(station);
-                                        setSummary(station.stream);
+                                        if (result.valid) {
 
-                                        // close this dialog
-                                        manualInputDialog.dismiss();
+                                            // TODO check if the stream itself is reachable?
 
-                                        //also finish parent dialog (RadioStreamPreference)
-                                        notifyChanged();
-                                        getDialog().dismiss();
+                                            RadioStation station = new RadioStation();
+                                            station.isManualInput = true;
+                                            station.isOnline = true;
+                                            station.name = result.description;
+                                            station.stream = result.streamUrl;
+                                            station.bitrate = (result.bitrateHint != null ? result.bitrateHint.intValue() : 0);
+                                            station.countryCode = ""; // empty string, otherwise invalid json
+                                            persistRadioStation(station);
+                                            setSummary(station.stream);
 
-                                    } else {
-                                        invalidUrlMessage.setVisibility(View.VISIBLE);
-                                        //TODO: show error message (unreachable, invalid url, invalid format etc)
+                                            // close this dialog
+                                            manualInputDialog.dismiss();
+
+                                            //also finish parent dialog (RadioStreamPreference)
+                                            notifyChanged();
+                                            getDialog().dismiss();
+
+                                        } else {
+                                            if (result.error != null && result.error == PlaylistInfo.Error.UNREACHABLE_URL) {
+                                                invalidUrlMessage.setText(R.string.radio_stream_unreachable_url);
+                                            } else {
+                                                invalidUrlMessage.setText(R.string.radio_stream_invalid_url);
+                                            }
+                                            invalidUrlMessage.setVisibility(View.VISIBLE);
+
+                                        }
+
                                     }
+                                };
 
-                                }
-                            };
+                                // start background task that checks the playlist
+                                new PlaylistRequestTask(playListResponseListener).execute(urlString);
 
 
-                            new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                            } else {
+
+                                // its a plain stream url
+
+                                StreamURLAvailabilityCheckTask.AsyncResponse streamCheckResponseListener = new StreamURLAvailabilityCheckTask.AsyncResponse() {
+                                    @Override
+                                    public void onRequestFinished(Boolean result) {
+
+                                        if (result != null && result.booleanValue()) {
+
+                                            //stream url is valid
+
+                                            RadioStation station = new RadioStation();
+                                            station.isManualInput = true;
+                                            station.isOnline = true;
+                                            station.name = (description != null && !description.isEmpty() ? description : url.getHost());
+                                            station.stream = urlString;
+                                            station.bitrate = 0;
+                                            station.countryCode = ""; // empty string, otherwise invalid json
+                                            persistRadioStation(station);
+                                            setSummary(station.stream);
+
+                                            // close this dialog
+                                            manualInputDialog.dismiss();
+
+                                            //also finish parent dialog (RadioStreamPreference)
+                                            notifyChanged();
+                                            getDialog().dismiss();
+
+                                        } else {
+
+                                            // invalid, show error message
+                                            invalidUrlMessage.setText(R.string.radio_stream_unreachable_url);
+                                            invalidUrlMessage.setVisibility(View.VISIBLE);
+                                        }
+
+                                    }
+                                };
+
+                                // start background task that checks if the plain stream url is reachable
+                                new StreamURLAvailabilityCheckTask(streamCheckResponseListener).execute(urlString);
+                            }
+
                         } else {
-                            Log.e(TAG, "is not a playlist");
-
-                            RadioStation station = new RadioStation();
-                            station.isManualInput = true;
-                            station.isOnline = true;
-                            station.name = (description != null && !description.isEmpty() ? description : url.getHost());
-                            station.stream = urlString;
-                            station.bitrate = 0;
-                            station.countryCode = ""; // empty string, otherwise invalid json
-                            persistRadioStation(station);
-                            setSummary(station.stream);
-
-                            // close this dialog
-                            manualInputDialog.dismiss();
-
-                            //also finish parent dialog (RadioStreamPreference)
-                            notifyChanged();
-                            getDialog().dismiss();
+                            // no network connection to check the stream itself or read the playlist
+                            invalidUrlMessage.setText(R.string.radio_stream_no_internet);
+                            invalidUrlMessage.setVisibility(View.VISIBLE);
                         }
                     }
+                } else {
+                    invalidUrlMessage.setVisibility(View.VISIBLE);
                 }
-
-                invalidUrlMessage.setVisibility(View.VISIBLE);
-                //TODO: show error message (unreachable, invalid url, invalid format etc)
             }
 
         });

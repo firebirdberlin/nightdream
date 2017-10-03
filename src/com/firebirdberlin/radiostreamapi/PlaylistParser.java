@@ -25,6 +25,10 @@ public class PlaylistParser {
     private static final String M3U_EXT_FILE_HEADER = "#EXTM3U";
     private static final String M3U_EXT_INFO_PREFIX = "#EXTINF:";
 
+    private static final String PLS_FILE_HEADER = "[playlist]";
+    private static final String PLS_FILE_FILE1_PREFIX = "File1=";
+    private static final String PLS_FILE_TITLE1_PREFIX = "Title1=";
+
     private static final Integer[] USUAL_BITRATES = new Integer[] { 64, 96, 128, 192, 256};
 
     public static boolean isPlaylistUrl(URL url) {
@@ -34,10 +38,11 @@ public class PlaylistParser {
 
     public static PlaylistInfo parsePlaylistUrl(String playlistUrl) {
 
+        HttpURLConnection urlConnection = null;
         try {
 
             URL url = new URL(playlistUrl);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
 
             urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(READ_TIMEOUT);
@@ -69,7 +74,6 @@ public class PlaylistParser {
             } else {
                 Log.e(TAG, "status code " + responseCode);
             }
-            urlConnection.disconnect();
 
         }
         catch (SocketTimeoutException e) {
@@ -77,9 +81,52 @@ public class PlaylistParser {
         }
         catch (Exception e) {
             Log.e(TAG, Log.getStackTraceString(e));
+        } finally {
+           if (urlConnection != null) {
+               urlConnection.disconnect();
+           }
         }
 
         return errorneousPlaylist(PlaylistInfo.Error.UNREACHABLE_URL);
+    }
+
+    public static boolean checkStreamURLAvailability(String urlString) {
+
+        HttpURLConnection urlConnection = null;
+        try {
+
+            URL url = new URL(urlString);
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setReadTimeout(READ_TIMEOUT);
+            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+
+            urlConnection.setDoOutput(true);
+
+            urlConnection.connect();
+
+            int responseCode = urlConnection.getResponseCode();
+            urlConnection.disconnect();
+            if ( responseCode == 200 ) {
+                return true;
+            } else {
+                Log.e(TAG, "status code " + responseCode);
+                return false;
+            }
+
+        }
+        catch (SocketTimeoutException e) {
+            Log.e(TAG, "Http Timeout");
+        }
+        catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return false;
     }
 
     private static PlaylistInfo errorneousPlaylist(PlaylistInfo.Error error) {
@@ -196,6 +243,53 @@ public class PlaylistParser {
     }
 
     private static PlaylistInfo parsePLS(List<String> lines) {
+
+        if (lines.isEmpty()) {
+            return null;
+        }
+
+        boolean valid = lines.get(0).startsWith(PLS_FILE_HEADER);
+        if (valid) {
+
+            String streamUrl = null;
+            String streamTitle = null;
+            Integer bitrateHint = null;
+            for (String line : lines) {
+                //find File 1 and Title1
+                if (line.startsWith(PLS_FILE_FILE1_PREFIX)) {
+                    if (line.length() > PLS_FILE_FILE1_PREFIX.length()) {
+                        String urlString = line.substring(PLS_FILE_FILE1_PREFIX.length());
+                        if (isValidUrl(urlString)) {
+                            streamUrl = urlString;
+                            bitrateHint = bitrateFromUrl(urlString);
+                        }
+                    }
+                }
+
+                if (line.startsWith(PLS_FILE_TITLE1_PREFIX)) {
+                    if (line.length() > PLS_FILE_TITLE1_PREFIX.length()) {
+                        String title = line.substring(PLS_FILE_TITLE1_PREFIX.length()).trim();
+                        if (!title.isEmpty()) {
+                            streamTitle = title;
+                        }
+                    }
+                }
+            }
+
+            if (streamUrl != null) {
+                PlaylistInfo p = new PlaylistInfo();
+                p.streamUrl = streamUrl;
+                p.format = PlaylistInfo.Format.PLS;
+
+                if (streamTitle != null) {
+                    p.description = streamTitle;
+                }
+                p.bitrateHint = bitrateHint;
+
+                return p;
+            }
+        }
+
         return null;
     }
 }
