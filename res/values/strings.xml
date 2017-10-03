@@ -124,6 +124,7 @@ OR
     <string name="radio_stream_manual_input_hint">Enter a stream URL.</string>
     <string name="radio_stream_manual_input_url">URL</string>
     <string name="radio_stream_manual_input_description">Description (optional)</string>
+    <string name="radio_stream_invalid_url">The URL is invalid.</string>
     <string name="radio_stream_query_hint">Search string</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_search">Search</string>

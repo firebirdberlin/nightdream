@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.radiostreamapi.models.Country;
+import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
@@ -505,6 +506,7 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     private void showManualInputDialog() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.radio_stream_manual_input_hint);
 
@@ -514,9 +516,33 @@ public class RadioStreamPreference extends DialogPreference
 
         final EditText inputUrl = (EditText) v.findViewById(R.id.radio_stream_manual_input_url);
         final EditText inputDescription = (EditText) v.findViewById(R.id.radio_stream_manual_input_description);
-        //test urlan description
-        inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
-        inputDescription.setText("Radio Berlin 88,8");
+
+        // test plain stream url + description
+        //inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
+        //inputDescription.setText("Radio Berlin 88,8");
+
+        // test playlist
+        inputUrl.setText("http://www.radioberlin.de/live.m3u");
+
+        final TextView invalidUrlMessage = (TextView) v.findViewById(R.id.invalid_url);
+        invalidUrlMessage.setVisibility(View.GONE);
+
+        // hide error message when url is edited
+        inputUrl.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                invalidUrlMessage.setVisibility(View.GONE);
+            }
+        });
 
         builder.setView(v);
 
@@ -546,28 +572,70 @@ public class RadioStreamPreference extends DialogPreference
                     URL url = validateUrlInput(urlString);
                     if (url != null) {
 
-                        //Todo: optional support m3u,pls : extract stream and infos from it (overwrites description input)
+                        if (PlaylistParser.isPlaylistUrl(url)) {
 
-                        RadioStation station = new RadioStation();
-                        station.isManualInput = true;
-                        station.isOnline = true;
-                        station.name = (description != null && !description.isEmpty() ? description : url.getHost());
-                        station.stream = urlString;
-                        station.bitrate = 0;
-                        station.countryCode = ""; // empty string, otherwise invalid json
-                        persistRadioStation(station);
-                        setSummary(station.stream);
-                        manualInputDialog.dismiss();
+                            Log.e(TAG, "is playlist");
 
-                        //also finish parent dialog (RadioStreamPreference)
-                        notifyChanged();
-                        getDialog().dismiss();
+                            PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                                @Override
+                                public void onRequestFinished(PlaylistInfo result) {
 
+                                    if (result.valid) {
+
+                                        RadioStation station = new RadioStation();
+                                        station.isManualInput = true;
+                                        station.isOnline = true;
+                                        station.name = result.description;
+                                        station.stream = result.streamUrl;
+                                        station.bitrate = (result.bitrateHint != null ? result.bitrateHint.intValue() : 0);
+                                        station.countryCode = ""; // empty string, otherwise invalid json
+                                        persistRadioStation(station);
+                                        setSummary(station.stream);
+
+                                        // close this dialog
+                                        manualInputDialog.dismiss();
+
+                                        //also finish parent dialog (RadioStreamPreference)
+                                        notifyChanged();
+                                        getDialog().dismiss();
+
+                                    } else {
+                                        invalidUrlMessage.setVisibility(View.VISIBLE);
+                                        //TODO: show error message (unreachable, invalid url, invalid format etc)
+                                    }
+
+                                }
+                            };
+
+
+                            new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                        } else {
+                            Log.e(TAG, "is not a playlist");
+
+                            RadioStation station = new RadioStation();
+                            station.isManualInput = true;
+                            station.isOnline = true;
+                            station.name = (description != null && !description.isEmpty() ? description : url.getHost());
+                            station.stream = urlString;
+                            station.bitrate = 0;
+                            station.countryCode = ""; // empty string, otherwise invalid json
+                            persistRadioStation(station);
+                            setSummary(station.stream);
+
+                            // close this dialog
+                            manualInputDialog.dismiss();
+
+                            //also finish parent dialog (RadioStreamPreference)
+                            notifyChanged();
+                            getDialog().dismiss();
+                        }
                     }
                 }
 
+                invalidUrlMessage.setVisibility(View.VISIBLE);
                 //TODO: show error message (unreachable, invalid url, invalid format etc)
             }
+
         });
     }
 
