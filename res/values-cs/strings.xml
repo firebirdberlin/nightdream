@@ -18,6 +18,8 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">O aplikaci</string>
+<string name="action_snooze">Odložení buzení</string>
+<string name="action_stop">Zastavení</string>
 <string name="alarm">Budík</string>
 <string name="alarmFadeIn">Zvyšující se hlasitost</string>
 <string name="alarmVolume">Hlasitost</string>
@@ -28,6 +30,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Vzhled</string>
 <string name="app_name">Noční hodiny</string>
 <string name="auto_brightness">Automatický jas</string>
+<string name="autostart_message_disabled">Pro funkci automatického startu vypněte šetřič obrazovky.</string>
 <string name="autostart_timerange_label_end">Koncový čas</string>
 <string name="autostart_timerange_label_start">Počáteční čas</string>
 <string name="background">Pozadí</string>
@@ -46,12 +49,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_secondary_color">Barva textu</string>
 <string name="clear">Vyčistit</string>
 <string name="clock_layout">Rozložení hodín</string>
+<string name="clock_layout_digital">Digitální</string>
+<string name="clock_layout_analog">Analogový</string>
 <string name="colors">Barvy</string>
 <string name="confirm_reset_question">Opravu chcete obnovit výchozí nastavení?</string>
 <string name="confirm_reset">Obnova</string>
 <string name="contribute">Přispět</string>
 <string name="contribute_source_code">Zdrojový kód</string>
 <string name="contribute_translation">Překlady</string>
+<string name="country">Země</string>
 <string name="credits">Zásluhy</string>
 <string name="date_format">Formát data</string>
 <string name="dialog_message_thank_you">Velice děkuji!</string>
@@ -124,6 +130,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Zobrazit teplotu</string>
 <string name="show_weather">Zobrazit místní počasí</string>
 <string name="show_wind_speed">Zobrazit rychlost větru</string>
+<string name="snoozeTime">Doba odložení budíku</string>
 <string name="speedUnit">Jednotky pro rychlost větru</string>
 <string name="titlePrivacyPolicy">Ochrana osobních údajů</string>
 <string name="temperatureUnit">Jednotky pro teplotu</string>
