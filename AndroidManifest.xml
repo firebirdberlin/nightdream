@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="170"
-    android:versionName="2.5.27">
+    android:versionCode="171"
+    android:versionName="2.5.28">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -145,6 +145,11 @@
         <receiver android:name=".receivers.WakeUpReceiver">
             <intent-filter>
                 <action android:name="com.firebirdberlin.nightdream.WAKEUP" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receivers.RadioStreamSleepTimeReceiver">
+            <intent-filter>
+                <action android:name="com.firebirdberlin.nightdream.ACTION_START_SLEEP_TIME" />
             </intent-filter>
         </receiver>
         <receiver

@@ -1,9 +1,10 @@
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.ui;
 
-import android.app.AlarmManager;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +25,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TimePicker;
 
+import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 
@@ -39,12 +44,12 @@ import static android.text.format.DateFormat.is24HourFormat;
 public class AlarmClock extends View {
     private static String TAG ="NightDream.AlarmClock";
     final private Handler handler = new Handler();
-    public boolean isVisible = false;
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
     SimpleTime time;
     GestureDetector mGestureDetector = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
+    private boolean daydreamMode = false;
     private boolean locked = false;
     private boolean FingerDown;
     private boolean userChangesAlarmTime = false;
@@ -77,10 +82,13 @@ public class AlarmClock extends View {
     };
     private Float lastMoveEventY = null;
     private int lastMinSinceDragStart = 0;
+    private NightDreamBroadcastReceiver broadcastReceiver = null;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
+        settings = new Settings(this.ctx);
+        updateTime();
         mGestureDetector = new GestureDetector(context, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
         cornerLeft.setIconResource(getResources(), R.drawable.ic_audio);
@@ -89,13 +97,49 @@ public class AlarmClock extends View {
         initColorFilters();
     }
 
+    public void setDaydreamMode(boolean enabled) {
+        this.daydreamMode = enabled;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        broadcastReceiver = registerBroadcastReceiver();
+    }
+
+    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_ALARM_SET);
+        filter.addAction(Config.ACTION_ALARM_STOPPED);
+        filter.addAction(Config.ACTION_ALARM_DELETED);
+        ctx.registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        unregister(broadcastReceiver);
+    }
+
+    private void unregister(BroadcastReceiver receiver) {
+        try {
+            ctx.unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+
     public void setLocked(boolean on) {
         locked = on;
     }
 
-    public void setSettings(Settings s) {
-        settings = s;
-        time = new SimpleTime(s.nextAlarmTimeMinutes);
+    private void updateTime() {
+        settings.updateNextAlarmTime();
+        time = new SimpleTime(settings.nextAlarmTimeMinutes);
+        invalidate();
         Log.d(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
     }
 
@@ -126,17 +170,9 @@ public class AlarmClock extends View {
 
     public boolean onTouchEvent(MotionEvent e) {
         // the view should be visible before the user interacts with it
-        if (! isVisible ) return false;
-        if (locked) return false;
+        if (!isClickable() || locked ) return false;
 
-        boolean event_consumed = mGestureDetector.onTouchEvent(e);
-        if (event_consumed) return true;
-
-        boolean eventCancelAlarm = handleAlarmCancelling(e);
-        if (eventCancelAlarm) return true;
-
-        boolean eventAlarmSet = handleAlarmSetEvents(e);
-        return eventAlarmSet;
+        return mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e)|| handleAlarmSetEvents(e);
     }
 
     private boolean handleAlarmSetEvents(MotionEvent e) {
@@ -161,7 +197,7 @@ public class AlarmClock extends View {
                 }
                 return false;
             case MotionEvent.ACTION_MOVE:
-                if (FingerDown == false) return false;
+                if (!FingerDown) return false;
                 if ( dist > touch_zone_radius ) {
                     userChangesAlarmTime = true;
                     cancelAlarm();
@@ -174,7 +210,7 @@ public class AlarmClock extends View {
                 this.lastMoveEventY = tY;
                 break;
             case MotionEvent.ACTION_UP:
-                if (FingerDown == false) return false;
+                if (!FingerDown) return false;
                 if ( dist > touch_zone_radius ) {
                     XYtotime(tX,tY);
                     setAlarm();
@@ -245,7 +281,7 @@ public class AlarmClock extends View {
 
     @Override
     protected void onDraw(Canvas canvas){
-        if ( !isVisible ) return;
+        if ( !isClickable() ) return;
         Resources res = getResources();
 
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -369,26 +405,7 @@ public class AlarmClock extends View {
         }
     }
 
-    public String getNextSystemAlarmTime() {
-        if ( Build.VERSION.SDK_INT < 21 ) {
-            return deprecatedGetNextSystemAlarmTime();
-        }
-        AlarmManager am = (AlarmManager) (ctx.getSystemService( Context.ALARM_SERVICE ));
-        AlarmManager.AlarmClockInfo info = am.getNextAlarmClock();
-        if (info != null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(info.getTriggerTime());
-            return getTimeFormatted(cal);
-        }
-        return "";
-    }
 
-    @SuppressWarnings("deprecation")
-    private String deprecatedGetNextSystemAlarmTime() {
-         return android.provider.Settings.System.getString(
-                 ctx.getContentResolver(),
-                 android.provider.Settings.System.NEXT_ALARM_FORMATTED);
-    }
 
     private enum Position {LEFT, RIGHT}
 
@@ -398,7 +415,7 @@ public class AlarmClock extends View {
             Log.w(TAG, "single tap");
 
             Point click = getClickedPoint(e);
-            if (cornerLeft.isInside(click)) {
+            if (cornerLeft.isInside(click) && !daydreamMode) {
                 TimePickerDialog mTimePicker;
                 int hour = (isAlarmSet()) ? time.hour : 7;
                 int min = (isAlarmSet()) ? time.min : 0;
@@ -489,4 +506,21 @@ public class AlarmClock extends View {
             }
         }
     }
+
+    class NightDreamBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Config.ACTION_ALARM_SET.equals(action)) {
+                if (intent.hasExtra("alarmTime")) {
+                    updateTime();
+                }
+            } else if (Config.ACTION_ALARM_STOPPED.equals(action)) {
+                updateTime();
+            } else if (Config.ACTION_ALARM_DELETED.equals(action)) {
+                updateTime();
+            }
+        }
+    }
+
 }

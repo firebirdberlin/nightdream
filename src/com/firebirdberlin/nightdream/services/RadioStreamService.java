@@ -18,6 +18,7 @@ import com.firebirdberlin.nightdream.HttpStatusCheckTask;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.io.IOException;
 
@@ -29,10 +30,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
-    private static String TAG = "NightDream.RadioStreamService";
+    private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
+    private static String ACTION_START_SLEEP_TIME = "start sleep time";
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
@@ -49,6 +51,23 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             if (currentVolume < 1.) {
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
                 handler.postDelayed(fadeIn, 50);
+            }
+        }
+    };
+    private Runnable fadeOut = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeOut);
+            if (mMediaPlayer == null) return;
+            if (RadioStreamService.streamingMode == StreamingMode.INACTIVE) {
+                stop(getApplicationContext());
+            }
+            currentVolume -= 0.01;
+            if (currentVolume > 0.) {
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeOut, 50);
+            } else {
+                stop(getApplicationContext());
             }
         }
     };
@@ -80,10 +99,25 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         context.stopService(i);
     }
 
+    public static void startSleepTime(Context context) {
+        Log.i(TAG, "startSleepTime");
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setAction(ACTION_START_SLEEP_TIME);
+        context.startService(i);
+    }
+
     private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, RadioStreamService.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return i;
+    }
+
+    public static RadioStation getCurrentRadioStation(Context context) {
+        if (streamingMode != StreamingMode.INACTIVE) {
+            Settings settings = new Settings(context);
+            return settings.getCurrentRadioStation();
+        }
+        return null;
     }
 
     @Override
@@ -137,6 +171,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } else
         if ( ACTION_STOP.equals(action) ) {
             stopSelf();
+        } else if (ACTION_START_SLEEP_TIME.equals(action)) {
+            handler.post(fadeOut);
         }
 
         return Service.START_REDELIVER_INTENT;

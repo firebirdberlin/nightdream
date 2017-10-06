@@ -63,7 +63,6 @@
 
     </LinearLayout>
 
-
     <FrameLayout
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -97,12 +96,12 @@
 
         <include layout="@layout/side_panel" />
     </FrameLayout>
-
-    <com.firebirdberlin.nightdream.AlarmClock
-        android:id="@+id/AlarmClock"
+    <FrameLayout
+        android:id="@+id/bottomPanel"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        />
-</LinearLayout>
+        android:layout_height="60dp">
+    </FrameLayout>
+
+    </LinearLayout>
 
 </FrameLayout>

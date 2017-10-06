@@ -3,15 +3,4 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/textview_alarm_time"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="00:00"
-        android:paddingBottom="10sp"
-        android:textSize="30sp"
-        android:visibility="gone"
-        />
 </RelativeLayout>

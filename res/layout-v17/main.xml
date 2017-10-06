@@ -89,11 +89,18 @@
             <include layout="@layout/side_panel" />
         </FrameLayout>
 
-        <com.firebirdberlin.nightdream.AlarmClock
-            android:id="@+id/AlarmClock"
+        <com.firebirdberlin.nightdream.ui.BottomPanelLayout
+            android:id="@+id/bottomPanel"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            />
+            android:layout_height="60dp">
+<!--            <com.firebirdberlin.nightdream.ui.AlarmClock
+                android:id="@+id/AlarmClock"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                />
+-->
+        </com.firebirdberlin.nightdream.ui.BottomPanelLayout>
+
     </LinearLayout>
 
 </FrameLayout>
