@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -35,15 +36,19 @@ public class WebRadioLayout extends RelativeLayout {
         setBackgroundResource(R.drawable.webradiopanelborder);
 
         textView = new TextView(context);
+        textView.setEllipsize(TextUtils.TruncateAt.END);
+        int padding = Utility.dpToPx(context, 6.f);
+        textView.setPadding(padding, padding, padding, padding);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        //lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 
         buttonSleepTimer = new ImageView(context);
         buttonSleepTimer.setImageResource(R.drawable.ic_nightmode);
-        int padding = Utility.dpToPx(context, 10.f);
+
+        padding = Utility.dpToPx(context, 6.f);
         buttonSleepTimer.setPadding(padding, padding, padding, padding);
         buttonSleepTimer.setOnClickListener(new OnClickListener() {
             @Override
@@ -56,7 +61,8 @@ public class WebRadioLayout extends RelativeLayout {
         RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        lp2.addRule(RelativeLayout.CENTER_IN_PARENT);
+        lp2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        //lp2.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         addView(textView, lp);
         addView(buttonSleepTimer, lp2);
