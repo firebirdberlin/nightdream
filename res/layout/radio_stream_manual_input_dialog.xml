@@ -46,4 +46,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         />
 
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/radio_stream_manual_input_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
+
 </LinearLayout>
