@@ -215,21 +215,16 @@ public class WeatherForecastLayout extends LinearLayout {
         String windSpeedBeaufort = String.format("%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(entry.windSpeed));
         switch (speedUnit) {
             case WeatherEntry.MILES_PER_HOUR:
-                return String.format("%.1f mi/h (%s)", toMilesPerHour(entry.windSpeed), windSpeedBeaufort);
+                double mph = WindSpeedConversion.metersPerSecondToMilesPerHour(entry.windSpeed);
+                return String.format("%.1f mi/h (%s)", mph, windSpeedBeaufort);
             case WeatherEntry.KM_PER_HOUR:
-                return String.format("%.1f km/h (%s)", toKilometersPerHour(entry.windSpeed), windSpeedBeaufort);
+                double kmph = WindSpeedConversion.metersPerSecondToKilometersPerHour(entry.windSpeed);
+                return String.format("%.1f km/h (%s)", kmph, windSpeedBeaufort);
+            case WeatherEntry.BEAUFORT:
             case WeatherEntry.METERS_PER_SECOND:
             default:
                 return String.format("%.1f m/s (%s)", entry.windSpeed, windSpeedBeaufort);
         }
-    }
-
-    private double toMilesPerHour(double mps) {
-        return mps  * 3600. / 1609.344;
-    }
-
-    private double toKilometersPerHour(double mps) {
-        return mps  * 3.6;
     }
 
     private void fixIconWindDirectionSize() {

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.WindSpeedConversion;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
@@ -204,22 +205,18 @@ public class WeatherLayout extends LinearLayout {
 
     private String formatWindText(WeatherEntry entry) {
         switch (speedUnit) {
+            case WeatherEntry.BEAUFORT:
+                return String.format("%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(entry.windSpeed));
             case WeatherEntry.MILES_PER_HOUR:
-                return String.format("%.1fmi/h", toMilesPerHour(entry.windSpeed));
+                double mph = WindSpeedConversion.metersPerSecondToMilesPerHour(entry.windSpeed);
+                return String.format("%.1fmi/h", mph);
             case WeatherEntry.KM_PER_HOUR:
-                return String.format("%.1fkm/h", toKilometersPerHour(entry.windSpeed));
+                double kmph = WindSpeedConversion.metersPerSecondToKilometersPerHour(entry.windSpeed);
+                return String.format("%.1fkm/h", kmph);
             case WeatherEntry.METERS_PER_SECOND:
             default:
                 return String.format("%.1fm/s", entry.windSpeed);
         }
-    }
-
-    private double toMilesPerHour(double mps) {
-        return mps  * 3600. / 1609.344;
-    }
-
-    private double toKilometersPerHour(double mps) {
-        return mps  * 3.6;
     }
 
     private void adjustTextSize() {

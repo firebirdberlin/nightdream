@@ -35,4 +35,11 @@ public class WindSpeedConversion {
         }
     }
 
+    public static double metersPerSecondToMilesPerHour(double mps) {
+        return mps  * 3600. / 1609.344;
+    }
+
+    public static double metersPerSecondToKilometersPerHour(double mps) {
+        return mps  * 3.6;
+    }
 }
