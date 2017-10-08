@@ -355,7 +355,7 @@ public class AlarmClock extends View {
     }
 
     private String getTimeFormatted(Calendar calendar) {
-        String localPattern  = "";
+        String localPattern;
         if (Build.VERSION.SDK_INT >= 18){
             if (is24HourFormat(ctx)) {
                 localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");

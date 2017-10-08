@@ -1,12 +1,23 @@
 package com.firebirdberlin.nightdream.models;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Collections;
+import java.util.List;
 
 public class SimpleTime {
+    public static int SUNDAY = 1;
+    public static int MONDAY = 1 << 1;
+    public static int TUESDAY = 1 << 2;
+    public static int WEDNESDAY = 1 << 3;
+    public static int THURSDAY = 1 << 4;
+    public static int FRIDAY = 1 << 5;
+    public static int SATURDAY = 1 << 6;
 
     public int hour = 0;
     public int min = 0;
+    private int recurringDays = 0;
 
     public SimpleTime() {
 
@@ -20,12 +31,12 @@ public class SimpleTime {
         min = calendar.get(Calendar.MINUTE);
     }
 
-    public SimpleTime(int hour, int min){
+    public SimpleTime(int hour, int min) {
         this.hour = hour;
         this.min = min;
     }
 
-    public SimpleTime(int minutes){
+    public SimpleTime(int minutes) {
         this.hour = minutes / 60;
         this.min = minutes % 60;
     }
@@ -39,18 +50,67 @@ public class SimpleTime {
     }
 
     public Calendar getCalendar() {
-        Calendar cal = new GregorianCalendar();
+        Calendar now = Calendar.getInstance();
+        return getCalendar(now);
+    }
+
+    public Calendar getNextAlarmTime(Calendar reference) {
+        return getCalendar(reference);
+    }
+
+    public Calendar getCalendar(Calendar reference) {
+        if (!isRecurring()) {
+            Calendar cal = initCalendar(reference);
+            if (cal.before(reference)) {
+                cal.add(Calendar.DATE, 1);
+            }
+            return cal;
+        } else {
+            return getNextRecurringAlarmTime(reference);
+        }
+    }
+
+    private Calendar initCalendar(Calendar reference) {
+        Calendar cal = (Calendar) reference.clone();
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, min);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
+        return cal;
+    }
 
-        Calendar now = Calendar.getInstance();
-        if ( cal.before(now) ) {
-            cal.add(Calendar.DATE, 1);
+
+    public void addRecurringDays(int flags) {
+        recurringDays = flags;
+    }
+
+    private boolean isRecurring() {
+        return recurringDays != 0;
+    }
+
+    private Calendar getNextRecurringAlarmTime(Calendar reference) {
+        List<Long> times = new ArrayList<>();
+        List<Integer> days = Arrays.asList(Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY,
+                Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY,
+                Calendar.SATURDAY);
+        for (Integer day : days) {
+
+            // map the day to the corresponding bit flag
+            int flag = 1 << (day - 1);
+            Calendar cal = initCalendar(reference);
+            if ((recurringDays & flag) == flag) {
+                cal.set(Calendar.DAY_OF_WEEK, day);
+                if (cal.before(reference)) {
+                    cal.add(Calendar.DATE, 7);
+                }
+                times.add(cal.getTimeInMillis());
+            }
         }
 
-        return cal;
+        Collections.sort(times);
+        Calendar result = Calendar.getInstance();
+        result.setTimeInMillis(times.get(0));
+        return result;
     }
 }
 
