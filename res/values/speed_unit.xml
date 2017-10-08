@@ -4,6 +4,7 @@
           <item>1</item>
           <item>2</item>
           <item>3</item>
+          <item>4</item>
      </string-array>
 
 
@@ -11,5 +12,6 @@
         <item>m/s</item>
         <item>mi/h</item>
         <item>km/h</item>
+        <item>Bft</item>
     </string-array>
 </resources>
