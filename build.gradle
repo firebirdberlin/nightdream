@@ -55,4 +55,8 @@ android {
             minifyEnabled true
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
