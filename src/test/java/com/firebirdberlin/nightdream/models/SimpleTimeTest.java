@@ -66,26 +66,25 @@ public class SimpleTimeTest extends TestCase {
         assertEquals(1507893900000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeFromList() throws Exception {
+    public void testGetNextFromList() throws Exception {
         List<SimpleTime> times = Arrays.asList(
                 new SimpleTime(10, 20, SimpleTime.TUESDAY | SimpleTime.FRIDAY),
                 new SimpleTime(13, 25, SimpleTime.MONDAY | SimpleTime.WEDNESDAY)
         );
 
         Calendar reference = getReference(14, 00);
-        long result = SimpleTime.getNextAlarmTime(times, reference);
-        assertEquals(1507548300000L, result);
+        SimpleTime result = SimpleTime.getNextFromList(times, reference);
+        assertEquals(times.get(1), result);
 
         Calendar reference2 = getReference(10, 00);
-        long result2 = SimpleTime.getNextAlarmTime(times, reference2);
-        assertEquals(1507278000000L, result2);
+        SimpleTime result2 = SimpleTime.getNextFromList(times, reference2);
+        assertEquals(times.get(0), result2);
     }
 
-    public void testGetNextAlarmTimeFromEmptyList() throws Exception {
-        Calendar reference = getReference(14, 00);
+    public void testGetNextFromListReturnNull() throws Exception {
         List<SimpleTime> times = Arrays.asList();
-
-        long result = SimpleTime.getNextAlarmTime(times, reference);
-        assertEquals(-1L, result);
+        Calendar reference = getReference(14, 00);
+        SimpleTime result = SimpleTime.getNextFromList(times, reference);
+        assertEquals(null, result);
     }
 }

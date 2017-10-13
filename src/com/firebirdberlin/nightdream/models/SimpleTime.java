@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 public class SimpleTime {
     public static int SUNDAY = 1;
@@ -55,22 +56,19 @@ public class SimpleTime {
         this.min = minutes % 60;
     }
 
-    public static long getNextAlarmTime(List<SimpleTime> entries, Calendar reference) {
-        List<Long> times = new ArrayList<>();
-
+    public static SimpleTime getNextFromList(List<SimpleTime> entries, Calendar reference) {
+        TreeMap<Calendar, SimpleTime> map = new TreeMap<>();
         for (SimpleTime t : entries) {
-            try {
-                times.add(t.getNextAlarmTime(reference).getTimeInMillis());
-            } catch (NullPointerException e) {
-
+            Calendar time = t.getNextAlarmTime(reference);
+            if (time != null) {
+                map.put(time, t);
             }
         }
 
-        if (times.size() > 0) {
-            Collections.sort(times);
-            return times.get(0);
+        if (map.size() > 0) {
+            return map.firstEntry().getValue();
         }
-        return -1L;
+        return null;
     }
 
     public int toMinutes() {
