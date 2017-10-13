@@ -56,7 +56,12 @@ public class SimpleTime {
         this.min = minutes % 60;
     }
 
-    public static SimpleTime getNextFromList(List<SimpleTime> entries, Calendar reference) {
+    public static SimpleTime getNextFromList(List<SimpleTime> entries) {
+        Calendar now = Calendar.getInstance();
+        return getNextFromList(entries, now);
+    }
+
+    protected static SimpleTime getNextFromList(List<SimpleTime> entries, Calendar reference) {
         TreeMap<Calendar, SimpleTime> map = new TreeMap<>();
         for (SimpleTime t : entries) {
             Calendar time = t.getNextAlarmTime(reference);

@@ -101,5 +101,9 @@ public class DataSource {
         return items;
     }
 
+    public SimpleTime getNextAlarmEntry() {
+        List<SimpleTime> entries = getAlarms();
+        return SimpleTime.getNextFromList(entries);
+    }
 
 }
