@@ -17,6 +17,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -136,9 +137,8 @@ public class AlarmClock extends View {
         locked = on;
     }
 
-    private void updateTime() {
-        settings.updateNextAlarmTime();
-        time = new SimpleTime(settings.nextAlarmTimeMinutes);
+    private void updateTime(SimpleTime time) {
+        this.time = time;
         invalidate();
         Log.d(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
     }
@@ -388,14 +388,10 @@ public class AlarmClock extends View {
     }
 
     private void setAlarm() {
-        setAlarm(time.toMinutes());
-    }
-
-    private void setAlarm(int alarmTimeMinutes) {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
-        settings.nextAlarmTimeMinutes = alarmTimeMinutes;
-        AlarmHandlerService.set(ctx, alarmTimeMinutes);
+        settings.nextAlarmTimeMinutes = time.toMinutes();
+        AlarmHandlerService.set(ctx, time);
     }
 
     public void cancelAlarm(){
@@ -404,8 +400,6 @@ public class AlarmClock extends View {
             settings.nextAlarmTimeMinutes = 0;
         }
     }
-
-
 
     private enum Position {LEFT, RIGHT}
 
@@ -511,14 +505,15 @@ public class AlarmClock extends View {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (Config.ACTION_ALARM_SET.equals(action)) {
-                if (intent.hasExtra("alarmTime")) {
-                    updateTime();
+            if (Config.ACTION_ALARM_SET.equals(action) ||
+                    Config.ACTION_ALARM_STOPPED.equals(action) ||
+                    Config.ACTION_ALARM_DELETED.equals(action)) {
+                Bundle extras = intent.getExtras();
+                SimpleTime time = null;
+                if ( extras != null) {
+                    time = new SimpleTime(extras);
                 }
-            } else if (Config.ACTION_ALARM_STOPPED.equals(action)) {
-                updateTime();
-            } else if (Config.ACTION_ALARM_DELETED.equals(action)) {
-                updateTime();
+                updateTime(time);
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.models;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -20,6 +22,8 @@ public class SimpleTime {
     public int hour = 0;
     public int min = 0;
     public int recurringDays = 0;
+    public boolean isActive = false;
+    public boolean isNextAlarm = false;
 
     public SimpleTime() {
 
@@ -103,6 +107,27 @@ public class SimpleTime {
         } else {
             return getNextRecurringAlarmTime(reference);
         }
+    }
+
+    public Bundle toBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putLong("id", this.id);
+        bundle.putInt("hour", this.hour);
+        bundle.putInt("min", this.min);
+        bundle.putInt("recurringDays", this.recurringDays);
+        bundle.putBoolean("isNextAlarm", this.isNextAlarm);
+        bundle.putBoolean("isActive", this.isActive);
+        bundle.putInt("alarmTimeMinutes", this.toMinutes());
+        return bundle;
+    }
+
+    public SimpleTime(Bundle bundle) {
+        this.id = bundle.getLong("id", -1L);
+        this.hour = bundle.getInt("hour", 0);
+        this.min = bundle.getInt("min", 0);
+        this.recurringDays = bundle.getInt("recurringDays", 0);
+        this.isActive = bundle.getBoolean("isActive", false);
+        this.isNextAlarm = bundle.getBoolean("isNextAlarm", false);
     }
 
     private Calendar initCalendar(Calendar reference) {

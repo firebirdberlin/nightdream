@@ -12,6 +12,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -29,9 +30,16 @@ public class WakeUpReceiver extends BroadcastReceiver {
     private Settings settings;
 
     public static void schedule(Context context) {
-        Settings settings = new Settings(context);
-        if (settings.nextAlarmTimeMinutes == 0) return;
-        setAlarm(context, settings.nextAlarmTimeMinutes);
+        DataSource db = new DataSource(context);
+        db.open();
+        SimpleTime next = db.getNextAlarmEntry();
+        setAlarm(context, next);
+        next = db.setNextAlarm(next);
+        db.close();
+
+        Intent intent = new Intent(Config.ACTION_ALARM_SET);
+        intent.putExtras(next.toBundle());
+        context.sendBroadcast(intent);
     }
 
     public static void cancelAlarm(Context context) {
@@ -50,15 +58,17 @@ public class WakeUpReceiver extends BroadcastReceiver {
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 
-    private static void setAlarm(Context context, int nextAlarmTimeMinutes) {
+    private static void setAlarm(Context context, SimpleTime nextAlarmEntry) {
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pI);
 
-        long nextAlarmTime = new SimpleTime(nextAlarmTimeMinutes).getMillis();
+        long nextAlarmTime = nextAlarmEntry.getMillis();
         if (Build.VERSION.SDK_INT >= 21) {
+            // TODO implement a show intent
             AlarmManager.AlarmClockInfo info =
-                    new AlarmManager.AlarmClockInfo(nextAlarmTime, pI);
+                    new AlarmManager.AlarmClockInfo(nextAlarmTime, null);
+
             am.setAlarmClock(info, pI);
         } else if (Build.VERSION.SDK_INT >= 19) {
             am.setExact(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI);
@@ -109,7 +119,8 @@ public class WakeUpReceiver extends BroadcastReceiver {
         wearableExtender.addAction(stopAction);
 
         Intent snoozeIntent = AlarmHandlerService.getSnoozeIntent(context);
-        PendingIntent pSnoozeIntent = PendingIntent.getService(context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pSnoozeIntent = PendingIntent.getService(context, 0, snoozeIntent,
+                                                               PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Action snoozeAction =
             new NotificationCompat.Action.Builder(0, textActionSnooze, pSnoozeIntent)

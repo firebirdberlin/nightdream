@@ -41,7 +41,6 @@ public class DataSource {
     private SimpleTime insert(SimpleTime time) {
         ContentValues values = toContentValues(time);
         if (db == null) return null;
-        // Insert the new row, returning the primary key value of the new row
         long new_id = db.insert(SQLiteDBHelper.AlarmEntry.TABLE_NAME,
                 null,
                 values);
@@ -68,6 +67,8 @@ public class DataSource {
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_HOUR, time.hour);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_MINUTE, time.hour);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_DAYS, time.recurringDays);
+        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE, time.isActive);
+        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM, time.isNextAlarm);
         return values;
     }
 
@@ -83,7 +84,9 @@ public class DataSource {
                 SQLiteDBHelper.AlarmEntry._ID,
                 SQLiteDBHelper.AlarmEntry.COLUMN_HOUR,
                 SQLiteDBHelper.AlarmEntry.COLUMN_MINUTE,
-                SQLiteDBHelper.AlarmEntry.COLUMN_DAYS
+                SQLiteDBHelper.AlarmEntry.COLUMN_DAYS,
+                SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE,
+                SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM
         };
 
         Cursor cursor = db.query(SQLiteDBHelper.AlarmEntry.TABLE_NAME, projection, null, null,
@@ -94,7 +97,11 @@ public class DataSource {
             int hour = cursor.getInt(1);
             int minute = cursor.getInt(2);
             int days = cursor.getInt(3);
+
             SimpleTime time = new SimpleTime(id, hour, minute, days);
+            time.isActive = (cursor.getInt(4) == 1);
+            time.isNextAlarm = (cursor.getInt(5) == 1);
+
             items.add(time);
         }
         cursor.close();
@@ -106,4 +113,12 @@ public class DataSource {
         return SimpleTime.getNextFromList(entries);
     }
 
+    public SimpleTime setNextAlarm(SimpleTime entry) {
+        db.execSQL("UPDATE " + SQLiteDBHelper.AlarmEntry.TABLE_NAME +
+                   " SET " + SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = 0" +
+                   " WHERE " + SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = 1;");
+        entry.isNextAlarm = true;
+        save(entry);
+        return entry;
+    }
 }

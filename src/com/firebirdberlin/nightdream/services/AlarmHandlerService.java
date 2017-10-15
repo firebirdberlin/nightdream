@@ -4,9 +4,11 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
@@ -54,10 +56,10 @@ public class AlarmHandlerService extends IntentService {
         context.startService(i);
     }
 
-    public static void set(Context context, int alarmTimeMinutes) {
+    public static void set(Context context, SimpleTime time) {
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_SET_ALARM);
-        i.putExtra("alarmTimeMinutes", alarmTimeMinutes);
+        i.putExtras(time.toBundle());
         context.startService(i);
     }
 
@@ -84,8 +86,11 @@ public class AlarmHandlerService extends IntentService {
         }
         else
         if (ACTION_SET_ALARM.equals(action) ) {
-            int minutes = intent.getIntExtra("alarmTimeMinutes", 0);
-            setNewAlarm(minutes);
+            Bundle extras = intent.getExtras();
+            if ( extras != null ) {
+                SimpleTime time = new SimpleTime(extras);
+                setNewAlarm(time);
+            }
         }
         else
         if (ACTION_CANCEL_ALARM.equals(action) ) {
@@ -97,7 +102,7 @@ public class AlarmHandlerService extends IntentService {
         }
     }
 
-    public void stopAlarm(){
+    private void stopAlarm(){
         boolean isRunning = alarmIsRunning();
         if (AlarmService.isRunning) {
             AlarmService.stop(context);
@@ -127,26 +132,25 @@ public class AlarmHandlerService extends IntentService {
         WakeUpReceiver.cancelAlarm(context);
     }
 
-    public void snoozeAlarm() {
+    private void snoozeAlarm() {
         stopAlarm();
         Calendar now = Calendar.getInstance();
         long nextAlarmTime = now.getTimeInMillis() + settings.snoozeTimeInMillis;
-
-        int nextAlarmTimeMinutes = new SimpleTime(nextAlarmTime).toMinutes();
-        setAlarm(nextAlarmTimeMinutes);
+        setAlarm(new SimpleTime(nextAlarmTime));
     }
 
-    private void setNewAlarm(int alarmTimeMinutes) {
+    private void setNewAlarm(SimpleTime time) {
         cancelAlarm();
-        setAlarm(alarmTimeMinutes);
+        setAlarm(time);
     }
 
-    private void setAlarm(int alarmTimeMinutes) {
-        settings.setAlarmTime(alarmTimeMinutes);
-        WakeUpReceiver.schedule(context);
+    private void setAlarm(SimpleTime time) {
+        settings.setAlarmTime(time.toMinutes());
 
-        Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        intent.putExtra("alarmTime", alarmTimeMinutes);
-        context.sendBroadcast(intent);
+        DataSource db = new DataSource(context);
+        db.open();
+        db.save(time);
+        db.close();
+        WakeUpReceiver.schedule(context);
     }
 }

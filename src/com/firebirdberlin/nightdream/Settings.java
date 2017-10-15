@@ -347,10 +347,6 @@ public class Settings {
         }
     }
 
-    public void updateNextAlarmTime() {
-        initNextAlarmTime();
-    }
-
     public Calendar getAlarmTime() {
         return new SimpleTime(nextAlarmTimeMinutes).getCalendar();
     }
