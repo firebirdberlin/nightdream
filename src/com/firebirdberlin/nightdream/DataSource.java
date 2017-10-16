@@ -41,9 +41,7 @@ public class DataSource {
     private SimpleTime insert(SimpleTime time) {
         ContentValues values = toContentValues(time);
         if (db == null) return null;
-        long new_id = db.insert(SQLiteDBHelper.AlarmEntry.TABLE_NAME,
-                null,
-                values);
+        long new_id = db.insert(SQLiteDBHelper.AlarmEntry.TABLE_NAME, null, values);
         time.id = new_id;
         return time;
     }
@@ -79,7 +77,42 @@ public class DataSource {
         db.delete(SQLiteDBHelper.AlarmEntry.TABLE_NAME, selection, selectionArgs);
     }
 
+    public void cancelPendingAlarms() {
+        String selection = SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = ? AND " +
+                SQLiteDBHelper.AlarmEntry.COLUMN_DAYS + " = ?";
+        String[] selectionArgs = {"1", "0"};
+
+        db.delete(SQLiteDBHelper.AlarmEntry.TABLE_NAME, selection, selectionArgs);
+    }
+
+
+    public SimpleTime getNextAlarmToSchedule() {
+        List<SimpleTime> entries = getAlarms();
+        return SimpleTime.getNextFromList(entries);
+    }
+
     public List<SimpleTime> getAlarms() {
+        Cursor cursor = getQueryCursor(null, null);
+        List<SimpleTime> items = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SimpleTime time = cursorToSimpleTime(cursor);
+            items.add(time);
+        }
+        cursor.close();
+        return items;
+    }
+
+    public SimpleTime getNextAlarmEntry() {
+        String where = SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = ?";
+        String[] whereArgs = {"1"};
+        Cursor cursor = getQueryCursor(where, whereArgs);
+        if ( cursor.moveToFirst() ) {
+            return cursorToSimpleTime(cursor);
+        }
+        return null;
+    }
+
+    private Cursor getQueryCursor(String where, String[] whereArgs) {
         String[] projection = {
                 SQLiteDBHelper.AlarmEntry._ID,
                 SQLiteDBHelper.AlarmEntry.COLUMN_HOUR,
@@ -89,28 +122,20 @@ public class DataSource {
                 SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM
         };
 
-        Cursor cursor = db.query(SQLiteDBHelper.AlarmEntry.TABLE_NAME, projection, null, null,
-                null, null, null);
-        List<SimpleTime> items = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            long id = cursor.getLong(0);
-            int hour = cursor.getInt(1);
-            int minute = cursor.getInt(2);
-            int days = cursor.getInt(3);
-
-            SimpleTime time = new SimpleTime(id, hour, minute, days);
-            time.isActive = (cursor.getInt(4) == 1);
-            time.isNextAlarm = (cursor.getInt(5) == 1);
-
-            items.add(time);
-        }
-        cursor.close();
-        return items;
+        return db.query(SQLiteDBHelper.AlarmEntry.TABLE_NAME, projection, where, whereArgs,
+                        null, null, null);
     }
 
-    public SimpleTime getNextAlarmEntry() {
-        List<SimpleTime> entries = getAlarms();
-        return SimpleTime.getNextFromList(entries);
+    private SimpleTime cursorToSimpleTime(Cursor cursor) {
+        long id = cursor.getLong(0);
+        int hour = cursor.getInt(1);
+        int minute = cursor.getInt(2);
+        int days = cursor.getInt(3);
+
+        SimpleTime time = new SimpleTime(id, hour, minute, days);
+        time.isActive = (cursor.getInt(4) == 1);
+        time.isNextAlarm = (cursor.getInt(5) == 1);
+        return time;
     }
 
     public SimpleTime setNextAlarm(SimpleTime entry) {

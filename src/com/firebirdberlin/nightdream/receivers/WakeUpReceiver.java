@@ -32,7 +32,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     public static void schedule(Context context) {
         DataSource db = new DataSource(context);
         db.open();
-        SimpleTime next = db.getNextAlarmEntry();
+        SimpleTime next = db.getNextAlarmToSchedule();
         setAlarm(context, next);
         next = db.setNextAlarm(next);
         db.close();
@@ -42,10 +42,27 @@ public class WakeUpReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void broadcastNextAlarm(Context context) {
+        DataSource db = new DataSource(context);
+        db.open();
+        SimpleTime next = db.getNextAlarmEntry();
+        db.close();
+        if ( next != null ) {
+            Intent intent = new Intent(Config.ACTION_ALARM_SET);
+            intent.putExtras(next.toBundle());
+            context.sendBroadcast(intent);
+        }
+    }
+
     public static void cancelAlarm(Context context) {
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
         am.cancel(pI);
+
+        DataSource db = new DataSource(context);
+        db.open();
+        db.cancelPendingAlarms();
+        db.close();
     }
 
     public static PendingIntent getPendingIntent(Context context) {

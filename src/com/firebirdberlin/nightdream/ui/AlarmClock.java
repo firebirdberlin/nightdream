@@ -31,6 +31,7 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 
 import java.text.DateFormat;
@@ -89,7 +90,7 @@ public class AlarmClock extends View {
         super(context, attrs);
         this.ctx = context;
         settings = new Settings(this.ctx);
-        updateTime();
+
         mGestureDetector = new GestureDetector(context, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
         cornerLeft.setIconResource(getResources(), R.drawable.ic_audio);
@@ -106,6 +107,7 @@ public class AlarmClock extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         broadcastReceiver = registerBroadcastReceiver();
+        WakeUpReceiver.broadcastNextAlarm(this.ctx);
     }
 
     private NightDreamBroadcastReceiver registerBroadcastReceiver() {
@@ -140,7 +142,11 @@ public class AlarmClock extends View {
     private void updateTime(SimpleTime time) {
         this.time = time;
         invalidate();
-        Log.d(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
+        if (time == null) {
+            Log.w(TAG, "no next alarm");
+            return;
+        }
+        Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
     }
 
     public void setCustomColor(int primary, int secondary) {
@@ -242,7 +248,6 @@ public class AlarmClock extends View {
                 if (FingerDownDeleteAlarm) {
                     FingerDownDeleteAlarm = false;
                     stopAlarm();
-                    ctx.sendBroadcast( new Intent(Config.ACTION_ALARM_DELETED) );
                     return true;
                 }
                 return false;
@@ -275,8 +280,16 @@ public class AlarmClock extends View {
         }
         lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
 
-        time.hour = (hours >= 24) ? 23 : hours;
-        time.min = (mins >= 60 || mins < 0) ? 0 : mins;
+        setAlarmTime(( hours >= 24 ) ? 23 : hours,
+                     ( mins >= 60 || mins < 0 ) ? 0 : mins);
+    }
+
+    private void setAlarmTime(int hour, int min) {
+        if (time == null) {
+            time = new SimpleTime();
+        }
+        time.hour = hour;
+        time.min = min;
     }
 
     @Override
@@ -372,7 +385,7 @@ public class AlarmClock extends View {
     }
 
     public boolean isAlarmSet() {
-        return (settings.nextAlarmTimeMinutes > 0L);
+        return (this.time != null);
     }
 
     public void stopAlarm(){
@@ -417,8 +430,7 @@ public class AlarmClock extends View {
                 mTimePicker = new TimePickerDialog(ctx, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        time.hour = selectedHour;
-                        time.min = selectedMinute;
+                        setAlarmTime(selectedHour, selectedMinute);
                         setAlarm();
                         invalidate();
                     }
@@ -505,14 +517,15 @@ public class AlarmClock extends View {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.d(TAG, action + " received.");
             if (Config.ACTION_ALARM_SET.equals(action) ||
                     Config.ACTION_ALARM_STOPPED.equals(action) ||
                     Config.ACTION_ALARM_DELETED.equals(action)) {
                 Bundle extras = intent.getExtras();
                 SimpleTime time = null;
-                if ( extras != null) {
+                try {
                     time = new SimpleTime(extras);
-                }
+                } catch (NullPointerException e) { }
                 updateTime(time);
             }
         }
