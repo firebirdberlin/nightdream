@@ -52,8 +52,7 @@ public class DataSource {
         String selection = SQLiteDBHelper.AlarmEntry._ID + " = ?";
         String[] selectionArgs = {String.valueOf(time.id)};
 
-        db.update(SQLiteDBHelper.AlarmEntry.TABLE_NAME, values, selection,
-                selectionArgs);
+        db.update(SQLiteDBHelper.AlarmEntry.TABLE_NAME, values, selection, selectionArgs);
         return time;
     }
 
@@ -63,7 +62,7 @@ public class DataSource {
             values.put(SQLiteDBHelper.AlarmEntry._ID, time.id);
         }
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_HOUR, time.hour);
-        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_MINUTE, time.hour);
+        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_MINUTE, time.min);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_DAYS, time.recurringDays);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE, time.isActive);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM, time.isNextAlarm);
@@ -79,8 +78,9 @@ public class DataSource {
 
     public void cancelPendingAlarms() {
         String selection = SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = ? AND " +
-                SQLiteDBHelper.AlarmEntry.COLUMN_DAYS + " = ?";
-        String[] selectionArgs = {"1", "0"};
+                SQLiteDBHelper.AlarmEntry.COLUMN_DAYS + " = ? AND " +
+                SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE + " = ?";
+        String[] selectionArgs = {"1", "0", "1"};
 
         db.delete(SQLiteDBHelper.AlarmEntry.TABLE_NAME, selection, selectionArgs);
     }
@@ -103,8 +103,9 @@ public class DataSource {
     }
 
     public SimpleTime getNextAlarmEntry() {
-        String where = SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = ?";
-        String[] whereArgs = {"1"};
+        String where = SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = ? AND "
+                + SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE  + " = ?";
+        String[] whereArgs = {"1", "1"};
         Cursor cursor = getQueryCursor(where, whereArgs);
         if ( cursor.moveToFirst() ) {
             return cursorToSimpleTime(cursor);

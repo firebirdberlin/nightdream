@@ -33,6 +33,10 @@ public class WakeUpReceiver extends BroadcastReceiver {
         DataSource db = new DataSource(context);
         db.open();
         SimpleTime next = db.getNextAlarmToSchedule();
+        if ( next == null ) {
+            // nothing to do
+            return;
+        }
         setAlarm(context, next);
         next = db.setNextAlarm(next);
         db.close();

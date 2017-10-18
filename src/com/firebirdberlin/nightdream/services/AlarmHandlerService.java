@@ -128,25 +128,22 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void cancelAlarm() {
-        settings.setAlarmTime(0);
         WakeUpReceiver.cancelAlarm(context);
     }
 
     private void snoozeAlarm() {
         stopAlarm();
         Calendar now = Calendar.getInstance();
-        long nextAlarmTime = now.getTimeInMillis() + settings.snoozeTimeInMillis;
-        setAlarm(new SimpleTime(nextAlarmTime));
+        SimpleTime time = new SimpleTime(now.getTimeInMillis() + settings.snoozeTimeInMillis);
+        time.isActive = true;
+        setAlarm(time);
     }
 
     private void setNewAlarm(SimpleTime time) {
-        cancelAlarm();
         setAlarm(time);
     }
 
     private void setAlarm(SimpleTime time) {
-        settings.setAlarmTime(time.toMinutes());
-
         DataSource db = new DataSource(context);
         db.open();
         db.save(time);

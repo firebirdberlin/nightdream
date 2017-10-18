@@ -351,14 +351,6 @@ public class Settings {
         return new SimpleTime(nextAlarmTimeMinutes).getCalendar();
     }
 
-    public void setAlarmTime(int alarmTimeMinutes) {
-        nextAlarmTimeMinutes = alarmTimeMinutes;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlarmTime", 0L); // deprecated
-        prefEditor.putInt("nextAlarmTimeMinutes", alarmTimeMinutes);
-        prefEditor.apply();
-    }
-
     public void setBackgroundImage(String uri) {
         bgpath = uri;
         SharedPreferences.Editor prefEditor = settings.edit();

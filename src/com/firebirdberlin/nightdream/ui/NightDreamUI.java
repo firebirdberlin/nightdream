@@ -185,6 +185,7 @@ public class NightDreamUI {
         @Override
         public void run() {
             removeCallbacks(hideBrightnessLevel);
+            hideSystemUI();
             updateBatteryValue();
             setupScreenAnimation();
 

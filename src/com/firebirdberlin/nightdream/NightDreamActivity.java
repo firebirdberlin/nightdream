@@ -55,10 +55,11 @@ import java.util.Calendar;
 import de.greenrobot.event.EventBus;
 
 
-public class NightDreamActivity extends Activity implements View.OnTouchListener,
-                                                            NightModeReceiver.Event,
-        LocationUpdateReceiver.AsyncResponse,
-        SleepTimerDialogFragment.SleepTimerDialogListener {
+public class NightDreamActivity extends Activity
+                                implements View.OnTouchListener,
+                                           NightModeReceiver.Event,
+                                           LocationUpdateReceiver.AsyncResponse,
+                                           SleepTimerDialogFragment.SleepTimerDialogListener {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();

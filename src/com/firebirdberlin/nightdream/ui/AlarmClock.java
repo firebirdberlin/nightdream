@@ -346,11 +346,8 @@ public class AlarmClock extends View {
     }
 
     private String getAlarmTimeFormatted() {
-        if ( userChangesAlarmTime ) {
+        if ( userChangesAlarmTime || isAlarmSet() ) {
             return getTimeFormatted(time.getCalendar());
-        } else
-        if ( isAlarmSet() ) {
-            return getTimeFormatted(settings.getAlarmTime());
         }
         return "";
     }
@@ -403,14 +400,14 @@ public class AlarmClock extends View {
     private void setAlarm() {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
-        settings.nextAlarmTimeMinutes = time.toMinutes();
+        time.isActive = true;
         AlarmHandlerService.set(ctx, time);
     }
 
     public void cancelAlarm(){
-        if (settings.nextAlarmTimeMinutes > 0) {
+        if ( isAlarmSet() ) {
             AlarmHandlerService.cancel(ctx);
-            settings.nextAlarmTimeMinutes = 0;
+            this.time = null;
         }
     }
 
