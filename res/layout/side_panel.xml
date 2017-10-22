@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/side_panel"
-    android:orientation="vertical"
-    android:background="@drawable/sidepanel"
-    android:layout_margin="20dp"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    android:background="@drawable/sidepanel"
+    android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/settings_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:contentDescription="settings"
-        android:id="@+id/settings_icon"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
         android:onClick="onSettingsClick"
         android:padding="5dp"
         android:src="@drawable/ic_settings"
         />
 
     <com.firebirdberlin.nightdream.ui.WebRadioImageView
+        android:id="@+id/radio_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:contentDescription="radio"
-        android:id="@+id/radio_icon"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
         android:onClick="onRadioClick"
         android:padding="5dp"
         android:src="@drawable/ic_radio"
@@ -31,11 +31,11 @@
         />
 
     <ImageView
+        android:id="@+id/icon_weather_forecast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:contentDescription="weather forecast"
-        android:id="@+id/icon_weather_forecast"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
         android:onClick="onWeatherForecastClick"
         android:padding="5dp"
         android:src="@drawable/ic_cloud"
@@ -43,13 +43,22 @@
         />
 
     <ImageView
+        android:id="@+id/night_mode_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:contentDescription="night mode toggle"
-        android:id="@+id/night_mode_icon"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:onClick="onNightModeClick"
         android:padding="5dp"
         android:src="@drawable/ic_sun"
-        android:onClick="onNightModeClick"
         />
+
+    <ImageView
+        android:id="@+id/alarm_clock_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onAlarmClockClick"
+        android:padding="5dp"
+        android:src="@drawable/ic_alarm_clock" />
 </LinearLayout>

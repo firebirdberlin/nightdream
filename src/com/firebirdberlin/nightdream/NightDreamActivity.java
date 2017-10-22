@@ -442,6 +442,11 @@ public class NightDreamActivity extends Activity
     }
 
     @SuppressWarnings("UnusedParameters")
+    public void onAlarmClockClick(View v) {
+        SetAlarmClockActivity.start(this);
+    }
+
+    @SuppressWarnings("UnusedParameters")
     public void onNightModeClick(View v) {
         if ( lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL ) {

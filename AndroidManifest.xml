@@ -21,16 +21,12 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="com.android.vending.BILLING" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:node="remove"
-        />
-
+        tools:node="remove" />
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
-        tools:node="remove"
-        />
+        tools:node="remove" />
 
     <application
         android:icon="@drawable/ic_nightdream"
@@ -59,6 +55,7 @@
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
@@ -163,14 +160,28 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".WeatherForecastActivity"
+        <activity
+            android:name=".WeatherForecastActivity"
             android:label="@string/forecast"
-            android:parentActivityName="com.firebirdberlin.nightdream.NightDreamActivity" >
+            android:parentActivityName=".NightDreamActivity">
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.firebirdberlin.nightdream.NightDreamActivity" />
-            ></activity>
+            >
+        </activity>
+        <activity
+            android:name=".SetAlarmClockActivity"
+            android:label="@string/alarm"
+            android:parentActivityName=".NightDreamActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.firebirdberlin.nightdream.NightDreamActivity" />
+            >
+        </activity>
     </application>
 
 </manifest>
