@@ -18,6 +18,15 @@
         android:src="@drawable/ic_settings"
         />
 
+    <ImageView
+        android:id="@+id/alarm_clock_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onAlarmClockClick"
+        android:padding="5dp"
+        android:src="@drawable/ic_alarm_clock" />
+
     <com.firebirdberlin.nightdream.ui.WebRadioImageView
         android:id="@+id/radio_icon"
         android:layout_width="wrap_content"
@@ -52,13 +61,4 @@
         android:padding="5dp"
         android:src="@drawable/ic_sun"
         />
-
-    <ImageView
-        android:id="@+id/alarm_clock_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="onAlarmClockClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_alarm_clock" />
 </LinearLayout>

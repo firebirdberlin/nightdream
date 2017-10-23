@@ -93,8 +93,6 @@ public class NightDreamUI {
     private AlarmClock alarmClock;
     private ImageView background_image;
     private ImageView menuIcon;
-    private ImageView settingsIcon;
-    private ImageView weatherIcon;
     private ImageView nightModeIcon;
     private WebRadioImageView radioIcon;
     private LightSensorEventListener lightSensorEventListener = null;
@@ -382,8 +380,6 @@ public class NightDreamUI {
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
-        settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
-        weatherIcon = (ImageView) rootView.findViewById(R.id.icon_weather_forecast);
         nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
 
@@ -533,12 +529,16 @@ public class NightDreamUI {
         int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
 
-
         batteryIconView.setColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
-        nightModeIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
-        settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
-        weatherIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
+
+        // colorize icons in the side panel
+        for (int i = 0; i < sidePanel.getChildCount(); i++) {
+            View view = sidePanel.getChildAt(i);
+            if (view instanceof ImageView) {
+                ((ImageView) view).setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+            }
+        }
 
         bottomPanelLayout.setCustomColor(accentColor, textColor);
 
