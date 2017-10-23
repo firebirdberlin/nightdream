@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@android:color/holo_blue_bright">
+
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+            android:text="09:00"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            android:textSize="60sp" />
+
+        <Switch
+            android:id="@+id/enabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/timeView"
+            android:elevation="24dp"
+            android:paddingEnd="?android:attr/listPreferredItemPaddingLeft"
+            android:paddingTop="?android:attr/listPreferredItemPaddingStart" />
+
+
+    </RelativeLayout>
+</LinearLayout>

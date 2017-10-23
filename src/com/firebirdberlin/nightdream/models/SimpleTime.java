@@ -60,6 +60,15 @@ public class SimpleTime {
         this.min = minutes % 60;
     }
 
+    public SimpleTime(Bundle bundle) {
+        this.id = bundle.getLong("id", -1L);
+        this.hour = bundle.getInt("hour", 0);
+        this.min = bundle.getInt("min", 0);
+        this.recurringDays = bundle.getInt("recurringDays", 0);
+        this.isActive = bundle.getBoolean("isActive", false);
+        this.isNextAlarm = bundle.getBoolean("isNextAlarm", false);
+    }
+
     public static SimpleTime getNextFromList(List<SimpleTime> entries) {
         Calendar now = Calendar.getInstance();
         return getNextFromList(entries, now);
@@ -121,15 +130,6 @@ public class SimpleTime {
         return bundle;
     }
 
-    public SimpleTime(Bundle bundle) {
-        this.id = bundle.getLong("id", -1L);
-        this.hour = bundle.getInt("hour", 0);
-        this.min = bundle.getInt("min", 0);
-        this.recurringDays = bundle.getInt("recurringDays", 0);
-        this.isActive = bundle.getBoolean("isActive", false);
-        this.isNextAlarm = bundle.getBoolean("isNextAlarm", false);
-    }
-
     private Calendar initCalendar(Calendar reference) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(reference.getTimeInMillis());
@@ -173,6 +173,11 @@ public class SimpleTime {
         Calendar result = Calendar.getInstance();
         result.setTimeInMillis(times.get(0));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%02d:%02d", hour, min);
     }
 }
 
