@@ -124,7 +124,7 @@ public class AlarmHandlerService extends IntentService {
             Intent intent = new Intent(Config.ACTION_ALARM_DELETED);
             context.sendBroadcast(intent);
         }
-
+        WakeUpReceiver.schedule(context);
     }
 
     private void cancelAlarm() {

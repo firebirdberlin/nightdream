@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
@@ -51,11 +52,15 @@ public class WakeUpReceiver extends BroadcastReceiver {
         db.open();
         SimpleTime next = db.getNextAlarmEntry();
         db.close();
+
+        Intent intent = new Intent(Config.ACTION_ALARM_SET);
         if ( next != null ) {
-            Intent intent = new Intent(Config.ACTION_ALARM_SET);
+            Log.w(TAG, next.toString());
             intent.putExtras(next.toBundle());
-            context.sendBroadcast(intent);
+        } else {
+            Log.w(TAG, "no next alarm");
         }
+        context.sendBroadcast(intent);
     }
 
     public static void cancelAlarm(Context context) {

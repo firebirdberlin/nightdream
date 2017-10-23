@@ -2,35 +2,78 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
 
     <RelativeLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:backgroundTint="@android:color/holo_blue_bright">
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="false"
+        android:backgroundTint="@android:color/holo_blue_bright"
+        android:paddingEnd="?android:attr/dialogPreferredPadding"
+        android:paddingRight="?android:attr/dialogPreferredPadding"
+        android:paddingStart="?android:attr/dialogPreferredPadding">
 
         <TextView
             android:id="@+id/timeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+            android:layout_toEndOf="@+id/button_delete"
             android:text="09:00"
             android:textAppearance="@android:style/TextAppearance.Material.Large"
-            android:textSize="60sp" />
+            android:textSize="50sp" />
 
         <Switch
             android:id="@+id/enabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@+id/timeView"
-            android:elevation="24dp"
-            android:paddingEnd="?android:attr/listPreferredItemPaddingLeft"
-            android:paddingTop="?android:attr/listPreferredItemPaddingStart" />
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="15dp"
+            android:elevation="24dp" />
 
+        <RelativeLayout
+            android:id="@+id/middle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/timeView"
+            android:animateLayoutChanges="true">
+
+            <ImageButton
+                android:id="@+id/button_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:adjustViewBounds="true"
+                android:onClick="onButtonDeleteClick"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:scrollbarAlwaysDrawVerticalTrack="false"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/button_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="14dp"
+                android:layout_marginRight="14dp"
+                android:elevation="24dp"
+                android:src="@android:drawable/arrow_down_float" />
+        </RelativeLayout>
 
     </RelativeLayout>
 </LinearLayout>
