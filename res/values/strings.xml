@@ -181,4 +181,6 @@ OR
     <string name="welcome_screen_title2">Preferences</string>
     <string name="welcome_screen_title3">Screen brightness</string>
     <string name="welcome_screen_title4">Clock size</string>
+    <string name="today">today</string>
+    <string name="tomorrow">tomorrow</string>
 </resources>

@@ -16,6 +16,7 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -34,7 +35,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         DataSource db = new DataSource(context);
         db.open();
         SimpleTime next = db.getNextAlarmToSchedule();
-        if ( next == null ) {
+        if (next == null) {
             // nothing to do
             return;
         }
@@ -54,7 +55,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         db.close();
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        if ( next != null ) {
+        if (next != null) {
             Log.w(TAG, next.toString());
             intent.putExtras(next.toBundle());
         } else {
@@ -84,6 +85,11 @@ public class WakeUpReceiver extends BroadcastReceiver {
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 
+    private static PendingIntent getShowIntent(Context context) {
+        Intent intent = new Intent(context, SetAlarmClockActivity.class);
+        return PendingIntent.getActivity(context, 0, intent, 0);
+    }
+
     private static void setAlarm(Context context, SimpleTime nextAlarmEntry) {
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -91,10 +97,8 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
         long nextAlarmTime = nextAlarmEntry.getMillis();
         if (Build.VERSION.SDK_INT >= 21) {
-            // TODO implement a show intent
-            AlarmManager.AlarmClockInfo info =
-                    new AlarmManager.AlarmClockInfo(nextAlarmTime, null);
-
+            PendingIntent pi = getShowIntent(context);
+            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(nextAlarmTime, pi);
             am.setAlarmClock(info, pI);
         } else if (Build.VERSION.SDK_INT >= 19) {
             am.setExact(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI);

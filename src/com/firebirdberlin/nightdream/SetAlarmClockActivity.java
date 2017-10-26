@@ -82,14 +82,18 @@ public class SetAlarmClockActivity extends Activity {
     }
 
     public void onClickAddNewAlarm(View view) {
-        TimePickerDialog mTimePicker;
-        int hour = 7;
-        int min = 0;
+        showTimePicker(7, 0, null);
+    }
+
+    private void showTimePicker(int hour, int min, final Long entry_id) {
         final Context context = this;
-        mTimePicker = new TimePickerDialog(context, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog mTimePicker = new TimePickerDialog(context, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 SimpleTime entry = new SimpleTime(selectedHour, selectedMinute);
+                if (entry_id != null) {
+                    entry.id = entry_id;
+                }
                 entry.isActive = true;
                 db.save(entry);
                 init();
@@ -104,6 +108,11 @@ public class SetAlarmClockActivity extends Activity {
         db.delete(entry);
         init();
         WakeUpReceiver.schedule(this);
+    }
+
+    public void onTimeClicked(View view) {
+        SimpleTime entry = (SimpleTime) view.getTag();
+        showTimePicker(entry.hour, entry.min, entry.id);
     }
 
     public void onActiveStateChanged(SimpleTime entry) {

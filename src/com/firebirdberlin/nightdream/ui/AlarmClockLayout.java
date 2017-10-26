@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,7 +30,7 @@ public class AlarmClockLayout extends LinearLayout {
     private TextView timeView = null;
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
-    private ImageButton buttonDelete = null;
+    private ImageView buttonDelete = null;
     private Switch switchActive = null;
     private RelativeLayout middle = null;
 
@@ -48,6 +47,7 @@ public class AlarmClockLayout extends LinearLayout {
         this.timeFormat = timeFormat;
         init();
         buttonDelete.setTag(entry);
+        timeView.setTag(entry);
     }
 
     public AlarmClockLayout(Context context, AttributeSet attrs) {
@@ -75,7 +75,7 @@ public class AlarmClockLayout extends LinearLayout {
         timeView = (TextView) findViewById(R.id.timeView);
         textViewWhen = (TextView) findViewById(R.id.textViewWhen);
         buttonDown = (ImageView) findViewById(R.id.button_down);
-        buttonDelete = (ImageButton) findViewById(R.id.button_delete);
+        buttonDelete = (ImageView) findViewById(R.id.button_delete);
         switchActive = (Switch) findViewById(R.id.enabled);
         middle = (RelativeLayout) findViewById(R.id.middle);
 
@@ -107,9 +107,9 @@ public class AlarmClockLayout extends LinearLayout {
             switchActive.setChecked(alarmClockEntry.isActive);
 
             if (isToday(time)) {
-                textViewWhen.setText("today");
+                textViewWhen.setText(R.string.today);
             } else if (isTomorrow(time)) {
-                textViewWhen.setText("tomorrow");
+                textViewWhen.setText(R.string.tomorrow);
             } else {
                 textViewWhen.setText(Utility.formatTime("EEEE", time));
             }
