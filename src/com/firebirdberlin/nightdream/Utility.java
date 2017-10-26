@@ -21,6 +21,9 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
@@ -37,6 +40,12 @@ public class Utility {
     static public boolean is24HourFormat(Context context) {
         return android.text.format.DateFormat.is24HourFormat(context);
     }
+
+    static public String formatTime(String format, Calendar calendar) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(calendar.getTime());
+    }
+
 
     static public Sensor getLightSensor(Context context) {
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -175,6 +184,24 @@ public class Utility {
         }
     }
 
+    public static int pixelsToDp(Context context, float px) {
+        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics);
+    }
+
+    public static int dpToPx(Context context, float dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
+    }
+
+    public static int getNearestEvenIntValue(float value) {
+        int r = (int) Math.ceil(value);
+        if (r % 2 != 0) {
+            r = (int) Math.floor(value);
+        }
+        return r;
+    }
+
     public Point getDisplaySize() {
         Point size = new Point();
         if (Build.VERSION.SDK_INT < 13) {
@@ -237,23 +264,5 @@ public class Utility {
     public void restoreSystemBrightnessMode() {
         System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
                 system_brightness_mode);
-    }
-
-    public static int pixelsToDp(Context context, float px) {
-        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
-        return (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics );
-    }
-
-    public static int dpToPx(Context context, float dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                context.getResources().getDisplayMetrics());
-    }
-
-    public static int getNearestEvenIntValue(float value) {
-        int r = (int)Math.ceil(value);
-        if (r % 2 != 0) {
-            r = (int)Math.floor(value);
-        }
-        return r;
     }
 }

@@ -78,7 +78,7 @@ public class SimpleTime {
         TreeMap<Calendar, SimpleTime> map = new TreeMap<>();
         for (SimpleTime t : entries) {
             Calendar time = t.getNextAlarmTime(reference);
-            if (time != null) {
+            if (t.isActive && time != null) {
                 map.put(time, t);
             }
         }

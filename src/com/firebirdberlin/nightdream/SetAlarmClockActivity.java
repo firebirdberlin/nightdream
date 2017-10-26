@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
@@ -14,9 +13,12 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SetAlarmClockActivity extends Activity {
+    static final String TAG = "SetAlarmClockActivity";
     private LinearLayout scrollView = null;
     private DataSource db = null;
 
@@ -32,13 +34,12 @@ public class SetAlarmClockActivity extends Activity {
         setTheme(R.style.DialogTheme);
 
         scrollView = (LinearLayout) findViewById(R.id.scroll_view);
-        init();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        openDB();
+        init();
     }
 
     private void openDB() {
@@ -61,8 +62,20 @@ public class SetAlarmClockActivity extends Activity {
         openDB();
         scrollView.removeAllViews();
         List<SimpleTime> entries = db.getAlarms();
+
+        Collections.sort(entries, new Comparator<SimpleTime>() {
+            public int compare(SimpleTime obj1, SimpleTime obj2) {
+                return obj1.getCalendar().compareTo(obj2.getCalendar());
+            }
+        });
+
+        Settings settings = new Settings(this);
+        String timeFormat = settings.getTimeFormat();
+        if (!settings.is24HourFormat()) {
+            timeFormat += " a";
+        }
         for (SimpleTime entry : entries) {
-            AlarmClockLayout layout = new AlarmClockLayout(this, entry);
+            AlarmClockLayout layout = new AlarmClockLayout(this, entry, timeFormat);
             scrollView.addView(layout);
         }
         scrollView.invalidate();
@@ -88,9 +101,13 @@ public class SetAlarmClockActivity extends Activity {
 
     public void onButtonDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
-        Log.w("SetAlarmClockActivity", String.format("button delete >>> %d", entry.id));
         db.delete(entry);
         init();
+        WakeUpReceiver.schedule(this);
+    }
+
+    public void onActiveStateChanged(SimpleTime entry) {
+        db.save(entry);
         WakeUpReceiver.schedule(this);
     }
 }

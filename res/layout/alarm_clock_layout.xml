@@ -47,12 +47,21 @@
             android:layout_below="@+id/timeView"
             android:animateLayoutChanges="true">
 
+            <TextView
+                android:id="@+id/textViewWhen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textAllCaps="false"
+                android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
             <ImageButton
                 android:id="@+id/button_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_below="@+id/textViewWhen"
                 android:adjustViewBounds="true"
                 android:onClick="onButtonDeleteClick"
                 android:scaleX="0.8"
