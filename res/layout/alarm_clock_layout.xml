@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -48,42 +49,141 @@
             android:layout_below="@+id/timeView"
             android:animateLayoutChanges="true">
 
-            <TextView
-                android:id="@+id/textViewWhen"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/layouotInfo"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:textAllCaps="false"
-                android:textAppearance="@android:style/TextAppearance.Material.Small" />
+                android:orientation="horizontal">
 
-            <ImageView
+                <TextView
+                    android:id="@+id/textViewWhen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_weight="1"
+                    android:textAllCaps="false"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
+                <ImageView
+                    android:id="@+id/button_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_weight="0.05"
+                    android:src="@android:drawable/arrow_down_float" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_days"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layouotInfo"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ToggleButton
+                    android:id="@+id/dayButton1"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textViewWhen"
+                    android:layout_weight="1"
+                    android:textOff="M"
+                    android:textOn="M" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton2"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/dayButton1"
+                    android:layout_alignBottom="@+id/dayButton1"
+                    android:layout_toEndOf="@+id/dayButton1"
+                    android:layout_toRightOf="@+id/dayButton1"
+                    android:layout_weight="1"
+                    android:textOff="T"
+                    android:textOn="T" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton3"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/button_delete"
+                    android:layout_toEndOf="@+id/dayButton2"
+                    android:layout_toRightOf="@+id/dayButton2"
+                    android:layout_weight="1"
+                    android:textOff="W"
+                    android:textOn="W" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton4"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/dayButton3"
+                    android:layout_alignBottom="@+id/dayButton3"
+                    android:layout_toEndOf="@+id/dayButton3"
+                    android:layout_toRightOf="@+id/dayButton3"
+                    android:layout_weight="1"
+                    android:textOff="T"
+                    android:textOn="T" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton6"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/dayButton5"
+                    android:layout_alignBottom="@+id/dayButton5"
+                    android:layout_toEndOf="@+id/dayButton5"
+                    android:layout_toRightOf="@+id/dayButton5"
+                    android:layout_weight="1"
+                    android:textOff="F"
+                    android:textOn="F" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton5"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/dayButton4"
+                    android:layout_alignBottom="@+id/dayButton4"
+                    android:layout_toEndOf="@+id/dayButton4"
+                    android:layout_toRightOf="@+id/dayButton4"
+                    android:layout_weight="1"
+                    android:textOff="S"
+                    android:textOn="S" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton7"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/dayButton6"
+                    android:layout_alignBottom="@+id/dayButton6"
+                    android:layout_toEndOf="@+id/dayButton6"
+                    android:layout_toRightOf="@+id/dayButton6"
+                    android:layout_weight="1"
+                    android:textOff="S"
+                    android:textOn="S" />
+
+            </LinearLayout>
+
+            <Button
                 android:id="@+id/button_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/textViewWhen"
-                android:adjustViewBounds="true"
-                android:onClick="onButtonDeleteClick"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
-                android:scrollbarAlwaysDrawHorizontalTrack="false"
-                android:scrollbarAlwaysDrawVerticalTrack="false"
-                android:src="@drawable/ic_delete"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/button_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="14dp"
-                android:layout_marginRight="14dp"
+                android:layout_below="@+id/layout_days"
+                android:layout_toEndOf="@+id/textViewWhen"
+                android:layout_toRightOf="@+id/textViewWhen"
+                android:drawableLeft="@drawable/ic_delete"
                 android:elevation="24dp"
-                android:src="@android:drawable/arrow_down_float" />
+                android:onClick="onButtonDeleteClick"
+                android:text="@string/delete"
+                android:visibility="gone"
+                tools:drawableLeft="@drawable/ic_delete" />
+
+
         </RelativeLayout>
+
 
     </RelativeLayout>
 </LinearLayout>

@@ -21,6 +21,9 @@ public class SetAlarmClockActivity extends Activity {
     static final String TAG = "SetAlarmClockActivity";
     private LinearLayout scrollView = null;
     private DataSource db = null;
+    private Settings settings = null;
+    private String timeFormat = "h:mm";
+
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -39,6 +42,8 @@ public class SetAlarmClockActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        settings = new Settings(this);
+        timeFormat = settings.getTimeFormat();
         init();
     }
 
@@ -69,8 +74,7 @@ public class SetAlarmClockActivity extends Activity {
             }
         });
 
-        Settings settings = new Settings(this);
-        String timeFormat = settings.getTimeFormat();
+
         if (!settings.is24HourFormat()) {
             timeFormat += " a";
         }

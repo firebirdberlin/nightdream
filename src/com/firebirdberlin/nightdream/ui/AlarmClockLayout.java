@@ -6,6 +6,7 @@ import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,7 +31,8 @@ public class AlarmClockLayout extends LinearLayout {
     private TextView timeView = null;
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
-    private ImageView buttonDelete = null;
+    private LinearLayout layoutDays = null;
+    private Button buttonDelete = null;
     private Switch switchActive = null;
     private RelativeLayout middle = null;
 
@@ -74,8 +76,9 @@ public class AlarmClockLayout extends LinearLayout {
 
         timeView = (TextView) findViewById(R.id.timeView);
         textViewWhen = (TextView) findViewById(R.id.textViewWhen);
+        layoutDays = (LinearLayout) findViewById(R.id.layout_days);
         buttonDown = (ImageView) findViewById(R.id.button_down);
-        buttonDelete = (ImageView) findViewById(R.id.button_delete);
+        buttonDelete = (Button) findViewById(R.id.button_delete);
         switchActive = (Switch) findViewById(R.id.enabled);
         middle = (RelativeLayout) findViewById(R.id.middle);
 
@@ -85,6 +88,7 @@ public class AlarmClockLayout extends LinearLayout {
             public void onClick(View view) {
                 int visibility = buttonDelete.getVisibility();
                 buttonDelete.setVisibility((visibility == View.GONE) ? View.VISIBLE : View.GONE);
+                layoutDays.setVisibility((visibility == View.GONE) ? View.VISIBLE : View.GONE);
             }
         });
 
