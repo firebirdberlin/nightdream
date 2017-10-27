@@ -23,7 +23,7 @@ public class SetAlarmClockActivity extends Activity {
     private DataSource db = null;
     private Settings settings = null;
     private String timeFormat = "h:mm";
-
+    private List<SimpleTime> entries = null;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -44,6 +44,9 @@ public class SetAlarmClockActivity extends Activity {
         super.onResume();
         settings = new Settings(this);
         timeFormat = settings.getTimeFormat();
+        if (!settings.is24HourFormat()) {
+            timeFormat += " a";
+        }
         init();
     }
 
@@ -65,19 +68,17 @@ public class SetAlarmClockActivity extends Activity {
 
     private void init() {
         openDB();
-        scrollView.removeAllViews();
-        List<SimpleTime> entries = db.getAlarms();
+        entries = db.getAlarms();
+        update();
+    }
 
+    private void update() {
         Collections.sort(entries, new Comparator<SimpleTime>() {
             public int compare(SimpleTime obj1, SimpleTime obj2) {
                 return obj1.getCalendar().compareTo(obj2.getCalendar());
             }
         });
-
-
-        if (!settings.is24HourFormat()) {
-            timeFormat += " a";
-        }
+        scrollView.removeAllViews();
         for (SimpleTime entry : entries) {
             AlarmClockLayout layout = new AlarmClockLayout(this, entry, timeFormat);
             scrollView.addView(layout);
@@ -94,13 +95,27 @@ public class SetAlarmClockActivity extends Activity {
         TimePickerDialog mTimePicker = new TimePickerDialog(context, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                SimpleTime entry = new SimpleTime(selectedHour, selectedMinute);
-                if (entry_id != null) {
-                    entry.id = entry_id;
+                SimpleTime entry = null;
+                if (entry_id == null) {
+                    entry = new SimpleTime();
+                } else {
+                    for (SimpleTime e : entries) {
+                        if (e.id == entry_id) {
+                            entry = e;
+                            break;
+                        }
+                    }
                 }
-                entry.isActive = true;
-                db.save(entry);
-                init();
+                if (entry != null) {
+                    entry.hour = selectedHour;
+                    entry.min = selectedMinute;
+                    entry.isActive = true;
+                    db.save(entry);
+                    if (entry_id == null) {
+                        entries.add(entry);
+                    }
+                }
+                update();
                 WakeUpReceiver.schedule(context);
             }
         }, hour, min, Utility.is24HourFormat(context));
@@ -110,7 +125,8 @@ public class SetAlarmClockActivity extends Activity {
     public void onButtonDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
         db.delete(entry);
-        init();
+        entries.remove(entry);
+        update();
         WakeUpReceiver.schedule(this);
     }
 
