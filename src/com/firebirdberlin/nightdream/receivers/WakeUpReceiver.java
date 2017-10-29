@@ -35,16 +35,20 @@ public class WakeUpReceiver extends BroadcastReceiver {
         DataSource db = new DataSource(context);
         db.open();
         SimpleTime next = db.getNextAlarmToSchedule();
-        if (next == null) {
-            // nothing to do
-            return;
+        if (next != null) {
+            setAlarm(context, next);
+            next = db.setNextAlarm(next);
+            db.close();
+        } else {
+            PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
+            AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
+            am.cancel(pI);
         }
-        setAlarm(context, next);
-        next = db.setNextAlarm(next);
-        db.close();
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        intent.putExtras(next.toBundle());
+        if (next != null ){
+            intent.putExtras(next.toBundle());
+        }
         context.sendBroadcast(intent);
     }
 
