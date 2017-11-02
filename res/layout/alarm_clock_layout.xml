@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
+    android:animateLayoutChanges="false"
     android:orientation="vertical">
 
 
@@ -47,10 +47,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/timeView"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="false">
 
             <LinearLayout
-                android:id="@+id/layouotInfo"
+                android:id="@+id/layoutInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -80,9 +80,10 @@
                 android:id="@+id/layout_days"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layouotInfo"
+                android:layout_below="@+id/layoutInfo"
+                android:animateLayoutChanges="false"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <ToggleButton
                     android:id="@+id/dayButton1"
@@ -129,18 +130,6 @@
                     android:textOn="T" />
 
                 <ToggleButton
-                    android:id="@+id/dayButton6"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/dayButton5"
-                    android:layout_alignBottom="@+id/dayButton5"
-                    android:layout_toEndOf="@+id/dayButton5"
-                    android:layout_toRightOf="@+id/dayButton5"
-                    android:layout_weight="1"
-                    android:textOff="F"
-                    android:textOn="F" />
-
-                <ToggleButton
                     android:id="@+id/dayButton5"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
@@ -148,6 +137,18 @@
                     android:layout_alignBottom="@+id/dayButton4"
                     android:layout_toEndOf="@+id/dayButton4"
                     android:layout_toRightOf="@+id/dayButton4"
+                    android:layout_weight="1"
+                    android:textOff="F"
+                    android:textOn="F" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton6"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/dayButton5"
+                    android:layout_alignBottom="@+id/dayButton5"
+                    android:layout_toEndOf="@+id/dayButton5"
+                    android:layout_toRightOf="@+id/dayButton5"
                     android:layout_weight="1"
                     android:textOff="S"
                     android:textOn="S" />

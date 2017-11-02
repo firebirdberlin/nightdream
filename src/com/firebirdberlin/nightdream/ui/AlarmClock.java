@@ -178,7 +178,15 @@ public class AlarmClock extends View {
         // the view should be visible before the user interacts with it
         if (!isClickable() || locked ) return false;
 
-        return mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e)|| handleAlarmSetEvents(e);
+        if (showRightCorner()) {
+            boolean success = handleAlarmCancelling(e);
+            if (success) return true;
+        }
+        if (showLeftCorner()) {
+            boolean success = mGestureDetector.onTouchEvent(e) || handleAlarmSetEvents(e);
+            if (success) return true;
+        }
+        return false;
     }
 
     private boolean handleAlarmSetEvents(MotionEvent e) {
@@ -307,24 +315,22 @@ public class AlarmClock extends View {
         touch_zone_radius = (w < h) ? w : h;
         quiet_zone_size = touch_zone_radius/4;
 
-        // left corner
-        if (! locked) {
+        if (showLeftCorner()) {
             cornerLeft.setCenter(0, h);
             cornerLeft.setRadius(touch_zone_radius);
             cornerLeft.setActive(FingerDown);
             cornerLeft.draw(canvas, paint);
+
+        }
+        if (showRightCorner()) {
+            cornerRight.setCenter(w, h);
+            cornerRight.setRadius(touch_zone_radius);
+            cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
+            cornerRight.draw(canvas, paint);
         }
 
-        // right corner
         if (isAlarmSet() || userChangesAlarmTime) {
-            if (! locked) {
-                cornerRight.setCenter(w, h);
-                cornerRight.setRadius(touch_zone_radius);
-                cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
-                cornerRight.draw(canvas, paint);
-            }
             paint.setColorFilter(secondaryColorFilter);
-
             String l = getAlarmTimeFormatted();
 
             paint.setTextSize(touch_zone_radius * .5f);
@@ -344,6 +350,20 @@ public class AlarmClock extends View {
             }
         }
     }
+
+    private boolean showLeftCorner() {
+        if (locked) return false;
+        return !(isAlarmSet() && time.isRecurring());
+
+    }
+
+    private boolean showRightCorner() {
+        if (locked) return false;
+        if (alarmIsRunning()) return true;
+        return (isAlarmSet() && !time.isRecurring()) || userChangesAlarmTime;
+
+    }
+
 
     private String getAlarmTimeFormatted() {
         if ( userChangesAlarmTime || isAlarmSet() ) {

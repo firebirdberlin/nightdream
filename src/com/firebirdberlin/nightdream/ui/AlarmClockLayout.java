@@ -4,6 +4,7 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
@@ -35,6 +37,26 @@ public class AlarmClockLayout extends LinearLayout {
     private Button buttonDelete = null;
     private Switch switchActive = null;
     private RelativeLayout middle = null;
+    private ToggleButton[] dayButtons = new ToggleButton[7];
+    private int firstdayOfWeek = Utility.getFirstDayOfWeek();
+
+    private ToggleButton.OnClickListener dayButtonOnclickListener =
+            new ToggleButton.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    int day = (int) view.getTag();
+                    Log.w(TAG, String.format("tag : %d", day));
+                    ToggleButton button = (ToggleButton) view;
+
+                    if (button.isChecked()) {
+                        alarmClockEntry.addRecurringDay(day);
+                    } else {
+                        alarmClockEntry.removeRecurringDay(day);
+                    }
+                    ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                }
+            };
 
     public AlarmClockLayout(Context context) {
         super(context);
@@ -82,6 +104,26 @@ public class AlarmClockLayout extends LinearLayout {
         switchActive = (Switch) findViewById(R.id.enabled);
         middle = (RelativeLayout) findViewById(R.id.middle);
 
+        dayButtons[0] = (ToggleButton) findViewById(R.id.dayButton1);
+        dayButtons[1] = (ToggleButton) findViewById(R.id.dayButton2);
+        dayButtons[2] = (ToggleButton) findViewById(R.id.dayButton3);
+        dayButtons[3] = (ToggleButton) findViewById(R.id.dayButton4);
+        dayButtons[4] = (ToggleButton) findViewById(R.id.dayButton5);
+        dayButtons[5] = (ToggleButton) findViewById(R.id.dayButton6);
+        dayButtons[6] = (ToggleButton) findViewById(R.id.dayButton7);
+
+        String[] weekdayStrings = Utility.getWeekdayStrings();
+        for (int i : SimpleTime.DAYS) {
+            int idx = (i - 1 + firstdayOfWeek - 1) % 7 + 1;
+            Log.w(TAG, String.format("set tag for %d: %d", i - 1, idx));
+            ToggleButton button = dayButtons[i - 1];
+            button.setTag(idx);
+            button.setTextOn(weekdayStrings[idx]);
+            button.setTextOff(weekdayStrings[idx]);
+            button.setText(weekdayStrings[idx]);
+            button.setOnClickListener(dayButtonOnclickListener);
+        }
+
         buttonDown.setSoundEffectsEnabled(false);
         buttonDown.setOnClickListener(new ImageView.OnClickListener() {
             @Override
@@ -97,7 +139,7 @@ public class AlarmClockLayout extends LinearLayout {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 alarmClockEntry.isActive = isChecked;
-                ((SetAlarmClockActivity) context).onActiveStateChanged(alarmClockEntry);
+                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
             }
         });
 
@@ -117,7 +159,14 @@ public class AlarmClockLayout extends LinearLayout {
             } else {
                 textViewWhen.setText(Utility.formatTime("EEEE", time));
             }
+
+            for (int i = 0; i < dayButtons.length; i++) {
+                int day = (int) dayButtons[i].getTag();
+                dayButtons[i].setChecked(alarmClockEntry.hasDay(day));
+            }
         }
+
+        invalidate();
     }
 
 }

@@ -17,6 +17,8 @@ public class SimpleTime {
     public static int THURSDAY = 1 << 4;
     public static int FRIDAY = 1 << 5;
     public static int SATURDAY = 1 << 6;
+    public static List<Integer> DAYS = Arrays.asList(Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY,
+            Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY);
 
     public long id = -1L;
     public int hour = 0;
@@ -140,26 +142,23 @@ public class SimpleTime {
         return cal;
     }
 
-    public void addRecurringDays(int flags) {
-        recurringDays = flags;
+    public void addRecurringDay(int day) {
+        recurringDays |= dayConstantToFlag(day);
     }
 
-    private boolean isRecurring() {
+    public void removeRecurringDay(int day) {
+        recurringDays &= ~dayConstantToFlag(day);
+    }
+
+    public boolean isRecurring() {
         return recurringDays != 0;
     }
 
     private Calendar getNextRecurringAlarmTime(Calendar reference) {
         List<Long> times = new ArrayList<>();
-        List<Integer> days = Arrays.asList(Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY,
-                Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY);
-
-        for (Integer day : days) {
-            // map the day to the corresponding bit flag
-            int flag = 1 << (day - 1);
+        for (Integer day : SimpleTime.DAYS) {
             Calendar cal = initCalendar(reference);
-
-            if ((recurringDays & flag) == flag) {
-
+            if (hasDay(day)) {
                 cal.set(Calendar.DAY_OF_WEEK, day);
                 if (cal.before(reference)) {
                     cal.add(Calendar.DATE, 7);
@@ -173,6 +172,16 @@ public class SimpleTime {
         Calendar result = Calendar.getInstance();
         result.setTimeInMillis(times.get(0));
         return result;
+    }
+
+    public boolean hasDay(int day) {
+        // map the day to the corresponding bit flag
+        int flag = 1 << (day - 1);
+        return ((recurringDays & flag) == flag);
+    }
+
+    public int dayConstantToFlag(int day) {
+        return (1 << (day - 1));
     }
 
     @Override

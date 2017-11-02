@@ -135,7 +135,7 @@ public class SetAlarmClockActivity extends Activity {
         showTimePicker(entry.hour, entry.min, entry.id);
     }
 
-    public void onActiveStateChanged(SimpleTime entry) {
+    public void onEntryStateChanged(SimpleTime entry) {
         db.save(entry);
         WakeUpReceiver.schedule(this);
     }

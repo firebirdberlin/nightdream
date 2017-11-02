@@ -21,8 +21,10 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
@@ -46,6 +48,22 @@ public class Utility {
         return sdf.format(calendar.getTime());
     }
 
+    static public String[] getWeekdayStrings() {
+        return getWeekdayStringsForLocale(Locale.getDefault());
+    }
+
+    static public String[] getWeekdayStringsForLocale(Locale locale) {
+        DateFormatSymbols symbols = new DateFormatSymbols(locale);
+        String[] dayNames = symbols.getShortWeekdays();
+        for (int i = 1; i < dayNames.length; i++) {
+            dayNames[i] = dayNames[i].substring(0, 1);
+        }
+        return dayNames;
+    }
+
+    static public int getFirstDayOfWeek() {
+        return Calendar.getInstance().getFirstDayOfWeek();
+    }
 
     static public Sensor getLightSensor(Context context) {
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);

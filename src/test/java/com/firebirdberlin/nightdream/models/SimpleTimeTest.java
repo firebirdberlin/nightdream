@@ -20,6 +20,37 @@ public class SimpleTimeTest extends TestCase {
         return reference;
     }
 
+    public void testAddRecurringDay() throws Exception {
+        SimpleTime time = new SimpleTime(13, 25);
+        assertFalse(time.isRecurring());
+
+        time.addRecurringDay(2);
+
+        assertTrue(time.isRecurring());
+
+        assertEquals(true, time.hasDay(2));
+        assertEquals(false, time.hasDay(1));
+        assertEquals(false, time.hasDay(3));
+        assertEquals(false, time.hasDay(4));
+        assertEquals(false, time.hasDay(5));
+        assertEquals(false, time.hasDay(6));
+        assertEquals(false, time.hasDay(7));
+    }
+
+    public void testRemoveRecurringDay() throws Exception {
+        SimpleTime time = new SimpleTime(13, 25);
+        time.addRecurringDay(2);
+        time.removeRecurringDay(2);
+        assertFalse(time.isRecurring());
+        assertEquals(false, time.hasDay(1));
+        assertEquals(false, time.hasDay(2));
+        assertEquals(false, time.hasDay(3));
+        assertEquals(false, time.hasDay(4));
+        assertEquals(false, time.hasDay(5));
+        assertEquals(false, time.hasDay(6));
+        assertEquals(false, time.hasDay(7));
+    }
+
     public void testGetNextAlarmTime() throws Exception {
         SimpleTime time = new SimpleTime(13, 25);
         Calendar reference = getReference(12, 00);
@@ -72,6 +103,9 @@ public class SimpleTimeTest extends TestCase {
                 new SimpleTime(13, 25, SimpleTime.MONDAY | SimpleTime.WEDNESDAY)
         );
 
+        times.get(0).isActive = true;
+        times.get(1).isActive = true;
+
         Calendar reference = getReference(14, 00);
         SimpleTime result = SimpleTime.getNextFromList(times, reference);
         assertEquals(times.get(1), result);
@@ -87,4 +121,6 @@ public class SimpleTimeTest extends TestCase {
         SimpleTime result = SimpleTime.getNextFromList(times, reference);
         assertEquals(null, result);
     }
+
+
 }
