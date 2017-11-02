@@ -69,6 +69,7 @@ public class NightDreamActivity extends Activity
     mAudioManager AudioManage = null;
     private ImageView background_image;
     private ImageView weatherIcon;
+    private ImageView alarmClockIcon;
     private boolean screenWasOn = false;
     private Context context = null;
     private float last_ambient = 4.0f;
@@ -159,6 +160,7 @@ public class NightDreamActivity extends Activity
         setKeepScreenOn(true);
 
         weatherIcon = (ImageView) findViewById(R.id.icon_weather_forecast);
+        alarmClockIcon = (ImageView) findViewById(R.id.alarm_clock_icon);
         background_image = (ImageView) findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -199,6 +201,7 @@ public class NightDreamActivity extends Activity
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
 
         scheduleShutdown();
+        setupAlarmClockIcon();
         setupWeatherForecastIcon();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
@@ -430,6 +433,15 @@ public class NightDreamActivity extends Activity
             weatherIcon.setVisibility(View.GONE);
         } else {
             weatherIcon.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setupAlarmClockIcon() {
+
+        if (Build.VERSION.SDK_INT < 14) {
+            alarmClockIcon.setVisibility(View.GONE);
+        } else {
+            alarmClockIcon.setVisibility(View.VISIBLE);
         }
     }
 

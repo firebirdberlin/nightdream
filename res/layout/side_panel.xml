@@ -25,7 +25,8 @@
         android:clickable="true"
         android:onClick="onAlarmClockClick"
         android:padding="5dp"
-        android:src="@drawable/ic_alarm_clock" />
+        android:src="@drawable/ic_alarm_clock"
+        android:visibility="gone" />
 
     <com.firebirdberlin.nightdream.ui.WebRadioImageView
         android:id="@+id/radio_icon"

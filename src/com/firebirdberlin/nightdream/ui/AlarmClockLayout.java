@@ -2,12 +2,16 @@ package com.firebirdberlin.nightdream.ui;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,8 +38,10 @@ public class AlarmClockLayout extends LinearLayout {
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
     private LinearLayout layoutDays = null;
+    private LinearLayout layoutInfo = null;
     private Button buttonDelete = null;
     private Switch switchActive = null;
+    private CheckBox checkBoxIsRepeating = null;
     private RelativeLayout middle = null;
     private ToggleButton[] dayButtons = new ToggleButton[7];
     private int firstdayOfWeek = Utility.getFirstDayOfWeek();
@@ -57,6 +63,34 @@ public class AlarmClockLayout extends LinearLayout {
                     ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                 }
             };
+
+    private CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
+            new CheckBox.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
+                    if (!checked) {
+                        for (int d : SimpleTime.DAYS) {
+                            alarmClockEntry.removeRecurringDay(d);
+                            dayButtons[d - 1].setChecked(false);
+                        }
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    }
+                }
+            };
+
+    private ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            boolean gone = buttonDelete.getVisibility() == View.GONE;
+            buttonDelete.setVisibility(gone ? View.VISIBLE : View.GONE);
+            checkBoxIsRepeating.setVisibility(gone ? View.VISIBLE : View.GONE);
+            buttonDown.setImageResource(gone ? R.drawable.ic_collapse : R.drawable.ic_expand);
+            layoutDays.setVisibility(
+                    (gone && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
+            );
+        }
+    };
 
     public AlarmClockLayout(Context context) {
         super(context);
@@ -98,11 +132,13 @@ public class AlarmClockLayout extends LinearLayout {
 
         timeView = (TextView) findViewById(R.id.timeView);
         textViewWhen = (TextView) findViewById(R.id.textViewWhen);
-        layoutDays = (LinearLayout) findViewById(R.id.layout_days);
+        layoutDays = (LinearLayout) findViewById(R.id.layoutDays);
+        layoutInfo = (LinearLayout) findViewById(R.id.layoutInfo);
         buttonDown = (ImageView) findViewById(R.id.button_down);
         buttonDelete = (Button) findViewById(R.id.button_delete);
         switchActive = (Switch) findViewById(R.id.enabled);
         middle = (RelativeLayout) findViewById(R.id.middle);
+        checkBoxIsRepeating = (CheckBox) findViewById(R.id.checkBoxIsRepeating);
 
         dayButtons[0] = (ToggleButton) findViewById(R.id.dayButton1);
         dayButtons[1] = (ToggleButton) findViewById(R.id.dayButton2);
@@ -124,16 +160,25 @@ public class AlarmClockLayout extends LinearLayout {
             button.setOnClickListener(dayButtonOnclickListener);
         }
 
-        buttonDown.setSoundEffectsEnabled(false);
-        buttonDown.setOnClickListener(new ImageView.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int visibility = buttonDelete.getVisibility();
-                buttonDelete.setVisibility((visibility == View.GONE) ? View.VISIBLE : View.GONE);
-                layoutDays.setVisibility((visibility == View.GONE) ? View.VISIBLE : View.GONE);
-            }
-        });
+        Drawable icon = getResources().getDrawable(R.drawable.ic_delete);
+        Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
+        Drawable scaled = new BitmapDrawable(
+                getResources(),
+                Bitmap.createScaledBitmap(
+                        bitmap,
+                        (int) (0.6f * bitmap.getWidth()),
+                        (int) (0.6f * bitmap.getHeight()),
+                        true
+                )
+        );
 
+        buttonDelete.setCompoundDrawablesWithIntrinsicBounds(scaled, null, null, null);
+
+        buttonDown.setImageResource(R.drawable.ic_expand);
+        buttonDown.setSoundEffectsEnabled(false);
+        buttonDown.setOnClickListener(buttonDownOnClickListener);
+
+        checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
         update();
         switchActive.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
             @Override
@@ -159,6 +204,11 @@ public class AlarmClockLayout extends LinearLayout {
             } else {
                 textViewWhen.setText(Utility.formatTime("EEEE", time));
             }
+
+            checkBoxIsRepeating.setOnCheckedChangeListener(null);
+            checkBoxIsRepeating.setChecked(alarmClockEntry.isRecurring());
+            checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
+
 
             for (int i = 0; i < dayButtons.length; i++) {
                 int day = (int) dayButtons[i].getTag();

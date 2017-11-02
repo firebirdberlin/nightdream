@@ -53,7 +53,6 @@
                 android:id="@+id/layoutInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:orientation="horizontal">
 
                 <TextView
@@ -71,19 +70,30 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
+                    android:layout_alignParentTop="false"
                     android:layout_weight="0.05"
-                    android:src="@android:drawable/arrow_down_float" />
+                    android:src="@drawable/ic_expand" />
+
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layout_days"
-                android:layout_width="match_parent"
+            <CheckBox
+                android:id="@+id/checkBoxIsRepeating"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layoutInfo"
+                android:layout_weight="1"
+                android:text="@string/repeat"
+                android:textAllCaps="false"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/layoutDays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checkBoxIsRepeating"
                 android:animateLayoutChanges="false"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ToggleButton
                     android:id="@+id/dayButton1"
@@ -172,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/layout_days"
+                android:layout_below="@+id/layoutDays"
                 android:layout_toEndOf="@+id/textViewWhen"
                 android:layout_toRightOf="@+id/textViewWhen"
                 android:drawableLeft="@drawable/ic_delete"

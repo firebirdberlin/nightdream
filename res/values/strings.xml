@@ -125,6 +125,7 @@ OR
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend">Recommend app</string>
     <string name="remaining">rem.</string>
+    <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="restless_mode">Move the clock around</string>
     <string name="review_request">Please rate this application. Thanks !</string>

@@ -178,4 +178,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title4">Größe</string>
     <string name="today">heute</string>
     <string name="tomorrow">morgen</string>
+    <string name="delete">löschen</string>
+    <string name="repeat">wiederholen</string>
 </resources>
