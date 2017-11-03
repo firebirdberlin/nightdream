@@ -19,7 +19,8 @@ OR
     <string name="about">About</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stop</string>
-    <string name="alarm">Alarm</string>
+    <string name="add_new_alarm">add new alarm</string>z
+    <string name="alarm">Alarm</string>z
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Turn the screen off during the night.</string>

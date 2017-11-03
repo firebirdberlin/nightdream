@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.models;
 
 import android.os.Bundle;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -187,6 +188,23 @@ public class SimpleTime {
     @Override
     public String toString() {
         return String.format("%02d:%02d", hour, min);
+    }
+
+    public String getWeekDaysAsString() {
+        DateFormatSymbols symbols = new DateFormatSymbols();
+        String[] dayNames = symbols.getShortWeekdays();
+        int firstDayOfWeek = Calendar.getInstance().getFirstDayOfWeek();
+        String result = "";
+
+        for (int d = 0; d < 7; d++) {
+            int day = (firstDayOfWeek - 1 + d) % 7 + 1;
+            if (hasDay(day)) {
+                if (!result.isEmpty()) result += ", ";
+                result += dayNames[day];
+            }
+        }
+
+        return result;
     }
 }
 

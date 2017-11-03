@@ -38,14 +38,27 @@ public class AlarmClockLayout extends LinearLayout {
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
     private LinearLayout layoutDays = null;
-    private LinearLayout layoutInfo = null;
     private Button buttonDelete = null;
     private Switch switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
     private RelativeLayout middle = null;
     private ToggleButton[] dayButtons = new ToggleButton[7];
     private int firstdayOfWeek = Utility.getFirstDayOfWeek();
-
+    private CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
+            new CheckBox.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
+                    if (!checked) {
+                        for (int d : SimpleTime.DAYS) {
+                            alarmClockEntry.removeRecurringDay(d);
+                            dayButtons[d - 1].setChecked(false);
+                        }
+                        update();
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    }
+                }
+            };
     private ToggleButton.OnClickListener dayButtonOnclickListener =
             new ToggleButton.OnClickListener() {
                 @Override
@@ -60,25 +73,10 @@ public class AlarmClockLayout extends LinearLayout {
                     } else {
                         alarmClockEntry.removeRecurringDay(day);
                     }
+                    update();
                     ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                 }
             };
-
-    private CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
-            new CheckBox.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
-                    if (!checked) {
-                        for (int d : SimpleTime.DAYS) {
-                            alarmClockEntry.removeRecurringDay(d);
-                            dayButtons[d - 1].setChecked(false);
-                        }
-                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
-                    }
-                }
-            };
-
     private ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -133,12 +131,24 @@ public class AlarmClockLayout extends LinearLayout {
         timeView = (TextView) findViewById(R.id.timeView);
         textViewWhen = (TextView) findViewById(R.id.textViewWhen);
         layoutDays = (LinearLayout) findViewById(R.id.layoutDays);
-        layoutInfo = (LinearLayout) findViewById(R.id.layoutInfo);
         buttonDown = (ImageView) findViewById(R.id.button_down);
         buttonDelete = (Button) findViewById(R.id.button_delete);
         switchActive = (Switch) findViewById(R.id.enabled);
         middle = (RelativeLayout) findViewById(R.id.middle);
         checkBoxIsRepeating = (CheckBox) findViewById(R.id.checkBoxIsRepeating);
+
+        RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lp2.addRule(RelativeLayout.ALIGN_PARENT_END);
+        lp2.addRule(RelativeLayout.BELOW, R.id.button_delete);
+        int height = (int) (0.8 * getHeightOfView(buttonDown));
+        lp2.setMargins(0, -height, 0, 0);
+
+        Log.w(TAG, String.format("button height %d", height));
+        buttonDown.setLayoutParams(lp2);
 
         dayButtons[0] = (ToggleButton) findViewById(R.id.dayButton1);
         dayButtons[1] = (ToggleButton) findViewById(R.id.dayButton2);
@@ -190,6 +200,12 @@ public class AlarmClockLayout extends LinearLayout {
 
     }
 
+    private int getHeightOfView(View contentview) {
+        contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        //contentview.getMeasuredWidth();
+        return contentview.getMeasuredHeight();
+    }
+
     private void update() {
         if (alarmClockEntry != null) {
             Calendar time = alarmClockEntry.getCalendar();
@@ -197,12 +213,12 @@ public class AlarmClockLayout extends LinearLayout {
             timeView.setText(text);
             switchActive.setChecked(alarmClockEntry.isActive);
 
-            if (isToday(time)) {
+            if (alarmClockEntry.isRecurring()) {
+                textViewWhen.setText(alarmClockEntry.getWeekDaysAsString());
+            } else if (isToday(time)) {
                 textViewWhen.setText(R.string.today);
             } else if (isTomorrow(time)) {
                 textViewWhen.setText(R.string.tomorrow);
-            } else {
-                textViewWhen.setText(Utility.formatTime("EEEE", time));
             }
 
             checkBoxIsRepeating.setOnCheckedChangeListener(null);

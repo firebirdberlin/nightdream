@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="false"
+    android:animationCache="false"
     android:orientation="vertical">
 
     <ScrollView
@@ -23,7 +24,8 @@
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
+            android:animateLayoutChanges="false"
+            android:animationCache="false"
             android:elevation="0dp"
             android:orientation="vertical"
             android:paddingBottom="12dp"
@@ -39,5 +41,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:onClick="onClickAddNewAlarm"
-        android:text=" Add new alarm" />
+        android:text="@string/add_new_alarm" />
 </RelativeLayout>

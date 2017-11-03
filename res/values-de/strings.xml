@@ -20,6 +20,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">Über</string>
 <string name="action_snooze">Schlummern</string>
 <string name="action_stop">Beenden</string>
+    <string name="add_new_alarm">neuen Wecker hinzufügen</string>z
 <string name="alarm">Wecker</string>
 <string name="alarmFadeIn">ansteigende Lautstärke</string>
 <string name="alarmVolume">Lautstärke</string>
