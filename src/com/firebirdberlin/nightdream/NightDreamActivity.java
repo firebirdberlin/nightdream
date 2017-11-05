@@ -438,7 +438,7 @@ public class NightDreamActivity extends Activity
 
     private void setupAlarmClockIcon() {
 
-        if (Build.VERSION.SDK_INT < 14) {
+        if (Build.VERSION.SDK_INT < 14 || !mySettings.useInternalAlarm) {
             alarmClockIcon.setVisibility(View.GONE);
         } else {
             alarmClockIcon.setVisibility(View.VISIBLE);

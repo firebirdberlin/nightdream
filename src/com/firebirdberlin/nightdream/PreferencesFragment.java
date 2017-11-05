@@ -57,19 +57,115 @@ public class PreferencesFragment extends PreferenceFragment {
     public static final int REQUEST_CODE_PURCHASE_WEB_RADIO = 1003;
     public static final String PREFS_KEY = "NightDream preferences";
     private static int RESULT_LOAD_IMAGE = 1;
+    private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
-    private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 5;
-    private Settings settings = null;
-    private Context mContext = null;
-    DaydreamSettingsObserver daydreamSettingsObserver = null;
-
-    IInAppBillingService mService;
     public boolean purchased_donation = false;
     public boolean purchased_weather_data = false;
     public boolean purchased_web_radio = false;
+    DaydreamSettingsObserver daydreamSettingsObserver = null;
+    IInAppBillingService mService;
+    Preference.OnPreferenceClickListener purchaseWebRadioPreferenceClickListener =
+            new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    purchaseIntent(ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
+                    return true;
+                }
+            };
+    Preference.OnPreferenceClickListener purchaseDonationPreferenceClickListener =
+            new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
+                    return true;
+                }
+            };
+    Preference.OnPreferenceClickListener purchaseWeatherDataPreferenceClickListener =
+            new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
+                    return true;
+                }
+            };
+    Preference.OnPreferenceChangeListener recordAudioPrefChangeListener =
+            new Preference.OnPreferenceChangeListener() {
+                public boolean onPreferenceChange(Preference preference, Object new_value) {
+                    boolean on = Boolean.parseBoolean(new_value.toString());
+                    if (on && !hasPermission(Manifest.permission.RECORD_AUDIO)) {
+                        requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
+                                PERMISSIONS_REQUEST_RECORD_AUDIO);
+                    }
+                    return true;
+                }
+            };
+    Preference.OnPreferenceChangeListener fetchWeatherDataPrefChangeListener =
+            new Preference.OnPreferenceChangeListener() {
+                public boolean onPreferenceChange(Preference preference, Object new_value) {
+                    boolean on = Boolean.parseBoolean(new_value.toString());
+                    if (on && !hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                PERMISSIONS_REQUEST_ACCESS_LOCATION);
+                    }
+                    return true;
+                }
+            };
+    private Settings settings = null;
+    private Context mContext = null;
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
 
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            Log.i(TAG, "IIAB service connected");
+            mService = IInAppBillingService.Stub.asInterface(service);
+            getPurchases();
+        }
+    };
+    SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    switch (key) {
+                        case "brightness_offset":
+                            int offsetInt = sharedPreferences.getInt("brightness_offset", 0);
+                            settings.setBrightnessOffset(offsetInt / 100.f);
+                            break;
+                        case "autoBrightness":
+                            InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
+                            // reset the brightness level
+                            settings.setBrightnessOffset(0.8f);
+                            pref.setProgress(80);
+                            setupBrightnessControls(sharedPreferences);
+                            break;
+                        case "minBrightness":
+                            int value = sharedPreferences.getInt("minBrightness", 1);
+                            settings.setNightModeBrightness(value / 100.f);
+                            break;
+                        case "backgroundMode":
+                            setupBackgroundImageControls(sharedPreferences);
+                            break;
+                        case "clockLayout":
+                            resetScaleFactor(sharedPreferences);
+                            break;
+                        case "nightModeActivationMode":
+                            setupNightModePreferences(sharedPreferences);
+                            break;
+                        case "useDeviceLock":
+                            setupDeviceAdministratorPermissions(sharedPreferences);
+                            break;
+                        case "standbyEnabledWhileConnected":
+                        case "standbyEnabledWhileDisconnected":
+                            setupStandByService(sharedPreferences);
+                            break;
+                        case "useInternalAlarm":
+                            setupAlarmClock(sharedPreferences);
+                    }
+                }
+            };
     private int indexInitialScreen = 0;
 
     @SuppressWarnings("deprecation")
@@ -137,21 +233,6 @@ public class PreferencesFragment extends PreferenceFragment {
 
         }
     }
-
-    ServiceConnection mServiceConn = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name,
-                IBinder service) {
-            Log.i(TAG, "IIAB service connected");
-            mService = IInAppBillingService.Stub.asInterface(service);
-            getPurchases();
-        }
-    };
 
     private void getPurchases() {
         if ( Utility.isDebuggable(mContext) ) {
@@ -406,54 +487,6 @@ public class PreferencesFragment extends PreferenceFragment {
         }
     }
 
-    Preference.OnPreferenceClickListener purchaseWebRadioPreferenceClickListener =
-        new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                purchaseIntent(ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
-                return true;
-            }
-        };
-
-    Preference.OnPreferenceClickListener purchaseDonationPreferenceClickListener =
-        new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
-                return true;
-            }
-        };
-
-    Preference.OnPreferenceClickListener purchaseWeatherDataPreferenceClickListener =
-        new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
-                return true;
-            }
-        };
-
-    Preference.OnPreferenceChangeListener recordAudioPrefChangeListener =
-        new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object new_value) {
-                boolean on = Boolean.parseBoolean(new_value.toString());
-                if (on && ! hasPermission(Manifest.permission.RECORD_AUDIO) ) {
-                    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
-                                       PERMISSIONS_REQUEST_RECORD_AUDIO);
-                }
-                return true;
-            }
-        };
-
-    Preference.OnPreferenceChangeListener fetchWeatherDataPrefChangeListener =
-        new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object new_value) {
-                boolean on = Boolean.parseBoolean(new_value.toString());
-                if (on && ! hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION) ) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                       PERMISSIONS_REQUEST_ACCESS_LOCATION);
-                }
-                return true;
-            }
-        };
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -674,46 +707,6 @@ public class PreferencesFragment extends PreferenceFragment {
                          nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC);
     }
 
-    SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
-        new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                switch (key) {
-                    case "brightness_offset":
-                        int offsetInt = sharedPreferences.getInt("brightness_offset", 0);
-                        settings.setBrightnessOffset(offsetInt / 100.f);
-                        break;
-                    case "autoBrightness":
-                        InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
-                        // reset the brightness level
-                        settings.setBrightnessOffset(0.8f);
-                        pref.setProgress(80);
-                        setupBrightnessControls(sharedPreferences);
-                        break;
-                    case "minBrightness":
-                        int value = sharedPreferences.getInt("minBrightness", 1);
-                        settings.setNightModeBrightness(value/100.f);
-                        break;
-                    case "backgroundMode":
-                        setupBackgroundImageControls(sharedPreferences);
-                        break;
-                    case "clockLayout":
-                        resetScaleFactor(sharedPreferences);
-                        break;
-                    case "nightModeActivationMode":
-                        setupNightModePreferences(sharedPreferences);
-                        break;
-                    case "useDeviceLock":
-                        setupDeviceAdministratorPermissions(sharedPreferences);
-                        break;
-                    case "standbyEnabledWhileConnected":
-                    case "standbyEnabledWhileDisconnected":
-                        setupStandByService(sharedPreferences);
-                        break;
-                }
-            }
-        };
-
     private void initUseDeviceLockPreference() {
         SwitchPreference pref = (SwitchPreference) findPreference("useDeviceLock");
 
@@ -743,6 +736,15 @@ public class PreferencesFragment extends PreferenceFragment {
             ScreenWatcherService.start(mContext);
         }
     }
+
+    private void setupAlarmClock(SharedPreferences sharedPreferences) {
+        boolean on = sharedPreferences.getBoolean("useInternalAlarm", false);
+
+        if (!on) {
+            WakeUpReceiver.cancelAlarm(mContext);
+        }
+    }
+
 
     private void setupDeviceAdministratorPermissions(SharedPreferences sharedPreferences) {
         if (!isAdded() ) return;

@@ -14,9 +14,11 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "BootReceiver: " + intent.getAction());
         PowerConnectionReceiver.schedule(context);
-        WakeUpReceiver.schedule(context);
-
         Settings settings = new Settings(context);
+        if (settings.useInternalAlarm) {
+            WakeUpReceiver.schedule(context);
+        }
+
         if (settings.standbyEnabledWhileConnected || settings.standbyEnabledWhileDisconnected) {
             ScreenWatcherService.start(context);
         }
