@@ -1,9 +1,11 @@
 package com.firebirdberlin.nightdream;
 
+import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -37,6 +39,11 @@ public class SetAlarmClockActivity extends Activity {
         setTheme(R.style.DialogTheme);
 
         scrollView = (LinearLayout) findViewById(R.id.scroll_view);
+        // https://www.youtube.com/watch?v=55wLsaWpQ4g
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            LayoutTransition layoutTransition = scrollView.getLayoutTransition();
+            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        }
     }
 
     @Override

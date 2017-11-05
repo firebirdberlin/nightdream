@@ -47,7 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/timeView"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            android:animationCache="true">
 
             <TextView
                 android:id="@+id/textViewWhen"
@@ -187,6 +188,7 @@
                 android:layout_alignParentTop="false"
                 android:layout_alignRight="@+id/button_delete"
                 android:layout_below="@+id/button_delete"
+                android:padding="5dp"
                 android:scaleX="0.5"
                 android:scaleY="0.5"
                 android:src="@drawable/ic_expand"

@@ -1,10 +1,12 @@
 package com.firebirdberlin.nightdream.ui;
 
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -136,6 +138,11 @@ public class AlarmClockLayout extends LinearLayout {
         switchActive = (Switch) findViewById(R.id.enabled);
         middle = (RelativeLayout) findViewById(R.id.middle);
         checkBoxIsRepeating = (CheckBox) findViewById(R.id.checkBoxIsRepeating);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            LayoutTransition layoutTransition = middle.getLayoutTransition();
+            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        }
 
         RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
