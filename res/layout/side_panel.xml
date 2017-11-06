@@ -28,6 +28,17 @@
         android:src="@drawable/ic_alarm_clock"
         android:visibility="gone" />
 
+    <ImageView
+        android:id="@+id/icon_weather_forecast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="weather forecast"
+        android:onClick="onWeatherForecastClick"
+        android:padding="5dp"
+        android:src="@drawable/ic_cloud"
+        android:visibility="gone" />
+
     <com.firebirdberlin.nightdream.ui.WebRadioImageView
         android:id="@+id/radio_icon"
         android:layout_width="wrap_content"
@@ -38,18 +49,6 @@
         android:padding="5dp"
         android:src="@drawable/ic_radio"
         android:visibility="visible"
-        />
-
-    <ImageView
-        android:id="@+id/icon_weather_forecast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contentDescription="weather forecast"
-        android:onClick="onWeatherForecastClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_cloud"
-        android:visibility="gone"
         />
 
     <ImageView

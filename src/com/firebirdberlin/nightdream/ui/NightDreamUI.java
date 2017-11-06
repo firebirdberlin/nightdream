@@ -1305,6 +1305,7 @@ public class NightDreamUI {
         showcaseView.setShowcaseTag(SHOWCASE_ID_ONBOARDING);
         showcaseView.showButton();
         showShowcase();
+
         setupShowcaseForQuickAlarms();
         setupShowcaseForAlarmDeletion();
         setupShowcaseForScreenLock();
@@ -1355,7 +1356,8 @@ public class NightDreamUI {
     }
 
     private void setupShowcaseForQuickAlarms() {
-        if ( showcaseView != null || daydreamMode) {
+        // deprecated with the introduction of the SetAlarmActivity
+/*        if ( showcaseView != null || daydreamMode) {
             return;
         }
 
@@ -1372,10 +1374,12 @@ public class NightDreamUI {
             showcaseView.hideButton();
             showShowcase();
         }
-
+*/
     }
 
     private void setupShowcaseForAlarmDeletion() {
+        // deprecated with the introduction of the SetAlarmActivity
+/*
         if ( showcaseView != null || daydreamMode) {
             return;
         }
@@ -1393,7 +1397,7 @@ public class NightDreamUI {
             showcaseView.hideButton();
             showShowcase();
         }
-
+*/
     }
 
     private void setupShowcaseForScreenLock() {
