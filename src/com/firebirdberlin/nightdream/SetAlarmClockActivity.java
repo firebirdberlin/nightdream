@@ -102,6 +102,10 @@ public class SetAlarmClockActivity extends Activity {
         TimePickerDialog mTimePicker = new TimePickerDialog(context, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                // Bug Android 4.1: Dialog is submitted twice
+                // >> ignore second call to this method.
+                if (!timePicker.isShown()) return;
+
                 SimpleTime entry = null;
                 if (entry_id == null) {
                     entry = new SimpleTime();

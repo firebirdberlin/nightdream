@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="false"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:targetApi="honeycomb">
 
 
     <RelativeLayout
@@ -12,10 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="false"
-        android:backgroundTint="@android:color/holo_blue_bright"
-        android:paddingEnd="?android:attr/dialogPreferredPadding"
-        android:paddingRight="?android:attr/dialogPreferredPadding"
-        android:paddingStart="?android:attr/dialogPreferredPadding">
+        android:paddingEnd="20dp"
+        android:paddingRight="20dp"
+        android:paddingStart="20dp">
 
         <TextView
             android:id="@+id/timeView"
@@ -24,11 +24,13 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/button_delete"
+
+            android:fontFamily="sans-serif"
             android:onClick="onTimeClicked"
             android:text="09:00"
-            android:textAppearance="@android:style/TextAppearance.Material.Large"
-            android:textSize="40sp" />
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textSize="40sp"
+            tools:ignore="HardcodedText" />
 
         <Switch
             android:id="@+id/enabled"
@@ -40,7 +42,7 @@
             android:layout_centerInParent="false"
             android:layout_centerVertical="true"
             android:layout_marginTop="15dp"
-            android:elevation="24dp" />
+            tools:targetApi="ice_cream_sandwich" />
 
         <RelativeLayout
             android:id="@+id/middle"
@@ -58,19 +60,15 @@
                 android:layout_alignParentRight="false"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_weight="1"
                 android:text="@string/today"
-                android:textAllCaps="false"
-                android:textAppearance="@android:style/TextAppearance.Material.Small" />
+                android:textAppearance="@android:style/TextAppearance.Small" />
 
             <CheckBox
                 android:id="@+id/checkBoxIsRepeating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewWhen"
-                android:layout_weight="1"
                 android:text="@string/repeat"
-                android:textAllCaps="false"
                 android:visibility="gone" />
 
             <LinearLayout
@@ -86,19 +84,15 @@
                     android:id="@+id/dayButton1"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textViewWhen"
                     android:layout_weight="1"
                     android:textOff="M"
-                    android:textOn="M" />
+                    android:textOn="M"
+                    tools:ignore="HardcodedText" />
 
                 <ToggleButton
                     android:id="@+id/dayButton2"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/dayButton1"
-                    android:layout_alignBottom="@+id/dayButton1"
-                    android:layout_toEndOf="@+id/dayButton1"
-                    android:layout_toRightOf="@+id/dayButton1"
                     android:layout_weight="1"
                     android:textOff="T"
                     android:textOn="T" />
@@ -107,9 +101,6 @@
                     android:id="@+id/dayButton3"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/button_delete"
-                    android:layout_toEndOf="@+id/dayButton2"
-                    android:layout_toRightOf="@+id/dayButton2"
                     android:layout_weight="1"
                     android:textOff="W"
                     android:textOn="W" />
@@ -118,10 +109,6 @@
                     android:id="@+id/dayButton4"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/dayButton3"
-                    android:layout_alignBottom="@+id/dayButton3"
-                    android:layout_toEndOf="@+id/dayButton3"
-                    android:layout_toRightOf="@+id/dayButton3"
                     android:layout_weight="1"
                     android:textOff="T"
                     android:textOn="T" />
@@ -130,10 +117,6 @@
                     android:id="@+id/dayButton5"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/dayButton4"
-                    android:layout_alignBottom="@+id/dayButton4"
-                    android:layout_toEndOf="@+id/dayButton4"
-                    android:layout_toRightOf="@+id/dayButton4"
                     android:layout_weight="1"
                     android:textOff="F"
                     android:textOn="F" />
@@ -142,10 +125,6 @@
                     android:id="@+id/dayButton6"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/dayButton5"
-                    android:layout_alignBottom="@+id/dayButton5"
-                    android:layout_toEndOf="@+id/dayButton5"
-                    android:layout_toRightOf="@+id/dayButton5"
                     android:layout_weight="1"
                     android:textOff="S"
                     android:textOn="S" />
@@ -154,10 +133,6 @@
                     android:id="@+id/dayButton7"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/dayButton6"
-                    android:layout_alignBottom="@+id/dayButton6"
-                    android:layout_toEndOf="@+id/dayButton6"
-                    android:layout_toRightOf="@+id/dayButton6"
                     android:layout_weight="1"
                     android:textOff="S"
                     android:textOn="S" />
@@ -169,11 +144,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/layoutDays"
                 android:layout_toEndOf="@+id/textViewWhen"
                 android:layout_toRightOf="@+id/textViewWhen"
                 android:drawableLeft="@drawable/ic_delete"
-                android:elevation="24dp"
+                android:drawableStart="@drawable/ic_delete"
                 android:onClick="onButtonDeleteClick"
                 android:text="@string/delete"
                 android:visibility="gone"

@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 
 import android.animation.LayoutTransition;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +29,7 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 
 import java.util.Calendar;
 
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class AlarmClockLayout extends LinearLayout {
 
     private static final String TAG = "AlarmClockLayout";
@@ -43,7 +44,6 @@ public class AlarmClockLayout extends LinearLayout {
     private Button buttonDelete = null;
     private Switch switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
-    private RelativeLayout middle = null;
     private ToggleButton[] dayButtons = new ToggleButton[7];
     private int firstdayOfWeek = Utility.getFirstDayOfWeek();
     private CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
@@ -67,7 +67,6 @@ public class AlarmClockLayout extends LinearLayout {
                 public void onClick(View view) {
 
                     int day = (int) view.getTag();
-                    Log.w(TAG, String.format("tag : %d", day));
                     ToggleButton button = (ToggleButton) view;
 
                     if (button.isChecked()) {
@@ -126,8 +125,7 @@ public class AlarmClockLayout extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child = inflater.inflate(R.layout.alarm_clock_layout, null);
-        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
 
         timeView = (TextView) findViewById(R.id.timeView);
@@ -136,26 +134,26 @@ public class AlarmClockLayout extends LinearLayout {
         buttonDown = (ImageView) findViewById(R.id.button_down);
         buttonDelete = (Button) findViewById(R.id.button_delete);
         switchActive = (Switch) findViewById(R.id.enabled);
-        middle = (RelativeLayout) findViewById(R.id.middle);
         checkBoxIsRepeating = (CheckBox) findViewById(R.id.checkBoxIsRepeating);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            RelativeLayout middle = (RelativeLayout) findViewById(R.id.middle);
             LayoutTransition layoutTransition = middle.getLayoutTransition();
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         }
 
-        RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        );
-        lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        lp2.addRule(RelativeLayout.ALIGN_PARENT_END);
-        lp2.addRule(RelativeLayout.BELOW, R.id.button_delete);
-        int height = (int) (0.8 * getHeightOfView(buttonDown));
-        lp2.setMargins(0, -height, 0, 0);
-
-        Log.w(TAG, String.format("button height %d", height));
-        buttonDown.setLayoutParams(lp2);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lp2.addRule(RelativeLayout.ALIGN_PARENT_END);
+            lp2.addRule(RelativeLayout.BELOW, R.id.button_delete);
+            int height = (int) (0.8 * getHeightOfView(buttonDown));
+            lp2.setMargins(0, -height, 0, 0);
+            buttonDown.setLayoutParams(lp2);
+        }
 
         dayButtons[0] = (ToggleButton) findViewById(R.id.dayButton1);
         dayButtons[1] = (ToggleButton) findViewById(R.id.dayButton2);
@@ -168,7 +166,6 @@ public class AlarmClockLayout extends LinearLayout {
         String[] weekdayStrings = Utility.getWeekdayStrings();
         for (int i : SimpleTime.DAYS) {
             int idx = (i - 1 + firstdayOfWeek - 1) % 7 + 1;
-            Log.w(TAG, String.format("set tag for %d: %d", i - 1, idx));
             ToggleButton button = dayButtons[i - 1];
             button.setTag(idx);
             button.setTextOn(weekdayStrings[idx]);
@@ -209,7 +206,6 @@ public class AlarmClockLayout extends LinearLayout {
 
     private int getHeightOfView(View contentview) {
         contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        //contentview.getMeasuredWidth();
         return contentview.getMeasuredHeight();
     }
 

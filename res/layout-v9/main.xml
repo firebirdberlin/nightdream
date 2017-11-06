@@ -2,8 +2,7 @@
 !! AUTOMATICALLY GENERATED FILE from config/res/layout-v9/main.xml !!
 -->
 
-<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -18,32 +17,32 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include layout="@layout/progressbar" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/notificationbar"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:orientation="horizontal"
         >
         <ImageView
             android:id="@+id/burger_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:clickable="true"
             android:contentDescription="settings"
-            android:src="@drawable/ic_menu"
-            android:clickable="true"/>
+            android:src="@drawable/ic_menu" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <com.firebirdberlin.nightdream.ui.BatteryIconView
                 android:id="@+id/batteryIconView"
@@ -64,14 +63,14 @@
     </LinearLayout>
 
     <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_width="match_parent">
+        android:layout_weight="1">
 
         <FrameLayout
             android:id="@+id/clockLayoutContainer"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <include layout="@layout/notification_bar" />
 
@@ -81,27 +80,26 @@
             <com.firebirdberlin.nightdream.ui.ClockLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/clockLayout"
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#44000000"
+                android:orientation="vertical"
                 android:paddingLeft="0sp"
                 android:paddingTop="0sp"
                 android:translationX="0sp"
                 android:translationY="0sp"
-                android:layout_gravity="center"
-                android:background="#44000000"
                 />
 
         </FrameLayout>
 
         <include layout="@layout/side_panel" />
     </FrameLayout>
-    <FrameLayout
+
+    <com.firebirdberlin.nightdream.ui.BottomPanelLayout
         android:id="@+id/bottomPanel"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
-    </FrameLayout>
-
+        android:layout_height="60dp"></com.firebirdberlin.nightdream.ui.BottomPanelLayout>
     </LinearLayout>
 
 </FrameLayout>

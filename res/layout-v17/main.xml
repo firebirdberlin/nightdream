@@ -93,12 +93,6 @@
             android:id="@+id/bottomPanel"
             android:layout_width="match_parent"
             android:layout_height="60dp">
-<!--            <com.firebirdberlin.nightdream.ui.AlarmClock
-                android:id="@+id/AlarmClock"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                />
--->
         </com.firebirdberlin.nightdream.ui.BottomPanelLayout>
 
     </LinearLayout>
