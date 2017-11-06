@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+<string name="about">jostakin</string>
+<string name="action_snooze">hiljennä</string>
+<string name="action_stop">pysäytä</string>
+<string name="alarm">herätys</string>
+<string name="alarmFadeIn">lisää äänenvoimakkuutta</string>
+<string name="alarmVolume">äänenvoimakkuus</string>
+<string name="allow_screen_off_summary">pimennä näyttö yöllä</string>
+<string name="allow_screen_off">pimennä näyttö</string>
+<string name="ambient_noise">havaitse taustamelu</string>
+<string name="ambient_noise_summary">estääkö taustamelu yömoodin</string>
+<string name="appearance">näkymä</string>
+<string name="app_name">yökello</string>
+<string name="auto_brightness">automaattinen kirkkaus</string>
+<string name="autostart_timerange_label_end">loppuaika</string>
+<string name="autostart_timerange_label_start">alkuaika</string>
+<string name="background">tausta</string>
+<string name="background_black">musta</string>
+<string name="background_gradient">gradientti</string>
+<string name="background_image">kuva</string>
+<string name="background_image_select">valitse kuva</string>
+<string name="behaviour">käytös</string>
+<string name="brightness">kirkkaus</string>
+<string name="buttonAccessibilitySettings">näytä ilmoitukset</string>
+<string name="category_handle_power">kun on kytkettynä</string>
+<string name="category_handle_power_autostart_time">aloita aikavyöhykkeessä</string>
+<string name="choose_alarm_sound">herätysääni</string>
+<string name="choose_primary_color">väri</string>
+<string name="choose_secondary_color">tekstin väri</string>
+<string name="clear">poista</string>
+<string name="clock_layout">ulkoasu</string>
+<string name="clock_layout_digital">digitaali</string>
+<string name="clock_layout_analog">analogi</string>
+<string name="colors">värit</string>
+<string name="confirm_reset_question">haluatko palauttaa alkuperäiset asetukset</string>
+<string name="confirm_reset">palauta</string>
+<string name="contribute">osallistu</string>
+<string name="contribute_source_code">lähdekoodi</string>
+<string name="contribute_translation">käännös</string>
+<string name="country">maa</string>
+<string name="credits">credits</string>
+<string name="credits_pull_requests">pyyntö</string>
+<string name="date_format">päiväyksen muoto</string>
+<string name="delete">poista</string>
+<string name="dialog_message_thank_you">Kiitos paljon!</string>
+<string name="dialog_title_thank_you">Kiitos</string>
+<string name="donate_bitcoin">bitcoin</string>
+<string name="donate">lahjoita</string>
+<string name="doubleTapToFinishSummary">viimeistele sovellus tuplaklikkaamalla näyttöä</string>
+<string name="doubleTapToFinishTitle">lopeta tuplaklikkaamalla</string>
+<string name="expertPreferences">eksperttiasetukset</string>
+<string name="forecast">5 päivän sääennuste</string>
+<string name="force_auto_rotation">pakota automaattinen kääntö</string>
+<string name="handle_power_ac">lataus</string>
+<string name="handle_power">automaattinen käynnistys</string>
+<string name="handle_power_car">autolaturi</string>
+<string name="handle_power_desk">pöytälaturi</string>
+<string name="handle_power_disconnection">pysäytä automaattisesti</string>
+<string name="handle_power_disconnection_summary">lopeta ohjelma, kun virtajohto irroitetaan</string>
+<string name="handle_power_usb">usb</string>
+<string name="handle_power_wireless">langaton laturi</string>
+<string name="hide_background_image_in_night_mode">piilota</string>
+<string name="hide_background_image_in_night_mode_summary">piilota taustakuva yömoodissa</string>
+<string name="hour">h</string>
+<string name="location_time">paikallinen aika</string>
+<string name="maxBrightness">suurin näytön kirkkaus</string>
+<string name="minBrightness">himmein</string>
+<string name="message_no_data_connection">ei datayhteyttä</string>
+<string name="message_mobile_data_connection">mobiilidatayhteys</string>
+<string name="message_mobile_data_connection_confirmation">olet mobiiliversioon. Avataanko radio?</string>
+<string name="minute">min</string>
+<string name="mute_ringer">vähennä soittaja</string>
+<string name="night_mode">yötila</string>
+<string name="night_mode_activation_mode">aktivointitila</string>
+<string name="night_mode_activation_manual">manuaalinen</string>
+<string name="night_mode_activation_auto">automaattinen</string>
+<string name="night_mode_activation_scheduled">ajastettu</string>
+<string name="night_mode_timerange_title">yöaika</string>
+<string name="night_mode_timerange_label_end">loppuaika</string>
+<string name="night_mode_timerange_label_start">alkuaika</string>
+<string name="noise_sensitivity">mikrofonin herkkyys</string>
+<string name="notification_alarm">vähennä herätys klikkaamalla</string>
+<string name="other_apps">muut sovellukset</string>
+</resources>

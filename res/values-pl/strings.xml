@@ -60,6 +60,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="credits">Autorzy</string>
 <string name="credits_pull_requests">Oczekiwane przeciągnięcie</string>
 <string name="date_format">Format daty</string>
+<string name="delete">usuń</string>
 <string name="dialog_message_thank_you">Dziękuje Ci bardzo !</string>
 <string name="dialog_title_thank_you">Dziękuje</string>
 <string name="donate_bitcoin">Bitcoin</string>
@@ -145,6 +146,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_wind_speed">Szybkość wiatru</string>
 <string name="snoozeTime">Czas trwania drzemki</string>
 <string name="speedUnit">Jednostka szybkości wiatru</string>
+<string name="sleep_time_dialog_title">Ustawienie czasu zaśnięcia</string>
 <string name="standbyEnabledWhileConnectedTitle">Tryb czuwania</string>
 <string name="standbyEnabledWhileConnectedSummary">Aktywuj kiedy ekran jest wyłączony</string>
 <string name="standbyEnabledWhileDisconnectedTitle">Tryb czuwania kiedy jest ładowanie</string>
@@ -164,7 +166,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="uninstall">Odinstaluj aplikacje</string>
 <string name="use_internal_alarm">Szybkie alarmy</string>
 <string name="useDeviceLock">Zablokuj urządzenie</string>
-<string name="useDeviceLockExplanation">Zablokuj urządzenie kiedy Nocny Zegar jest aktywny</string>
+<string name="useDeviceLockDescription">Zablokowanie ekranu potrzebuje uprawnienia administatora urządzenia Prosze wyłącz ta funkcje przed odinstalowaniem tej aplikacji.</string>
+<string name="useDeviceLockExplanation">Zablokuj urządzenie kiedy Nocny Zegar jest aktywny. Przed odinstalowaniem tej aplikacji proszę odznacz to ustawienie</string>
 <string name="weather_calculation_time">Częstotliwość odswieżania pogody</string>
 <string name="weather_city_id_summary">Otwórz weatherMap City Id. Zostaw puste dla automatycznego wykrycia lokalizacji</string>
 <string name="weather_city_id_title">Kod miasta</string>
