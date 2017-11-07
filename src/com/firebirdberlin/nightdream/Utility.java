@@ -19,6 +19,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 
 import java.text.DateFormatSymbols;
@@ -282,5 +283,10 @@ public class Utility {
     public void restoreSystemBrightnessMode() {
         System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
                 system_brightness_mode);
+    }
+
+    public static int getHeightOfView(View contentview) {
+        contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        return contentview.getMeasuredHeight();
     }
 }

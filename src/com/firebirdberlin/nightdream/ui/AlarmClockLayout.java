@@ -150,7 +150,7 @@ public class AlarmClockLayout extends LinearLayout {
             lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             lp2.addRule(RelativeLayout.ALIGN_PARENT_END);
             lp2.addRule(RelativeLayout.BELOW, R.id.button_delete);
-            int height = (int) (0.8 * getHeightOfView(buttonDown));
+            int height = (int) (0.8 * Utility.getHeightOfView(buttonDown));
             lp2.setMargins(0, -height, 0, 0);
             buttonDown.setLayoutParams(lp2);
         }
@@ -202,11 +202,6 @@ public class AlarmClockLayout extends LinearLayout {
             }
         });
 
-    }
-
-    private int getHeightOfView(View contentview) {
-        contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        return contentview.getMeasuredHeight();
     }
 
     private void update() {

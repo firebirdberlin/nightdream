@@ -7,58 +7,70 @@
     android:background="@drawable/sidepanel"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/settings_icon"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contentDescription="settings"
-        android:onClick="onSettingsClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_settings"
-        />
+        android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/alarm_clock_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:onClick="onAlarmClockClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_alarm_clock"
-        android:visibility="gone" />
+        <ImageView
+            android:id="@+id/settings_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onSettingsClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_settings"
+            android:contentDescription="settings" />
 
-    <ImageView
-        android:id="@+id/icon_weather_forecast"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contentDescription="weather forecast"
-        android:onClick="onWeatherForecastClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_cloud"
-        android:visibility="gone" />
+        <ImageView
+            android:id="@+id/icon_weather_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onWeatherForecastClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_cloud"
+            android:visibility="gone"
+            android:contentDescription="@string/weather"/>
 
-    <com.firebirdberlin.nightdream.ui.WebRadioImageView
-        android:id="@+id/radio_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contentDescription="radio"
-        android:onClick="onRadioClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_radio"
-        android:visibility="visible"
-        />
+        <ImageView
+            android:id="@+id/alarm_clock_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onAlarmClockClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_alarm_clock"
+            android:visibility="gone"
+            android:contentDescription="@string/alarm" />
+    </LinearLayout>
 
-    <ImageView
-        android:id="@+id/night_mode_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contentDescription="night mode toggle"
-        android:onClick="onNightModeClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_sun"
-        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.firebirdberlin.nightdream.ui.WebRadioImageView
+            android:id="@+id/radio_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onRadioClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_radio"
+            android:visibility="visible"
+            android:contentDescription="@string/radio"/>
+
+        <ImageView
+            android:id="@+id/night_mode_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onNightModeClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_sun"
+            android:contentDescription="@string/night_mode"/>
+    </LinearLayout>
+
 </LinearLayout>

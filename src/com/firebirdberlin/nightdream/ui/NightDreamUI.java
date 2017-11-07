@@ -63,6 +63,7 @@ import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.io.FileDescriptor;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -367,7 +368,6 @@ public class NightDreamUI {
             mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
         }
 
-
         this.window = window;
         View rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
@@ -378,10 +378,11 @@ public class NightDreamUI {
         bottomPanelLayout = (BottomPanelLayout) rootView.findViewById(R.id.bottomPanel);
         alarmClock = bottomPanelLayout.getAlarmClock();
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
-        sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
         nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
+        sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
+        sidePanel.post(setupSidePanel);
 
         OnClickListener onMenuItemClickListener = new OnClickListener() {
             public void onClick(View v) {
@@ -535,8 +536,12 @@ public class NightDreamUI {
         // colorize icons in the side panel
         for (int i = 0; i < sidePanel.getChildCount(); i++) {
             View view = sidePanel.getChildAt(i);
-            if (view instanceof ImageView) {
-                ((ImageView) view).setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+            colorizeImageView(view, textColor);
+            if (view instanceof LinearLayout) {
+                LinearLayout layout = ((LinearLayout) view);
+                for (int j = 0; j < layout.getChildCount(); j++) {
+                    colorizeImageView(layout.getChildAt(j), textColor);
+                }
             }
         }
 
@@ -558,6 +563,12 @@ public class NightDreamUI {
             brightnessProgress.setProgressTintList(ColorStateList.valueOf(accentColor));
             brightnessProgress.setProgressBackgroundTintList(
                     ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
+        }
+    }
+
+    private void colorizeImageView(View view, int color) {
+        if (view instanceof ImageView) {
+            ((ImageView) view).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -585,6 +596,7 @@ public class NightDreamUI {
         }
         nightModeIcon.setImageResource( (mode == 0) ? R.drawable.ic_moon : R.drawable.ic_sun );
     }
+
 
     private void setupBackgroundImage() {
         bgblack = new ColorDrawable(Color.BLACK);
@@ -766,8 +778,10 @@ public class NightDreamUI {
                     } else {
                         setupShowcaseView();
                     }
+                    sidePanel.post(setupSidePanel);
                 }
         };
+
         handler.postDelayed(fixConfig, 200);
     }
 
@@ -1084,6 +1098,45 @@ public class NightDreamUI {
             sidePanel.setClickable(false);
         }
     }
+
+    private Runnable setupSidePanel = new Runnable() {
+        @Override
+        public void run() {
+            ArrayList<ImageView> children = new ArrayList<>();
+            ArrayList<LinearLayout> layouts = new ArrayList<>();
+            for (int i = 0; i < sidePanel.getChildCount(); i++) {
+                View view = sidePanel.getChildAt(i);
+                if (view instanceof ImageView) {
+                    children.add((ImageView) view);
+                }
+                if (view instanceof LinearLayout) {
+                    layouts.add(((LinearLayout) view));
+                }
+            }
+
+            for (LinearLayout layout : layouts ) {
+                for (int i = 0; i < layout.getChildCount(); i++) {
+                    View view = layout.getChildAt(i);
+                    if (view instanceof ImageView) {
+                        children.add((ImageView) view);
+                    }
+                }
+            }
+
+            int panelHeight = sidePanel.getHeight();
+            int totalHeight = 0;
+            for (ImageView v : children) {
+                totalHeight += Utility.getHeightOfView(v);
+            }
+
+            int orientation = (totalHeight >= panelHeight) ?
+                    LinearLayout.HORIZONTAL : LinearLayout.VERTICAL;
+
+            for (LinearLayout layout : layouts) {
+                layout.setOrientation(orientation);
+            }
+        }
+    };
 
     private void hideBatteryView(int millis) {
         if (! batteryViewShallBeVisible() ) {
