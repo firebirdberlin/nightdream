@@ -147,4 +147,8 @@ public class DataSource {
         save(entry);
         return entry;
     }
+
+    public void dropData() {
+        db.execSQL("delete from " + SQLiteDBHelper.AlarmEntry.TABLE_NAME + ";");
+    }
 }

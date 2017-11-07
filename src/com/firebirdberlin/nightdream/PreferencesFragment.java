@@ -444,6 +444,10 @@ public class PreferencesFragment extends PreferenceFragment {
                             settings.clear();
                             getPreferenceScreen().removeAll();
                             WakeUpReceiver.cancelAlarm(mContext);
+                            DataSource db = new DataSource(context);
+                            db.open();
+                            db.dropData();
+                            db.close();
                             addPreferencesFromResource(R.xml.preferences);
                             init();
                             togglePurchasePreferences();
