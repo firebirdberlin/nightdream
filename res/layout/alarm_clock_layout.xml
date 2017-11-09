@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="false"
+        android:background="@android:color/transparent"
         android:paddingEnd="20dp"
         android:paddingRight="20dp"
         android:paddingStart="20dp">
@@ -161,9 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="false"
-                android:layout_alignRight="@+id/button_delete"
-                android:layout_below="@+id/button_delete"
+                android:layout_alignParentTop="true"
                 android:padding="5dp"
                 android:scaleX="0.5"
                 android:scaleY="0.5"

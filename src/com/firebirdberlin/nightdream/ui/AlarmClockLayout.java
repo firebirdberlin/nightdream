@@ -5,6 +5,7 @@ import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -35,7 +36,7 @@ public class AlarmClockLayout extends LinearLayout {
     private static final String TAG = "AlarmClockLayout";
     private Context context = null;
     private String timeFormat = "h:mm";
-
+    private View mainLayout = null;
     private SimpleTime alarmClockEntry = null;
     private TextView timeView = null;
     private TextView textViewWhen = null;
@@ -88,6 +89,7 @@ public class AlarmClockLayout extends LinearLayout {
             layoutDays.setVisibility(
                     (gone && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
             );
+            mainLayout.setBackgroundColor(gone ? Color.DKGRAY : Color.TRANSPARENT);
         }
     };
 
@@ -127,7 +129,7 @@ public class AlarmClockLayout extends LinearLayout {
         View child = inflater.inflate(R.layout.alarm_clock_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
-
+        mainLayout = (View) findViewById(R.id.mainLayout);
         timeView = (TextView) findViewById(R.id.timeView);
         textViewWhen = (TextView) findViewById(R.id.textViewWhen);
         layoutDays = (LinearLayout) findViewById(R.id.layoutDays);
@@ -140,19 +142,6 @@ public class AlarmClockLayout extends LinearLayout {
             RelativeLayout middle = (RelativeLayout) findViewById(R.id.middle);
             LayoutTransition layoutTransition = middle.getLayoutTransition();
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT
-            );
-            lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            lp2.addRule(RelativeLayout.ALIGN_PARENT_END);
-            lp2.addRule(RelativeLayout.BELOW, R.id.button_delete);
-            int height = (int) (0.8 * Utility.getHeightOfView(buttonDown));
-            lp2.setMargins(0, -height, 0, 0);
-            buttonDown.setLayoutParams(lp2);
         }
 
         dayButtons[0] = (ToggleButton) findViewById(R.id.dayButton1);

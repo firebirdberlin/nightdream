@@ -1135,6 +1135,10 @@ public class NightDreamUI {
             for (LinearLayout layout : layouts) {
                 layout.setOrientation(orientation);
             }
+            if (Build.VERSION.SDK_INT > 11 && sidePanel.getX() < 0) {
+                initSidePanel();
+            }
+
         }
     };
 
