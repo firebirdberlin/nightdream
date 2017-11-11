@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,10 +24,10 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TimePicker;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -59,9 +59,8 @@ public class AlarmClock extends View {
     private Context ctx;
     private int customcolor = Color.parseColor("#33B5E5");
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
-    private int display_height;
-    private int w;
     private Paint paint = new Paint();
+    private Rect alarmTimeRect = new Rect(0, 0, 0, 0);
     private Settings settings = null;
     private ColorFilter customColorFilter;
     private ColorFilter customColorFilterImage;
@@ -175,8 +174,20 @@ public class AlarmClock extends View {
     }
 
     public boolean onTouchEvent(MotionEvent e) {
+        Log.d(TAG, String.format("onTouchEvent: %d", e.getAction()));
+
         // the view should be visible before the user interacts with it
         if (!isClickable() || locked ) return false;
+        Point p = getClickedPoint(e);
+
+        if (e.getAction() == MotionEvent.ACTION_DOWN &&
+                !daydreamMode &&
+                showAlarmTime() &&
+                alarmTimeRect.contains(p.x, p.y)
+                ) {
+            SetAlarmClockActivity.start(getContext());
+            return true;
+        }
 
         if (showRightCorner()) {
             boolean success = handleAlarmCancelling(e);
@@ -329,7 +340,7 @@ public class AlarmClock extends View {
             cornerRight.draw(canvas, paint);
         }
 
-        if (isAlarmSet() || userChangesAlarmTime) {
+        if (showAlarmTime()) {
             paint.setColorFilter(secondaryColorFilter);
             String l = getAlarmTimeFormatted();
 
@@ -337,18 +348,27 @@ public class AlarmClock extends View {
             float lw = paint.measureText(l);
             float cw = touch_zone_radius - 60;
             if ((touch_zone_radius) <= 100)  cw = 0;
-            if (userChangesAlarmTime || isAlarmSet()){
-                paint.setColor(Color.WHITE);
-                canvas.drawText(l, w/2-(lw+cw)/2 + cw, h-touch_zone_radius/3, paint );
-            }
+            paint.setColor(Color.WHITE);
+
+            alarmTimeRect.left = (int) (w / 2 - (lw + cw) / 2 + cw);
+            alarmTimeRect.bottom = h;
+            alarmTimeRect.top = 30;
+            alarmTimeRect.right = alarmTimeRect.left + (int) lw;
+
+            canvas.drawText(l, w / 2 - (lw + cw) / 2 + cw, h - touch_zone_radius / 3, paint);
 
             if ((touch_zone_radius) > 100){ // no image on on small screens
                 paint.setColorFilter(customColorFilterImage);
                 Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarm_clock);
                 Bitmap resizedBitmap = Bitmap.createScaledBitmap(ic_alarmclock, touch_zone_radius-60, touch_zone_radius-60, false);
+                alarmTimeRect.left = (int) (w / 2 - (lw + cw) / 2 - cw / 2);
                 canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
             }
         }
+    }
+
+    private boolean showAlarmTime() {
+        return (isAlarmSet() || userChangesAlarmTime);
     }
 
     private boolean showLeftCorner() {
@@ -434,25 +454,17 @@ public class AlarmClock extends View {
     private enum Position {LEFT, RIGHT}
 
     class LocalSimpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
+
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+            super.onSingleTapConfirmed(e);
+            if (daydreamMode) return false;
             Log.w(TAG, "single tap");
 
             Point click = getClickedPoint(e);
-            if (cornerLeft.isInside(click) && !daydreamMode) {
-                TimePickerDialog mTimePicker;
-                int hour = (isAlarmSet()) ? time.hour : 7;
-                int min = (isAlarmSet()) ? time.min : 0;
-
-                mTimePicker = new TimePickerDialog(ctx, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        setAlarmTime(selectedHour, selectedMinute);
-                        setAlarm();
-                        invalidate();
-                    }
-                }, hour, min, Utility.is24HourFormat(ctx));
-                mTimePicker.show();
+            if ((showAlarmTime() && alarmTimeRect.contains(click.x, click.y)) ||
+                    (showLeftCorner() && cornerLeft.isInside(click))) {
+                SetAlarmClockActivity.start(getContext());
                 return true;
             }
             return false;

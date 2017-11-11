@@ -17,32 +17,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="settings"
             android:onClick="onSettingsClick"
             android:padding="5dp"
-            android:src="@drawable/ic_settings"
-            android:contentDescription="settings" />
-
-        <ImageView
-            android:id="@+id/icon_weather_forecast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:onClick="onWeatherForecastClick"
-            android:padding="5dp"
-            android:src="@drawable/ic_cloud"
-            android:visibility="gone"
-            android:contentDescription="@string/weather"/>
+            android:src="@drawable/ic_settings" />
 
         <ImageView
             android:id="@+id/alarm_clock_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="@string/alarm"
             android:onClick="onAlarmClockClick"
             android:padding="5dp"
             android:src="@drawable/ic_alarm_clock"
-            android:visibility="gone"
-            android:contentDescription="@string/alarm" />
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/icon_weather_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/weather"
+            android:onClick="onWeatherForecastClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_cloud"
+            android:visibility="gone" />
+
     </LinearLayout>
 
 
@@ -56,21 +57,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="@string/radio"
             android:onClick="onRadioClick"
             android:padding="5dp"
             android:src="@drawable/ic_radio"
-            android:visibility="visible"
-            android:contentDescription="@string/radio"/>
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/night_mode_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="@string/night_mode"
             android:onClick="onNightModeClick"
             android:padding="5dp"
-            android:src="@drawable/ic_sun"
-            android:contentDescription="@string/night_mode"/>
+            android:src="@drawable/ic_sun" />
     </LinearLayout>
 
 </LinearLayout>
