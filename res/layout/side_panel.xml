@@ -1,55 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/side_panel"
-    android:orientation="vertical"
-    android:background="@drawable/sidepanel"
-    android:layout_margin="20dp"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    android:background="@drawable/sidepanel"
+    android:orientation="vertical">
 
-    <ImageView
-        android:clickable="true"
-        android:contentDescription="settings"
-        android:id="@+id/settings_icon"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:onClick="onSettingsClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_settings"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <com.firebirdberlin.nightdream.ui.WebRadioImageView
-        android:clickable="true"
-        android:contentDescription="radio"
-        android:id="@+id/radio_icon"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:onClick="onRadioClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_radio"
-        android:visibility="visible"
-        />
+        <ImageView
+            android:id="@+id/settings_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="settings"
+            android:onClick="onSettingsClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_settings" />
 
-    <ImageView
-        android:clickable="true"
-        android:contentDescription="weather forecast"
-        android:id="@+id/icon_weather_forecast"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:onClick="onWeatherForecastClick"
-        android:padding="5dp"
-        android:src="@drawable/ic_cloud"
-        android:visibility="gone"
-        />
+        <ImageView
+            android:id="@+id/alarm_clock_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/alarm"
+            android:onClick="onAlarmClockClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_alarm_clock"
+            android:visibility="gone" />
 
-    <ImageView
-        android:clickable="true"
-        android:contentDescription="night mode toggle"
-        android:id="@+id/night_mode_icon"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:padding="5dp"
-        android:src="@drawable/ic_sun"
-        android:onClick="onNightModeClick"
-        />
+        <ImageView
+            android:id="@+id/icon_weather_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/weather"
+            android:onClick="onWeatherForecastClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_cloud"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.firebirdberlin.nightdream.ui.WebRadioImageView
+            android:id="@+id/radio_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/radio"
+            android:onClick="onRadioClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_radio"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/night_mode_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/night_mode"
+            android:onClick="onNightModeClick"
+            android:padding="5dp"
+            android:src="@drawable/ic_sun" />
+    </LinearLayout>
+
 </LinearLayout>

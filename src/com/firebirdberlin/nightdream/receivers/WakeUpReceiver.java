@@ -10,10 +10,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -29,15 +32,51 @@ public class WakeUpReceiver extends BroadcastReceiver {
     private Settings settings;
 
     public static void schedule(Context context) {
-        Settings settings = new Settings(context);
-        if (settings.nextAlarmTimeMinutes == 0) return;
-        setAlarm(context, settings.nextAlarmTimeMinutes);
+        DataSource db = new DataSource(context);
+        db.open();
+        SimpleTime next = db.getNextAlarmToSchedule();
+        if (next != null) {
+            setAlarm(context, next);
+            next = db.setNextAlarm(next);
+            db.close();
+        } else {
+            PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
+            AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
+            am.cancel(pI);
+        }
+
+        Intent intent = new Intent(Config.ACTION_ALARM_SET);
+        if (next != null ){
+            intent.putExtras(next.toBundle());
+        }
+        context.sendBroadcast(intent);
+    }
+
+    public static void broadcastNextAlarm(Context context) {
+        DataSource db = new DataSource(context);
+        db.open();
+        SimpleTime next = db.getNextAlarmEntry();
+        db.close();
+
+        Intent intent = new Intent(Config.ACTION_ALARM_SET);
+        if (next != null) {
+            Log.w(TAG, next.toString());
+            intent.putExtras(next.toBundle());
+        } else {
+            Log.w(TAG, "no next alarm");
+        }
+        context.sendBroadcast(intent);
     }
 
     public static void cancelAlarm(Context context) {
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
         am.cancel(pI);
+
+        DataSource db = new DataSource(context);
+        db.open();
+        db.cancelPendingAlarms();
+        db.close();
     }
 
     public static PendingIntent getPendingIntent(Context context) {
@@ -50,15 +89,20 @@ public class WakeUpReceiver extends BroadcastReceiver {
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 
-    private static void setAlarm(Context context, int nextAlarmTimeMinutes) {
+    private static PendingIntent getShowIntent(Context context) {
+        Intent intent = new Intent(context, SetAlarmClockActivity.class);
+        return PendingIntent.getActivity(context, 0, intent, 0);
+    }
+
+    private static void setAlarm(Context context, SimpleTime nextAlarmEntry) {
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pI);
 
-        long nextAlarmTime = new SimpleTime(nextAlarmTimeMinutes).getMillis();
+        long nextAlarmTime = nextAlarmEntry.getMillis();
         if (Build.VERSION.SDK_INT >= 21) {
-            AlarmManager.AlarmClockInfo info =
-                    new AlarmManager.AlarmClockInfo(nextAlarmTime, pI);
+            PendingIntent pi = getShowIntent(context);
+            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(nextAlarmTime, pi);
             am.setAlarmClock(info, pI);
         } else if (Build.VERSION.SDK_INT >= 19) {
             am.setExact(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI);
@@ -109,7 +153,8 @@ public class WakeUpReceiver extends BroadcastReceiver {
         wearableExtender.addAction(stopAction);
 
         Intent snoozeIntent = AlarmHandlerService.getSnoozeIntent(context);
-        PendingIntent pSnoozeIntent = PendingIntent.getService(context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pSnoozeIntent = PendingIntent.getService(context, 0, snoozeIntent,
+                                                               PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Action snoozeAction =
             new NotificationCompat.Action.Builder(0, textActionSnooze, pSnoozeIntent)

@@ -20,6 +20,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">Über</string>
 <string name="action_snooze">Schlummern</string>
 <string name="action_stop">Beenden</string>
+    <string name="add_new_alarm">neuen Wecker hinzufügen</string>z
 <string name="alarm">Wecker</string>
 <string name="alarmFadeIn">ansteigende Lautstärke</string>
 <string name="alarmVolume">Lautstärke</string>
@@ -176,4 +177,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Einstellungen</string>
 <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
 <string name="welcome_screen_title4">Größe</string>
+    <string name="today">heute</string>
+    <string name="tomorrow">morgen</string>
+    <string name="delete">löschen</string>
+    <string name="repeat">wiederholen</string>
 </resources>

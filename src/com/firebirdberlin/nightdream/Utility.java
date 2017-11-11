@@ -19,7 +19,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
+
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
@@ -36,6 +42,28 @@ public class Utility {
 
     static public boolean is24HourFormat(Context context) {
         return android.text.format.DateFormat.is24HourFormat(context);
+    }
+
+    static public String formatTime(String format, Calendar calendar) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(calendar.getTime());
+    }
+
+    static public String[] getWeekdayStrings() {
+        return getWeekdayStringsForLocale(Locale.getDefault());
+    }
+
+    static public String[] getWeekdayStringsForLocale(Locale locale) {
+        DateFormatSymbols symbols = new DateFormatSymbols(locale);
+        String[] dayNames = symbols.getShortWeekdays();
+        for (int i = 1; i < dayNames.length; i++) {
+            dayNames[i] = dayNames[i].substring(0, 1);
+        }
+        return dayNames;
+    }
+
+    static public int getFirstDayOfWeek() {
+        return Calendar.getInstance().getFirstDayOfWeek();
     }
 
     static public Sensor getLightSensor(Context context) {
@@ -175,6 +203,24 @@ public class Utility {
         }
     }
 
+    public static int pixelsToDp(Context context, float px) {
+        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics);
+    }
+
+    public static int dpToPx(Context context, float dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
+    }
+
+    public static int getNearestEvenIntValue(float value) {
+        int r = (int) Math.ceil(value);
+        if (r % 2 != 0) {
+            r = (int) Math.floor(value);
+        }
+        return r;
+    }
+
     public Point getDisplaySize() {
         Point size = new Point();
         if (Build.VERSION.SDK_INT < 13) {
@@ -239,21 +285,8 @@ public class Utility {
                 system_brightness_mode);
     }
 
-    public static int pixelsToDp(Context context, float px) {
-        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
-        return (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics );
-    }
-
-    public static int dpToPx(Context context, float dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                context.getResources().getDisplayMetrics());
-    }
-
-    public static int getNearestEvenIntValue(float value) {
-        int r = (int)Math.ceil(value);
-        if (r % 2 != 0) {
-            r = (int)Math.floor(value);
-        }
-        return r;
+    public static int getHeightOfView(View contentview) {
+        contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        return contentview.getMeasuredHeight();
     }
 }

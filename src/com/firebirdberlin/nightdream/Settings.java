@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -108,7 +107,6 @@ public class Settings {
     public String dateFormat;
     public String timeFormat12h;
     public String timeFormat24h;
-    public BatteryValue batteryReferenceValue;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
@@ -123,12 +121,6 @@ public class Settings {
     public Settings(Context context){
         this.mContext = context;
         settings = context.getSharedPreferences(PREFS_KEY, 0);
-
-        if ( !settings.contains("useInternalAlarm") ) {
-            boolean on = getUseInternalAlarmDefault();
-            setUseInternalAlarm(on);
-        }
-
         reload();
     }
 
@@ -149,7 +141,7 @@ public class Settings {
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", -1L); // deprecated
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", -1L); // deprecated
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
-        force_auto_rotation = settings.getBoolean("force_auto_rotation", false);
+        force_auto_rotation = settings.getBoolean("force_auto_rotation", true);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
@@ -202,7 +194,7 @@ public class Settings {
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         useDeviceLock = settings.getBoolean("useDeviceLock", false);
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
-        useInternalAlarm = settings.getBoolean("useInternalAlarm", false);
+        useInternalAlarm = settings.getBoolean("useInternalAlarm", true);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
@@ -247,18 +239,6 @@ public class Settings {
         prefEditor.putInt("batteryReferenceChargingMethod", bv.chargingMethod);
         prefEditor.putInt("batteryReferenceStatus", bv.status);
         prefEditor.commit();
-    }
-
-    private boolean getUseInternalAlarmDefault() {
-        try {
-            long installed = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).firstInstallTime;
-            if (installed < getDateAsLong(2016, 6, 17)) {
-                return true;
-            }
-        }
-        catch (NameNotFoundException e ) {
-        }
-        return false;
     }
 
     private String getDefaultDateFormat() {
@@ -347,20 +327,8 @@ public class Settings {
         }
     }
 
-    public void updateNextAlarmTime() {
-        initNextAlarmTime();
-    }
-
     public Calendar getAlarmTime() {
         return new SimpleTime(nextAlarmTimeMinutes).getCalendar();
-    }
-
-    public void setAlarmTime(int alarmTimeMinutes) {
-        nextAlarmTimeMinutes = alarmTimeMinutes;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlarmTime", 0L); // deprecated
-        prefEditor.putInt("nextAlarmTimeMinutes", alarmTimeMinutes);
-        prefEditor.apply();
     }
 
     public void setBackgroundImage(String uri) {

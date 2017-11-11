@@ -63,6 +63,7 @@ import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.io.FileDescriptor;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -93,8 +94,6 @@ public class NightDreamUI {
     private AlarmClock alarmClock;
     private ImageView background_image;
     private ImageView menuIcon;
-    private ImageView settingsIcon;
-    private ImageView weatherIcon;
     private ImageView nightModeIcon;
     private WebRadioImageView radioIcon;
     private LightSensorEventListener lightSensorEventListener = null;
@@ -185,6 +184,7 @@ public class NightDreamUI {
         @Override
         public void run() {
             removeCallbacks(hideBrightnessLevel);
+            hideSystemUI();
             updateBatteryValue();
             setupScreenAnimation();
 
@@ -368,7 +368,6 @@ public class NightDreamUI {
             mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
         }
 
-
         this.window = window;
         View rootView = window.getDecorView().findViewById(android.R.id.content);
         background_image = (ImageView) rootView.findViewById(R.id.background_view);
@@ -379,12 +378,11 @@ public class NightDreamUI {
         bottomPanelLayout = (BottomPanelLayout) rootView.findViewById(R.id.bottomPanel);
         alarmClock = bottomPanelLayout.getAlarmClock();
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
-        sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
-        settingsIcon = (ImageView) rootView.findViewById(R.id.settings_icon);
-        weatherIcon = (ImageView) rootView.findViewById(R.id.icon_weather_forecast);
         nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
+        sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
+        sidePanel.post(setupSidePanel);
 
         OnClickListener onMenuItemClickListener = new OnClickListener() {
             public void onClick(View v) {
@@ -532,12 +530,20 @@ public class NightDreamUI {
         int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
 
-
         batteryIconView.setColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
-        nightModeIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
-        settingsIcon.setColorFilter( textColor, PorterDuff.Mode.MULTIPLY );
-        weatherIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
+
+        // colorize icons in the side panel
+        for (int i = 0; i < sidePanel.getChildCount(); i++) {
+            View view = sidePanel.getChildAt(i);
+            colorizeImageView(view, textColor);
+            if (view instanceof LinearLayout) {
+                LinearLayout layout = ((LinearLayout) view);
+                for (int j = 0; j < layout.getChildCount(); j++) {
+                    colorizeImageView(layout.getChildAt(j), textColor);
+                }
+            }
+        }
 
         bottomPanelLayout.setCustomColor(accentColor, textColor);
 
@@ -557,6 +563,12 @@ public class NightDreamUI {
             brightnessProgress.setProgressTintList(ColorStateList.valueOf(accentColor));
             brightnessProgress.setProgressBackgroundTintList(
                     ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
+        }
+    }
+
+    private void colorizeImageView(View view, int color) {
+        if (view instanceof ImageView) {
+            ((ImageView) view).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -584,6 +596,7 @@ public class NightDreamUI {
         }
         nightModeIcon.setImageResource( (mode == 0) ? R.drawable.ic_moon : R.drawable.ic_sun );
     }
+
 
     private void setupBackgroundImage() {
         bgblack = new ColorDrawable(Color.BLACK);
@@ -765,8 +778,10 @@ public class NightDreamUI {
                     } else {
                         setupShowcaseView();
                     }
+                    sidePanel.post(setupSidePanel);
                 }
         };
+
         handler.postDelayed(fixConfig, 200);
     }
 
@@ -1084,6 +1099,49 @@ public class NightDreamUI {
         }
     }
 
+    private Runnable setupSidePanel = new Runnable() {
+        @Override
+        public void run() {
+            ArrayList<ImageView> children = new ArrayList<>();
+            ArrayList<LinearLayout> layouts = new ArrayList<>();
+            for (int i = 0; i < sidePanel.getChildCount(); i++) {
+                View view = sidePanel.getChildAt(i);
+                if (view instanceof ImageView) {
+                    children.add((ImageView) view);
+                }
+                if (view instanceof LinearLayout) {
+                    layouts.add(((LinearLayout) view));
+                }
+            }
+
+            for (LinearLayout layout : layouts ) {
+                for (int i = 0; i < layout.getChildCount(); i++) {
+                    View view = layout.getChildAt(i);
+                    if (view instanceof ImageView) {
+                        children.add((ImageView) view);
+                    }
+                }
+            }
+
+            int panelHeight = sidePanel.getHeight();
+            int totalHeight = 0;
+            for (ImageView v : children) {
+                totalHeight += Utility.getHeightOfView(v);
+            }
+
+            int orientation = (totalHeight >= panelHeight) ?
+                    LinearLayout.HORIZONTAL : LinearLayout.VERTICAL;
+
+            for (LinearLayout layout : layouts) {
+                layout.setOrientation(orientation);
+            }
+            if (Build.VERSION.SDK_INT > 11 && sidePanel.getX() < 0) {
+                initSidePanel();
+            }
+
+        }
+    };
+
     private void hideBatteryView(int millis) {
         if (! batteryViewShallBeVisible() ) {
             setAlpha(batteryIconView, 0.f, millis);
@@ -1304,6 +1362,7 @@ public class NightDreamUI {
         showcaseView.setShowcaseTag(SHOWCASE_ID_ONBOARDING);
         showcaseView.showButton();
         showShowcase();
+
         setupShowcaseForQuickAlarms();
         setupShowcaseForAlarmDeletion();
         setupShowcaseForScreenLock();
@@ -1354,7 +1413,8 @@ public class NightDreamUI {
     }
 
     private void setupShowcaseForQuickAlarms() {
-        if ( showcaseView != null || daydreamMode) {
+        // deprecated with the introduction of the SetAlarmActivity
+/*        if ( showcaseView != null || daydreamMode) {
             return;
         }
 
@@ -1371,10 +1431,12 @@ public class NightDreamUI {
             showcaseView.hideButton();
             showShowcase();
         }
-
+*/
     }
 
     private void setupShowcaseForAlarmDeletion() {
+        // deprecated with the introduction of the SetAlarmActivity
+/*
         if ( showcaseView != null || daydreamMode) {
             return;
         }
@@ -1392,7 +1454,7 @@ public class NightDreamUI {
             showcaseView.hideButton();
             showShowcase();
         }
-
+*/
     }
 
     private void setupShowcaseForScreenLock() {

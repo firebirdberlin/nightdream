@@ -14,7 +14,7 @@ installemulator:
 	adb -e install -r bin/Pro/NightDream-release.apk
 
 installdebug:
-	adb $(OPT) install -r bin/Pro/NightDream-debug.apk
+	adb $(OPT) install -r ./build/outputs/apk/nightdream-debug.apk
 
 installdebugemulator:
 	adb -e install -r bin/Pro/NightDream-debug.apk

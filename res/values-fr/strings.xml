@@ -58,7 +58,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute_translation">Traduction</string>
 <string name="country">Pays</string>
 <string name="credits">Crédits</string>
+<string name="credits_pull_requests">Tirer</string>
 <string name="date_format">Format de la date</string>
+<string name="delete">Effacer</string>
 <string name="dialog_message_thank_you">Merci beaucoup!</string>
 <string name="dialog_title_thank_you">Merci</string>
 <string name="donate_bitcoin">Bitcoin</string>
@@ -144,7 +146,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_wind_speed">Vitesse du vent</string>
 <string name="snoozeTime">Durée du réport</string>
 <string name="speedUnit">Unité - vitesse du vent</string>
-<string name="standbyEnabledWhileConnectedTitle">Mode veille</string>
+<string name="sleep_time_dialog_title">Mode veille</string>
+<string name="standbyEnabledWhileConnectedTitle">Pause</string>
 <string name="standbyEnabledWhileConnectedSummary">Activer lorsque l\'écran s\'éteind</string>
 <string name="standbyEnabledWhileDisconnectedTitle">Mode veille durant la décharge</string>
 <string name="standbyEnabledWhileDisconnectedSummary">Cette fonctionnalité consomme beaucoup de batterie !</string>

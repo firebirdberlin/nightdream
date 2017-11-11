@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="false"
+    android:animationCache="false"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_add_new_alarm"
+        android:animateLayoutChanges="false"
+        android:animationCache="false"
+        android:clipToPadding="true"
+        android:fillViewport="true"
+        android:visibility="visible"
+        tools:context="com.firebirdberlin.nightdream.SetAlarmClockActivity">
+
+
+        <LinearLayout
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:animationCache="true"
+            android:elevation="0dp"
+            android:orientation="vertical"
+            android:paddingBottom="12dp"
+            android:paddingLeft="@dimen/text_padding"
+            android:paddingRight="@dimen/text_padding"
+            android:paddingTop="12dp" />
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_add_new_alarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:onClick="onClickAddNewAlarm"
+        android:text="@string/add_new_alarm" />
+</RelativeLayout>

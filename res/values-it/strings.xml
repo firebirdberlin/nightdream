@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -18,6 +17,8 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">A proposito</string>
+<string name="action_snooze">Rinvio sveglia</string>
+<string name="action_stop">Stop</string>
 <string name="alarm">Sveglia</string>
 <string name="alarmFadeIn">Volume incrementale</string>
 <string name="alarmVolume">Volume</string>
@@ -28,11 +29,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Aspetto</string>
 <string name="app_name">Orologio notturno</string>
 <string name="auto_brightness">Luminosità automatica</string>
+<string name="autostart_message_disabled">Disabilitare lo screensaver (daydream) per attivare le opzioni di avvio automatico</string>
 <string name="autostart_timerange_label_end">Ora di arresto</string>
 <string name="autostart_timerange_label_start">Ora di avvio</string>
 <string name="background">Sfondo</string>
 <string name="background_black">Nero</string>
-<string name="background_gradient">Gradiente</string>
+<string name="background_gradient">Sfumatura</string>
 <string name="background_image">Immagine</string>
 <string name="background_image_select">Seleziona un\'immagine</string>
 <string name="behaviour">Comportamento</string>
@@ -57,10 +59,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="credits">Ringraziamenti</string>
 <string name="credits_pull_requests">Richiesta pull</string>
 <string name="date_format">Formato della data</string>
+<string name="delete">Cancella</string>
 <string name="dialog_message_thank_you">Grazie mille!</string>
 <string name="dialog_title_thank_you">Grazie</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Dona</string>
+<string name="doubleTapToFinishSummary">Chiudi l\'app facendo doppio tap sullo schermo</string>
+<string name="doubleTapToFinishTitle">Doppio tap per terminare</string>
+<string name="expertPreferences">Opzioni avanzate</string>
+<string name="forecast">Previsioni meteo a 5 giorni</string>
 <string name="force_auto_rotation">Forza l\'orientamento in Daydream</string>
 <string name="force_auto_rotation_summary">forza l\'orientamento dello schermo se Daydream è in uso</string>
 <string name="handle_power_ac">rete elettrica</string>
@@ -75,11 +82,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">In modalità Notte, nascondi l\'immagine di sfondo</string>
 <string name="hour">Ora</string>
 <string name="location_time">Ora locale</string>
+<string name="maxBrightness">Massima luminosità schermo</string>
+<string name="minBrightness">Minima luminosità schermo</string>
 <string name="message_no_data_connection">Nessun collegamento dati</string>
 <string name="message_mobile_data_connection">Collegamento dati da rete cellulare</string>
+<string name="message_mobile_data_connection_confirmation">Sei connesso ad una rete mobile. Desideri riprodurre lo stream radio?</string>
 <string name="minute">Minuto</string>
 <string name="mute_ringer">Spegni la suoneria</string>
 <string name="night_mode">Modalità Notte</string>
+<string name="night_mode_activation_mode">Modalità di attivazione</string>
 <string name="night_mode_activation_manual">Manuale</string>
 <string name="night_mode_activation_auto">Automatico</string>
 <string name="night_mode_activation_scheduled">Programmato</string>
@@ -91,6 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="other_apps">Altre app</string>
 <string name="other_apps_tinytimetracker_summary">Torni traccia del tuo tempo di lavoro quotidiano</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+<string name="persistent_battery_value_while_charging">Livello batteria persistente</string>
 <string name="persistent_battery_value_while_charging_summary">Mostra lo stato della batteria durante il caricamento</string>
 <string name="preview">Anteprima</string>
 <string name="purchaseWeatherData">Acquista una licenza</string>
@@ -103,8 +115,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_search">Cerca</string>
 <string name="radio_stream_start">avvia/interrompi flusso radio</string>
 <string name="radio_stream_url">URL flusso radio</string>
-<string name="reactivate_on_ambient_light_value">Soglia luminanza</string>
-<string name="reactivate_on_ambient_light_value_summary">lo schermo viene riattivato se la soglia di luminanza viene superata</string>
+<string name="radio_stream_offline">Offline</string>
+<string name="radio_stream_failure">Errore sullo stream radio</string>
+<string name="reactivate_on_ambient_light_value">Soglia luminosità</string>
+<string name="reactivate_on_ambient_light_value_summary">lo schermo viene riattivato se la soglia di luminosità  viene superata</string>
 <string name="reactivate_screen_on_noise">Attiva al rumore ambientale</string>
 <string name="recommend_app_desc">Scegli un\'app per condividere i tuoi consigli</string>
 <string name="recommend_app_subject">Vorrei raccomandati questo orologio notturno</string>
@@ -121,16 +135,32 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">orientamento schermo</string>
 <string name="select_alarm_sound">Seleziona suoneria sveglia</string>
 <string name="set_alarm">imposta allarme</string>
+<string name="showcase_text_set_alarms">Tocca e scorri col dito per impostare un allarme singolo velocemente</string>
+<string name="showcase_text_delete_alarms">Tappa qui per eliminare o arrestare una sveglia. Tappa in qualunque altro punto per rinviare</string>
+<string name="showcase_text_screen_lock">Lo schermo è attualmente bloccato. Premi a lungo sull\'icona per sbloccare.</string>
+<string name="showcase_title_screen_lock">Blocco schermo</string>
 <string name="show_date">Mostra data</string>
 <string name="show_temperature">Mostra temperatura</string>
 <string name="show_weather">Mostra meteo locale</string>
 <string name="show_wind_speed">Mostra velocità vento</string>
+<string name="snoozeTime">Intervallo rinvio</string>
 <string name="speedUnit">Unità di misura del vento</string>
+<string name="sleep_time_dialog_title">Timer spegnimento automatico</string>
+<string name="standbyEnabledWhileConnectedTitle">Modalità standby</string>
+<string name="standbyEnabledWhileConnectedSummary">Attiva quando si spegni lo schermo</string>
+<string name="standbyEnabledWhileDisconnectedTitle">Modalità standby durante la scarica</string>
+<string name="standbyEnabledWhileDisconnectedSummary">Questa funzione scarica la batteria velocemente</string>
+<string name="standbyNotificationText">Servizio standby attivo</string>
 <string name="titlePrivacyPolicy">Regolamento sulla privacy</string>
 <string name="temperatureUnit">unità di misura della temperatura</string>
 <string name="timeFormat">Formato ora</string>
 <string name="translations">Traduzione</string>
 <string name="typeface_7_segment">Led 7 segmenti</string>
+<string name="uninstall">Disinstalla l\'applicazione</string>
+<string name="use_internal_alarm">Allarmi rapidi</string>
+<string name="useDeviceLock">Blocca dispositivo</string>
+<string name="useDeviceLockDescription">La funzione di blocco schermo richiede privilegi amministrativi. Per disinstallare questa app per favore disabilitare questa funzione</string>
+<string name="weather_calculation_time">Tempo di calcolo previsioni meteo</string>
 <string name="weather_info_title">Informazioni</string>
 <string name="weather">Meteo</string>
 <string name="welcome_screen_text1">Benvenuto nel tuo nuovo orologio notturno! Questa app mostra l\'ora corrente mentre carichi il tuo smartphone.</string>

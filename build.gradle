@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'http://repo1.maven.org/maven2' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
@@ -15,6 +16,7 @@ dependencies {
     }
     compile project(':externals:android-preferences')
     compile fileTree(include: '*.jar', dir: 'libs')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 
 android {
@@ -53,5 +55,9 @@ android {
             proguardFile '/home/stefan/android/projects/nightdream/proguard-project.txt'
             minifyEnabled true
         }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }

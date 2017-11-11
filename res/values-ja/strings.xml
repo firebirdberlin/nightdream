@@ -157,4 +157,5 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">設定</string>
 <string name="welcome_screen_title3">画面の明るさ</string>
 <string name="welcome_screen_title4">時計のサイズ</string>
+    <string name="today"></string>
 </resources>

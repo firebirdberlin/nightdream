@@ -55,10 +55,11 @@ import java.util.Calendar;
 import de.greenrobot.event.EventBus;
 
 
-public class NightDreamActivity extends Activity implements View.OnTouchListener,
-                                                            NightModeReceiver.Event,
-        LocationUpdateReceiver.AsyncResponse,
-        SleepTimerDialogFragment.SleepTimerDialogListener {
+public class NightDreamActivity extends Activity
+                                implements View.OnTouchListener,
+                                           NightModeReceiver.Event,
+                                           LocationUpdateReceiver.AsyncResponse,
+                                           SleepTimerDialogFragment.SleepTimerDialogListener {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
@@ -68,6 +69,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
     mAudioManager AudioManage = null;
     private ImageView background_image;
     private ImageView weatherIcon;
+    private ImageView alarmClockIcon;
     private boolean screenWasOn = false;
     private Context context = null;
     private float last_ambient = 4.0f;
@@ -158,6 +160,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         setKeepScreenOn(true);
 
         weatherIcon = (ImageView) findViewById(R.id.icon_weather_forecast);
+        alarmClockIcon = (ImageView) findViewById(R.id.alarm_clock_icon);
         background_image = (ImageView) findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -198,6 +201,7 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
 
         scheduleShutdown();
+        setupAlarmClockIcon();
         setupWeatherForecastIcon();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
@@ -432,12 +436,26 @@ public class NightDreamActivity extends Activity implements View.OnTouchListener
         }
     }
 
+    private void setupAlarmClockIcon() {
+
+        if (Build.VERSION.SDK_INT < 14 || !mySettings.useInternalAlarm) {
+            alarmClockIcon.setVisibility(View.GONE);
+        } else {
+            alarmClockIcon.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void onWeatherForecastClick(View v) {
         String cityID = mySettings.getValidCityID();
         if (cityID != null && !cityID.isEmpty()) {
             WeatherForecastActivity.start(this, cityID);
         }
 
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    public void onAlarmClockClick(View v) {
+        SetAlarmClockActivity.start(this);
     }
 
     @SuppressWarnings("UnusedParameters")
