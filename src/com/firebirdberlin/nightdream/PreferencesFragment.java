@@ -365,19 +365,22 @@ public class PreferencesFragment extends PreferenceFragment {
         setupNightModePreferences(prefs);
         initUseDeviceLockPreference();
 
+
+
         Preference goToSettings = findPreference("startNotificationService");
-        goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                if (Build.VERSION.SDK_INT < 18){
-                    Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivityForResult(intent, 0);
-                } else {
-                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-                    startActivityForResult(intent, 0);
+        if (Build.VERSION.SDK_INT >= 18){
+            goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+
+                        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                        startActivityForResult(intent, 0);
+
+                    return true;
                 }
-                return true;
-            }
-        });
+            });
+        } else {
+            removePreference("startNotificationService");
+        }
 
         Preference chooseImage = findPreference("chooseBackgroundImage");
         chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
