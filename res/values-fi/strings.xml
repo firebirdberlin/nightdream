@@ -19,7 +19,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">jostakin</string>
 <string name="action_snooze">hiljennä</string>
 <string name="action_stop">pysäytä</string>
-<string name="alarm">herätys</string>
 <string name="alarmFadeIn">lisää äänenvoimakkuutta</string>
 <string name="alarmVolume">äänenvoimakkuus</string>
 <string name="allow_screen_off_summary">pimennä näyttö yöllä</string>
@@ -40,7 +39,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">kirkkaus</string>
 <string name="buttonAccessibilitySettings">näytä ilmoitukset</string>
 <string name="category_handle_power">kun on kytkettynä</string>
-<string name="category_handle_power_autostart_time">aloita aikavyöhykkeessä</string>
+<string name="category_handle_power_autostart_time">aloita aikavälillä</string>
 <string name="choose_alarm_sound">herätysääni</string>
 <string name="choose_primary_color">väri</string>
 <string name="choose_secondary_color">tekstin väri</string>
@@ -68,6 +67,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="expertPreferences">eksperttiasetukset</string>
 <string name="forecast">5 päivän sääennuste</string>
 <string name="force_auto_rotation">pakota automaattinen kääntö</string>
+<string name="force_auto_rotation_summary">Pakota näyttötila kun yökello on käytössä</string>
 <string name="handle_power_ac">lataus</string>
 <string name="handle_power">automaattinen käynnistys</string>
 <string name="handle_power_car">autolaturi</string>
@@ -84,9 +84,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="minBrightness">himmein</string>
 <string name="message_no_data_connection">ei datayhteyttä</string>
 <string name="message_mobile_data_connection">mobiilidatayhteys</string>
-<string name="message_mobile_data_connection_confirmation">olet mobiiliversioon. Avataanko radio?</string>
+<string name="message_mobile_data_connection_confirmation">Olet mobiiliverkossa, avataanko radio</string>
 <string name="minute">min</string>
-<string name="mute_ringer">vähennä soittaja</string>
+<string name="mute_ringer">Hiljennä soittoääni</string>
 <string name="night_mode">yötila</string>
 <string name="night_mode_activation_mode">aktivointitila</string>
 <string name="night_mode_activation_manual">manuaalinen</string>
@@ -96,6 +96,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode_timerange_label_end">loppuaika</string>
 <string name="night_mode_timerange_label_start">alkuaika</string>
 <string name="noise_sensitivity">mikrofonin herkkyys</string>
-<string name="notification_alarm">vähennä herätys klikkaamalla</string>
+<string name="notification_alarm">Lopeta herätys klikkaamalla</string>
 <string name="other_apps">muut sovellukset</string>
+<string name="other_apps_tinytimetracker_summary">Seuraa päivittäistä työaikaasi</string>
+<string name="persistent_battery_value_while_charging">Pakota akun tilavarauksen näyttö</string>
+<string name="persistent_battery_value_while_charging_summary">Pakota akun tilavarauksen näyttö kun latauksessa</string>
 </resources>
