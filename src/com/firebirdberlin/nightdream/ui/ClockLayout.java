@@ -23,6 +23,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_DIGITAL = 0;
     public static final int LAYOUT_ID_ANALOG = 1;
+    public static final int LAYOUT_ID_ANALOG2 = 2;
     private static final String TAG = "NightDream.ClockLayout";
     private int layoutId = LAYOUT_ID_DIGITAL;
 
@@ -51,13 +52,19 @@ public class ClockLayout extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater)
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View child;
+        View child = null;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
-        } else {
+        } else
+        if (layoutId == LAYOUT_ID_ANALOG ){
             child = inflater.inflate(R.layout.analog_clock_layout, null);
+        } else
+        if (layoutId == LAYOUT_ID_ANALOG2 ){
+            child = inflater.inflate(R.layout.analog_clock_layout_2, null);
         }
-        addView(child);
+        if (child != null) {
+            addView(child);
+        }
     }
 
     @Override
@@ -196,7 +203,7 @@ public class ClockLayout extends LinearLayout {
                     }
                     break;
             }
-        } else {
+        } else if (layoutId == LAYOUT_ID_ANALOG) {
             int widgetSize = parentWidth/2;
 
             switch (config.orientation) {

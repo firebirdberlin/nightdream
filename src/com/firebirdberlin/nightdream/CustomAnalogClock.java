@@ -19,13 +19,12 @@ import android.view.View;
 
 
 public class CustomAnalogClock extends View {
-    private static final String TAG = "NightDream.CustomAnalogClock";
+    private static final String TAG = "CustomAnalogClock";
 
     Context context;
     TimeReceiver timeReceiver;
-    Calendar mCalendar;
-    private Paint paint = new Paint();
-    int customcolor = Color.GREEN;
+    protected Paint paint = new Paint();
+    int customColor = Color.GREEN;
     int customSecondaryColor = Color.parseColor("#C2C2C2");
     ColorFilter customColorFilter;
     ColorFilter secondaryColorFilter;
@@ -43,7 +42,7 @@ public class CustomAnalogClock extends View {
 
     private void init(Context context) {
         this.context = context;
-        customColorFilter = new LightingColorFilter(customcolor, 1);
+        customColorFilter = new LightingColorFilter(customColor, 1);
         secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
 
     }
@@ -68,8 +67,8 @@ public class CustomAnalogClock extends View {
     }
 
     public void setPrimaryColor(int color) {
-        customcolor = color;
-        customColorFilter = new LightingColorFilter(customcolor, 1);
+        customColor = color;
+        customColorFilter = new LightingColorFilter(customColor, 1);
         invalidate();
     }
 
