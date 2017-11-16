@@ -101,6 +101,7 @@
 
             <PreferenceCategory
                 android:title="@string/appearance">
+
                 <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
                     android:layout_gravity="center"
                     android:gravity="center"
@@ -115,6 +116,11 @@
                     android:entryValues="@array/clockLayoutValues"
                     android:key="clockLayout"
                     android:title="@string/clock_layout" />
+
+                <Preference
+                    android:icon="@drawable/ic_googleplay"
+                    android:key="purchaseDesignPackage"
+                    android:title="@string/purchaseWeatherData" />
 
                 <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
                     android:descendantFocusability="afterDescendants"
@@ -195,8 +201,8 @@
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="useDeviceLock"
-                android:title="@string/useDeviceLock"
-                android:summary="@string/useDeviceLockDescription"/>
+                android:summary="@string/useDeviceLockDescription"
+                android:title="@string/useDeviceLock" />
 
             <SwitchPreference
                 android:defaultValue="true"
@@ -219,8 +225,8 @@
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="doubleTapToFinish"
-                android:title="@string/doubleTapToFinishTitle"
-                android:summary="@string/doubleTapToFinishSummary" />
+                android:summary="@string/doubleTapToFinishSummary"
+                android:title="@string/doubleTapToFinishTitle" />
         </PreferenceCategory>
 
     </PreferenceScreen>
@@ -426,8 +432,9 @@
                 android:key="weatherCityID"
                 android:title="@string/weather_city_id_title"
                 owmapi:textClear="@string/clear"
-                owmapi:textSummary="@string/weather_city_id_summary"
+                owmapi:textSummary=""
                 />
+            <!--owmapi:textSummary="@string/weather_city_id_summary" -->
 
             <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
                 android:dependency="showWeather"
@@ -576,6 +583,26 @@ uk - Ernest Feynman"/>
                     android:title="Icons">
                     <intent android:action="android.intent.action.VIEW"
                         android:data="https://icons8.com"/>
+                </Preference>
+
+                <Preference
+                    android:icon="@drawable/ic_cloud"
+                    android:key="about_owm"
+                    android:summary="OpenWeatherMap"
+                    android:title="@string/weather">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="http://openweathermap.com" />
+                </Preference>
+
+                <Preference
+                    android:icon="@drawable/ic_radio"
+                    android:key="about_dirble"
+                    android:summary="Dirble.com"
+                    android:title="@string/radio_stream">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="http://www.dirble.com" />
                 </Preference>
 
                 <Preference

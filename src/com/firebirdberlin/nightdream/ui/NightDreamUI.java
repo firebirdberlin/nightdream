@@ -359,6 +359,48 @@ public class NightDreamUI {
             }
         }
     };
+    private Runnable setupSidePanel = new Runnable() {
+        @Override
+        public void run() {
+            ArrayList<ImageView> children = new ArrayList<>();
+            ArrayList<LinearLayout> layouts = new ArrayList<>();
+            for (int i = 0; i < sidePanel.getChildCount(); i++) {
+                View view = sidePanel.getChildAt(i);
+                if (view instanceof ImageView) {
+                    children.add((ImageView) view);
+                }
+                if (view instanceof LinearLayout) {
+                    layouts.add(((LinearLayout) view));
+                }
+            }
+
+            for (LinearLayout layout : layouts) {
+                for (int i = 0; i < layout.getChildCount(); i++) {
+                    View view = layout.getChildAt(i);
+                    if (view instanceof ImageView) {
+                        children.add((ImageView) view);
+                    }
+                }
+            }
+
+            int panelHeight = sidePanel.getHeight();
+            int totalHeight = 0;
+            for (ImageView v : children) {
+                totalHeight += Utility.getHeightOfView(v);
+            }
+
+            int orientation = (totalHeight >= panelHeight) ?
+                    LinearLayout.HORIZONTAL : LinearLayout.VERTICAL;
+
+            for (LinearLayout layout : layouts) {
+                layout.setOrientation(orientation);
+            }
+            if (Build.VERSION.SDK_INT > 11 && sidePanel.getX() < 0) {
+                initSidePanel();
+            }
+
+        }
+    };
 
     public NightDreamUI(Context context, Window window) {
         mContext = context;
@@ -510,7 +552,7 @@ public class NightDreamUI {
             centerClockLayout();
         }
 
-        clockLayout.setLayout(settings.clockLayout);
+        clockLayout.setLayout(settings.getClockLayoutID(false));
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
         clockLayout.setTypeface(settings.typeface);
@@ -596,7 +638,6 @@ public class NightDreamUI {
         }
         nightModeIcon.setImageResource( (mode == 0) ? R.drawable.ic_moon : R.drawable.ic_sun );
     }
-
 
     private void setupBackgroundImage() {
         bgblack = new ColorDrawable(Color.BLACK);
@@ -1098,49 +1139,6 @@ public class NightDreamUI {
             sidePanel.setClickable(false);
         }
     }
-
-    private Runnable setupSidePanel = new Runnable() {
-        @Override
-        public void run() {
-            ArrayList<ImageView> children = new ArrayList<>();
-            ArrayList<LinearLayout> layouts = new ArrayList<>();
-            for (int i = 0; i < sidePanel.getChildCount(); i++) {
-                View view = sidePanel.getChildAt(i);
-                if (view instanceof ImageView) {
-                    children.add((ImageView) view);
-                }
-                if (view instanceof LinearLayout) {
-                    layouts.add(((LinearLayout) view));
-                }
-            }
-
-            for (LinearLayout layout : layouts ) {
-                for (int i = 0; i < layout.getChildCount(); i++) {
-                    View view = layout.getChildAt(i);
-                    if (view instanceof ImageView) {
-                        children.add((ImageView) view);
-                    }
-                }
-            }
-
-            int panelHeight = sidePanel.getHeight();
-            int totalHeight = 0;
-            for (ImageView v : children) {
-                totalHeight += Utility.getHeightOfView(v);
-            }
-
-            int orientation = (totalHeight >= panelHeight) ?
-                    LinearLayout.HORIZONTAL : LinearLayout.VERTICAL;
-
-            for (LinearLayout layout : layouts) {
-                layout.setOrientation(orientation);
-            }
-            if (Build.VERSION.SDK_INT > 11 && sidePanel.getX() < 0) {
-                initSidePanel();
-            }
-
-        }
-    };
 
     private void hideBatteryView(int millis) {
         if (! batteryViewShallBeVisible() ) {

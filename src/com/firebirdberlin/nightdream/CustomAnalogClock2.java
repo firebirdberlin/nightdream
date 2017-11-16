@@ -69,7 +69,7 @@ public class CustomAnalogClock2 extends CustomAnalogClock {
         }
 
         paint.setStrokeWidth(1.f);
-        paint.setAlpha(200);
+        paint.setAlpha(255);
 
         // minute hand
         canvas.save();

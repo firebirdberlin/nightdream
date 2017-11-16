@@ -149,6 +149,7 @@ public class PreferencesFragment extends PreferenceFragment {
                             setupBackgroundImageControls(sharedPreferences);
                             break;
                         case "clockLayout":
+                            Log.d(TAG, String.format("%s = %s", key, sharedPreferences.getString(key, "none")));
                             resetScaleFactor(sharedPreferences);
                             break;
                         case "nightModeActivationMode":
@@ -201,8 +202,8 @@ public class PreferencesFragment extends PreferenceFragment {
             screen.onItemClick(null, null, indexInitialScreen, 0);
         }
 
-        // InAppBillingService service dont seems to be available in emulator
-        activatePurchasesIfDebuggableAndEmulator();
+        // InAppBillingService service doesnt seem to be available in emulator
+        activatePurchasesIfDebuggable();
         daydreamSettingsObserver = new DaydreamSettingsObserver( new Handler() );
         mContext.getContentResolver().registerContentObserver(
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
@@ -235,11 +236,8 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void getPurchases() {
-        if ( Utility.isDebuggable(mContext) ) {
-            purchased_donation = true;
-            purchased_weather_data = true;
-            purchased_web_radio = true;
-            togglePurchasePreferences();
+        if (Utility.isDebuggable(getContext())) {
+            activatePurchasesIfDebuggable();
             return;
         }
         if (mService == null || getActivity() == null) {
@@ -253,7 +251,10 @@ public class PreferencesFragment extends PreferenceFragment {
             return;
         }
 
-        if (ownedItems == null) return;
+        if (ownedItems == null) {
+            storeWeatherDataPurchase(false);
+            return;
+        }
 
         int response = ownedItems.getInt("RESPONSE_CODE");
         if (response == 0) {
@@ -266,6 +267,7 @@ public class PreferencesFragment extends PreferenceFragment {
             String continuationToken =
                 ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
+            boolean weatherDataIsPurchased = false;
             for (int i = 0; i < purchaseDataList.size(); ++i) {
                 String purchaseData = purchaseDataList.get(i);
                 String signature = signatureList.get(i);
@@ -273,11 +275,11 @@ public class PreferencesFragment extends PreferenceFragment {
 
                 if (ITEM_DONATION.equals(sku)) {
                     purchased_donation = true;
-                    purchased_weather_data = true;
+                    weatherDataIsPurchased = true;
                     purchased_web_radio = true;
                 }
                 if (ITEM_WEATHER_DATA.equals(sku)) {
-                    purchased_weather_data = true;
+                    weatherDataIsPurchased = true;
                 }
                 if (ITEM_WEB_RADIO.equals(sku)) {
                     purchased_web_radio = true;
@@ -296,6 +298,7 @@ public class PreferencesFragment extends PreferenceFragment {
                 //}
             }
 
+            storeWeatherDataPurchase(weatherDataIsPurchased);
             togglePurchasePreferences();
 
             // if continuationToken != null, call getPurchases again
@@ -303,6 +306,17 @@ public class PreferencesFragment extends PreferenceFragment {
         }
 
     }
+
+
+    private void storeWeatherDataPurchase(boolean isPurchased) {
+        purchased_weather_data = isPurchased;
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("purchasedWeatherData", isPurchased);
+        editor.apply();
+        Log.i(TAG, String.format("purchasedWeatherData = %b", isPurchased));
+    }
+
 
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
@@ -315,6 +329,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
         if (purchased_weather_data) {
             removePreference("purchaseWeatherData");
+            removePreference("purchaseDesignPackage");
         }
 
         if (purchased_web_radio) {
@@ -392,11 +407,13 @@ public class PreferencesFragment extends PreferenceFragment {
 
         Preference donationPreference = findPreference("donation_play");
         Preference purchaseWeatherDataPreference = findPreference("purchaseWeatherData");
+        Preference purchaseDesignPackagePreference = findPreference("purchaseDesignPackage");
         Preference purchaseWebRadioPreference = findPreference("purchaseWebRadio");
         Preference purchaseWebRadioUIPreference = findPreference("purchaseWebRadioUI");
 
         donationPreference.setOnPreferenceClickListener(purchaseDonationPreferenceClickListener);
         purchaseWeatherDataPreference.setOnPreferenceClickListener(purchaseWeatherDataPreferenceClickListener);
+        purchaseDesignPackagePreference.setOnPreferenceClickListener(purchaseWeatherDataPreferenceClickListener);
         purchaseWebRadioPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
         purchaseWebRadioUIPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
 
@@ -529,12 +546,12 @@ public class PreferencesFragment extends PreferenceFragment {
                 String sku = jo.getString("productId");
                 if (sku.equals(ITEM_DONATION) ) {
                     purchased_donation = true;
-                    purchased_weather_data = true;
+                    storeWeatherDataPurchase(true);
                     purchased_web_radio = true;
                     showThankYouDialog();
                 } else
                 if (sku.equals(ITEM_WEATHER_DATA) ) {
-                    purchased_weather_data = true;
+                    storeWeatherDataPurchase(true);
                 } else
                 if (sku.equals(ITEM_WEB_RADIO) ) {
                     purchased_web_radio = true;
@@ -830,10 +847,10 @@ public class PreferencesFragment extends PreferenceFragment {
         return null;
     }
 
-    private void activatePurchasesIfDebuggableAndEmulator() {
-        if ( Utility.isDebuggable(mContext) && Utility.isEmulator()) {
+    private void activatePurchasesIfDebuggable() {
+        if (Utility.isDebuggable(mContext)) {
             purchased_donation = true;
-            purchased_weather_data = true;
+            storeWeatherDataPurchase(true);
             purchased_web_radio = true;
             togglePurchasePreferences();
         }

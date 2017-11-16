@@ -49,8 +49,9 @@ OR
     <string name="choose_secondary_color">Text color</string>
     <string name="clear">clear</string>
     <string name="clock_layout">Layout</string>
-    <string name="clock_layout_digital">digital</string>
-    <string name="clock_layout_analog">analog</string>
+    <string name="clock_layout_digital">digital clock</string>
+    <string name="clock_layout_analog">analog clock</string>
+    <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="colors">Colors</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="confirm_reset">Reset</string>

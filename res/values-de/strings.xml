@@ -103,8 +103,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
 <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
 <string name="preview">Vorschau</string>
-<string name="purchaseWeatherData">Wetterdaten Lizenz kaufen</string>
-<string name="purchaseWebRadio">Web-Radio Lizenz kaufen</string>
+    <string name="purchaseWeatherData">Design-Paket kaufen</string>
+    <string name="purchaseWebRadio">Webradio-Paket kaufen</string>
 <string name="radio">Radio</string>
 <string name="radio_stream_enabled">Aktiviert</string>
 <string name="radio_stream_no_search_results">Es gab keine Suchergebnisse.</string>
@@ -181,4 +181,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tomorrow">morgen</string>
     <string name="delete">löschen</string>
     <string name="repeat">wiederholen</string>
+    <string name="clock_layout_analog">Analoguhr</string>
+    <string name="clock_layout_digital">Digitaluhr</string>
+    <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
 </resources>

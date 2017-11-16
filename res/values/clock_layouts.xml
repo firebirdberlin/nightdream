@@ -10,6 +10,6 @@
     <string-array name="clockLayout">
         <item>@string/clock_layout_digital</item>
         <item>@string/clock_layout_analog</item>
-        <item>@string/clock_layout_analog</item>
+        <item>@string/clock_layout_elegant_analog</item>
      </string-array>
 </resources>
