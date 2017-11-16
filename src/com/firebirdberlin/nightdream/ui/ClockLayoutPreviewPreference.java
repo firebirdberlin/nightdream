@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -62,7 +63,7 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     protected void updateView() {
         Settings settings = new Settings(getContext());
-
+        clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(settings.clockLayout);
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
@@ -86,8 +87,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                                         - preferenceView.getPaddingRight(),
                                  config);
 
-
-        clockLayout.invalidate();
+        clockLayout.requestLayout();
     }
 
     private WeatherEntry getWeatherEntry(Settings settings) {

@@ -211,7 +211,14 @@ public class Utility {
     public static int dpToPx(Context context, float dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.getResources().getDisplayMetrics());
+
     }
+
+    public static int spToPx(Context context, float sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                context.getResources().getDisplayMetrics());
+    }
+
 
     public static int getNearestEvenIntValue(float value) {
         int r = (int) Math.ceil(value);
@@ -219,6 +226,11 @@ public class Utility {
             r = (int) Math.floor(value);
         }
         return r;
+    }
+
+    public static int getHeightOfView(View contentview) {
+        contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        return contentview.getMeasuredHeight();
     }
 
     public Point getDisplaySize() {
@@ -283,10 +295,5 @@ public class Utility {
     public void restoreSystemBrightnessMode() {
         System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
                 system_brightness_mode);
-    }
-
-    public static int getHeightOfView(View contentview) {
-        contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        return contentview.getMeasuredHeight();
     }
 }

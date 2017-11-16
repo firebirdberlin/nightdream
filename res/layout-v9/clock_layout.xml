@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 <!--
         time
 -->
     <LinearLayout
         android:id="@+id/time_layout"
-        android:orientation="horizontal"
-        android:padding="0px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:padding="0px">
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:clickable="true"
             android:ellipsize="none"
-            android:id="@+id/clock"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:maxLines="1"
             android:padding="0px"
-            android:singleLine="true"
             android:text="00:00"
             android:textColor="#C2C2C2"
             android:textSize="50sp"
@@ -34,14 +34,14 @@
             custom:format24Hr="HH:mm"/>
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/clock_ampm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:clickable="true"
             android:ellipsize="none"
-            android:id="@+id/clock_ampm"
-            android:layout_gravity="top"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:maxLines="1"
             android:padding="0px"
-            android:singleLine="true"
             android:textColor="#C2C2C2"
             android:textSize="20sp"
             custom:fontPath="fonts/roboto_thin.ttf"
@@ -62,23 +62,23 @@
 -->
     <LinearLayout
         android:id="@+id/info"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
         <com.firebirdberlin.nightdream.CustomDigitalClock
             xmlns:custom="http://schemas.android.com/apk/res-auto"
-            android:ellipsize="none"
             android:id="@+id/date"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="none"
+            android:maxLines="1"
             android:paddingTop="5sp"
-            android:singleLine="true"
+            android:text="Sun, 30. October 2016"
             android:textColor="#C2C2C2"
             android:textStyle="bold"
-            android:text="Sun, 30. October 2016"
             custom:fontPath="fonts/roboto_light.ttf"
             custom:format12Hr="dd. MMMM yyyy"
             custom:format24Hr="dd. MMMM yyyy"/>

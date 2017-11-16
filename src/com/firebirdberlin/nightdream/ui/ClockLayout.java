@@ -7,9 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +16,7 @@ import android.widget.LinearLayout;
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayout extends LinearLayout {
@@ -182,7 +181,8 @@ public class ClockLayout extends LinearLayout {
                     }
                     if (weatherLayout != null) {
                         weatherLayout.setMaxWidth(parentWidth / 2);
-                        weatherLayout.setMaxFontSizesInPx(spToPx(minFontSize), spToPx(20.f));
+                        weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
+                                Utility.spToPx(context, 20.f));
                         weatherLayout.update();
                     }
                     break;
@@ -198,35 +198,16 @@ public class ClockLayout extends LinearLayout {
                     }
                     if (weatherLayout != null) {
                         weatherLayout.setMaxWidth((int) (0.8f * parentWidth));
-                        weatherLayout.setMaxFontSizesInPx(spToPx(minFontSize), spToPx(25.f));
+                        weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
+                                Utility.spToPx(context, 25.f));
                         weatherLayout.update();
                     }
                     break;
             }
         } else if (layoutId == LAYOUT_ID_ANALOG) {
-            int widgetSize = parentWidth/2;
-
-            switch (config.orientation) {
-                case Configuration.ORIENTATION_LANDSCAPE:
-                    widgetSize = parentWidth/4;
-                    break;
-                case Configuration.ORIENTATION_PORTRAIT:
-                default:
-                    widgetSize = parentWidth/2;
-                    break;
-            }
-            setSize(widgetSize, widgetSize);
-            if (date != null) {
-                date.setMaxWidth(widgetSize / 2);
-                date.setMaxFontSizesInSp(minFontSize, (18.f));
-                date.setTranslationY(0.2f * widgetSize);
-            }
-            if (weatherLayout != null) {
-                weatherLayout.setMaxWidth(widgetSize / 2);
-                weatherLayout.setMaxFontSizesInPx(spToPx(minFontSize), spToPx(18.f));
-                weatherLayout.update();
-                weatherLayout.setTranslationY(-0.2f * widgetSize);
-            }
+            setupLayoutAnalog(parentWidth, config);
+        } else if (layoutId == LAYOUT_ID_ANALOG2) {
+            setupLayoutAnalog2(parentWidth, config);
         }
 
         if ( date != null ) date.invalidate();
@@ -247,24 +228,54 @@ public class ClockLayout extends LinearLayout {
         invalidate();
     }
 
-    private float pixelsToSp(float px) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return px/density;
+    private void setupLayoutAnalog(int parentWidth, Configuration config) {
+        final float minFontSize = 8.f; // in sp
+        final float maxFontSize = 18.f; // in sp
+        int widgetSize = getAnalogWidgetSize(parentWidth, config);
+        setSize(widgetSize, widgetSize);
+        if (date != null) {
+            date.setMaxWidth(widgetSize / 2);
+            date.setMaxFontSizesInSp(minFontSize, maxFontSize);
+            date.setTranslationY(0.2f * widgetSize);
+        }
+        if (weatherLayout != null) {
+            weatherLayout.setMaxWidth(widgetSize / 2);
+            weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
+                    Utility.spToPx(context, maxFontSize));
+            weatherLayout.update();
+            weatherLayout.setTranslationY(-0.2f * widgetSize);
+        }
     }
 
-    private int dpToPx(float dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                                               context.getResources().getDisplayMetrics());
+    private void setupLayoutAnalog2(int parentWidth, Configuration config) {
+        final float minFontSize = 10.f; // in sp
+        final float maxFontSize = 20.f; // in sp
+        int widgetSize = getAnalogWidgetSize(parentWidth, config);
+        analog_clock.getLayoutParams().width = widgetSize;
+        analog_clock.getLayoutParams().height = widgetSize;
+
+        int additionalHeight = Utility.getHeightOfView(date) + Utility.getHeightOfView(weatherLayout);
+        setSize(widgetSize, widgetSize + additionalHeight);
+        if (date != null) {
+            date.setMaxWidth(widgetSize / 3 * 2);
+            date.setMaxFontSizesInSp(minFontSize, maxFontSize);
+        }
+        if (weatherLayout != null) {
+            weatherLayout.setMaxWidth(widgetSize / 3 * 2);
+            weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
+                    Utility.spToPx(context, maxFontSize));
+            weatherLayout.update();
+        }
     }
 
-    private int spToPx(float sp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
-                                               context.getResources().getDisplayMetrics());
-    }
-
-    private int pixelsToDp(float px) {
-        DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
-        return (int) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics );
+    private int getAnalogWidgetSize(int parentWidth, Configuration config) {
+        switch (config.orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+                return parentWidth / 4;
+            case Configuration.ORIENTATION_PORTRAIT:
+            default:
+                return parentWidth / 2;
+        }
     }
 
     public void setDateFormat(String formatString) {

@@ -68,24 +68,25 @@ public class CustomAnalogClock2 extends CustomAnalogClock {
             canvas.drawLine(start.x, start.y, end.x, end.y, paint);
         }
 
-        // hour hand
         paint.setStrokeWidth(1.f);
         paint.setAlpha(200);
-        paint.setColorFilter(secondaryColorFilter);
-        canvas.save();
-
-        canvas.rotate((float) radiansToDegrees(hour_angle), center.x, center.y);
-        drawHand(canvas, paint, center, (int) (0.6 * radius), (int) (0.04f * radius));
 
         // minute hand
-        canvas.restore();
         canvas.save();
-        paint.setColorFilter(secondaryColorFilter);
+        paint.setColorFilter(customColorFilter);
         canvas.rotate((float) radiansToDegrees(min_angle), center.x, center.y);
         drawHand(canvas, paint, center, (int) (0.9 * radius), (int) (0.04f * radius));
-
         canvas.restore();
+
+        // hour hand
+        canvas.save();
         paint.setColorFilter(secondaryColorFilter);
+        canvas.rotate((float) radiansToDegrees(hour_angle), center.x, center.y);
+        drawHand(canvas, paint, center, (int) (0.6 * radius), (int) (0.04f * radius));
+        canvas.restore();
+
+        paint.setColorFilter(secondaryColorFilter);
+        paint.setAlpha(255);
         canvas.drawCircle(center.x, center.y, 0.045f * radius, paint);
 
         paint.setColorFilter(null);
