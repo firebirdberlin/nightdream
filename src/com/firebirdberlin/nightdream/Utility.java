@@ -72,7 +72,8 @@ public class Utility {
     }
 
     public static boolean isDebuggable(Context context){
-        return ( 0 != ( context.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE ) );
+        return (context != null &&
+                0 != (context.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE));
     }
 
     public static boolean isEmulator() {

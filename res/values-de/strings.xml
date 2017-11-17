@@ -184,4 +184,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_analog">Analoguhr</string>
     <string name="clock_layout_digital">Digitaluhr</string>
     <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
+    <string name="clock_layout_modern_analog">moderne Analoguhr</string>
 </resources>
