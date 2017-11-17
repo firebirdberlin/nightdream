@@ -19,7 +19,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">Acerca de</string>
 <string name="action_snooze">Aplazar</string>
 <string name="action_stop">Detener</string>
-<string name="alarm">Alarma</string>
 <string name="alarmFadeIn">Incrementar volumen</string>
 <string name="alarmVolume">Volumen de la alarma</string>
 <string name="allow_screen_off_summary">Apagar la pantalla durante la noche</string>
@@ -58,7 +57,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute_translation">Traducción</string>
 <string name="country">Pais</string>
 <string name="credits">Créditos</string>
+<string name="credits_pull_requests">Solicitud de salida</string>
 <string name="date_format">Formato de fecha</string>
+<string name="delete">Borrar</string>
 <string name="dialog_message_thank_you">¡Muchas gracias!</string>
 <string name="dialog_title_thank_you">Gracias</string>
 <string name="donate_bitcoin">Bitcoin</string>
@@ -123,6 +124,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend_app_subject">Me gustaría recomendarte esta aplicación de reloj de noche.</string>
 <string name="recommend">Recomienda la aplicación</string>
 <string name="remaining">Restante</string>
+<string name="repeat">Repetir</string>
 <string name="reset_to_defaults">Restablecer a valores predeterminados</string>
 <string name="restless_mode">Mover el reloj alrededor</string>
 <string name="review_request">Por favor califica esta aplicación. ¡Gracias!</string>
@@ -144,6 +146,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_wind_speed">Velocidad del viento</string>
 <string name="snoozeTime">Tiempo par aplazar</string>
 <string name="speedUnit">Unidad de velocidad del viento</string>
+<string name="sleep_time_dialog_title">Tiempo de Dormir</string>
 <string name="standbyEnabledWhileConnectedTitle">Modo de espera</string>
 <string name="standbyEnabledWhileConnectedSummary">Activar cuando la pantalla se apague</string>
 <string name="standbyEnabledWhileDisconnectedTitle">Entrar en modo de espera mientras se descarga</string>
@@ -163,13 +166,14 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="uninstall">Desinstalar aplicación</string>
 <string name="use_internal_alarm">Alarmas rápidas</string>
 <string name="useDeviceLock">Bloquear dispositivo</string>
+<string name="useDeviceLockDescription">La función de bloqueo de pantalla necesita el permiso de administrador del dispositivo. Para desinstalar la aplicación, deshabilite esta función.</string>
 <string name="useDeviceLockExplanation">Bloquear el dispositivo mientras night clock esta en uso</string>
 <string name="weather_calculation_time">Previsión climática</string>
 <string name="weather_city_id_summary">Deja vacío para una detección automática de la ubicación</string>
 <string name="weather_city_id_title">Buscar ubicación</string>
 <string name="weather_info_title">Información</string>
 <string name="weather">Clima</string>
-<string name="welcome_screen_text1">¡Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
+<string name="welcome_screen_text1">¡Bienvenido a tu nuevo reloj nocturno! Esta aplicación muestra la hora actual mientras cargas tu dispositivo.</string>
 <string name="welcome_screen_text2">¡Accede a las preferencias aquí!</string>
 <string name="welcome_screen_text3">Selecciona y desliza para cambiar el brillo de la pantalla. ¡Pruébalo ahora!</string>
 <string name="welcome_screen_text4">Cambia el tamaño del reloj con zoom de dos dedos.</string>
@@ -177,4 +181,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Preferencias</string>
 <string name="welcome_screen_title3">Brillo de pantalla</string>
 <string name="welcome_screen_title4">Tamaño de reloj</string>
+<string name="today">Hoy</string>
+<string name="tomorrow">Mañana</string>
 </resources>
