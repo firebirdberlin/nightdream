@@ -8,7 +8,7 @@ doze:
 	adb shell dumpsys deviceidle force-idle
 
 install:
-	adb $(OPT) install -r bin/Pro/NightDream-release.apk
+	adb $(OPT) install -r nightdream-release.apk
 
 installemulator:
 	adb -e install -r bin/Pro/NightDream-release.apk

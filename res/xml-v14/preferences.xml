@@ -102,6 +102,11 @@
             <PreferenceCategory
                 android:title="@string/appearance">
 
+                <Preference
+                    android:icon="@drawable/ic_googleplay"
+                    android:key="purchaseDesignPackage"
+                    android:title="@string/purchaseWeatherData" />
+
                 <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
                     android:layout_gravity="center"
                     android:gravity="center"
@@ -116,11 +121,6 @@
                     android:entryValues="@array/clockLayoutValues"
                     android:key="clockLayout"
                     android:title="@string/clock_layout" />
-
-                <Preference
-                    android:icon="@drawable/ic_googleplay"
-                    android:key="purchaseDesignPackage"
-                    android:title="@string/purchaseWeatherData" />
 
                 <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
                     android:descendantFocusability="afterDescendants"
@@ -341,6 +341,7 @@
             <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                 android:defaultValue="5"
+                android:dependency="useInternalAlarm"
                 android:key="snoozeTimeInMinutes"
                 android:max="60"
                 android:title="@string/snoozeTime"

@@ -40,6 +40,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="background_image">Bild</string>
 <string name="background_image_select">Bild auswählen</string>
 <string name="behaviour">Verhalten</string>
+    <string name="buy">Kaufen</string>
 <string name="brightness">Helligkeit</string>
 <string name="brightness_offset">Richtwert</string>
 <string name="buttonAccessibilitySettings">Benachrichtigungen anzeigen</string>
@@ -103,7 +104,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
 <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
 <string name="preview">Vorschau</string>
-    <string name="purchaseWeatherData">Design-Paket kaufen</string>
+    <string name="product_name_weather">Wetter- und Design-Paket</string>
+    <string name="product_name_webradio">Web-Radio Paket</string>
+    <string name="product_name_donation">Spende</string>
+    <string name="purchaseWeatherData">Wetter- und Design-Paket kaufen</string>
     <string name="purchaseWebRadio">Webradio-Paket kaufen</string>
 <string name="radio">Radio</string>
 <string name="radio_stream_enabled">Aktiviert</string>
@@ -185,4 +189,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_digital">Digitaluhr</string>
     <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
     <string name="clock_layout_modern_analog">moderne Analoguhr</string>
+    <string name="product_name_pro">Vollversion</string>
 </resources>

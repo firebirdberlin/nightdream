@@ -30,6 +30,6 @@
         android:layout_alignParentTop="true"
         android:backgroundTint="@android:color/holo_red_light"
         android:rotation="0"
-        android:text="design package" />
+        android:text="@string/product_name_weather" />
 
 </RelativeLayout>
