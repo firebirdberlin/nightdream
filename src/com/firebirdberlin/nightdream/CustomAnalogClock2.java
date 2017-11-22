@@ -17,6 +17,10 @@ import java.util.Calendar;
 public class CustomAnalogClock2 extends CustomAnalogClock {
     private static final String TAG = "CustomAnalogClock";
 
+    private Point center = new Point();
+    private Point tick_start = new Point();
+    private Point tick_end = new Point();
+
     public CustomAnalogClock2(Context context) {
         super(context);
     }
@@ -26,9 +30,9 @@ public class CustomAnalogClock2 extends CustomAnalogClock {
     }
 
     public void onDraw(Canvas canvas) {
-        int w = getWidth() - 20;
-        Point center = new Point(getWidth() / 2, getHeight() / 2);
-        int radius = w / 2 - 10;
+        center.x = getWidth() / 2;
+        center.y = getHeight() / 2;
+        int radius = getWidth() / 2 - 20;
 
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
@@ -42,33 +46,24 @@ public class CustomAnalogClock2 extends CustomAnalogClock {
         paint.setAlpha(70);
         paint.setColorFilter(customColorFilter);
 
-        final int[] colors = {Color.TRANSPARENT, Color.WHITE};
-        final float[] positions = {0.5f, 1.f};
-        Shader gradient = new SweepGradient(center.x, center.y, colors, positions);
-        float rotate = (float) radiansToDegrees(min_angle);
-        Matrix gradientMatrix = new Matrix();
-        gradientMatrix.preRotate(rotate, center.x, center.y);
-        gradient.setLocalMatrix(gradientMatrix);
-
-        paint.setShader(gradient);
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        canvas.drawCircle(center.x, center.y, 0.9f * radius, paint);
+        drawArc(canvas, radius, min_angle);
 
         // ticks
-        paint.setShader(null);
+
         paint.setAlpha(150);
         paint.setColorFilter(secondaryColorFilter);
-        paint.setStrokeWidth(4.f);
 
-        for (double angle=0; angle < 2 * Math.PI; angle += Math.PI/6 ) {
-            Point start = new Point((int) (center.x + .87 * radius * Math.cos(angle)),
-                    (int) (center.y + .87 * radius * Math.sin(angle)));
-            Point end = new Point((int) (center.x + .93 * radius * Math.cos(angle)),
-                    (int) (center.y + .93 * radius * Math.sin(angle)));
-            canvas.drawLine(start.x, start.y, end.x, end.y, paint);
+        paint.setStrokeWidth(Utility.dpToPx(context, 1.f));
+
+        for (double angle = 0; angle < 2 * Math.PI; angle += Math.PI / 6) {
+            tick_start.x = (int) (center.x + .87 * radius * Math.cos(angle));
+            tick_start.y = (int) (center.y + .87 * radius * Math.sin(angle));
+            tick_end.x = (int) (center.x + .93 * radius * Math.cos(angle));
+            tick_end.y = (int) (center.y + .93 * radius * Math.sin(angle));
+            canvas.drawLine(tick_start.x, tick_start.y, tick_end.x, tick_end.y, paint);
         }
 
-        paint.setStrokeWidth(1.f);
+        paint.setStrokeWidth(Utility.dpToPx(context, 1.f));
         paint.setAlpha(255);
 
         // minute hand
@@ -110,5 +105,20 @@ public class CustomAnalogClock2 extends CustomAnalogClock {
         path.lineTo(base.x, base.y - halfWidth);
         path.close();
         canvas.drawPath(path, paint);
+    }
+
+    private void drawArc(Canvas canvas, int radius, double angle) {
+        final int[] colors = {Color.TRANSPARENT, Color.WHITE};
+        final float[] positions = {0.5f, 1.f};
+        Shader gradient = new SweepGradient(center.x, center.y, colors, positions);
+        float rotate = (float) radiansToDegrees(angle);
+        Matrix gradientMatrix = new Matrix();
+        gradientMatrix.preRotate(rotate, center.x, center.y);
+        gradient.setLocalMatrix(gradientMatrix);
+
+        paint.setShader(gradient);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        canvas.drawCircle(center.x, center.y, 0.9f * radius, paint);
+        paint.setShader(null);
     }
 }
