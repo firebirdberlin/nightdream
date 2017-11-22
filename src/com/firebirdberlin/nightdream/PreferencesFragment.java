@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -38,6 +39,7 @@ import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +50,7 @@ import java.util.List;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
-@SuppressWarnings("NewAPI")
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class PreferencesFragment extends PreferenceFragment {
     public static final String TAG = "PreferencesFragment";
     public static final String ITEM_DONATION = "donation";
@@ -146,6 +148,8 @@ public class PreferencesFragment extends PreferenceFragment {
                         case "clockLayout":
                             Log.d(TAG, String.format("%s = %s", key, sharedPreferences.getString(key, "none")));
                             resetScaleFactor(sharedPreferences);
+                            ClockLayoutPreviewPreference preview = (ClockLayoutPreviewPreference) findPreference("clockLayoutPreview");
+                            preview.invalidate();
                             break;
                         case "nightModeActivationMode":
                             setupNightModePreferences(sharedPreferences);

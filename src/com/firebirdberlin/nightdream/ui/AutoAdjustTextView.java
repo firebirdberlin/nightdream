@@ -1,29 +1,19 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
-
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.database.ContentObserver;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Handler;
-import android.provider.Settings;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
+
 import com.firebirdberlin.nightdream.R;
 
 
 public class AutoAdjustTextView extends TextView {
-    private static final String TAG = "NightDream.AutoAdjustTextView";
+    private static final String TAG = "AutoAdjustTextView";
     Context context = null;
     private int maxWidth = -1;
 

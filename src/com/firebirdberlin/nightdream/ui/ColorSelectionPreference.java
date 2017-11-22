@@ -12,13 +12,11 @@ import android.view.ViewParent;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.ui.ColorPrefWidgetView;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class ColorSelectionPreference extends Preference
                                       implements View.OnClickListener {
-    //private LinearLayout colorSelectionLayout = null;
     private ColorPrefWidgetView primaryColorView = null;
     private ColorPrefWidgetView secondaryColorView = null;
     private ColorPrefWidgetView primaryColorNightView = null;
@@ -49,7 +47,6 @@ public class ColorSelectionPreference extends Preference
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 layoutInflater.inflate(R.layout.color_selection_layout, summaryParent2, true);
 
-                //colorSelectionLayout = (LinearLayout) summaryParent2.findViewById(R.id.colorSelectionLayout);
                 primaryColorView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.primaryColor);
                 secondaryColorView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.secondaryColor);
 

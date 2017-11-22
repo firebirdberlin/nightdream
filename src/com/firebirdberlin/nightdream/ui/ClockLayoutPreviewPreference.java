@@ -40,6 +40,10 @@ public class ClockLayoutPreviewPreference extends Preference {
         ClockLayoutPreviewPreference.previewMode = previewMode;
     }
 
+    public void invalidate() {
+        notifyChanged();
+    }
+
     @Override
     protected View onCreateView(ViewGroup parent) {
         preferenceView = super.onCreateView(parent);
