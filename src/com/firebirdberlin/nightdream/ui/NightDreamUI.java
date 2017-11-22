@@ -1200,7 +1200,7 @@ public class NightDreamUI {
         Log.d(TAG, String.format("getScaleFactor > %f %f", s, max));
 
         s = Math.min(s, max);
-        if (s > 0.f && !Float.isNaN(s) && !Float.isInfinite(s)) {
+        if (s > 0.5f && !Float.isNaN(s) && !Float.isInfinite(s)) {
             return s;
         }
         return 1.f;

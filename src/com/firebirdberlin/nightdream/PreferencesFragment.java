@@ -232,7 +232,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void getPurchases() {
-        if (Utility.isDebuggable(getContext())) {
+        if (Utility.isDebuggable(mContext)) {
             activatePurchasesIfDebuggable();
             return;
         }

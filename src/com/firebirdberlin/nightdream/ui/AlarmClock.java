@@ -28,7 +28,6 @@ import android.view.View;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
-import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
@@ -48,7 +47,7 @@ public class AlarmClock extends View {
     final private Handler handler = new Handler();
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
-    SimpleTime time;
+    SimpleTime time = null;
     GestureDetector mGestureDetector = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
     private boolean daydreamMode = false;
@@ -61,7 +60,6 @@ public class AlarmClock extends View {
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
     private Paint paint = new Paint();
     private Rect alarmTimeRect = new Rect(0, 0, 0, 0);
-    private Settings settings = null;
     private ColorFilter customColorFilter;
     private ColorFilter customColorFilterImage;
     private ColorFilter secondaryColorFilter;
@@ -88,7 +86,6 @@ public class AlarmClock extends View {
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
-        settings = new Settings(this.ctx);
 
         mGestureDetector = new GestureDetector(context, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
@@ -129,7 +126,7 @@ public class AlarmClock extends View {
         try {
             ctx.unregisterReceiver(receiver);
         } catch (IllegalArgumentException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -386,7 +383,7 @@ public class AlarmClock extends View {
 
 
     private String getAlarmTimeFormatted() {
-        if ( userChangesAlarmTime || isAlarmSet() ) {
+        if ((userChangesAlarmTime || isAlarmSet()) && time != null) {
             return getTimeFormatted(time.getCalendar());
         }
         return "";
