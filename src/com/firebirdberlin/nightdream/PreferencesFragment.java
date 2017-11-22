@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -38,24 +39,33 @@ import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
-@SuppressWarnings("NewAPI")
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class PreferencesFragment extends PreferenceFragment {
     public static final String TAG = "PreferencesFragment";
     public static final String ITEM_DONATION = "donation";
     public static final String ITEM_WEATHER_DATA = "weather_data";
     public static final String ITEM_WEB_RADIO = "web_radio";
+    public static final String ITEM_PRO = "pro";
     public static final int REQUEST_CODE_PURCHASE_DONATION = 1001;
     public static final int REQUEST_CODE_PURCHASE_WEATHER = 1002;
     public static final int REQUEST_CODE_PURCHASE_WEB_RADIO = 1003;
+    public static final int REQUEST_CODE_PURCHASE_PRO = 1004;
     public static final String PREFS_KEY = "NightDream preferences";
+    private static final int PRODUCT_ID_WEATHER_DATA = 0;
+    private static final int PRODUCT_ID_WEB_RADIO = 1;
+    private static final int PRODUCT_ID_DONATION = 2;
+    private static final int PRODUCT_ID_PRO = 3;
     private static int RESULT_LOAD_IMAGE = 1;
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
@@ -64,26 +74,13 @@ public class PreferencesFragment extends PreferenceFragment {
     public boolean purchased_donation = false;
     public boolean purchased_weather_data = false;
     public boolean purchased_web_radio = false;
+    public boolean purchased_pro = false;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
     IInAppBillingService mService;
-    Preference.OnPreferenceClickListener purchaseWebRadioPreferenceClickListener =
+    Preference.OnPreferenceClickListener purchasePreferenceClickListener =
             new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    purchaseIntent(ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
-                    return true;
-                }
-            };
-    Preference.OnPreferenceClickListener purchaseDonationPreferenceClickListener =
-            new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
-                    return true;
-                }
-            };
-    Preference.OnPreferenceClickListener purchaseWeatherDataPreferenceClickListener =
-            new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
+                    showPurchaseDialog();
                     return true;
                 }
             };
@@ -149,7 +146,10 @@ public class PreferencesFragment extends PreferenceFragment {
                             setupBackgroundImageControls(sharedPreferences);
                             break;
                         case "clockLayout":
+                            Log.d(TAG, String.format("%s = %s", key, sharedPreferences.getString(key, "none")));
                             resetScaleFactor(sharedPreferences);
+                            ClockLayoutPreviewPreference preview = (ClockLayoutPreviewPreference) findPreference("clockLayoutPreview");
+                            preview.invalidate();
                             break;
                         case "nightModeActivationMode":
                             setupNightModePreferences(sharedPreferences);
@@ -201,8 +201,8 @@ public class PreferencesFragment extends PreferenceFragment {
             screen.onItemClick(null, null, indexInitialScreen, 0);
         }
 
-        // InAppBillingService service dont seems to be available in emulator
-        activatePurchasesIfDebuggableAndEmulator();
+        // InAppBillingService service doesnt seem to be available in emulator
+        activatePurchasesIfDebuggable();
         daydreamSettingsObserver = new DaydreamSettingsObserver( new Handler() );
         mContext.getContentResolver().registerContentObserver(
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
@@ -217,6 +217,7 @@ public class PreferencesFragment extends PreferenceFragment {
     public void setInitialScreenIndex(int index) {
         this.indexInitialScreen = index;
     }
+
 
     @Override
     public void onDestroy() {
@@ -235,11 +236,8 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void getPurchases() {
-        if ( Utility.isDebuggable(mContext) ) {
-            purchased_donation = true;
-            purchased_weather_data = true;
-            purchased_web_radio = true;
-            togglePurchasePreferences();
+        if (Utility.isDebuggable(mContext)) {
+            activatePurchasesIfDebuggable();
             return;
         }
         if (mService == null || getActivity() == null) {
@@ -253,7 +251,10 @@ public class PreferencesFragment extends PreferenceFragment {
             return;
         }
 
-        if (ownedItems == null) return;
+        if (ownedItems == null) {
+            storeWeatherDataPurchase(false);
+            return;
+        }
 
         int response = ownedItems.getInt("RESPONSE_CODE");
         if (response == 0) {
@@ -266,6 +267,7 @@ public class PreferencesFragment extends PreferenceFragment {
             String continuationToken =
                 ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
+            boolean weatherDataIsPurchased = false;
             for (int i = 0; i < purchaseDataList.size(); ++i) {
                 String purchaseData = purchaseDataList.get(i);
                 String signature = signatureList.get(i);
@@ -273,11 +275,16 @@ public class PreferencesFragment extends PreferenceFragment {
 
                 if (ITEM_DONATION.equals(sku)) {
                     purchased_donation = true;
-                    purchased_weather_data = true;
+                    weatherDataIsPurchased = true;
+                    purchased_web_radio = true;
+                }
+                if (ITEM_PRO.equals(sku)) {
+                    purchased_pro = true;
+                    weatherDataIsPurchased = true;
                     purchased_web_radio = true;
                 }
                 if (ITEM_WEATHER_DATA.equals(sku)) {
-                    purchased_weather_data = true;
+                    weatherDataIsPurchased = true;
                 }
                 if (ITEM_WEB_RADIO.equals(sku)) {
                     purchased_web_radio = true;
@@ -286,16 +293,17 @@ public class PreferencesFragment extends PreferenceFragment {
                 // do something with this purchase information
                 // e.g. display the updated list of products owned by user
                 // or consume the purchase
-                //try {
-                    //JSONObject o = new JSONObject(purchaseData);
-                    //String purchaseToken = o.getString("purchaseToken");
-                    //mService.consumePurchase(3, getActivity().getPackageName(), purchaseToken);
-                //}
-                //catch (Exception e) {
-                    //e.printStackTrace();
-                //}
+//                try {
+//                    JSONObject o = new JSONObject(purchaseData);
+//                    String purchaseToken = o.getString("purchaseToken");
+//                    mService.consumePurchase(3, getActivity().getPackageName(), purchaseToken);
+//                }
+//                catch (Exception e) {
+//                    e.printStackTrace();
+//                }
             }
 
+            storeWeatherDataPurchase(weatherDataIsPurchased);
             togglePurchasePreferences();
 
             // if continuationToken != null, call getPurchases again
@@ -304,10 +312,22 @@ public class PreferencesFragment extends PreferenceFragment {
 
     }
 
+
+    private void storeWeatherDataPurchase(boolean isPurchased) {
+        purchased_weather_data = isPurchased;
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("purchasedWeatherData", isPurchased);
+        editor.apply();
+        Log.i(TAG, String.format("purchasedWeatherData = %b", isPurchased));
+    }
+
+
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
         enablePreference("useRadioAlarmClock", purchased_web_radio);
         enablePreference("radioStreamURLUI", purchased_web_radio);
+
 
         if (purchased_donation) {
             removePreference("donation_play");
@@ -315,6 +335,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
         if (purchased_weather_data) {
             removePreference("purchaseWeatherData");
+            removePreference("purchaseDesignPackage");
         }
 
         if (purchased_web_radio) {
@@ -334,6 +355,107 @@ public class PreferencesFragment extends PreferenceFragment {
                     REQUEST_CODE, new Intent(), 0, 0, 0);
         } catch (RemoteException | SendIntentException ignored) {
         }
+    }
+
+
+    public void showPurchaseDialog() {
+        if (purchased_donation) return;
+        List<CharSequence> entries = new ArrayList<>();
+        final List<Integer> values = new ArrayList<>();
+        HashMap<String, String> prices = getPrices();
+
+        if (!purchased_weather_data) {
+            entries.add(getProductWithPrice(prices, R.string.product_name_weather, ITEM_WEATHER_DATA));
+            values.add(PRODUCT_ID_WEATHER_DATA);
+        }
+        if (!purchased_web_radio) {
+            entries.add(getProductWithPrice(prices, R.string.product_name_webradio, ITEM_WEB_RADIO));
+            values.add(PRODUCT_ID_WEB_RADIO);
+        }
+
+        if (!purchased_pro && !purchased_weather_data && !purchased_web_radio) {
+            entries.add(getProductWithPrice(prices, R.string.product_name_pro, ITEM_PRO));
+            values.add(PRODUCT_ID_PRO);
+        }
+
+        if (!purchased_donation) {
+            entries.add(getProductWithPrice(prices, R.string.product_name_donation, ITEM_DONATION));
+            values.add(PRODUCT_ID_DONATION);
+        }
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.buy))
+                .setItems(
+                        entries.toArray(new CharSequence[entries.size()]),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                Log.i(TAG, String.format("selected %d", which));
+                                int selected = values.get(which);
+                                switch (selected) {
+                                    case PRODUCT_ID_WEATHER_DATA:
+                                        purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
+                                        break;
+                                    case PRODUCT_ID_WEB_RADIO:
+                                        purchaseIntent(ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
+                                        break;
+                                    case PRODUCT_ID_DONATION:
+                                        purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
+                                        break;
+                                    case PRODUCT_ID_PRO:
+                                        purchaseIntent(ITEM_PRO, REQUEST_CODE_PURCHASE_PRO);
+                                        break;
+                                }
+                            }
+                        })
+                .setNeutralButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private String getProductWithPrice(HashMap<String, String> prices, int resId, String sku) {
+        String price = prices.get(sku);
+        if (price != null) {
+            return String.format("%s (%s)", getResources().getString(resId), price);
+        }
+        return getResources().getString(resId);
+    }
+
+    private HashMap<String, String> getPrices() {
+        HashMap<String, String> map = new HashMap<>();
+        ArrayList skuList = new ArrayList();
+        skuList.add(ITEM_WEATHER_DATA);
+        skuList.add(ITEM_WEB_RADIO);
+        skuList.add(ITEM_DONATION);
+        skuList.add(ITEM_PRO);
+        Bundle querySkus = new Bundle();
+        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+
+        Bundle skuDetails;
+        try {
+            skuDetails = mService.getSkuDetails(3, getActivity().getPackageName(), "inapp", querySkus);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return map;
+        }
+        final int BILLING_RESPONSE_RESULT_OK = 0;
+        int response = skuDetails.getInt("RESPONSE_CODE");
+        if (response == BILLING_RESPONSE_RESULT_OK) {
+            ArrayList<String> responseList
+                    = skuDetails.getStringArrayList("DETAILS_LIST");
+
+            for (String thisResponse : responseList) {
+                try {
+                    JSONObject object = new JSONObject(thisResponse);
+                    String sku = object.getString("productId");
+                    String price = object.getString("price");
+                    map.put(sku, price);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return map;
     }
 
     public void showThankYouDialog() {
@@ -392,13 +514,15 @@ public class PreferencesFragment extends PreferenceFragment {
 
         Preference donationPreference = findPreference("donation_play");
         Preference purchaseWeatherDataPreference = findPreference("purchaseWeatherData");
+        Preference purchaseDesignPackagePreference = findPreference("purchaseDesignPackage");
         Preference purchaseWebRadioPreference = findPreference("purchaseWebRadio");
         Preference purchaseWebRadioUIPreference = findPreference("purchaseWebRadioUI");
 
-        donationPreference.setOnPreferenceClickListener(purchaseDonationPreferenceClickListener);
-        purchaseWeatherDataPreference.setOnPreferenceClickListener(purchaseWeatherDataPreferenceClickListener);
-        purchaseWebRadioPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
-        purchaseWebRadioUIPreference.setOnPreferenceClickListener(purchaseWebRadioPreferenceClickListener);
+        donationPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        purchaseWeatherDataPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        purchaseDesignPackagePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        purchaseWebRadioPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        purchaseWebRadioUIPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
 
         Preference prefHandlePower = findPreference("handle_power");
         Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
@@ -453,6 +577,7 @@ public class PreferencesFragment extends PreferenceFragment {
                             db.close();
                             addPreferencesFromResource(R.xml.preferences);
                             init();
+                            storeWeatherDataPurchase(purchased_weather_data);
                             togglePurchasePreferences();
                         }
                     }).show();
@@ -516,6 +641,7 @@ public class PreferencesFragment extends PreferenceFragment {
         else
         if (resultCode == Activity.RESULT_OK &&
                 (requestCode == REQUEST_CODE_PURCHASE_DONATION ||
+                        requestCode == REQUEST_CODE_PURCHASE_PRO ||
                     requestCode == REQUEST_CODE_PURCHASE_WEATHER ||
                     requestCode == REQUEST_CODE_PURCHASE_WEB_RADIO )) {
             Log.i(TAG, "Purchase request for " + String.valueOf(requestCode));
@@ -527,16 +653,19 @@ public class PreferencesFragment extends PreferenceFragment {
             try {
                 JSONObject jo = new JSONObject(purchaseData);
                 String sku = jo.getString("productId");
-                if (sku.equals(ITEM_DONATION) ) {
+                if (ITEM_DONATION.equals(sku)) {
                     purchased_donation = true;
-                    purchased_weather_data = true;
+                    storeWeatherDataPurchase(true);
                     purchased_web_radio = true;
                     showThankYouDialog();
-                } else
-                if (sku.equals(ITEM_WEATHER_DATA) ) {
-                    purchased_weather_data = true;
-                } else
-                if (sku.equals(ITEM_WEB_RADIO) ) {
+                } else if (ITEM_PRO.equals(sku)) {
+                    purchased_pro = true;
+                    storeWeatherDataPurchase(true);
+                    purchased_web_radio = true;
+                    showThankYouDialog();
+                } else if (ITEM_WEATHER_DATA.equals(sku)) {
+                    storeWeatherDataPurchase(true);
+                } else if (ITEM_WEB_RADIO.equals(sku)) {
                     purchased_web_radio = true;
                 }
             }
@@ -830,10 +959,10 @@ public class PreferencesFragment extends PreferenceFragment {
         return null;
     }
 
-    private void activatePurchasesIfDebuggableAndEmulator() {
-        if ( Utility.isDebuggable(mContext) && Utility.isEmulator()) {
+    private void activatePurchasesIfDebuggable() {
+        if (Utility.isDebuggable(mContext)) {
             purchased_donation = true;
-            purchased_weather_data = true;
+            storeWeatherDataPurchase(true);
             purchased_web_radio = true;
             togglePurchasePreferences();
         }

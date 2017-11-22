@@ -75,7 +75,11 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private void showStockAlarmView() {
-        if (stockAlarmView != null) return; // already visible
+        if (stockAlarmView != null) {
+            stockAlarmView.setCustomColor(accentColor, textColor);
+            stockAlarmView.setText();
+            return; // already visible
+        }
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) return;
         
         removeAllViews();

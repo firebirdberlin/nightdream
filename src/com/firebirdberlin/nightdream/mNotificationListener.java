@@ -10,8 +10,8 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
 import java.util.HashSet;
-import com.firebirdberlin.nightdream.Config;
 
 public class mNotificationListener extends NotificationListenerService {
 
@@ -55,31 +55,9 @@ public class mNotificationListener extends NotificationListenerService {
         listNotifications();
     }
 
-
-    class NLServiceReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String command = intent.getStringExtra("command");
-            if (command == null) return;
-
-            if( command.equals("clearall") ) {
-                    mNotificationListener.this.cancelAllNotifications();
-            } else
-            if ( command.equals("list") ) {
-                listNotifications();
-            } else
-            if ( command.equals("release") ) {
-                Log.d(TAG,"calling stopSelf()");
-                mNotificationListener.this.stopSelf();
-            }
-        }
-    }
-
     private void listNotifications() {
         clearNotificationUI();
-        HashSet<String> groupKeys = new HashSet<String>();
+        HashSet<String> groupKeys = new HashSet<>();
 
         StatusBarNotification[] notificationList = null;
         try {
@@ -151,6 +129,7 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void logNotification(StatusBarNotification sbn) {
+        if (sbn == null) return;
         Notification notification = sbn.getNotification();
         CharSequence title = "";
         CharSequence text = "";
@@ -171,5 +150,24 @@ public class mNotificationListener extends NotificationListenerService {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("action", "clear");
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+    }
+
+    class NLServiceReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String command = intent.getStringExtra("command");
+            if (command == null) return;
+
+            if (command.equals("clearall")) {
+                mNotificationListener.this.cancelAllNotifications();
+            } else if (command.equals("list")) {
+                listNotifications();
+            } else if (command.equals("release")) {
+                Log.d(TAG, "calling stopSelf()");
+                mNotificationListener.this.stopSelf();
+            }
+        }
     }
 }

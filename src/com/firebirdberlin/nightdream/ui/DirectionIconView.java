@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 
@@ -62,8 +61,6 @@ public class DirectionIconView extends View {
         int heigthWithoutPadding = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
 
         height = heigthWithoutPadding;
-        Log.i(TAG, "onMeasure " + String.valueOf(height) + " " + String.valueOf(getHeight()) );
-
         setMeasuredDimension(height + getPaddingLeft() + getPaddingRight(),
                 height + getPaddingTop() + getPaddingBottom());
     }
@@ -78,7 +75,6 @@ public class DirectionIconView extends View {
         int half = height / 2;
         canvas.translate((float) getPaddingLeft(), (float) getPaddingBottom());
         canvas.rotate(this.direction + 90.f, half, half);
-        Log.i(TAG, String.valueOf(this.direction));
         paint.setAntiAlias(true);
         paint.setColorFilter(colorFilter);
         paint.setColor(Color.WHITE);

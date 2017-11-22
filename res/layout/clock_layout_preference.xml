@@ -1,21 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_below="@android:id/summary"
-    android:gravity="center"
-    android:paddingTop="5dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/previewContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_below="@android:id/summary"
+    android:layout_centerHorizontal="true"
+    android:layout_centerInParent="true"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical"
+    tools:targetApi="honeycomb">
 
-    <com.firebirdberlin.nightdream.ui.ClockLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.firebirdberlin.nightdream.ui.ClockLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/clockLayout"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:animateLayoutChanges="false"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"
         android:translationX="0sp"
         android:translationY="0sp"
-        android:background="#44000000"
-        />
+        tools:targetApi="honeycomb">
+
+    </com.firebirdberlin.nightdream.ui.ClockLayout>
+
+    <TextView
+        android:id="@+id/textViewPurchaseHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:background="@color/custom_red"
+        android:rotation="0"
+        android:text="@string/product_name_weather"
+        tools:ignore="RelativeOverlap" />
 
 </RelativeLayout>

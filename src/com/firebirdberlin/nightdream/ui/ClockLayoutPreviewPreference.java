@@ -1,14 +1,19 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.os.Build;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -18,6 +23,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 public class ClockLayoutPreviewPreference extends Preference {
     private static PreviewMode previewMode = PreviewMode.DAY;
     private ClockLayout clockLayout = null;
+    private TextView textViewPurchaseHint = null;
     private View preferenceView = null;
     private Context context = null;
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
@@ -34,6 +40,10 @@ public class ClockLayoutPreviewPreference extends Preference {
         ClockLayoutPreviewPreference.previewMode = previewMode;
     }
 
+    public void invalidate() {
+        notifyChanged();
+    }
+
     @Override
     protected View onCreateView(ViewGroup parent) {
         preferenceView = super.onCreateView(parent);
@@ -47,7 +57,15 @@ public class ClockLayoutPreviewPreference extends Preference {
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 layoutInflater.inflate(R.layout.clock_layout_preference, summaryParent2, true);
 
+                RelativeLayout previewContainer = (RelativeLayout) summaryParent2.findViewById(R.id.previewContainer);
                 clockLayout = (ClockLayout) summaryParent2.findViewById(R.id.clockLayout);
+                textViewPurchaseHint = (TextView) summaryParent2.findViewById(R.id.textViewPurchaseHint);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    LayoutTransition lt = new LayoutTransition();
+                    lt.disableTransitionType(LayoutTransition.CHANGING);
+                    previewContainer.setLayoutTransition(lt);
+                }
             }
         }
 
@@ -62,8 +80,9 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     protected void updateView() {
         Settings settings = new Settings(getContext());
-
-        clockLayout.setLayout(settings.clockLayout);
+        textViewPurchaseHint.setVisibility(showPurchaseHint(settings) ? View.VISIBLE : View.GONE);
+        clockLayout.setBackgroundColor(Color.TRANSPARENT);
+        clockLayout.setLayout(settings.getClockLayoutID(true));
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
@@ -86,7 +105,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                                         - preferenceView.getPaddingRight(),
                                  config);
 
-
+        clockLayout.requestLayout();
         clockLayout.invalidate();
     }
 
@@ -96,6 +115,10 @@ public class ClockLayoutPreviewPreference extends Preference {
             entry.setFakeData();
         }
         return entry;
+    }
+
+    private boolean showPurchaseHint(Settings settings) {
+        return (!settings.purchasedWeatherData && settings.getClockLayoutID(true) > 1);
     }
 
     public enum PreviewMode {DAY, NIGHT}

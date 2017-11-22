@@ -78,7 +78,6 @@ public class Settings {
     public int background_mode = 1;
     public int clockColor;
     public int clockColorNight;
-    public int clockLayout;
     public int nightModeActivationMode;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
@@ -91,7 +90,6 @@ public class Settings {
     public int autostartTimeRangeEndInMinutes = -1;
     public int nightModeTimeRangeStartInMinutes = -1;
     public int nightModeTimeRangeEndInMinutes = -1;
-
     public long autostartTimeRangeStart = -1L; // deprecated
     public long autostartTimeRangeEnd = -1L; // deprecated
     public long nightModeTimeRangeStart = -1L; // deprecated
@@ -111,11 +109,14 @@ public class Settings {
     public String weatherCityID;
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
+    public boolean purchasedWeatherData = false;
     Context mContext;
     SharedPreferences settings;
+    private int clockLayout;
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
+
 
 
     public Settings(Context context){
@@ -172,6 +173,7 @@ public class Settings {
         nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", -1L); // deprecated
         nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", -1L); // deprecated
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
+        purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         radioStreamURL = settings.getString("radioStreamURL", "");
         radioStreamURLUI = settings.getString("radioStreamURLUI", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
@@ -211,6 +213,14 @@ public class Settings {
 
     private boolean is24HourMode() {
         return android.text.format.DateFormat.is24HourFormat(mContext);
+    }
+
+    public int getClockLayoutID(boolean preview) {
+        if (clockLayout >= 2 && !preview && !purchasedWeatherData) {
+            return 1;
+        }
+
+        return clockLayout;
     }
 
     public String getTimeFormat() {

@@ -1,33 +1,32 @@
 package com.firebirdberlin.openweathermapapi;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.content.SharedPreferences;
 import android.preference.DialogPreference;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.openweathermapapi.CityRequestTask;
 import com.firebirdberlin.openweathermapapi.models.City;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CityIDPreference extends DialogPreference
                               implements CityRequestTask.AsyncResponse {
@@ -41,7 +40,7 @@ public class CityIDPreference extends DialogPreference
     private TextView noResultsText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
-    private String textSummary;
+    private String textSummary = "";
 
     public CityIDPreference(Context ctx) {
         this(ctx, null);
@@ -58,6 +57,14 @@ public class CityIDPreference extends DialogPreference
         setValuesFromXml(attrs);
     }
 
+    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
+                                                  String name, String defaultValue) {
+        String value = attrs.getAttributeValue(namespace, name);
+        if (value == null) value = defaultValue;
+
+        return value;
+    }
+
     private void setValuesFromXml(AttributeSet attrs) {
         mContext = getContext();
         Resources res = mContext.getResources();
@@ -70,7 +77,7 @@ public class CityIDPreference extends DialogPreference
             setPositiveButtonText(android.R.string.cancel);
         }
 
-        String resSummary = getAttributeStringValue(attrs, NAMESPACE, "textSummary", null);
+        String resSummary = getAttributeStringValue(attrs, NAMESPACE, "textSummary", "");
         int resSummaryID = res.getIdentifier(resSummary, null, mContext.getPackageName());
         if (resSummaryID != 0 ) {
             textSummary = res.getString(resSummaryID);
@@ -83,14 +90,6 @@ public class CityIDPreference extends DialogPreference
         builder.setNegativeButton(null, null);
     }
 
-    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
-                                                  String name, String defaultValue) {
-        String value = attrs.getAttributeValue(namespace, name);
-        if (value == null) value = defaultValue;
-
-        return value;
-    }
-
     @Override
     protected View onCreateDialogView() {
         adapter = new ArrayAdapter<City>(mContext, android.R.layout.simple_list_item_1, cities);
@@ -98,7 +97,6 @@ public class CityIDPreference extends DialogPreference
             getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.city_id_search_dialog, null);
 
-        final CityIDPreference context = this;
         queryText = ((EditText) v.findViewById(R.id.query_string));
         spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
         cityListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
