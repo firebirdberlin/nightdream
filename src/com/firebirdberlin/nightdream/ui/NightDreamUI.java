@@ -1108,7 +1108,6 @@ public class NightDreamUI {
                showSidePanel();
             }
         }
-
     }
 
     private void showSidePanel() {
@@ -1131,7 +1130,17 @@ public class NightDreamUI {
         }
     }
 
-    private void initSidePanel() {
+    public boolean sidePanelIsHidden() {
+        if (Build.VERSION.SDK_INT > 11) {
+            float x = sidePanel.getX();
+            return (x < 0.f);
+        } else {
+            return (sidePanel.getVisibility() != View.VISIBLE);
+        }
+    }
+
+    public void initSidePanel() {
+        if (sidePanel == null) return;
         if (Build.VERSION.SDK_INT > 11) {
             sidePanel.setX(-1000f);
         } else {

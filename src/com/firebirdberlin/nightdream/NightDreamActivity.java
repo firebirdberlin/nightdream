@@ -434,6 +434,10 @@ public class NightDreamActivity extends Activity
         } else {
             weatherIcon.setVisibility(View.VISIBLE);
         }
+
+        if (nightDreamUI.sidePanelIsHidden()) {
+            nightDreamUI.initSidePanel();
+        }
     }
 
     private void setupAlarmClockIcon() {
