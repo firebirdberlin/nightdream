@@ -48,6 +48,7 @@ import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
@@ -1172,6 +1173,10 @@ public class NightDreamUI {
             blinkIfLocked();
         }
         dimScreen(0, last_ambient, settings.dim_offset);
+    }
+
+    public void onEvent(OnPowerConnected event) {
+        showAlarmClock();
     }
 
     public void blinkIfLocked() {
