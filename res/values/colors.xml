@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="custom_red">#A30000</color>
+    <color name="blue">#3498db</color>
+
 </resources>

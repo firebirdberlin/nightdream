@@ -157,6 +157,7 @@ public class PreferencesFragment extends PreferenceFragment {
                         case "useDeviceLock":
                             setupDeviceAdministratorPermissions(sharedPreferences);
                             break;
+                        case "handle_power":
                         case "standbyEnabledWhileConnected":
                         case "standbyEnabledWhileDisconnected":
                             setupStandByService(sharedPreferences);
@@ -423,6 +424,8 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private HashMap<String, String> getPrices() {
         HashMap<String, String> map = new HashMap<>();
+        if (mService == null) return map;
+
         ArrayList skuList = new ArrayList();
         skuList.add(ITEM_WEATHER_DATA);
         skuList.add(ITEM_WEB_RADIO);
@@ -854,9 +857,10 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
-        //if (!isAdded()) return;
-        boolean on = sharedPreferences.getBoolean("standbyEnabledWhileConnected", false) ||
-                         sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false);
+        boolean on = ((sharedPreferences.getBoolean("handle_power", false) &&
+                sharedPreferences.getBoolean("standbyEnabledWhileConnected", false))
+                || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false)
+        );
         int newState = on ?
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;

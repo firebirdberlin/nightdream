@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.media.audiofx.BassBoost;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +24,13 @@ public class WeatherForecastActivity extends Activity
     final static String TAG = "WeatherForecastActivity";
 
     private LinearLayout scrollView = null;
+
+    public static void start(Context context, String cityID) {
+        Intent intent = new Intent(context, WeatherForecastActivity.class);
+        intent.putExtra("cityID", cityID);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +45,6 @@ public class WeatherForecastActivity extends Activity
         Intent intent = getIntent();
         String cityID = intent.getStringExtra("cityID");
         new ForecastRequestTask(this).execute(cityID);
-    }
-
-    public static void start(Context context, String cityID) {
-        Intent intent = new Intent(context, WeatherForecastActivity.class);
-        intent.putExtra("cityID", cityID);
-        context.startActivity(intent);
     }
 
     public void onRequestFinished(List<WeatherEntry> entries) {
@@ -66,8 +66,10 @@ public class WeatherForecastActivity extends Activity
             TextView dateView = new TextView(this);
             if (Build.VERSION.SDK_INT >= 23) {
                 dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
+                dateView.setTextColor(getResources().getColor(R.color.blue, null));
             } else {
                 dateView.setTextAppearance(this, android.R.style.TextAppearance_Medium);
+                dateView.setTextColor(getResources().getColor(R.color.blue));
             }
             dateView.setTypeface(null, Typeface.BOLD);
 
