@@ -35,6 +35,10 @@ public class PlaylistParser {
         return (getPlaylistFormat(url.getPath()) != null);
     }
 
+    public static boolean isPlaylistUrl(String url) {
+        return (getPlaylistFormat(url) != null);
+    }
+
     public static PlaylistInfo parsePlaylistUrl(String playlistUrl) {
 
         HttpURLConnection urlConnection = null;

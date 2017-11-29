@@ -575,7 +575,7 @@ public class RadioStreamPreference extends DialogPreference
 
                     PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
                         @Override
-                        public void onRequestFinished(PlaylistInfo result) {
+                        public void onPlaylistRequestFinished(PlaylistInfo result) {
                             progressSpinner.setVisibility(View.GONE);
 
                             if (result.valid) {
@@ -622,7 +622,7 @@ public class RadioStreamPreference extends DialogPreference
                 if (PlaylistParser.isPlaylistUrl(url)) {
                     PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
                         @Override
-                        public void onRequestFinished(PlaylistInfo result) {
+                        public void onPlaylistRequestFinished(PlaylistInfo result) {
                             progressSpinner.setVisibility(View.GONE);
 
                             final URL resultStreamUrl = validateUrlInput(result.streamUrl);

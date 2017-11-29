@@ -3,15 +3,11 @@ package com.firebirdberlin.radiostreamapi;
 import android.os.AsyncTask;
 
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
-import com.firebirdberlin.radiostreamapi.models.RadioStation;
-
-import java.net.URL;
-import java.util.List;
 
 public class PlaylistRequestTask extends AsyncTask<String, Void, PlaylistInfo> {
 
     public interface AsyncResponse {
-        public void onRequestFinished(PlaylistInfo result);
+        public void onPlaylistRequestFinished(PlaylistInfo result);
     }
 
     private AsyncResponse delegate = null;
@@ -28,6 +24,6 @@ public class PlaylistRequestTask extends AsyncTask<String, Void, PlaylistInfo> {
 
     @Override
     protected void onPostExecute(PlaylistInfo result) {
-        delegate.onRequestFinished(result);
+        delegate.onPlaylistRequestFinished(result);
     }
 }
