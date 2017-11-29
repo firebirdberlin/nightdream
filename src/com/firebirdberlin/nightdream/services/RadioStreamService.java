@@ -183,6 +183,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         if ( PlaylistParser.isPlaylistUrl(streamURL) ) {
             resolveStreamUrlTask = new PlaylistRequestTask(this);
+            resolveStreamUrlTask.execute(streamURL);
         } else {
             statusCheckTask = new HttpStatusCheckTask(this);
             statusCheckTask.execute(streamURL);

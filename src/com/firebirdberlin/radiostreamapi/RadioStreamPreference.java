@@ -2,10 +2,10 @@ package com.firebirdberlin.radiostreamapi;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.telephony.TelephonyManager;
@@ -50,15 +50,12 @@ public class RadioStreamPreference extends DialogPreference
     private final static String TAG = "NightDream.RadioStreamPreference";
     private Context mContext = null;
     private EditText queryText = null;
-    private String selectedStream;
     private ArrayList<RadioStation> stations = new ArrayList<RadioStation>();
     private ArrayList<String> stationTexts = new ArrayList<String>();
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
     private TextView directInputHintText;
-    private EditText directInputUrl = null;
-    private EditText directInputDescription = null;
     private TextView noDataConnectionText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
@@ -116,7 +113,6 @@ public class RadioStreamPreference extends DialogPreference
         noResultsText = (TextView) v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
         directInputHintText = (TextView) v.findViewById(R.id.direct_input_hint);
-        //directInputHintText.setVisibility(View.GONE);
         directInputHintText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,6 +199,16 @@ public class RadioStreamPreference extends DialogPreference
         initCountrySpinner();
 
         return v;
+    }
+
+    @Override
+    protected void showDialog(Bundle state) {
+        super.showDialog(state);
+
+        RadioStation station = getPersistedRadioStation();
+        if (station.isUserDefinedStreamUrl) {
+            showManualInputDialog();
+        }
     }
 
     private void startSearch() {
@@ -629,7 +635,7 @@ public class RadioStreamPreference extends DialogPreference
                             if (result.valid && resultStreamUrl != null) {
                                 String stationName = getStationName(description, result.description, resultStreamUrl);
                                 int bitrate = (result.bitrateHint != null ? result.bitrateHint.intValue() : 0);
-                                persistAndDisnmissDialog(manualInputDialog, stationName, result.streamUrl, bitrate);
+                                persistAndDisnmissDialog(manualInputDialog, stationName, urlString, bitrate);
                             } else {
                                 showUrlErrorMessage(invalidUrlMessage);
                             }
@@ -681,12 +687,13 @@ public class RadioStreamPreference extends DialogPreference
 
     private RadioStation createRadioStation(String name, String streamUrl, int bitrate) {
         RadioStation station = new RadioStation();
-        station.isManualInput = true;
+        station.isUserDefinedStreamUrl = true;
         station.isOnline = true;
         station.name = name;
         station.stream = streamUrl;
         station.bitrate = bitrate;
         station.countryCode = ""; // empty string, otherwise invalid json
+        station.isUserDefinedStreamUrl = true;
         return station;
     }
 
