@@ -508,6 +508,7 @@ public class RadioStreamPreference extends DialogPreference
     private void showManualInputDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
         builder.setTitle(R.string.radio_stream_manual_input_hint);
 
         LayoutInflater inflater = (LayoutInflater)
@@ -518,16 +519,21 @@ public class RadioStreamPreference extends DialogPreference
         final EditText inputDescription = (EditText) v.findViewById(R.id.radio_stream_manual_input_description);
         final ContentLoadingProgressBar progressSpinner = (ContentLoadingProgressBar) v.findViewById(R.id.radio_stream_manual_input_progress_bar);
 
+        RadioStation persistedRadioStation = getPersistedRadioStation();
+        if (persistedRadioStation != null) {
+            inputUrl.setText(persistedRadioStation.stream);
+            inputDescription.setText(persistedRadioStation.name);
+        }
+
         // test plain stream url + description
         //inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
         //inputDescription.setText("Radio Berlin 88,8");
 
         // test playlist
         //inputUrl.setText("http://www.radioberlin.de/live.m3u");
-        inputUrl.setText("http://www.radioberlin.de/live.pls");
+        //inputUrl.setText("http://www.radioberlin.de/live.pls");
 
         final TextView invalidUrlMessage = (TextView) v.findViewById(R.id.invalid_url);
-        invalidUrlMessage.setText(R.string.radio_stream_invalid_url); //reset to default error message
         invalidUrlMessage.setVisibility(View.GONE);
 
         // hide error message when url is edited
@@ -550,227 +556,155 @@ public class RadioStreamPreference extends DialogPreference
         inputUrl.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    // when url input field looses focus and is a playlist url (m3u, pls), start the validation,
-                    // retrieve stream description and put it into the description field
-                    final String urlString = inputUrl.getText().toString();
-                    final String description = inputDescription.getText().toString();
-                    boolean networkConnection = Utility.hasNetworkConnection(mContext);
+                if (hasFocus) {
+                    return;
+                }
+                // when url input field looses focus and is a playlist url (m3u, pls), start the validation,
+                // retrieve stream description and put it into the description field
+                final String urlString = inputUrl.getText().toString();
+                final String description = inputDescription.getText().toString();
 
-                    if (urlString != null && !urlString.isEmpty()) {
-                        final URL url = validateUrlInput(urlString);
-                        if (networkConnection && url != null) {
+                if (!description.isEmpty()) {
+                    return;
+                }
 
-                            if (PlaylistParser.isPlaylistUrl(url)) {
-                                // display progress spinner before url validation starts
-                                progressSpinner.setVisibility(View.VISIBLE);
+                boolean networkConnection = Utility.hasNetworkConnection(mContext);
+                final URL url = validateUrlInput(urlString);
+                if (networkConnection && url != null && PlaylistParser.isPlaylistUrl(url)) {
+                    progressSpinner.setVisibility(View.VISIBLE);
 
-                                PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
-                                    @Override
-                                    public void onRequestFinished(PlaylistInfo result) {
+                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                        @Override
+                        public void onRequestFinished(PlaylistInfo result) {
+                            progressSpinner.setVisibility(View.GONE);
 
-                                        // hide progress spinner
-                                        progressSpinner.setVisibility(View.GONE);
-
-                                        if (result.valid) {
-
-                                            if (result.description != null && !result.description.isEmpty()) {
-                                                inputDescription.setText(result.description);
-                                            }
-
-                                        } else {
-                                            showUrlErrorMessage(invalidUrlMessage, result.error);
-                                        }
-
-                                    }
-                                };
-
-                                // start background task that checks the playlist
-                                new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                            if (result.valid) {
+                                String stationName = getStationName(description, result.description, url);
+                                inputDescription.setText(stationName);
+                            } else {
+                                showUrlErrorMessage(invalidUrlMessage);
                             }
                         }
-                    }
-
-                    progressSpinner.setVisibility(View.VISIBLE);
+                    };
+                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
                 }
             }
         });
 
         builder.setView(v);
-
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface manualInputDialog, int which) {
-                // do nothing here, but below
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setPositiveButton(android.R.string.ok, null);
+        builder.setNeutralButton(android.R.string.cancel, null);
 
         final AlertDialog manualInputDialog = builder.create();
-        manualInputDialog.show();
         // set OK button click handler here, so closing of the dialog can be prevented if invalid url was entered
+        manualInputDialog.show();
         manualInputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String urlString = inputUrl.getText().toString();
-                final String enteredDescription = inputDescription.getText().toString();
+                final String description = inputDescription.getText().toString();
+
+                final URL url = validateUrlInput(urlString);
+                if (url == null) {
+                    showUrlErrorMessage(invalidUrlMessage);
+                    return;
+                }
 
                 boolean networkConnection = Utility.hasNetworkConnection(mContext);
+                if (!networkConnection) {
+                    invalidUrlMessage.setText(R.string.radio_stream_no_internet);
+                    invalidUrlMessage.setVisibility(View.VISIBLE);
+                    return;
+                }
 
-                if (urlString != null && !urlString.isEmpty()) {
-                    final URL url = validateUrlInput(urlString);
-                    if (url != null) {
+                progressSpinner.setVisibility(View.VISIBLE);
 
-                        if (networkConnection) {
+                if (PlaylistParser.isPlaylistUrl(url)) {
+                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                        @Override
+                        public void onRequestFinished(PlaylistInfo result) {
+                            progressSpinner.setVisibility(View.GONE);
 
-                            // display progress spinner before url validation starts
-                            progressSpinner.setVisibility(View.VISIBLE);
-
-                            if (PlaylistParser.isPlaylistUrl(url)) {
-
-                                Log.e(TAG, "is playlist");
-
-                                PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
-                                    @Override
-                                    public void onRequestFinished(PlaylistInfo result) {
-
-                                        // hide progress spinner
-                                        progressSpinner.setVisibility(View.GONE);
-
-                                        if (result.valid) {
-
-                                            final URL resultStreamUrl = validateUrlInput(result.streamUrl);
-
-                                            if (resultStreamUrl != null) {
-
-                                                // TODO check if the stream itself is reachable?
-
-                                                RadioStation station = new RadioStation();
-                                                station.isManualInput = true;
-                                                station.isOnline = true;
-                                                // use manually entered/edited description, and if empty the stream description
-                                                String stationName;
-                                                if (enteredDescription != null && !enteredDescription.trim().isEmpty()) {
-                                                    stationName = enteredDescription.trim();
-                                                } else if (result.description != null && !result.description.trim().isEmpty()) {
-                                                    stationName = result.description;
-                                                } else {
-                                                    stationName = resultStreamUrl.getHost();
-                                                }
-
-                                                station.name = stationName;
-                                                station.stream = result.streamUrl;
-                                                station.bitrate = (result.bitrateHint != null ? result.bitrateHint.intValue() : 0);
-                                                station.countryCode = ""; // empty string, otherwise invalid json
-                                                persistRadioStation(station);
-                                                setSummary(station.stream);
-
-                                                // close this dialog
-                                                manualInputDialog.dismiss();
-
-                                                //also finish parent dialog (RadioStreamPreference)
-                                                notifyChanged();
-                                                getDialog().dismiss();
-
-                                            } else {
-                                                showUrlErrorMessage(invalidUrlMessage, PlaylistInfo.Error.INVALID_CONTENT);
-                                            }
-
-                                        } else {
-                                            showUrlErrorMessage(invalidUrlMessage, result.error);
-                                        }
-
-                                    }
-                                };
-
-                                // start background task that checks the playlist
-                                new PlaylistRequestTask(playListResponseListener).execute(urlString);
-
-
+                            final URL resultStreamUrl = validateUrlInput(result.streamUrl);
+                            if (result.valid && resultStreamUrl != null) {
+                                String stationName = getStationName(description, result.description, resultStreamUrl);
+                                int bitrate = (result.bitrateHint != null ? result.bitrateHint.intValue() : 0);
+                                persistAndDisnmissDialog(manualInputDialog, stationName, result.streamUrl, bitrate);
                             } else {
-
-                                // its a plain stream url
-
-                                StreamURLAvailabilityCheckTask.AsyncResponse streamCheckResponseListener = new StreamURLAvailabilityCheckTask.AsyncResponse() {
-                                    @Override
-                                    public void onRequestFinished(Boolean result) {
-
-                                        // hide progress spinner
-                                        progressSpinner.setVisibility(View.GONE);
-
-                                        if (result != null && result.booleanValue()) {
-
-                                            //stream url is valid
-
-                                            RadioStation station = new RadioStation();
-                                            station.isManualInput = true;
-                                            station.isOnline = true;
-                                            // if optional description is left empty, use the url host name as description
-                                            station.name = (enteredDescription != null && !enteredDescription.isEmpty() ? enteredDescription : url.getHost());
-                                            station.stream = urlString;
-                                            station.bitrate = 0;
-                                            station.countryCode = ""; // empty string, otherwise invalid json
-                                            persistRadioStation(station);
-                                            setSummary(station.stream);
-
-                                            // close this dialog
-                                            manualInputDialog.dismiss();
-
-                                            //also finish parent dialog (RadioStreamPreference)
-                                            notifyChanged();
-                                            getDialog().dismiss();
-
-                                        } else {
-
-                                            // invalid, show error message
-                                            showUrlErrorMessage(invalidUrlMessage, PlaylistInfo.Error.UNREACHABLE_URL);
-                                        }
-
-                                    }
-                                };
-
-                                // start background task that checks if the plain stream url is reachable
-                                new StreamURLAvailabilityCheckTask(streamCheckResponseListener).execute(urlString);
+                                showUrlErrorMessage(invalidUrlMessage);
                             }
 
-
-
-                        } else {
-                            // no network connection to check the stream itself or read the playlist
-                            invalidUrlMessage.setText(R.string.radio_stream_no_internet);
-                            invalidUrlMessage.setVisibility(View.VISIBLE);
                         }
-                    }
-                } else {
-                    invalidUrlMessage.setVisibility(View.VISIBLE);
+                    };
+                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                } else { // its a plain stream url
+                    StreamURLAvailabilityCheckTask.AsyncResponse streamCheckResponseListener = new StreamURLAvailabilityCheckTask.AsyncResponse() {
+                        @Override
+                        public void onRequestFinished(Boolean result) {
+                            progressSpinner.setVisibility(View.GONE);
+                            if (result != null && result) {
+                                String name = (description != null && !description.isEmpty() ? description : url.getHost());
+                                persistAndDisnmissDialog(manualInputDialog, name, urlString, 0);
+                            } else {
+                                showUrlErrorMessage(invalidUrlMessage);
+                            }
+                        }
+                    };
+                    new StreamURLAvailabilityCheckTask(streamCheckResponseListener).execute(urlString);
                 }
+
             }
 
         });
     }
 
-    private void showUrlErrorMessage(TextView invalidUrlMessage, PlaylistInfo.Error error) {
-        if (error != null && error == PlaylistInfo.Error.UNREACHABLE_URL) {
-            invalidUrlMessage.setText(R.string.radio_stream_unreachable_url);
+    private void persistAndDisnmissDialog(final AlertDialog dialog, String name, String urlString, int bitrate) {
+        RadioStation station = createRadioStation(name, urlString, bitrate);
+        persistRadioStation(station);
+
+        dialog.dismiss();
+        //also finish parent dialog (RadioStreamPreference)
+        notifyChanged();
+        getDialog().dismiss();
+
+    }
+
+    private String getStationName(String manualInput, String autoInput, URL streamURL) {
+        if (manualInput != null && !manualInput.trim().isEmpty()) {
+            return manualInput.trim();
+        } else if (autoInput != null && !autoInput.trim().isEmpty()) {
+            return autoInput.trim();
         } else {
-            invalidUrlMessage.setText(R.string.radio_stream_invalid_url);
+            return streamURL.getHost();
         }
+    }
+
+    private RadioStation createRadioStation(String name, String streamUrl, int bitrate) {
+        RadioStation station = new RadioStation();
+        station.isManualInput = true;
+        station.isOnline = true;
+        station.name = name;
+        station.stream = streamUrl;
+        station.bitrate = bitrate;
+        station.countryCode = ""; // empty string, otherwise invalid json
+        return station;
+    }
+
+    private void showUrlErrorMessage(TextView invalidUrlMessage) {
+        invalidUrlMessage.setText(R.string.radio_stream_unreachable_url);
         invalidUrlMessage.setVisibility(View.VISIBLE);
     }
 
     private URL validateUrlInput(String urlString) {
+        if ( urlString == null || urlString.isEmpty() ) {
+            return null;
+        }
         try {
             URL url = new URL(urlString);
             // todo: check if stream is online/reachable?
             return url;
         } catch (MalformedURLException e) {
-
+            return null;
         }
-        return null;
     }
 }

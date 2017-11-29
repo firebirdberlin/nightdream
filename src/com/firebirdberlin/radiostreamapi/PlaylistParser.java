@@ -19,8 +19,8 @@ public class PlaylistParser {
 
     private static String TAG = "NightDream.PlaylistParser";
 
-    private static int READ_TIMEOUT = 10000;
-    private static int CONNECT_TIMEOUT = 10000;
+    private static int READ_TIMEOUT = 3000;
+    private static int CONNECT_TIMEOUT = 3000;
 
     private static final String M3U_EXT_FILE_HEADER = "#EXTM3U";
     private static final String M3U_EXT_INFO_PREFIX = "#EXTINF:";
@@ -32,7 +32,6 @@ public class PlaylistParser {
     private static final Integer[] USUAL_BITRATES = new Integer[] { 64, 96, 128, 192, 256};
 
     public static boolean isPlaylistUrl(URL url) {
-
         return (getPlaylistFormat(url.getPath()) != null);
     }
 
@@ -91,35 +90,18 @@ public class PlaylistParser {
     }
 
     public static boolean checkStreamURLAvailability(String urlString) {
-
         HttpURLConnection urlConnection = null;
         try {
-
             URL url = new URL(urlString);
             urlConnection = (HttpURLConnection) url.openConnection();
 
-            urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(READ_TIMEOUT);
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
 
-            urlConnection.setDoOutput(true);
-
-            urlConnection.connect();
-
             int responseCode = urlConnection.getResponseCode();
-            urlConnection.disconnect();
-            if ( responseCode == 200 ) {
-                return true;
-            } else {
-                Log.e(TAG, "status code " + responseCode);
-                return false;
-            }
-
-        }
-        catch (SocketTimeoutException e) {
-            Log.e(TAG, "Http Timeout");
-        }
-        catch (Exception e) {
+            Log.d(TAG, "status code " + responseCode);
+            return ( responseCode == 200 );
+        } catch (IOException e) {
             Log.e(TAG, Log.getStackTraceString(e));
         } finally {
             if (urlConnection != null) {

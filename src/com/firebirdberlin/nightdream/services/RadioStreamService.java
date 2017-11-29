@@ -150,7 +150,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         String action = intent.getAction();
         if (ACTION_START.equals(action)) {
-
             alarmIsRunning = true;
             streamingMode = StreamingMode.ALARM;
             currentStreamType = AudioManager.STREAM_ALARM;
