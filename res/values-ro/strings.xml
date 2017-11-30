@@ -17,7 +17,6 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">Despre</string>
-<string name="alarm">Alarmă</string>
 <string name="alarmFadeIn">Volumul crescendo</string>
 <string name="alarmVolume">Volum</string>
 <string name="allow_screen_off_summary">Inchide ecranul pe timpul noptii</string>
@@ -71,13 +70,13 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">Ascunde imaginea de fundal în modul noapte</string>
 <string name="hour">ora</string>
 <string name="location_time">Timp - locatie</string>
-<string name="message_no_data_connection">Fara conexiune</string>
 <string name="message_mobile_data_connection">Date mobil</string>
+<string name="message_no_data_connection">Fara conexiune</string>
 <string name="minute">min</string>
 <string name="mute_ringer">Sonerie muta</string>
-<string name="night_mode">Mod noapte</string>
-<string name="night_mode_activation_mode">Modul Activare</string>
 <string name="night_mode_activation_auto">Automat</string>
+<string name="night_mode_activation_mode">Modul Activare</string>
+<string name="night_mode">Mod noapte</string>
 <string name="noise_sensitivity">Sensibilitate microfon</string>
 <string name="notification_alarm">Apasă pentru a oprire alarmă</string>
 <string name="other_apps">Alte aplicații</string>
@@ -114,8 +113,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_weather">Arata vremea locala</string>
 <string name="show_wind_speed">Viteza vântului</string>
 <string name="speedUnit">Unitate viteza vântului</string>
-<string name="titlePrivacyPolicy">Licenta Politica</string>
 <string name="temperatureUnit">Unitate temperatura</string>
+<string name="titlePrivacyPolicy">Licenta Politica</string>
 <string name="translations">Traduceri</string>
 <string name="typeface_7_segment">LED 7-segmente</string>
 <string name="typeface_roboto_condensed">Roboto condensat</string>
