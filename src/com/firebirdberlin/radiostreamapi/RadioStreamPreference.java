@@ -1,55 +1,58 @@
 package com.firebirdberlin.radiostreamapi;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.radiostreamapi.models.Country;
+import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 public class RadioStreamPreference extends DialogPreference
-                                   implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse {
-    private final static String TAG = "NightDream.RadioStreamPreference";
+        implements StationRequestTask.AsyncResponse,
+        CountryRequestTask.AsyncResponse {
+    private final static String TAG = "RadioStreamPreference";
     private Context mContext = null;
     private EditText queryText = null;
-    private String selectedStream;
-    private ArrayList<RadioStation> stations = new ArrayList<RadioStation>();
-    private ArrayList<String> stationTexts = new ArrayList<String>();
+    private ArrayList<RadioStation> stations = new ArrayList<>();
+    private ArrayList<String> stationTexts = new ArrayList<>();
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
@@ -66,15 +69,15 @@ public class RadioStreamPreference extends DialogPreference
     public RadioStreamPreference(Context ctx, AttributeSet attrs) {
         this(ctx, attrs, android.R.attr.dialogPreferenceStyle);
         mContext = getContext();
-        setValuesFromXml(attrs);
+        init();
     }
 
     public RadioStreamPreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
-        setValuesFromXml(attrs);
+        init();
     }
 
-    private void setValuesFromXml(AttributeSet attrs) {
+    private void init() {
         mContext = getContext();
         setNegativeButtonText(android.R.string.cancel);
     }
@@ -85,37 +88,40 @@ public class RadioStreamPreference extends DialogPreference
         builder.setPositiveButton(null, null);
     }
 
-    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
-                                                  String name, String defaultValue) {
-        String value = attrs.getAttributeValue(namespace, name);
-        if (value == null) value = defaultValue;
-
-        return value;
-    }
-
     @Override
     protected View onCreateDialogView() {
         updateDisplayedRadioStationTexts();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, stationTexts);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, stationTexts);
 
         LayoutInflater inflater = (LayoutInflater)
             getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.radio_stream_dialog, null);
 
-        final RadioStreamPreference context = this;
         queryText = ((EditText) v.findViewById(R.id.query_string));
         spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
         stationListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
         countrySpinner = (Spinner) v.findViewById(R.id.countrySpinner);
         noResultsText = (TextView) v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
+        Button directInputHintText = (Button) v.findViewById(R.id.direct_input_hint);
+        directInputHintText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showManualInputDialog();
+            }
+        });
+
         noDataConnectionText = (TextView) v.findViewById(R.id.no_data_connection);
         noDataConnectionText.setVisibility(View.GONE);
-        //for german and english display this text in parantheses, otherwise the default message_no_data_connection is displayed
-        if ("de".equals(Locale.getDefault().getLanguage()) || "en".equals(Locale.getDefault().getLanguage())) {
+        String lang = Locale.getDefault().getLanguage();
+        if ("de".equals(lang) || "en".equals(lang)) {
+            // For German and English display this text in parentheses, otherwise the default
+            // message_no_data_connection is displayed
             try {
-                noDataConnectionText.setText(String.format("(%s)", mContext.getResources().getString(R.string.message_no_data_connection)));
+                noDataConnectionText.setText(String.format("(%s)",
+                        mContext.getResources().getString(R.string.message_no_data_connection)));
             } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
             }
         }
 
@@ -189,10 +195,20 @@ public class RadioStreamPreference extends DialogPreference
         return v;
     }
 
+    @Override
+    protected void showDialog(Bundle state) {
+        super.showDialog(state);
+
+        RadioStation station = getPersistedRadioStation();
+        if (station != null && station.isUserDefinedStreamUrl) {
+            showManualInputDialog();
+        }
+    }
+
     private void startSearch() {
 
         String query = queryText.getText().toString().trim();
-        if (query == null || query.isEmpty()) {
+        if (query.isEmpty()) {
             return;
         }
 
@@ -216,7 +232,6 @@ public class RadioStreamPreference extends DialogPreference
         this.stations.clear();
         this.stations.addAll(stations);
         updateDisplayedRadioStationTexts();
-        //Log.i(TAG, String.format("Request finished with %d entries", this.stations.size()));
         ((ArrayAdapter) stationListView.getAdapter()).notifyDataSetChanged();
         spinner.hide();
         stationListView.setVisibility((stations.size() == 0) ? View.GONE : View.VISIBLE);
@@ -230,7 +245,6 @@ public class RadioStreamPreference extends DialogPreference
 
     @Override
     public void onCountryRequestFinished(List<Country> countries) {
-        //Log.i(TAG, "found " + countries.size() + " countries.");
         // sort countries alphabetically
         Collections.sort(countries, new Comparator<Country>() {
             @Override
@@ -263,10 +277,11 @@ public class RadioStreamPreference extends DialogPreference
 
     @Override
     public CharSequence getSummary () {
+
         RadioStation station = getPersistedRadioStation();
         if (station != null && station.name != null && !station.name.isEmpty()) {
 
-            final boolean hasCountry = (station.countryCode != null);
+            final boolean hasCountry = (station.countryCode != null && !station.countryCode.isEmpty());
             final boolean hasBitrate = (station.bitrate > 0);
             String summary;
             if (hasCountry && hasBitrate) {
@@ -297,7 +312,7 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     private void updateCountryNameToCodeMap(List<Country> countries) {
-        countryNameToCodeMap = new HashMap<String, String>();
+        countryNameToCodeMap = new HashMap<>();
         for (Country c : countries) {
             countryNameToCodeMap.put(c.name, c.countryCode);
         }
@@ -357,15 +372,14 @@ public class RadioStreamPreference extends DialogPreference
             }
         }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, countryList);
 
         // select as default: first preferred country, and "any country"
         if (selectedItemIndex == -1 && !countryList.isEmpty()) {
-            selectedItemIndex = (!preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
+            selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
         }
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
@@ -374,7 +388,7 @@ public class RadioStreamPreference extends DialogPreference
 
     private List<String> getPreferredCountryCodes() {
 
-        List<String> preferredCountryCodes = new ArrayList<String>();
+        List<String> preferredCountryCodes = new ArrayList<>();
 
         try {
             TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
@@ -386,7 +400,7 @@ public class RadioStreamPreference extends DialogPreference
                 //Log.i(TAG, "iso country code is " + locale);
             }
         } catch (Throwable t) {
-
+            t.printStackTrace();
         }
 
         String locale = mContext.getResources().getConfiguration().locale.getCountry();
@@ -462,7 +476,7 @@ public class RadioStreamPreference extends DialogPreference
             SharedPreferences prefs = getSharedPreferences();
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putString(jsonKey(), json);
-            prefEditor.commit();
+            prefEditor.apply();
         } catch (JSONException e) {
             Log.e(TAG, "error converting station to json", e);
         }
@@ -475,8 +489,7 @@ public class RadioStreamPreference extends DialogPreference
         String json = prefs.getString(jsonKey(),  null);
         if (json != null) {
             try {
-                RadioStation s = RadioStation.fromJson(json);
-                return s;
+                return RadioStation.fromJson(json);
             } catch (JSONException e) {
                 Log.e(TAG, "error converting json to station", e);
             }
@@ -486,4 +499,205 @@ public class RadioStreamPreference extends DialogPreference
 
     }
 
+    private void showManualInputDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle(R.string.radio_stream_manual_input_hint);
+
+        LayoutInflater inflater = (LayoutInflater)
+                getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(R.layout.radio_stream_manual_input_dialog, null);
+
+        final EditText inputUrl = (EditText) v.findViewById(R.id.radio_stream_manual_input_url);
+        final EditText inputDescription = (EditText) v.findViewById(R.id.radio_stream_manual_input_description);
+        final ContentLoadingProgressBar progressSpinner = (ContentLoadingProgressBar) v.findViewById(R.id.radio_stream_manual_input_progress_bar);
+
+        RadioStation persistedRadioStation = getPersistedRadioStation();
+        if (persistedRadioStation != null) {
+            inputUrl.setText(persistedRadioStation.stream);
+            inputDescription.setText(persistedRadioStation.name);
+        }
+
+        // test plain stream url + description
+        //inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
+        //inputDescription.setText("Radio Berlin 88,8");
+
+        // test playlist
+        //inputUrl.setText("http://www.radioberlin.de/live.m3u");
+        //inputUrl.setText("http://www.radioberlin.de/live.pls");
+
+        final TextView invalidUrlMessage = (TextView) v.findViewById(R.id.invalid_url);
+        invalidUrlMessage.setVisibility(View.GONE);
+
+        // hide error message when url is edited
+        inputUrl.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                invalidUrlMessage.setVisibility(View.GONE);
+            }
+        });
+
+        inputUrl.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    return;
+                }
+                // when url input field looses focus and is a playlist url (m3u, pls), start the validation,
+                // retrieve stream description and put it into the description field
+                final String urlString = inputUrl.getText().toString();
+                final String description = inputDescription.getText().toString();
+
+                if (!description.isEmpty()) {
+                    return;
+                }
+
+                boolean networkConnection = Utility.hasNetworkConnection(mContext);
+                final URL url = validateUrlInput(urlString);
+                if (networkConnection && url != null && PlaylistParser.isPlaylistUrl(url)) {
+                    progressSpinner.setVisibility(View.VISIBLE);
+
+                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                        @Override
+                        public void onPlaylistRequestFinished(PlaylistInfo result) {
+                            progressSpinner.setVisibility(View.GONE);
+
+                            if (result.valid) {
+                                String stationName = getStationName(description, result.description, url);
+                                inputDescription.setText(stationName);
+                            } else {
+                                showUrlErrorMessage(invalidUrlMessage);
+                            }
+                        }
+                    };
+                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                }
+            }
+        });
+
+        builder.setView(v);
+        builder.setPositiveButton(android.R.string.ok, null);
+        builder.setNeutralButton(android.R.string.cancel, null);
+
+        final AlertDialog manualInputDialog = builder.create();
+        // set OK button click handler here, so closing of the dialog can be prevented if invalid url was entered
+        manualInputDialog.show();
+        manualInputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String urlString = inputUrl.getText().toString();
+                final String description = inputDescription.getText().toString();
+
+                final URL url = validateUrlInput(urlString);
+                if (url == null) {
+                    showUrlErrorMessage(invalidUrlMessage);
+                    return;
+                }
+
+                boolean networkConnection = Utility.hasNetworkConnection(mContext);
+                if (!networkConnection) {
+                    invalidUrlMessage.setText(R.string.message_no_data_connection);
+                    invalidUrlMessage.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                progressSpinner.setVisibility(View.VISIBLE);
+
+                if (PlaylistParser.isPlaylistUrl(url)) {
+                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                        @Override
+                        public void onPlaylistRequestFinished(PlaylistInfo result) {
+                            progressSpinner.setVisibility(View.GONE);
+
+                            final URL resultStreamUrl = validateUrlInput(result.streamUrl);
+                            if (result.valid && resultStreamUrl != null) {
+                                String stationName = getStationName(description, result.description, resultStreamUrl);
+                                int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
+                                persistAndDismissDialog(manualInputDialog, stationName, urlString, bitrate);
+                            } else {
+                                showUrlErrorMessage(invalidUrlMessage);
+                            }
+
+                        }
+                    };
+                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                } else { // its a plain stream url
+                    StreamURLAvailabilityCheckTask.AsyncResponse streamCheckResponseListener = new StreamURLAvailabilityCheckTask.AsyncResponse() {
+                        @Override
+                        public void onRequestFinished(Boolean result) {
+                            progressSpinner.setVisibility(View.GONE);
+                            if (result != null && result) {
+                                String name = (!description.isEmpty() ? description : url.getHost());
+                                persistAndDismissDialog(manualInputDialog, name, urlString, 0);
+                            } else {
+                                showUrlErrorMessage(invalidUrlMessage);
+                            }
+                        }
+                    };
+                    new StreamURLAvailabilityCheckTask(streamCheckResponseListener).execute(urlString);
+                }
+
+            }
+
+        });
+    }
+
+    private void persistAndDismissDialog(final AlertDialog dialog, String name, String urlString, int bitrate) {
+        RadioStation station = createRadioStation(name, urlString, bitrate);
+        persistRadioStation(station);
+
+        dialog.dismiss();
+        //also finish parent dialog (RadioStreamPreference)
+        notifyChanged();
+        getDialog().dismiss();
+
+    }
+
+    private String getStationName(String manualInput, String autoInput, URL streamURL) {
+        if (manualInput != null && !manualInput.trim().isEmpty()) {
+            return manualInput.trim();
+        } else if (autoInput != null && !autoInput.trim().isEmpty()) {
+            return autoInput.trim();
+        } else {
+            return streamURL.getHost();
+        }
+    }
+
+    private RadioStation createRadioStation(String name, String streamUrl, int bitrate) {
+        RadioStation station = new RadioStation();
+        station.isUserDefinedStreamUrl = true;
+        station.isOnline = true;
+        station.name = name;
+        station.stream = streamUrl;
+        station.bitrate = bitrate;
+        station.countryCode = ""; // empty string, otherwise invalid json
+        station.isUserDefinedStreamUrl = true;
+        return station;
+    }
+
+    private void showUrlErrorMessage(TextView invalidUrlMessage) {
+        invalidUrlMessage.setText(R.string.radio_stream_unreachable_url);
+        invalidUrlMessage.setVisibility(View.VISIBLE);
+    }
+
+    private URL validateUrlInput(String urlString) {
+        if ( urlString == null || urlString.isEmpty() ) {
+            return null;
+        }
+        try {
+            return new URL(urlString);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
 }
