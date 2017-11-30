@@ -46,16 +46,16 @@ import java.util.Map;
 
 
 public class RadioStreamPreference extends DialogPreference
-                                   implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse {
-    private final static String TAG = "NightDream.RadioStreamPreference";
+        implements StationRequestTask.AsyncResponse,
+        CountryRequestTask.AsyncResponse {
+    private final static String TAG = "RadioStreamPreference";
     private Context mContext = null;
     private EditText queryText = null;
-    private ArrayList<RadioStation> stations = new ArrayList<RadioStation>();
-    private ArrayList<String> stationTexts = new ArrayList<String>();
+    private ArrayList<RadioStation> stations = new ArrayList<>();
+    private ArrayList<String> stationTexts = new ArrayList<>();
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
-    private TextView directInputHintText;
     private TextView noDataConnectionText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
@@ -69,23 +69,15 @@ public class RadioStreamPreference extends DialogPreference
     public RadioStreamPreference(Context ctx, AttributeSet attrs) {
         this(ctx, attrs, android.R.attr.dialogPreferenceStyle);
         mContext = getContext();
-        setValuesFromXml(attrs);
+        init();
     }
 
     public RadioStreamPreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
-        setValuesFromXml(attrs);
+        init();
     }
 
-    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
-                                                  String name, String defaultValue) {
-        String value = attrs.getAttributeValue(namespace, name);
-        if (value == null) value = defaultValue;
-
-        return value;
-    }
-
-    private void setValuesFromXml(AttributeSet attrs) {
+    private void init() {
         mContext = getContext();
         setNegativeButtonText(android.R.string.cancel);
     }
@@ -99,35 +91,37 @@ public class RadioStreamPreference extends DialogPreference
     @Override
     protected View onCreateDialogView() {
         updateDisplayedRadioStationTexts();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, stationTexts);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, stationTexts);
 
         LayoutInflater inflater = (LayoutInflater)
             getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.radio_stream_dialog, null);
 
-        final RadioStreamPreference context = this;
         queryText = ((EditText) v.findViewById(R.id.query_string));
         spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
         stationListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
         countrySpinner = (Spinner) v.findViewById(R.id.countrySpinner);
         noResultsText = (TextView) v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
-        directInputHintText = (TextView) v.findViewById(R.id.direct_input_hint);
+        Button directInputHintText = (Button) v.findViewById(R.id.direct_input_hint);
         directInputHintText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(mContext, "Hello", Toast.LENGTH_SHORT).show();
                 showManualInputDialog();
             }
         });
 
         noDataConnectionText = (TextView) v.findViewById(R.id.no_data_connection);
         noDataConnectionText.setVisibility(View.GONE);
-        //for german and english display this text in parantheses, otherwise the default message_no_data_connection is displayed
-        if ("de".equals(Locale.getDefault().getLanguage()) || "en".equals(Locale.getDefault().getLanguage())) {
+        String lang = Locale.getDefault().getLanguage();
+        if ("de".equals(lang) || "en".equals(lang)) {
+            // For German and English display this text in parentheses, otherwise the default
+            // message_no_data_connection is displayed
             try {
-                noDataConnectionText.setText(String.format("(%s)", mContext.getResources().getString(R.string.message_no_data_connection)));
+                noDataConnectionText.setText(String.format("(%s)",
+                        mContext.getResources().getString(R.string.message_no_data_connection)));
             } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
             }
         }
 
@@ -206,7 +200,7 @@ public class RadioStreamPreference extends DialogPreference
         super.showDialog(state);
 
         RadioStation station = getPersistedRadioStation();
-        if (station.isUserDefinedStreamUrl) {
+        if (station != null && station.isUserDefinedStreamUrl) {
             showManualInputDialog();
         }
     }
@@ -214,14 +208,13 @@ public class RadioStreamPreference extends DialogPreference
     private void startSearch() {
 
         String query = queryText.getText().toString().trim();
-        if (query == null || query.isEmpty()) {
+        if (query.isEmpty()) {
             return;
         }
 
         spinner.show();
         stationListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
-        directInputHintText.setVisibility(View.GONE);
         noDataConnectionText.setVisibility(View.GONE);
 
         String country = getSelectedCountry();
@@ -239,12 +232,10 @@ public class RadioStreamPreference extends DialogPreference
         this.stations.clear();
         this.stations.addAll(stations);
         updateDisplayedRadioStationTexts();
-        //Log.i(TAG, String.format("Request finished with %d entries", this.stations.size()));
         ((ArrayAdapter) stationListView.getAdapter()).notifyDataSetChanged();
         spinner.hide();
         stationListView.setVisibility((stations.size() == 0) ? View.GONE : View.VISIBLE);
         noResultsText.setVisibility((stations.size() == 0) ? View.VISIBLE : View.GONE);
-        directInputHintText.setVisibility((stations.size() == 0) ? View.VISIBLE : View.GONE);
         if (stations.size() == 0 && !Utility.hasNetworkConnection(mContext)) {
             noDataConnectionText.setVisibility(View.VISIBLE);
         } else {
@@ -254,7 +245,6 @@ public class RadioStreamPreference extends DialogPreference
 
     @Override
     public void onCountryRequestFinished(List<Country> countries) {
-        //Log.i(TAG, "found " + countries.size() + " countries.");
         // sort countries alphabetically
         Collections.sort(countries, new Comparator<Country>() {
             @Override
@@ -322,7 +312,7 @@ public class RadioStreamPreference extends DialogPreference
     }
 
     private void updateCountryNameToCodeMap(List<Country> countries) {
-        countryNameToCodeMap = new HashMap<String, String>();
+        countryNameToCodeMap = new HashMap<>();
         for (Country c : countries) {
             countryNameToCodeMap.put(c.name, c.countryCode);
         }
@@ -382,15 +372,14 @@ public class RadioStreamPreference extends DialogPreference
             }
         }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, countryList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, countryList);
 
         // select as default: first preferred country, and "any country"
         if (selectedItemIndex == -1 && !countryList.isEmpty()) {
-            selectedItemIndex = (!preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
+            selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
         }
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
@@ -399,7 +388,7 @@ public class RadioStreamPreference extends DialogPreference
 
     private List<String> getPreferredCountryCodes() {
 
-        List<String> preferredCountryCodes = new ArrayList<String>();
+        List<String> preferredCountryCodes = new ArrayList<>();
 
         try {
             TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
@@ -411,7 +400,7 @@ public class RadioStreamPreference extends DialogPreference
                 //Log.i(TAG, "iso country code is " + locale);
             }
         } catch (Throwable t) {
-
+            t.printStackTrace();
         }
 
         String locale = mContext.getResources().getConfiguration().locale.getCountry();
@@ -487,7 +476,7 @@ public class RadioStreamPreference extends DialogPreference
             SharedPreferences prefs = getSharedPreferences();
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putString(jsonKey(), json);
-            prefEditor.commit();
+            prefEditor.apply();
         } catch (JSONException e) {
             Log.e(TAG, "error converting station to json", e);
         }
@@ -500,8 +489,7 @@ public class RadioStreamPreference extends DialogPreference
         String json = prefs.getString(jsonKey(),  null);
         if (json != null) {
             try {
-                RadioStation s = RadioStation.fromJson(json);
-                return s;
+                return RadioStation.fromJson(json);
             } catch (JSONException e) {
                 Log.e(TAG, "error converting json to station", e);
             }
@@ -618,7 +606,7 @@ public class RadioStreamPreference extends DialogPreference
 
                 boolean networkConnection = Utility.hasNetworkConnection(mContext);
                 if (!networkConnection) {
-                    invalidUrlMessage.setText(R.string.radio_stream_no_internet);
+                    invalidUrlMessage.setText(R.string.message_no_data_connection);
                     invalidUrlMessage.setVisibility(View.VISIBLE);
                     return;
                 }
@@ -634,8 +622,8 @@ public class RadioStreamPreference extends DialogPreference
                             final URL resultStreamUrl = validateUrlInput(result.streamUrl);
                             if (result.valid && resultStreamUrl != null) {
                                 String stationName = getStationName(description, result.description, resultStreamUrl);
-                                int bitrate = (result.bitrateHint != null ? result.bitrateHint.intValue() : 0);
-                                persistAndDisnmissDialog(manualInputDialog, stationName, urlString, bitrate);
+                                int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
+                                persistAndDismissDialog(manualInputDialog, stationName, urlString, bitrate);
                             } else {
                                 showUrlErrorMessage(invalidUrlMessage);
                             }
@@ -649,8 +637,8 @@ public class RadioStreamPreference extends DialogPreference
                         public void onRequestFinished(Boolean result) {
                             progressSpinner.setVisibility(View.GONE);
                             if (result != null && result) {
-                                String name = (description != null && !description.isEmpty() ? description : url.getHost());
-                                persistAndDisnmissDialog(manualInputDialog, name, urlString, 0);
+                                String name = (!description.isEmpty() ? description : url.getHost());
+                                persistAndDismissDialog(manualInputDialog, name, urlString, 0);
                             } else {
                                 showUrlErrorMessage(invalidUrlMessage);
                             }
@@ -664,7 +652,7 @@ public class RadioStreamPreference extends DialogPreference
         });
     }
 
-    private void persistAndDisnmissDialog(final AlertDialog dialog, String name, String urlString, int bitrate) {
+    private void persistAndDismissDialog(final AlertDialog dialog, String name, String urlString, int bitrate) {
         RadioStation station = createRadioStation(name, urlString, bitrate);
         persistRadioStation(station);
 
@@ -707,9 +695,7 @@ public class RadioStreamPreference extends DialogPreference
             return null;
         }
         try {
-            URL url = new URL(urlString);
-            // todo: check if stream is online/reachable?
-            return url;
+            return new URL(urlString);
         } catch (MalformedURLException e) {
             return null;
         }
