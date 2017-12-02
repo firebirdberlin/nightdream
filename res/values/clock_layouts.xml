@@ -14,6 +14,6 @@
         <item>@string/clock_layout_analog</item>
         <item>@string/clock_layout_elegant_analog</item>
         <item>@string/clock_layout_modern_analog</item>
-        <item>Mein Test</item>
+        <item>@string/clock_layout_digit_analog</item>
      </string-array>
 </resources>
