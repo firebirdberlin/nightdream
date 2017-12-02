@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--
+            time
+
+    -->
+    <com.firebirdberlin.nightdream.CustomAnalogClock4 xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/analog_clock"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="top"
+        android:background="@android:color/transparent"
+        android:padding="0px" />
+
+    <!--
+        Date
+        -->
+    <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ellipsize="none"
+        android:fontFamily="sans-serif-light"
+        android:maxLines="1"
+        android:text="Sun, 30. October 2016"
+        android:textColor="#C2C2C2"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:translationY="0px"
+        custom:format12Hr="dd. MMMM yyyy"
+        custom:format24Hr="dd. MMMM yyyy" />
+
+    <com.firebirdberlin.nightdream.ui.WeatherLayout
+        android:id="@+id/weatherLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:translationY="0px" />
+</LinearLayout>

@@ -5,6 +5,7 @@
           <item>1</item>
           <item>2</item>
          <item>3</item>
+         <item>4</item>
      </string-array>
 
 
@@ -13,5 +14,6 @@
         <item>@string/clock_layout_analog</item>
         <item>@string/clock_layout_elegant_analog</item>
         <item>@string/clock_layout_modern_analog</item>
+        <item>Mein Test</item>
      </string-array>
 </resources>
