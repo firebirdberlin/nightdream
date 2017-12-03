@@ -3,22 +3,21 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
-import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import java.util.Calendar;
 
 
 public class CustomAnalogClock4 extends CustomAnalogClock {
-    private static final String TAG = "CustomAnalogClock";
+    final boolean highlightQuarterOfHour = true;
+    final boolean emphasizeHour12 = true;
+    final boolean enableShader = false;
 
     public CustomAnalogClock4(Context context) {
         super(context);
@@ -26,6 +25,14 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
 
     public CustomAnalogClock4(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    private static float fontSizeForWidth(String dummyText, float destWidth, Paint paint) {
+        final float dummyFontSize = 48f;
+        paint.setTextSize(dummyFontSize);
+        Rect bounds = new Rect();
+        paint.getTextBounds(dummyText, 0, dummyText.length(), bounds);
+        return dummyFontSize * destWidth / bounds.width();
     }
 
     public void onDraw(Canvas canvas) {
@@ -47,25 +54,29 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         // 60min = 2PI -> min / 60 * 2PI
         double min_angle = (double) min / 30. * Math.PI - Math.PI / 2.;
 
-        paint.setAlpha(255);
-        paint.setColorFilter(customColorFilter);
-        paint.setStyle(Paint.Style.FILL);
-
         float tickStart = .95f;
         float tickEnd = .99f;
         float hourDigitStart = .85f;
 
-        drawHands(canvas, centerX, centerY, radius, hour_angle, min_angle, tickStart, tickEnd, hourDigitStart - .05f);
-
+        paint.setAlpha(255);
         paint.setColor(Color.WHITE);
 
-        drawTicks(canvas, centerX, centerY, radius, tickStart, tickEnd);
+        applyShader(paint, centerX, centerY, radius);
 
+        drawTicks(canvas, centerX, centerY, radius, tickStart, tickEnd);
         drawHourDigits(canvas, centerX, centerY, radius, hourDigitStart);
 
+        paint.setColorFilter(customColorFilter);
+        paint.setStyle(Paint.Style.FILL);
+
+        drawHands(canvas, centerX, centerY, radius, hour_angle, min_angle, tickStart,
+                hourDigitStart - .05f);
     }
 
-    private void drawHands(Canvas canvas, float centerX, float centerY, int radius, double hour_angle, double min_angle, float tickStart, float tickEnd, float hourDigitStart) {
+    private void drawHands(Canvas canvas, float centerX, float centerY, int radius,
+                           double hour_angle, double min_angle, float tickStart,
+                           float hourDigitStart) {
+        paint.setShader(null);
         // minute hand
         canvas.save();
         paint.setColorFilter(customColorFilter);
@@ -114,27 +125,38 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         canvas.drawPath(path, paint);
     }
 
+    private void applyShader(Paint paint, float centerX, float centerY, int radius) {
+        if (!enableShader) return;
+
+        int x1 = (int) (centerX - radius), y1 = (int) (centerY - radius);
+
+        float[] hsv = new float[3];
+        Color.colorToHSV(customColor, hsv);
+        hsv[2] *= 1.2f;
+        hsv[1] *= .50f;
+        int accent = Color.HSVToColor(hsv);
+
+        int colors[] = {Color.WHITE, accent};
+        float positions[] = {0.4f, 1.f};
+        Shader shader = new LinearGradient(x1, y1, centerX, centerY, colors, positions, Shader.TileMode.MIRROR);
+        paint.setShader(shader);
+    }
+
     private void drawTicks(Canvas canvas, float centerX, float centerY, int radius, float tickStart, float tickEnd) {
         // ticks
-        paint.setShader(null);
         paint.setAlpha(150);
         paint.setColorFilter(secondaryColorFilter);
 
         int width = Utility.dpToPx(context, 1.f);
         paint.setStrokeWidth(width);
-        paint.setStyle(Paint.Style.FILL); //filled circle for every fifth minute
+        paint.setStyle(Paint.Style.FILL); //filled circle for every hour
         int minuteCounter = 0;
-
-        final boolean emphasizeHour12 = false;
 
         float angleDelta = (float) Math.PI / 30f;
         float angleMax = (float) (2f * Math.PI);
         for (double angle = 0; angle < angleMax; angle += angleDelta) {
 
             boolean roundTick = (minuteCounter % 5 == 0);
-
-            //tickStart = (roundTick ? .94f : .95f);
-
             float tickStartX = (float) (centerX + tickStart * radius * Math.cos(angle));
             float tickStartY = (float) (centerY + tickStart * radius * Math.sin(angle));
             float tickEndX = (float) (centerX + tickEnd * radius * Math.cos(angle));
@@ -143,8 +165,8 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
 
             if (emphasizeHour12 && minuteCounter == 45) {
                 // for "12" digit draw a special marker
-                float triangleHeight = (float) (tickEnd - tickStart) * radius * 1.5f;
-                float triangleWidth = triangleHeight * 2f;
+                float triangleHeight = (tickEnd - tickStart) * radius * 1.2f;
+                float triangleWidth = triangleHeight * 1.2f;
                 drawTriangle(canvas, paint, tickEndX, tickEndY - triangleHeight * .1f, triangleWidth, triangleHeight);
             } else if (roundTick) {
                 float roundTickRadius = (tickEnd - tickStart) * .5f * radius;
@@ -159,7 +181,6 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
     }
 
     private void drawHourDigits(Canvas canvas, float centerX, float centerY, int radius, float hourDigitStart) {
-        //paint.setTextSize(30);
         // calculate font-size for desired text width, so digits have equal size on any device
         final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
         final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
@@ -168,7 +189,6 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         paint.setStrokeWidth(0);
 
         int digitCounter = 0;
-        boolean highlightQuarterOfHour = true;
         for (double angle = 0; angle < 2 * Math.PI; angle += Math.PI / 6) {
 
             int currentHour = (digitCounter + 2) % 12 + 1;
@@ -177,12 +197,10 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 if (currentHour % 3 == 0) {
                     // 3,6,9,12
                     paint.setColorFilter(customColorFilter);
-                    //paint.setTextSize(31);
                     paint.setTextSize(digitFontSizeBig);
                     paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
                 } else {
                     paint.setColorFilter(secondaryColorFilter);
-                    //paint.setTextSize(28);
                     paint.setTextSize(digitFontSizeSmall);
                     paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
                 }
@@ -205,43 +223,10 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
 
             canvas.drawText(currentHourText, x, y + bounds.height(), paint);
             digitCounter++;
-
-            //debug test alignment:
-            // ray
-            //float rayEndX = (float) (center.x + .93 * radius * Math.cos(angle));
-            //float rayEndY = (float) (center.y + .93 * radius * Math.sin(angle));
-            //canvas.drawLine(center.x, center.y, rayEndX, rayEndY, paint);
-            // text bounding box
-            //canvas.drawRect(x, y, x + textWidth, y + bounds.height(), paint);
-
         }
-    }
-
-    private void drawArc(Canvas canvas, int radius, double angle, float centerX, float centerY) {
-        final int[] colors = {Color.TRANSPARENT, Color.WHITE};
-        final float[] positions = {0.2f, 1.f};
-        Shader gradient = new SweepGradient(centerX, centerY, colors, positions);
-        float rotate = (float) radiansToDegrees(angle);
-        Matrix gradientMatrix = new Matrix();
-        gradientMatrix.preRotate(rotate, centerX, centerY);
-        gradient.setLocalMatrix(gradientMatrix);
-
-
-        paint.setShader(gradient);
-        canvas.drawCircle(centerX, centerY, 0.9f * radius, paint);
-        paint.setShader(null);
     }
 
     private double radiansToDegrees(double rad) {
         return rad * 180. / Math.PI;
-    }
-
-    private static float fontSizeForWidth(String dummyText, float destWidth, Paint paint) {
-        final float dummyFontSize = 48f;
-        paint.setTextSize(dummyFontSize);
-        Rect bounds = new Rect();
-        paint.getTextBounds(dummyText, 0, dummyText.length(), bounds);
-        float fontSize = dummyFontSize * destWidth / bounds.width();
-        return fontSize;
     }
 }

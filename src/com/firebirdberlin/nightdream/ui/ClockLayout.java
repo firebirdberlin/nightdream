@@ -214,7 +214,7 @@ public class ClockLayout extends LinearLayout {
             }
         } else if (layoutId == LAYOUT_ID_ANALOG) {
             setupLayoutAnalog(parentWidth, config);
-        } else if (layoutId == LAYOUT_ID_ANALOG2 || layoutId == LAYOUT_ID_ANALOG3) {
+        } else {
             setupLayoutAnalog2(parentWidth, config);
         }
 
