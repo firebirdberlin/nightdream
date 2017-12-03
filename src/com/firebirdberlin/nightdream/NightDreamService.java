@@ -1,7 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import java.util.Calendar;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,21 +15,22 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import de.greenrobot.event.EventBus;
 
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
+import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.ui.AlarmClock;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
+
+import java.util.Calendar;
+
+import de.greenrobot.event.EventBus;
 
 
 public class NightDreamService extends DreamService implements View.OnTouchListener,
@@ -43,7 +42,25 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     SensorManager sensorManager;
     Sensor lightSensor;
     int mode;
+    View.OnClickListener onStockAlarmTimeClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (Build.VERSION.SDK_INT < 19) return;
 
+            Intent mClockIntent = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS);
+            mClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(mClockIntent);
+            finish();
+        }
+    };
+    private float last_ambient;
+    private double last_ambient_noise = 32000.;
+    private NightDreamUI nightDreamUI = null;
+    private NotificationReceiver nReceiver;
+    private NightModeReceiver nightModeReceiver = null;
+
+    private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
+    private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
+    private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
@@ -54,16 +71,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
             return false;
         }
     };
-
-    private float last_ambient;
-    private double last_ambient_noise = 32000.;
-    private NightDreamUI nightDreamUI = null;
-    private NotificationReceiver nReceiver;
-    private NightModeReceiver nightModeReceiver = null;
-
-    private double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
-    private double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
-    private Settings mySettings = null;
     private GestureDetector mGestureDetector = null;
 
     public void onAttachedToWindow() {
@@ -108,17 +115,6 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
         }
 */
     }
-
-    View.OnClickListener onStockAlarmTimeClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            if (Build.VERSION.SDK_INT < 19) return;
-
-            Intent mClockIntent = new Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS);
-            mClockIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(mClockIntent);
-            finish();
-        }
-    };
 
     @Override
     public void onDreamingStarted() {
@@ -213,7 +209,7 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
     }
 
     public boolean onTouch(View view, MotionEvent e) {
-        return mGestureDetector.onTouchEvent(e) || nightDreamUI.onTouch(view, e, last_ambient);
+        return mGestureDetector.onTouchEvent(e) || nightDreamUI.onTouch(view, e);
     }
 
     // click on the settings icon

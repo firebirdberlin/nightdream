@@ -3,6 +3,8 @@ package com.firebirdberlin.nightdream;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -12,6 +14,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings.System;
@@ -232,6 +235,14 @@ public class Utility {
     public static int getHeightOfView(View contentview) {
         contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         return contentview.getMeasuredHeight();
+    }
+
+    public static boolean isCharging(Context context) {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, ifilter);
+        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        return (status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                status == BatteryManager.BATTERY_STATUS_FULL);
     }
 
     public Point getDisplaySize() {

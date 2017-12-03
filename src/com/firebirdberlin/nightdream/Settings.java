@@ -66,6 +66,7 @@ public class Settings {
     public float dim_offset = 0.8f;
     public float nightModeBrightness = 0.f;
     public float maxBrightness = 1.f;
+    public float maxBrightnessBattery = 1.f;
     public float location_lon = 0.f;
     public float location_lat = 0.f;
     public long location_time = -1L;
@@ -168,6 +169,7 @@ public class Settings {
         initNextAlarmTime();
         nightModeBrightness = settings.getFloat("nightModeBrightness", nightModeBrightness);
         maxBrightness = 0.01f * settings.getInt("maxBrightness", 100);
+        maxBrightnessBattery = 0.01f * settings.getInt("maxBrightnessBattery", 100);
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_mintes", -1);
         nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", -1L); // deprecated

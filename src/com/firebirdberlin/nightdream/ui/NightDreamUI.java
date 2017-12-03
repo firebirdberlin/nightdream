@@ -49,9 +49,8 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnPowerConnected;
+import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.mAudioManager;
-import com.firebirdberlin.nightdream.models.BatteryValue;
-import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
@@ -87,7 +86,6 @@ public class NightDreamUI {
     private int mode = 2;
     private boolean isDebuggable;
     private boolean controlsVisible = false;
-    private BatteryValue batteryValue;
     private Context mContext;
 
     private Drawable bgshape;
@@ -186,7 +184,6 @@ public class NightDreamUI {
         public void run() {
             removeCallbacks(hideBrightnessLevel);
             hideSystemUI();
-            updateBatteryValue();
             setupScreenAnimation();
 
             hideBatteryView(2000);
@@ -259,7 +256,6 @@ public class NightDreamUI {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             Log.w(TAG, "single tap up");
-            updateBatteryValue();
 
             showAlarmClock();
             removeCallbacks(hideAlarmClock);
@@ -316,7 +312,6 @@ public class NightDreamUI {
             handler.postDelayed(moveAround, 30000);
             handler.postDelayed(hideAlarmClock, 20000);
             brightnessProgress.setVisibility(View.INVISIBLE);
-            updateBatteryValue();
             showAlarmClock();
 
             setupShowcaseForQuickAlarms();
@@ -486,7 +481,6 @@ public class NightDreamUI {
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setDaydreamMode(daydreamMode);
         bottomPanelLayout.setup();
-        updateBatteryValue();
         setupScreenAnimation();
         lockUI(this.locked);
 
@@ -827,14 +821,8 @@ public class NightDreamUI {
         handler.postDelayed(fixConfig, 200);
     }
 
-    private void updateBatteryValue() {
-        Log.d(TAG, "updating battery value");
-        BatteryStats battery = new BatteryStats(mContext);
-        this.batteryValue = battery.reference;
-    }
-
     private void setupScreenAnimation() {
-        if (this.batteryValue.isCharging) {
+        if (!Utility.isCharging(mContext)) {
             screen_alpha_animation_duration = 3000;
             screen_transition_animation_duration = 10000;
         } else {
@@ -946,7 +934,7 @@ public class NightDreamUI {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore a minimum value must be set to preserve the visibility of the clock.
         minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
-        float maxBrightness = settings.autoBrightness ? Math.min(settings.maxBrightness, 1.f) : 1.f;
+        float maxBrightness = getMaxAllowedBrightness();
         brightness = to_range(brightness, minBrightness, maxBrightness);
         setBrightness(brightness);
 
@@ -978,6 +966,14 @@ public class NightDreamUI {
         if ( light_value + 0.2f < settings.minIlluminance ) {
             settings.setMinIlluminance(light_value + 0.2f);
         }
+    }
+
+    private float getMaxAllowedBrightness() {
+        float maxBrightness = settings.autoBrightness ? Math.min(settings.maxBrightness, 1.f) : 1.f;
+        if (!Utility.isCharging(mContext)) {
+            return Math.min(settings.maxBrightnessBattery, maxBrightness);
+        }
+        return maxBrightness;
     }
 
     private void setBrightness(float value) {
@@ -1023,7 +1019,7 @@ public class NightDreamUI {
         }
 
         if (light_value <= LIGHT_VALUE_DARK
-                && ( ( settings.useAmbientNoiseDetection() == false)
+                && ((!settings.useAmbientNoiseDetection())
                     || last_ambient_noise < ambient_noise_threshold)){
             return 0;
         } else if (light_value < LIGHT_VALUE_BRIGHT/2.f) { // night shift, desk light on
@@ -1061,9 +1057,9 @@ public class NightDreamUI {
         dimScreen(screen_alpha_animation_duration, light_value, dim_offset);
 
         if (soundmeter != null) {
-            if (new_mode == 0 && soundmeter.isRunning() == false) {
+            if (new_mode == 0 && !soundmeter.isRunning()) {
                 soundmeter.startMeasurement(3000);
-            } else if (new_mode == 1 && soundmeter.isRunning() == false){
+            } else if (new_mode == 1 && !soundmeter.isRunning()) {
                 soundmeter.startMeasurement(60000);
             } else if (new_mode > 1) {
                 soundmeter.stopMeasurement();
@@ -1071,7 +1067,7 @@ public class NightDreamUI {
         }
     }
 
-    public void setAlpha(View v, float alpha, int millis){
+    private void setAlpha(View v, float alpha, int millis) {
         if (v == null) return;
 
         if (Build.VERSION.SDK_INT < 14) {
@@ -1179,7 +1175,11 @@ public class NightDreamUI {
         showAlarmClock();
     }
 
-    public void blinkIfLocked() {
+    public void onEvent(OnPowerDisconnected event) {
+        showAlarmClock();
+    }
+
+    private void blinkIfLocked() {
         handler.removeCallbacks(blink);
         if (locked && AlarmHandlerService.alarmIsRunning()) {
             handler.postDelayed(blink, 1000);
@@ -1244,7 +1244,7 @@ public class NightDreamUI {
         }
     }
 
-    public boolean onTouch(View view, MotionEvent e, float last_ambient) {
+    public boolean onTouch(View view, MotionEvent e) {
         if (locked) {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
@@ -1305,9 +1305,8 @@ public class NightDreamUI {
             notificationManager.notify(0, n);
 
         }
-        else {
-            /* handle your error case: the device has no way to handle market urls */
-        }
+        /* else handle your error case: the device has no way to handle market urls */
+
     }
 
     private NightDreamBroadcastReceiver registerBroadcastReceiver() {
@@ -1323,9 +1322,9 @@ public class NightDreamUI {
     private void unregister(BroadcastReceiver receiver) {
         try {
             mContext.unregisterReceiver(receiver);
-        } catch ( IllegalArgumentException e ) {
-
+        } catch (IllegalArgumentException ignored) {
         }
+
     }
 
     public void onEvent(OnNewLightSensorValue event){
@@ -1380,7 +1379,7 @@ public class NightDreamUI {
         setupShowcaseForScreenLock();
     }
 
-    void setupShowcaseView() {
+    private void setupShowcaseView() {
         if (showcaseView == null) return;
         if (showcaseView.getShowcaseTag() != SHOWCASE_ID_ONBOARDING) return;
 

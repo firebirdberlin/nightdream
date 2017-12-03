@@ -89,6 +89,7 @@ OR
     <string name="hour">h</string>
     <string name="location_time">location time</string>
     <string name="maxBrightness">Maximum screen brightness</string>
+    <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
     <string name="message_mobile_data_connection_confirmation">You are connected to a mobile network. Play the radio stream?</string>
     <string name="message_mobile_data_connection">Mobile data connection</string>
     <string name="message_no_data_connection">No data connection</string>

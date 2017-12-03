@@ -799,9 +799,11 @@ public class PreferencesFragment extends PreferenceFragment {
             title = getString(R.string.brightness_offset);
         }
         brightnessOffset.setTitle(title);
+        PreferenceCategory category = (PreferenceCategory) findPreference("category_brightness");
 
+        removePreference("maxBrightnessBattery");
         if (on) {
-            PreferenceCategory category = (PreferenceCategory) findPreference("category_brightness");
+
             InlineSeekBarPreference prefMaxBrightness = new InlineSeekBarPreference(mContext);
             prefMaxBrightness.setKey("maxBrightness");
             prefMaxBrightness.setTitle(getString(R.string.maxBrightness));
@@ -827,6 +829,14 @@ public class PreferencesFragment extends PreferenceFragment {
             removePreference("maxBrightness");
             removePreference("minBrightness");
         }
+
+        InlineSeekBarPreference prefMaxBrightnessBattery = new InlineSeekBarPreference(mContext);
+        prefMaxBrightnessBattery.setKey("maxBrightnessBattery");
+        prefMaxBrightnessBattery.setTitle(getString(R.string.maxBrightnessBattery));
+        prefMaxBrightnessBattery.setSummary("");
+        prefMaxBrightnessBattery.setRange(1, 100);
+        prefMaxBrightnessBattery.setDefaultValue(25);
+        category.addPreference(prefMaxBrightnessBattery);
     }
 
     private void setupBackgroundImageControls(SharedPreferences prefs) {

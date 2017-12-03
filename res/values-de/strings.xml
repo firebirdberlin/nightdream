@@ -195,4 +195,5 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Einstellungen</string>
 <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
 <string name="welcome_screen_title4">Größe</string>
+    <string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
 </resources>
