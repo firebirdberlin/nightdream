@@ -115,11 +115,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWebRadio">Acquista una licenza</string>
 <string name="radio">Radio</string>
 <string name="radio_stream_enabled">Abilitato</string>
+<string name="radio_stream">Radio</string>
 <string name="radio_stream_failure">Errore sullo stream radio</string>
 <string name="radio_stream_no_search_results">La ricerca non ha dato risultati.</string>
 <string name="radio_stream_offline">Offline</string>
 <string name="radio_stream_query_hint">Stringa di ricerca</string>
-<string name="radio_stream">Radio</string>
 <string name="radio_stream_search">Cerca</string>
 <string name="radio_stream_start">avvia/interrompi flusso radio</string>
 <string name="radio_stream_url">URL flusso radio</string>

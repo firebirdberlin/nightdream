@@ -88,6 +88,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">h</string>
 <string name="location_time">Zeit der letzten Standortbestimmung</string>
 <string name="maxBrightness">max. Bildschirmhelligkeit</string>
+<string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
 <string name="message_mobile_data_connection_confirmation">Sie haben eine mobile Datenverbindung. Soll der Radiostream jetzt abgespielt werden? </string>
 <string name="message_mobile_data_connection">Mobile Datenverbindung</string>
 <string name="message_no_data_connection">Keine Datenverbindung</string>
@@ -195,5 +196,4 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Einstellungen</string>
 <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
 <string name="welcome_screen_title4">Größe</string>
-    <string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
 </resources>
