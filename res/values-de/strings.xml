@@ -54,6 +54,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="clock_layout_digital">Digitaluhr</string>
 <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
 <string name="clock_layout_modern_analog">moderne Analoguhr</string>
+<string name="clock_layout_digit_analog">Analoguhr mit Ziffern</string>
 <string name="colors">Farben</string>
 <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
 <string name="confirm_reset">Zurücksetzen</string>
@@ -194,4 +195,5 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Einstellungen</string>
 <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
 <string name="welcome_screen_title4">Größe</string>
+    <string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
 </resources>

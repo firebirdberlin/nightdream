@@ -394,7 +394,7 @@ public class NightDreamActivity extends Activity
     }
 
     public boolean onTouch(View view, MotionEvent e) {
-        return mGestureDetector.onTouchEvent(e) || nightDreamUI.onTouch(view, e, last_ambient);
+        return mGestureDetector.onTouchEvent(e) || nightDreamUI.onTouch(view, e);
     }
 
     // click on the settings icon

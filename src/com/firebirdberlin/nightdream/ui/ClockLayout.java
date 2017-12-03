@@ -24,6 +24,7 @@ public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_ANALOG = 1;
     public static final int LAYOUT_ID_ANALOG2 = 2;
     public static final int LAYOUT_ID_ANALOG3 = 3;
+    public static final int LAYOUT_ID_ANALOG4 = 4;
     private static final String TAG = "NightDream.ClockLayout";
     private int layoutId = LAYOUT_ID_DIGITAL;
 
@@ -61,9 +62,12 @@ public class ClockLayout extends LinearLayout {
         } else
         if (layoutId == LAYOUT_ID_ANALOG2 ){
             child = inflater.inflate(R.layout.analog_clock_layout_2, null);
-        }
+        } else
         if (layoutId == LAYOUT_ID_ANALOG3) {
             child = inflater.inflate(R.layout.analog_clock_layout_3, null);
+        } else
+        if (layoutId == LAYOUT_ID_ANALOG4) {
+            child = inflater.inflate(R.layout.analog_clock_layout_4, null);
         }
         if (child != null) {
             addView(child);
@@ -210,7 +214,7 @@ public class ClockLayout extends LinearLayout {
             }
         } else if (layoutId == LAYOUT_ID_ANALOG) {
             setupLayoutAnalog(parentWidth, config);
-        } else if (layoutId == LAYOUT_ID_ANALOG2 || layoutId == LAYOUT_ID_ANALOG3) {
+        } else {
             setupLayoutAnalog2(parentWidth, config);
         }
 
