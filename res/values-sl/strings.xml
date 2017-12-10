@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -20,7 +19,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">O programu</string>
 <string name="action_snooze">Dremez</string>
 <string name="action_stop">Ustavi</string>
-<string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Povecaj glasnost</string>
 <string name="alarmVolume">Glasnost</string>
 <string name="allow_screen_off_summary">Izklopi ekran ponoci</string>
@@ -48,9 +46,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_primary_color">Barva prikaza</string>
 <string name="choose_secondary_color">Barva teksta</string>
 <string name="clear">Pocisti</string>
-<string name="clock_layout">Postavitev</string>
-<string name="clock_layout_digital">Digital</string>
 <string name="clock_layout_analog">Analog</string>
+<string name="clock_layout_digital">Digital</string>
+<string name="clock_layout_elegant_analog">Elegantna analogna ura</string>
+<string name="clock_layout_digit_analog">Analogna ura z številkami</string>
+<string name="clock_layout">Postavitev</string>
+<string name="clock_layout_modern_analog">Moderna analogna ura</string>
 <string name="colors">Barve</string>
 <string name="confirm_reset_question">Ali zelite ponastaviti nastavitve ?</string>
 <string name="confirm_reset">Ponastavitev</string>
@@ -61,12 +62,17 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="credits">Zasluge</string>
 <string name="credits_pull_requests">Podaj zahtevke</string>
 <string name="date_format">Format datuma</string>
+<string name="delete">Izbriši</string>
 <string name="dialog_message_thank_you">Najlepsa hvala!</string>
 <string name="dialog_title_thank_you">Hvala</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Donirati</string>
+<string name="doubleTapToFinishSummary">Zaključi aplikacijo z dvojnim klikom na zaslon</string>
+<string name="doubleTapToFinishTitle">Dvojni klik za zaključek</string>
+<string name="expertPreferences">Napredne funkcije</string>
 <string name="force_auto_rotation">Vsili vrtenje v Daydream</string>
 <string name="force_auto_rotation_summary">Dopusti vrtenje zaslona ce je v uporabi Daydream</string>
+<string name="forecast">5-dnevna vremenska napoved</string>
 <string name="handle_power_ac">AC</string>
 <string name="handle_power">Avtomatski zagon</string>
 <string name="handle_power_car">Avto polnilec</string>
@@ -79,19 +85,22 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">Skrij sliko ozadja v night mode</string>
 <string name="hour">h</string>
 <string name="location_time">Lokalni cas</string>
-<string name="message_no_data_connection">Ni povezave</string>
-<string name="message_mobile_data_connection">Mobilna povezava</string>
+<string name="maxBrightness">Maksimalna osvetlitev zaslona</string>
+<string name="maxBrightnessBattery">Maksimalba osvetlitev zaslona pri napajanju z baterijo</string>
 <string name="message_mobile_data_connection_confirmation">Povezava preko mobilnih podatkov. Predvajanje radijskih programov?</string>
+<string name="message_mobile_data_connection">Mobilna povezava</string>
+<string name="message_no_data_connection">Ni povezave</string>
+<string name="minBrightness">Minimalna osvetlitev zaslona</string>
 <string name="minute">min</string>
 <string name="mute_ringer">Izklopi zvonenje</string>
-<string name="night_mode">Night mode</string>
-<string name="night_mode_activation_mode">Aktivacijski nacin</string>
-<string name="night_mode_activation_manual">Rocno</string>
 <string name="night_mode_activation_auto">Avtomatsko</string>
+<string name="night_mode_activation_manual">Rocno</string>
+<string name="night_mode_activation_mode">Aktivacijski nacin</string>
 <string name="night_mode_activation_scheduled">Nastavljeno</string>
-<string name="night_mode_timerange_title">Nocni cas</string>
+<string name="night_mode">Night mode</string>
 <string name="night_mode_timerange_label_end">Koncni cas</string>
 <string name="night_mode_timerange_label_start">Zacetni cas</string>
+<string name="night_mode_timerange_title">Nocni cas</string>
 <string name="noise_sensitivity">Obcutljivost mikrofona</string>
 <string name="notification_alarm">Pritisni za izklop alarma</string>
 <string name="other_apps">Ostale aplikacije</string>
@@ -100,15 +109,25 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging">Trenutni status baterije</string>
 <string name="persistent_battery_value_while_charging_summary">Prikazi status baterije med polnjenjem</string>
 <string name="preview">Predogled</string>
+<string name="product_name_donation">Donacija</string>
+<string name="product_name_pro">Polna verzija</string>
+<string name="product_name_weather">Vremenski in dizajn paket</string>
+<string name="product_name_webradio">Paket internetni radio</string>
 <string name="purchaseWeatherData">Kupi licenco</string>
 <string name="purchaseWebRadio">Kupi licenco</string>
 <string name="radio">Radio</string>
 <string name="radio_stream_enabled">Omogoceno</string>
-<string name="radio_stream_no_search_results">Ni zadetkov iskanja</string>
-<string name="radio_stream_query_hint">Iskalni niz</string>
 <string name="radio_stream">Radijsko oddajanje</string>
+<string name="radio_stream_failure">Napaka pri radijskem prenosu</string>
+<string name="radio_stream_manual_input_hint">Dodaj postajo ročno</string>
+<string name="radio_stream_manual_input_url">Internetni naslov za prenos</string>
+<string name="radio_stream_manual_input_description">Ime pistaje</string>
+<string name="radio_stream_no_search_results">Ni zadetkov iskanja</string>
+<string name="radio_stream_offline">Brez povezave</string>
+<string name="radio_stream_query_hint">Iskalni niz</string>
 <string name="radio_stream_search">Isci</string>
 <string name="radio_stream_start">Vklop/Izklop radijskega odajanja</string>
+<string name="radio_stream_unreachable_url">Internetni naslov ni dosegljiv</string>
 <string name="radio_stream_url">Radijsko oddajanje URL</string>
 <string name="reactivate_on_ambient_light_value">Osvetljenost</string>
 <string name="reactivate_on_ambient_light_value_summary">Ponovni vklop ekrana ce je presezena stopnja osvetlitve</string>
@@ -117,6 +136,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend_app_subject">Priporocil bi vam aplikacijo nocne ure</string>
 <string name="recommend">Priporocena aplikacija</string>
 <string name="remaining">Ostanek</string>
+<string name="repeat">Ponovi</string>
 <string name="reset_to_defaults">Ponastavitev na prednastavljene nastavitve</string>
 <string name="restless_mode">Premikaj uro</string>
 <string name="review_request">Prosim oceni to aplikacijo</string>
@@ -128,17 +148,27 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Zasuk ekrana</string>
 <string name="select_alarm_sound">Izberi zvok alarma</string>
 <string name="set_alarm">Nastavi alarm</string>
-<string name="showcase_text_set_alarms">Pritisni in podrsaj s prstom za nastavitev hitrega enkratnega alarma.</string>
 <string name="showcase_text_delete_alarms">Pritisni tukaj za izbris ali ustavitev alarma. Pritisni kjerkoli drugje za dremez.</string>
+<string name="showcase_text_screen_lock">Zaslon je trenutno zakljenjen. Dolg pritisk na ikono za odklep !</string>
+<string name="showcase_text_set_alarms">Pritisni in podrsaj s prstom za nastavitev hitrega enkratnega alarma.</string>
+<string name="showcase_title_screen_lock">Zakljenjen zaslon</string>
 <string name="show_date">Prikazi datum</string>
 <string name="show_temperature">Prikazi temperaturo</string>
 <string name="show_weather">Prikazi lokalno vreme</string>
 <string name="show_wind_speed">Prikazi hitrost vetra</string>
+<string name="sleep_time_dialog_title">Čas Dremeža</string>
 <string name="snoozeTime">Cas dremeza</string>
 <string name="speedUnit">Enota za hitrost vetra</string>
-<string name="titlePrivacyPolicy">Licenca uporabe</string>
+<string name="standbyEnabledWhileConnectedSummary">Aktiviraj ko se zaslon ugasne</string>
+<string name="standbyEnabledWhileConnectedTitle">V pripravljenosti</string>
+<string name="standbyEnabledWhileDisconnectedSummary">Ta funkcija hitro izprazni baterijo!</string>
+<string name="standbyEnabledWhileDisconnectedTitle">V pripravljenosti pri praznjenju</string>
+<string name="standbyNotificationText">Servis za pripravo je v teku</string>
 <string name="temperatureUnit">Enota za temperaturo</string>
 <string name="timeFormat">Casovni format</string>
+<string name="titlePrivacyPolicy">Licenca uporabe</string>
+<string name="today">Danes</string>
+<string name="tomorrow">Jutri</string>
 <string name="translations">Prevod</string>
 <string name="typeface_7_segment">7-segmentni LED</string>
 <string name="typeface_roboto_condensed">Roboto kondenzirano</string>
@@ -147,6 +177,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_regular">Roboto normalno</string>
 <string name="typeface_roboto_thin">Roboto tanko</string>
 <string name="typeface">Typeface</string>
+<string name="uninstall">Odstrani aplikacijo</string>
+<string name="useDeviceLockDescription">Dodatek za zaklep zaslona potrebuje administratorjeve pravice. Za odstranitev aplikacije prosim onemogočite ta didatek.</string>
+<string name="useDeviceLockExplanation">Zakleni zaslon pri aktivni aplikaciji. Za odstranitev aplikacije prosim prekliči te dovoljenja. </string>
+<string name="useDeviceLock">Zakleni napravo</string>
 <string name="use_internal_alarm">Hitri alarm</string>
 <string name="weather_calculation_time">Vremenski preracun casa</string>
 <string name="weather_city_id_summary">Odpri vremensko karto z kodo Mesta. Pusti prazno za avtomatkodetekcino lokacije.</string>
