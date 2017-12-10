@@ -822,7 +822,7 @@ public class NightDreamUI {
     }
 
     private void setupScreenAnimation() {
-        if (!Utility.isCharging(mContext)) {
+        if (Utility.isCharging(mContext)) {
             screen_alpha_animation_duration = 3000;
             screen_transition_animation_duration = 10000;
         } else {
@@ -1172,10 +1172,12 @@ public class NightDreamUI {
     }
 
     public void onEvent(OnPowerConnected event) {
+        setupScreenAnimation();
         showAlarmClock();
     }
 
     public void onEvent(OnPowerDisconnected event) {
+        setupScreenAnimation();
         showAlarmClock();
     }
 
