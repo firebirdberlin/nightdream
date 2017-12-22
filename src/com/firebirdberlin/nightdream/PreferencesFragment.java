@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -40,6 +41,7 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
+import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -601,9 +603,31 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
+        Preference customAlarmToneURI = findPreference("customAlarmToneUri");
+        customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+
+                FragmentManager fm = getFragmentManager();
+                ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
+                dialog.setSelectedUri(settings.AlarmToneUri);
+                dialog.show(fm, "custom sounds");
+                return false;
+            }
+        });
+
         setupLightSensorPreferences();
         setupDaydreamPreferences();
 
+    }
+
+    public void onAlarmToneSelected(Uri uri) {
+        settings.setAlarmToneUri(uri != null ? uri.toString() : null);
     }
 
     private void setupLightSensorPreferences() {

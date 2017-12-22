@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -304,6 +305,18 @@ public class Settings {
         useInternalAlarm = on;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("useInternalAlarm", on);
+        prefEditor.commit();
+    }
+
+    public void setAlarmToneUri(String uriString) {
+        AlarmToneUri = uriString;
+        SharedPreferences.Editor prefEditor = settings.edit();
+
+        if ( uriString != null ) {
+            prefEditor.putString("AlarmToneUri", uriString);
+        } else {
+            prefEditor.remove("AlarmToneUri");
+        }
         prefEditor.commit();
     }
 

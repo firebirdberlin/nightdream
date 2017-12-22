@@ -2,15 +2,36 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.os.Build;
+
+import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
 
 
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity extends PreferenceActivity
+        implements ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener {
     public static final int PREFERENCES_SCREEN_WEB_RADIO_INDEX = 6;
 
     PreferencesFragment fragment = null;
+
+    public static void start(Context context) {
+        if (Build.VERSION.SDK_INT > 10) {
+            Intent intent = new Intent(context, PreferencesActivity.class);
+            context.startActivity(intent);
+        } else {
+            PreferencesActivityv9.start(context);
+        }
+    }
+
+    public static void start(Context context, int preferenceScreenIndex) {
+        if (Build.VERSION.SDK_INT > 10) {
+            Intent intent = new Intent(context, PreferencesActivity.class);
+            intent.putExtra("preferenceScreenIndex", preferenceScreenIndex);
+            context.startActivity(intent);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,21 +54,8 @@ public class PreferencesActivity extends PreferenceActivity {
 
     }
 
-    public static void start(Context context) {
-        if (Build.VERSION.SDK_INT > 10) {
-            Intent intent = new Intent(context, PreferencesActivity.class);
-            context.startActivity(intent);
-        } else {
-            PreferencesActivityv9.start(context);
-        }
-    }
-
-    public static void start(Context context, int preferenceScreenIndex) {
-        if (Build.VERSION.SDK_INT > 10) {
-            Intent intent = new Intent(context, PreferencesActivity.class);
-            intent.putExtra("preferenceScreenIndex", preferenceScreenIndex);
-            context.startActivity(intent);
-        }
+    public void onAlarmToneSelected(Uri uri) {
+        fragment.onAlarmToneSelected(uri);
     }
 
     @Override
