@@ -306,6 +306,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
         try {
             mp.start();
+            sendBroadcast( new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK) );
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }

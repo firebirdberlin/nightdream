@@ -1317,6 +1317,7 @@ public class NightDreamUI {
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
+        filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
         mContext.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -1508,6 +1509,13 @@ public class NightDreamUI {
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 bottomPanelLayout.setup();
                 setRadioIconActive();
+            } else
+            if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
+                WebRadioLayout webRadioLayout = bottomPanelLayout.getWebRadioLayout();
+                if (webRadioLayout != null) {
+                    webRadioLayout.setShowConnectingHint(false);
+                    webRadioLayout.setText();
+                }
             }
             else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
