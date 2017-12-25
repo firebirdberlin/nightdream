@@ -144,7 +144,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
 
     private void drawTicks(Canvas canvas, float centerX, float centerY, int radius, float tickStart, float tickEnd) {
         // ticks
-        paint.setAlpha(150);
+        paint.setAlpha(255);
         paint.setColorFilter(secondaryColorFilter);
 
         int width = Utility.dpToPx(context, 1.f);
@@ -170,8 +170,8 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 drawTriangle(canvas, paint, tickEndX, tickEndY - triangleHeight * .1f, triangleWidth, triangleHeight);
             } else if (roundTick) {
                 float roundTickRadius = (tickEnd - tickStart) * .5f * radius;
-                float roundTickCenterX = (int) (centerX + (tickStart + (tickEnd - tickStart) * .5f) * radius * Math.cos(angle));
-                float roundTickCenterY = (int) (centerY + (tickStart + (tickEnd - tickStart) * .5f) * radius * Math.sin(angle));
+                float roundTickCenterX =  (centerX + (tickStart + (tickEnd - tickStart) * .5f) * (float) radius * (float) Math.cos(angle));
+                float roundTickCenterY =  (centerY + (tickStart + (tickEnd - tickStart) * .5f) * (float) radius * (float) Math.sin(angle));
                 canvas.drawCircle(roundTickCenterX, roundTickCenterY, roundTickRadius, paint);
             } else {
                 canvas.drawLine(tickStartX, tickStartY, tickEndX, tickEndY, paint);
@@ -216,12 +216,13 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
             // for width measureText returns more exact result than textbounds
             // for height textbounds is ok
             float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
+            float textHeight = bounds.height();
 
             // move center of text bounding box to x/y
             x -= textWidth / 2.;
-            y -= bounds.height() / 2 + 1f;
+            y -= textHeight / 2f + 1f;
 
-            canvas.drawText(currentHourText, x, y + bounds.height(), paint);
+            canvas.drawText(currentHourText, x, y + textHeight, paint);
             digitCounter++;
         }
     }
