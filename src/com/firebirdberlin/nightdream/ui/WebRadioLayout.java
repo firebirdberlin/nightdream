@@ -5,11 +5,13 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,6 +26,8 @@ public class WebRadioLayout extends RelativeLayout {
     private Context context;
     private TextView textView;
     private ImageView buttonSleepTimer;
+    private boolean showConnectingHint = false;
+    private ProgressBar spinner;
 
     public WebRadioLayout(Context context) {
         super(context);
@@ -36,6 +40,7 @@ public class WebRadioLayout extends RelativeLayout {
         setBackgroundResource(R.drawable.webradiopanelborder);
 
         textView = new TextView(context);
+        textView.setId(R.id.web_radio_text_view); // id for placing spinner LEFT_OF this view
         textView.setEllipsize(TextUtils.TruncateAt.END);
         int padding = Utility.dpToPx(context, 6.f);
         textView.setPadding(padding, padding, padding, padding);
@@ -64,9 +69,18 @@ public class WebRadioLayout extends RelativeLayout {
         lp2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         //lp2.addRule(RelativeLayout.CENTER_IN_PARENT);
 
+        spinner = new ProgressBar(context, null, android.R.attr.progressBarStyleSmall);
+        spinner.setPadding(0, padding, 0, padding);
+        spinner.setVisibility(View.VISIBLE);
+
+        RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp3.addRule(RelativeLayout.LEFT_OF, textView.getId());
+        lp3.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
         addView(textView, lp);
         addView(buttonSleepTimer, lp2);
-
+        addView(spinner, lp3);
     }
 
     public void setCustomColor(int accentColor, int textColor) {
@@ -92,6 +106,11 @@ public class WebRadioLayout extends RelativeLayout {
         } else {
             textView.setText("");
         }
+        spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
+    }
+
+    protected void setShowConnectingHint(boolean showConnectingHint) {
+        this.showConnectingHint = showConnectingHint;
     }
 
     @Override

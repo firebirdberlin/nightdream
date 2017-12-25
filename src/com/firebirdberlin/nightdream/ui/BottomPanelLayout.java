@@ -69,6 +69,10 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
+    public WebRadioLayout getWebRadioLayout() {
+        return webRadioLayout;
+    }
+
     private void clearViews() {
         stockAlarmView = null;
         webRadioLayout = null;
@@ -98,6 +102,7 @@ public class BottomPanelLayout extends FrameLayout {
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
+        webRadioLayout.setShowConnectingHint(true);
         webRadioLayout.setText();
         addView(webRadioLayout);
         invalidate();
