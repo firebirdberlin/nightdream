@@ -74,11 +74,11 @@ public class NightDreamUI {
     static final long SHOWCASE_ID_ONBOARDING = 1;
     static final long SHOWCASE_ID_ALARMS = 2;
     static final long SHOWCASE_ID_ALARM_DELETION = 3;
-    static final long SHOWCASE_ID_SCREEN_LOCK = 4;
+    private static final long SHOWCASE_ID_SCREEN_LOCK = 4;
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-    static int showcaseCounter = 0;
+    private static int showcaseCounter = 0;
     private static String TAG ="NightDreamUI";
     final private Handler handler = new Handler();
     private int screen_alpha_animation_duration = 3000;
@@ -1509,13 +1509,10 @@ public class NightDreamUI {
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 bottomPanelLayout.setup();
                 setRadioIconActive();
+                showAlarmClock();
             } else
             if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-                WebRadioLayout webRadioLayout = bottomPanelLayout.getWebRadioLayout();
-                if (webRadioLayout != null) {
-                    webRadioLayout.setShowConnectingHint(false);
-                    webRadioLayout.setText();
-                }
+                bottomPanelLayout.updateWebRadioView();
             }
             else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
