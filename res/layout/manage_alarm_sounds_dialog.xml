@@ -14,11 +14,30 @@
         android:headerDividersEnabled="true"
         android:visibility="visible" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="10dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_weight="1"
+            android:background="@color/custom_red"
+            android:text="@string/product_name_webradio"
+            android:textAlignment="textEnd"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
     <Button
         android:id="@+id/addCustomAlarmTone"
+        style="@android:style/Widget.DeviceDefault.Button.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:elevation="0dp"
         android:text="@string/add_custom_alarm_tone" />
 
 
