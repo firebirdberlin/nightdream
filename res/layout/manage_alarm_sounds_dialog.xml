@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="add custom alarm tone" />
+        android:text="@string/add_custom_alarm_tone" />
 
 
 </LinearLayout>

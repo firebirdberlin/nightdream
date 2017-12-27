@@ -20,6 +20,7 @@ OR
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stop</string>
     <string name="add_new_alarm">add new alarm</string>z
+    <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="alarm">Alarm</string>z
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmVolume">Volume</string>

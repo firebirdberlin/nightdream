@@ -220,10 +220,14 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                 File dstFile = new File(DIRECTORY, fileName);
                 FileUri uriDst = new FileUri(dstFile);
 
+                boolean isCreated = false;
                 try {
-                    dstFile.createNewFile();
+                    isCreated = dstFile.createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return;
+                }
+                if (!isCreated) {
                     return;
                 }
 
