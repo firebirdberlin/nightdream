@@ -1,7 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -37,6 +38,7 @@ import static android.app.Activity.RESULT_OK;
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ManageAlarmSoundsDialogFragment extends DialogFragment {
     final static String TAG = "ManageAlarmSoundsDialog";
+    final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     protected File DIRECTORY = null;
     // Use this instance of the interface to deliver action events
     ManageAlarmSoundsDialogListener mListener;
@@ -65,30 +67,6 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
         return DIRECTORY.listFiles();
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (ManageAlarmSoundsDialogListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement ManageAlarmSoundsDialogListener");
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (ManageAlarmSoundsDialogListener) context;
-
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement ManageAlarmSoundsDialogListener");
-        }
-    }
-
     public void setSelectedUri(String uriString) {
         selectedUri = Uri.parse(uriString);
     }
@@ -107,10 +85,12 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
         addCustomAlarmTone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("audio/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, 1);
+                if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    return;
+                }
+                selectCustomTone();
             }
         });
 
@@ -118,12 +98,13 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
         builder.setTitle(R.string.choose_alarm_sound)
                 .setIcon(R.drawable.ic_alarm_clock)
                 .setView(view)
-
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (arrayAdapter != null) {
-                            mListener.onAlarmToneSelected(arrayAdapter.getSelectedUri());
+                            if (mListener != null) {
+                                mListener.onAlarmToneSelected(arrayAdapter.getSelectedUri());
+                            }
                             arrayAdapter.release();
                         }
 
@@ -137,6 +118,31 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                     }
                 });
         return builder.create();
+    }
+
+    private boolean hasPermission(String permission) {
+        return Build.VERSION.SDK_INT < 23 ||
+                (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    selectCustomTone();
+                }
+            }
+        }
+    }
+
+    private void selectCustomTone() {
+        Intent intent = new Intent();
+        intent.setType("audio/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
     }
 
     private void initListView() {
@@ -247,6 +253,10 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void setOnAlarmToneSelectedListener(ManageAlarmSoundsDialogListener listener) {
+        this.mListener = listener;
     }
 
     public interface ManageAlarmSoundsDialogListener {

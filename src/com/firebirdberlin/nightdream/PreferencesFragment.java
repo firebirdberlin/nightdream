@@ -607,15 +607,15 @@ public class PreferencesFragment extends PreferenceFragment {
         customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-
-                if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                }
-
                 FragmentManager fm = getFragmentManager();
                 ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
                 dialog.setSelectedUri(settings.AlarmToneUri);
+                dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
+                    @Override
+                    public void onAlarmToneSelected(Uri uri) {
+                        settings.setAlarmToneUri(uri != null ? uri.toString() : null);
+                    }
+                });
                 dialog.show(fm, "custom sounds");
                 return false;
             }
@@ -624,10 +624,6 @@ public class PreferencesFragment extends PreferenceFragment {
         setupLightSensorPreferences();
         setupDaydreamPreferences();
 
-    }
-
-    public void onAlarmToneSelected(Uri uri) {
-        settings.setAlarmToneUri(uri != null ? uri.toString() : null);
     }
 
     private void setupLightSensorPreferences() {

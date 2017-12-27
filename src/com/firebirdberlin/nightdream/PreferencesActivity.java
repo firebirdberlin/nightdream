@@ -2,16 +2,12 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
 
-
-public class PreferencesActivity extends PreferenceActivity
-        implements ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener {
+public class PreferencesActivity extends PreferenceActivity {
     public static final int PREFERENCES_SCREEN_WEB_RADIO_INDEX = 6;
 
     PreferencesFragment fragment = null;
@@ -52,10 +48,6 @@ public class PreferencesActivity extends PreferenceActivity
             .replace(android.R.id.content, fragment)
             .commit();
 
-    }
-
-    public void onAlarmToneSelected(Uri uri) {
-        fragment.onAlarmToneSelected(uri);
     }
 
     @Override
