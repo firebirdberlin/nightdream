@@ -94,6 +94,9 @@
         <service
             android:name=".services.WeatherService"
             android:enabled="true" />
+        <service
+            android:name=".widget.ClockWidgetProvider$UpdateService"
+            android:enabled="true" />
 
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".PreferencesActivityv9" />
@@ -150,6 +153,14 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
+        </receiver>
+        <receiver android:name=".widget.ClockWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/clock_widget_info" />
         </receiver>
 
         <activity
