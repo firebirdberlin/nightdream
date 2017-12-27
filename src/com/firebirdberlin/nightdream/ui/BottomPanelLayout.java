@@ -69,10 +69,6 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
-    public WebRadioLayout getWebRadioLayout() {
-        return webRadioLayout;
-    }
-
     private void clearViews() {
         stockAlarmView = null;
         webRadioLayout = null;
@@ -106,6 +102,13 @@ public class BottomPanelLayout extends FrameLayout {
         webRadioLayout.setText();
         addView(webRadioLayout);
         invalidate();
+    }
+
+    public void updateWebRadioView() {
+        if (webRadioLayout == null) return;
+
+        webRadioLayout.setShowConnectingHint(false);
+        webRadioLayout.setText();
     }
 
     private void showAlarmView() {
