@@ -8,9 +8,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -30,11 +33,15 @@ import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.firebirdberlin.nightdream.R.id.clock;
+import static com.firebirdberlin.nightdream.R.id.clockLayoutContainer;
 
 public class ClockWidgetProvider extends AppWidgetProvider {
 
@@ -100,22 +107,99 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static void renderClockWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Dimension viewSize) {
 
+        //renderClockWidgetTest1(context, appWidgetManager, appWidgetId, viewSize); //works
+        renderClockWidgetTest2(context, appWidgetManager, appWidgetId, viewSize); //works
+    }
+
+    private static void renderClockWidgetTest1(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Dimension viewSize) {
+
         //View clockView = new CustomAnalogClock(context);
         //AutoAdjustTextView clockView = new CustomDigitalClock(context);
         //View clockView = new CustomAnalogClock4(context);
 
+        View clockLayout = createClockViewTest1(context); // this works
+
+        Log.d(TAG, String.format("view size: w=%d h=%d", viewSize.width, viewSize.height));
+
+        clockLayout.measure(viewSize.width, viewSize.height);
+        clockLayout.layout(0, 0, viewSize.width, viewSize.height);
+        clockLayout.setDrawingCacheEnabled(true);
+        Bitmap clockBitmap = clockLayout.getDrawingCache();
+        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
+        updateViews.setImageViewBitmap(R.id.clockWidgetImageView, clockBitmap);
+
+        // click activates app
+        Intent intent = new Intent(context, NightDreamActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+
+        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+    }
+
+    private static void renderClockWidgetTest2(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Dimension viewSize) {
+
+        //View clockView = new CustomAnalogClock(context);
+        //AutoAdjustTextView clockView = new CustomDigitalClock(context);
+        //View clockView = new CustomAnalogClock4(context);
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View rootView = inflater.inflate(R.layout.clock_widget_clock_layout, null);
+        ClockLayout clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
+        View container = rootView.findViewById(R.id.previewContainer);
+
+        clockLayout.setScaleFactor(1f);
+        if (Build.VERSION.SDK_INT >= 11) {
+            clockLayout.setTranslationX(0);
+            clockLayout.setTranslationY(0);
+        } else {
+            clockLayout.setPadding(0, 0, 0, 0);
+        }
+        //clockLayout.updateLayout(viewSize.width, config);
+        clockLayout.setVisibility(View.VISIBLE);
+
+        Log.d(TAG, String.format("view size: w=%d h=%d", viewSize.width, viewSize.height));
+
+
+        // TODO: init all clockLayout params like in ClockLayoutPreviewPreference.updateView()
+        //Utility utility = new Utility(context);
+        //Point size = utility.getDisplaySize();
+        clockLayout.setLayout(ClockLayout.LAYOUT_ID_DIGITAL);
+        Configuration config = context.getResources().getConfiguration();
+        clockLayout.updateLayout(viewSize.width, config);
+        clockLayout.requestLayout();
+        clockLayout.invalidate();
+        //
+
+
+        rootView.measure(viewSize.width, viewSize.height);
+
+
+
+        rootView.layout(0, 0, viewSize.width, viewSize.height);
+
+        Log.d(TAG, "clockLayout.getWidth()=" + clockLayout.getWidth() + ", container width=" + container.getWidth());
+
+        //center after layout
         /*
-        View clockView = new ClockLayout(context);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.weight = 1.0f;
-        params.gravity = Gravity.TOP;
-
-        clockView.setLayoutParams(params);
+        if (clockLayout.getWidth() > 0 && clockLayout.getWidth() < viewSize.width) {
+            clockLayout.setLeft((viewSize.width - clockLayout.getWidth()) / 2);
+        }
         */
 
+        rootView.setDrawingCacheEnabled(true);
+        Bitmap clockBitmap = rootView.getDrawingCache();
+        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
+        updateViews.setImageViewBitmap(R.id.clockWidgetImageView, clockBitmap);
+
+        // click activates app
+        Intent intent = new Intent(context, NightDreamActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+
+        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+    }
+
+    private static View createClockViewTest1(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View clockLayout = inflater.inflate(R.layout.clock_layout, null);
         AutoAdjustTextView clock = (AutoAdjustTextView) clockLayout.findViewById(R.id.clock);
@@ -144,23 +228,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             tdate.setFormat24Hour(settings.dateFormat);
         }
 
-        Log.d(TAG, String.format("view size: w=%d h=%d", viewSize.width, viewSize.height));
-
-        clockLayout.invalidate();
-        clockLayout.measure(viewSize.width, viewSize.height);
-        clockLayout.layout(0, 0, viewSize.width, viewSize.height);
-        clockLayout.setDrawingCacheEnabled(true);
-        Bitmap clockBitmap = clockLayout.getDrawingCache();
-        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
-        updateViews.setImageViewBitmap(R.id.clockWidgetImageView, clockBitmap);
-
-        // click activates app
-        Intent intent = new Intent(context, NightDreamActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
-
-        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+        return clockLayout;
     }
+
 
 
     public static final class Dimension {
