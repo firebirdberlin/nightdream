@@ -10,20 +10,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Size;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomAnalogClock4;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
+import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,35 +85,80 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     }
 
     static void renderAllClockWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, Map<Integer, Dimension> widgetDimensions) {
-        final int n = appWidgetIds.length;
-        for (int i = 0; i < n; i++) {
-            int currentWidgetId = appWidgetIds[i];
 
+        for (int widgetId : appWidgetIds) {
 
-            Dimension viewSize = widgetDimensions.get(currentWidgetId);
+            Dimension viewSize = widgetDimensions.get(widgetId);
             if (viewSize == null) {
                 Log.d(TAG, "onUpdate: widget dimension is NULL");
                 viewSize = new Dimension(150, 150);
             }
 
-            renderClockWidget(context, appWidgetManager, currentWidgetId, viewSize);
+            renderClockWidget(context, appWidgetManager, widgetId, viewSize);
         }
     }
 
     private static void renderClockWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Dimension viewSize) {
+
         //View clockView = new CustomAnalogClock(context);
-        //View clockView = new CustomDigitalClock(context);
-        View clockView = new CustomAnalogClock4(context);
+        //AutoAdjustTextView clockView = new CustomDigitalClock(context);
+        //View clockView = new CustomAnalogClock4(context);
 
-        //LayoutInflater inflater = LayoutInflater.from(context);
-        //View clockView = inflater.inflate(R.layout.clock_layout, null);
+        /*
+        View clockView = new ClockLayout(context);
 
-        clockView.measure(viewSize.width, viewSize.height);
-        clockView.layout(0, 0, viewSize.width, viewSize.height);
-        clockView.setDrawingCacheEnabled(true);
-        Bitmap clockBitmap = clockView.getDrawingCache();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.weight = 1.0f;
+        params.gravity = Gravity.TOP;
+
+        clockView.setLayoutParams(params);
+        */
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View clockLayout = inflater.inflate(R.layout.clock_layout, null);
+        AutoAdjustTextView clock = (AutoAdjustTextView) clockLayout.findViewById(R.id.clock);
+        AutoAdjustTextView date = (AutoAdjustTextView) clockLayout.findViewById(R.id.date);
+        Settings settings = new Settings(context);
+        if (clock != null) {
+
+            Typeface tf = settings.typeface;
+            //Log.d(TAG, "#### typeface: " + tf.toString());
+            clock.setTypeface(settings.typeface);
+
+            Log.d(TAG, "#### clockColor: " + settings.clockColor);
+
+            //day/night?
+            //int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
+            //int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
+            int accentColor = settings.clockColor;
+            int textColor = settings.secondaryColor;
+            clock.setTextColor(accentColor);
+
+        }
+
+        if (date != null) {
+            CustomDigitalClock tdate = (CustomDigitalClock) date;
+            tdate.setFormat12Hour(settings.dateFormat);
+            tdate.setFormat24Hour(settings.dateFormat);
+        }
+
+        Log.d(TAG, String.format("view size: w=%d h=%d", viewSize.width, viewSize.height));
+
+        clockLayout.invalidate();
+        clockLayout.measure(viewSize.width, viewSize.height);
+        clockLayout.layout(0, 0, viewSize.width, viewSize.height);
+        clockLayout.setDrawingCacheEnabled(true);
+        Bitmap clockBitmap = clockLayout.getDrawingCache();
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
         updateViews.setImageViewBitmap(R.id.clockWidgetImageView, clockBitmap);
+
+        // click activates app
+        Intent intent = new Intent(context, NightDreamActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+
         appWidgetManager.updateAppWidget(appWidgetId, updateViews);
     }
 
