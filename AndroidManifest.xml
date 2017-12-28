@@ -154,12 +154,14 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".widget.ClockWidgetProvider" >
+        <receiver android:name=".widget.ClockWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/clock_widget_info" />
         </receiver>
 
@@ -185,6 +187,15 @@
                 android:value="com.firebirdberlin.nightdream.NightDreamActivity" />
             >
         </activity>
+        <!--
+        <activity android:name=".widget.LayoutTestActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        -->
     </application>
 
 </manifest>

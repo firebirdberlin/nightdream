@@ -51,6 +51,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private PendingIntent alarmIntent = null;
 
+    //TODO
+    private static final boolean WIDGET_RESIZABLE = false;
+    private static final int WIDGET_DEFAULT_WIDTH = 144;
+    private static final int WIDGET_DEFAULT_HEIGHT = 72;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
@@ -66,18 +71,22 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
         Log.d(TAG, "onAppWidgetOptionsChanged");
 
-        int minwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-        int maxwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
-        int minheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-        int maxheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
+        if (WIDGET_RESIZABLE) {
 
-        //just take min values
-        Dimension viewSize = new Dimension(minwidth, minheight);
-        WIDGET_DIMENSIONS.put(appWidgetId, viewSize);
+            int minwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+            int maxwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
+            int minheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+            int maxheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
 
-        Log.i(TAG, String.format("widget size: %d %d %d %d", minwidth, maxwidth, minheight, maxheight));
+            //just take min values
+            Dimension viewSize = new Dimension(minwidth, minheight);
+            WIDGET_DIMENSIONS.put(appWidgetId, viewSize);
 
-        renderClockWidget(context, appWidgetManager, appWidgetId, viewSize);
+            Log.i(TAG, String.format("widget size: %d %d %d %d", minwidth, maxwidth, minheight, maxheight));
+
+            renderClockWidget(context, appWidgetManager, appWidgetId, viewSize);
+
+        }
     }
 
     private void setupClockUpdateService(Context context) {
@@ -97,8 +106,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
             Dimension viewSize = widgetDimensions.get(widgetId);
             if (viewSize == null) {
-                Log.d(TAG, "onUpdate: widget dimension is NULL");
-                viewSize = new Dimension(150, 150);
+                //Log.d(TAG, "onUpdate: widget dimension is NULL");
+                viewSize = new Dimension(WIDGET_DEFAULT_WIDTH, WIDGET_DEFAULT_HEIGHT);
             }
 
             renderClockWidget(context, appWidgetManager, widgetId, viewSize);
@@ -107,84 +116,41 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static void renderClockWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Dimension viewSize) {
 
-        //renderClockWidgetTest1(context, appWidgetManager, appWidgetId, viewSize); //works
-        renderClockWidgetTest2(context, appWidgetManager, appWidgetId, viewSize); //works
-    }
-
-    private static void renderClockWidgetTest1(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Dimension viewSize) {
-
-        //View clockView = new CustomAnalogClock(context);
-        //AutoAdjustTextView clockView = new CustomDigitalClock(context);
-        //View clockView = new CustomAnalogClock4(context);
-
-        View clockLayout = createClockViewTest1(context); // this works
-
-        Log.d(TAG, String.format("view size: w=%d h=%d", viewSize.width, viewSize.height));
-
-        clockLayout.measure(viewSize.width, viewSize.height);
-        clockLayout.layout(0, 0, viewSize.width, viewSize.height);
-        clockLayout.setDrawingCacheEnabled(true);
-        Bitmap clockBitmap = clockLayout.getDrawingCache();
-        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
-        updateViews.setImageViewBitmap(R.id.clockWidgetImageView, clockBitmap);
-
-        // click activates app
-        Intent intent = new Intent(context, NightDreamActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
-
-        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
-    }
-
-    private static void renderClockWidgetTest2(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Dimension viewSize) {
-
-        //View clockView = new CustomAnalogClock(context);
-        //AutoAdjustTextView clockView = new CustomDigitalClock(context);
-        //View clockView = new CustomAnalogClock4(context);
-
         LayoutInflater inflater = LayoutInflater.from(context);
         View rootView = inflater.inflate(R.layout.clock_widget_clock_layout, null);
         ClockLayout clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         View container = rootView.findViewById(R.id.previewContainer);
 
-        clockLayout.setScaleFactor(1f);
-        if (Build.VERSION.SDK_INT >= 11) {
-            clockLayout.setTranslationX(0);
-            clockLayout.setTranslationY(0);
-        } else {
-            clockLayout.setPadding(0, 0, 0, 0);
-        }
-        //clockLayout.updateLayout(viewSize.width, config);
-        clockLayout.setVisibility(View.VISIBLE);
+        clockLayout.setScaleFactor(.8f);
 
         Log.d(TAG, String.format("view size: w=%d h=%d", viewSize.width, viewSize.height));
 
-
         // TODO: init all clockLayout params like in ClockLayoutPreviewPreference.updateView()
-        //Utility utility = new Utility(context);
-        //Point size = utility.getDisplaySize();
         clockLayout.setLayout(ClockLayout.LAYOUT_ID_DIGITAL);
         Configuration config = context.getResources().getConfiguration();
+
         clockLayout.updateLayout(viewSize.width, config);
         clockLayout.requestLayout();
         clockLayout.invalidate();
         //
-
-
         rootView.measure(viewSize.width, viewSize.height);
-
-
-
         rootView.layout(0, 0, viewSize.width, viewSize.height);
 
         Log.d(TAG, "clockLayout.getWidth()=" + clockLayout.getWidth() + ", container width=" + container.getWidth());
 
         //center after layout
-        /*
         if (clockLayout.getWidth() > 0 && clockLayout.getWidth() < viewSize.width) {
-            clockLayout.setLeft((viewSize.width - clockLayout.getWidth()) / 2);
+            //clockLayout.setLeft((viewSize.width - clockLayout.getWidth()) / 2);
+            int left = (viewSize.width - clockLayout.getWidth()) / 2;
+            int top = (viewSize.height - clockLayout.getHeight()) / 2;
+            if (Build.VERSION.SDK_INT >= 11) {
+                clockLayout.setTranslationX(left);
+                clockLayout.setTranslationY(-20);
+            } else {
+                //?
+                //clockLayout.setPadding(0, 0, 0, 0);
+            }
         }
-        */
 
         rootView.setDrawingCacheEnabled(true);
         Bitmap clockBitmap = rootView.getDrawingCache();
@@ -198,39 +164,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         appWidgetManager.updateAppWidget(appWidgetId, updateViews);
     }
-
-    private static View createClockViewTest1(Context context) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View clockLayout = inflater.inflate(R.layout.clock_layout, null);
-        AutoAdjustTextView clock = (AutoAdjustTextView) clockLayout.findViewById(R.id.clock);
-        AutoAdjustTextView date = (AutoAdjustTextView) clockLayout.findViewById(R.id.date);
-        Settings settings = new Settings(context);
-        if (clock != null) {
-
-            Typeface tf = settings.typeface;
-            //Log.d(TAG, "#### typeface: " + tf.toString());
-            clock.setTypeface(settings.typeface);
-
-            Log.d(TAG, "#### clockColor: " + settings.clockColor);
-
-            //day/night?
-            //int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
-            //int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
-            int accentColor = settings.clockColor;
-            int textColor = settings.secondaryColor;
-            clock.setTextColor(accentColor);
-
-        }
-
-        if (date != null) {
-            CustomDigitalClock tdate = (CustomDigitalClock) date;
-            tdate.setFormat12Hour(settings.dateFormat);
-            tdate.setFormat24Hour(settings.dateFormat);
-        }
-
-        return clockLayout;
-    }
-
 
 
     public static final class Dimension {
