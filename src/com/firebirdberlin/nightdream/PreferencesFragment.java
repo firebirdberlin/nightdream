@@ -603,7 +603,8 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
-        Preference customAlarmToneURI = findPreference("customAlarmToneUri");
+        final Preference customAlarmToneURI = findPreference("customAlarmToneUri");
+        customAlarmToneURI.setSummary(settings.AlarmToneName);
         customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -612,8 +613,16 @@ public class PreferencesFragment extends PreferenceFragment {
                 dialog.setSelectedUri(settings.AlarmToneUri);
                 dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
                     @Override
-                    public void onAlarmToneSelected(Uri uri) {
-                        settings.setAlarmToneUri(uri != null ? uri.toString() : null);
+                    public void onAlarmToneSelected(Uri uri, String name) {
+                        String summary;
+                        if (purchased_web_radio || !uri.getScheme().equals("file")) {
+                            settings.setAlarmToneUri(uri != null ? uri.toString() : null, name);
+                            summary = name;
+                        } else {
+                            summary = String.format("%s (%s)", name,
+                                    mContext.getString(R.string.product_name_webradio));
+                        }
+                        customAlarmToneURI.setSummary(summary);
                     }
                 });
                 dialog.show(fm, "custom sounds");

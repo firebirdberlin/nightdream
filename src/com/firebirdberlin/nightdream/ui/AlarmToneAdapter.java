@@ -159,10 +159,10 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         releaseMediaplayer();
     }
 
-    public Uri getSelectedUri() {
+    public FileUri getSelectedUri() {
         FileUri item = getItem(selectedPosition);
         if (item != null ) {
-            return item.uri;
+            return item;
         }
         return null;
     }

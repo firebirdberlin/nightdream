@@ -103,7 +103,10 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         if (arrayAdapter != null) {
                             if (mListener != null) {
-                                mListener.onAlarmToneSelected(arrayAdapter.getSelectedUri());
+                                FileUri fileUri = arrayAdapter.getSelectedUri();
+                                if (fileUri != null) {
+                                    mListener.onAlarmToneSelected(fileUri.uri, fileUri.name);
+                                }
                             }
                             arrayAdapter.release();
                         }
@@ -264,6 +267,6 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
     }
 
     public interface ManageAlarmSoundsDialogListener {
-        void onAlarmToneSelected(Uri uri);
+        void onAlarmToneSelected(Uri uri, String name);
     }
 }

@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -100,6 +99,7 @@ public class Settings {
     public long lastReviewRequestTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
     public String AlarmToneUri = "";
+    public String AlarmToneName = "";
     public String radioStreamURL = "";
     public String radioStreamURLUI = "";
     public String backgroundImageURI = "";
@@ -130,6 +130,7 @@ public class Settings {
     public void reload() {
         AlarmToneUri = settings.getString("AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
+        AlarmToneName = settings.getString("AlarmToneName", "");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         alarmVolume = settings.getInt("alarmVolume", 3);
@@ -308,14 +309,17 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public void setAlarmToneUri(String uriString) {
+    public void setAlarmToneUri(String uriString, String name) {
         AlarmToneUri = uriString;
+        AlarmToneName = name;
         SharedPreferences.Editor prefEditor = settings.edit();
 
         if ( uriString != null ) {
             prefEditor.putString("AlarmToneUri", uriString);
+            prefEditor.putString("AlarmToneName", name);
         } else {
             prefEditor.remove("AlarmToneUri");
+            prefEditor.remove("AlarmToneName");
         }
         prefEditor.commit();
     }
