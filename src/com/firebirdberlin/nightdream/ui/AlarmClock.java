@@ -455,7 +455,9 @@ public class AlarmClock extends View {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             super.onSingleTapConfirmed(e);
-            if (daydreamMode) return false;
+            if (daydreamMode || Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                return false;
+            }
             Log.w(TAG, "single tap");
 
             Point click = getClickedPoint(e);

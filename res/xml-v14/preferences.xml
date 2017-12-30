@@ -317,12 +317,9 @@
                 android:key="useInternalAlarm"
                 android:title="@string/use_internal_alarm" />
 
-            <RingtonePreference
+            <Preference
                 android:dependency="useInternalAlarm"
-                android:key="AlarmToneUri"
-                android:ringtoneType="alarm"
-                android:showDefault="false"
-                android:showSilent="false"
+                android:key="customAlarmToneUri"
                 android:title="@string/choose_alarm_sound" />
 
             <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
@@ -367,7 +364,6 @@
                     android:title="@string/radio_stream_enabled" />
 
                 <com.firebirdberlin.radiostreamapi.RadioStreamPreference
-                    android:defaultValue=""
                     android:dependency="useRadioAlarmClock"
                     android:icon="@drawable/ic_search"
                     android:key="radioStreamURL"
@@ -427,7 +423,6 @@
 
             <com.firebirdberlin.openweathermapapi.CityIDPreference
                 xmlns:owmapi="owmapi"
-                android:defaultValue=""
                 android:dependency="showWeather"
                 android:icon="@drawable/ic_search"
                 android:key="weatherCityID"
@@ -454,7 +449,6 @@
                 android:title="@string/purchaseWebRadio"/>
 
             <com.firebirdberlin.radiostreamapi.RadioStreamPreference
-                android:defaultValue=""
                 android:enabled="false"
                 android:icon="@drawable/ic_search"
                 android:key="radioStreamURLUI"

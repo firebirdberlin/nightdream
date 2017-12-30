@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:background="@android:color/transparent"
+    android:baselineAligned="true"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:orientation="horizontal"
+    android:paddingEnd="12dp"
+    android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+    android:paddingRight="12dp"
+    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    tools:targetApi="ice_cream_sandwich">
+
+        <RadioButton
+            android:id="@+id/text1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:text="RadioButton" />
+
+        <ImageView
+            android:id="@+id/buttonDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:baselineAlignBottom="false"
+            android:contentDescription="@string/delete"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:src="@drawable/ic_delete"
+            android:textAlignment="viewEnd"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:textColor="?android:attr/textColorHighlight" />
+</LinearLayout>

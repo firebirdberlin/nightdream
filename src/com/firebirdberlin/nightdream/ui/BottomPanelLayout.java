@@ -50,7 +50,9 @@ public class BottomPanelLayout extends FrameLayout {
     public void setCustomColor(int accentColor, int textColor) {
         this.accentColor = accentColor;
         this.textColor = textColor;
-        view.setCustomColor(accentColor, textColor);
+        if (view != null) {
+            view.setCustomColor(accentColor, textColor);
+        }
         if (stockAlarmView != null) stockAlarmView.setCustomColor(accentColor, textColor);
         if (webRadioLayout != null) webRadioLayout.setCustomColor(accentColor, textColor);
     }
