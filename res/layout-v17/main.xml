@@ -63,6 +63,13 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
+            <!-- Test Button -->
+            <Button
+                android:id="@+id/testButton"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:text="add station"/>
+
             <FrameLayout
                 android:id="@+id/clockLayoutContainer"
                 android:layout_width="match_parent"

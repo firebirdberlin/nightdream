@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -34,6 +35,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -68,6 +70,8 @@ import java.util.Calendar;
 import java.util.Random;
 
 import de.greenrobot.event.EventBus;
+
+import static java.security.AccessController.getContext;
 
 
 public class NightDreamUI {
@@ -421,6 +425,18 @@ public class NightDreamUI {
         radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         sidePanel.post(setupSidePanel);
+
+        //test radio stations #105
+        Button testButton = (Button) rootView.findViewById(R.id.testButton);
+        testButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(v.getContext(), "Test", Toast.LENGTH_LONG).show();
+                RadioStreamDialogFragment dialog = new RadioStreamDialogFragment();
+
+                dialog.show(((Activity)v.getContext()).getFragmentManager(), "radio_stream_dialog");
+            }
+        });
 
         OnClickListener onMenuItemClickListener = new OnClickListener() {
             public void onClick(View v) {
