@@ -17,6 +17,8 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">Névjegy</string>
+<string name="action_snooze">Szundi</string>
+<string name="action_stop">Stop</string>
 <string name="alarm">Ébresztő óra</string>
 <string name="alarmFadeIn">Hangerő növelése</string>
 <string name="alarmVolume">Hangerő</string>
@@ -27,6 +29,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="appearance">Kinézet</string>
 <string name="app_name">Éjszakai óra</string>
 <string name="auto_brightness">Automatikus fényerő</string>
+<string name="autostart_message_disabled">Kérlek kapcsold ki a képernyő védő beállitásokban, hogy automatikusan elinduljon.</string>
 <string name="autostart_timerange_label_end">Befejező időpont</string>
 <string name="autostart_timerange_label_start">Kezdő időpont</string>
 <string name="background">Háttér</string>
@@ -38,11 +41,18 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Fényerő</string>
 <string name="brightness_offset">Fényerő kiegyenlítése</string>
 <string name="buttonAccessibilitySettings">Értesítések mutatása</string>
+<string name="buy">Vásárlás.</string>
 <string name="category_handle_power">... és amikor csatlakoztatva a</string>
 <string name="category_handle_power_autostart_time">Indítás az adott időtartományban</string>
 <string name="choose_alarm_sound">Ébresztő hang</string>
 <string name="choose_primary_color">Hangsúly színe</string>
 <string name="choose_secondary_color">Szöveg színe</string>
+<string name="clear">Tiszta</string>
+<string name="clock_layout_analog">Analóg óra</string>
+<string name="clock_layout_digital">Digitális óra</string>
+<string name="clock_layout_elegant_analog">Elegáns analóg óra</string>
+<string name="clock_layout_digit_analog">Analóg óra számokkal</string>
+<string name="clock_layout_modern_analog">Modern analóg óra</string>
 <string name="colors">Színek</string>
 <string name="confirm_reset_question">Valóban vissza akarja állítani az összes beállítást?</string>
 <string name="confirm_reset">Visszaállítás</string>
@@ -51,6 +61,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute_translation">Fordítás</string>
 <string name="credits">Kredit</string>
 <string name="date_format">Dátum formája</string>
+<string name="delete">Törlés</string>
 <string name="dialog_message_thank_you">Nagyon szépen köszönöm!</string>
 <string name="dialog_title_thank_you">Köszi</string>
 <string name="donate_bitcoin">Bitérme</string>
@@ -81,9 +92,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWeatherData">Engedély vásárlása</string>
 <string name="purchaseWebRadio">Engedély vásárlása</string>
 <string name="radio_stream_enabled">Engedélyezett</string>
+<string name="radio_stream">Rádióadások</string>
 <string name="radio_stream_no_search_results">Nem volt keresési eredmény.</string>
 <string name="radio_stream_query_hint">Sor keresése</string>
-<string name="radio_stream">Rádióadások</string>
 <string name="radio_stream_search">Keresés</string>
 <string name="radio_stream_start">Rádióadás Indítása/Leállítása</string>
 <string name="radio_stream_url">Rádióadás URL</string>
@@ -111,6 +122,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_wind_speed">Mutassa a szél sebességét</string>
 <string name="speedUnit">Szél erősség egysége</string>
 <string name="temperatureUnit">Hőmérséklet egysége</string>
+<string name="today">Ma</string>
+<string name="tomorrow">Holnap</string>
 <string name="translations">Fordítások</string>
 <string name="typeface_7_segment">7-szegmenses LED</string>
 <string name="typeface_roboto_condensed">Roboto sűrített</string>

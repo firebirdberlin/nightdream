@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -42,15 +41,19 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Helderheid</string>
 <string name="brightness_offset">Helderheid standaard</string>
 <string name="buttonAccessibilitySettings">Toon meldingen</string>
+<string name="buy">Koop</string>
 <string name="category_handle_power">... en wanneer verbonden met</string>
 <string name="category_handle_power_autostart_time">Start binnen tijdsbereik</string>
 <string name="choose_alarm_sound">Alarmtoon</string>
 <string name="choose_primary_color">Accentkleur</string>
 <string name="choose_secondary_color">Tekstkleur</string>
 <string name="clear">Wissen</string>
-<string name="clock_layout">Weergave</string>
-<string name="clock_layout_digital">Digitaal</string>
 <string name="clock_layout_analog">Analoog</string>
+<string name="clock_layout_digital">Digitaal</string>
+<string name="clock_layout_elegant_analog">Elegante analoge klok</string>
+<string name="clock_layout_digit_analog">Analoge klok met getallen</string>
+<string name="clock_layout">Weergave</string>
+<string name="clock_layout_modern_analog">Moderne analoge klok</string>
 <string name="colors">Kleur</string>
 <string name="confirm_reset_question">Wil je echt alle instellingen verwijderen?</string>
 <string name="confirm_reset">Reset</string>
@@ -61,6 +64,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="credits">Credits</string>
 <string name="credits_pull_requests">Verzoeken</string>
 <string name="date_format">Datumformaat</string>
+<string name="delete">Verwijder</string>
 <string name="dialog_message_thank_you">Dank U wel!</string>
 <string name="dialog_title_thank_you">Bedankt</string>
 <string name="donate_bitcoin">Bitcoin</string>
@@ -70,6 +74,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="expertPreferences">Expert instellingen</string>
 <string name="force_auto_rotation">Forceer schermorientatie tijdens dagdromen</string>
 <string name="force_auto_rotation_summary">Forceer schermorientatie tijdens gebruik Nachtklok</string>
+<string name="forecast">Weer vijf dagen</string>
 <string name="handle_power_ac">AC</string>
 <string name="handle_power">Automatisch starten</string>
 <string name="handle_power_car">Stand voor autohouder</string>
@@ -83,20 +88,21 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">U</string>
 <string name="location_time">Plaatselijke tijd</string>
 <string name="maxBrightness">Maximale scherm helderheid</string>
-<string name="minBrightness">Minimale scherm helderheid</string>
-<string name="message_no_data_connection">Geen internet verbinding</string>
-<string name="message_mobile_data_connection">Mobiele data</string>
+<string name="maxBrightnessBattery">Maximale helderheid bij batterij</string>
 <string name="message_mobile_data_connection_confirmation">Je bent verbonden met een mobiele dataverbinding, radio stream afspelen?</string>
+<string name="message_mobile_data_connection">Mobiele data</string>
+<string name="message_no_data_connection">Geen internet verbinding</string>
+<string name="minBrightness">Minimale scherm helderheid</string>
 <string name="minute">min</string>
 <string name="mute_ringer">Mute alarm</string>
-<string name="night_mode">Nachtmodus</string>
-<string name="night_mode_activation_mode">Activering</string>
-<string name="night_mode_activation_manual">Handmatig</string>
 <string name="night_mode_activation_auto">Automatisch</string>
+<string name="night_mode_activation_manual">Handmatig</string>
+<string name="night_mode_activation_mode">Activering</string>
 <string name="night_mode_activation_scheduled">Ingesteld</string>
-<string name="night_mode_timerange_title">Nachttijd</string>
+<string name="night_mode">Nachtmodus</string>
 <string name="night_mode_timerange_label_end">Eind tijd</string>
 <string name="night_mode_timerange_label_start">Start tijd</string>
+<string name="night_mode_timerange_title">Nachttijd</string>
 <string name="noise_sensitivity">Gevoeligheid microfoon</string>
 <string name="notification_alarm">Druk om alarm te stoppen</string>
 <string name="other_apps">Andere apps</string>
@@ -105,18 +111,26 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging">Geforceerde batterijstatus</string>
 <string name="persistent_battery_value_while_charging_summary">Geef de batterijstatus altijd weer bij het opladen</string>
 <string name="preview">Voorbeeld</string>
+<string name="product_name_donation">Donatie</string>
+<string name="product_name_pro">Volledige versie</string>
+<string name="product_name_weather">Weer en design pakket</string>
+<string name="product_name_webradio">Web radio pakket</string>
 <string name="purchaseWeatherData">Koop een licentie</string>
 <string name="purchaseWebRadio">Koop een licentie</string>
 <string name="radio">Radio</string>
 <string name="radio_stream_enabled">Ingeschakeld</string>
-<string name="radio_stream_no_search_results">Geen zoekresultaten</string>
-<string name="radio_stream_query_hint">Zoek</string>
 <string name="radio_stream">Radio streams</string>
+<string name="radio_stream_failure">Radio stream probleem</string>
+<string name="radio_stream_manual_input_hint">Handmatig een station toevoegen</string>
+<string name="radio_stream_manual_input_url">URL streamen</string>
+<string name="radio_stream_manual_input_description">Naam station</string>
+<string name="radio_stream_no_search_results">Geen zoekresultaten</string>
+<string name="radio_stream_offline">Offline</string>
+<string name="radio_stream_query_hint">Zoek</string>
 <string name="radio_stream_search">Zoeken</string>
 <string name="radio_stream_start">Start/Stop radio</string>
+<string name="radio_stream_unreachable_url">URL is niet bereikbaar</string>
 <string name="radio_stream_url">Radio stream URL</string>
-<string name="radio_stream_offline">Offline</string>
-<string name="radio_stream_failure">Radio stream probleem</string>
 <string name="reactivate_on_ambient_light_value">Licht grens</string>
 <string name="reactivate_on_ambient_light_value_summary">Bij bereiken ingestelde helderheid wordt het scherm geactiveerd.</string>
 <string name="reactivate_screen_on_noise">Wakker worden van omgevingsgeluid</string>
@@ -124,6 +138,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend_app_subject">Ik wil je deze nachtklok aanbevelen</string>
 <string name="recommend">Beveel deze applicatie aan.</string>
 <string name="remaining">Rest.</string>
+<string name="repeat">Herhaal</string>
 <string name="reset_to_defaults">Terug naar originele instellingen</string>
 <string name="restless_mode">Beweeg klok over het scherm</string>
 <string name="review_request">Beoordeel deze applicatie a.u.b. Bedankt!</string>
@@ -135,9 +150,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Schermorientatie</string>
 <string name="select_alarm_sound">Kies alarmgeluid</string>
 <string name="set_alarm">Stel alarm in</string>
-<string name="showcase_text_set_alarms">Tik en schuif je vinger om een eenmalig alarm in te stellen.</string>
 <string name="showcase_text_delete_alarms">Tik hier om een alarm te stoppen of te verwijderen.</string>
 <string name="showcase_text_screen_lock">Scherm is vergrendeld druk lang op de icon om te ongrendelen</string>
+<string name="showcase_text_set_alarms">Tik en schuif je vinger om een eenmalig alarm in te stellen.</string>
 <string name="showcase_title_screen_lock">Scherm vergrendeling</string>
 <string name="show_date">Toon datum</string>
 <string name="show_temperature">Temperatuur</string>
@@ -145,14 +160,16 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_wind_speed">Windsnelheid</string>
 <string name="snoozeTime">Sluimer tijd</string>
 <string name="speedUnit">Eenheid windsnelheid</string>
-<string name="standbyEnabledWhileConnectedTitle">Standby modes</string>
 <string name="standbyEnabledWhileConnectedSummary">Activeer als het scherm uit staat</string>
-<string name="standbyEnabledWhileDisconnectedTitle">Standby modes tijdens ontladen</string>
+<string name="standbyEnabledWhileConnectedTitle">Standby modes</string>
 <string name="standbyEnabledWhileDisconnectedSummary">Deze optie zorgt ervoor dat je batterij snel leeg gaat.</string>
+<string name="standbyEnabledWhileDisconnectedTitle">Standby modes tijdens ontladen</string>
 <string name="standbyNotificationText">Standby service is geactiveerd</string>
-<string name="titlePrivacyPolicy">Privacy beleid</string>
 <string name="temperatureUnit">Temperatuur eenheid</string>
 <string name="timeFormat">Tijdseenheid</string>
+<string name="titlePrivacyPolicy">Privacy beleid</string>
+<string name="today">Vandaag</string>
+<string name="tomorrow">Morgen</string>
 <string name="translations">Vertalingen</string>
 <string name="typeface_7_segment">7-segment LED</string>
 <string name="typeface_roboto_condensed">Roboto compact</string>
@@ -162,9 +179,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto dun</string>
 <string name="typeface">Lettertype</string>
 <string name="uninstall">Programma deinstalleren</string>
-<string name="use_internal_alarm">Snelle alarmen</string>
-<string name="useDeviceLock">Apparaat vergrendelen</string>
+<string name="useDeviceLockDescription">De vergrendeloptie heeft administrator toestemming nodig. Zet deze optie uit voordat u de app verwijdert</string>
 <string name="useDeviceLockExplanation">Apparaat vergrendelen wanneer night clock is geactiveerd</string>
+<string name="useDeviceLock">Apparaat vergrendelen</string>
+<string name="use_internal_alarm">Snelle alarmen</string>
 <string name="weather_calculation_time">Weerberekeningstijdstip</string>
 <string name="weather_city_id_summary">Open houden voor een automatische locatie berekening</string>
 <string name="weather_city_id_title">Locatie zoeken</string>

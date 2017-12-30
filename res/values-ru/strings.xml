@@ -50,6 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="clock_layout_analog">Аналоговые</string>
 <string name="clock_layout_digital">Цифровые</string>
 <string name="clock_layout_elegant_analog">Элегантные аналоговые часы</string>
+<string name="clock_layout_digit_analog">Аналоговые часы с цифрами</string>
 <string name="clock_layout">Тип часов</string>
 <string name="clock_layout_modern_analog">Модерновые аналоговые часы</string>
 <string name="colors">Цвета</string>
@@ -57,7 +58,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="confirm_reset">Сброс</string>
 <string name="contribute">Внести свой вклад в проект</string>
 <string name="contribute_source_code">Исходный код проекта</string>
-<string name="contribute_translation">Перевести на другой язык</string>
+<string name="contribute_translation">Перевод</string>
 <string name="country">Страна</string>
 <string name="credits">Разработчики</string>
 <string name="credits_pull_requests">Pull requests</string>
@@ -86,6 +87,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">ч.</string>
 <string name="location_time">Местное время</string>
 <string name="maxBrightness">Максимальная яркость экрана</string>
+<string name="maxBrightnessBattery">Максимальная яркость от АКБ</string>
 <string name="message_mobile_data_connection_confirmation">Вы подключены к сотовой сети. Запустить радио?</string>
 <string name="message_mobile_data_connection">Подключение к Интернету</string>
 <string name="message_no_data_connection">Нет подключения к Интернету</string>
@@ -119,12 +121,14 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream">Потоковое радио</string>
 <string name="radio_stream_failure">Поток неожиданно остановлен</string>
 <string name="radio_stream_manual_input_hint">Добавить станцию вручную</string>
+<string name="radio_stream_manual_input_url">Поток URL</string>
 <string name="radio_stream_manual_input_description">Название станции</string>
 <string name="radio_stream_no_search_results">Поиск не дал результатов</string>
 <string name="radio_stream_offline">Отключено</string>
 <string name="radio_stream_query_hint">Строка поиска</string>
 <string name="radio_stream_search">Поиск</string>
 <string name="radio_stream_start">Запустить/отключить радио</string>
+<string name="radio_stream_unreachable_url">URL недоступен</string>
 <string name="radio_stream_url">URL потокового радио</string>
 <string name="reactivate_on_ambient_light_value">Предел освещения</string>
 <string name="reactivate_on_ambient_light_value_summary">Включить экран, если превышен предел освещения</string>
@@ -153,13 +157,13 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Показывать температуру</string>
 <string name="show_weather">Показывать местную погоду</string>
 <string name="show_wind_speed">Показывать скорость ветра</string>
-<string name="sleep_time_dialog_title">Время сна</string>
+<string name="sleep_time_dialog_title">Таймер сна</string>
 <string name="snoozeTime">Время повтора</string>
 <string name="speedUnit">Ед. скорости ветра</string>
 <string name="standbyEnabledWhileConnectedSummary">Активировать при выключении экрана.</string>
 <string name="standbyEnabledWhileConnectedTitle">Режим ожидания</string>
-<string name="standbyEnabledWhileDisconnectedSummary">Это ускорит разряд батареи!</string>
-<string name="standbyEnabledWhileDisconnectedTitle">Режим ожидания при разряде.</string>
+<string name="standbyEnabledWhileDisconnectedSummary">Это ускорит разряд АКБ!</string>
+<string name="standbyEnabledWhileDisconnectedTitle">Режим ожидания при разрядке.</string>
 <string name="standbyNotificationText">Режим ожидания запущен.</string>
 <string name="temperatureUnit">Ед. температуры</string>
 <string name="timeFormat">Формат времени</string>
@@ -178,7 +182,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="useDeviceLockDescription">Функция блокировки экрана требует разрешения администратора устройства. Чтобы удалить приложение, отключите эту функцию.</string>
 <string name="useDeviceLockExplanation">Заблокировать устройство когда Night Clock запущен.</string>
 <string name="useDeviceLock">Заблокировать устройство</string>
-<string name="use_internal_alarm">Использовать будильник</string>
+<string name="use_internal_alarm">Быстрый будильник</string>
 <string name="weather_calculation_time">время подсчёта погоды</string>
 <string name="weather_city_id_summary">Оставьте пустым для автоопределения местоположения</string>
 <string name="weather_city_id_title">Поиск местоположения</string>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -38,8 +37,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="behaviour">السلوك</string>
 <string name="brightness">السطوع</string>
 <string name="brightness_offset">تعويض السطوع</string>
-<string name="buttonAccessibilitySettings">تشغيل الإستماع الى الإشعارات</string>
-<string name="category_handle_power">وعند الإتصال بـ ...</string>
+<string name="buttonAccessibilitySettings">تشغيل الاستماع الى الإشعارات</string>
+<string name="category_handle_power">وعند الاتصال بـ ...</string>
 <string name="category_handle_power_autostart_time">التشغيل في المدة الزمنية</string>
 <string name="choose_alarm_sound">نغمة المنبه</string>
 <string name="choose_primary_color">لون الساعة</string>
@@ -59,6 +58,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="donate">التبرع</string>
 <string name="force_auto_rotation">إجبار التدوير في حلم اليقظة</string>
 <string name="force_auto_rotation_summary">إجبار تدوير الشاشة عند إستخدام حلم اليقظة</string>
+<string name="forecast">النشرة الجوية لخمسة أيام</string>
 <string name="handle_power_ac">الكهرباء</string>
 <string name="handle_power">بدء تلقائي</string>
 <string name="handle_power_car">وصلة السيارة</string>
@@ -74,9 +74,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="message_no_data_connection">البيانات غير متوفرة</string>
 <string name="minute">دقائق</string>
 <string name="mute_ringer">نغمة صامتة</string>
-<string name="night_mode">الوضع الليلي</string>
-<string name="night_mode_activation_manual">يدوي</string>
 <string name="night_mode_activation_auto">آلي</string>
+<string name="night_mode_activation_manual">يدوي</string>
+<string name="night_mode">الوضع الليلي</string>
 <string name="noise_sensitivity">إحساس الميكروفون</string>
 <string name="notification_alarm">إضغط لإيقاف المنبه</string>
 <string name="other_apps">تطبيقات أخرى</string>
@@ -86,9 +86,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWeatherData">اشتري ترخيص</string>
 <string name="purchaseWebRadio">اشتري ترخيص</string>
 <string name="radio_stream_enabled">تمكين</string>
+<string name="radio_stream">موجات الراديو</string>
 <string name="radio_stream_no_search_results">لا يوجد نتائج للبحث</string>
 <string name="radio_stream_query_hint">البحث بـ</string>
-<string name="radio_stream">موجات الراديو</string>
 <string name="radio_stream_start">بدء/وقف موجة الراديو</string>
 <string name="radio_stream_url">رابط موجة الراديو</string>
 <string name="reactivate_on_ambient_light_value">درجة الإحساس بالضوء</string>

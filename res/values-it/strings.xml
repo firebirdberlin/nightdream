@@ -17,7 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">A proposito</string>
-<string name="action_snooze">Rinvio sveglia</string>
+<string name="action_snooze">Postponi  sveglia</string>
 <string name="action_stop">Stop</string>
 <string name="alarmFadeIn">Volume incrementale</string>
 <string name="alarmVolume">Volume</string>
@@ -40,7 +40,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Luminosità</string>
 <string name="brightness_offset">Scostamento luminosità</string>
 <string name="buttonAccessibilitySettings">Mostra le notifiche</string>
-<string name="buy">Compra</string>
+<string name="buy">Acquista</string>
 <string name="category_handle_power">... e se connesso a</string>
 <string name="category_handle_power_autostart_time">Avvia nell\'intervallo</string>
 <string name="choose_alarm_sound">Suono della sveglia</string>
@@ -50,6 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="clock_layout_analog">Orologio analogico</string>
 <string name="clock_layout_digital">Orologio digitale</string>
 <string name="clock_layout_elegant_analog">Orologio analogico elegante</string>
+<string name="clock_layout_digit_analog">Orologio analogico con numeri</string>
 <string name="clock_layout">Tipo orologio</string>
 <string name="clock_layout_modern_analog">Orologio analogico moderno</string>
 <string name="colors">Colori</string>
@@ -86,6 +87,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">Ora</string>
 <string name="location_time">Ora locale</string>
 <string name="maxBrightness">Massima luminosità schermo</string>
+<string name="maxBrightnessBattery">Massima luminosità schermo da batteria</string>
 <string name="message_mobile_data_connection_confirmation">Sei connesso ad una rete mobile. Desideri riprodurre lo stream radio?</string>
 <string name="message_mobile_data_connection">Collegamento dati da rete cellulare</string>
 <string name="message_no_data_connection">Nessun collegamento dati</string>
@@ -103,7 +105,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="noise_sensitivity">Sensibilità del microfono</string>
 <string name="notification_alarm">Fai click per fermare la sveglia</string>
 <string name="other_apps">Altre app</string>
-<string name="other_apps_tinytimetracker_summary">Torni traccia del tuo tempo di lavoro quotidiano</string>
+<string name="other_apps_tinytimetracker_summary">Tieni traccia del tuo tempo di lavoro quotidiano</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
 <string name="persistent_battery_value_while_charging">Livello batteria persistente</string>
 <string name="persistent_battery_value_while_charging_summary">Mostra lo stato della batteria durante il caricamento</string>
@@ -117,12 +119,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_enabled">Abilitato</string>
 <string name="radio_stream">Radio</string>
 <string name="radio_stream_failure">Errore sullo stream radio</string>
+<string name="radio_stream_manual_input_hint">Aggiungi Radio manualmente </string>
+<string name="radio_stream_manual_input_description">Nome stazione radio</string>
 <string name="radio_stream_no_search_results">La ricerca non ha dato risultati.</string>
 <string name="radio_stream_offline">Offline</string>
 <string name="radio_stream_query_hint">Stringa di ricerca</string>
 <string name="radio_stream_search">Cerca</string>
 <string name="radio_stream_start">avvia/interrompi flusso radio</string>
-<string name="radio_stream_url">URL flusso radio</string>
+<string name="radio_stream_unreachable_url">l\'URL non è raggiungibile</string>
+<string name="radio_stream_url">URL web radio</string>
 <string name="reactivate_on_ambient_light_value">Soglia luminosità</string>
 <string name="reactivate_on_ambient_light_value_summary">lo schermo viene riattivato se la soglia di luminosità  viene superata</string>
 <string name="reactivate_screen_on_noise">Attiva al rumore ambientale</string>
@@ -170,6 +175,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="useDeviceLock">Blocca dispositivo</string>
 <string name="use_internal_alarm">Allarmi rapidi</string>
 <string name="weather_calculation_time">Tempo di calcolo previsioni meteo</string>
+<string name="weather_city_id_summary">Lasciare vuoto per autoricerca</string>
+<string name="weather_city_id_title">Ricerca posizione</string>
 <string name="weather_info_title">Informazioni</string>
 <string name="weather">Meteo</string>
 <string name="welcome_screen_text1">Benvenuto nel tuo nuovo orologio notturno! Questa app mostra l\'ora corrente mentre carichi il tuo smartphone.</string>
