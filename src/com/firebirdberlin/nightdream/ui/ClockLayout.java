@@ -105,6 +105,9 @@ public class ClockLayout extends LinearLayout {
         if ( clock_ampm != null ) {
             clock_ampm.setTypeface(typeface);
         }
+        if (analog_clock != null) {
+            analog_clock.setTypeface(typeface);
+        }
     }
 
     public void setPrimaryColor(int color) {

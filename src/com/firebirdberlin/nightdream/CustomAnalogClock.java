@@ -14,6 +14,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -28,6 +29,7 @@ public class CustomAnalogClock extends View {
     int customSecondaryColor = Color.parseColor("#C2C2C2");
     ColorFilter customColorFilter;
     ColorFilter secondaryColorFilter;
+    Typeface typeface = Typeface.DEFAULT;
 
     public CustomAnalogClock(Context context) {
         super(context);
@@ -45,6 +47,10 @@ public class CustomAnalogClock extends View {
         customColorFilter = new LightingColorFilter(customColor, 1);
         secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
 
+    }
+
+    public void setTypeface(Typeface typeface) {
+        this.typeface = typeface;
     }
 
     @Override
