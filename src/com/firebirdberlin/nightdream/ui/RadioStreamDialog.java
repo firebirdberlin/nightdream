@@ -29,6 +29,7 @@ import com.firebirdberlin.radiostreamapi.StationRequestTask;
 import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -362,6 +363,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
         }
+
     }
 
     private List<String> getPreferredCountryCodes() {
