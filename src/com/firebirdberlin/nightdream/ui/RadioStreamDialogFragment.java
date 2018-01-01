@@ -1,8 +1,10 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,10 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.radiostreamapi.RadioStreamPreference;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.util.ArrayList;
@@ -26,6 +27,15 @@ public class RadioStreamDialogFragment extends DialogFragment {
     private final static String TAG = "RadioStreamDialogFragment";
 
     private RadioStreamDialog radioStreamDialog;
+
+    private final RadioStreamDialogListener listener;
+    private final RadioStation radioStation;
+
+    public RadioStreamDialogFragment(RadioStreamDialogListener listener, RadioStation radioStation) {
+        super();
+        this.listener = listener;
+        this.radioStation = radioStation;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -63,32 +73,25 @@ public class RadioStreamDialogFragment extends DialogFragment {
         return builder.create();
         */
 
-        // TODO get current station
-        RadioStation station = null;
+        radioStreamDialog = new RadioStreamDialog(getActivity(), radioStation);
 
-        final RadioStreamDialogListener dialogListener = new RadioStreamDialogListener() {
+        RadioStreamDialogListener dialogDismissListener = new RadioStreamDialogListener() {
+            @Override
             public void onRadioStreamSelected(RadioStation station) {
-                //TODO save station to some preset (json)
+                getDialog().dismiss();
+                // delegate to listener
+                listener.onRadioStreamSelected(station);
             }
         };
 
-        radioStreamDialog = new RadioStreamDialog(getActivity(), station);
-        View view = radioStreamDialog.createDialogView(dialogListener);
+        View view = radioStreamDialog.createDialogView(dialogDismissListener);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
         builder.setTitle(R.string.radio_stream)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // FIRE ZE MISSILES!
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
+                .setPositiveButton(null, null)
+                .setNegativeButton(android.R.string.cancel, null);
         // Create the AlertDialog object and return it
         return builder.create();
 
@@ -101,4 +104,10 @@ public class RadioStreamDialogFragment extends DialogFragment {
         super.onResume();
     }
     */
+
+    public static void showDialog(Activity parentActivity, int favoriteIndex, RadioStation radioStation, RadioStreamDialogListener listener) {
+        RadioStreamDialogFragment dialog = new RadioStreamDialogFragment(listener, radioStation);
+        //todo: show favoriteIndex in dialog title?
+        dialog.show(parentActivity.getFragmentManager(), "radio_stream_dialog");
+    }
 }

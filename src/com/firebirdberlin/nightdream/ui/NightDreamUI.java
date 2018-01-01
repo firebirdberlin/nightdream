@@ -58,11 +58,15 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
+import org.json.JSONException;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
@@ -427,14 +431,54 @@ public class NightDreamUI {
         sidePanel.post(setupSidePanel);
 
         //test radio stations #105
-        Button testButton = (Button) rootView.findViewById(R.id.testButton);
-        testButton.setOnClickListener(new OnClickListener() {
+        Button testButton1 = (Button) rootView.findViewById(R.id.testButton1);
+        testButton1.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                //Toast.makeText(v.getContext(), "Test", Toast.LENGTH_LONG).show();
-                RadioStreamDialogFragment dialog = new RadioStreamDialogFragment();
+            public void onClick(final View v) {
 
-                dialog.show(((Activity)v.getContext()).getFragmentManager(), "radio_stream_dialog");
+                final int stationIndex = 0;
+
+                //Toast.makeText(v.getContext(), "Test", Toast.LENGTH_LONG).show();
+                RadioStreamDialogListener listener = new RadioStreamDialogListener() {
+                    @Override
+                    public void onRadioStreamSelected(RadioStation station) {
+                        Toast.makeText(v.getContext(), "Save radio station #" + stationIndex + ": " + station.name, Toast.LENGTH_LONG).show();
+
+                        // update station in settings
+                        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+                        stations.set(stationIndex, station);
+                        settings.setFavoriteRadioStations(stations);
+                    }
+                };
+
+                FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+                RadioStation station = stations.get(stationIndex);
+                RadioStreamDialogFragment.showDialog((Activity)v.getContext(), stationIndex, station, listener);
+            }
+        });
+        Button testButton2 = (Button) rootView.findViewById(R.id.testButton2);
+        testButton2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+
+                final int stationIndex = 1;
+
+                //Toast.makeText(v.getContext(), "Test", Toast.LENGTH_LONG).show();
+                RadioStreamDialogListener listener = new RadioStreamDialogListener() {
+                    @Override
+                    public void onRadioStreamSelected(RadioStation station) {
+                        Toast.makeText(v.getContext(), "Save radio station #" + stationIndex + ": " + station.name, Toast.LENGTH_LONG).show();
+
+                        // update station in settings
+                        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+                        stations.set(stationIndex, station);
+                        settings.setFavoriteRadioStations(stations);
+                    }
+                };
+
+                FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+                RadioStation station = stations.get(stationIndex);
+                RadioStreamDialogFragment.showDialog((Activity)v.getContext(), stationIndex, station, listener);
             }
         });
 

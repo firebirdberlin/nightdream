@@ -22,6 +22,10 @@ public class RadioStation {
 
     public static RadioStation fromJson(String json) throws JSONException {
         JSONObject jsonStation = new JSONObject(json);
+        return fromJsonObj(jsonStation);
+    }
+
+    public static RadioStation fromJsonObj(JSONObject jsonStation) throws JSONException {
         RadioStation station = new RadioStation();
         station.id = jsonStation.getLong(JSON_ID);
         station.name = jsonStation.getString(JSON_NAME);
@@ -51,6 +55,11 @@ public class RadioStation {
     }
 
     public String toJson() throws JSONException {
+        final JSONObject jsonStation = toJsonObject();
+        return jsonStation.toString();
+    }
+
+    public JSONObject toJsonObject() throws JSONException {
         JSONObject jsonStation = new JSONObject();
         jsonStation.put(JSON_ID, id);
         jsonStation.put(JSON_NAME, name);
@@ -60,6 +69,6 @@ public class RadioStation {
         jsonStation.put(JSON_USER_DEFINED_STREAM_URL, isUserDefinedStreamUrl);
         //jsonStation.put(JSON_STATUS, isOnline);
 
-        return jsonStation.toString();
+        return jsonStation;
     }
 }

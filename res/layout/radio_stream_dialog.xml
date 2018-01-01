@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:minWidth="300dp"
     android:orientation="vertical"
     android:padding="24dp"
     android:theme="@style/DialogTheme">
@@ -21,7 +22,7 @@
             android:id="@+id/countrySpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <LinearLayout

@@ -63,13 +63,22 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <!-- Test Button -->
-            <Button
-                android:id="@+id/testButton"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:text="add station"/>
-
+            <!-- Test Buttons -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <Button
+                    android:id="@+id/testButton1"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:text="#1"/>
+                <Button
+                    android:id="@+id/testButton2"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:text="#2"/>
+            </LinearLayout>
             <FrameLayout
                 android:id="@+id/clockLayoutContainer"
                 android:layout_width="match_parent"

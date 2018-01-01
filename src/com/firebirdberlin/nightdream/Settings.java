@@ -17,6 +17,7 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
@@ -532,5 +533,33 @@ public class Settings {
             }
         }
         return null;
+    }
+
+    private static final String FAVORITE_RADIO_STATIOS_KEY = "favoriteRadioStations";
+
+    public FavoriteRadioStations getFavoriteRadioStations() {
+        String json = settings.getString(FAVORITE_RADIO_STATIOS_KEY, null);
+        if (json != null) {
+            Log.i(TAG, json);
+            try {
+                FavoriteRadioStations stations = FavoriteRadioStations.fromJson(json);
+                return stations;
+            } catch (JSONException e) {
+                Log.e(TAG, "error converting json to FavoriteRadioStations", e);
+            }
+        }
+        return new FavoriteRadioStations();
+
+    }
+
+    public void setFavoriteRadioStations(FavoriteRadioStations stations) {
+        try {
+            String json = stations.toJson();
+            SharedPreferences.Editor prefEditor = settings.edit();
+            prefEditor.putString(FAVORITE_RADIO_STATIOS_KEY, json);
+            prefEditor.commit();
+        } catch (JSONException e) {
+            Log.e(TAG, "error converting FavoriteRadioStations to json", e);
+        }
     }
 }
