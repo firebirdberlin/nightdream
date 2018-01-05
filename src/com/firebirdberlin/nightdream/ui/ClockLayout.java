@@ -61,7 +61,7 @@ public class ClockLayout extends LinearLayout {
             child = inflater.inflate(R.layout.analog_clock_layout, null);
         } else
         if (layoutId == LAYOUT_ID_ANALOG2 ){
-            child = inflater.inflate(R.layout.analog_clock_layout_2, null);
+            child = inflater.inflate(R.layout.analog_clock_layout_4, null);
         } else
         if (layoutId == LAYOUT_ID_ANALOG3) {
             child = inflater.inflate(R.layout.analog_clock_layout_3, null);
@@ -259,6 +259,14 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void setupLayoutAnalog2(int parentWidth, Configuration config) {
+        switch (layoutId) {
+            case LAYOUT_ID_ANALOG2:
+                analog_clock.setStyle(CustomAnalogClock.Style.SIMPLE);
+                break;
+            case LAYOUT_ID_ANALOG4:
+                analog_clock.setStyle(CustomAnalogClock.Style.DEFAULT);
+                break;
+        }
         final float minFontSize = 10.f; // in sp
         final float maxFontSize = 20.f; // in sp
         int widgetSize = getAnalogWidgetSize(parentWidth, config);

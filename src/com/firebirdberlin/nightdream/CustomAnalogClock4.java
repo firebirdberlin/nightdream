@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
@@ -15,23 +17,25 @@ import java.util.Calendar;
 
 
 public class CustomAnalogClock4 extends CustomAnalogClock {
-    final boolean emphasizeHour12 = true;
     final String[] ROMAN_DIGITS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
-    DigitStyle digitStyle = DigitStyle.ROMAN;
+
+    Decoration decoration = Decoration.NONE;
     float digitPosition = 0.85f;
-    boolean highlightQuarterOfHour = true;
+    DigitStyle digitStyle = DigitStyle.ARABIC;
+    boolean emphasizeHour12 = true;
     HandShape handShape = HandShape.TRIANGLE;
     float handLengthHours = 0.8f;
     float handLengthMinutes = 0.95f;
     float handWidthHours = 0.04f;
     float handWidthMinutes = 0.04f;
-    TickStyle tickStyleMinutes = TickStyle.DASH;
+    boolean highlightQuarterOfHour = true;
     float tickStartMinutes = 0.95f;
+    TickStyle tickStyleMinutes = TickStyle.DASH;
     float tickLengthMinutes = 0.04f;
-    TickStyle tickStyleHours = TickStyle.CIRCLE;
     float tickStartHours = 0.95f;
+    TickStyle tickStyleHours = TickStyle.CIRCLE;
     float tickLengthHours = 0.04f;
-    boolean enableShader = false;
+
     public CustomAnalogClock4(Context context) {
         super(context);
     }
@@ -45,6 +49,47 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         Rect bounds = new Rect();
         paint.getTextBounds(dummyText, 0, dummyText.length(), bounds);
         return dummyFontSize * destWidth / bounds.width();
+    }
+
+    public void setStyle(Style style) {
+        switch (style) {
+            case DEFAULT:
+                decoration = Decoration.NONE;
+                digitPosition = 0.85f;
+                digitStyle = DigitStyle.ARABIC;
+                emphasizeHour12 = true;
+                handShape = HandShape.TRIANGLE;
+                handLengthHours = 0.8f;
+                handLengthMinutes = 0.95f;
+                handWidthHours = 0.04f;
+                handWidthMinutes = 0.04f;
+                highlightQuarterOfHour = true;
+                tickStartMinutes = 0.95f;
+                tickStyleMinutes = TickStyle.DASH;
+                tickLengthMinutes = 0.04f;
+                tickStartHours = 0.95f;
+                tickStyleHours = TickStyle.CIRCLE;
+                tickLengthHours = 0.04f;
+                break;
+            case SIMPLE:
+                decoration = Decoration.MINUTE_HAND;
+                digitPosition = 0.85f;
+                digitStyle = DigitStyle.NONE;
+                emphasizeHour12 = false;
+                handShape = HandShape.TRIANGLE;
+                handLengthHours = 0.6f;
+                handLengthMinutes = 0.9f;
+                handWidthHours = 0.04f;
+                handWidthMinutes = 0.04f;
+                highlightQuarterOfHour = false;
+                tickStartMinutes = 0.87f;
+                tickStyleMinutes = TickStyle.NONE;
+                tickLengthMinutes = 0.06f;
+                tickStartHours = 0.87f;
+                tickStyleHours = TickStyle.DASH;
+                tickLengthHours = 0.06f;
+        }
+
     }
 
     public void onDraw(Canvas canvas) {
@@ -69,8 +114,9 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         paint.setAlpha(255);
         paint.setColor(Color.WHITE);
 
-        applyShader(paint, centerX, centerY, radius);
+        drawBackgroundArc(canvas, centerX, centerY, radius, min_angle);
 
+        applyShader(paint, centerX, centerY, radius);
         drawTicks(canvas, centerX, centerY, radius);
         drawHourDigits(canvas, centerX, centerY, radius);
         drawHands(canvas, centerX, centerY, radius, hour_angle, min_angle);
@@ -149,8 +195,28 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         canvas.drawPath(path, paint);
     }
 
+    private void drawBackgroundArc(Canvas canvas, float centerX, float centerY, int radius, double angle) {
+        if (decoration != Decoration.MINUTE_HAND) return;
+        canvas.save();
+        paint.setAlpha(70);
+        paint.setColorFilter(customColorFilter);
+        final int[] colors = {Color.TRANSPARENT, Color.WHITE};
+        final float[] positions = {0.5f, 1.f};
+        Shader gradient = new SweepGradient(centerX, centerY, colors, positions);
+        float rotate = (float) radiansToDegrees(angle);
+        Matrix gradientMatrix = new Matrix();
+        gradientMatrix.preRotate(rotate, centerX, centerY);
+        gradient.setLocalMatrix(gradientMatrix);
+
+        paint.setShader(gradient);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        canvas.drawCircle(centerX, centerY, handLengthMinutes * radius, paint);
+        paint.setShader(null);
+        canvas.restore();
+    }
+
     private void applyShader(Paint paint, float centerX, float centerY, int radius) {
-        if (!enableShader) return;
+        if (decoration != Decoration.LABELS) return;
 
         int x1 = (int) (centerX - radius), y1 = (int) (centerY - radius);
 
@@ -270,9 +336,11 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         return rad * 180. / Math.PI;
     }
 
-    enum DigitStyle {NONE, ARABIC, ROMAN}
+    public enum DigitStyle {NONE, ARABIC, ROMAN}
 
-    enum HandShape {TRIANGLE, BAR}
+    public enum HandShape {TRIANGLE, BAR}
 
-    enum TickStyle {NONE, DASH, CIRCLE}
+    public enum TickStyle {NONE, DASH, CIRCLE}
+
+    public enum Decoration {NONE, MINUTE_HAND, LABELS}
 }

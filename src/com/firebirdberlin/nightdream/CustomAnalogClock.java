@@ -1,9 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import java.lang.IllegalArgumentException;
-import java.lang.Math;
-import java.util.Calendar;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,19 +14,19 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.Calendar;
+
 
 public class CustomAnalogClock extends View {
     private static final String TAG = "CustomAnalogClock";
-
+    protected Paint paint = new Paint();
     Context context;
     TimeReceiver timeReceiver;
-    protected Paint paint = new Paint();
     int customColor = Color.GREEN;
     int customSecondaryColor = Color.parseColor("#C2C2C2");
     ColorFilter customColorFilter;
     ColorFilter secondaryColorFilter;
     Typeface typeface = Typeface.DEFAULT;
-
     public CustomAnalogClock(Context context) {
         super(context);
         init(context);
@@ -40,6 +36,10 @@ public class CustomAnalogClock extends View {
         super(context, attrs);
 
         init(context);
+    }
+
+    public void setStyle(Style style) {
+
     }
 
     private void init(Context context) {
@@ -129,6 +129,8 @@ public class CustomAnalogClock extends View {
         timeReceiver = new TimeReceiver();
         context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
     }
+
+    public enum Style {DEFAULT, SIMPLE}
 
     class TimeReceiver extends BroadcastReceiver {
         @Override
