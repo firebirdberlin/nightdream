@@ -16,37 +16,25 @@ import java.util.Calendar;
 
 public class CustomAnalogClock4 extends CustomAnalogClock {
     final boolean emphasizeHour12 = true;
-    final int DIGIT_STYLE_NONE = 0;
-    final int DIGIT_STYLE_ARABIC = 1;
-    final int DIGIT_STYLE_ROMAN = 2;
-    final int HAND_SHAPE_TRIANGLE = 1;
-    final int HAND_SHAPE_BAR = 2;
-    final int TICK_STYLE_NONE = 0;
-    final int TICK_STYLE_DASH = 1;
-    final int TICK_STYLE_CIRCLE = 2;
     final String[] ROMAN_DIGITS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
-
-    int digitStyle = DIGIT_STYLE_ROMAN;
+    DigitStyle digitStyle = DigitStyle.ROMAN;
     float digitPosition = 0.85f;
     boolean highlightQuarterOfHour = true;
-
-    int handShape = HAND_SHAPE_TRIANGLE;
+    HandShape handShape = HandShape.TRIANGLE;
     float handLengthHours = 0.8f;
     float handLengthMinutes = 0.95f;
     float handWidthHours = 0.04f;
     float handWidthMinutes = 0.04f;
-    int tickStyleMinutes = TICK_STYLE_DASH;
+    TickStyle tickStyleMinutes = TickStyle.DASH;
     float tickStartMinutes = 0.95f;
     float tickLengthMinutes = 0.04f;
-    int tickStyleHours = TICK_STYLE_CIRCLE;
+    TickStyle tickStyleHours = TickStyle.CIRCLE;
     float tickStartHours = 0.95f;
     float tickLengthHours = 0.04f;
     boolean enableShader = false;
-
     public CustomAnalogClock4(Context context) {
         super(context);
     }
-
     public CustomAnalogClock4(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -124,9 +112,9 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
 
     private void drawHand(Canvas canvas, Paint paint, float baseX, float baseY, int height, int width) {
         switch (handShape) {
-            case HAND_SHAPE_BAR:
+            case BAR:
                 drawHandBar(canvas, paint, baseX, baseY, height, width);
-            case HAND_SHAPE_TRIANGLE:
+            case TRIANGLE:
             default:
                 drawHandTriangle(canvas, paint, baseX, baseY, height, width);
                 break;
@@ -193,7 +181,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         for (double angle = 0; angle < angleMax; angle += angleDelta) {
 
             boolean isHourTick = (minuteCounter % 5 == 0);
-            int tickStyle = (isHourTick) ? tickStyleHours : tickStyleMinutes;
+            TickStyle tickStyle = (isHourTick) ? tickStyleHours : tickStyleMinutes;
             float tickStart = (isHourTick) ? tickStartHours : tickStartMinutes;
             float tickLength = (isHourTick) ? tickLengthHours : tickLengthMinutes;
 
@@ -202,9 +190,9 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
             float tickEndX = (float) (centerX + (tickStart + tickLength) * radius * Math.cos(angle));
             float tickEndY = (float) (centerY + (tickStart + tickLength) * radius * Math.sin(angle));
             switch (tickStyle) {
-                case TICK_STYLE_NONE:
+                case NONE:
                     break;
-                case TICK_STYLE_CIRCLE:
+                case CIRCLE:
                     if (isHourTick && emphasizeHour12 && minuteCounter == 45) {
                         // for "12" digit draw a special marker
                         float triangleHeight = tickLength * radius * 1.2f;
@@ -226,7 +214,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
     }
 
     private void drawHourDigits(Canvas canvas, float centerX, float centerY, int radius) {
-        if (digitStyle == DIGIT_STYLE_NONE) return;
+        if (digitStyle == DigitStyle.NONE) return;
         // calculate font-size for desired text width, so digits have equal size on any device
         final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
         final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
@@ -258,7 +246,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
             float y = (float) (centerY + digitPosition * radius * Math.sin(angle));
 
             Rect bounds = new Rect();
-            String currentHourText = (digitStyle == DIGIT_STYLE_ARABIC )
+            String currentHourText = (digitStyle == DigitStyle.ARABIC)
                                         ? String.valueOf(currentHour)
                                         : ROMAN_DIGITS[currentHour - 1];
 
@@ -281,4 +269,10 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
     private double radiansToDegrees(double rad) {
         return rad * 180. / Math.PI;
     }
+
+    enum DigitStyle {NONE, ARABIC, ROMAN}
+
+    enum HandShape {TRIANGLE, BAR}
+
+    enum TickStyle {NONE, DASH, CIRCLE}
 }
