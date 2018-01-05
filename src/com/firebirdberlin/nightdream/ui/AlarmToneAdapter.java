@@ -160,6 +160,10 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
     }
 
     public FileUri getSelectedUri() {
+        if (selectedPosition < 0 || selectedPosition >= getCount()) {
+            return null;
+        }
+
         FileUri item = getItem(selectedPosition);
         if (item != null ) {
             return item;
