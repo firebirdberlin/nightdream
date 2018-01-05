@@ -109,6 +109,10 @@ public class OpenWeatherMapApi {
 
     private static WeatherEntry getWeatherEntryFromJSONObject(JSONObject json) {
         WeatherEntry entry = new WeatherEntry();
+        if (json == null) {
+            return entry;
+        }
+
         JSONObject jsonMain = getJSONObject(json, "main");
         JSONObject jsonClouds = getJSONObject(json, "clouds");
         JSONObject jsonRain = getJSONObject(json, "rain");

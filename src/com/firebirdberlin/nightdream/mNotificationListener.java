@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -62,9 +63,10 @@ public class mNotificationListener extends NotificationListenerService {
         StatusBarNotification[] notificationList = null;
         try {
             notificationList = mNotificationListener.this.getActiveNotifications();
-        } catch (SecurityException e) {
-            //Notification listener service is not yet registered.
+        } catch (RuntimeException | OutOfMemoryError e) {
+
         }
+
         if (notificationList == null) return;
 
         for (StatusBarNotification sbn : notificationList) {

@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -106,7 +105,9 @@ public class WebRadioLayout extends RelativeLayout {
         } else {
             textView.setText("");
         }
-        spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
+        if (spinner != null) {
+            spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
+        }
     }
 
     protected void setShowConnectingHint(boolean showConnectingHint) {
