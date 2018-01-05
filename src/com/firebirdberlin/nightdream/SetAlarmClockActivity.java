@@ -108,8 +108,10 @@ public class SetAlarmClockActivity extends Activity {
                 if (!timePicker.isShown()) return;
 
                 SimpleTime entry = null;
+                boolean isNew = false;
                 if (entry_id == null) {
                     entry = new SimpleTime();
+                    isNew = true;
                 } else {
                     for (SimpleTime e : entries) {
                         if (e.id == entry_id) {
@@ -122,13 +124,13 @@ public class SetAlarmClockActivity extends Activity {
                     entry.hour = selectedHour;
                     entry.min = selectedMinute;
                     entry.isActive = true;
-
-                    entry.addRecurringDay(Calendar.MONDAY);
-                    entry.addRecurringDay(Calendar.TUESDAY);
-                    entry.addRecurringDay(Calendar.WEDNESDAY);
-                    entry.addRecurringDay(Calendar.THURSDAY);
-                    entry.addRecurringDay(Calendar.FRIDAY);
-
+                    if (isNew) {
+                        entry.addRecurringDay(Calendar.MONDAY);
+                        entry.addRecurringDay(Calendar.TUESDAY);
+                        entry.addRecurringDay(Calendar.WEDNESDAY);
+                        entry.addRecurringDay(Calendar.THURSDAY);
+                        entry.addRecurringDay(Calendar.FRIDAY);
+                    }
                     db.save(entry);
                     if (entry_id == null) {
                         entries.add(entry);
