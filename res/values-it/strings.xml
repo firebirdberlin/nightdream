@@ -17,8 +17,9 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">A proposito</string>
-<string name="action_snooze">Postponi  sveglia</string>
+<string name="action_snooze">Postponi sveglia</string>
 <string name="action_stop">Stop</string>
+<string name="add_custom_alarm_tone">Aggiungi un tono di allarme personalizzato</string>
 <string name="alarmFadeIn">Volume incrementale</string>
 <string name="alarmVolume">Volume</string>
 <string name="allow_screen_off_summary">Di notte spegni lo schermo</string>
@@ -112,6 +113,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="preview">Anteprima</string>
 <string name="product_name_donation">Donazione</string>
 <string name="product_name_pro">Versione completa</string>
+<string name="product_name_weather">Meteo e pacchetto di design</string>
 <string name="product_name_webradio">Pacchetto web radio</string>
 <string name="purchaseWeatherData">Acquista una licenza</string>
 <string name="purchaseWebRadio">Acquista una licenza</string>
@@ -120,6 +122,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream">Radio</string>
 <string name="radio_stream_failure">Errore sullo stream radio</string>
 <string name="radio_stream_manual_input_hint">Aggiungi Radio manualmente </string>
+<string name="radio_stream_manual_input_url">Stream URL</string>
 <string name="radio_stream_manual_input_description">Nome stazione radio</string>
 <string name="radio_stream_no_search_results">La ricerca non ha dato risultati.</string>
 <string name="radio_stream_offline">Offline</string>
@@ -170,8 +173,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="tomorrow">Domani</string>
 <string name="translations">Traduzione</string>
 <string name="typeface_7_segment">Led 7 segmenti</string>
+<string name="typeface_roboto_condensed">Roboto condensato</string>
+<string name="typeface_roboto_light">Roboto luminoso</string>
+<string name="typeface_roboto_medium">Roboto medio</string>
+<string name="typeface_roboto_regular">Roboto regolare</string>
+<string name="typeface_roboto_thin">Roboto leggero</string>
+<string name="typeface">carattere tipografico</string>
 <string name="uninstall">Disinstalla l\'applicazione</string>
 <string name="useDeviceLockDescription">La funzione di blocco schermo richiede privilegi amministrativi. Per disinstallare questa app per favore disabilitare questa funzione</string>
+<string name="useDeviceLockExplanation">Blocca il dispositivo mentre l\'app è attiva. Per disinstallare l\'app, si prega di revocare questa autorizzazione.</string>
 <string name="useDeviceLock">Blocca dispositivo</string>
 <string name="use_internal_alarm">Allarmi rapidi</string>
 <string name="weather_calculation_time">Tempo di calcolo previsioni meteo</string>
