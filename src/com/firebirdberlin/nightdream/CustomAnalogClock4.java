@@ -18,6 +18,9 @@ import java.util.Calendar;
 
 public class CustomAnalogClock4 extends CustomAnalogClock {
     final String[] ROMAN_DIGITS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
+    float centerX = 0.f;
+    float centerY = 0.f;
+    int radius = 0;
 
     Decoration decoration = Decoration.NONE;
     float digitPosition = 0.85f;
@@ -88,14 +91,33 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 tickStartHours = 0.87f;
                 tickStyleHours = TickStyle.DASH;
                 tickLengthHours = 0.06f;
+                break;
+            case ARC:
+                decoration = Decoration.NONE;
+                digitPosition = 0.85f;
+                digitStyle = DigitStyle.NONE;
+                emphasizeHour12 = false;
+                handShape = HandShape.ARC;
+                handLengthHours = 0.80f;
+                handLengthMinutes = 0.90f;
+                handWidthHours = 0.06f;
+                handWidthMinutes = 0.06f;
+                highlightQuarterOfHour = false;
+                tickStartMinutes = 0.87f;
+                tickStyleMinutes = TickStyle.NONE;
+                tickLengthMinutes = 0.06f;
+                tickStartHours = 0.87f;
+                tickStyleHours = TickStyle.DASH;
+                tickLengthHours = 0.06f;
+                break;
         }
 
     }
 
     public void onDraw(Canvas canvas) {
-        float centerX = getWidth() / 2;
-        float centerY = getHeight() / 2;
-        int radius = getWidth() / 2 - 20;
+        centerX = getWidth() / 2;
+        centerY = getHeight() / 2;
+        radius = getWidth() / 2 - 20;
 
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
@@ -143,23 +165,17 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 (int) (handWidthHours * radius));
         canvas.restore();
 
-        paint.setColorFilter(secondaryColorFilter);
-        paint.setAlpha(255);
-        canvas.drawCircle(centerX, centerY, 0.045f * radius, paint);
-
-        paint.setColorFilter(null);
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(2.f);
-        canvas.drawPoint(centerX, centerY, paint);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.WHITE);
-        canvas.drawCircle(centerX, centerY, 0.045f * radius, paint);
+        drawScrew(canvas);
     }
 
     private void drawHand(Canvas canvas, Paint paint, float baseX, float baseY, int height, int width) {
         switch (handShape) {
+            case ARC:
+                drawHandArc(canvas, height, width);
+                break;
             case BAR:
                 drawHandBar(canvas, paint, baseX, baseY, height, width);
+                break;
             case TRIANGLE:
             default:
                 drawHandTriangle(canvas, paint, baseX, baseY, height, width);
@@ -182,6 +198,35 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
     private void drawHandBar(Canvas canvas, Paint paint, float centerX, float centerY, int length, int width) {
         paint.setStrokeWidth(width);
         canvas.drawLine(centerX, centerY, centerX + length, centerY, paint);
+    }
+
+    private void drawHandArc(Canvas canvas, int length, int width) {
+        canvas.save();
+        float px = (float) (.93 - .87) * radius;
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(width);
+        final int[] colors = {Color.TRANSPARENT, Color.WHITE};
+        final float[] positions = {0.2f, 1.f};
+        Shader gradient = new SweepGradient(centerX, centerY, colors, positions);
+        paint.setShader(gradient);
+        canvas.drawCircle(centerX, centerY, length, paint);
+        paint.setShader(null);
+        canvas.restore();
+    }
+
+    private void drawScrew(Canvas canvas) {
+        if (handShape == HandShape.ARC) return;
+
+        paint.setColorFilter(secondaryColorFilter);
+        paint.setAlpha(255);
+        canvas.drawCircle(centerX, centerY, 0.045f * radius, paint);
+        paint.setColorFilter(null);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(2.f);
+        canvas.drawPoint(centerX, centerY, paint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.WHITE);
+        canvas.drawCircle(centerX, centerY, 0.045f * radius, paint);
     }
 
     private void drawTriangle(Canvas canvas, Paint paint, float baseX, float baseY, float width, float height) {
@@ -338,7 +383,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
 
     public enum DigitStyle {NONE, ARABIC, ROMAN}
 
-    public enum HandShape {TRIANGLE, BAR}
+    public enum HandShape {TRIANGLE, BAR, ARC}
 
     public enum TickStyle {NONE, DASH, CIRCLE}
 
