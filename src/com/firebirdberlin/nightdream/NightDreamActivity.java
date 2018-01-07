@@ -468,14 +468,23 @@ public class NightDreamActivity extends Activity
         setMode(new_mode);
     }
 
-    private void toggleRadioStreamState() {
+    public void toggleRadioStreamState() {
+        toggleRadioStreamState(0, false); // start first radio stream (legacy settings)
+    }
+
+    public void toggleRadioStreamState(final int radioStationIndex, boolean restart) {
+        boolean wasAlreadyPlaying = false;
         if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
             RadioStreamService.stop(this);
-            return;
+            wasAlreadyPlaying = true;
+            //if (!restart) { // restart does work yet (will playback previous station)
+                return;
+            //}
         }
 
         if (Utility.hasNetworkConnection(this)) {
-            if (Utility.hasFastNetworkConnection(this)) {
+            // is stream was already playing before, dont ask again? (but what if user switched from wifi to 3g since stream start?)
+            if (Utility.hasFastNetworkConnection(this) || wasAlreadyPlaying) {
                 RadioStreamService.startStream(this);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 new AlertDialog.Builder(this, R.style.DialogTheme)
@@ -485,7 +494,7 @@ public class NightDreamActivity extends Activity
                         .setIcon(R.drawable.ic_attention)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                RadioStreamService.startStream(context);
+                                RadioStreamService.startStream(context, radioStationIndex);
                                 nightDreamUI.hideSystemUI();
                             }
                         })

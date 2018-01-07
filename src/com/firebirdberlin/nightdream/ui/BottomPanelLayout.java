@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -57,11 +58,11 @@ public class BottomPanelLayout extends FrameLayout {
         if (webRadioLayout != null) webRadioLayout.setCustomColor(accentColor, textColor);
     }
 
-    public void setup() {
+    public void setup(Bundle extras) {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
         } else if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO & !daydreamMode) {
-            showWebRadioView();
+            showWebRadioView(true, extras);
         } else if (!useInternalAlarm) {
             showStockAlarmView();
         } else {
@@ -94,14 +95,19 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
-    private void showWebRadioView() {
+    public void showWebRadioView(Bundle extras) {
+        showWebRadioView(true, extras);
+    }
+
+    public void showWebRadioView(boolean showConnectingHint, Bundle extras) {
+
         if (webRadioLayout != null) return; // already visible
         removeAllViews();
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
-        webRadioLayout.setShowConnectingHint(true);
-        webRadioLayout.setText();
+        webRadioLayout.setShowConnectingHint(showConnectingHint);
+        webRadioLayout.setText(extras);
         addView(webRadioLayout);
         invalidate();
     }
@@ -110,7 +116,7 @@ public class BottomPanelLayout extends FrameLayout {
         if (webRadioLayout == null) return;
 
         webRadioLayout.setShowConnectingHint(false);
-        webRadioLayout.setText();
+        webRadioLayout.setText(null);
     }
 
     private void showAlarmView() {

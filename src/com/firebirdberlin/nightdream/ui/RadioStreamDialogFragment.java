@@ -30,11 +30,13 @@ public class RadioStreamDialogFragment extends DialogFragment {
 
     private final RadioStreamDialogListener listener;
     private final RadioStation radioStation;
+    private final int stationIndex;
 
-    public RadioStreamDialogFragment(RadioStreamDialogListener listener, RadioStation radioStation) {
+    public RadioStreamDialogFragment(RadioStreamDialogListener listener, RadioStation radioStation, int stationIndex) {
         super();
         this.listener = listener;
         this.radioStation = radioStation;
+        this.stationIndex = stationIndex;
     }
 
     @Override
@@ -88,10 +90,12 @@ public class RadioStreamDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
-        builder.setTitle(R.string.radio_stream)
+        String title = getResources().getString(R.string.radio_stream) + " #" + String.valueOf(stationIndex + 1);
+        builder.setTitle(title)
                 .setView(view)
                 .setPositiveButton(null, null)
                 .setNegativeButton(android.R.string.cancel, null);
+
         // Create the AlertDialog object and return it
         return builder.create();
 
@@ -105,8 +109,8 @@ public class RadioStreamDialogFragment extends DialogFragment {
     }
     */
 
-    public static void showDialog(Activity parentActivity, int favoriteIndex, RadioStation radioStation, RadioStreamDialogListener listener) {
-        RadioStreamDialogFragment dialog = new RadioStreamDialogFragment(listener, radioStation);
+    public static void showDialog(Activity parentActivity, int stationIndex, RadioStation radioStation, RadioStreamDialogListener listener) {
+        RadioStreamDialogFragment dialog = new RadioStreamDialogFragment(listener, radioStation, stationIndex);
         //todo: show favoriteIndex in dialog title?
         dialog.show(parentActivity.getFragmentManager(), "radio_stream_dialog");
     }

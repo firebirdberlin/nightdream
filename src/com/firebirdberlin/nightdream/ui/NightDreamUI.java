@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,7 +34,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,15 +56,11 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
-import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
-import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
-import org.json.JSONException;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
@@ -74,8 +68,6 @@ import java.util.Calendar;
 import java.util.Random;
 
 import de.greenrobot.event.EventBus;
-
-import static java.security.AccessController.getContext;
 
 
 public class NightDreamUI {
@@ -430,58 +422,6 @@ public class NightDreamUI {
         sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
         sidePanel.post(setupSidePanel);
 
-        //test radio stations #105
-        Button testButton1 = (Button) rootView.findViewById(R.id.testButton1);
-        testButton1.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-
-                final int stationIndex = 0;
-
-                //Toast.makeText(v.getContext(), "Test", Toast.LENGTH_LONG).show();
-                RadioStreamDialogListener listener = new RadioStreamDialogListener() {
-                    @Override
-                    public void onRadioStreamSelected(RadioStation station) {
-                        Toast.makeText(v.getContext(), "Save radio station #" + stationIndex + ": " + station.name, Toast.LENGTH_LONG).show();
-
-                        // update station in settings
-                        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
-                        stations.set(stationIndex, station);
-                        settings.setFavoriteRadioStations(stations);
-                    }
-                };
-
-                FavoriteRadioStations stations = settings.getFavoriteRadioStations();
-                RadioStation station = stations.get(stationIndex);
-                RadioStreamDialogFragment.showDialog((Activity)v.getContext(), stationIndex, station, listener);
-            }
-        });
-        Button testButton2 = (Button) rootView.findViewById(R.id.testButton2);
-        testButton2.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-
-                final int stationIndex = 1;
-
-                //Toast.makeText(v.getContext(), "Test", Toast.LENGTH_LONG).show();
-                RadioStreamDialogListener listener = new RadioStreamDialogListener() {
-                    @Override
-                    public void onRadioStreamSelected(RadioStation station) {
-                        Toast.makeText(v.getContext(), "Save radio station #" + stationIndex + ": " + station.name, Toast.LENGTH_LONG).show();
-
-                        // update station in settings
-                        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
-                        stations.set(stationIndex, station);
-                        settings.setFavoriteRadioStations(stations);
-                    }
-                };
-
-                FavoriteRadioStations stations = settings.getFavoriteRadioStations();
-                RadioStation station = stations.get(stationIndex);
-                RadioStreamDialogFragment.showDialog((Activity)v.getContext(), stationIndex, station, listener);
-            }
-        });
-
         OnClickListener onMenuItemClickListener = new OnClickListener() {
             public void onClick(View v) {
                 if (locked) return;
@@ -540,7 +480,7 @@ public class NightDreamUI {
         initSidePanel();
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setDaydreamMode(daydreamMode);
-        bottomPanelLayout.setup();
+        bottomPanelLayout.setup(null);
         setupScreenAnimation();
         lockUI(this.locked);
 
@@ -819,7 +759,7 @@ public class NightDreamUI {
     private void setupAlarmClock() {
         bottomPanelLayout.setDaydreamMode(daydreamMode);
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
-        bottomPanelLayout.setup();
+        bottomPanelLayout.setup(null);
         bottomPanelLayout.show();
     }
 
@@ -1175,6 +1115,9 @@ public class NightDreamUI {
             sidePanel.setClickable(true);
         }
         handler.postDelayed(hideAlarmClock, 20000);
+
+        //test for #105
+        showWebRadioBottomPanel();
     }
 
     private void hideSidePanel() {
@@ -1557,6 +1500,11 @@ public class NightDreamUI {
         }
     }
 
+    private void showWebRadioBottomPanel() {
+        bottomPanelLayout.showWebRadioView(false, null);
+        bottomPanelLayout.show();
+    }
+
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1567,7 +1515,7 @@ public class NightDreamUI {
                 clockLayout.update(settings.weatherEntry);
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
-                bottomPanelLayout.setup();
+                bottomPanelLayout.setup(intent.getExtras());
                 setRadioIconActive();
                 showAlarmClock();
             } else
@@ -1576,7 +1524,8 @@ public class NightDreamUI {
             }
             else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
-                setupAlarmClock();
+                // test: leave web radio panel open for testing #105
+                //setupAlarmClock();
                 setRadioIconInactive();
             }
         }

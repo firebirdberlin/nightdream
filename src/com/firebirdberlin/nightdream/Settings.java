@@ -537,6 +537,20 @@ public class Settings {
 
     private static final String FAVORITE_RADIO_STATIOS_KEY = "favoriteRadioStations";
 
+    public RadioStation getFavoriteRadioStation(int radioStationIndex) {
+        FavoriteRadioStations stations = getFavoriteRadioStations();
+
+        RadioStation station = null;
+        if (stations != null) {
+             station = stations.get(radioStationIndex);
+        }
+        if (station == null && radioStationIndex == 0) {
+            station = getCurrentRadioStation();
+        }
+        return station;
+    }
+
+    // todo make private, use getter for specific station index
     public FavoriteRadioStations getFavoriteRadioStations() {
         String json = settings.getString(FAVORITE_RADIO_STATIOS_KEY, null);
         if (json != null) {
