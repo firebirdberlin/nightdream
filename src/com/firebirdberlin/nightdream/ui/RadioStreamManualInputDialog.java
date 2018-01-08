@@ -26,7 +26,7 @@ public class RadioStreamManualInputDialog {
 
     public void showDialog(final Context context, RadioStation persistedRadioStation, final RadioStreamDialogListener listener) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
 
         builder.setTitle(R.string.radio_stream_manual_input_hint);
 

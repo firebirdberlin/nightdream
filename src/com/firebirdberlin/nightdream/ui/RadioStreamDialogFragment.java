@@ -93,6 +93,7 @@ public class RadioStreamDialogFragment extends DialogFragment {
         View view = radioStreamDialog.createDialogView(dialogDismissListener);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         DialogInterface.OnClickListener cancelClickListener = new DialogInterface.OnClickListener() {
 
