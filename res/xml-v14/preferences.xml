@@ -554,7 +554,8 @@ es - Romina Ramírez et. al.\n
 fr - Michel Dumont\n
 he - Nati Rubinstein\n
 hr - Tomislav Gal\n
-hu - Szabados János"
+hu - Szabados János\n
+nl - Leo van der Meulen et. al.\n"
                     android:title="@string/translations" />
 
                 <Preference
@@ -562,14 +563,15 @@ hu - Szabados János"
                     android:key="translations2"
                     android:selectable="false"
                     android:summary="
-nl - Leo van der Meulen et. al.\n
 pl - Wojciech Mudyn et. al.\n
 ro - Lucian Balaj\n
 ru - Denis Korotkov et. al.\n
 sk - Martin Renko\n
 sr - Vladimir Milić\n
 sv - Johnny Wahlberg\n
-uk - Ernest Feynman"/>
+tr - Işıl Aylanç\n
+uk - Ernest Feynman\n
+vi - Phong Nguyen"/>
 
                 <Preference
                     android:icon="@drawable/ic_icons8"

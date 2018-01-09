@@ -19,6 +19,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">O autorach</string>
 <string name="action_snooze">Drzemka</string>
 <string name="action_stop">Stop</string>
+<string name="add_custom_alarm_tone">dodaj własny dźwięk alarmu</string>
 <string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Zwiększenie głośności</string>
 <string name="alarmVolume">Głosność</string>
@@ -41,6 +42,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Jasność</string>
 <string name="brightness_offset">Intensywność świecenia</string>
 <string name="buttonAccessibilitySettings">Dostęp do powiadomień</string>
+<string name="buy">kup</string>
 <string name="category_handle_power">....obszar działania....</string>
 <string name="category_handle_power_autostart_time">Rozpocznij w przedziale czasowym</string>
 <string name="choose_alarm_sound">Dzwięk alarmu</string>
@@ -49,7 +51,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="clear">Wyczyść</string>
 <string name="clock_layout_analog">Analogowy</string>
 <string name="clock_layout_digital">Cyfrowy</string>
+<string name="clock_layout_elegant_analog">elegancki zegar analogowy</string>
+<string name="clock_layout_digit_analog">zegar analogowy z cyframi</string>
 <string name="clock_layout">Szablon</string>
+<string name="clock_layout_modern_analog">nowoczesny zegar analogowy</string>
 <string name="colors">Kolory</string>
 <string name="confirm_reset_question">Czy napewno chcesz resetować ustawienia </string>
 <string name="confirm_reset">Reset</string>
@@ -84,6 +89,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">h</string>
 <string name="location_time">Czas lokalny</string>
 <string name="maxBrightness">Maksymalna jasność podświetlenia</string>
+<string name="maxBrightnessBattery">Max jasność ekranu na baterji</string>
 <string name="message_mobile_data_connection_confirmation">Jesteś podłączony do sieci. Włączyć radio?</string>
 <string name="message_mobile_data_connection">Transfer danych mobilny</string>
 <string name="message_no_data_connection">Nie połaczono</string>
@@ -106,7 +112,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging">Status baterii</string>
 <string name="persistent_battery_value_while_charging_summary">Pokazuj status baterii cały czas podczas ładowania</string>
 <string name="preview">Podgląd</string>
+<string name="product_name_donation">Dotacja</string>
 <string name="product_name_pro">Pełna wersja</string>
+<string name="product_name_weather">Pogoda i pakiet wygladu</string>
+<string name="product_name_webradio">Radio internetowe</string>
 <string name="purchaseWeatherData">Kup licencje na pogode</string>
 <string name="purchaseWebRadio">Kup licencje na webradio</string>
 <string name="radio">Radio</string>
