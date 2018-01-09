@@ -19,7 +19,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">Hakkında</string>
 <string name="action_snooze">Ertele</string>
 <string name="action_stop">Dur</string>
+<string name="add_new_alarm">Yeni Alarm ekle</string>
 <string name="add_custom_alarm_tone">Farklı bir alarm sesi belirle</string>
+<string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Alarm sesini arttırarak çal</string>
 <string name="alarmVolume">Alarm ses seviyesi</string>
 <string name="allow_screen_off_summary">Gece boyunca ekran kapalı</string>
