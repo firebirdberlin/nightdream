@@ -358,7 +358,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
         }
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
