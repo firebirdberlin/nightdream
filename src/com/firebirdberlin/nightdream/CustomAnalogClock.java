@@ -130,7 +130,7 @@ public class CustomAnalogClock extends View {
         context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
     }
 
-    public enum Style {DEFAULT, SIMPLE, ARC}
+    public enum Style {DEFAULT, SIMPLE, ARC, MINIMALISTIC}
 
     class TimeReceiver extends BroadcastReceiver {
         @Override

@@ -32,12 +32,17 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
     float handWidthHours = 0.04f;
     float handWidthMinutes = 0.04f;
     boolean highlightQuarterOfHour = true;
+    float innerCircleRadius = 0.045f;
     float tickStartMinutes = 0.95f;
     TickStyle tickStyleMinutes = TickStyle.DASH;
     float tickLengthMinutes = 0.04f;
     float tickStartHours = 0.95f;
+    float tickWidthHours = 0.01f;
+    float tickWidthMinutes = 0.01f;
     TickStyle tickStyleHours = TickStyle.CIRCLE;
     float tickLengthHours = 0.04f;
+    float outerCircleRadius = 1.f;
+    float outerCircleWidth = 0f;
 
     public CustomAnalogClock4(Context context) {
         super(context);
@@ -55,6 +60,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
     }
 
     public void setStyle(Style style) {
+        style = Style.MINIMALISTIC;
         switch (style) {
             case DEFAULT:
                 decoration = Decoration.NONE;
@@ -67,12 +73,17 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 handWidthHours = 0.04f;
                 handWidthMinutes = 0.04f;
                 highlightQuarterOfHour = true;
+                innerCircleRadius = 0.045f;
+                outerCircleRadius = 1.f;
+                outerCircleWidth = 0.f;
                 tickStartMinutes = 0.95f;
                 tickStyleMinutes = TickStyle.DASH;
                 tickLengthMinutes = 0.04f;
                 tickStartHours = 0.95f;
                 tickStyleHours = TickStyle.CIRCLE;
                 tickLengthHours = 0.04f;
+                tickWidthHours = 0.01f;
+                tickWidthMinutes = 0.01f;
                 break;
             case SIMPLE:
                 decoration = Decoration.MINUTE_HAND;
@@ -85,12 +96,17 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 handWidthHours = 0.04f;
                 handWidthMinutes = 0.04f;
                 highlightQuarterOfHour = false;
+                innerCircleRadius = 0.045f;
+                outerCircleRadius = 1.f;
+                outerCircleWidth = 0.f;
                 tickStartMinutes = 0.87f;
                 tickStyleMinutes = TickStyle.NONE;
                 tickLengthMinutes = 0.06f;
                 tickStartHours = 0.87f;
                 tickStyleHours = TickStyle.DASH;
                 tickLengthHours = 0.06f;
+                tickWidthHours = 0.01f;
+                tickWidthMinutes = 0.01f;
                 break;
             case ARC:
                 decoration = Decoration.NONE;
@@ -103,12 +119,40 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 handWidthHours = 0.06f;
                 handWidthMinutes = 0.06f;
                 highlightQuarterOfHour = false;
+                innerCircleRadius = 0.045f;
+                outerCircleRadius = 1.f;
+                outerCircleWidth = 0.f;
                 tickStartMinutes = 0.87f;
                 tickStyleMinutes = TickStyle.NONE;
                 tickLengthMinutes = 0.06f;
                 tickStartHours = 0.87f;
                 tickStyleHours = TickStyle.DASH;
                 tickLengthHours = 0.06f;
+                tickWidthHours = 0.01f;
+                tickWidthMinutes = 0.01f;
+                break;
+            case MINIMALISTIC:
+                decoration = Decoration.NONE;
+                digitPosition = 0.7f;
+                digitStyle = DigitStyle.NONE;
+                emphasizeHour12 = false;
+                handShape = HandShape.BAR;
+                handLengthHours = 0.6f;
+                handLengthMinutes = 0.8f;
+                handWidthHours = 0.02f;
+                handWidthMinutes = 0.02f;
+                highlightQuarterOfHour = false;
+                innerCircleRadius = 0.0f;
+                outerCircleRadius = 1.f;
+                outerCircleWidth = 0.01f;
+                tickStartMinutes = 0.87f;
+                tickStyleMinutes = TickStyle.NONE;
+                tickLengthMinutes = 0.06f;
+                tickStartHours = 0.84f;
+                tickStyleHours = TickStyle.DASH;
+                tickLengthHours = 0.1f;
+                tickWidthHours = 0.025f;
+                tickWidthMinutes = 0.025f;
                 break;
         }
 
@@ -139,6 +183,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         drawBackgroundArc(canvas, centerX, centerY, radius, min_angle);
 
         applyShader(paint, centerX, centerY, radius);
+        drawOuterCircle(canvas);
         drawTicks(canvas, centerX, centerY, radius);
         drawHourDigits(canvas, centerX, centerY, radius);
         drawHands(canvas, centerX, centerY, radius, hour_angle, min_angle);
@@ -165,7 +210,7 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
                 (int) (handWidthHours * radius));
         canvas.restore();
 
-        drawScrew(canvas);
+        drawInnerCircle(canvas);
     }
 
     private void drawHand(Canvas canvas, Paint paint, float baseX, float baseY, int height, int width) {
@@ -214,19 +259,19 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         canvas.restore();
     }
 
-    private void drawScrew(Canvas canvas) {
+    private void drawInnerCircle(Canvas canvas) {
         if (handShape == HandShape.ARC) return;
 
         paint.setColorFilter(secondaryColorFilter);
         paint.setAlpha(255);
-        canvas.drawCircle(centerX, centerY, 0.045f * radius, paint);
+        canvas.drawCircle(centerX, centerY, innerCircleRadius * radius, paint);
         paint.setColorFilter(null);
         paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(2.f);
+        paint.setStrokeWidth(2);
         canvas.drawPoint(centerX, centerY, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.WHITE);
-        canvas.drawCircle(centerX, centerY, 0.045f * radius, paint);
+        canvas.drawCircle(centerX, centerY, innerCircleRadius * radius, paint);
     }
 
     private void drawTriangle(Canvas canvas, Paint paint, float baseX, float baseY, float width, float height) {
@@ -277,13 +322,21 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
         paint.setShader(shader);
     }
 
+    private void drawOuterCircle(Canvas canvas) {
+        if (outerCircleWidth == 0.00f) return;
+        paint.setAlpha(255);
+        paint.setColor(Color.WHITE);
+        paint.setColorFilter(secondaryColorFilter);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(outerCircleWidth * radius);
+
+        canvas.drawCircle(centerX, centerY, outerCircleRadius * radius, paint);
+    }
     private void drawTicks(Canvas canvas, float centerX, float centerY, int radius) {
         // ticks
         paint.setAlpha(255);
         paint.setColorFilter(secondaryColorFilter);
 
-        int width = Utility.dpToPx(context, 1.f);
-        paint.setStrokeWidth(width);
         paint.setStyle(Paint.Style.FILL); //filled circle for every hour
         int minuteCounter = 0;
 
@@ -295,7 +348,8 @@ public class CustomAnalogClock4 extends CustomAnalogClock {
             TickStyle tickStyle = (isHourTick) ? tickStyleHours : tickStyleMinutes;
             float tickStart = (isHourTick) ? tickStartHours : tickStartMinutes;
             float tickLength = (isHourTick) ? tickLengthHours : tickLengthMinutes;
-
+            int width = (int) ((isHourTick) ? tickWidthHours * radius : tickWidthMinutes * radius);
+            paint.setStrokeWidth(width);
             float tickStartX = (float) (centerX + tickStart * radius * Math.cos(angle));
             float tickStartY = (float) (centerY + tickStart * radius * Math.sin(angle));
             float tickEndX = (float) (centerX + (tickStart + tickLength) * radius * Math.cos(angle));
