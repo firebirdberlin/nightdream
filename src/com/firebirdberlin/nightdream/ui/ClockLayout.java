@@ -233,6 +233,9 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void setupLayoutAnalog(int parentWidth, Configuration config) {
+        if (analog_clock != null) {
+            analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+        }
         final float minFontSize = 8.f; // in sp
         final float maxFontSize = 18.f; // in sp
         int widgetSize = getAnalogWidgetSize(parentWidth, config);
@@ -253,6 +256,9 @@ public class ClockLayout extends LinearLayout {
 
     private void setupLayoutAnalog2(int parentWidth, Configuration config) {
         switch (layoutId) {
+            case LAYOUT_ID_ANALOG:
+                analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+                break;
             case LAYOUT_ID_ANALOG2:
                 analog_clock.setStyle(CustomAnalogClock.Style.SIMPLE);
                 break;
