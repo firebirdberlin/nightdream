@@ -37,11 +37,11 @@ public class CustomAnalogClock extends View {
     float centerY = 0.f;
     int radius = 0;
 
-    CustomAnalogClock.Decoration decoration = CustomAnalogClock.Decoration.NONE;
+    Decoration decoration = Decoration.NONE;
     float digitPosition = 0.85f;
-    CustomAnalogClock.DigitStyle digitStyle = CustomAnalogClock.DigitStyle.ARABIC;
+    DigitStyle digitStyle = DigitStyle.ARABIC;
     boolean emphasizeHour12 = true;
-    CustomAnalogClock.HandShape handShape = CustomAnalogClock.HandShape.TRIANGLE;
+    HandShape handShape = HandShape.TRIANGLE;
     float handLengthHours = 0.8f;
     float handLengthMinutes = 0.95f;
     float handWidthHours = 0.04f;
@@ -49,12 +49,12 @@ public class CustomAnalogClock extends View {
     boolean highlightQuarterOfHour = true;
     float innerCircleRadius = 0.045f;
     float tickStartMinutes = 0.95f;
-    CustomAnalogClock.TickStyle tickStyleMinutes = CustomAnalogClock.TickStyle.DASH;
+    TickStyle tickStyleMinutes = TickStyle.DASH;
     float tickLengthMinutes = 0.04f;
     float tickStartHours = 0.95f;
     float tickWidthHours = 0.01f;
     float tickWidthMinutes = 0.01f;
-    CustomAnalogClock.TickStyle tickStyleHours = CustomAnalogClock.TickStyle.CIRCLE;
+    TickStyle tickStyleHours = TickStyle.CIRCLE;
     float tickLengthHours = 0.04f;
     float outerCircleRadius = 1.f;
     float outerCircleWidth = 0f;
@@ -125,11 +125,11 @@ public class CustomAnalogClock extends View {
     public void setStyle(Style style) {
         switch (style) {
             case DEFAULT:
-                decoration = CustomAnalogClock.Decoration.NONE;
+                decoration = Decoration.NONE;
                 digitPosition = 0.85f;
-                digitStyle = CustomAnalogClock.DigitStyle.ARABIC;
+                digitStyle = DigitStyle.ARABIC;
                 emphasizeHour12 = true;
-                handShape = CustomAnalogClock.HandShape.TRIANGLE;
+                handShape = HandShape.TRIANGLE;
                 handLengthHours = 0.8f;
                 handLengthMinutes = 0.95f;
                 handWidthHours = 0.04f;
@@ -139,20 +139,20 @@ public class CustomAnalogClock extends View {
                 outerCircleRadius = 1.f;
                 outerCircleWidth = 0.f;
                 tickStartMinutes = 0.95f;
-                tickStyleMinutes = CustomAnalogClock.TickStyle.DASH;
+                tickStyleMinutes = TickStyle.DASH;
                 tickLengthMinutes = 0.04f;
                 tickStartHours = 0.95f;
-                tickStyleHours = CustomAnalogClock.TickStyle.CIRCLE;
+                tickStyleHours = TickStyle.CIRCLE;
                 tickLengthHours = 0.04f;
                 tickWidthHours = 0.01f;
                 tickWidthMinutes = 0.01f;
                 break;
             case SIMPLE:
-                decoration = CustomAnalogClock.Decoration.MINUTE_HAND;
+                decoration = Decoration.MINUTE_HAND;
                 digitPosition = 0.85f;
-                digitStyle = CustomAnalogClock.DigitStyle.NONE;
+                digitStyle = DigitStyle.NONE;
                 emphasizeHour12 = false;
-                handShape = CustomAnalogClock.HandShape.TRIANGLE;
+                handShape = HandShape.TRIANGLE;
                 handLengthHours = 0.6f;
                 handLengthMinutes = 0.9f;
                 handWidthHours = 0.04f;
@@ -162,20 +162,20 @@ public class CustomAnalogClock extends View {
                 outerCircleRadius = 1.f;
                 outerCircleWidth = 0.f;
                 tickStartMinutes = 0.87f;
-                tickStyleMinutes = CustomAnalogClock.TickStyle.NONE;
+                tickStyleMinutes = TickStyle.NONE;
                 tickLengthMinutes = 0.06f;
                 tickStartHours = 0.87f;
-                tickStyleHours = CustomAnalogClock.TickStyle.DASH;
+                tickStyleHours = TickStyle.DASH;
                 tickLengthHours = 0.06f;
                 tickWidthHours = 0.01f;
                 tickWidthMinutes = 0.01f;
                 break;
             case ARC:
-                decoration = CustomAnalogClock.Decoration.NONE;
+                decoration = Decoration.NONE;
                 digitPosition = 0.85f;
-                digitStyle = CustomAnalogClock.DigitStyle.NONE;
+                digitStyle = DigitStyle.NONE;
                 emphasizeHour12 = false;
-                handShape = CustomAnalogClock.HandShape.ARC;
+                handShape = HandShape.ARC;
                 handLengthHours = 0.80f;
                 handLengthMinutes = 0.90f;
                 handWidthHours = 0.06f;
@@ -185,20 +185,20 @@ public class CustomAnalogClock extends View {
                 outerCircleRadius = 1.f;
                 outerCircleWidth = 0.f;
                 tickStartMinutes = 0.87f;
-                tickStyleMinutes = CustomAnalogClock.TickStyle.NONE;
+                tickStyleMinutes = TickStyle.NONE;
                 tickLengthMinutes = 0.06f;
                 tickStartHours = 0.87f;
-                tickStyleHours = CustomAnalogClock.TickStyle.DASH;
+                tickStyleHours = TickStyle.DASH;
                 tickLengthHours = 0.06f;
                 tickWidthHours = 0.01f;
                 tickWidthMinutes = 0.01f;
                 break;
             case MINIMALISTIC:
-                decoration = CustomAnalogClock.Decoration.NONE;
+                decoration = Decoration.NONE;
                 digitPosition = 0.7f;
-                digitStyle = CustomAnalogClock.DigitStyle.NONE;
+                digitStyle = DigitStyle.NONE;
                 emphasizeHour12 = false;
-                handShape = CustomAnalogClock.HandShape.BAR;
+                handShape = HandShape.BAR;
                 handLengthHours = 0.6f;
                 handLengthMinutes = 0.8f;
                 handWidthHours = 0.02f;
@@ -208,10 +208,10 @@ public class CustomAnalogClock extends View {
                 outerCircleRadius = 1.f;
                 outerCircleWidth = 0.01f;
                 tickStartMinutes = 0.87f;
-                tickStyleMinutes = CustomAnalogClock.TickStyle.NONE;
+                tickStyleMinutes = TickStyle.NONE;
                 tickLengthMinutes = 0.06f;
                 tickStartHours = 0.84f;
-                tickStyleHours = CustomAnalogClock.TickStyle.DASH;
+                tickStyleHours = TickStyle.DASH;
                 tickLengthHours = 0.1f;
                 tickWidthHours = 0.025f;
                 tickWidthMinutes = 0.025f;
