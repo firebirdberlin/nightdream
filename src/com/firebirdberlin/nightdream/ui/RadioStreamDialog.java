@@ -24,12 +24,10 @@ import android.widget.TextView;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.radiostreamapi.CountryRequestTask;
-import com.firebirdberlin.radiostreamapi.RadioStreamPreference;
 import com.firebirdberlin.radiostreamapi.StationRequestTask;
 import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -351,14 +349,16 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             }
         }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryList);
+        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, R.layout.spinner_item, countryList);
 
         // select as default: first preferred country, and "any country"
         if (selectedItemIndex == -1 && !countryList.isEmpty()) {
             selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
         }
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);

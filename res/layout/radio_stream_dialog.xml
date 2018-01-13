@@ -6,8 +6,8 @@
     android:minWidth="300dp"
     android:orientation="vertical"
     android:padding="24dp"
+    android:theme="@style/DialogTheme"
     >
-
 
     <LinearLayout
         android:layout_width="match_parent"
