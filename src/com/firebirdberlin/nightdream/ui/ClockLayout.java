@@ -262,7 +262,8 @@ public class ClockLayout extends LinearLayout {
         analog_clock.getLayoutParams().width = widgetSize;
         analog_clock.getLayoutParams().height = widgetSize;
 
-        int additionalHeight = Utility.getHeightOfView(date) + Utility.getHeightOfView(weatherLayout);
+        int additionalHeight = (int) (1.2f * Utility.getHeightOfView(date)
+                + 1.2f * Utility.getHeightOfView(weatherLayout));
         setSize(widgetSize, widgetSize + additionalHeight);
         if (date != null) {
             date.setMaxWidth(widgetSize / 3 * 2);
