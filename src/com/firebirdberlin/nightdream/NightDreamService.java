@@ -188,8 +188,8 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
 
     void setupNightMode() {
         if (mySettings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_SCHEDULED) return;
-        Calendar start = new SimpleTime(mySettings.nightModeTimeRangeStart).getCalendar();
-        Calendar end = new SimpleTime(mySettings.nightModeTimeRangeEnd).getCalendar();
+        Calendar start = new SimpleTime(mySettings.nightModeTimeRangeStartInMinutes).getCalendar();
+        Calendar end = new SimpleTime(mySettings.nightModeTimeRangeEndInMinutes).getCalendar();
 
         TimeRange timerange = new TimeRange(start, end);
         int new_mode = ( timerange.inRange() ) ? 0 : 2;

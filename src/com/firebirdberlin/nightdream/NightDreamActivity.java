@@ -257,18 +257,8 @@ public class NightDreamActivity extends Activity
     void setupNightMode() {
         if (mySettings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_SCHEDULED) return;
 
-        Calendar start;
-        Calendar end;
-        if (mySettings.nightModeTimeRangeStartInMinutes > -1) {
-            start = new SimpleTime(mySettings.nightModeTimeRangeStartInMinutes).getCalendar();
-        } else {
-            start = new SimpleTime(mySettings.nightModeTimeRangeStart).getCalendar(); // deprecated
-        }
-        if (mySettings.nightModeTimeRangeEndInMinutes > -1) {
-            end = new SimpleTime(mySettings.nightModeTimeRangeEndInMinutes).getCalendar();
-        } else {
-            end = new SimpleTime(mySettings.nightModeTimeRangeEnd).getCalendar(); // deprecated
-        }
+        Calendar start = new SimpleTime(mySettings.nightModeTimeRangeStartInMinutes).getCalendar();
+        Calendar end = new SimpleTime(mySettings.nightModeTimeRangeEndInMinutes).getCalendar();
 
         TimeRange timerange = new TimeRange(start, end);
         int new_mode = ( timerange.inRange() ) ? 0 : 2;

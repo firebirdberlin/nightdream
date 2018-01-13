@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.models;
 
+import android.util.Log;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -9,19 +11,9 @@ public class TimeRange {
     public Calendar end;
 
 
-    public TimeRange() {
-        this.start = Calendar.getInstance();
-        this.end = Calendar.getInstance();
-    }
-
-    public TimeRange(long start, long end){
-        this.start = getCalendar(start);
-        this.end = getCalendar(end);
-    }
-
     public TimeRange(Calendar start, Calendar end){
-        this.start = start;
-        this.end = end;
+        this.start = (Calendar) start.clone();
+        this.end = (Calendar) end.clone();
         this.start = fixDate(this.start);
         this.end = fixDate(this.end);
     }
@@ -45,18 +37,16 @@ public class TimeRange {
     }
 
     public boolean inRange(Calendar time) {
-        if (end.before(start)){
+        time = fixDate(time);
+
+        if (start.equals(time) ) {
+            return true;
+        } else if (end.before(start)){
             return ( time.after(start) || time.before(end) );
         } else if (! start.equals(end)) {
             return ( time.after(start) && time.before(end) );
         }
         return true;
-    }
-
-    public Calendar getCalendar(long time) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(time);
-        return fixDate(cal);
     }
 
     public Calendar getNextEvent() {

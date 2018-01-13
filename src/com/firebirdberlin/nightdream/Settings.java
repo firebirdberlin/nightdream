@@ -93,8 +93,6 @@ public class Settings {
     public int nightModeTimeRangeEndInMinutes = -1;
     public long autostartTimeRangeStart = -1L; // deprecated
     public long autostartTimeRangeEnd = -1L; // deprecated
-    public long nightModeTimeRangeStart = -1L; // deprecated
-    public long nightModeTimeRangeEnd = -1L; // deprecated
     public int nextAlarmTimeMinutes = 0;
     public long lastReviewRequestTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
@@ -173,9 +171,7 @@ public class Settings {
         maxBrightness = 0.01f * settings.getInt("maxBrightness", 100);
         maxBrightnessBattery = 0.01f * settings.getInt("maxBrightnessBattery", 100);
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
-        nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_mintes", -1);
-        nightModeTimeRangeStart = settings.getLong("nightmode_timerange_start", -1L); // deprecated
-        nightModeTimeRangeEnd = settings.getLong("nightmode_timerange_end", -1L); // deprecated
+        nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         radioStreamURL = settings.getString("radioStreamURL", "");
