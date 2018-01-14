@@ -245,6 +245,15 @@ public class Utility {
                 status == BatteryManager.BATTERY_STATUS_FULL);
     }
 
+    public static boolean languageIs(String... languages) {
+        for (String language : languages) {
+            if (language.equals(Locale.getDefault().getLanguage())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Point getDisplaySize() {
         Point size = new Point();
         if (Build.VERSION.SDK_INT < 13) {

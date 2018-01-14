@@ -4,6 +4,7 @@
 
         <Preference
             android:icon="@drawable/ic_attention"
+            android:key="translations_wanted"
             android:summary="Please add or update the translation for your language."
             android:title="Translations wanted !">
             <intent android:action="android.intent.action.VIEW"
