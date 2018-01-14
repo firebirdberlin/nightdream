@@ -632,7 +632,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
         setupLightSensorPreferences();
         setupDaydreamPreferences();
-
+        setupTranslationRequest();
     }
 
     private void setupLightSensorPreferences() {
@@ -648,6 +648,12 @@ public class PreferencesFragment extends PreferenceFragment {
                                         getString(R.string.night_mode_activation_scheduled),
             });
             nightModePref.setEntryValues(new String[]{"0", "2"});
+        }
+    }
+
+    private void setupTranslationRequest() {
+        if (Utility.languageIs("de", "en")) {
+            removePreference("translations_wanted");
         }
     }
 

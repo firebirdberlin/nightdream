@@ -59,14 +59,7 @@ public class ClockLayout extends LinearLayout {
         } else
         if (layoutId == LAYOUT_ID_ANALOG ){
             child = inflater.inflate(R.layout.analog_clock_layout, null);
-        } else
-        if (layoutId == LAYOUT_ID_ANALOG2 ){
-            child = inflater.inflate(R.layout.analog_clock_layout_2, null);
-        } else
-        if (layoutId == LAYOUT_ID_ANALOG3) {
-            child = inflater.inflate(R.layout.analog_clock_layout_3, null);
-        } else
-        if (layoutId == LAYOUT_ID_ANALOG4) {
+        } else {
             child = inflater.inflate(R.layout.analog_clock_layout_4, null);
         }
         if (child != null) {
@@ -104,6 +97,9 @@ public class ClockLayout extends LinearLayout {
         }
         if ( clock_ampm != null ) {
             clock_ampm.setTypeface(typeface);
+        }
+        if (analog_clock != null) {
+            analog_clock.setTypeface(typeface);
         }
     }
 
@@ -237,6 +233,9 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void setupLayoutAnalog(int parentWidth, Configuration config) {
+        if (analog_clock != null) {
+            analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+        }
         final float minFontSize = 8.f; // in sp
         final float maxFontSize = 18.f; // in sp
         int widgetSize = getAnalogWidgetSize(parentWidth, config);
@@ -256,6 +255,20 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void setupLayoutAnalog2(int parentWidth, Configuration config) {
+        switch (layoutId) {
+            case LAYOUT_ID_ANALOG:
+                analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+                break;
+            case LAYOUT_ID_ANALOG2:
+                analog_clock.setStyle(CustomAnalogClock.Style.SIMPLE);
+                break;
+            case LAYOUT_ID_ANALOG3:
+                analog_clock.setStyle(CustomAnalogClock.Style.ARC);
+                break;
+            case LAYOUT_ID_ANALOG4:
+                analog_clock.setStyle(CustomAnalogClock.Style.DEFAULT);
+                break;
+        }
         final float minFontSize = 10.f; // in sp
         final float maxFontSize = 20.f; // in sp
         int widgetSize = getAnalogWidgetSize(parentWidth, config);
