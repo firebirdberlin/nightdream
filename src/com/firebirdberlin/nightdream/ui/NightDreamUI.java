@@ -1515,21 +1515,25 @@ public class NightDreamUI {
                 clockLayout.update(settings.weatherEntry);
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
-                bottomPanelLayout.setup(intent.getExtras());
+                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
+                bottomPanelLayout.setup(radioStationIndex);
                 boolean connectingHintVisible = true;
-                bottomPanelLayout.updateWebRadioView(connectingHintVisible, intent.getExtras());
+                bottomPanelLayout.updateWebRadioView(connectingHintVisible, radioStationIndex);
                 setRadioIconActive();
                 showAlarmClock();
             } else
             if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-                Log.i(TAG, "received ACTION_RADIO_STREAM_READY_FOR_PLAYBACK, radioIndex=" + intent.getIntExtra(RadioStreamService.EXTRA_RADIO_STATION_INDEX, -1));
+                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
+                //Log.i(TAG, "received ACTION_RADIO_STREAM_READY_FOR_PLAYBACK, radioIndex=" + radioStationIndex);
+
                 boolean connectingHintVisible = false;
-                bottomPanelLayout.updateWebRadioView(connectingHintVisible, intent.getExtras());
+                bottomPanelLayout.updateWebRadioView(connectingHintVisible, radioStationIndex);
             }
             else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 // test: leave web radio panel open for testing #105
                 //setupAlarmClock();
+                bottomPanelLayout.updateWebRadioView(false, -1);
                 setRadioIconInactive();
             }
         }

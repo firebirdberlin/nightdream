@@ -61,11 +61,11 @@ public class BottomPanelLayout extends FrameLayout {
         if (webRadioLayout != null) webRadioLayout.setCustomColor(accentColor, textColor);
     }
 
-    public void setup(Bundle extras) {
+    public void setup(Integer radioStationIndex) {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
         } else if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO & !daydreamMode) {
-            showWebRadioView(extras);
+            showWebRadioView(radioStationIndex);
         } else if (!useInternalAlarm) {
             showStockAlarmView();
         } else {
@@ -98,13 +98,13 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
-    public void showWebRadioView(Bundle extras) {
+    public void showWebRadioView(Integer radioStationIndex) {
 
         Log.i(TAG, "showWebRadioView");
 
         if (webRadioLayout != null) {
             //webRadioLayout.setShowConnectingHint(connectingHintActiveState);
-            webRadioLayout.setText(extras);
+            webRadioLayout.setText(radioStationIndex);
             invalidate();
             return; // already visible
         }
@@ -113,16 +113,16 @@ public class BottomPanelLayout extends FrameLayout {
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
         //webRadioLayout.setShowConnectingHint(connectingHintActiveState);
-        webRadioLayout.setText(extras);
+        webRadioLayout.setText(radioStationIndex);
         addView(webRadioLayout);
         invalidate();
     }
 
-    public void updateWebRadioView(boolean connectingHintActiveState, Bundle extras) {
+    public void updateWebRadioView(boolean connectingHintActiveState, Integer radioStationIndex) {
         if (webRadioLayout == null) return;
 
         webRadioLayout.setShowConnectingHint(connectingHintActiveState);
-        webRadioLayout.setText(extras);
+        webRadioLayout.setText(radioStationIndex);
         invalidate();
     }
 
