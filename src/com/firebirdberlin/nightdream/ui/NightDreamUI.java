@@ -1115,9 +1115,6 @@ public class NightDreamUI {
             sidePanel.setClickable(true);
         }
         handler.postDelayed(hideAlarmClock, 20000);
-
-        //test for #105
-        showWebRadioBottomPanel();
     }
 
     private void hideSidePanel() {
@@ -1500,11 +1497,6 @@ public class NightDreamUI {
         }
     }
 
-    private void showWebRadioBottomPanel() {
-        bottomPanelLayout.showWebRadioView(null);
-        bottomPanelLayout.show();
-    }
-
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1531,8 +1523,7 @@ public class NightDreamUI {
             }
             else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
-                // test: leave web radio panel open for testing #105
-                //setupAlarmClock();
+                setupAlarmClock();
                 bottomPanelLayout.updateWebRadioView(false, -1);
                 setRadioIconInactive();
             }
