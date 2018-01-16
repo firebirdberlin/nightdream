@@ -2,22 +2,19 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.PorterDuff;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -28,8 +25,9 @@ import java.util.List;
 public class WebRadioStationButtonsLayout extends LinearLayout {
 
     public static String TAG ="WebRadioStationButtonsLayout";
-
     private static int NUM_BUTTONS = 5;
+    ColorFilter defaultColorFilter;
+    ColorFilter accentColorFilter;
     private Context context;
 
     private List<Button> stationSelectButtons;
@@ -55,6 +53,9 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         this.accentColor = accentColor;
         this.textColor = textColor;
 
+        accentColorFilter = new LightingColorFilter(accentColor, 1);
+        defaultColorFilter = new LightingColorFilter(textColor, 1);
+
         updateButtonColors();
     }
 
@@ -68,22 +69,23 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
 
             Button btn = new Button(context);
             btn.setText(String.valueOf(i + 1));
-            //btn1.setTextColor(Color.WHITE);
+            btn.setTag(i);
 
-            int widthDP = Utility.pixelsToDp(context, 25);
-            int heightDP = Utility.pixelsToDp(context, 20);
+            int widthDP = Utility.pixelsToDp(context, 40);
+            int heightDP = Utility.pixelsToDp(context, 35);
             int margin = Utility.pixelsToDp(context, 5);
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(widthDP, heightDP);
-            lp.setMargins(margin, margin, margin, margin);
+            lp.setMargins(margin, 2, margin, margin);
             btn.setLayoutParams(lp);
             btn.setPadding(0, 0, 0, 0);
-            btn.setBackgroundResource(R.drawable.border);
-            btn.setTextSize(10);
-            final int stationIndex = i;
+            btn.setBackgroundResource(R.drawable.webradio_station_button);
+            btn.setTextSize(16);
+
             btn.setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(final View v) {
+                    int stationIndex = (int) v.getTag();
                     showRadioStreamDialog(stationIndex);
                     return true;
                 }
@@ -92,13 +94,11 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             btn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-
-                    int i = getButtonIndex(v);
-                    //Log.i(TAG, "pressed button: " + i + " active=" + (activeStationIndex != null ? activeStationIndex.intValue() : "null")) ;
-                    if (activeStationIndex != null && i == activeStationIndex.intValue()) {
+                    int index = (int) v.getTag();
+                    if (activeStationIndex != null && index == activeStationIndex.intValue()) {
                         stopRadioStream();
                     } else {
-                        startRadioStreamOrShowDialog(stationIndex);
+                        startRadioStreamOrShowDialog(index);
                     }
 
                 }
@@ -113,25 +113,15 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
     }
 
     private void updateButtonColors() {
-        if (stationSelectButtons != null) {
-            int i = 0;
-            for (Button b : stationSelectButtons) {
+        if (stationSelectButtons == null) return;
 
-                int color;
-                int stroke;
-                if (activeStationIndex != null && activeStationIndex.intValue() == i) {
-                    color = accentColor;
-                    stroke = 2;
-                } else {
-                    color = textColor;
-                    stroke = 1;
-                }
-
-                b.setTextColor(color);
-                GradientDrawable drawable = (GradientDrawable) b.getBackground();
-                drawable.setStroke(stroke, color);
-                i++;
-            }
+        for (Button b : stationSelectButtons) {
+            int tag = (int) b.getTag();
+            int color = (activeStationIndex != null && activeStationIndex.intValue() == tag)
+                    ? accentColor : textColor;
+            b.setTextColor(color);
+            Drawable border = b.getBackground();
+            border.setColorFilter((color == accentColor) ? accentColorFilter : defaultColorFilter);
         }
     }
 
@@ -157,15 +147,6 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
     private void stopRadioStream() {
         if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
             RadioStreamService.stop(context);
-        }
-    }
-
-    private int getButtonIndex(View button) {
-
-        if (stationSelectButtons != null) {
-            return stationSelectButtons.indexOf(button);
-        } else {
-            return -1;
         }
     }
 
