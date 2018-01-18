@@ -45,8 +45,8 @@ public class RadioStreamManualInputDialog {
         }
 
         // test plain stream url + description
-        //inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
-        //inputDescription.setText("Radio Berlin 88,8");
+        inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
+        inputDescription.setText("Radio Berlin 88,8");
 
         // test playlist
         //inputUrl.setText("http://www.radioberlin.de/live.m3u");
