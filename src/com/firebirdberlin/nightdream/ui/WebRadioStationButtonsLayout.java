@@ -72,7 +72,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             btn.setTag(i);
 
             int widthDP = Utility.pixelsToDp(context, 40);
-            int heightDP = Utility.pixelsToDp(context, 35);
+            int heightDP = Utility.pixelsToDp(context, 30);
             int margin = Utility.pixelsToDp(context, 5);
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(widthDP, heightDP);
