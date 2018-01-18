@@ -130,7 +130,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public static RadioStation getCurrentRadioStation(Context context) {
         if (streamingMode != StreamingMode.INACTIVE) {
             Settings settings = new Settings(context);
-            return settings.getCurrentRadioStation();
+            return settings.getLegacyRadioStation();
         }
         return null;
     }

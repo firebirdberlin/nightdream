@@ -145,22 +145,6 @@ public class RadioStreamPreference extends DialogPreference {
     }
 
     private void persistRadioStation(RadioStation station) {
-        /*
-        //save stream as separate field
-        persistString(station.stream);
-
-        //save complete station as json string
-        try {
-            String json = station.toJson();
-            SharedPreferences prefs = getSharedPreferences();
-            SharedPreferences.Editor prefEditor = prefs.edit();
-            prefEditor.putString(jsonKey(), json);
-            prefEditor.apply();
-        } catch (JSONException e) {
-            Log.e(TAG, "error converting station to json", e);
-        }
-        */
-
         SharedPreferences prefs = getSharedPreferences();
         Settings.setPersistentFavoriteRadioStation(prefs, station, 0);
 

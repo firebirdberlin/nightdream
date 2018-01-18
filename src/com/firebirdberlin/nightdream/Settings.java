@@ -521,18 +521,19 @@ public class Settings {
                  == PackageManager.PERMISSION_GRANTED);
     }
 
-    public RadioStation getCurrentRadioStation() {
-        String json = settings.getString(RADIO_STATION_LEGACY_JSON_KEY, null);
+    public RadioStation getLegacyRadioStation() {
+
+        String json = settings.getString(RADIO_STATION_LEGACY_JSON_KEY,  null);
         if (json != null) {
-            Log.i(TAG, json);
             try {
-                RadioStation s = RadioStation.fromJson(json);
-                return s;
+                return RadioStation.fromJson(json);
             } catch (JSONException e) {
                 Log.e(TAG, "error converting json to station", e);
             }
         }
+
         return null;
+
     }
 
     // settings key used in preferences.xml and RadioStreamPreference
@@ -548,7 +549,7 @@ public class Settings {
              station = stations.get(radioStationIndex);
         }
         if (station == null && radioStationIndex == 0) {
-            station = getCurrentRadioStation();
+            station = getLegacyRadioStation();
         }
         return station;
     }
@@ -588,6 +589,23 @@ public class Settings {
         }
     }
 
+    public void upgradeLegacyRadioStationToFirstFavoriteRadioStation() {
+
+        FavoriteRadioStations stations = getFavoriteRadioStations();
+
+        RadioStation firstRadioStation = null;
+        if (stations != null) {
+            firstRadioStation = stations.get(0);
+        }
+        if (firstRadioStation == null) {
+            RadioStation legacyStation = getLegacyRadioStation();
+            if (legacyStation != null) {
+                Settings.setPersistentFavoriteRadioStation(settings, legacyStation, 0);
+            }
+        }
+
+    }
+
     private static void persistLegacyRadioStation(SharedPreferences preferences, RadioStation station) {
         // update legacy settings of a single radio station as well
         Log.i(TAG, "persistLegacyRadioStation");
@@ -601,6 +619,9 @@ public class Settings {
             Log.e(TAG, "error converting FavoriteRadioStations to json", e);
         }
     }
+
+
+
 
     private static void setFavoriteRadioStations(SharedPreferences preferences, FavoriteRadioStations stations) {
         try {

@@ -404,6 +404,8 @@ public class NightDreamActivity extends Activity
             return;
         }
 
+        mySettings.upgradeLegacyRadioStationToFirstFavoriteRadioStation();
+
         toggleRadioStreamState();
 
     }
