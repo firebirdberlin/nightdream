@@ -21,6 +21,9 @@ public class RadioStation {
     public boolean isUserDefinedStreamUrl = false;
 
     public static RadioStation fromJson(String json) throws JSONException {
+        if (json == null) {
+            return null;
+        }
         JSONObject jsonStation = new JSONObject(json);
         return fromJsonObj(jsonStation);
     }

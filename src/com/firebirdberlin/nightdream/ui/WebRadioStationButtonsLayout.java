@@ -156,10 +156,11 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         RadioStreamDialogListener listener = new RadioStreamDialogListener() {
             @Override
             public void onRadioStreamSelected(RadioStation station) {
-                //Toast.makeText(getContext(), "Saved radio station #" + (stationIndex + 1) + ": " + station.name, Toast.LENGTH_LONG).show();
-
                 // update station in settings
-                settings.setPersistentFavoriteRadioStation(station, stationIndex);
+                settings.persistFavoriteRadioStation(station, stationIndex);
+                if (stationIndex == 0) {
+                    settings.persistLegacyRadioStation(station);
+                }
                 stations = settings.getFavoriteRadioStations();
 
                 NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();

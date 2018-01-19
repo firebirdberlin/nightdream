@@ -3,47 +3,18 @@ package com.firebirdberlin.radiostreamapi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.DialogPreference;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.telephony.TelephonyManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.ui.RadioStreamDialog;
 import com.firebirdberlin.nightdream.ui.RadioStreamDialogListener;
-import com.firebirdberlin.nightdream.ui.RadioStreamManualInputDialog;
-import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 
 public class RadioStreamPreference extends DialogPreference {
@@ -145,13 +116,20 @@ public class RadioStreamPreference extends DialogPreference {
     }
 
     private void persistRadioStation(RadioStation station) {
-        SharedPreferences prefs = getSharedPreferences();
-        Settings.setPersistentFavoriteRadioStation(prefs, station, 0);
-
+        persistString(station.stream);
+        //save complete station as json string
+        try {
+            String json = station.toJson();
+            SharedPreferences prefs = getSharedPreferences();
+            SharedPreferences.Editor prefEditor = prefs.edit();
+            prefEditor.putString(jsonKey(), json);
+            prefEditor.commit();
+        } catch (JSONException e) {
+            Log.e(TAG, "error converting station to json", e);
+        }
     }
 
     private RadioStation getPersistedRadioStation() {
-
         SharedPreferences prefs = getSharedPreferences();
         String json = prefs.getString(jsonKey(),  null);
         if (json != null) {

@@ -25,7 +25,6 @@ import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
@@ -36,12 +35,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
+    public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
     private static String ACTION_START_SLEEP_TIME = "start sleep time";
-    public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
@@ -127,14 +126,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         return i;
     }
 
-    public static RadioStation getCurrentRadioStation(Context context) {
-        if (streamingMode != StreamingMode.INACTIVE) {
-            Settings settings = new Settings(context);
-            return settings.getLegacyRadioStation();
-        }
-        return null;
-    }
-
     @Override
     public void onCreate(){
         Log.d(TAG,"onCreate() called.");
@@ -156,7 +147,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                 .setSmallIcon(R.drawable.ic_radio)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .build();
-
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
@@ -168,18 +158,14 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             streamingMode = StreamingMode.ALARM;
             currentStreamType = AudioManager.STREAM_ALARM;
             setAlarmVolume(settings.alarmVolume);
-
-            this.radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
-
-            checkStreamAndStart(radioStationIndex);
+            checkStreamAndStart(-1);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
-
-            this.radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
+            radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
 
             Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
             broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-            sendBroadcast( broadcastIndex );
+            sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
 
@@ -198,18 +184,18 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         Log.i(TAG, "checkStreamAndStart radioStationIndex=" + radioStationIndex);
 
-        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
-        RadioStation station = null;
-        if (stations != null) {
-           station = stations.get(radioStationIndex);
-        }
-
-        if (station != null) {
-            streamURL = station.stream;
+        if (streamingMode == StreamingMode.ALARM) {
+            streamURL = settings.radioStreamURL;
         } else {
             streamURL = settings.radioStreamURLUI;
+            FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+            if (stations != null) {
+                RadioStation station = stations.get(radioStationIndex);
+                if (station != null) {
+                    streamURL = station.stream;
+                }
+            }
         }
-
         if ( PlaylistParser.isPlaylistUrl(streamURL) ) {
             resolveStreamUrlTask = new PlaylistRequestTask(this);
             resolveStreamUrlTask.execute(streamURL);
