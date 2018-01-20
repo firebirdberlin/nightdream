@@ -38,9 +38,6 @@ public class Settings {
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
     private final static String TAG = "NightDream.Settings";
-    // settings key used in preferences.xml and RadioStreamPreference
-    private static final String RADIO_STATION_LEGACY_KEY = "radioStreamURLUI";
-    private static final String RADIO_STATION_LEGACY_JSON_KEY = "radioStreamURLUI_json";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
@@ -538,21 +535,6 @@ public class Settings {
                  == PackageManager.PERMISSION_GRANTED);
     }
 
-    public RadioStation getLegacyRadioStation() {
-
-        String json = settings.getString(RADIO_STATION_LEGACY_JSON_KEY,  null);
-        if (json != null) {
-            try {
-                return RadioStation.fromJson(json);
-            } catch (JSONException e) {
-                Log.e(TAG, "error converting json to station", e);
-            }
-        }
-
-        return null;
-
-    }
-
     public RadioStation getFavoriteRadioStation(int radioStationIndex) {
         FavoriteRadioStations stations = getFavoriteRadioStations();
 
@@ -564,6 +546,18 @@ public class Settings {
             station = getLegacyRadioStation();
         }
         return station;
+    }
+
+    private RadioStation getLegacyRadioStation() {
+        String json = settings.getString("radioStreamURLUI_json", null);
+        if (json != null) {
+            try {
+                return RadioStation.fromJson(json);
+            } catch (JSONException e) {
+                Log.e(TAG, "error converting json to station", e);
+            }
+        }
+        return null;
     }
 
     public FavoriteRadioStations getFavoriteRadioStations() {
@@ -607,19 +601,5 @@ public class Settings {
             }
         }
 
-    }
-
-    public void persistLegacyRadioStation(RadioStation station) {
-        // update legacy settings of a single radio station as well
-        Log.i(TAG, "persistLegacyRadioStation");
-        try {
-            String json = station.toJson();
-            SharedPreferences.Editor prefEditor = settings.edit();
-            prefEditor.putString(RADIO_STATION_LEGACY_KEY, station.stream);
-            prefEditor.putString(RADIO_STATION_LEGACY_JSON_KEY, json);
-            prefEditor.commit();
-        } catch (JSONException e) {
-            Log.e(TAG, "error converting FavoriteRadioStations to json", e);
-        }
     }
 }

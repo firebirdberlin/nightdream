@@ -440,12 +440,6 @@
                 android:key="purchaseWebRadioUI"
                 android:title="@string/purchaseWebRadio"/>
 
-            <com.firebirdberlin.radiostreamapi.RadioStreamPreference
-                android:enabled="false"
-                android:icon="@drawable/ic_search"
-                android:key="radioStreamURLUI"
-                android:title="@string/radio_stream_url"/>
-
         </PreferenceScreen>
 
         <Preference

@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.R;
@@ -32,6 +31,11 @@ public class RadioStreamDialogFragment extends DialogFragment {
         f.setRadioStation(radioStation);
         f.setStationIndex(stationIndex);
         return f;
+    }
+
+    public static void showDialog(Activity parentActivity, int stationIndex, RadioStation radioStation, RadioStreamDialogListener listener) {
+        RadioStreamDialogFragment dialog = RadioStreamDialogFragment.newInstance(listener, radioStation, stationIndex);
+        dialog.show(parentActivity.getFragmentManager(), "radio_stream_dialog");
     }
 
     public void setListener(RadioStreamDialogListener listener) {
@@ -98,18 +102,11 @@ public class RadioStreamDialogFragment extends DialogFragment {
                 .setPositiveButton(null, null)
                 .setNegativeButton(android.R.string.cancel, cancelClickListener);
 
-        // can only delete existing presets but not the first (default prefix)
-        final boolean showDeleteButton = (stationIndex > 0 && radioStation != null);
-        if (showDeleteButton) {
+        if (radioStation != null) {
             builder.setNeutralButton(R.string.delete, deleteClickListener);
         }
 
         return builder.create();
 
-    }
-
-    public static void showDialog(Activity parentActivity, int stationIndex, RadioStation radioStation, RadioStreamDialogListener listener) {
-        RadioStreamDialogFragment dialog = RadioStreamDialogFragment.newInstance(listener, radioStation, stationIndex);
-        dialog.show(parentActivity.getFragmentManager(), "radio_stream_dialog");
     }
 }

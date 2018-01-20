@@ -150,10 +150,6 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         }
     }
 
-    public void toggleRadioStreamState() {
-        toggleRadioStreamState(0, false); // start first radio stream (legacy settings)
-    }
-
     public void toggleRadioStreamState(final int radioStationIndex, boolean restart) {
         boolean wasAlreadyPlaying = false;
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
@@ -203,9 +199,6 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             public void onRadioStreamSelected(RadioStation station) {
                 // update station in settings
                 settings.persistFavoriteRadioStation(station, stationIndex);
-                if (stationIndex == 0) {
-                    settings.persistLegacyRadioStation(station);
-                }
                 stations = settings.getFavoriteRadioStations();
 
                 NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();

@@ -42,7 +42,6 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
-import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -167,17 +166,6 @@ public class PreferencesFragment extends PreferenceFragment {
                             break;
                         case "useInternalAlarm":
                             setupAlarmClock(sharedPreferences);
-                            break;
-                        case "radioStreamURLUI":
-                            Log.w(TAG, "radioStreamURLUI changed");
-                            try {
-                                String json = sharedPreferences.getString("radioStreamURLUI_json", null);
-                                RadioStation station = RadioStation.fromJson(json);
-                                settings.persistFavoriteRadioStation(station, 0);
-                            } catch (JSONException e) {
-                                Log.e(TAG, "error converting json to station", e);
-                            }
-
                             break;
                     }
                 }
@@ -342,8 +330,6 @@ public class PreferencesFragment extends PreferenceFragment {
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
         enablePreference("useRadioAlarmClock", purchased_web_radio);
-        enablePreference("radioStreamURLUI", purchased_web_radio);
-
 
         if (purchased_donation) {
             removePreference("donation_play");
