@@ -10,6 +10,8 @@ import java.net.URL;
 public class HttpStatusCheckTask extends AsyncTask<String, Void, Boolean> {
     private static String TAG = "NightDream.HttpStatusCheckTask";
     private static int MAX_NUM_REDIRECTS = 5;
+    private static int READ_TIMEOUT = 10000;
+    private static int CONNECT_TIMEOUT = 10000;
 
     public interface AsyncResponse {
         public void onStatusCheckFinished(Boolean success, String url, int numRedirects);
@@ -47,6 +49,8 @@ public class HttpStatusCheckTask extends AsyncTask<String, Void, Boolean> {
         Log.i(TAG, String.format("Checking URL %s", url.toString()));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setInstanceFollowRedirects(false);
+        con.setConnectTimeout(CONNECT_TIMEOUT);
+        con.setReadTimeout(READ_TIMEOUT);
         responseCode = con.getResponseCode();
         latestURL = url.toString();
         if (numRedirects < MAX_NUM_REDIRECTS &&
