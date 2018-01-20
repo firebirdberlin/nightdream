@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.R;
@@ -61,6 +62,8 @@ public class RadioStreamDialogFragment extends DialogFragment {
             public void onCancel() {
                 listener.onCancel();
             }
+            @Override
+            public void onDelete(int stationIndex) {}
         };
 
         View view = radioStreamDialog.createDialogView(dialogDismissListener);
@@ -78,11 +81,28 @@ public class RadioStreamDialogFragment extends DialogFragment {
             }
         };
 
+        DialogInterface.OnClickListener deleteClickListener = new DialogInterface.OnClickListener() {
+
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (listener != null) {
+                    listener.onDelete(stationIndex);
+                }
+            }
+        };
+
         String title = getResources().getString(R.string.radio_stream) + " #" + String.valueOf(stationIndex + 1);
         builder.setTitle(title)
                 .setView(view)
                 .setPositiveButton(null, null)
                 .setNegativeButton(android.R.string.cancel, cancelClickListener);
+
+        // can only delete existing presets but not the first (default prefix)
+        final boolean showDeleteButton = (stationIndex > 0 && radioStation != null);
+        if (showDeleteButton) {
+            builder.setNeutralButton(R.string.delete, deleteClickListener);
+        }
 
         return builder.create();
 
@@ -90,7 +110,6 @@ public class RadioStreamDialogFragment extends DialogFragment {
 
     public static void showDialog(Activity parentActivity, int stationIndex, RadioStation radioStation, RadioStreamDialogListener listener) {
         RadioStreamDialogFragment dialog = RadioStreamDialogFragment.newInstance(listener, radioStation, stationIndex);
-        //todo: show favoriteIndex in dialog title?
         dialog.show(parentActivity.getFragmentManager(), "radio_stream_dialog");
     }
 }

@@ -589,6 +589,11 @@ public class Settings {
         setFavoriteRadioStations(stations);
     }
 
+    public void deleteFavoriteRadioStation(int stationIndex) {
+        persistFavoriteRadioStation(null, stationIndex);
+    }
+
+
     public void upgradeLegacyRadioStationToFirstFavoriteRadioStation() {
         FavoriteRadioStations stations = getFavoriteRadioStations();
         RadioStation firstRadioStation = null;

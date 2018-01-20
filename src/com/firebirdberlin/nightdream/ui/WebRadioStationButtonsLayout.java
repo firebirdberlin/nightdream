@@ -7,6 +7,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -174,6 +175,23 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             public void onCancel() {
                 NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
                 nightDreamActivity.hideSystemUI();
+            }
+
+            @Override
+            public void onDelete(int stationIndex) {
+                Log.i(TAG, "delete");
+                //if (stationIndex == activeStationIndex) {
+                    stopRadioStream();
+                //}
+                settings.deleteFavoriteRadioStation(stationIndex);
+
+                /*
+                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
+                nightDreamActivity.hideSystemUI();
+                updateButtonColors();
+                invalidate();
+                requestLayout();
+                */
             }
         };
 

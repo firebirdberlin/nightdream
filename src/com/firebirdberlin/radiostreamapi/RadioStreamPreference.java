@@ -154,6 +154,10 @@ public class RadioStreamPreference extends DialogPreference {
         public void onCancel() {
 
         }
+
+        @Override
+        public void onDelete(int stationIndex) {
+        }
     }
 
 }

@@ -415,6 +415,9 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             public void onCancel() {
                 radioStreamDialogListener.onCancel();
             }
+
+            @Override
+            public void onDelete(int stationIndex) {}
         };
 
         manualInputDialog.showDialog(getContext(), persistedRadioStation, manualDialogListener);
