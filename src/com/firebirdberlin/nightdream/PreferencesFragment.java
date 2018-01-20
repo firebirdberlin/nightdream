@@ -172,7 +172,6 @@ public class PreferencesFragment extends PreferenceFragment {
                             Log.w(TAG, "radioStreamURLUI changed");
                             try {
                                 String json = sharedPreferences.getString("radioStreamURLUI_json", null);
-                                Log.i(TAG, json);
                                 RadioStation station = RadioStation.fromJson(json);
                                 settings.persistFavoriteRadioStation(station, 0);
                             } catch (JSONException e) {
