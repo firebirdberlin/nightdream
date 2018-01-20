@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
+    android:minWidth="300dp"
     android:theme="@style/DialogTheme">
 
 
