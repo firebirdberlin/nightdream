@@ -587,12 +587,6 @@ public class NightDreamUI {
         clockLayout.setPrimaryColor(accentColor);
         clockLayout.setSecondaryColor(textColor);
 
-        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
-            setRadioIconActive();
-        } else {
-            setRadioIconInactive();
-        }
-
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
         if (Build.VERSION.SDK_INT < 21) {
             brightnessDrawable.setColorFilter(accentColor, PorterDuff.Mode.MULTIPLY);
@@ -607,16 +601,6 @@ public class NightDreamUI {
         if (view instanceof ImageView) {
             ((ImageView) view).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
-    }
-
-    public void setRadioIconActive() {
-        int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
-        radioIcon.setColorFilter( accentColor, PorterDuff.Mode.SRC_ATOP );
-    }
-
-    public void setRadioIconInactive() {
-        int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
-        radioIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
     }
 
     private void setNightModeIcon() {
@@ -1165,7 +1149,7 @@ public class NightDreamUI {
         controlsVisible = true;
         setupAlarmClock();
         if ( AlarmHandlerService.alarmIsRunning() ) {
-            setRadioIconInactive();
+            //setRadioIconInactive();
             blinkIfLocked();
         }
         dimScreen(0, last_ambient, settings.dim_offset);
@@ -1511,7 +1495,6 @@ public class NightDreamUI {
                 bottomPanelLayout.setup(radioStationIndex);
                 boolean connectingHintVisible = true;
                 bottomPanelLayout.updateWebRadioView(connectingHintVisible, radioStationIndex);
-                setRadioIconActive();
                 showAlarmClock();
             } else
             if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
@@ -1525,7 +1508,6 @@ public class NightDreamUI {
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setupAlarmClock();
                 bottomPanelLayout.updateWebRadioView(false, -1);
-                setRadioIconInactive();
             }
         }
     }

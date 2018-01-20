@@ -1,16 +1,20 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
@@ -22,7 +26,7 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 public class WebRadioStationButtonsLayout extends LinearLayout {
 
-    public static String TAG ="WebRadioStationButtonsLayout";
+    public static String TAG = "WebRadioStationButtons";
     private static int NUM_BUTTONS = 5;
     ColorFilter defaultColorFilter;
     ColorFilter accentColorFilter;
@@ -139,13 +143,53 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         if (station != null) {
             //start radio stream
             //Todo add active radio station as parameter
-            final NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
-            nightDreamActivity.toggleRadioStreamState(stationIndex, true);
+            toggleRadioStreamState(stationIndex, true);
 
         } else {
             showRadioStreamDialog(stationIndex);
         }
     }
+
+    public void toggleRadioStreamState() {
+        toggleRadioStreamState(0, false); // start first radio stream (legacy settings)
+    }
+
+    public void toggleRadioStreamState(final int radioStationIndex, boolean restart) {
+        boolean wasAlreadyPlaying = false;
+        if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
+            RadioStreamService.stop(context);
+            wasAlreadyPlaying = true;
+            //todo: improve switching station (restart stream without restarting the service?)
+            if (!restart) {
+                return;
+            }
+        }
+
+        if (Utility.hasNetworkConnection(context)) {
+            // is stream was already playing before, dont ask again? (but what if user switched from wifi to 3g since stream start?)
+            if (Utility.hasFastNetworkConnection(context) || wasAlreadyPlaying) {
+                RadioStreamService.startStream(context, radioStationIndex);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                new AlertDialog.Builder(context, R.style.DialogTheme)
+                        .setTitle(R.string.message_mobile_data_connection)
+                        .setMessage(R.string.message_mobile_data_connection_confirmation)
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(R.drawable.ic_attention)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                RadioStreamService.startStream(context, radioStationIndex);
+                                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
+                                nightDreamActivity.hideSystemUI();
+                            }
+                        })
+                        .show();
+            }
+
+        } else { // no network connection
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     private void stopRadioStream() {
         if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
@@ -168,7 +212,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                 nightDreamActivity.hideSystemUI();
 
                 //setActiveStation(stationIndex);
-                nightDreamActivity.toggleRadioStreamState(stationIndex, true);
+                toggleRadioStreamState(stationIndex, true);
             }
 
             @Override
@@ -201,13 +245,11 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
 
     public void setActiveStation(int stationIndex) {
         activeStationIndex = stationIndex > -1 ? stationIndex : null;
-        //highlight active button
         updateButtonColors();
     }
 
     public void clearActiveStation() {
         activeStationIndex = null;
-        //highlight active button
         updateButtonColors();
     }
 }
