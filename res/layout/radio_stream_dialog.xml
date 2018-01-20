@@ -96,6 +96,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:clickable="true"
+        android:paddingBottom="3dp"
         android:text="@string/radio_stream_manual_input_hint"
         android:textAllCaps="false"
         android:textAppearance="?android:attr/textAppearanceSmall"

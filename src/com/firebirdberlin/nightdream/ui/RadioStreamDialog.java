@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -70,7 +71,6 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
     public View createDialogView(final RadioStreamDialogListener radioStreamDialogListener) {
         updateDisplayedRadioStationTexts();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, stationTexts);
 
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -117,7 +117,9 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             }
         });
 
-        stationListView.setAdapter(adapter);
+        //ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, stationTexts);
+        ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, R.layout.radio_stream_dialog_list_view_item, stationTexts);
+        stationListView.setAdapter(stationListViewAdapter);
         stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
