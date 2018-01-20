@@ -17,14 +17,31 @@ public class RadioStreamDialogFragment extends DialogFragment {
 
     private RadioStreamDialog radioStreamDialog;
 
-    private final RadioStreamDialogListener listener;
-    private final RadioStation radioStation;
-    private final int stationIndex;
+    private RadioStreamDialogListener listener;
+    private RadioStation radioStation;
+    private int stationIndex;
 
-    public RadioStreamDialogFragment(RadioStreamDialogListener listener, RadioStation radioStation, int stationIndex) {
-        super();
+    public RadioStreamDialogFragment() {
+        // empty default constructor
+    }
+
+    public static RadioStreamDialogFragment newInstance(RadioStreamDialogListener listener, RadioStation radioStation, int stationIndex) {
+        RadioStreamDialogFragment f = new RadioStreamDialogFragment();
+        f.setListener(listener);
+        f.setRadioStation(radioStation);
+        f.setStationIndex(stationIndex);
+        return f;
+    }
+
+    public void setListener(RadioStreamDialogListener listener) {
         this.listener = listener;
+    }
+
+    public void setRadioStation(RadioStation radioStation) {
         this.radioStation = radioStation;
+    }
+
+    public void setStationIndex(int stationIndex) {
         this.stationIndex = stationIndex;
     }
 
@@ -70,7 +87,7 @@ public class RadioStreamDialogFragment extends DialogFragment {
     }
 
     public static void showDialog(Activity parentActivity, int stationIndex, RadioStation radioStation, RadioStreamDialogListener listener) {
-        RadioStreamDialogFragment dialog = new RadioStreamDialogFragment(listener, radioStation, stationIndex);
+        RadioStreamDialogFragment dialog = RadioStreamDialogFragment.newInstance(listener, radioStation, stationIndex);
         //todo: show favoriteIndex in dialog title?
         dialog.show(parentActivity.getFragmentManager(), "radio_stream_dialog");
     }
