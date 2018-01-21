@@ -2,6 +2,7 @@ package com.firebirdberlin.radiostreamapi;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.ui.RadioStreamDialog;
 import com.firebirdberlin.nightdream.ui.RadioStreamDialogListener;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -45,6 +47,20 @@ public class RadioStreamPreference extends DialogPreference {
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         builder.setPositiveButton(null, null);
+
+        // provide delete button if a station was already configured before
+        RadioStation station = getPersistedRadioStation();
+        if (station != null) {
+
+            builder.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    deleteRadioStation();
+                    notifyChanged();
+                }
+            });
+        }
     }
 
     @Override
@@ -127,6 +143,14 @@ public class RadioStreamPreference extends DialogPreference {
         } catch (JSONException e) {
             Log.e(TAG, "error converting station to json", e);
         }
+    }
+
+    private void deleteRadioStation() {
+        persistString(null);
+        SharedPreferences prefs = getSharedPreferences();
+        SharedPreferences.Editor prefEditor = prefs.edit();
+        prefEditor.remove(jsonKey());
+        prefEditor.commit();
     }
 
     private RadioStation getPersistedRadioStation() {
