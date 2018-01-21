@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.R;
@@ -106,7 +107,29 @@ public class RadioStreamDialogFragment extends DialogFragment {
             builder.setNeutralButton(R.string.delete, deleteClickListener);
         }
 
-        return builder.create();
+        final Dialog dialog = builder.create();
+
+        // detect back button and also call onCancel listener so systemUI can be hidden afterwards
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey (DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK &&
+                        event.getAction() == KeyEvent.ACTION_UP &&
+                        !event.isCanceled()) {
+
+                    dialog.cancel();
+
+                    if (listener != null) {
+                        listener.onCancel();
+                    }
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        return dialog;
 
     }
 }
