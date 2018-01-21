@@ -174,8 +174,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 RadioStreamService.startStream(context, radioStationIndex);
-                                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
-                                nightDreamActivity.hideSystemUI();
+                                hideSystemUI();
                             }
                         })
                         .show();
@@ -201,8 +200,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                 settings.persistFavoriteRadioStation(station, stationIndex);
                 stations = settings.getFavoriteRadioStations();
 
-                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
-                nightDreamActivity.hideSystemUI();
+                hideSystemUI();
 
                 //setActiveStation(stationIndex);
                 toggleRadioStreamState(stationIndex, true);
@@ -210,30 +208,31 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
 
             @Override
             public void onCancel() {
-                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
-                nightDreamActivity.hideSystemUI();
+                hideSystemUI();
             }
 
             @Override
             public void onDelete(int stationIndex) {
                 Log.i(TAG, "delete");
-                //if (stationIndex == activeStationIndex) {
+                if (activeStationIndex != null && stationIndex == activeStationIndex) {
                     stopRadioStream();
-                //}
+                }
                 settings.deleteFavoriteRadioStation(stationIndex);
-
-                /*
-                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
-                nightDreamActivity.hideSystemUI();
+                stations = settings.getFavoriteRadioStations();
                 updateButtonColors();
-                invalidate();
-                requestLayout();
-                */
+
+                hideSystemUI();
+
             }
         };
 
         RadioStation station = stations.get(stationIndex);
         RadioStreamDialogFragment.showDialog((Activity)getContext(), stationIndex, station, listener);
+    }
+
+    private void hideSystemUI() {
+        NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
+        nightDreamActivity.hideSystemUI();
     }
 
     public void setActiveStation(int stationIndex) {
