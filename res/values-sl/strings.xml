@@ -19,6 +19,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">O programu</string>
 <string name="action_snooze">Dremez</string>
 <string name="action_stop">Ustavi</string>
+<string name="add_new_alarm">Dodaj novo budilko</string>
+<string name="add_custom_alarm_tone">Dodaj osebni ton budilke</string>
+<string name="alarm">Budilka</string>
 <string name="alarmFadeIn">Povecaj glasnost</string>
 <string name="alarmVolume">Glasnost</string>
 <string name="allow_screen_off_summary">Izklopi ekran ponoci</string>
@@ -40,6 +43,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Svetlost</string>
 <string name="brightness_offset">Ofset svetlosti</string>
 <string name="buttonAccessibilitySettings">Prikazi obvestila</string>
+<string name="buy">Kupi</string>
 <string name="category_handle_power">... in ko je povezava z</string>
 <string name="category_handle_power_autostart_time">Zacni v dolocenem casu</string>
 <string name="choose_alarm_sound">Ton alarma</string>

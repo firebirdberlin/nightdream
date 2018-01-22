@@ -19,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">Acerca de</string>
 <string name="action_snooze">Aplazar</string>
 <string name="action_stop">Detener</string>
+<string name="add_new_alarm">Añadir alarma</string>
+<string name="add_custom_alarm_tone">Añadir un tono de alarma particular</string>
 <string name="alarm">Alarma</string>
 <string name="alarmFadeIn">Incrementar volumen</string>
 <string name="alarmVolume">Volumen de la alarma</string>
@@ -41,6 +43,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Brillo</string>
 <string name="brightness_offset">Ajustes de brillo</string>
 <string name="buttonAccessibilitySettings">Mostrar notificaciones</string>
+<string name="buy">Comprar</string>
 <string name="category_handle_power">... y cuando está conectado a</string>
 <string name="category_handle_power_autostart_time">Comenzar dentro del intervalo de tiempo</string>
 <string name="choose_alarm_sound">Tono de alarma</string>
@@ -49,7 +52,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="clear">Borrar</string>
 <string name="clock_layout_analog">Analógico</string>
 <string name="clock_layout_digital">Digital</string>
+<string name="clock_layout_elegant_analog">Relog analógico elegante</string>
+<string name="clock_layout_digit_analog">Reloj analógico con numeros</string>
 <string name="clock_layout">Tipo del reloj</string>
+<string name="clock_layout_modern_analog">Reloj analógico moderno</string>
 <string name="colors">Colores</string>
 <string name="confirm_reset_question">¿Realmente deseas restablecer todas las configuraciones?</string>
 <string name="confirm_reset">Restablecer</string>
@@ -60,6 +66,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="credits">Créditos</string>
 <string name="credits_pull_requests">Solicitar extracción</string>
 <string name="date_format">Formato de fecha</string>
+<string name="delete">borrar</string>
 <string name="dialog_message_thank_you">¡Muchas gracias!</string>
 <string name="dialog_title_thank_you">Gracias</string>
 <string name="donate_bitcoin">Bitcoin</string>
@@ -105,12 +112,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging">Estado de batería permanente</string>
 <string name="persistent_battery_value_while_charging_summary">Mostrar el estado de batería siempre durante la carga</string>
 <string name="preview">Vista previa</string>
+<string name="product_name_weather">Pronostico del tiempo Pack</string>
+<string name="product_name_webradio">Radio Web Pack</string>
 <string name="purchaseWeatherData">Compra una licencia</string>
 <string name="purchaseWebRadio">Compra una licencia</string>
 <string name="radio">Radio</string>
 <string name="radio_stream_enabled">Activado</string>
 <string name="radio_stream">Emisoras de radio</string>
 <string name="radio_stream_failure">Fallo de emisión</string>
+<string name="radio_stream_manual_input_description">Nombre de la estación de radio</string>
 <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
 <string name="radio_stream_offline">Emisora fuera de línea</string>
 <string name="radio_stream_query_hint">Cadena de búsqueda</string>
@@ -124,6 +134,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend_app_subject">Me gustaría recomendarte esta aplicación de reloj de noche.</string>
 <string name="recommend">Recomienda la aplicación</string>
 <string name="remaining">Restante</string>
+<string name="repeat">Repetir</string>
 <string name="reset_to_defaults">Restablecer a valores predeterminados</string>
 <string name="restless_mode">Mover el reloj alrededor</string>
 <string name="review_request">Por favor califica esta aplicación. ¡Gracias!</string>
@@ -153,6 +164,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="temperatureUnit">Unidad de temperatura</string>
 <string name="timeFormat">Formato de hora</string>
 <string name="titlePrivacyPolicy">Política de privacidad</string>
+<string name="today">Hoy</string>
+<string name="tomorrow">mañana</string>
 <string name="translations">Traducciones</string>
 <string name="typeface_7_segment">Led de 7 segmentos</string>
 <string name="typeface_roboto_condensed">Roboto condensado</string>

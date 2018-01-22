@@ -85,7 +85,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_wireless">sạc không dây</string>
 <string name="hide_background_image_in_night_mode">Ẩn</string>
 <string name="hide_background_image_in_night_mode_summary">Ẩn hình nền ở chế độ ban đêm.</string>
-<string name="hour">Giờ</string>
+<string name="hour">h</string>
 <string name="location_time">Múi giờ</string>
 <string name="maxBrightness">Độ sáng tối đa</string>
 <string name="maxBrightnessBattery">Độ sáng tối đa khi dùng pin</string>
@@ -93,7 +93,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="message_mobile_data_connection">Kết nối dữ liệu di động</string>
 <string name="message_no_data_connection">Không có kết nối dữ liệu</string>
 <string name="minBrightness">Độ sáng màn hình tối thiểu</string>
-<string name="minute">tối thiểu</string>
+<string name="minute">m</string>
 <string name="mute_ringer">tắt chuông</string>
 <string name="night_mode_activation_auto">tự động</string>
 <string name="night_mode_activation_manual">bằng tay</string>
