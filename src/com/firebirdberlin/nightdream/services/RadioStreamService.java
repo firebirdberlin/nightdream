@@ -41,10 +41,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
     private static String ACTION_START_SLEEP_TIME = "start sleep time";
+    static private int radioStationIndex;
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
-    private int radioStationIndex;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
     private String streamURL = "";
@@ -91,6 +91,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         context.startService(i);
     }
 
+    public static int getCurrentRadioStationIndex() {
+        if (streamingMode != StreamingMode.RADIO) {
+            return -1;
+        }
+
+        return radioStationIndex;
+    }
     public static void startStream(Context context) {
         startStream(context, 0);
     }
@@ -227,6 +234,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         stopForeground(false); // bool: true = remove Notification
         isRunning = false;
         alarmIsRunning = false;
+        radioStationIndex = -1;
         streamingMode = StreamingMode.INACTIVE;
 
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);

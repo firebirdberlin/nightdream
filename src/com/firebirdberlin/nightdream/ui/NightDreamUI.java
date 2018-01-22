@@ -52,7 +52,6 @@ import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -480,7 +479,7 @@ public class NightDreamUI {
         initSidePanel();
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setDaydreamMode(daydreamMode);
-        bottomPanelLayout.setup(null);
+        bottomPanelLayout.setup();
         setupScreenAnimation();
         lockUI(this.locked);
 
@@ -743,7 +742,7 @@ public class NightDreamUI {
     private void setupAlarmClock() {
         bottomPanelLayout.setDaydreamMode(daydreamMode);
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
-        bottomPanelLayout.setup(null);
+        bottomPanelLayout.setup();
         bottomPanelLayout.show();
     }
 
@@ -1491,23 +1490,13 @@ public class NightDreamUI {
                 clockLayout.update(settings.weatherEntry);
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
-                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
-                bottomPanelLayout.setup(radioStationIndex);
-                boolean connectingHintVisible = true;
-                bottomPanelLayout.updateWebRadioView(connectingHintVisible, radioStationIndex);
                 showAlarmClock();
             } else
             if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
-                //Log.i(TAG, "received ACTION_RADIO_STREAM_READY_FOR_PLAYBACK, radioIndex=" + radioStationIndex);
-
-                boolean connectingHintVisible = false;
-                bottomPanelLayout.updateWebRadioView(connectingHintVisible, radioStationIndex);
             }
             else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setupAlarmClock();
-                bottomPanelLayout.updateWebRadioView(false, -1);
             }
         }
     }

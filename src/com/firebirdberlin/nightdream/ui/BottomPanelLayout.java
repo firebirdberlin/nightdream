@@ -41,7 +41,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     public void setActivePanel(Panel panel) {
         activePanel = panel;
-        setup(0);
+        setup();
     }
 
     public void setDaydreamMode(boolean enabled) {
@@ -69,11 +69,11 @@ public class BottomPanelLayout extends FrameLayout {
         if (webRadioLayout != null) webRadioLayout.setCustomColor(accentColor, textColor);
     }
 
-    public void setup(Integer radioStationIndex) {
+    public void setup() {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
         } else if (activePanel == Panel.WEB_RADIO & !daydreamMode) {
-            showWebRadioView(radioStationIndex);
+            showWebRadioView();
         } else if (!useInternalAlarm) {
             showStockAlarmView();
         } else {
@@ -106,13 +106,12 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
-    public void showWebRadioView(Integer radioStationIndex) {
+    private void showWebRadioView() {
 
         Log.i(TAG, "showWebRadioView");
 
         if (webRadioLayout != null) {
-            //webRadioLayout.setShowConnectingHint(connectingHintActiveState);
-            webRadioLayout.setText(radioStationIndex);
+            webRadioLayout.setText(null);
             invalidate();
             return; // already visible
         }
@@ -120,19 +119,10 @@ public class BottomPanelLayout extends FrameLayout {
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
-        //webRadioLayout.setShowConnectingHint(connectingHintActiveState);
-        webRadioLayout.setText(radioStationIndex);
         addView(webRadioLayout);
         invalidate();
     }
 
-    public void updateWebRadioView(boolean connectingHintActiveState, Integer radioStationIndex) {
-        if (webRadioLayout == null) return;
-
-        webRadioLayout.setShowConnectingHint(connectingHintActiveState);
-        webRadioLayout.setText(radioStationIndex);
-        invalidate();
-    }
 
     private void showAlarmView() {
         if (activePanel == Panel.WEB_RADIO) return;
