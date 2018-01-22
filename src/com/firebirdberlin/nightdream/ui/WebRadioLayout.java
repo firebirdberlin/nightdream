@@ -180,6 +180,7 @@ public class WebRadioLayout extends RelativeLayout {
     public void setClickable(boolean clickable) {
         super.setClickable(clickable);
         buttonSleepTimer.setClickable(clickable);
+        webRadioButtons.setClickable(clickable);
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {

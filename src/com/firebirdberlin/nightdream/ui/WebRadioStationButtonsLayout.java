@@ -36,6 +36,25 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
     private Integer activeStationIndex;
     private int accentColor;
     private int textColor;
+    private OnClickListener buttonOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            int index = (int) v.getTag();
+            if (activeStationIndex != null && index == activeStationIndex.intValue()) {
+                stopRadioStream();
+            } else {
+                startRadioStreamOrShowDialog(index);
+            }
+        }
+    };
+    private OnLongClickListener buttonOnLongClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(final View v) {
+            int stationIndex = (int) v.getTag();
+            showRadioStreamDialog(stationIndex);
+            return true;
+        }
+    };
 
     public WebRadioStationButtonsLayout(Context context) {
         super(context);
@@ -82,28 +101,20 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             btn.setBackgroundResource(R.drawable.webradio_station_button);
             btn.setTextSize(16);
 
-            btn.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(final View v) {
-                    int stationIndex = (int) v.getTag();
-                    showRadioStreamDialog(stationIndex);
-                    return true;
-                }
-            });
-
-            btn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    int index = (int) v.getTag();
-                    if (activeStationIndex != null && index == activeStationIndex.intValue()) {
-                        stopRadioStream();
-                    } else {
-                        startRadioStreamOrShowDialog(index);
-                    }
-                }
-            });
+            btn.setOnLongClickListener(buttonOnLongClickListener);
+            btn.setOnClickListener(buttonOnClickListener);
 
             addView(btn);
+        }
+    }
+
+    @Override
+    public void setClickable(boolean clickable) {
+        super.setClickable(clickable);
+        for (int i = 0; i < getChildCount(); i++) {
+            Button b = (Button) getChildAt(i);
+            b.setClickable(clickable);
+            b.setLongClickable(clickable);
         }
     }
 
