@@ -8,7 +8,7 @@ import android.preference.PreferenceActivity;
 
 
 public class PreferencesActivity extends PreferenceActivity {
-    public static final int PREFERENCES_SCREEN_WEB_RADIO_INDEX = 6;
+    public static final int PREFERENCES_SCREEN_WEB_RADIO_INDEX = 5;
 
     PreferencesFragment fragment = null;
 

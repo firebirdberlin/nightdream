@@ -2,15 +2,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="main_screen">
 
-        <Preference
-            android:icon="@drawable/ic_attention"
-            android:key="translations_wanted"
-            android:summary="Please add or update the translation for your language."
-            android:title="Translations wanted !">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="https://fhain.zzzz.io/pastt"/>
-        </Preference>
-
         <PreferenceScreen
             android:icon="@drawable/ic_power"
             android:key="autostart"
@@ -477,6 +468,15 @@
             </de.firebirdberlin.preference.VersionPreference>
 
             <Preference
+                android:icon="@drawable/ic_faq"
+                android:title="FAQ">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="https://github.com/firebirdberlin/nightdream/wiki" />
+
+            </Preference>
+
+            <Preference
                 android:icon="@drawable/ic_share"
                 android:key="recommendApp"
                 android:title="@string/recommend"/>
@@ -534,7 +534,7 @@
                     android:key="credits"
                     android:selectable="false"
                     android:summary="stefan.fruhner@googlemail.com"
-                    android:title="Stefan Fruhner (2017)" />
+                    android:title="Stefan Fruhner (2018)" />
 
                 <Preference
                     android:enabled="true"
@@ -638,4 +638,15 @@ vi - Phong Nguyen"/>
             </PreferenceCategory>
 
         </PreferenceScreen>
-    </PreferenceScreen>
+
+    <Preference
+        android:icon="@drawable/ic_attention"
+        android:key="translations_wanted"
+        android:summary="Please add or update the translation for your language."
+        android:title="Translations wanted !">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://fhain.zzzz.io/pastt" />
+    </Preference>
+
+</PreferenceScreen>

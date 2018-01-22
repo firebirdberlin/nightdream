@@ -652,9 +652,10 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupTranslationRequest() {
-        if (Utility.languageIs("de", "en")) {
-            removePreference("translations_wanted");
-        }
+
+//        if (Utility.languageIs("de", "en")) {
+//            removePreference("translations_wanted");
+//        }
     }
 
     @Override
