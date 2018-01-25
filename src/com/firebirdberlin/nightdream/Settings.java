@@ -113,6 +113,7 @@ public class Settings {
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
+    public boolean purchasedWebRadio = false;
     Context mContext;
     SharedPreferences settings;
     private int clockLayout;
@@ -190,6 +191,7 @@ public class Settings {
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
+        purchasedWebRadio = settings.getBoolean("purchasedWebRadio", false);
         radioStreamURL = settings.getString("radioStreamURL", "");
         radioStreamURLUI = settings.getString("radioStreamURLUI", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);

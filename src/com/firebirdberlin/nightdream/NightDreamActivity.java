@@ -401,7 +401,7 @@ public class NightDreamActivity extends Activity
         if ( AlarmHandlerService.alarmIsRunning() ) {
             AlarmHandlerService.stop(this);
         }
-        if ( mySettings.radioStreamURLUI.isEmpty() ) {
+        if (!mySettings.purchasedWebRadio) {
             PreferencesActivity.start(this, PreferencesActivity.PREFERENCES_SCREEN_WEB_RADIO_INDEX);
             return;
         }
