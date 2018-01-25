@@ -125,7 +125,7 @@ public class BottomPanelLayout extends FrameLayout {
 
 
     private void showAlarmView() {
-        if (activePanel == Panel.WEB_RADIO) return;
+        if (activePanel == Panel.WEB_RADIO && !AlarmHandlerService.alarmIsRunning()) return;
         removeAllViews();
         clearViews();
         addView(view);

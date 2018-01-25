@@ -251,6 +251,7 @@ public class NightDreamActivity extends Activity
 
         setupNightMode();
         setupRadioStreamUI();
+        bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
     }
 
     public void onSwitchNightMode() {
@@ -274,7 +275,6 @@ public class NightDreamActivity extends Activity
             case ALARM:
                 setVolumeControlStream(AudioManager.STREAM_ALARM);
                 nightDreamUI.showAlarmClock();
-
                 break;
             case RADIO:
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -415,6 +415,7 @@ public class NightDreamActivity extends Activity
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
             setRadioIconActive();
         }
+        nightDreamUI.showAlarmClock();
     }
 
     public void setRadioIconActive() {
@@ -586,10 +587,6 @@ public class NightDreamActivity extends Activity
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-    }
-
-    public void hideSystemUI() {
-        nightDreamUI.hideSystemUI();
     }
 
     @Override

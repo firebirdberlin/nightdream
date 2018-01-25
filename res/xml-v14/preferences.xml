@@ -440,6 +440,15 @@
                 android:key="purchaseWebRadioUI"
                 android:title="@string/purchaseWebRadio"/>
 
+            <EditTextPreference
+                android:defaultValue="30"
+                android:dialogMessage="@string/sleep_time_default_value_msg"
+                android:dialogTitle="@string/sleep_time_default_value"
+                android:icon="@drawable/ic_nightmode"
+                android:inputType="number"
+                android:key="sleepTimeInMinutesDefaultValue"
+                android:title="@string/sleep_time_default_value" />
+
         </PreferenceScreen>
 
         <Preference

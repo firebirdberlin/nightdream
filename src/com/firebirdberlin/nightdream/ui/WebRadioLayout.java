@@ -197,6 +197,7 @@ public class WebRadioLayout extends RelativeLayout {
                 setText(radioStationIndex);
             } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setText(null);
+                setShowConnectingHint(false);
             }
         }
     }

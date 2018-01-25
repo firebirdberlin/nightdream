@@ -980,17 +980,8 @@ public class NightDreamUI {
         }
     }
 
-    public void hideSystemUI() {
-        if (Build.VERSION.SDK_INT >= 19){
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
+    private void hideSystemUI() {
+        Utility.hideSystemUI(mContext);
     }
 
     public int determineScreenMode(int current_mode, float light_value, double last_ambient_noise){
@@ -1148,7 +1139,6 @@ public class NightDreamUI {
         controlsVisible = true;
         setupAlarmClock();
         if ( AlarmHandlerService.alarmIsRunning() ) {
-            //setRadioIconInactive();
             blinkIfLocked();
         }
         dimScreen(0, last_ambient, settings.dim_offset);
@@ -1492,9 +1482,6 @@ public class NightDreamUI {
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 showAlarmClock();
             } else
-            if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-            }
-            else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setupAlarmClock();
             }

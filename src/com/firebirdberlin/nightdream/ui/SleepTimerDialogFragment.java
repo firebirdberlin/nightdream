@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 
 import java.util.Calendar;
@@ -99,6 +100,11 @@ public class SleepTimerDialogFragment extends DialogFragment {
                     SleepTimerDialogFragment.this.getDialog().cancel();
                 }
             });
+        } else {
+            Settings settings = new Settings((Context) mListener);
+            if (settings.sleepTimeInMinutesDefaultValue > -1) {
+                minuteTextEdit.setText(String.valueOf(settings.sleepTimeInMinutesDefaultValue));
+            }
         }
 
         return builder.create();

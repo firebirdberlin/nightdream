@@ -98,6 +98,7 @@ public class Settings {
     public int nextAlarmTimeMinutes = 0;
     public long lastReviewRequestTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
+    public int sleepTimeInMinutesDefaultValue = 30;
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
     public String radioStreamURL = "";
@@ -206,6 +207,10 @@ public class Settings {
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
+
+        String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
+        sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
+
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));

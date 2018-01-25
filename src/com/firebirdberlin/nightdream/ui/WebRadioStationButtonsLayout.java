@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -149,38 +148,37 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         RadioStation station = null;
         if (stations != null) {
             station = stations.get(stationIndex);
-            //Log.i(TAG, "found stations");
         }
         if (station != null) {
             //start radio stream
-            //Todo add active radio station as parameter
-            toggleRadioStreamState(stationIndex, true);
+            toggleRadioStreamState(stationIndex);
 
         } else {
             showRadioStreamDialog(stationIndex);
         }
     }
 
-    public void toggleRadioStreamState(final int radioStationIndex, boolean restart) {
+    private void toggleRadioStreamState(final int radioStationIndex) {
         boolean wasAlreadyPlaying = false;
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
             RadioStreamService.stop(context);
             wasAlreadyPlaying = true;
-            //todo: improve switching station (restart stream without restarting the service?)
-            if (!restart) {
-                return;
-            }
         }
 
         if (Utility.hasNetworkConnection(context)) {
-            // is stream was already playing before, dont ask again? (but what if user switched from wifi to 3g since stream start?)
+            // is stream was already playing before, don't ask again? (but what if user switched from wifi to 3g since stream start?)
             if (Utility.hasFastNetworkConnection(context) || wasAlreadyPlaying) {
                 RadioStreamService.startStream(context, radioStationIndex);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 new AlertDialog.Builder(context, R.style.DialogTheme)
                         .setTitle(R.string.message_mobile_data_connection)
                         .setMessage(R.string.message_mobile_data_connection_confirmation)
-                        .setNegativeButton(android.R.string.no, null)
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                hideSystemUI();
+                            }
+                        })
                         .setIcon(R.drawable.ic_attention)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -210,11 +208,8 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                 // update station in settings
                 settings.persistFavoriteRadioStation(station, stationIndex);
                 stations = settings.getFavoriteRadioStations();
-
+                toggleRadioStreamState(stationIndex);
                 hideSystemUI();
-
-                //setActiveStation(stationIndex);
-                toggleRadioStreamState(stationIndex, true);
             }
 
             @Override
@@ -242,8 +237,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
     }
 
     private void hideSystemUI() {
-        NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
-        nightDreamActivity.hideSystemUI();
+        Utility.hideSystemUI(getContext());
     }
 
     public void setActiveStation(int stationIndex) {
