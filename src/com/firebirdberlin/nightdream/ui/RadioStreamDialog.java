@@ -92,8 +92,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
         noDataConnectionText = (TextView) v.findViewById(R.id.no_data_connection);
         noDataConnectionText.setVisibility(View.GONE);
-        String lang = Locale.getDefault().getLanguage();
-        if ("de".equals(lang) || "en".equals(lang)) {
+        if (Utility.languageIs("de", "en")) {
             // For German and English display this text in parentheses, otherwise the default
             // message_no_data_connection is displayed
             try {

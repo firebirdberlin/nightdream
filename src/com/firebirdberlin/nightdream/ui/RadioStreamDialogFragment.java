@@ -76,8 +76,6 @@ public class RadioStreamDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
         DialogInterface.OnClickListener cancelClickListener = new DialogInterface.OnClickListener() {
-
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (listener != null) {
@@ -101,10 +99,10 @@ public class RadioStreamDialogFragment extends DialogFragment {
         builder.setTitle(title)
                 .setView(view)
                 .setPositiveButton(null, null)
-                .setNegativeButton(android.R.string.cancel, cancelClickListener);
+                .setNeutralButton(android.R.string.cancel, cancelClickListener);
 
         if (radioStation != null) {
-            builder.setNeutralButton(R.string.delete, deleteClickListener);
+            builder.setNegativeButton(R.string.delete, deleteClickListener);
         }
 
         final Dialog dialog = builder.create();
