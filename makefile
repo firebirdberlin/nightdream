@@ -1,3 +1,6 @@
+ctags:
+	ctags -R .
+
 release:
 	ant -f Pro_build.xml release
 

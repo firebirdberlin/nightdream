@@ -555,6 +555,11 @@ public class Settings {
         return station;
     }
 
+    public boolean hasLegacyRadioStation() {
+        String json = settings.getString("radioStreamURLUI_json", null);
+        return json != null;
+    }
+
     private RadioStation getLegacyRadioStation() {
         String json = settings.getString("radioStreamURLUI_json", null);
         if (json != null) {
