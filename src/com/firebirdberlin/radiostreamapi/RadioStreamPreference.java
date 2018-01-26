@@ -31,36 +31,33 @@ public class RadioStreamPreference extends DialogPreference {
 
     public RadioStreamPreference(Context ctx, AttributeSet attrs) {
         this(ctx, attrs, android.R.attr.dialogPreferenceStyle);
-        init();
     }
 
     public RadioStreamPreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
-        init();
     }
 
-    private void init() {
-        setNegativeButtonText(android.R.string.cancel);
-    }
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
+        builder.setNeutralButton(android.R.string.cancel, null);
         builder.setPositiveButton(null, null);
 
         // provide delete button if a station was already configured before
         RadioStation station = getPersistedRadioStation();
-        if (station != null) {
-
-            builder.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    deleteRadioStation();
-                    notifyChanged();
-                }
-            });
+        if (station == null) {
+            return;
         }
+        builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteRadioStation();
+                notifyChanged();
+                setSummary("");
+            }
+        });
+
     }
 
     @Override
@@ -163,9 +160,7 @@ public class RadioStreamPreference extends DialogPreference {
                 Log.e(TAG, "error converting json to station", e);
             }
         }
-
         return null;
-
     }
 
     private class RadioStreamDialogResultListener implements RadioStreamDialogListener {
@@ -176,11 +171,11 @@ public class RadioStreamPreference extends DialogPreference {
         }
         @Override
         public void onCancel() {
-
         }
 
         @Override
         public void onDelete(int stationIndex) {
+            setSummary("");
         }
     }
 
