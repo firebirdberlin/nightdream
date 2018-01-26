@@ -10,6 +10,9 @@ import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class BottomPanelLayout extends FrameLayout {
+
+    public static String TAG ="BottomPanelLayout";
+
     public boolean isVisible = true;
     public boolean useInternalAlarm = false;
     private boolean daydreamMode = false;
@@ -62,7 +65,7 @@ public class BottomPanelLayout extends FrameLayout {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
         } else if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO & !daydreamMode) {
-            showWebRadioView(true, extras);
+            showWebRadioView(extras);
         } else if (!useInternalAlarm) {
             showStockAlarmView();
         } else {
@@ -96,27 +99,31 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     public void showWebRadioView(Bundle extras) {
-        showWebRadioView(true, extras);
-    }
 
-    public void showWebRadioView(boolean showConnectingHint, Bundle extras) {
+        Log.i(TAG, "showWebRadioView");
 
-        if (webRadioLayout != null) return; // already visible
+        if (webRadioLayout != null) {
+            //webRadioLayout.setShowConnectingHint(connectingHintActiveState);
+            webRadioLayout.setText(extras);
+            invalidate();
+            return; // already visible
+        }
         removeAllViews();
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
-        webRadioLayout.setShowConnectingHint(showConnectingHint);
+        //webRadioLayout.setShowConnectingHint(connectingHintActiveState);
         webRadioLayout.setText(extras);
         addView(webRadioLayout);
         invalidate();
     }
 
-    public void updateWebRadioView() {
+    public void updateWebRadioView(boolean connectingHintActiveState, Bundle extras) {
         if (webRadioLayout == null) return;
 
-        webRadioLayout.setShowConnectingHint(false);
-        webRadioLayout.setText(null);
+        webRadioLayout.setShowConnectingHint(connectingHintActiveState);
+        webRadioLayout.setText(extras);
+        invalidate();
     }
 
     private void showAlarmView() {
@@ -139,7 +146,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     @Override
     public void setClickable(boolean clickable) {
-        Log.w("BottomPanelLayout", "setClickable " + ((clickable) ? "true" : "false"));
+        //Log.w(TAG, "setClickable " + ((clickable) ? "true" : "false"));
         super.setClickable(clickable);
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).setClickable(clickable);

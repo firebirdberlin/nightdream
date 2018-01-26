@@ -522,7 +522,7 @@ public class Settings {
     }
 
     public RadioStation getCurrentRadioStation() {
-        String json = settings.getString("radioStreamURLUI_json", null);
+        String json = settings.getString(RADIO_STATION_LEGACY_JSON_KEY, null);
         if (json != null) {
             Log.i(TAG, json);
             try {
@@ -535,6 +535,9 @@ public class Settings {
         return null;
     }
 
+    // settings key used in preferences.xml and RadioStreamPreference
+    private static final String RADIO_STATION_LEGACY_KEY = "radioStreamURLUI";
+    private static final String RADIO_STATION_LEGACY_JSON_KEY = "radioStreamURLUI_json";
     private static final String FAVORITE_RADIO_STATIOS_KEY = "favoriteRadioStations";
 
     public RadioStation getFavoriteRadioStation(int radioStationIndex) {
@@ -550,9 +553,12 @@ public class Settings {
         return station;
     }
 
-    // todo make private, use getter for specific station index
     public FavoriteRadioStations getFavoriteRadioStations() {
-        String json = settings.getString(FAVORITE_RADIO_STATIOS_KEY, null);
+        return getFavoriteRadioStations(settings);
+    }
+
+    private static FavoriteRadioStations getFavoriteRadioStations(SharedPreferences preferences) {
+        String json = preferences.getString(FAVORITE_RADIO_STATIOS_KEY, null);
         if (json != null) {
             Log.i(TAG, json);
             try {
@@ -566,10 +572,40 @@ public class Settings {
 
     }
 
-    public void setFavoriteRadioStations(FavoriteRadioStations stations) {
+    public void setPersistentFavoriteRadioStation(RadioStation station, int stationIndex) {
+        setPersistentFavoriteRadioStation(settings, station, stationIndex);
+    }
+
+    public static void setPersistentFavoriteRadioStation(SharedPreferences preferences, RadioStation station, int stationIndex) {
+        Log.i(TAG, "setPersistentFavoriteRadioStation index=" + stationIndex);
+        FavoriteRadioStations stations = getFavoriteRadioStations(preferences);
+        stations.set(stationIndex, station);
+        setFavoriteRadioStations(preferences, stations);
+
+        //for now station #0 is also saved like in RadioStreamPreferences
+        if (stationIndex == 0) {
+            persistLegacyRadioStation(preferences, station);
+        }
+    }
+
+    private static void persistLegacyRadioStation(SharedPreferences preferences, RadioStation station) {
+        // update legacy settings of a single radio station as well
+        Log.i(TAG, "persistLegacyRadioStation");
+        try {
+            String json = station.toJson();
+            SharedPreferences.Editor prefEditor = preferences.edit();
+            prefEditor.putString(RADIO_STATION_LEGACY_KEY, station.stream);
+            prefEditor.putString(RADIO_STATION_LEGACY_JSON_KEY, json);
+            prefEditor.commit();
+        } catch (JSONException e) {
+            Log.e(TAG, "error converting FavoriteRadioStations to json", e);
+        }
+    }
+
+    private static void setFavoriteRadioStations(SharedPreferences preferences, FavoriteRadioStations stations) {
         try {
             String json = stations.toJson();
-            SharedPreferences.Editor prefEditor = settings.edit();
+            SharedPreferences.Editor prefEditor = preferences.edit();
             prefEditor.putString(FAVORITE_RADIO_STATIOS_KEY, json);
             prefEditor.commit();
         } catch (JSONException e) {

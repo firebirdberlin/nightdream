@@ -45,6 +45,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
+    private int radioStationIndex;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
     private String streamURL = "";
@@ -168,17 +169,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             currentStreamType = AudioManager.STREAM_ALARM;
             setAlarmVolume(settings.alarmVolume);
 
-            int radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, 0);
+            this.radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
 
             checkStreamAndStart(radioStationIndex);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
 
-            int radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, 0);
+            this.radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
 
-            Intent sendIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
-            sendIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-            sendBroadcast( sendIndex );
+            Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
+            broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+            sendBroadcast( broadcastIndex );
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
 
@@ -334,7 +335,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
         try {
             mp.start();
-            sendBroadcast( new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK) );
+            Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
+            intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+            sendBroadcast( intent );
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }

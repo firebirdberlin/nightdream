@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.ui.RadioStreamDialog;
 import com.firebirdberlin.nightdream.ui.RadioStreamDialogListener;
@@ -144,6 +145,7 @@ public class RadioStreamPreference extends DialogPreference {
     }
 
     private void persistRadioStation(RadioStation station) {
+        /*
         //save stream as separate field
         persistString(station.stream);
 
@@ -157,6 +159,10 @@ public class RadioStreamPreference extends DialogPreference {
         } catch (JSONException e) {
             Log.e(TAG, "error converting station to json", e);
         }
+        */
+
+        SharedPreferences prefs = getSharedPreferences();
+        Settings.setPersistentFavoriteRadioStation(prefs, station, 0);
 
     }
 
@@ -181,6 +187,10 @@ public class RadioStreamPreference extends DialogPreference {
             persistRadioStation(station);
             notifyChanged();
             getDialog().dismiss();
+        }
+        @Override
+        public void onCancel() {
+
         }
     }
 

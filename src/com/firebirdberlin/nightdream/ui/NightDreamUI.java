@@ -1501,7 +1501,7 @@ public class NightDreamUI {
     }
 
     private void showWebRadioBottomPanel() {
-        bottomPanelLayout.showWebRadioView(false, null);
+        bottomPanelLayout.showWebRadioView(null);
         bottomPanelLayout.show();
     }
 
@@ -1516,11 +1516,15 @@ public class NightDreamUI {
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 bottomPanelLayout.setup(intent.getExtras());
+                boolean connectingHintVisible = true;
+                bottomPanelLayout.updateWebRadioView(connectingHintVisible, intent.getExtras());
                 setRadioIconActive();
                 showAlarmClock();
             } else
             if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-                bottomPanelLayout.updateWebRadioView();
+                Log.i(TAG, "received ACTION_RADIO_STREAM_READY_FOR_PLAYBACK, radioIndex=" + intent.getIntExtra(RadioStreamService.EXTRA_RADIO_STATION_INDEX, -1));
+                boolean connectingHintVisible = false;
+                bottomPanelLayout.updateWebRadioView(connectingHintVisible, intent.getExtras());
             }
             else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {

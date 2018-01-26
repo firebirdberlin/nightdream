@@ -123,8 +123,13 @@ public class WebRadioLayout extends RelativeLayout {
             Button btn = new Button(context);
             btn.setText(String.valueOf(i + 1));
             //btn1.setTextColor(Color.WHITE);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(50, 40);
-            lp.setMargins(5, 5, 5, 5);
+
+            int widthDP = Utility.pixelsToDp(context, 25);
+            int heightDP = Utility.pixelsToDp(context, 20);
+            int margin = Utility.pixelsToDp(context, 5);
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(widthDP, heightDP);
+            lp.setMargins(margin, margin, margin, margin);
             btn.setLayoutParams(lp);
             btn.setPadding(0, 0, 0, 0);
             btn.setBackgroundResource(R.drawable.border);
@@ -177,9 +182,15 @@ public class WebRadioLayout extends RelativeLayout {
                 Toast.makeText(getContext(), "Saved radio station #" + stationIndex + ": " + station.name, Toast.LENGTH_LONG).show();
 
                 // update station in settings
+                /*
                 FavoriteRadioStations stations = settings.getFavoriteRadioStations();
                 stations.set(stationIndex, station);
                 settings.setFavoriteRadioStations(stations);
+                */
+                settings.setPersistentFavoriteRadioStation(station, stationIndex);
+
+                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
+                nightDreamActivity.hideSystemUI();
 
                 /*
                 try {
@@ -189,6 +200,12 @@ public class WebRadioLayout extends RelativeLayout {
                 }
                 */
 
+            }
+
+            @Override
+            public void onCancel() {
+                NightDreamActivity nightDreamActivity = (NightDreamActivity) getContext();
+                nightDreamActivity.hideSystemUI();
             }
         };
 
@@ -221,17 +238,28 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     protected void setText(Bundle extras) {
+
+        //Log.i(TAG, "setText extras=" + (extras != null ? "set" : "null"));
+
         if (textView == null) return;
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
 
             RadioStation station;
+            // extras must be provided to update the station name
             if (extras != null) {
                 int radioStationIndex = extras.getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
+                //Log.i(TAG, "extras != null, index=" + radioStationIndex);
                 station = settings.getFavoriteRadioStation(radioStationIndex);
-            } else {
-                station = RadioStreamService.getCurrentRadioStation(context);
+                textView.setText(station.name);
             }
-            textView.setText(station.name);
+            /*
+            else {
+                //Log.i(TAG, "extras = null");
+                station = RadioStreamService.getCurrentRadioStation(context);
+                textView.setText(station.name);
+            }
+            */
+
         } else {
             textView.setText("");
         }
@@ -242,6 +270,9 @@ public class WebRadioLayout extends RelativeLayout {
 
     protected void setShowConnectingHint(boolean showConnectingHint) {
         this.showConnectingHint = showConnectingHint;
+        spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
+        invalidate();
+        //Log.i(TAG, "setShowConnectingHint " + showConnectingHint);
     }
 
     @Override

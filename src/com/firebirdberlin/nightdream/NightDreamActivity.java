@@ -477,15 +477,16 @@ public class NightDreamActivity extends Activity
         if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
             RadioStreamService.stop(this);
             wasAlreadyPlaying = true;
-            //if (!restart) { // restart does work yet (will playback previous station)
+            //todo: improve switching station (restart stream without restarting the service?)
+            if (!restart) {
                 return;
-            //}
+            }
         }
 
         if (Utility.hasNetworkConnection(this)) {
             // is stream was already playing before, dont ask again? (but what if user switched from wifi to 3g since stream start?)
             if (Utility.hasFastNetworkConnection(this) || wasAlreadyPlaying) {
-                RadioStreamService.startStream(this);
+                RadioStreamService.startStream(this, radioStationIndex);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 new AlertDialog.Builder(this, R.style.DialogTheme)
                         .setTitle(R.string.message_mobile_data_connection)
@@ -605,6 +606,10 @@ public class NightDreamActivity extends Activity
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+    }
+
+    public void hideSystemUI() {
+        nightDreamUI.hideSystemUI();
     }
 
     @Override

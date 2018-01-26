@@ -409,6 +409,10 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
                 //dialog is already closed, now also finish parent dialog (RadioStreamPreference)
                 radioStreamDialogListener.onRadioStreamSelected(station);
             }
+            @Override
+            public void onCancel() {
+                radioStreamDialogListener.onCancel();
+            }
         };
 
         manualInputDialog.showDialog(getContext(), persistedRadioStation, manualDialogListener);

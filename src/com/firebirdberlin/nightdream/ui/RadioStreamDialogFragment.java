@@ -84,17 +84,30 @@ public class RadioStreamDialogFragment extends DialogFragment {
                 // delegate to listener
                 listener.onRadioStreamSelected(station);
             }
+            @Override
+            public void onCancel() {
+                listener.onCancel();
+            }
         };
 
         View view = radioStreamDialog.createDialogView(dialogDismissListener);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
+        DialogInterface.OnClickListener cancelClickListener = new DialogInterface.OnClickListener() {
+
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                listener.onCancel();
+            }
+        };
+
         String title = getResources().getString(R.string.radio_stream) + " #" + String.valueOf(stationIndex + 1);
         builder.setTitle(title)
                 .setView(view)
                 .setPositiveButton(null, null)
-                .setNegativeButton(android.R.string.cancel, null);
+                .setNegativeButton(android.R.string.cancel, cancelClickListener);
 
         // Create the AlertDialog object and return it
         return builder.create();
