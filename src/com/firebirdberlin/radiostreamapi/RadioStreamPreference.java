@@ -41,22 +41,29 @@ public class RadioStreamPreference extends DialogPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
+
         builder.setNeutralButton(android.R.string.cancel, null);
         builder.setPositiveButton(null, null);
 
         // provide delete button if a station was already configured before
         RadioStation station = getPersistedRadioStation();
         if (station == null) {
-            return;
+
+            // must be set to null, otherwise used as cancel button
+            builder.setNegativeButton(null, null);
+
+        } else {
+
+            builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    deleteRadioStation();
+                    notifyChanged();
+                    setSummary("");
+                }
+            });
+
         }
-        builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deleteRadioStation();
-                notifyChanged();
-                setSummary("");
-            }
-        });
 
     }
 
