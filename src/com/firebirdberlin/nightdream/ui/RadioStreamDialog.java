@@ -116,8 +116,8 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             }
         });
 
-        //ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, stationTexts);
-        ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, R.layout.radio_stream_dialog_list_view_item, stationTexts);
+        ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, stationTexts);
+        //ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, R.layout.radio_stream_dialog_list_view_item, stationTexts);
         stationListView.setAdapter(stationListViewAdapter);
         stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
@@ -350,16 +350,16 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             }
         }
 
-        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryList);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, R.layout.spinner_item, countryList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryList);
+        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, R.layout.spinner_item, countryList);
 
         // select as default: first preferred country, and "any country"
         if (selectedItemIndex == -1 && !countryList.isEmpty()) {
             selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
         }
 
-        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dataAdapter.setDropDownViewResource(R.layout.spinner_item);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);

@@ -54,7 +54,11 @@ public class RadioStreamDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        radioStreamDialog = new RadioStreamDialog(getActivity(), radioStation);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
+
+        // Warning: must use context of AlertDialog.Builder here so that the changed theme is applied by LayoutInflater in RadioStreamDialog!
+        // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme for this DialogFragment)
+        radioStreamDialog = new RadioStreamDialog(builder.getContext(), radioStation);
 
         RadioStreamDialogListener dialogDismissListener = new RadioStreamDialogListener() {
             @Override
@@ -72,8 +76,6 @@ public class RadioStreamDialogFragment extends DialogFragment {
         };
 
         View view = radioStreamDialog.createDialogView(dialogDismissListener);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
 
         DialogInterface.OnClickListener cancelClickListener = new DialogInterface.OnClickListener() {
             @Override
