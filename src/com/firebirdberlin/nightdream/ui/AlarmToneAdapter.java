@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -42,6 +43,7 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         this.listener = listener;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -84,8 +86,10 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         });
         ImageView buttonDelete = (ImageView) v.findViewById(R.id.buttonDelete);
 
-        buttonDelete.setVisibility(item != null && "file".equals(item.uri.getScheme())
-                ? View.VISIBLE : View.GONE);
+        buttonDelete.setVisibility(
+                item != null && "file".equals(item.uri.getScheme()) &&
+                        !item.uri.toString().contains("android_asset")
+                        ? View.VISIBLE : View.GONE);
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

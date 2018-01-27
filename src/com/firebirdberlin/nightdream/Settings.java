@@ -101,6 +101,8 @@ public class Settings {
     public int sleepTimeInMinutesDefaultValue = 30;
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
+    public String fontUri = "";
+    public String fontName = "";
     public String radioStreamURL = "";
     public String radioStreamURLUI = "";
     public String backgroundImageURI = "";
@@ -146,6 +148,8 @@ public class Settings {
         AlarmToneUri = settings.getString("AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         AlarmToneName = settings.getString("AlarmToneName", "");
+        fontUri = settings.getString("fontUri", "");
+        fontName = settings.getString("fontName", "");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         alarmVolume = settings.getInt("alarmVolume", 3);
@@ -287,18 +291,36 @@ public class Settings {
         return android.text.format.DateFormat.is24HourFormat(mContext);
     }
 
-    public long getDateAsLong(int year, int month, int day) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_MONTH, day);
-            calendar.set(Calendar.MONTH, month - 1);
-            calendar.set(Calendar.YEAR, year);
-            return calendar.getTimeInMillis();
-    }
-
     private Typeface loadTypeface() {
-        int typeface = Integer.parseInt(settings.getString("typeface", "6"));
-        String path = mapIntToTypefacePath(typeface);
-        return Typeface.createFromAsset(mContext.getAssets(), path);
+        final String ASSET_PATH = "file:///android_asset/";
+        if (settings.contains("typeface") ||
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+
+            int typeface = Integer.parseInt(settings.getString("typeface", "6"));
+            String path = mapIntToTypefacePath(typeface);
+            if (path != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                String name = path.substring(6);
+                setFontUri(ASSET_PATH + path, name);
+                SharedPreferences.Editor prefEditor = settings.edit();
+                prefEditor.remove("typeface");
+                prefEditor.commit();
+            }
+
+            return Typeface.createFromAsset(mContext.getAssets(), path);
+        }
+        String path = settings.getString("fontUri", "");
+        try {
+            if (path.contains(ASSET_PATH)) {
+                path = path.replace(ASSET_PATH, "");
+                return Typeface.createFromAsset(mContext.getAssets(), path);
+            } else {
+                path = path.replace("file://", "");
+                return Typeface.createFromFile(path);
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private String mapIntToTypefacePath(int typeface) {
@@ -320,24 +342,30 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public void setUseInternalAlarm(boolean on) {
-        useInternalAlarm = on;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putBoolean("useInternalAlarm", on);
-        prefEditor.commit();
-    }
-
     public void setAlarmToneUri(String uriString, String name) {
         AlarmToneUri = uriString;
         AlarmToneName = name;
         SharedPreferences.Editor prefEditor = settings.edit();
-
         if ( uriString != null ) {
             prefEditor.putString("AlarmToneUri", uriString);
             prefEditor.putString("AlarmToneName", name);
         } else {
             prefEditor.remove("AlarmToneUri");
             prefEditor.remove("AlarmToneName");
+        }
+        prefEditor.commit();
+    }
+
+    public void setFontUri(String uriString, String name) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        fontUri = uriString;
+        fontName = name;
+        if (uriString != null) {
+            prefEditor.putString("fontUri", uriString);
+            prefEditor.putString("fontName", name);
+        } else {
+            prefEditor.remove("fontUri");
+            prefEditor.remove("fontName");
         }
         prefEditor.commit();
     }
@@ -599,7 +627,6 @@ public class Settings {
         persistFavoriteRadioStation(null, stationIndex);
     }
 
-
     public void upgradeLegacyRadioStationToFirstFavoriteRadioStation() {
         FavoriteRadioStations stations = getFavoriteRadioStations();
         RadioStation firstRadioStation = null;
@@ -612,6 +639,5 @@ public class Settings {
                 persistFavoriteRadioStation(legacyStation, 0);
             }
         }
-
     }
 }

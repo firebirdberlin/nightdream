@@ -989,7 +989,7 @@ public class NightDreamUI {
     }
 
     private void hideSystemUI() {
-        Utility.hideSystemUI(mContext);
+        Utility.hideSystemUI(window);
     }
 
     public int determineScreenMode(int current_mode, float light_value, double last_ambient_noise){

@@ -121,6 +121,10 @@
                     android:title="@string/colors"
                     />
 
+                <Preference
+                    android:key="customTypefaceUri"
+                    android:title="@string/typeface" />
+
                 <SwitchPreference
                     android:defaultValue="true"
                     android:key="showDate"
@@ -137,12 +141,6 @@
                     android:title="@string/timeFormat"
                     custom:formatType="time" />
 
-                <ListPreference
-                    android:defaultValue="6"
-                    android:entries="@array/typeFaces"
-                    android:entryValues="@array/typeFaceValues"
-                    android:key="typeface"
-                    android:title="@string/typeface" />
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/background">

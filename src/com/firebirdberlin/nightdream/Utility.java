@@ -24,6 +24,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import java.text.DateFormatSymbols;
@@ -256,9 +257,14 @@ public class Utility {
     }
 
     public static void hideSystemUI(Context context) {
+        hideSystemUI(((Activity) context).getWindow());
+    }
+
+    public static void hideSystemUI(Window window) {
+        if (window == null) return;
         if (Build.VERSION.SDK_INT >= 19) {
 
-            View decorView = ((Activity) context).getWindow().getDecorView();
+            View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -268,6 +274,7 @@ public class Utility {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
 
     public Point getDisplaySize() {
         Point size = new Point();
