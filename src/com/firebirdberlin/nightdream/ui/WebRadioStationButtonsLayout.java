@@ -11,7 +11,6 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -76,7 +75,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         accentColorFilter = new LightingColorFilter(accentColor, 1);
         defaultColorFilter = new LightingColorFilter(textColor, 1);
 
-        updateButtonColors();
+        updateButtonState();
     }
 
     private void init() {
@@ -124,29 +123,21 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         }
     }
 
-    private void updateButtonColors() {
-        updateButtonVisibilityAndColors();
-    }
-
-    private void updateButtonVisibilityAndColors() {
-
+    private void updateButtonState() {
         final int lastButtonInUseIndex = lastButtonInUseIndex();
-        // show 2 preset buttons initially and more if they are used
-        final int lastVisibleButton = Math.min(Math.max(1, lastButtonInUseIndex + 1), FavoriteRadioStations.getMaxNumEntries() - 1);
-
         for (int i = 0; i < getChildCount(); i++) {
             Button b = (Button) getChildAt(i);
+            b.setVisibility(i <= lastButtonInUseIndex + 1 ? VISIBLE : GONE);
+            b.setText(String.valueOf(i + 1));
 
-            b.setVisibility(i <= lastVisibleButton ? VISIBLE : GONE);
-
-            int tag = (int) b.getTag();
-            int color = (activeStationIndex != null && activeStationIndex.intValue() == tag)
+            int color = (activeStationIndex != null && activeStationIndex.intValue() == i)
                     ? accentColor : textColor;
 
             Drawable border = b.getBackground();
             if (stations != null && stations.get(i) == null) {
                 border.setAlpha(125);
                 color = setAlpha(color, 125);
+                b.setText(i <= lastButtonInUseIndex ? String.valueOf(i + 1) : "+");
             } else {
                 border.setAlpha(255);
                 color = setAlpha(color, 255);
@@ -159,9 +150,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
     private int lastButtonInUseIndex() {
         int lastIndex = -1;
         for (int i = 0; i < getChildCount(); i++) {
-            Button b = (Button) getChildAt(i);
-            boolean buttonInUse =(stations != null && stations.get(i) != null);
-            if (buttonInUse) {
+            if (stations != null && stations.get(i) != null) {
                 lastIndex = i;
             }
         }
@@ -256,7 +245,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                 }
                 settings.deleteFavoriteRadioStation(stationIndex);
                 stations = settings.getFavoriteRadioStations();
-                updateButtonColors();
+                updateButtonState();
 
                 hideSystemUI();
 
@@ -273,11 +262,11 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
 
     public void setActiveStation(int stationIndex) {
         activeStationIndex = stationIndex > -1 ? stationIndex : null;
-        updateButtonColors();
+        updateButtonState();
     }
 
     public void clearActiveStation() {
         activeStationIndex = null;
-        updateButtonColors();
+        updateButtonState();
     }
 }
