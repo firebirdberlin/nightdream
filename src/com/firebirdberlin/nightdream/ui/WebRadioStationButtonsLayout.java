@@ -26,7 +26,6 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 public class WebRadioStationButtonsLayout extends LinearLayout {
 
     public static String TAG = "WebRadioStationButtons";
-    private static int NUM_BUTTONS = 5;
     ColorFilter defaultColorFilter;
     ColorFilter accentColorFilter;
     FavoriteRadioStations stations;
@@ -83,7 +82,8 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         settings = new Settings(context);
         stations = settings.getFavoriteRadioStations();
 
-        for (int i = 0; i < NUM_BUTTONS; i++) {
+        final int maxNumButtons = FavoriteRadioStations.getMaxNumEntries();
+        for (int i = 0; i < maxNumButtons; i++) {
 
             Button btn = new Button(context);
             btn.setText(String.valueOf(i + 1));
@@ -118,8 +118,20 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
     }
 
     private void updateButtonColors() {
+        updateButtonVisibilityAndColors();
+    }
+
+    private void updateButtonVisibilityAndColors() {
+
+        final int lastButtonInUseIndex = lastButtonInUseIndex();
+        // show 2 preset buttons initially and more if they are used
+        final int lastVisibleButton = Math.min(Math.max(1, lastButtonInUseIndex + 1), FavoriteRadioStations.getMaxNumEntries() - 1);
+
         for (int i = 0; i < getChildCount(); i++) {
             Button b = (Button) getChildAt(i);
+
+            b.setVisibility(i <= lastVisibleButton ? VISIBLE : GONE);
+
             int tag = (int) b.getTag();
             int color = (activeStationIndex != null && activeStationIndex.intValue() == tag)
                     ? accentColor : textColor;
@@ -135,6 +147,18 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             b.setTextColor(color);
             border.setColorFilter((color == accentColor) ? accentColorFilter : defaultColorFilter);
         }
+    }
+
+    private int lastButtonInUseIndex() {
+        int lastIndex = -1;
+        for (int i = 0; i < getChildCount(); i++) {
+            Button b = (Button) getChildAt(i);
+            boolean buttonInUse =(stations != null && stations.get(i) != null);
+            if (buttonInUse) {
+                lastIndex = i;
+            }
+        }
+        return lastIndex;
     }
 
     public int setAlpha(int color, int alpha) {
