@@ -123,6 +123,9 @@ public class BottomPanelLayout extends FrameLayout {
         invalidate();
     }
 
+    public boolean isWebRadioViewActive() {
+        return webRadioLayout != null;
+    }
 
     private void showAlarmView() {
         if (activePanel == Panel.WEB_RADIO && !AlarmHandlerService.alarmIsRunning()) return;

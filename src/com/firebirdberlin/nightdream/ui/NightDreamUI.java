@@ -599,8 +599,8 @@ public class NightDreamUI {
     }
 
     private void updateRadioIconColor(final int accentColor, final int textColor) {
-        BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
-        final int color = (panel == BottomPanelLayout.Panel.WEB_RADIO ? accentColor : textColor);
+        final boolean webRadioViewActive = bottomPanelLayout.isWebRadioViewActive();
+        final int color = (webRadioViewActive ? accentColor : textColor);
         radioIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
