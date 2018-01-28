@@ -581,6 +581,8 @@ public class NightDreamUI {
             }
         }
 
+        updateRadioIconColor(accentColor, textColor);
+
         bottomPanelLayout.setCustomColor(accentColor, textColor);
 
         clockLayout.setPrimaryColor(accentColor);
@@ -594,6 +596,12 @@ public class NightDreamUI {
             brightnessProgress.setProgressBackgroundTintList(
                     ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
         }
+    }
+
+    private void updateRadioIconColor(final int accentColor, final int textColor) {
+        BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
+        final int color = (panel == BottomPanelLayout.Panel.WEB_RADIO ? accentColor : textColor);
+        radioIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
     private void colorizeImageView(View view, int color) {
