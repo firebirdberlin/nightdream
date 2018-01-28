@@ -599,7 +599,7 @@ public class PreferencesFragment extends PreferenceFragment {
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 if (! RadioStreamService.isRunning) {
-                    RadioStreamService.start(context);
+                    RadioStreamService.start(context, true);
                 } else {
                     RadioStreamService.stop(context);
                 }
