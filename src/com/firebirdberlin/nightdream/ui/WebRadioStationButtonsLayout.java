@@ -7,9 +7,11 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -82,6 +84,11 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         settings = new Settings(context);
         stations = settings.getFavoriteRadioStations();
 
+        Utility utility = new Utility(getContext());
+        Point displaySize = utility.getDisplaySize();
+        //Log.d(TAG, "displayWidth=" + displaySize.x);
+        final int buttonWidthPixels = (displaySize.x > 480 ? 40 : 35);
+
         final int maxNumButtons = FavoriteRadioStations.getMaxNumEntries();
         for (int i = 0; i < maxNumButtons; i++) {
 
@@ -89,7 +96,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             btn.setText(String.valueOf(i + 1));
             btn.setTag(i);
 
-            int widthDP = Utility.pixelsToDp(context, 40);
+            int widthDP = Utility.pixelsToDp(context, buttonWidthPixels);
             int heightDP = Utility.pixelsToDp(context, 30);
             int margin = Utility.pixelsToDp(context, 5);
 
