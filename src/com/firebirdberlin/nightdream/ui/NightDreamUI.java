@@ -1181,12 +1181,12 @@ public class NightDreamUI {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void applyScaleFactor(float factor) {
-        int screen_width = clockLayoutContainer.getWidth();
-        int screen_height = clockLayoutContainer.getHeight();
+        int width = clockLayoutContainer.getWidth();
+        int height = clockLayoutContainer.getHeight();
         factor *= clockLayout.getScaleX();
         int new_width = (int) (clockLayout.getWidth() * factor);
         int new_height = (int) (clockLayout.getHeight() * factor);
-        if (factor > 0.5f && new_width <= screen_width && new_height <= screen_height) {
+        if (factor > 0.5f && new_width < width  && new_height < height) {
             clockLayout.setScaleFactor(factor);
         }
     }

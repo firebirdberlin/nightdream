@@ -11,10 +11,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
@@ -32,7 +34,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     public CustomDigitalClock(Context context) {
         super(context);
         this.context = context;
-        initClock(context);
+        initClock();
     }
 
     public CustomDigitalClock(Context context, AttributeSet attrs) {
@@ -46,11 +48,16 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
         a.recycle();
 
-        initClock(context);
+        initClock();
     }
 
-    private void initClock(Context context) {
-        Resources r = context.getResources();
+    private void initClock() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // Due to an issue with hardware acceleration the text disappears if the font
+            // size gets too large. So we disable hardware acceleration.
+            // https://stackoverflow.com/questions/6253528/font-size-too-large-to-fit-in-cache
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
         mFormatChangeObserver = new FormatChangeObserver();
         getContext().getContentResolver().registerContentObserver(
