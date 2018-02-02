@@ -24,13 +24,17 @@ import android.widget.ListView;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.models.FileUri;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -145,17 +149,20 @@ public class ManageFontsDialogFragment extends DialogFragment {
     }
 
     private void initListView() {
-        ArrayList<FileUri> sounds = getCustomFiles();
+        ArrayList<FileUri> staticFiles = getCustomFiles();
 
         Log.i(TAG, DIRECTORY.getAbsolutePath());
         final File file_list[] = listFiles();
         if (file_list != null && file_list.length > 0) {
             for (File file : file_list) {
-                sounds.add(new FileUri(file));
+                FileUri fileUri = new FileUri(file);
+                fileUri.name = getUserFriendlyFileName(fileUri.name);
+                staticFiles.add(fileUri);
             }
 
         }
-        arrayAdapter = new AlarmToneAdapter(getActivity(), R.layout.list_item_alarm_tone, sounds);
+        arrayAdapter = new AlarmToneAdapter(getActivity(), R.layout.list_item_alarm_tone,
+                staticFiles);
         arrayAdapter.setSelectedUri(selectedUri);
         arrayAdapter.setOnDeleteRequestListener(new AlarmToneAdapter.OnDeleteRequestListener() {
             @Override
@@ -211,62 +218,136 @@ public class ManageFontsDialogFragment extends DialogFragment {
                 ContentResolver contentResolver = getActivity().getContentResolver();
                 Cursor returnCursor = contentResolver.query(uri, null, null, null, null);
                 if (returnCursor == null) return;
-                /*
-                 * Get the column indexes of the data in the Cursor,
-                 * move to the first row in the Cursor, get the data,
-                 * and display it.
-                 */
+
                 int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                //int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
                 returnCursor.moveToFirst();
 
                 String fileName = returnCursor.getString(nameIndex);
-                Log.w(TAG, fileName);
-                String mimeType = contentResolver.getType(uri);
-                Log.w(TAG, mimeType);
-                //long fileSize = returnCursor.getLong(sizeIndex);
+//                String mimeType = contentResolver.getType(uri);
+//                int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+//                long fileSize = returnCursor.getLong(sizeIndex);
                 returnCursor.close();
-                File dstFile = new File(DIRECTORY, fileName);
-                FileUri uriDst = new FileUri(dstFile);
 
-                boolean isCreated = false;
-                try {
-                    isCreated = dstFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                if (!isCreated) {
-                    return;
-                }
-
-                FileInputStream src;
-                FileOutputStream dst;
-                try {
-                    src = (FileInputStream) contentResolver.openInputStream(uri);
-                    dst = (FileOutputStream) contentResolver.openOutputStream(uriDst.uri);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    return;
-                }
-
-                Log.i(TAG, uri.getPath() + " => " + dstFile.getAbsolutePath());
-                Log.i(TAG, uriDst.name + "/" + uriDst.uri);
-
-                try {
-                    copyFile(src, dst);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-
-                if (arrayAdapter != null) {
-                    arrayAdapter.add(uriDst);
-                    arrayAdapter.notifyDataSetChanged();
+                if (extensionIs(fileName, ".zip")) {
+                    extractZipFile(uri);
+                } else if (extensionIs(fileName, ".ttf", ".otf")) {
+                    copyFileToDirectory(uri, fileName);
                 }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void copyFileToDirectory(Uri uri, String fileName) {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        File dstFile = new File(DIRECTORY, fileName);
+        FileUri uriDst = new FileUri(dstFile);
+
+        boolean isCreated;
+        try {
+            isCreated = dstFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (!isCreated) {
+            return;
+        }
+
+        FileInputStream src;
+        FileOutputStream dst;
+        try {
+            src = (FileInputStream) contentResolver.openInputStream(uri);
+            dst = (FileOutputStream) contentResolver.openOutputStream(uriDst.uri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try {
+            copyFile(src, dst);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        addFileToList(uriDst);
+    }
+
+    private boolean extractZipFile(Uri uri) {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+
+        InputStream is;
+        ZipInputStream zis;
+        try {
+            String filename;
+            is = contentResolver.openInputStream(uri);
+            zis = new ZipInputStream(new BufferedInputStream(is));
+            ZipEntry ze;
+            byte[] buffer = new byte[1024];
+            int count;
+
+            while ((ze = zis.getNextEntry()) != null) {
+                filename = ze.getName();
+                Log.i(TAG, filename);
+                if (!extensionIs(filename, ".ttf", ".otf")) continue;
+                String[] parts = filename.split("/");
+                if (parts.length > 0) {
+                    filename = parts[parts.length - 1];
+                }
+                filename = filename.replace(" ", "_");
+
+                final File file = new File(DIRECTORY, filename);
+                if (!file.exists()) {
+                    FileOutputStream fout = new FileOutputStream(DIRECTORY + "/" + filename);
+
+                    while ((count = zis.read(buffer)) != -1) {
+                        fout.write(buffer, 0, count);
+                    }
+
+                    FileUri uriDst = new FileUri(Uri.fromFile(file), filename);
+                    addFileToList(uriDst);
+                    fout.close();
+                }
+
+                zis.closeEntry();
+            }
+
+            zis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean extensionIs(String filename, String... extensions) {
+        if (filename != null) {
+            for (String ext : extensions) {
+                if (ext == null) continue;
+                if (filename.toLowerCase().endsWith(ext)) return true;
+            }
+        }
+        return false;
+    }
+
+    private void addFileToList(FileUri uri) {
+        if (arrayAdapter != null) {
+            // make an eye-friendly name
+            uri.name = getUserFriendlyFileName(uri.name);
+
+            arrayAdapter.add(uri);
+            arrayAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private String getUserFriendlyFileName(String name) {
+        // make an eye-friendly name
+        name = name.replace("_", " ");
+        name = name.replaceAll(".(?i)ttf", "");
+        name = name.replaceAll(".(?i)otf", "");
+        return name;
     }
 
     public void setOnFontSelectedListener(ManageFontsDialogListener listener) {
