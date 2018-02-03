@@ -192,7 +192,7 @@ public class PreferencesFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         // bind the in-app billing service
         Intent serviceIntent =
-            new Intent("com.android.vending.billing.InAppBillingService.BIND");
+                new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
         getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
@@ -201,14 +201,14 @@ public class PreferencesFragment extends PreferenceFragment {
     public void onStart() {
         super.onStart();
 
-        if (indexInitialScreen > 0 ) {
+        if (indexInitialScreen > 0) {
             PreferenceScreen screen = getPreferenceScreen();
             screen.onItemClick(null, null, indexInitialScreen, 0);
         }
 
         // InAppBillingService service doesnt seem to be available in emulator
         activatePurchasesIfDebuggable();
-        daydreamSettingsObserver = new DaydreamSettingsObserver( new Handler() );
+        daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler());
         mContext.getContentResolver().registerContentObserver(
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
                 true,
@@ -234,8 +234,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
         try {
             mContext.getContentResolver().unregisterContentObserver(daydreamSettingsObserver);
-        }
-        catch (IllegalArgumentException | NullPointerException ignored) {
+        } catch (IllegalArgumentException | NullPointerException ignored) {
 
         }
     }
@@ -264,13 +263,13 @@ public class PreferencesFragment extends PreferenceFragment {
         int response = ownedItems.getInt("RESPONSE_CODE");
         if (response == 0) {
             ArrayList<String> ownedSkus =
-                ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-            ArrayList<String>  purchaseDataList =
-                ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-            ArrayList<String>  signatureList =
-                ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
+                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+            ArrayList<String> purchaseDataList =
+                    ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+            ArrayList<String> signatureList =
+                    ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
             String continuationToken =
-                ownedItems.getString("INAPP_CONTINUATION_TOKEN");
+                    ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
             boolean weatherDataIsPurchased = false;
             boolean radioIsPurchased = false;
@@ -357,7 +356,7 @@ public class PreferencesFragment extends PreferenceFragment {
         try {
             String developerPayload = "abcdefghijklmnopqrstuvwxyz";
             Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(),
-                                                           sku, "inapp",developerPayload);
+                    sku, "inapp", developerPayload);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
                     REQUEST_CODE, new Intent(), 0, 0, 0);
@@ -470,10 +469,10 @@ public class PreferencesFragment extends PreferenceFragment {
 
     public void showThankYouDialog() {
         new AlertDialog.Builder(getActivity())
-            .setTitle(getResources().getString(R.string.dialog_title_thank_you))
-            .setMessage(R.string.dialog_message_thank_you)
-            .setPositiveButton(android.R.string.ok, null)
-            .show();
+                .setTitle(getResources().getString(R.string.dialog_title_thank_you))
+                .setMessage(R.string.dialog_message_thank_you)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     @Override
@@ -498,14 +497,13 @@ public class PreferencesFragment extends PreferenceFragment {
         initUseDeviceLockPreference();
 
 
-
         Preference goToSettings = findPreference("startNotificationService");
-        if (Build.VERSION.SDK_INT >= 18){
+        if (Build.VERSION.SDK_INT >= 18) {
             goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
 
-                        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-                        startActivityForResult(intent, 0);
+                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                    startActivityForResult(intent, 0);
 
                     return true;
                 }
@@ -573,24 +571,24 @@ public class PreferencesFragment extends PreferenceFragment {
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 new AlertDialog.Builder(mContext)
-                    .setTitle(getResources().getString(R.string.confirm_reset))
-                    .setMessage(getResources().getString(R.string.confirm_reset_question))
-                    .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            settings.clear();
-                            getPreferenceScreen().removeAll();
-                            WakeUpReceiver.cancelAlarm(mContext);
-                            DataSource db = new DataSource(context);
-                            db.open();
-                            db.dropData();
-                            db.close();
-                            addPreferencesFromResource(R.xml.preferences);
-                            init();
-                            storeWeatherDataPurchase(purchased_weather_data, purchased_web_radio);
-                            togglePurchasePreferences();
-                        }
-                    }).show();
+                        .setTitle(getResources().getString(R.string.confirm_reset))
+                        .setMessage(getResources().getString(R.string.confirm_reset_question))
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                settings.clear();
+                                getPreferenceScreen().removeAll();
+                                WakeUpReceiver.cancelAlarm(mContext);
+                                DataSource db = new DataSource(context);
+                                db.open();
+                                db.dropData();
+                                db.close();
+                                addPreferencesFromResource(R.xml.preferences);
+                                init();
+                                storeWeatherDataPurchase(purchased_weather_data, purchased_web_radio);
+                                togglePurchasePreferences();
+                            }
+                        }).show();
 
                 return true;
             }
@@ -599,7 +597,7 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference startAudioStream = findPreference("startAudioStream");
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                if (! RadioStreamService.isRunning) {
+                if (!RadioStreamService.isRunning) {
                     RadioStreamService.start(context, true);
                 } else {
                     RadioStreamService.stop(context);
@@ -635,6 +633,15 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
+        setupCustomTypeFacePreference();
+        setupLightSensorPreferences();
+        setupDaydreamPreferences();
+        setupTranslationRequest();
+    }
+
+    private void setupCustomTypeFacePreference() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) return;
+
         final Preference customTypefaceUri = findPreference("customTypefaceUri");
         customTypefaceUri.setSummary(settings.fontName);
         customTypefaceUri.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -655,10 +662,6 @@ public class PreferencesFragment extends PreferenceFragment {
                 return false;
             }
         });
-
-        setupLightSensorPreferences();
-        setupDaydreamPreferences();
-        setupTranslationRequest();
     }
 
     private void setupLightSensorPreferences() {

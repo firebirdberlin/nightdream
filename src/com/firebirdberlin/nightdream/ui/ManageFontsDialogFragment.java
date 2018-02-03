@@ -46,7 +46,7 @@ public class ManageFontsDialogFragment extends DialogFragment {
     ManageFontsDialogListener mListener;
     ListView listView;
     Button addCustomAlarmTone;
-    AlarmToneAdapter arrayAdapter;
+    FontAdapter arrayAdapter;
     Uri selectedUri;
 
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
@@ -161,10 +161,10 @@ public class ManageFontsDialogFragment extends DialogFragment {
             }
 
         }
-        arrayAdapter = new AlarmToneAdapter(getActivity(), R.layout.list_item_alarm_tone,
+        arrayAdapter = new FontAdapter(getActivity(), R.layout.list_item_alarm_tone,
                 staticFiles);
         arrayAdapter.setSelectedUri(selectedUri);
-        arrayAdapter.setOnDeleteRequestListener(new AlarmToneAdapter.OnDeleteRequestListener() {
+        arrayAdapter.setOnDeleteRequestListener(new FontAdapter.OnDeleteRequestListener() {
             @Override
             public void onDeleteRequested(FileUri file) {
                 if (file == null || file.uri == null) {
