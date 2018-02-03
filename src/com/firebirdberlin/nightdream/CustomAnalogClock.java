@@ -443,10 +443,43 @@ public class CustomAnalogClock extends View {
     private void drawHourDigits(Canvas canvas, float centerX, float centerY, int radius) {
         if (digitStyle == DigitStyle.NONE) return;
         // calculate font-size for desired text width, so digits have equal size on any device
+
+        // init typeface
+        paint.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
+
+        /*
+        ToDo: until now digits have fixed width of 0.8% of the radius -> should become configurable as well!
+               Then digitPosition should also be configurable.
+        */
         final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
         final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
 
         paint.setTextSize(digitFontSizeBig);
+
+
+        final boolean preventDigitsFromOverlapWithTicks = true;
+
+        float minTickStart = Math.min(tickStartMinutes, tickStartHours);
+        float minTickLength = Math.min(tickLengthMinutes, tickLengthHours);
+
+        float correctedAbsoluteDigitPosition = digitPosition * radius;
+        if (preventDigitsFromOverlapWithTicks && minTickStart > 0 && minTickLength > 0) {
+
+            // get bounding box of the widest possible digit "12" -> assumes all number glyphs of the font have equal height -> maybe move this into the hour loop.
+            Rect dummyBounds = new Rect();
+            final String dummyHourText = getHourTextOfDigitStyle(1);
+            paint.getTextBounds(dummyHourText, 0, dummyHourText.length(), dummyBounds);
+            float dummyTextWidth = paint.measureText(dummyHourText, 0, dummyHourText.length());
+
+            // take the larger of width or height, so this should also work for very wide fonts
+            float maxDigitDimension = Math.max(dummyTextWidth, dummyBounds.height());
+
+            // use digitPosition, of the corrected position if digitPosition would overlap with ticks
+            correctedAbsoluteDigitPosition = Math.min(digitPosition * radius,
+                    (minTickStart * radius)  // abs start of tick
+                            - (minTickLength * 0.5f * radius)  // leave distance of half the tick length between digit and tick
+                            - (maxDigitDimension / 2f));
+        }
 
         paint.setStrokeWidth(0);
 
@@ -467,15 +500,14 @@ public class CustomAnalogClock extends View {
                     paint.setTextSize(digitFontSizeSmall);
                     paint.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
                 }
+            } else {
+                paint.setColorFilter(secondaryColorFilter);
+                paint.setTextSize(digitFontSizeSmall);
+                paint.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
             }
 
-            float x = (float) (centerX + digitPosition * radius * Math.cos(angle));
-            float y = (float) (centerY + digitPosition * radius * Math.sin(angle));
-
             Rect bounds = new Rect();
-            String currentHourText = (digitStyle == DigitStyle.ARABIC)
-                    ? String.valueOf(currentHour)
-                    : ROMAN_DIGITS[currentHour - 1];
+            final String currentHourText = getHourTextOfDigitStyle(currentHour);
 
             paint.getTextBounds(currentHourText, 0, currentHourText.length(), bounds);
 
@@ -484,6 +516,9 @@ public class CustomAnalogClock extends View {
             float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
             float textHeight = bounds.height();
 
+            float x = (float) (centerX + correctedAbsoluteDigitPosition * Math.cos(angle));
+            float y = (float) (centerY + correctedAbsoluteDigitPosition * Math.sin(angle));
+
             // move center of text bounding box to x/y
             x -= textWidth / 2.;
             y -= textHeight / 2f + 1f;
@@ -491,6 +526,13 @@ public class CustomAnalogClock extends View {
             canvas.drawText(currentHourText, x, y + textHeight, paint);
             digitCounter++;
         }
+    }
+
+    private String getHourTextOfDigitStyle(int currentHour) {
+        String currentHourText = (digitStyle == DigitStyle.ARABIC)
+                ? String.valueOf(currentHour)
+                : ROMAN_DIGITS[currentHour - 1];
+        return currentHourText;
     }
 
     private double radiansToDegrees(double rad) {
