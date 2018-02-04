@@ -151,9 +151,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Orientacja ekranu</string>
 <string name="select_alarm_sound">Wybierz dźwięk alarmu </string>
 <string name="set_alarm">Ustaw zegar</string>
-<string name="showcase_text_delete_alarms">Dotknij to w celu usuniecia lub zatrzymania alarmu</string>
 <string name="showcase_text_screen_lock">Ekran jest zablokowany. Przytrzymaj ikone długo żeby odblokować.</string>
-<string name="showcase_text_set_alarms">Dotnij i przeciągnij swoim palcem w celu szybkiego ustawienia czasu alarmu</string>
 <string name="showcase_title_screen_lock">Ekran zablokowany</string>
 <string name="show_date">Pokaż date</string>
 <string name="show_temperature">Teperatura</string>

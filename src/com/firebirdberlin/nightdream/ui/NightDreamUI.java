@@ -312,9 +312,6 @@ public class NightDreamUI {
             handler.postDelayed(hideAlarmClock, 20000);
             brightnessProgress.setVisibility(View.INVISIBLE);
             showAlarmClock();
-
-            setupShowcaseForQuickAlarms();
-            setupShowcaseForAlarmDeletion();
         }
 
         @Override
@@ -1358,8 +1355,6 @@ public class NightDreamUI {
         showcaseView.showButton();
         showShowcase();
 
-        setupShowcaseForQuickAlarms();
-        setupShowcaseForAlarmDeletion();
         setupShowcaseForScreenLock();
     }
 
@@ -1405,51 +1400,6 @@ public class NightDreamUI {
                 showcaseView.hide();
                 break;
         }
-    }
-
-    private void setupShowcaseForQuickAlarms() {
-        // deprecated with the introduction of the SetAlarmActivity
-/*        if ( showcaseView != null || daydreamMode) {
-            return;
-        }
-
-        if (settings.useInternalAlarm) {
-            Point size = utility.getDisplaySize();
-            showcaseView = new ShowcaseView.Builder((Activity) mContext)
-                .setTarget(new PointTarget(0, size.y))
-                .hideOnTouchOutside()
-                .setContentTitle(mContext.getString(R.string.use_internal_alarm))
-                .setContentText(mContext.getString(R.string.showcase_text_set_alarms))
-                .setShowcaseEventListener(showcaseViewEventListener)
-                .singleShot(SHOWCASE_ID_ALARMS)
-                .build();
-            showcaseView.hideButton();
-            showShowcase();
-        }
-*/
-    }
-
-    private void setupShowcaseForAlarmDeletion() {
-        // deprecated with the introduction of the SetAlarmActivity
-/*
-        if ( showcaseView != null || daydreamMode) {
-            return;
-        }
-
-        if ( alarmClock.isAlarmSet() ) {
-            Point size = utility.getDisplaySize();
-            showcaseView = new ShowcaseView.Builder((Activity) mContext)
-                .setTarget(new PointTarget(size.x, size.y))
-                .hideOnTouchOutside()
-                .setContentTitle(mContext.getString(R.string.use_internal_alarm))
-                .setContentText(mContext.getString(R.string.showcase_text_delete_alarms))
-                .setShowcaseEventListener(showcaseViewEventListener)
-                .singleShot(SHOWCASE_ID_ALARM_DELETION)
-                .build();
-            showcaseView.hideButton();
-            showShowcase();
-        }
-*/
     }
 
     private void setupShowcaseForScreenLock() {

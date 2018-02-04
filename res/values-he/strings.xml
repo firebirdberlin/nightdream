@@ -131,8 +131,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">סיבוב מסך</string>
 <string name="select_alarm_sound">בחר צלצול לשעון מעורר</string>
 <string name="set_alarm">כוון שעון מעורר</string>
-<string name="showcase_text_set_alarms">גע והזז את האצבע כדי להגדיר זמן צלצול חד פעמי</string>
-<string name="showcase_text_delete_alarms">הקש כאן כדי לעצור או להסיר צלצול. הקש בכל במקום אחר כדי להפעיל נדנוד.</string>
 <string name="showcase_text_screen_lock">המסך נעול. הקש והחזק על מנת לשחרר הנעילה</string>
 <string name="showcase_title_screen_lock">נעילת המסך</string>
 <string name="show_date">הצג תאריך</string>

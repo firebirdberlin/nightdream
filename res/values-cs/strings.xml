@@ -136,8 +136,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Orientace obrazovky</string>
 <string name="select_alarm_sound">Vyber zvuk budíku</string>
 <string name="set_alarm">nastavit budík</string>
-<string name="showcase_text_set_alarms">Dotkněte se a posunujte prst pro rychlé nastavení budíku.</string>
-<string name="showcase_text_delete_alarms">Dotkněte se zde pro smazání nebo zastavení budíku. Dotkněte se kdekoliv jinde pro odložení.</string>
 <string name="showcase_text_screen_lock">Obrazovka je aktuálně uzamčena. Stlačte dlouze pro odemknutí!</string>
 <string name="showcase_title_screen_lock">Zámek obrazovky</string>
 <string name="show_date">Zobrazit datum</string>

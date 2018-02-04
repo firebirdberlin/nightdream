@@ -152,9 +152,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Ekran yönlendirme</string>
 <string name="select_alarm_sound">Alarm sesi</string>
 <string name="set_alarm">Alarm kur</string>
-<string name="showcase_text_delete_alarms">Bir alarmı durdurnak yada silmek için buraya tıklayın, Alarmı ertelemek icin herhangi bir yere tıklayın.</string>
 <string name="showcase_text_screen_lock">Ekran kilitli. Ekran kilidini acmak için Simgeye basılı tutun!</string>
-<string name="showcase_text_set_alarms">Hızlıca bir seferlik alarm kurmak için ekrana dokunup kaydırın.</string>
 <string name="showcase_title_screen_lock">Ekran kilidi</string>
 <string name="show_date">Tarihi göster</string>
 <string name="show_temperature">Sıcaklığı göster</string>

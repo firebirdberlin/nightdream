@@ -153,9 +153,7 @@ OR
     <string name="screenOrientation">Screen orientation</string>
     <string name="select_alarm_sound">Select alarm sound</string>
     <string name="set_alarm">set alarm</string>
-    <string name="showcase_text_delete_alarms">Tap here to delete or to stop an alarm. Tap anywhere else to snooze.</string>
     <string name="showcase_text_screen_lock">The screen is currently locked. Long press the icon to unlock !</string>
-    <string name="showcase_text_set_alarms">Touch and slide your finger to set a one-time alarm quickly.</string>
     <string name="showcase_title_screen_lock">Screen lock</string>
     <string name="show_date">Show date</string>
     <string name="show_temperature">Show temperature</string>

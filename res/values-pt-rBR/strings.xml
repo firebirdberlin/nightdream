@@ -134,8 +134,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Orientação da tela</string>
 <string name="select_alarm_sound">Selecione som de alarme</string>
 <string name="set_alarm">ative o alarme</string>
-<string name="showcase_text_set_alarms">Toque e deslize o dedo para definir um alarme único rapidamente.</string>
-<string name="showcase_text_delete_alarms">Toque aqui para eliminar ou parar um alarme.</string>
 <string name="showcase_text_screen_lock">A tela está bloqueada. Mantenha o ícone pressionado para desbloquear.</string>
 <string name="showcase_title_screen_lock">Bloqueio de tela</string>
 <string name="show_date">Mostre a data</string>

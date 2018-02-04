@@ -150,9 +150,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Định hướng màn hình</string>
 <string name="select_alarm_sound">Chọn âm thanh báo thức</string>
 <string name="set_alarm">Cài đặt báo thức</string>
-<string name="showcase_text_delete_alarms">Nhấn vào đây  để dừng báo thức. Nhấn nơi khác để ngủ thêm.</string>
 <string name="showcase_text_screen_lock">Màn hình hiện đang bị khóa. Nhấn và giữ biểu tượng để mở khóa!</string>
-<string name="showcase_text_set_alarms">Chạm và trượt ngón tay để cài nhanh báo thức một lần.</string>
 <string name="showcase_title_screen_lock">Màn hình khóa</string>
 <string name="show_date">Hiển thị ngày</string>
 <string name="show_temperature">Hiển thị nhiệt độ</string>

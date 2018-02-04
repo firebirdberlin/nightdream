@@ -125,8 +125,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">画面の向き</string>
 <string name="select_alarm_sound">アラーム音を選択</string>
 <string name="set_alarm">アラームセット</string>
-<string name="showcase_text_set_alarms">タッチして指をスライドさせると、ワンタイムアラームがすぐに設定されます</string>
-<string name="showcase_text_delete_alarms">アラームを削除または停止するには、ここをクリックしてください</string>
 <string name="show_date">日付を表示する</string>
 <string name="show_temperature">温度を表示する</string>
 <string name="show_weather">現在地の天気を表示</string>
@@ -135,6 +133,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="titlePrivacyPolicy">個人情報保護方針</string>
 <string name="temperatureUnit">温度単位</string>
 <string name="timeFormat">時間形式</string>
+<string name="today"></string>
 <string name="translations">翻訳</string>
 <string name="typeface_7_segment">7セグメントLED</string>
 <string name="typeface_roboto_condensed">ロボット凝縮</string>
@@ -157,5 +156,4 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">設定</string>
 <string name="welcome_screen_title3">画面の明るさ</string>
 <string name="welcome_screen_title4">時計のサイズ</string>
-    <string name="today"></string>
 </resources>

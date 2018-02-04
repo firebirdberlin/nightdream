@@ -150,9 +150,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Bildschirmausrichtung</string>
 <string name="select_alarm_sound">Weckton auswählen</string>
 <string name="set_alarm">Alarm einstellen</string>
-<string name="showcase_text_delete_alarms">Tippen Sie hier, um einen Alarm zu löschen oder zu beenden. Tippen Sie auf die Uhrzeit, um die Schlummerfunktion zu aktivieren.</string>
 <string name="showcase_text_screen_lock">Der Bildschirm ist gesperrt. Drücken Sie das Symbol lange, um den Bildschirm zu entsperren.</string>
-<string name="showcase_text_set_alarms">Tippen Sie hier und verschieben Sie Ihren Finger, um einen einmaligen Alarm zu stellen.</string>
 <string name="showcase_title_screen_lock">Bildschirmsperre</string>
 <string name="show_date">Datum anzeigen</string>
 <string name="show_temperature">Temperatur anzeigen</string>
