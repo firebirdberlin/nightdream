@@ -100,8 +100,11 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
                 if (listener != null) {
                     listener.onDeleteRequested(item);
                 }
+
+                FileUri selected = getSelectedUri();
                 remove(item);
                 notifyDataSetChanged();
+                setSelectedUri(selected.uri);
                 releaseMediaplayer();
 
             }

@@ -309,18 +309,7 @@ public class Settings {
             return Typeface.createFromAsset(mContext.getAssets(), path);
         }
         String path = settings.getString("fontUri", "");
-        try {
-            if (path.contains(ASSET_PATH)) {
-                path = path.replace(ASSET_PATH, "");
-                return Typeface.createFromAsset(mContext.getAssets(), path);
-            } else {
-                path = path.replace("file://", "");
-                return Typeface.createFromFile(path);
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return Utility.loadTypefacefromUri(mContext, path);
     }
 
     private String mapIntToTypefacePath(int typeface) {

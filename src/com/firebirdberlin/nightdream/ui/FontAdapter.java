@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,8 +19,10 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FileUri;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -27,6 +31,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
     private int viewId = -1;
     private int selectedPosition = -1;
     private OnDeleteRequestListener listener;
+    private HashMap<FileUri, Typeface> typefaceMap = new HashMap<>();
 
     FontAdapter(Context context, int viewId, List<FileUri> values) {
         super(context, viewId, R.id.text1, values);
@@ -42,11 +47,16 @@ class FontAdapter extends ArrayAdapter<FileUri> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        Log.w("TAG", String.valueOf(position));
         super.getView(position, convertView, parent);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View v = inflater.inflate(viewId, parent, false);
         RadioButton button = (RadioButton) v.findViewById(R.id.text1);
         final FileUri item = getItem(position);
+
+        Typeface typeface = loadTypefaceForItem(item);
+        button.setTypeface(typeface);
+        button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         button.setText(item != null ? item.name : "");
         button.setChecked(position == selectedPosition);
         button.setTag(position);
@@ -112,6 +122,15 @@ class FontAdapter extends ArrayAdapter<FileUri> {
         return v;
     }
 
+
+    private Typeface loadTypefaceForItem(FileUri item) {
+        Typeface typeface = typefaceMap.get(item);
+        if (typeface == null) {
+            typeface = Utility.loadTypefacefromUri(context, item.uri.toString());
+            typefaceMap.put(item, typeface);
+        }
+        return typeface;
+    }
 
     public void release() {
 
