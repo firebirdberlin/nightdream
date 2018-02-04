@@ -607,13 +607,25 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
+
+        setupCustomAlarmTonePreference();
+        setupCustomTypeFacePreference();
+        setupLightSensorPreferences();
+        setupDaydreamPreferences();
+        setupTranslationRequest();
+    }
+
+    private void setupCustomAlarmTonePreference() {
         final Preference customAlarmToneURI = findPreference("customAlarmToneUri");
         customAlarmToneURI.setSummary(settings.AlarmToneName);
-        customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+
+        {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 FragmentManager fm = getFragmentManager();
                 ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
+                dialog.setIsPurchased(purchased_web_radio);
                 dialog.setSelectedUri(settings.AlarmToneUri);
                 dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
                     @Override
@@ -628,16 +640,18 @@ public class PreferencesFragment extends PreferenceFragment {
                         }
                         customAlarmToneURI.setSummary(summary);
                     }
+
+                    @Override
+                    public void onPurchaseRequested() {
+                        Log.w(TAG, "purchase requested");
+                        showPurchaseDialog();
+                    }
+
                 });
                 dialog.show(fm, "custom sounds");
                 return false;
             }
         });
-
-        setupCustomTypeFacePreference();
-        setupLightSensorPreferences();
-        setupDaydreamPreferences();
-        setupTranslationRequest();
     }
 
     private void setupCustomTypeFacePreference() {
