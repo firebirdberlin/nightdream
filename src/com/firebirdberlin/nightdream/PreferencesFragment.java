@@ -375,6 +375,7 @@ public class PreferencesFragment extends PreferenceFragment {
             entries.add(getProductWithPrice(prices, R.string.product_name_weather, ITEM_WEATHER_DATA));
             values.add(PRODUCT_ID_WEATHER_DATA);
         }
+
         if (!purchased_web_radio) {
             entries.add(getProductWithPrice(prices, R.string.product_name_webradio, ITEM_WEB_RADIO));
             values.add(PRODUCT_ID_WEB_RADIO);
@@ -649,6 +650,7 @@ public class PreferencesFragment extends PreferenceFragment {
             public boolean onPreferenceClick(Preference preference) {
                 FragmentManager fm = getFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
+                dialog.setIsPurchased(purchased_weather_data);
 
                 dialog.setSelectedUri(settings.fontUri);
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
@@ -656,6 +658,12 @@ public class PreferencesFragment extends PreferenceFragment {
                     public void onFontSelected(Uri uri, String name) {
                         settings.setFontUri(uri != null ? uri.toString() : null, name);
                         customTypefaceUri.setSummary(name);
+                    }
+
+                    @Override
+                    public void onPurchaseRequested() {
+                        Log.w(TAG, "purchase requested");
+                        showPurchaseDialog();
                     }
                 });
                 dialog.show(fm, "custom fonts");

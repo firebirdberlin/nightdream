@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -45,9 +46,10 @@ public class ManageFontsDialogFragment extends DialogFragment {
     protected File DIRECTORY = null;
     ManageFontsDialogListener mListener;
     ListView listView;
-    Button addCustomAlarmTone;
+    Button btnAddCustomFont;
     FontAdapter arrayAdapter;
     Uri selectedUri;
+    boolean isPurchased = false;
 
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
         FileChannel inChannel = src.getChannel();
@@ -62,6 +64,10 @@ public class ManageFontsDialogFragment extends DialogFragment {
 
             outChannel.close();
         }
+    }
+
+    public void setIsPurchased(boolean isPurchased) {
+        this.isPurchased = isPurchased;
     }
 
     public File[] listFiles() {
@@ -82,12 +88,28 @@ public class ManageFontsDialogFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.manage_alarm_sounds_dialog, null);
         listView = (ListView) view.findViewById(R.id.listView);
-        addCustomAlarmTone = (Button) view.findViewById(R.id.addCustomAlarmTone);
-        addCustomAlarmTone.setText(getActivity().getString(R.string.add_custom_font));
+        btnAddCustomFont = (Button) view.findViewById(R.id.addCustomAlarmTone);
 
-        addCustomAlarmTone.setOnClickListener(new View.OnClickListener() {
+        String btnTxt = getActivity().getString(R.string.add_custom_font);
+        if (!isPurchased) {
+            String productName = getActivity().getString(R.string.product_name_weather);
+            btnTxt += "\n (" + productName + ")";
+            btnAddCustomFont.setBackgroundColor(getRandomMaterialColor());
+        }
+        btnAddCustomFont.setText(btnTxt);
+
+        btnAddCustomFont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!isPurchased) {
+                    if (mListener != null) {
+                        mListener.onPurchaseRequested();
+                        dismiss();
+                        return;
+                    }
+                }
+
                 if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
@@ -122,6 +144,11 @@ public class ManageFontsDialogFragment extends DialogFragment {
                     }
                 });
         return builder.create();
+    }
+
+    private int getRandomMaterialColor() {
+        int[] colors = getResources().getIntArray(R.array.materialColors);
+        return colors[new Random().nextInt(colors.length)];
     }
 
     private boolean hasPermission(String permission) {
@@ -356,5 +383,7 @@ public class ManageFontsDialogFragment extends DialogFragment {
 
     public interface ManageFontsDialogListener {
         void onFontSelected(Uri uri, String name);
+
+        void onPurchaseRequested();
     }
 }

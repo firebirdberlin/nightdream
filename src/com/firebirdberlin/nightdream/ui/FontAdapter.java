@@ -47,7 +47,6 @@ class FontAdapter extends ArrayAdapter<FileUri> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Log.w("TAG", String.valueOf(position));
         super.getView(position, convertView, parent);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View v = inflater.inflate(viewId, parent, false);
