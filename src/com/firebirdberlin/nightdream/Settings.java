@@ -308,7 +308,7 @@ public class Settings {
 
             return Typeface.createFromAsset(mContext.getAssets(), path);
         }
-        String path = settings.getString("fontUri", "");
+        String path = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
         return Utility.loadTypefacefromUri(mContext, path);
     }
 

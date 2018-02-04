@@ -29,7 +29,6 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -111,20 +110,6 @@ public class PreferencesFragment extends PreferenceFragment {
             };
     private Settings settings = null;
     private Context mContext = null;
-    ServiceConnection mServiceConn = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name,
-                                       IBinder service) {
-            Log.i(TAG, "IIAB service connected");
-            mService = IInAppBillingService.Stub.asInterface(service);
-            getPurchases();
-        }
-    };
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
@@ -171,7 +156,25 @@ public class PreferencesFragment extends PreferenceFragment {
                     }
                 }
             };
-    private int indexInitialScreen = 0;
+    private boolean shallShowPurchaseDialog = false;
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            Log.i(TAG, "IIAB service connected");
+            mService = IInAppBillingService.Stub.asInterface(service);
+            getPurchases();
+            if (shallShowPurchaseDialog) {
+                showPurchaseDialog();
+                shallShowPurchaseDialog = false;
+            }
+        }
+    };
 
     @SuppressWarnings("deprecation")
     @Override
@@ -201,11 +204,6 @@ public class PreferencesFragment extends PreferenceFragment {
     public void onStart() {
         super.onStart();
 
-        if (indexInitialScreen > 0) {
-            PreferenceScreen screen = getPreferenceScreen();
-            screen.onItemClick(null, null, indexInitialScreen, 0);
-        }
-
         // InAppBillingService service doesnt seem to be available in emulator
         activatePurchasesIfDebuggable();
         daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler());
@@ -219,8 +217,8 @@ public class PreferencesFragment extends PreferenceFragment {
                 daydreamSettingsObserver);
     }
 
-    public void setInitialScreenIndex(int index) {
-        this.indexInitialScreen = index;
+    public void setShowPurchaseDialog() {
+        this.shallShowPurchaseDialog = true;
     }
 
 

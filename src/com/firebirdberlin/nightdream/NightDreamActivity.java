@@ -402,7 +402,7 @@ public class NightDreamActivity extends Activity
             AlarmHandlerService.stop(this);
         }
         if (!mySettings.purchasedWebRadio && !mySettings.hasLegacyRadioStation()) {
-            PreferencesActivity.start(this, PreferencesActivity.PREFERENCES_SCREEN_WEB_RADIO_INDEX);
+            PreferencesActivity.startWithPurchaseDialog(this);
             return;
         }
         mySettings.upgradeLegacyRadioStationToFirstFavoriteRadioStation();
