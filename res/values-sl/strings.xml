@@ -152,9 +152,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Zasuk ekrana</string>
 <string name="select_alarm_sound">Izberi zvok alarma</string>
 <string name="set_alarm">Nastavi alarm</string>
-<string name="showcase_text_delete_alarms">Pritisni tukaj za izbris ali ustavitev alarma. Pritisni kjerkoli drugje za dremez.</string>
 <string name="showcase_text_screen_lock">Zaslon je trenutno zakljenjen. Dolg pritisk na ikono za odklep !</string>
-<string name="showcase_text_set_alarms">Pritisni in podrsaj s prstom za nastavitev hitrega enkratnega alarma.</string>
 <string name="showcase_title_screen_lock">Zakljenjen zaslon</string>
 <string name="show_date">Prikazi datum</string>
 <string name="show_temperature">Prikazi temperaturo</string>

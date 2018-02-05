@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import java.text.DateFormatSymbols;
@@ -256,9 +258,14 @@ public class Utility {
     }
 
     public static void hideSystemUI(Context context) {
+        hideSystemUI(((Activity) context).getWindow());
+    }
+
+    public static void hideSystemUI(Window window) {
+        if (window == null) return;
         if (Build.VERSION.SDK_INT >= 19) {
 
-            View decorView = ((Activity) context).getWindow().getDecorView();
+            View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -266,6 +273,22 @@ public class Utility {
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                             | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    public static Typeface loadTypefacefromUri(Context context, String uri) {
+        final String ASSET_PATH = "file:///android_asset/";
+        try {
+            if (uri.contains(ASSET_PATH)) {
+                uri = uri.replace(ASSET_PATH, "");
+                return Typeface.createFromAsset(context.getAssets(), uri);
+            } else {
+                uri = uri.replace("file://", "");
+                return Typeface.createFromFile(uri);
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

@@ -135,8 +135,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Орієнтація екрану</string>
 <string name="select_alarm_sound">Обрати звук будильника</string>
 <string name="set_alarm">встановити будильник</string>
-<string name="showcase_text_set_alarms">Торкніться і проведіть пальцем, щоб встановити одиничний будильник.</string>
-<string name="showcase_text_delete_alarms">Торкніться тут, щоб видалити або вимкнути будильник. Торкніться решти екрану, щоб повторити сигнал пізніше.</string>
 <string name="showcase_text_screen_lock">Екран заблоковано. Затисніть значок, щоб розблокувати!</string>
 <string name="showcase_title_screen_lock">Блокування екрану</string>
 <string name="show_date">Відображати дату</string>

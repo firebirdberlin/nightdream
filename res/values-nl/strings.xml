@@ -150,9 +150,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Schermorientatie</string>
 <string name="select_alarm_sound">Kies alarmgeluid</string>
 <string name="set_alarm">Stel alarm in</string>
-<string name="showcase_text_delete_alarms">Tik hier om een alarm te stoppen of te verwijderen. Tik ergens anders om te sluimeren.</string>
 <string name="showcase_text_screen_lock">Scherm is vergrendeld. Druk lang op de icon om te ongrendelen</string>
-<string name="showcase_text_set_alarms">Tik en schuif je vinger om snel een eenmalig alarm in te stellen.</string>
 <string name="showcase_title_screen_lock">Scherm vergrendeling</string>
 <string name="show_date">Toon datum</string>
 <string name="show_temperature">Toon temperatuur</string>

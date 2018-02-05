@@ -149,9 +149,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Ориентация экрана</string>
 <string name="select_alarm_sound">Выбрать мелодию будильника</string>
 <string name="set_alarm">Установить будильник</string>
-<string name="showcase_text_delete_alarms">Нажмите здесь, чтобы удалить или выключить будильник</string>
 <string name="showcase_text_screen_lock">Экран заблокирован. Длительное нажатие на иконку для разблокирования</string>
-<string name="showcase_text_set_alarms">Нажмите и проведите пальцем, чтобы быстро установить разовый будильник</string>
 <string name="showcase_title_screen_lock">Экран заблокирован</string>
 <string name="show_date">Показывать дату</string>
 <string name="show_temperature">Показывать температуру</string>

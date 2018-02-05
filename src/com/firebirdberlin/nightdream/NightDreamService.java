@@ -225,8 +225,8 @@ public class NightDreamService extends DreamService implements View.OnTouchListe
             AlarmHandlerService.stop(this);
         }
 
-        if ( mySettings.radioStreamURLUI.isEmpty() ) {
-            PreferencesActivity.start(this, PreferencesActivity.PREFERENCES_SCREEN_WEB_RADIO_INDEX);
+        if (!mySettings.purchasedWebRadio && !mySettings.hasLegacyRadioStation()) {
+            PreferencesActivity.startWithPurchaseDialog(this);
             return;
         }
 

@@ -29,7 +29,6 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -42,6 +41,7 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
+import com.firebirdberlin.nightdream.ui.ManageFontsDialogFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -110,20 +110,6 @@ public class PreferencesFragment extends PreferenceFragment {
             };
     private Settings settings = null;
     private Context mContext = null;
-    ServiceConnection mServiceConn = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name,
-                                       IBinder service) {
-            Log.i(TAG, "IIAB service connected");
-            mService = IInAppBillingService.Stub.asInterface(service);
-            getPurchases();
-        }
-    };
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
@@ -170,7 +156,25 @@ public class PreferencesFragment extends PreferenceFragment {
                     }
                 }
             };
-    private int indexInitialScreen = 0;
+    private boolean shallShowPurchaseDialog = false;
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            Log.i(TAG, "IIAB service connected");
+            mService = IInAppBillingService.Stub.asInterface(service);
+            getPurchases();
+            if (shallShowPurchaseDialog) {
+                showPurchaseDialog();
+                shallShowPurchaseDialog = false;
+            }
+        }
+    };
 
     @SuppressWarnings("deprecation")
     @Override
@@ -191,7 +195,7 @@ public class PreferencesFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         // bind the in-app billing service
         Intent serviceIntent =
-            new Intent("com.android.vending.billing.InAppBillingService.BIND");
+                new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
         getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
@@ -200,14 +204,9 @@ public class PreferencesFragment extends PreferenceFragment {
     public void onStart() {
         super.onStart();
 
-        if (indexInitialScreen > 0 ) {
-            PreferenceScreen screen = getPreferenceScreen();
-            screen.onItemClick(null, null, indexInitialScreen, 0);
-        }
-
         // InAppBillingService service doesnt seem to be available in emulator
         activatePurchasesIfDebuggable();
-        daydreamSettingsObserver = new DaydreamSettingsObserver( new Handler() );
+        daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler());
         mContext.getContentResolver().registerContentObserver(
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
                 true,
@@ -218,8 +217,8 @@ public class PreferencesFragment extends PreferenceFragment {
                 daydreamSettingsObserver);
     }
 
-    public void setInitialScreenIndex(int index) {
-        this.indexInitialScreen = index;
+    public void setShowPurchaseDialog() {
+        this.shallShowPurchaseDialog = true;
     }
 
 
@@ -233,8 +232,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
         try {
             mContext.getContentResolver().unregisterContentObserver(daydreamSettingsObserver);
-        }
-        catch (IllegalArgumentException | NullPointerException ignored) {
+        } catch (IllegalArgumentException | NullPointerException ignored) {
 
         }
     }
@@ -263,13 +261,13 @@ public class PreferencesFragment extends PreferenceFragment {
         int response = ownedItems.getInt("RESPONSE_CODE");
         if (response == 0) {
             ArrayList<String> ownedSkus =
-                ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-            ArrayList<String>  purchaseDataList =
-                ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-            ArrayList<String>  signatureList =
-                ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
+                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+            ArrayList<String> purchaseDataList =
+                    ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+            ArrayList<String> signatureList =
+                    ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
             String continuationToken =
-                ownedItems.getString("INAPP_CONTINUATION_TOKEN");
+                    ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
             boolean weatherDataIsPurchased = false;
             boolean radioIsPurchased = false;
@@ -356,7 +354,7 @@ public class PreferencesFragment extends PreferenceFragment {
         try {
             String developerPayload = "abcdefghijklmnopqrstuvwxyz";
             Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(),
-                                                           sku, "inapp",developerPayload);
+                    sku, "inapp", developerPayload);
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
                     REQUEST_CODE, new Intent(), 0, 0, 0);
@@ -375,6 +373,7 @@ public class PreferencesFragment extends PreferenceFragment {
             entries.add(getProductWithPrice(prices, R.string.product_name_weather, ITEM_WEATHER_DATA));
             values.add(PRODUCT_ID_WEATHER_DATA);
         }
+
         if (!purchased_web_radio) {
             entries.add(getProductWithPrice(prices, R.string.product_name_webradio, ITEM_WEB_RADIO));
             values.add(PRODUCT_ID_WEB_RADIO);
@@ -469,10 +468,10 @@ public class PreferencesFragment extends PreferenceFragment {
 
     public void showThankYouDialog() {
         new AlertDialog.Builder(getActivity())
-            .setTitle(getResources().getString(R.string.dialog_title_thank_you))
-            .setMessage(R.string.dialog_message_thank_you)
-            .setPositiveButton(android.R.string.ok, null)
-            .show();
+                .setTitle(getResources().getString(R.string.dialog_title_thank_you))
+                .setMessage(R.string.dialog_message_thank_you)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     @Override
@@ -497,14 +496,13 @@ public class PreferencesFragment extends PreferenceFragment {
         initUseDeviceLockPreference();
 
 
-
         Preference goToSettings = findPreference("startNotificationService");
-        if (Build.VERSION.SDK_INT >= 18){
+        if (Build.VERSION.SDK_INT >= 18) {
             goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
 
-                        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-                        startActivityForResult(intent, 0);
+                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                    startActivityForResult(intent, 0);
 
                     return true;
                 }
@@ -572,24 +570,24 @@ public class PreferencesFragment extends PreferenceFragment {
         resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 new AlertDialog.Builder(mContext)
-                    .setTitle(getResources().getString(R.string.confirm_reset))
-                    .setMessage(getResources().getString(R.string.confirm_reset_question))
-                    .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            settings.clear();
-                            getPreferenceScreen().removeAll();
-                            WakeUpReceiver.cancelAlarm(mContext);
-                            DataSource db = new DataSource(context);
-                            db.open();
-                            db.dropData();
-                            db.close();
-                            addPreferencesFromResource(R.xml.preferences);
-                            init();
-                            storeWeatherDataPurchase(purchased_weather_data, purchased_web_radio);
-                            togglePurchasePreferences();
-                        }
-                    }).show();
+                        .setTitle(getResources().getString(R.string.confirm_reset))
+                        .setMessage(getResources().getString(R.string.confirm_reset_question))
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                settings.clear();
+                                getPreferenceScreen().removeAll();
+                                WakeUpReceiver.cancelAlarm(mContext);
+                                DataSource db = new DataSource(context);
+                                db.open();
+                                db.dropData();
+                                db.close();
+                                addPreferencesFromResource(R.xml.preferences);
+                                init();
+                                storeWeatherDataPurchase(purchased_weather_data, purchased_web_radio);
+                                togglePurchasePreferences();
+                            }
+                        }).show();
 
                 return true;
             }
@@ -598,7 +596,7 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference startAudioStream = findPreference("startAudioStream");
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                if (! RadioStreamService.isRunning) {
+                if (!RadioStreamService.isRunning) {
                     RadioStreamService.start(context, true);
                 } else {
                     RadioStreamService.stop(context);
@@ -607,13 +605,25 @@ public class PreferencesFragment extends PreferenceFragment {
             }
         });
 
+
+        setupCustomAlarmTonePreference();
+        setupCustomTypeFacePreference();
+        setupLightSensorPreferences();
+        setupDaydreamPreferences();
+        setupTranslationRequest();
+    }
+
+    private void setupCustomAlarmTonePreference() {
         final Preference customAlarmToneURI = findPreference("customAlarmToneUri");
         customAlarmToneURI.setSummary(settings.AlarmToneName);
-        customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+
+        {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 FragmentManager fm = getFragmentManager();
                 ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
+                dialog.setIsPurchased(purchased_web_radio);
                 dialog.setSelectedUri(settings.AlarmToneUri);
                 dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
                     @Override
@@ -628,15 +638,50 @@ public class PreferencesFragment extends PreferenceFragment {
                         }
                         customAlarmToneURI.setSummary(summary);
                     }
+
+                    @Override
+                    public void onPurchaseRequested() {
+                        Log.w(TAG, "purchase requested");
+                        showPurchaseDialog();
+                    }
+
                 });
                 dialog.show(fm, "custom sounds");
                 return false;
             }
         });
+    }
 
-        setupLightSensorPreferences();
-        setupDaydreamPreferences();
-        setupTranslationRequest();
+    private void setupCustomTypeFacePreference() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) return;
+
+        final Preference customTypefaceUri = findPreference("customTypefaceUri");
+        customTypefaceUri.setSummary(settings.fontName);
+        customTypefaceUri.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                FragmentManager fm = getFragmentManager();
+                ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
+                dialog.setIsPurchased(purchased_weather_data);
+
+                dialog.setSelectedUri(settings.fontUri);
+                dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
+                    @Override
+                    public void onFontSelected(Uri uri, String name) {
+                        settings.setFontUri(uri != null ? uri.toString() : null, name);
+                        customTypefaceUri.setSummary(name);
+                    }
+
+                    @Override
+                    public void onPurchaseRequested() {
+                        Log.w(TAG, "purchase requested");
+                        showPurchaseDialog();
+                    }
+                });
+                dialog.show(fm, "custom fonts");
+                return false;
+            }
+        });
     }
 
     private void setupLightSensorPreferences() {

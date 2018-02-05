@@ -4,12 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,24 +19,24 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FileUri;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 
-class AlarmToneAdapter extends ArrayAdapter<FileUri> {
+class FontAdapter extends ArrayAdapter<FileUri> {
     private Context context = null;
     private int viewId = -1;
     private int selectedPosition = -1;
-    private MediaPlayer mediaPlayer;
     private OnDeleteRequestListener listener;
+    private HashMap<FileUri, Typeface> typefaceMap = new HashMap<>();
 
-    AlarmToneAdapter(Context context, int viewId, List<FileUri> values) {
+    FontAdapter(Context context, int viewId, List<FileUri> values) {
         super(context, viewId, R.id.text1, values);
         this.context = context;
         this.viewId = viewId;
-        this.mediaPlayer = new MediaPlayer();
     }
 
     void setOnDeleteRequestListener(OnDeleteRequestListener listener) {
@@ -52,36 +52,18 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         View v = inflater.inflate(viewId, parent, false);
         RadioButton button = (RadioButton) v.findViewById(R.id.text1);
         final FileUri item = getItem(position);
+
+        Typeface typeface = loadTypefaceForItem(item);
+        button.setTypeface(typeface);
+        button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         button.setText(item != null ? item.name : "");
         button.setChecked(position == selectedPosition);
         button.setTag(position);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean samePosition = selectedPosition == (Integer) view.getTag();
                 selectedPosition = (Integer) view.getTag();
                 notifyDataSetChanged();
-
-                boolean justStop = (samePosition && mediaPlayer != null && mediaPlayer.isPlaying());
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                    releaseMediaplayer();
-                }
-
-                if (item == null || justStop || !shallPlaySound()) {
-                    return;
-                }
-
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                try {
-                    mediaPlayer.setDataSource(context, item.uri);
-                    mediaPlayer.setLooping(false);
-                    mediaPlayer.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mediaPlayer.start();
-
             }
         });
         ImageView buttonDelete = (ImageView) v.findViewById(R.id.buttonDelete);
@@ -105,7 +87,6 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
                 remove(item);
                 notifyDataSetChanged();
                 setSelectedUri(selected.uri);
-                releaseMediaplayer();
 
             }
 
@@ -140,30 +121,18 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         return v;
     }
 
-    private boolean shallPlaySound() {
-        AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        switch (audio.getRingerMode()) {
-            case AudioManager.RINGER_MODE_NORMAL:
-                return true;
-            case AudioManager.RINGER_MODE_SILENT:
-                return false;
-            case AudioManager.RINGER_MODE_VIBRATE:
-                return false;
-        }
-        return false;
-    }
 
-    private void releaseMediaplayer() {
-        if (mediaPlayer == null) {
-            return;
+    private Typeface loadTypefaceForItem(FileUri item) {
+        Typeface typeface = typefaceMap.get(item);
+        if (typeface == null) {
+            typeface = Utility.loadTypefacefromUri(context, item.uri.toString());
+            typefaceMap.put(item, typeface);
         }
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        mediaPlayer = null;
+        return typeface;
     }
 
     public void release() {
-        releaseMediaplayer();
+
     }
 
     public FileUri getSelectedUri() {
@@ -172,7 +141,7 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         }
 
         FileUri item = getItem(selectedPosition);
-        if (item != null ) {
+        if (item != null) {
             return item;
         }
         return null;
@@ -180,13 +149,17 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
 
     public void setSelectedUri(Uri uri) {
         if (uri == null) return;
-        for (int i = 0; i < getCount(); i++){
+        for (int i = 0; i < getCount(); i++) {
             FileUri item = getItem(i);
             if (uri.equals(item.uri)) {
                 selectedPosition = i;
                 notifyDataSetChanged();
-                break;
+                return;
             }
+        }
+        if (getCount() > 0) {
+            selectedPosition = 0;
+            notifyDataSetChanged();
         }
     }
 

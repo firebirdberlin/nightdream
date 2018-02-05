@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -46,6 +47,7 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
     Button addCustomAlarmTone;
     AlarmToneAdapter arrayAdapter;
     Uri selectedUri;
+    boolean isPurchased = false;
 
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
         FileChannel inChannel = src.getChannel();
@@ -60,6 +62,10 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
 
             outChannel.close();
         }
+    }
+
+    public void setIsPurchased(boolean isPurchased) {
+        this.isPurchased = isPurchased;
     }
 
     public File[] listFiles() {
@@ -81,10 +87,25 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.manage_alarm_sounds_dialog, null);
         listView = (ListView) view.findViewById(R.id.listView);
         addCustomAlarmTone = (Button) view.findViewById(R.id.addCustomAlarmTone);
-
+        String btnTxt = getActivity().getString(R.string.add_custom_alarm_tone);
+        if (!isPurchased) {
+            String productName = getActivity().getString(R.string.product_name_webradio);
+            btnTxt += "\n (" + productName + ")";
+            addCustomAlarmTone.setBackgroundColor(getRandomMaterialColor());
+        }
+        addCustomAlarmTone.setText(btnTxt);
         addCustomAlarmTone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!isPurchased) {
+                    if (mListener != null) {
+                        mListener.onPurchaseRequested();
+                        dismiss();
+                        return;
+                    }
+                }
+
                 if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
@@ -121,6 +142,11 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                     }
                 });
         return builder.create();
+    }
+
+    private int getRandomMaterialColor() {
+        int[] colors = getResources().getIntArray(R.array.materialColors);
+        return colors[new Random().nextInt(colors.length)];
     }
 
     private boolean hasPermission(String permission) {
@@ -268,5 +294,7 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
 
     public interface ManageAlarmSoundsDialogListener {
         void onAlarmToneSelected(Uri uri, String name);
+
+        void onPurchaseRequested();
     }
 }

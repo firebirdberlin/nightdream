@@ -129,8 +129,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Orijentacija ekrana</string>
 <string name="select_alarm_sound">Podesite zvuk alarma</string>
 <string name="set_alarm">podesite alarm</string>
-<string name="showcase_text_set_alarms">Dodirni i povuci svoj prst da postaviš funciju alarma brzo.</string>
-<string name="showcase_text_delete_alarms">Tapni ovde da obrišes ili zaustaviš alarm. Tapni bilo koje drugo mesto da odložiš alarm.</string>
 <string name="show_date">Prikazati datum</string>
 <string name="show_temperature">Prikazati temperaturu</string>
 <string name="show_weather">Prikazati lokalne vremenske prilike</string>

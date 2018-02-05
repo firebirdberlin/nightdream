@@ -135,8 +135,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Orientação do ecrã</string>
 <string name="select_alarm_sound">Selecione som de alarme</string>
 <string name="set_alarm">ative o alarme</string>
-<string name="showcase_text_set_alarms">Toque e deslize o dedo para configurar rapidamente o alarme.</string>
-<string name="showcase_text_delete_alarms">Toque aqui para apagar ou parar o alarme. Toque em qualquer outro local para ativar modo soneca.</string>
 <string name="showcase_text_screen_lock">Ecrã está neste momento bloqueado. Faça um toque prolongado no ícone para desbloquear.</string>
 <string name="showcase_title_screen_lock">Ecrã bloqueado</string>
 <string name="show_date">Mostrar a data</string>

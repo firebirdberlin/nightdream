@@ -150,9 +150,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">orientamento schermo</string>
 <string name="select_alarm_sound">Seleziona suoneria sveglia</string>
 <string name="set_alarm">imposta allarme</string>
-<string name="showcase_text_delete_alarms">Tappa qui per eliminare o arrestare una sveglia. Tappa in qualunque altro punto per rinviare</string>
 <string name="showcase_text_screen_lock">Lo schermo è attualmente bloccato. Premi a lungo sull\'icona per sbloccare.</string>
-<string name="showcase_text_set_alarms">Tocca e scorri col dito per impostare un allarme singolo velocemente</string>
 <string name="showcase_title_screen_lock">Blocco schermo</string>
 <string name="show_date">Mostra data</string>
 <string name="show_temperature">Mostra temperatura</string>

@@ -146,9 +146,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Orientation de l\'écran</string>
 <string name="select_alarm_sound">Sélection du son de l\'alarme</string>
 <string name="set_alarm">Régler l\'alarme</string>
-<string name="showcase_text_delete_alarms">Cliquer ici pour supprimer ou arrêter une alarme. Cliquer ailleurs pour reporter l\'alarme. </string>
 <string name="showcase_text_screen_lock">Ecran vérouillé. Appuyer longtemps pour le débloquer !</string>
-<string name="showcase_text_set_alarms">Toucher l\écran et glisser pour paramètrer l\'alarme rapide</string>
 <string name="showcase_title_screen_lock">Vérouillage de l\'écran</string>
 <string name="show_date">Afficher la date</string>
 <string name="show_temperature">Température</string>

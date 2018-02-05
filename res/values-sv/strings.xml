@@ -135,8 +135,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screenOrientation">Skärmrotation</string>
 <string name="select_alarm_sound">Välj alarmljud</string>
 <string name="set_alarm">ställ alarm</string>
-<string name="showcase_text_set_alarms">Tryck och dra för att ställa in engångsalarm snabbt. </string>
-<string name="showcase_text_delete_alarms">Tryck här för att stoppa alarmet. Tryck på valfri annan plats för att snoozea.</string>
 <string name="showcase_text_screen_lock">Skärmen är låst. Håll nere ikonen för att låsa upp!</string>
 <string name="showcase_title_screen_lock">Skärmlås</string>
 <string name="show_date">Visa datum</string>

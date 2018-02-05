@@ -8,8 +8,6 @@ import android.preference.PreferenceActivity;
 
 
 public class PreferencesActivity extends PreferenceActivity {
-    public static final int PREFERENCES_SCREEN_WEB_RADIO_INDEX = 5;
-
     PreferencesFragment fragment = null;
 
     public static void start(Context context) {
@@ -21,10 +19,10 @@ public class PreferencesActivity extends PreferenceActivity {
         }
     }
 
-    public static void start(Context context, int preferenceScreenIndex) {
+    public static void startWithPurchaseDialog(Context context) {
         if (Build.VERSION.SDK_INT > 10) {
             Intent intent = new Intent(context, PreferencesActivity.class);
-            intent.putExtra("preferenceScreenIndex", preferenceScreenIndex);
+            intent.putExtra("shallShowPurchaseDialog", true);
             context.startActivity(intent);
         }
     }
@@ -36,10 +34,10 @@ public class PreferencesActivity extends PreferenceActivity {
 
         fragment = new PreferencesFragment();
         Intent intent = getIntent();
-        if ( intent.hasExtra("preferenceScreenIndex") ) {
-            int index = intent.getIntExtra("preferenceScreenIndex", -1);
-            if ( index > -1 ) {
-                fragment.setInitialScreenIndex(index);
+        if (intent.hasExtra("shallShowPurchaseDialog")) {
+            boolean showDialog = intent.getBooleanExtra("shallShowPurchaseDialog", false);
+            if (showDialog) {
+                fragment.setShowPurchaseDialog();
             }
         }
 
