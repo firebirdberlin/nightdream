@@ -148,8 +148,8 @@ public class Settings {
         AlarmToneUri = settings.getString("AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         AlarmToneName = settings.getString("AlarmToneName", "");
-        fontUri = settings.getString("fontUri", "");
-        fontName = settings.getString("fontName", "");
+        fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
+        fontName = settings.getString("fontName", "7-Segment Digital Font");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         alarmVolume = settings.getInt("alarmVolume", 3);
@@ -190,7 +190,7 @@ public class Settings {
         initNextAlarmTime();
         nightModeBrightness = settings.getFloat("nightModeBrightness", nightModeBrightness);
         maxBrightness = 0.01f * settings.getInt("maxBrightness", 100);
-        maxBrightnessBattery = 0.01f * settings.getInt("maxBrightnessBattery", 100);
+        maxBrightnessBattery = 0.01f * settings.getInt("maxBrightnessBattery", 25);
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);

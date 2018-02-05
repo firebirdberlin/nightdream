@@ -2,7 +2,17 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="main_screen">
 
-        <PreferenceScreen
+    <Preference
+        android:icon="@drawable/ic_attention"
+        android:key="translations_wanted"
+        android:summary="Please add or update the translation for your language."
+        android:title="Translations wanted !">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://fhain.zzzz.io/pastt" />
+    </Preference>
+
+    <PreferenceScreen
             android:icon="@drawable/ic_power"
             android:key="autostart"
             android:title="@string/handle_power">
@@ -235,6 +245,7 @@
                     android:entries="@array/nightModeActivationValues"
                     android:entryValues="@array/nightModeActivationModes"
                     android:key="nightModeActivationMode"
+                    android:summary="%s"
                     android:title="@string/night_mode_activation_mode" />
 
                 <de.firebirdberlin.preference.TimeRangePreference
@@ -499,38 +510,7 @@
                     android:data="http://fhain.zzzz.io/apps/NightDream/privacy.html"/>
             </Preference>
 
-            <PreferenceCategory android:title="@string/contribute">
-                <Preference
-                    android:icon="@drawable/ic_github"
-                    android:title="@string/contribute_source_code">
-                    <intent android:action="android.intent.action.VIEW"
-                        android:data="https://github.com/firebirdberlin/nightdream"/>
-
-                </Preference>
-
-                <Preference
-                    android:icon="@drawable/ic_github"
-                    android:title="@string/contribute_translation">
-                    <intent android:action="android.intent.action.VIEW"
-                        android:data="https://fhain.zzzz.io/pastt"/>
-                </Preference>
-            </PreferenceCategory>
-
-            <PreferenceCategory
-                android:key="donation_screen"
-                android:title="@string/donate">
-                <Preference
-                    android:icon="@drawable/ic_googleplay"
-                    android:key="donation_play"
-                    android:title="@string/donate"/>
-
-                <de.firebirdberlin.preference.BitcoinDonationPreference
-                    android:icon="@drawable/ic_bitcoin"
-                    android:title="@string/donate_bitcoin"/>
-            </PreferenceCategory>
-
-
-            <PreferenceCategory android:title="@string/credits">
+            <PreferenceScreen android:title="@string/credits">
                 <Preference
                     android:enabled="true"
                     android:key="credits"
@@ -614,6 +594,15 @@ vi - Phong Nguyen"/>
                 </Preference>
 
                 <Preference
+                    android:key="about_roboto"
+                    android:summary="by Christian Robertson"
+                    android:title="Roboto Font">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="https://fonts.google.com/specimen/Roboto" />
+                </Preference>
+
+                <Preference
                     android:key="about_meteocons"
                     android:summary="by Alessio Atzeni"
                     android:title="Meteocons Font">
@@ -628,6 +617,47 @@ vi - Phong Nguyen"/>
                     <intent android:action="android.intent.action.VIEW"
                         android:data="http://torinak.com/7segment"/>
                 </Preference>
+
+                <Preference
+                    android:key="about_dancing_script"
+                    android:summary="by Pablo Impallari"
+                    android:title="Dancing Script Regular Font">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="https://fonts.google.com/specimen/Dancing+Script?selection.family=Dancing+Script" />
+                </Preference>
+            </PreferenceScreen>
+
+            <PreferenceCategory android:title="@string/contribute">
+                <Preference
+                    android:icon="@drawable/ic_github"
+                    android:title="@string/contribute_source_code">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="https://github.com/firebirdberlin/nightdream" />
+
+                </Preference>
+
+                <Preference
+                    android:icon="@drawable/ic_github"
+                    android:title="@string/contribute_translation">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="https://fhain.zzzz.io/pastt" />
+                </Preference>
+            </PreferenceCategory>
+
+            <PreferenceCategory
+                android:key="donation_screen"
+                android:title="@string/donate">
+                <Preference
+                    android:icon="@drawable/ic_googleplay"
+                    android:key="donation_play"
+                    android:title="@string/donate" />
+
+                <de.firebirdberlin.preference.BitcoinDonationPreference
+                    android:icon="@drawable/ic_bitcoin"
+                    android:title="@string/donate_bitcoin" />
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/other_apps">
@@ -638,17 +668,5 @@ vi - Phong Nguyen"/>
                         android:data="market://details?id=com.firebirdberlin.tinytimetracker"/>
                 </Preference>
             </PreferenceCategory>
-
         </PreferenceScreen>
-
-    <Preference
-        android:icon="@drawable/ic_attention"
-        android:key="translations_wanted"
-        android:summary="Please add or update the translation for your language."
-        android:title="Translations wanted !">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="https://fhain.zzzz.io/pastt" />
-    </Preference>
-
 </PreferenceScreen>
