@@ -3,19 +3,17 @@
      <string-array name="typeFaceValues">
           <item>1</item>
           <item>2</item>
-          <item>3</item>
           <item>4</item>
-          <item>5</item>
           <item>6</item>
+         <item>7</item>
      </string-array>
 
 
     <string-array name="typeFaces">
         <item>@string/typeface_roboto_regular</item>
         <item>@string/typeface_roboto_light</item>
-        <item>@string/typeface_roboto_condensed</item>
         <item>@string/typeface_roboto_thin</item>
-        <item>@string/typeface_roboto_medium</item>
         <item>@string/typeface_7_segment</item>
+        <item>@string/typeface_dancing_script</item>
     </string-array>
 </resources>

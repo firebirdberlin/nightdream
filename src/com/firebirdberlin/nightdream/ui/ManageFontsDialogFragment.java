@@ -210,10 +210,9 @@ public class ManageFontsDialogFragment extends DialogFragment {
         ArrayList<FileUri> list = new ArrayList<>();
         list.add(getFileUri("roboto_regular.ttf", R.string.typeface_roboto_regular));
         list.add(getFileUri("roboto_light.ttf", R.string.typeface_roboto_light));
-        list.add(getFileUri("roboto_condensed.ttf", R.string.typeface_roboto_condensed));
         list.add(getFileUri("roboto_thin.ttf", R.string.typeface_roboto_thin));
-        list.add(getFileUri("roboto_medium.ttf", R.string.typeface_roboto_medium));
         list.add(getFileUri("7segment.ttf", R.string.typeface_7_segment));
+        list.add(getFileUri("dancingscript_regular.ttf", R.string.typeface_dancing_script));
 
 //        list.add(new FileUri( Uri.parse("file:///android_asset/fonts/roboto_regular.ttf"), getContext().getString(R.string.typeface_roboto_medium)))
 //        try {

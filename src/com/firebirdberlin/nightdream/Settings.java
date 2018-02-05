@@ -320,6 +320,8 @@ public class Settings {
             case 4: return "fonts/roboto_thin.ttf";
             case 5: return "fonts/roboto_medium.ttf";
             case 6: return "fonts/7segment.ttf";
+            case 7:
+                return "fonts/dancingscript_regular.ttf";
             default: return null;
         }
     }

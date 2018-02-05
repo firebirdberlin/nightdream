@@ -176,6 +176,7 @@ OR
     <string name="tomorrow">tomorrow</string>
     <string name="translations">Translations</string>
     <string name="typeface_7_segment">7-segment LED</string>
+    <string name="typeface_dancing_script">Dancing Script Regular</string>
     <string name="typeface_roboto_condensed">Roboto condensed</string>
     <string name="typeface_roboto_light">Roboto light</string>
     <string name="typeface_roboto_medium">Roboto medium</string>
