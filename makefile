@@ -1,20 +1,20 @@
-release:
-	ant -f Pro_build.xml release
+ctags:
+	ctags -R .
 
 debug:
-	ant -f Pro_build.xml debug
+	./gradlew assembleDebug
 
 doze:
 	adb shell dumpsys deviceidle force-idle
 
 install:
-	adb $(OPT) install -r nightdream-release.apk
+	adb $(OPT) install -r release/nightdream-release.apk
 
 installemulator:
 	adb -e install -r bin/Pro/NightDream-release.apk
 
-installdebug:
-	adb $(OPT) install -r ./build/outputs/apk/nightdream-debug.apk
+installdebug: assembleDebug
+	./gradlew installDebug
 
 installdebugemulator:
 	adb -e install -r bin/Pro/NightDream-debug.apk
@@ -46,3 +46,6 @@ revoke-permissions:
 
 screenshot:
 	adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > screen.png
+
+test:
+	./gradlew test

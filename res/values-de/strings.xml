@@ -196,4 +196,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Einstellungen</string>
 <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
 <string name="welcome_screen_title4">Größe</string>
+    <string name="sleep_time_default_value_msg">Welcher Wert soll Standardmäßig für den Sleep Timer gesetzt werden (in Minuten)?</string>
+    <string name="sleep_time_default_value">Standard-Einschlafzeit</string>
+    <string name="sleep_time_dialog_title">Sleep Timer</string>
 </resources>

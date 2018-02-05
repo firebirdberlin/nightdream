@@ -6,11 +6,14 @@ import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class BottomPanelLayout extends FrameLayout {
+
+    public static String TAG ="BottomPanelLayout";
+
     public boolean isVisible = true;
     public boolean useInternalAlarm = false;
+    Panel activePanel = Panel.ALARM_CLOCK;
     private boolean daydreamMode = false;
     private Context context;
     private AttributeSet attrs;
@@ -30,6 +33,15 @@ public class BottomPanelLayout extends FrameLayout {
         this.context = context;
         this.attrs = attrs;
         view = new AlarmClock(context, attrs);
+    }
+
+    public Panel getActivePanel() {
+        return activePanel;
+    }
+
+    public void setActivePanel(Panel panel) {
+        activePanel = panel;
+        setup();
     }
 
     public void setDaydreamMode(boolean enabled) {
@@ -60,7 +72,7 @@ public class BottomPanelLayout extends FrameLayout {
     public void setup() {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
-        } else if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO & !daydreamMode) {
+        } else if (activePanel == Panel.WEB_RADIO & !daydreamMode) {
             showWebRadioView();
         } else if (!useInternalAlarm) {
             showStockAlarmView();
@@ -82,8 +94,8 @@ public class BottomPanelLayout extends FrameLayout {
             stockAlarmView.setText();
             return; // already visible
         }
-        if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) return;
-        
+        if (activePanel == Panel.WEB_RADIO) return;
+
         removeAllViews();
         clearViews();
         view.cancelAlarm();
@@ -95,26 +107,28 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private void showWebRadioView() {
-        if (webRadioLayout != null) return; // already visible
+
+        Log.i(TAG, "showWebRadioView");
+
+        if (webRadioLayout != null) {
+            webRadioLayout.setText(null);
+            invalidate();
+            return; // already visible
+        }
         removeAllViews();
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
-        webRadioLayout.setShowConnectingHint(true);
-        webRadioLayout.setText();
         addView(webRadioLayout);
         invalidate();
     }
 
-    public void updateWebRadioView() {
-        if (webRadioLayout == null) return;
-
-        webRadioLayout.setShowConnectingHint(false);
-        webRadioLayout.setText();
+    public boolean isWebRadioViewActive() {
+        return webRadioLayout != null;
     }
 
     private void showAlarmView() {
-        if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) return;
+        if (activePanel == Panel.WEB_RADIO && !AlarmHandlerService.alarmIsRunning()) return;
         removeAllViews();
         clearViews();
         addView(view);
@@ -133,7 +147,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     @Override
     public void setClickable(boolean clickable) {
-        Log.w("BottomPanelLayout", "setClickable " + ((clickable) ? "true" : "false"));
+        //Log.w(TAG, "setClickable " + ((clickable) ? "true" : "false"));
         super.setClickable(clickable);
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).setClickable(clickable);
@@ -143,5 +157,7 @@ public class BottomPanelLayout extends FrameLayout {
     public void invalidate() {
         setCustomColor(accentColor, textColor);
     }
+
+    public enum Panel {ALARM_CLOCK, WEB_RADIO}
 }
 

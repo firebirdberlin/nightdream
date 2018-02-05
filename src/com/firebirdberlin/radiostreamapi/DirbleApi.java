@@ -2,36 +2,34 @@ package com.firebirdberlin.radiostreamapi;
 
 import android.util.Log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.String;
-import java.lang.StringBuilder;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import com.firebirdberlin.radiostreamapi.models.Country;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.firebirdberlin.radiostreamapi.models.Country;
-import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class DirbleApi {
 
+    private static final String COUNTRIES_CACHE_FILE = "dirbleCountries.json";
     private static String TAG = "NightDream.DirbleAPI";
     private static String BASEURL = "http://api.dirble.com/v2/search/";
     private static String COUNTRY_REQUEST_BASE_URL = "http://api.dirble.com/v2/countries/";
@@ -41,8 +39,6 @@ public class DirbleApi {
     private static int MAX_NUM_RESULTS = 100;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
-
-    private static final String COUNTRIES_CACHE_FILE = "dirbleCountries.json";
 
     public static List<RadioStation> fetchStations(String queryString, String countryCode) {
         List<RadioStation> stationList = new ArrayList<RadioStation>();
@@ -112,8 +108,9 @@ public class DirbleApi {
                             }
                         }
                         station.isOnline = streamObj.getLong("status") == 1L;
-                        //if ( station.isOnline )
-                        stationList.add(station);
+                        if (station.isOnline) {
+                            stationList.add(station);
+                        }
                     }
                 }
             } catch (JSONException e) {

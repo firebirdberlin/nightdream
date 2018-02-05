@@ -2,197 +2,80 @@ package com.firebirdberlin.radiostreamapi;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.DialogPreference;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.telephony.TelephonyManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.radiostreamapi.models.Country;
-import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
+import com.firebirdberlin.nightdream.ui.RadioStreamDialog;
+import com.firebirdberlin.nightdream.ui.RadioStreamDialogListener;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
-
-public class RadioStreamPreference extends DialogPreference
-        implements StationRequestTask.AsyncResponse,
-        CountryRequestTask.AsyncResponse {
+public class RadioStreamPreference extends DialogPreference {
     private final static String TAG = "RadioStreamPreference";
-    private Context mContext = null;
-    private EditText queryText = null;
-    private ArrayList<RadioStation> stations = new ArrayList<>();
-    private ArrayList<String> stationTexts = new ArrayList<>();
-    private ListView stationListView;
-    private Spinner countrySpinner;
-    private TextView noResultsText;
-    private TextView noDataConnectionText;
-    private ContentLoadingProgressBar spinner;
-    private Button searchButton;
-    private Map<String, String> countryNameToCodeMap = null;
+
+    private RadioStreamDialog radioStreamDialog;
 
     public RadioStreamPreference(Context ctx) {
         this(ctx, null);
-        mContext = getContext();
+
     }
 
     public RadioStreamPreference(Context ctx, AttributeSet attrs) {
         this(ctx, attrs, android.R.attr.dialogPreferenceStyle);
-        mContext = getContext();
-        init();
     }
 
     public RadioStreamPreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
-        init();
     }
 
-    private void init() {
-        mContext = getContext();
-        setNegativeButtonText(android.R.string.cancel);
-    }
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
+
+        builder.setNeutralButton(android.R.string.cancel, null);
         builder.setPositiveButton(null, null);
+
+        // provide delete button if a station was already configured before
+        RadioStation station = getPersistedRadioStation();
+        if (station == null) {
+
+            // must be set to null, otherwise used as cancel button
+            builder.setNegativeButton(null, null);
+
+        } else {
+
+            builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    deleteRadioStation();
+                    notifyChanged();
+                    setSummary("");
+                }
+            });
+
+        }
+
     }
 
     @Override
     protected View onCreateDialogView() {
-        updateDisplayedRadioStationTexts();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, stationTexts);
 
-        LayoutInflater inflater = (LayoutInflater)
-            getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View v = inflater.inflate(R.layout.radio_stream_dialog, null);
+        RadioStation station = getPersistedRadioStation();
 
-        queryText = ((EditText) v.findViewById(R.id.query_string));
-        spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
-        stationListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
-        countrySpinner = (Spinner) v.findViewById(R.id.countrySpinner);
-        noResultsText = (TextView) v.findViewById(R.id.no_results);
-        noResultsText.setVisibility(View.GONE);
-        Button directInputHintText = (Button) v.findViewById(R.id.direct_input_hint);
-        directInputHintText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showManualInputDialog();
-            }
-        });
+        radioStreamDialog = new RadioStreamDialog(getContext(), station);
 
-        noDataConnectionText = (TextView) v.findViewById(R.id.no_data_connection);
-        noDataConnectionText.setVisibility(View.GONE);
-        String lang = Locale.getDefault().getLanguage();
-        if ("de".equals(lang) || "en".equals(lang)) {
-            // For German and English display this text in parentheses, otherwise the default
-            // message_no_data_connection is displayed
-            try {
-                noDataConnectionText.setText(String.format("(%s)",
-                        mContext.getResources().getString(R.string.message_no_data_connection)));
-            } catch (Resources.NotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        return radioStreamDialog.createDialogView(new RadioStreamDialogResultListener());
 
-        queryText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-                    startSearch();
-
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        stationListView.setAdapter(adapter);
-        stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RadioStation station = stations.get(position);
-                persistRadioStation(station);
-                setSummary(station.stream);
-                notifyChanged();
-                getDialog().dismiss();
-
-            }
-        });
-
-        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                //Log.i(TAG, "country changed");
-                startSearch();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-
-        });
-        searchButton = ((Button) v.findViewById(R.id.start_search));
-        searchButton.setEnabled(false);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                startSearch();
-            }
-        });
-
-        queryText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchButton.setEnabled(queryText.getText().length() > 0 );
-            }
-        });
-
-        initCountrySpinner();
-
-        return v;
     }
 
     @Override
@@ -201,73 +84,15 @@ public class RadioStreamPreference extends DialogPreference
 
         RadioStation station = getPersistedRadioStation();
         if (station != null && station.isUserDefinedStreamUrl) {
-            showManualInputDialog();
+            radioStreamDialog.showManualInputDialog(new RadioStreamDialogResultListener());
         }
     }
-
-    private void startSearch() {
-
-        String query = queryText.getText().toString().trim();
-        if (query.isEmpty()) {
-            return;
-        }
-
-        spinner.show();
-        stationListView.setVisibility(View.GONE);
-        noResultsText.setVisibility(View.GONE);
-        noDataConnectionText.setVisibility(View.GONE);
-
-        String country = getSelectedCountry();
-        new StationRequestTask(this).execute(query, country);
-
-        InputMethodManager imm =
-                (InputMethodManager) queryText.getContext()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
-        searchButton.setEnabled(false);
-    }
-
-    @Override
-    public void onRequestFinished(List<RadioStation> stations){
-        this.stations.clear();
-        this.stations.addAll(stations);
-        updateDisplayedRadioStationTexts();
-        ((ArrayAdapter) stationListView.getAdapter()).notifyDataSetChanged();
-        spinner.hide();
-        stationListView.setVisibility((stations.size() == 0) ? View.GONE : View.VISIBLE);
-        noResultsText.setVisibility((stations.size() == 0) ? View.VISIBLE : View.GONE);
-        if (stations.size() == 0 && !Utility.hasNetworkConnection(mContext)) {
-            noDataConnectionText.setVisibility(View.VISIBLE);
-        } else {
-            noDataConnectionText.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onCountryRequestFinished(List<Country> countries) {
-        // sort countries alphabetically
-        Collections.sort(countries, new Comparator<Country>() {
-            @Override
-            public int compare(Country lhs, Country rhs) {
-                if (lhs.name == null) {
-                    return -1;
-                }
-                if (rhs.name == null) {
-                    return 1;
-                }
-                return lhs.name.compareTo(rhs.name);
-            }
-        });
-
-        updateCountryNameToCodeMap(countries);
-        updateCountrySpinner(countries);
-    }
-
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
-        this.stations.clear();
+        //this.stations.clear();
+        radioStreamDialog.clearLastSearchResult();
     }
 
     @Override
@@ -306,185 +131,33 @@ public class RadioStreamPreference extends DialogPreference
         setSummary(getPersistedString((String) defaultValue));
     }
 
-    private void initCountrySpinner() {
-        Log.i(TAG, "starting country search");
-        new CountryRequestTask(this, mContext).execute();
-    }
-
-    private void updateCountryNameToCodeMap(List<Country> countries) {
-        countryNameToCodeMap = new HashMap<>();
-        for (Country c : countries) {
-            countryNameToCodeMap.put(c.name, c.countryCode);
-        }
-
-    }
-
-    private void updateCountrySpinner(List<Country> countries) {
-
-
-        RadioStation persistedRadioStation = getPersistedRadioStation();
-        String persistedCountryCode = persistedRadioStation != null ? persistedRadioStation.countryCode : null;
-        Log.i(TAG, "found persisted station: " + (persistedRadioStation !=  null ? persistedRadioStation.toString() : "null"));
-
-
-        List<String> preferredCountryCodes = getPreferredCountryCodes();
-
-        List<String> countryList = new ArrayList<String>();
-
-        // first add empty entry meaning "any country"
-        //countryList.add("All countries");
-        //empty string until localized
-        countryList.add("");
-
-        int selectedItemIndex = -1;
-
-        // add preferred countries first
-        if (preferredCountryCodes != null && !preferredCountryCodes.isEmpty()) {
-
-            for (Country c : countries) {
-                int numFound = 0;
-                for (String preferredCountry : preferredCountryCodes) {
-                    if (c.countryCode != null && c.countryCode.equals(preferredCountry)) {
-                        countryList.add(c.name);
-                        numFound++;
-
-                        // if radio station is already configured selects its country as default
-                        if (persistedCountryCode != null && c.countryCode.equals(persistedRadioStation.countryCode)) {
-                            selectedItemIndex = countryList.size() - 1;
-                        }
-                    }
-                }
-
-                if (numFound == preferredCountryCodes.size()) {
-                    break;
-                }
-            }
-        }
-
-
-        // now add all countries (including preferred country, so they are duplicates, but no problem)
-        for (Country c : countries) {
-            countryList.add(c.name);
-
-            // if radio station is already configured selects its country as default
-            if (persistedCountryCode != null && c.countryCode.equals(persistedRadioStation.countryCode)) {
-                selectedItemIndex = countryList.size() - 1;
-            }
-        }
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_item, countryList);
-
-        // select as default: first preferred country, and "any country"
-        if (selectedItemIndex == -1 && !countryList.isEmpty()) {
-            selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
-        }
-
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        countrySpinner.setAdapter(dataAdapter);
-        if (selectedItemIndex > -1) {
-            countrySpinner.setSelection(selectedItemIndex);
-        }
-    }
-
-    private List<String> getPreferredCountryCodes() {
-
-        List<String> preferredCountryCodes = new ArrayList<>();
-
-        try {
-            TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm != null) {
-                String simCountryCode = tm.getSimCountryIso();
-                if (simCountryCode != null && !simCountryCode.isEmpty()) {
-                    preferredCountryCodes.add(simCountryCode.toUpperCase());
-                }
-                //Log.i(TAG, "iso country code is " + locale);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
-        String locale = mContext.getResources().getConfiguration().locale.getCountry();
-        if (locale != null && !preferredCountryCodes.isEmpty() && !preferredCountryCodes.get(0).equals(locale)) {
-            preferredCountryCodes.add(locale);
-        }
-
-        //test: french people living in Canada :D
-        /*
-        preferredCountryCodes.clear();
-        preferredCountryCodes.add("CA");
-        preferredCountryCodes.add("FR");
-        */
-
-        return preferredCountryCodes;
-    }
-
-    private String getSelectedCountry() {
-
-        // first item means "all countries", no country restriction
-        if (countrySpinner.getSelectedItemPosition() == 0) {
-            return null;
-        }
-
-        String item = (String) countrySpinner.getSelectedItem();
-        if (item != null && !item.isEmpty()) {
-            return countryNameToCodeMap.get(item);
-        } else {
-            return null;
-        }
-
-    }
-
-    private boolean isCountrySelected() {
-        return (countrySpinner != null && countrySpinner.getSelectedItemPosition() > 0);
-    }
-
-    private void updateDisplayedRadioStationTexts() {
-        boolean countrySelected = isCountrySelected();
-        stationTexts.clear();
-        for (RadioStation station : stations) {
-            String stationTitle;
-            if (countrySelected) {
-                stationTitle = getDisplayedRadioStationText(station, false);
-            } else {
-                stationTitle = getDisplayedRadioStationText(station, true);
-            }
-            stationTexts.add(stationTitle);
-        }
-
-    }
-
-    private String getDisplayedRadioStationText(RadioStation station, boolean displayCountryCode) {
-        String countryCode = (displayCountryCode) ? String.format("%s ", station.countryCode) : "";
-        String streamOffline = (station.isOnline) ? ""
-            : String.format(" - %s",
-                            mContext.getResources().getString(R.string.radio_stream_offline));
-        return String.format("%s%s (%d kbit/s)%s",
-                             countryCode, station.name, station.bitrate, streamOffline);
-    }
-
     private String jsonKey() {
         return String.format("%s_json", getKey());
     }
 
     private void persistRadioStation(RadioStation station) {
-        //save stream as separate field
         persistString(station.stream);
-
         //save complete station as json string
         try {
             String json = station.toJson();
             SharedPreferences prefs = getSharedPreferences();
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putString(jsonKey(), json);
-            prefEditor.apply();
+            prefEditor.commit();
         } catch (JSONException e) {
             Log.e(TAG, "error converting station to json", e);
         }
+    }
 
+    private void deleteRadioStation() {
+        persistString(null);
+        SharedPreferences prefs = getSharedPreferences();
+        SharedPreferences.Editor prefEditor = prefs.edit();
+        prefEditor.remove(jsonKey());
+        prefEditor.commit();
     }
 
     private RadioStation getPersistedRadioStation() {
-
         SharedPreferences prefs = getSharedPreferences();
         String json = prefs.getString(jsonKey(),  null);
         if (json != null) {
@@ -494,210 +167,23 @@ public class RadioStreamPreference extends DialogPreference
                 Log.e(TAG, "error converting json to station", e);
             }
         }
-
         return null;
-
     }
 
-    private void showManualInputDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        builder.setTitle(R.string.radio_stream_manual_input_hint);
-
-        LayoutInflater inflater = (LayoutInflater)
-                getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.radio_stream_manual_input_dialog, null);
-
-        final EditText inputUrl = (EditText) v.findViewById(R.id.radio_stream_manual_input_url);
-        final EditText inputDescription = (EditText) v.findViewById(R.id.radio_stream_manual_input_description);
-        final ContentLoadingProgressBar progressSpinner = (ContentLoadingProgressBar) v.findViewById(R.id.radio_stream_manual_input_progress_bar);
-
-        RadioStation persistedRadioStation = getPersistedRadioStation();
-        if (persistedRadioStation != null) {
-            inputUrl.setText(persistedRadioStation.stream);
-            inputDescription.setText(persistedRadioStation.name);
+    private class RadioStreamDialogResultListener implements RadioStreamDialogListener {
+        public void onRadioStreamSelected(RadioStation station) {
+            persistRadioStation(station);
+            notifyChanged();
+            getDialog().dismiss();
+        }
+        @Override
+        public void onCancel() {
         }
 
-        // test plain stream url + description
-        //inputUrl.setText("http://rbb-radioberlin-live.cast.addradio.de/rbb/radioberlin/live/mp3/128/stream.mp3");
-        //inputDescription.setText("Radio Berlin 88,8");
-
-        // test playlist
-        //inputUrl.setText("http://www.radioberlin.de/live.m3u");
-        //inputUrl.setText("http://www.radioberlin.de/live.pls");
-
-        final TextView invalidUrlMessage = (TextView) v.findViewById(R.id.invalid_url);
-        invalidUrlMessage.setVisibility(View.GONE);
-
-        // hide error message when url is edited
-        inputUrl.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                invalidUrlMessage.setVisibility(View.GONE);
-            }
-        });
-
-        inputUrl.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    return;
-                }
-                // when url input field looses focus and is a playlist url (m3u, pls), start the validation,
-                // retrieve stream description and put it into the description field
-                final String urlString = inputUrl.getText().toString();
-                final String description = inputDescription.getText().toString();
-
-                if (!description.isEmpty()) {
-                    return;
-                }
-
-                boolean networkConnection = Utility.hasNetworkConnection(mContext);
-                final URL url = validateUrlInput(urlString);
-                if (networkConnection && url != null && PlaylistParser.isPlaylistUrl(url)) {
-                    progressSpinner.setVisibility(View.VISIBLE);
-
-                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
-                        @Override
-                        public void onPlaylistRequestFinished(PlaylistInfo result) {
-                            progressSpinner.setVisibility(View.GONE);
-
-                            if (result.valid) {
-                                String stationName = getStationName(description, result.description, url);
-                                inputDescription.setText(stationName);
-                            } else {
-                                showUrlErrorMessage(invalidUrlMessage);
-                            }
-                        }
-                    };
-                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
-                }
-            }
-        });
-
-        builder.setView(v);
-        builder.setPositiveButton(android.R.string.ok, null);
-        builder.setNeutralButton(android.R.string.cancel, null);
-
-        final AlertDialog manualInputDialog = builder.create();
-        // set OK button click handler here, so closing of the dialog can be prevented if invalid url was entered
-        manualInputDialog.show();
-        manualInputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String urlString = inputUrl.getText().toString();
-                final String description = inputDescription.getText().toString();
-
-                final URL url = validateUrlInput(urlString);
-                if (url == null) {
-                    showUrlErrorMessage(invalidUrlMessage);
-                    return;
-                }
-
-                boolean networkConnection = Utility.hasNetworkConnection(mContext);
-                if (!networkConnection) {
-                    invalidUrlMessage.setText(R.string.message_no_data_connection);
-                    invalidUrlMessage.setVisibility(View.VISIBLE);
-                    return;
-                }
-
-                progressSpinner.setVisibility(View.VISIBLE);
-
-                if (PlaylistParser.isPlaylistUrl(url)) {
-                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
-                        @Override
-                        public void onPlaylistRequestFinished(PlaylistInfo result) {
-                            progressSpinner.setVisibility(View.GONE);
-
-                            final URL resultStreamUrl = validateUrlInput(result.streamUrl);
-                            if (result.valid && resultStreamUrl != null) {
-                                String stationName = getStationName(description, result.description, resultStreamUrl);
-                                int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
-                                persistAndDismissDialog(manualInputDialog, stationName, urlString, bitrate);
-                            } else {
-                                showUrlErrorMessage(invalidUrlMessage);
-                            }
-
-                        }
-                    };
-                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
-                } else { // its a plain stream url
-                    StreamURLAvailabilityCheckTask.AsyncResponse streamCheckResponseListener = new StreamURLAvailabilityCheckTask.AsyncResponse() {
-                        @Override
-                        public void onRequestFinished(Boolean result) {
-                            progressSpinner.setVisibility(View.GONE);
-                            if (result != null && result) {
-                                String name = (!description.isEmpty() ? description : url.getHost());
-                                persistAndDismissDialog(manualInputDialog, name, urlString, 0);
-                            } else {
-                                showUrlErrorMessage(invalidUrlMessage);
-                            }
-                        }
-                    };
-                    new StreamURLAvailabilityCheckTask(streamCheckResponseListener).execute(urlString);
-                }
-
-            }
-
-        });
-    }
-
-    private void persistAndDismissDialog(final AlertDialog dialog, String name, String urlString, int bitrate) {
-        RadioStation station = createRadioStation(name, urlString, bitrate);
-        persistRadioStation(station);
-
-        dialog.dismiss();
-        //also finish parent dialog (RadioStreamPreference)
-        notifyChanged();
-        getDialog().dismiss();
-
-    }
-
-    private String getStationName(String manualInput, String autoInput, URL streamURL) {
-        if (manualInput != null && !manualInput.trim().isEmpty()) {
-            return manualInput.trim();
-        } else if (autoInput != null && !autoInput.trim().isEmpty()) {
-            return autoInput.trim();
-        } else {
-            return streamURL.getHost();
+        @Override
+        public void onDelete(int stationIndex) {
+            setSummary("");
         }
     }
 
-    private RadioStation createRadioStation(String name, String streamUrl, int bitrate) {
-        RadioStation station = new RadioStation();
-        station.isUserDefinedStreamUrl = true;
-        station.isOnline = true;
-        station.name = name;
-        station.stream = streamUrl;
-        station.bitrate = bitrate;
-        station.countryCode = ""; // empty string, otherwise invalid json
-        station.isUserDefinedStreamUrl = true;
-        return station;
-    }
-
-    private void showUrlErrorMessage(TextView invalidUrlMessage) {
-        invalidUrlMessage.setText(R.string.radio_stream_unreachable_url);
-        invalidUrlMessage.setVisibility(View.VISIBLE);
-    }
-
-    private URL validateUrlInput(String urlString) {
-        if ( urlString == null || urlString.isEmpty() ) {
-            return null;
-        }
-        try {
-            return new URL(urlString);
-        } catch (MalformedURLException e) {
-            return null;
-        }
-    }
 }

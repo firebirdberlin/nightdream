@@ -440,11 +440,15 @@
                 android:key="purchaseWebRadioUI"
                 android:title="@string/purchaseWebRadio"/>
 
-            <com.firebirdberlin.radiostreamapi.RadioStreamPreference
+            <EditTextPreference
+                android:defaultValue="30"
+                android:dialogMessage="@string/sleep_time_default_value_msg"
+                android:dialogTitle="@string/sleep_time_default_value"
                 android:enabled="false"
-                android:icon="@drawable/ic_search"
-                android:key="radioStreamURLUI"
-                android:title="@string/radio_stream_url"/>
+                android:icon="@drawable/ic_nightmode"
+                android:inputType="number"
+                android:key="sleepTimeInMinutesDefaultValue"
+                android:title="@string/sleep_time_default_value" />
 
         </PreferenceScreen>
 

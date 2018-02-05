@@ -2,7 +2,10 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -14,19 +17,27 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 public class WebRadioLayout extends RelativeLayout {
+
+    public static String TAG ="WebRadioLayout";
+
     public boolean locked = false;
     private Context context;
     private TextView textView;
     private ImageView buttonSleepTimer;
     private boolean showConnectingHint = false;
     private ProgressBar spinner;
+    private WebRadioStationButtonsLayout webRadioButtons;
+    private Settings settings;
+    private NightDreamBroadcastReceiver broadcastReceiver = null;
 
     public WebRadioLayout(Context context) {
         super(context);
@@ -37,6 +48,8 @@ public class WebRadioLayout extends RelativeLayout {
         super(context, attrs);
         this.context = context;
         setBackgroundResource(R.drawable.webradiopanelborder);
+
+        settings = new Settings(context);
 
         textView = new TextView(context);
         textView.setId(R.id.web_radio_text_view); // id for placing spinner LEFT_OF this view
@@ -80,6 +93,39 @@ public class WebRadioLayout extends RelativeLayout {
         addView(textView, lp);
         addView(buttonSleepTimer, lp2);
         addView(spinner, lp3);
+
+        webRadioButtons = new WebRadioStationButtonsLayout(context, attrs);
+        RelativeLayout.LayoutParams lp4 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp4.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        lp4.addRule(RelativeLayout.CENTER_IN_PARENT);
+        addView(webRadioButtons, lp4);
+        setText(null);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        broadcastReceiver = registerBroadcastReceiver();
+    }
+
+    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
+        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
+        filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
+        context.registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        try {
+            context.unregisterReceiver(broadcastReceiver);
+        } catch (IllegalArgumentException ignored) {
+        }
     }
 
     public void setCustomColor(int accentColor, int textColor) {
@@ -91,32 +137,68 @@ public class WebRadioLayout extends RelativeLayout {
                 PorterDuff.Mode.SRC_ATOP
         );
         textView.setTextColor(textColor);
+
+        if (webRadioButtons != null) {
+            webRadioButtons.setCustomColor(accentColor, textColor);
+        }
     }
 
     public void setLocked(boolean locked) {
         this.locked = locked;
     }
 
-    protected void setText() {
+    protected void setText(Integer radioStationIndex) {
         if (textView == null) return;
+
+        if (radioStationIndex == null) {
+            radioStationIndex = RadioStreamService.getCurrentRadioStationIndex();
+        }
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
-            RadioStation station = RadioStreamService.getCurrentRadioStation(context);
-            textView.setText(station.name);
+
+            if (radioStationIndex >= 0) {
+                RadioStation station = settings.getFavoriteRadioStation(radioStationIndex);
+                textView.setText(station.name);
+                webRadioButtons.setActiveStation(radioStationIndex);
+            }
         } else {
             textView.setText("");
+            webRadioButtons.clearActiveStation();
         }
         if (spinner != null) {
             spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
         }
+        webRadioButtons.invalidate();
     }
 
     protected void setShowConnectingHint(boolean showConnectingHint) {
         this.showConnectingHint = showConnectingHint;
+        spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
+        invalidate();
     }
 
     @Override
     public void setClickable(boolean clickable) {
         super.setClickable(clickable);
         buttonSleepTimer.setClickable(clickable);
+        webRadioButtons.setClickable(clickable);
+    }
+
+    class NightDreamBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
+                setShowConnectingHint(true);
+                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
+                setText(radioStationIndex);
+            } else if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
+                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
+                setShowConnectingHint(false);
+                setText(radioStationIndex);
+            } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
+                setText(null);
+                setShowConnectingHint(false);
+            }
+        }
     }
 }

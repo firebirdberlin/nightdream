@@ -17,6 +17,7 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import org.json.JSONException;
@@ -37,6 +38,7 @@ public class Settings {
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
     private final static String TAG = "NightDream.Settings";
+    private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
     public boolean standbyEnabledWhileConnected = false;
@@ -96,6 +98,7 @@ public class Settings {
     public int nextAlarmTimeMinutes = 0;
     public long lastReviewRequestTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
+    public int sleepTimeInMinutesDefaultValue = 30;
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
     public String radioStreamURL = "";
@@ -110,6 +113,7 @@ public class Settings {
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
+    public boolean purchasedWebRadio = false;
     Context mContext;
     SharedPreferences settings;
     private int clockLayout;
@@ -117,12 +121,25 @@ public class Settings {
     private boolean ambientNoiseDetection;
     private String bgpath = "";
 
-
-
     public Settings(Context context){
         this.mContext = context;
         settings = context.getSharedPreferences(PREFS_KEY, 0);
         reload();
+    }
+
+    private static FavoriteRadioStations getFavoriteRadioStations(SharedPreferences preferences) {
+        String json = preferences.getString(FAVORITE_RADIO_STATIONS_KEY, null);
+        if (json != null) {
+            Log.i(TAG, json);
+            try {
+                FavoriteRadioStations stations = FavoriteRadioStations.fromJson(json);
+                return stations;
+            } catch (JSONException e) {
+                Log.e(TAG, "error converting json to FavoriteRadioStations", e);
+            }
+        }
+        return new FavoriteRadioStations();
+
     }
 
     public void reload() {
@@ -174,6 +191,7 @@ public class Settings {
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
+        purchasedWebRadio = settings.getBoolean("purchasedWebRadio", false);
         radioStreamURL = settings.getString("radioStreamURL", "");
         radioStreamURLUI = settings.getString("radioStreamURLUI", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
@@ -191,6 +209,10 @@ public class Settings {
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
+
+        String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
+        sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
+
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
@@ -520,17 +542,76 @@ public class Settings {
                  == PackageManager.PERMISSION_GRANTED);
     }
 
-    public RadioStation getCurrentRadioStation() {
+    public RadioStation getFavoriteRadioStation(int radioStationIndex) {
+        FavoriteRadioStations stations = getFavoriteRadioStations();
+
+        RadioStation station = null;
+        if (stations != null) {
+             station = stations.get(radioStationIndex);
+        }
+        if (station == null && radioStationIndex == 0) {
+            station = getLegacyRadioStation();
+        }
+        return station;
+    }
+
+    public boolean hasLegacyRadioStation() {
+        String json = settings.getString("radioStreamURLUI_json", null);
+        return json != null;
+    }
+
+    private RadioStation getLegacyRadioStation() {
         String json = settings.getString("radioStreamURLUI_json", null);
         if (json != null) {
-            Log.i(TAG, json);
             try {
-                RadioStation s = RadioStation.fromJson(json);
-                return s;
+                return RadioStation.fromJson(json);
             } catch (JSONException e) {
                 Log.e(TAG, "error converting json to station", e);
             }
         }
         return null;
+    }
+
+    public FavoriteRadioStations getFavoriteRadioStations() {
+        return getFavoriteRadioStations(settings);
+    }
+
+    private void setFavoriteRadioStations(FavoriteRadioStations stations) {
+        try {
+            String json = stations.toJson();
+            Log.i(TAG, json);
+            SharedPreferences.Editor prefEditor = settings.edit();
+            prefEditor.putString(FAVORITE_RADIO_STATIONS_KEY, json);
+            prefEditor.commit();
+        } catch (JSONException e) {
+            Log.e(TAG, "error converting FavoriteRadioStations to json", e);
+        }
+    }
+
+    public void persistFavoriteRadioStation(RadioStation station, int stationIndex) {
+        Log.i(TAG, "setPersistentFavoriteRadioStation index=" + stationIndex);
+        FavoriteRadioStations stations = getFavoriteRadioStations(settings);
+        stations.set(stationIndex, station);
+        setFavoriteRadioStations(stations);
+    }
+
+    public void deleteFavoriteRadioStation(int stationIndex) {
+        persistFavoriteRadioStation(null, stationIndex);
+    }
+
+
+    public void upgradeLegacyRadioStationToFirstFavoriteRadioStation() {
+        FavoriteRadioStations stations = getFavoriteRadioStations();
+        RadioStation firstRadioStation = null;
+        if (stations != null) {
+            firstRadioStation = stations.get(0);
+        }
+        if (firstRadioStation == null) {
+            RadioStation legacyStation = getLegacyRadioStation();
+            if (legacyStation != null) {
+                persistFavoriteRadioStation(legacyStation, 0);
+            }
+        }
+
     }
 }

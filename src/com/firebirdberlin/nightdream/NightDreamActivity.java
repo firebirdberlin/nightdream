@@ -2,17 +2,16 @@ package com.firebirdberlin.nightdream;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.PorterDuff;
 import android.hardware.Sensor;
 import android.media.AudioManager;
 import android.os.Build;
@@ -27,7 +26,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -46,8 +44,10 @@ import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
+import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
 import java.util.Calendar;
@@ -70,6 +70,8 @@ public class NightDreamActivity extends Activity
     private ImageView background_image;
     private ImageView weatherIcon;
     private ImageView alarmClockIcon;
+    private WebRadioImageView radioIcon;
+    private BottomPanelLayout bottomPanelLayout;
     private boolean screenWasOn = false;
     private Context context = null;
     private float last_ambient = 4.0f;
@@ -158,9 +160,10 @@ public class NightDreamActivity extends Activity
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
         setKeepScreenOn(true);
-
+        bottomPanelLayout = (BottomPanelLayout) findViewById(R.id.bottomPanel);
         weatherIcon = (ImageView) findViewById(R.id.icon_weather_forecast);
         alarmClockIcon = (ImageView) findViewById(R.id.alarm_clock_icon);
+        radioIcon = (WebRadioImageView) findViewById(R.id.radio_icon);
         background_image = (ImageView) findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -248,6 +251,7 @@ public class NightDreamActivity extends Activity
 
         setupNightMode();
         setupRadioStreamUI();
+        bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
     }
 
     public void onSwitchNightMode() {
@@ -271,7 +275,6 @@ public class NightDreamActivity extends Activity
             case ALARM:
                 setVolumeControlStream(AudioManager.STREAM_ALARM);
                 nightDreamUI.showAlarmClock();
-
                 break;
             case RADIO:
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -398,14 +401,31 @@ public class NightDreamActivity extends Activity
         if ( AlarmHandlerService.alarmIsRunning() ) {
             AlarmHandlerService.stop(this);
         }
-
-        if ( mySettings.radioStreamURLUI.isEmpty() ) {
+        if (!mySettings.purchasedWebRadio && !mySettings.hasLegacyRadioStation()) {
             PreferencesActivity.start(this, PreferencesActivity.PREFERENCES_SCREEN_WEB_RADIO_INDEX);
             return;
         }
+        mySettings.upgradeLegacyRadioStationToFirstFavoriteRadioStation();
 
-        toggleRadioStreamState();
+        BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
+        if (panel == BottomPanelLayout.Panel.WEB_RADIO) {
+            bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
+            setRadioIconInactive();
+        } else {
+            bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
+            setRadioIconActive();
+        }
+        nightDreamUI.showAlarmClock();
+    }
 
+    public void setRadioIconActive() {
+        int accentColor = (mode == 0) ? mySettings.clockColorNight : mySettings.clockColor;
+        radioIcon.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+    }
+
+    public void setRadioIconInactive() {
+        int textColor = (mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor;
+        radioIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     public void onLocationFailure() { }
@@ -466,35 +486,6 @@ public class NightDreamActivity extends Activity
             last_ambient = ( new_mode == 2 ) ? 400.f : mySettings.minIlluminance;
         }
         setMode(new_mode);
-    }
-
-    private void toggleRadioStreamState() {
-        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
-            RadioStreamService.stop(this);
-            return;
-        }
-
-        if (Utility.hasNetworkConnection(this)) {
-            if (Utility.hasFastNetworkConnection(this)) {
-                RadioStreamService.startStream(this);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                new AlertDialog.Builder(this, R.style.DialogTheme)
-                        .setTitle(R.string.message_mobile_data_connection)
-                        .setMessage(R.string.message_mobile_data_connection_confirmation)
-                        .setNegativeButton(android.R.string.no, null)
-                        .setIcon(R.drawable.ic_attention)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                RadioStreamService.startStream(context);
-                                nightDreamUI.hideSystemUI();
-                            }
-                        })
-                        .show();
-            }
-
-        } else { // no network connection
-            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override

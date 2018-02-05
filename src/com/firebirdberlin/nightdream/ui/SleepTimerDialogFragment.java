@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 
 import java.util.Calendar;
@@ -50,7 +51,11 @@ public class SleepTimerDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
         // Get the layout inflater
 
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        // Warning: must use context of AlertDialog.Builder here so that the changed theme is applied by LayoutInflater in RadioStreamDialog!
+        // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme for this DialogFragment)
+        LayoutInflater inflater =  (LayoutInflater)
+                builder.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+
 
         View view = inflater.inflate(R.layout.sleep_timer_dialog, null);
         minuteTextEdit = (EditText) view.findViewById(R.id.minuteText);
@@ -99,6 +104,11 @@ public class SleepTimerDialogFragment extends DialogFragment {
                     SleepTimerDialogFragment.this.getDialog().cancel();
                 }
             });
+        } else {
+            Settings settings = new Settings((Context) mListener);
+            if (settings.sleepTimeInMinutesDefaultValue > -1) {
+                minuteTextEdit.setText(String.valueOf(settings.sleepTimeInMinutesDefaultValue));
+            }
         }
 
         return builder.create();

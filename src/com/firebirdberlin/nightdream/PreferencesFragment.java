@@ -166,6 +166,7 @@ public class PreferencesFragment extends PreferenceFragment {
                             break;
                         case "useInternalAlarm":
                             setupAlarmClock(sharedPreferences);
+                            break;
                     }
                 }
             };
@@ -255,7 +256,7 @@ public class PreferencesFragment extends PreferenceFragment {
         }
 
         if (ownedItems == null) {
-            storeWeatherDataPurchase(false);
+            storeWeatherDataPurchase(false, false);
             return;
         }
 
@@ -271,6 +272,7 @@ public class PreferencesFragment extends PreferenceFragment {
                 ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
             boolean weatherDataIsPurchased = false;
+            boolean radioIsPurchased = false;
             for (int i = 0; i < purchaseDataList.size(); ++i) {
                 String purchaseData = purchaseDataList.get(i);
                 String signature = signatureList.get(i);
@@ -279,18 +281,18 @@ public class PreferencesFragment extends PreferenceFragment {
                 if (ITEM_DONATION.equals(sku)) {
                     purchased_donation = true;
                     weatherDataIsPurchased = true;
-                    purchased_web_radio = true;
+                    radioIsPurchased = true;
                 }
                 if (ITEM_PRO.equals(sku)) {
                     purchased_pro = true;
                     weatherDataIsPurchased = true;
-                    purchased_web_radio = true;
+                    radioIsPurchased = true;
                 }
                 if (ITEM_WEATHER_DATA.equals(sku)) {
                     weatherDataIsPurchased = true;
                 }
                 if (ITEM_WEB_RADIO.equals(sku)) {
-                    purchased_web_radio = true;
+                    radioIsPurchased = true;
                 }
 
                 // do something with this purchase information
@@ -306,7 +308,7 @@ public class PreferencesFragment extends PreferenceFragment {
 //                }
             }
 
-            storeWeatherDataPurchase(weatherDataIsPurchased);
+            storeWeatherDataPurchase(weatherDataIsPurchased, radioIsPurchased);
             togglePurchasePreferences();
 
             // if continuationToken != null, call getPurchases again
@@ -316,21 +318,23 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
 
-    private void storeWeatherDataPurchase(boolean isPurchased) {
-        purchased_weather_data = isPurchased;
+    private void storeWeatherDataPurchase(boolean weatherIsPurchased, boolean radioIsPurchased) {
+        purchased_weather_data = weatherIsPurchased;
+        purchased_web_radio = radioIsPurchased;
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("purchasedWeatherData", isPurchased);
+        editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
+        editor.putBoolean("purchasedWebRadio", radioIsPurchased);
         editor.apply();
-        Log.i(TAG, String.format("purchasedWeatherData = %b", isPurchased));
+        Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
+        Log.i(TAG, String.format("purchasedWebRadio = %b", radioIsPurchased));
     }
 
 
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
         enablePreference("useRadioAlarmClock", purchased_web_radio);
-        enablePreference("radioStreamURLUI", purchased_web_radio);
-
+        enablePreference("sleepTimeInMinutesDefaultValue", purchased_web_radio);
 
         if (purchased_donation) {
             removePreference("donation_play");
@@ -582,7 +586,7 @@ public class PreferencesFragment extends PreferenceFragment {
                             db.close();
                             addPreferencesFromResource(R.xml.preferences);
                             init();
-                            storeWeatherDataPurchase(purchased_weather_data);
+                            storeWeatherDataPurchase(purchased_weather_data, purchased_web_radio);
                             togglePurchasePreferences();
                         }
                     }).show();
@@ -595,7 +599,7 @@ public class PreferencesFragment extends PreferenceFragment {
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 if (! RadioStreamService.isRunning) {
-                    RadioStreamService.start(context);
+                    RadioStreamService.start(context, true);
                 } else {
                     RadioStreamService.stop(context);
                 }
@@ -652,10 +656,9 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupTranslationRequest() {
-
-//        if (Utility.languageIs("de", "en")) {
-//            removePreference("translations_wanted");
-//        }
+        if (Utility.languageIs("de", "en")) {
+            removePreference("translations_wanted");
+        }
     }
 
     @Override
@@ -694,18 +697,16 @@ public class PreferencesFragment extends PreferenceFragment {
                 String sku = jo.getString("productId");
                 if (ITEM_DONATION.equals(sku)) {
                     purchased_donation = true;
-                    storeWeatherDataPurchase(true);
-                    purchased_web_radio = true;
+                    storeWeatherDataPurchase(true, true);
                     showThankYouDialog();
                 } else if (ITEM_PRO.equals(sku)) {
                     purchased_pro = true;
-                    storeWeatherDataPurchase(true);
-                    purchased_web_radio = true;
+                    storeWeatherDataPurchase(true, true);
                     showThankYouDialog();
                 } else if (ITEM_WEATHER_DATA.equals(sku)) {
-                    storeWeatherDataPurchase(true);
+                    storeWeatherDataPurchase(true, purchased_web_radio);
                 } else if (ITEM_WEB_RADIO.equals(sku)) {
-                    purchased_web_radio = true;
+                    storeWeatherDataPurchase(purchased_weather_data, true);
                 }
             }
             catch (JSONException e) {
@@ -1012,8 +1013,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private void activatePurchasesIfDebuggable() {
         if (Utility.isDebuggable(mContext)) {
             purchased_donation = true;
-            storeWeatherDataPurchase(true);
-            purchased_web_radio = true;
+            storeWeatherDataPurchase(true, true);
             togglePurchasePreferences();
         }
     }

@@ -52,7 +52,6 @@ import com.firebirdberlin.nightdream.events.OnPowerConnected;
 import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -582,16 +581,12 @@ public class NightDreamUI {
             }
         }
 
+        updateRadioIconColor(accentColor, textColor);
+
         bottomPanelLayout.setCustomColor(accentColor, textColor);
 
         clockLayout.setPrimaryColor(accentColor);
         clockLayout.setSecondaryColor(textColor);
-
-        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
-            setRadioIconActive();
-        } else {
-            setRadioIconInactive();
-        }
 
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
         if (Build.VERSION.SDK_INT < 21) {
@@ -603,20 +598,16 @@ public class NightDreamUI {
         }
     }
 
+    private void updateRadioIconColor(final int accentColor, final int textColor) {
+        final boolean webRadioViewActive = bottomPanelLayout.isWebRadioViewActive();
+        final int color = (webRadioViewActive ? accentColor : textColor);
+        radioIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+    }
+
     private void colorizeImageView(View view, int color) {
         if (view instanceof ImageView) {
             ((ImageView) view).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
-    }
-
-    public void setRadioIconActive() {
-        int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
-        radioIcon.setColorFilter( accentColor, PorterDuff.Mode.SRC_ATOP );
-    }
-
-    public void setRadioIconInactive() {
-        int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
-        radioIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
     }
 
     private void setNightModeIcon() {
@@ -997,17 +988,8 @@ public class NightDreamUI {
         }
     }
 
-    public void hideSystemUI() {
-        if (Build.VERSION.SDK_INT >= 19){
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
+    private void hideSystemUI() {
+        Utility.hideSystemUI(mContext);
     }
 
     public int determineScreenMode(int current_mode, float light_value, double last_ambient_noise){
@@ -1165,7 +1147,6 @@ public class NightDreamUI {
         controlsVisible = true;
         setupAlarmClock();
         if ( AlarmHandlerService.alarmIsRunning() ) {
-            setRadioIconInactive();
             blinkIfLocked();
         }
         dimScreen(0, last_ambient, settings.dim_offset);
@@ -1200,12 +1181,12 @@ public class NightDreamUI {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void applyScaleFactor(float factor) {
-        int screen_width = clockLayoutContainer.getWidth();
-        int screen_height = clockLayoutContainer.getHeight();
+        int width = clockLayoutContainer.getWidth();
+        int height = clockLayoutContainer.getHeight();
         factor *= clockLayout.getScaleX();
         int new_width = (int) (clockLayout.getWidth() * factor);
         int new_height = (int) (clockLayout.getHeight() * factor);
-        if (factor > 0.5f && new_width <= screen_width && new_height <= screen_height) {
+        if (factor > 0.5f && new_width < width  && new_height < height) {
             clockLayout.setScaleFactor(factor);
         }
     }
@@ -1507,17 +1488,10 @@ public class NightDreamUI {
                 clockLayout.update(settings.weatherEntry);
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
-                bottomPanelLayout.setup();
-                setRadioIconActive();
                 showAlarmClock();
             } else
-            if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-                bottomPanelLayout.updateWebRadioView();
-            }
-            else
             if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setupAlarmClock();
-                setRadioIconInactive();
             }
         }
     }

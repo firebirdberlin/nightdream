@@ -160,6 +160,8 @@ OR
     <string name="show_temperature">Show temperature</string>
     <string name="show_weather">Show local weather</string>
     <string name="show_wind_speed">Show wind speed</string>
+    <string name="sleep_time_default_value">Default sleep time</string>
+    <string name="sleep_time_default_value_msg">Please enter the default sleep time in minutes.</string>
     <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="speedUnit">Wind speed unit</string>

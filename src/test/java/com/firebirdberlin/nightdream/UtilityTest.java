@@ -20,14 +20,15 @@ public class UtilityTest extends TestCase {
         }
 
         String[] expected = {"", "S", "M", "D", "M", "D", "F", "S"};
-        assert 7 == weekdays.length;
+        assertEquals(8, weekdays.length);
         Assert.assertArrayEquals(expected, weekdays);
     }
 
     public void testGetWeekdayStringsforLocaleUs() throws Exception {
         String[] weekdays = Utility.getWeekdayStringsForLocale(new Locale("us"));
         String[] expected = {"", "S", "M", "T", "W", "T", "F", "S"};
-        assert 7 == weekdays.length;
+
+        assertEquals(8, weekdays.length);
         Assert.assertArrayEquals(expected, weekdays);
     }
 
