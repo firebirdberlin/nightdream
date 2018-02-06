@@ -19,7 +19,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">Over</string>
 <string name="action_snooze">Sluimer</string>
 <string name="action_stop">Stop</string>
+<string name="add_new_alarm">Voeg nieuwe wekker toe</string>
 <string name="add_custom_alarm_tone">Voeg aangepaste alarmtoon toe</string>
+<string name="add_custom_font">Voeg aangepast lettertype toe</string>
+<string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Volume harder</string>
 <string name="alarmVolume">Volume</string>
 <string name="allow_screen_off_summary">Scherm uitzetten tijdens de nacht</string>
@@ -85,7 +88,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_wireless">Draadloze oplader</string>
 <string name="hide_background_image_in_night_mode">Verbergen</string>
 <string name="hide_background_image_in_night_mode_summary">Verberg de achtergrond in de nachtmodus</string>
-<string name="hour">U</string>
+<string name="hour">u</string>
 <string name="location_time">Plaatselijke tijd</string>
 <string name="maxBrightness">Maximale scherm helderheid</string>
 <string name="maxBrightnessBattery">Maximale helderheid op batterij</string>
@@ -156,7 +159,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Toon temperatuur</string>
 <string name="show_weather">Toon lokaal weer</string>
 <string name="show_wind_speed">Toon windsnelheid</string>
-<string name="sleep_time_dialog_title">Slaap tijd</string>
+<string name="sleep_time_default_value">Standaard bedtijd</string>
+<string name="sleep_time_default_value_msg">Standaard bedtijd in minuten</string>
+<string name="sleep_time_dialog_title">Bedtijd</string>
 <string name="snoozeTime">Sluimer tijd</string>
 <string name="speedUnit">Eenheid windsnelheid</string>
 <string name="standbyEnabledWhileConnectedSummary">Activeer als het scherm uit gaat</string>

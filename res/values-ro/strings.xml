@@ -17,10 +17,16 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
 <string name="about">Despre</string>
-<string name="alarmFadeIn">Volumul crescendo</string>
+<string name="action_snooze">Amânare</string>
+<string name="action_stop">Stop</string>
+<string name="add_new_alarm">Adaugă alarmă nouă</string>
+<string name="add_custom_alarm_tone">Adaugă ton alarmă personalizat</string>
+<string name="add_custom_font">Adaugă font personalizat</string>
+<string name="alarm">Alarmă</string>
+<string name="alarmFadeIn">Volum crescând</string>
 <string name="alarmVolume">Volum</string>
 <string name="allow_screen_off_summary">Inchide ecranul pe timpul noptii</string>
-<string name="allow_screen_off">Stingere ecran</string>
+<string name="allow_screen_off">Inchide ecran</string>
 <string name="ambient_noise">Detectare zgomot de fond</string>
 <string name="ambient_noise_summary">Ar trebui ca zgomotul de fond sa previna ca modul de noapte sa fie activat?</string>
 <string name="appearance">Înfățișare</string>

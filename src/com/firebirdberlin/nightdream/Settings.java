@@ -298,15 +298,16 @@ public class Settings {
 
             int typeface = Integer.parseInt(settings.getString("typeface", "6"));
             String path = mapIntToTypefacePath(typeface);
-            if (path != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                String name = path.substring(6);
-                setFontUri(ASSET_PATH + path, name);
-                SharedPreferences.Editor prefEditor = settings.edit();
-                prefEditor.remove("typeface");
-                prefEditor.commit();
+            if (path != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    String name = path.substring(6);
+                    setFontUri(ASSET_PATH + path, name);
+                    SharedPreferences.Editor prefEditor = settings.edit();
+                    prefEditor.remove("typeface");
+                    prefEditor.commit();
+                }
+                return Typeface.createFromAsset(mContext.getAssets(), path);
             }
-
-            return Typeface.createFromAsset(mContext.getAssets(), path);
         }
         String path = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
         return Utility.loadTypefacefromUri(mContext, path);
@@ -314,11 +315,12 @@ public class Settings {
 
     private String mapIntToTypefacePath(int typeface) {
         switch (typeface) {
-            case 1: return "fonts/roboto_regular.ttf";
+            case 1:
+            case 3:
+            case 5:
+                return "fonts/roboto_regular.ttf";
             case 2: return "fonts/roboto_light.ttf";
-            case 3: return "fonts/roboto_condensed.ttf";
             case 4: return "fonts/roboto_thin.ttf";
-            case 5: return "fonts/roboto_medium.ttf";
             case 6: return "fonts/7segment.ttf";
             case 7:
                 return "fonts/dancingscript_regular.ttf";
