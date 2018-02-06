@@ -16,14 +16,19 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
@@ -42,7 +47,7 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
 
 
-public class AlarmClock extends View {
+public class AlarmClock extends RelativeLayout {
     private static String TAG ="NightDream.AlarmClock";
     final private Handler handler = new Handler();
     public int touch_zone_radius = 150;
@@ -60,9 +65,8 @@ public class AlarmClock extends View {
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
     private Paint paint = new Paint();
     private Rect alarmTimeRect = new Rect(0, 0, 0, 0);
+    private TextView alarmTimeTextView;
     private ColorFilter customColorFilter;
-    private ColorFilter customColorFilterImage;
-    private ColorFilter secondaryColorFilter;
     private HotCorner cornerLeft;
     private HotCorner cornerRight;
     private boolean blinkStateOn = false;
@@ -93,6 +97,24 @@ public class AlarmClock extends View {
         cornerRight = new HotCorner(Position.RIGHT);
         cornerRight.setIconResource(getResources(), R.drawable.ic_no_audio);
         initColorFilters();
+
+        alarmTimeTextView = new TextView(context);
+        alarmTimeTextView.setEllipsize(TextUtils.TruncateAt.END);
+        alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        alarmTimeTextView.setVisibility(INVISIBLE);
+        LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_VERTICAL);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        addView(alarmTimeTextView, lp);
+
+        alarmTimeTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w(TAG, "onClick");
+                if (daydreamMode) return;
+                SetAlarmClockActivity.start(getContext());
+            }
+        });
     }
 
     public void setDaydreamMode(boolean enabled) {
@@ -130,7 +152,6 @@ public class AlarmClock extends View {
         }
     }
 
-
     public void setLocked(boolean on) {
         locked = on;
     }
@@ -149,13 +170,22 @@ public class AlarmClock extends View {
         customcolor = primary;
         customSecondaryColor = secondary;
         initColorFilters();
-        this.invalidate();
+        invalidate();
     }
 
     private void initColorFilters() {
         customColorFilter = new LightingColorFilter(customcolor, 1);
-        customColorFilterImage = new PorterDuffColorFilter(customSecondaryColor, PorterDuff.Mode.SRC_ATOP);
-        secondaryColorFilter = new LightingColorFilter(customSecondaryColor, 1);
+        ColorFilter customColorFilterImage = new PorterDuffColorFilter(
+                customSecondaryColor, PorterDuff.Mode.SRC_ATOP);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+                && alarmTimeTextView != null) {
+            Drawable icon = getResources().getDrawable(R.drawable.ic_alarm_clock);
+            icon = icon.mutate();
+            icon.setColorFilter(customColorFilterImage);
+            alarmTimeTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, null, null);
+            alarmTimeTextView.setCompoundDrawablePadding(Utility.dpToPx(getContext(), 20.f));
+        }
     }
 
     public boolean isInteractive() {
@@ -175,16 +205,6 @@ public class AlarmClock extends View {
 
         // the view should be visible before the user interacts with it
         if (!isClickable() || locked ) return false;
-        Point p = getClickedPoint(e);
-
-        if (e.getAction() == MotionEvent.ACTION_DOWN &&
-                !daydreamMode &&
-                showAlarmTime() &&
-                alarmTimeRect.contains(p.x, p.y)
-                ) {
-            SetAlarmClockActivity.start(getContext());
-            return true;
-        }
 
         if (showRightCorner()) {
             boolean success = handleAlarmCancelling(e);
@@ -311,7 +331,6 @@ public class AlarmClock extends View {
     @Override
     protected void onDraw(Canvas canvas){
         if ( !isClickable() ) return;
-        Resources res = getResources();
 
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setColorFilter(customColorFilter);
@@ -338,32 +357,27 @@ public class AlarmClock extends View {
         }
 
         if (showAlarmTime()) {
-            paint.setColorFilter(secondaryColorFilter);
             String l = getAlarmTimeFormatted();
-
-            paint.setTextSize(touch_zone_radius * .5f);
-            float lw = paint.measureText(l);
-            float cw = touch_zone_radius - 60;
-            if ((touch_zone_radius) <= 100)  cw = 0;
-            paint.setColor(Color.WHITE);
-
-            alarmTimeRect.left = (int) (w / 2 - (lw + cw) / 2 + cw);
-            alarmTimeRect.bottom = h;
-            alarmTimeRect.top = 30;
-            alarmTimeRect.right = alarmTimeRect.left + (int) lw;
-
-            canvas.drawText(l, w / 2 - (lw + cw) / 2 + cw, h - touch_zone_radius / 3, paint);
-
-            if ((touch_zone_radius) > 100){ // no image on on small screens
-                paint.setColorFilter(customColorFilterImage);
-                Bitmap ic_alarmclock = BitmapFactory.decodeResource(res, R.drawable.ic_alarm_clock);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(ic_alarmclock, touch_zone_radius-60, touch_zone_radius-60, false);
-                alarmTimeRect.left = (int) (w / 2 - (lw + cw) / 2 - cw / 2);
-                canvas.drawBitmap(resizedBitmap, w/2 - (lw+cw)/2 - cw/2, h-touch_zone_radius+30, paint);
-            }
+            alarmTimeTextView.setText(l);
+            alarmTimeTextView.setVisibility(VISIBLE);
+        } else {
+            alarmTimeTextView.setText("");
+            alarmTimeTextView.setVisibility(INVISIBLE);
         }
     }
 
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        setWillNotDraw(false);
+    }
+
+    @Override
+    public void setClickable(boolean clickable) {
+        super.setClickable(clickable);
+        alarmTimeTextView.setClickable(clickable);
+
+    }
     private boolean showAlarmTime() {
         return (isAlarmSet() || userChangesAlarmTime);
     }
@@ -458,8 +472,6 @@ public class AlarmClock extends View {
             if (daydreamMode || Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 return false;
             }
-            Log.w(TAG, "single tap");
-
             Point click = getClickedPoint(e);
             if ((showAlarmTime() && alarmTimeRect.contains(click.x, click.y)) ||
                     (showLeftCorner() && cornerLeft.isInside(click))) {
@@ -487,7 +499,7 @@ public class AlarmClock extends View {
             this.position = position;
         }
 
-        public void setActive(boolean activated) {
+        void setActive(boolean activated) {
             this.activated = activated;
         }
 
@@ -495,13 +507,13 @@ public class AlarmClock extends View {
             this.center = center;
         }
 
-        public void setCenter(int x, int y) {
+        void setCenter(int x, int y) {
             this.center.x = x;
             this.center.y = y;
         }
 
 
-        public void setRadius(int radius) {
+        void setRadius(int radius) {
             if (radius == this.radius) return;
             this.radius = radius;
             this.radius2 = (int) (0.93 * radius);
@@ -512,16 +524,16 @@ public class AlarmClock extends View {
             }
         }
 
-        public boolean isInside(Point p) {
+        boolean isInside(Point p) {
             int dist = (int) distance(p, center);
             return (dist < this.radius);
         }
 
-        public void setIconResource(Resources res, int iconID) {
+        void setIconResource(Resources res, int iconID) {
             this.icon = BitmapFactory.decodeResource(res, iconID);
         }
 
-        public void draw(Canvas canvas, Paint paint) {
+        void draw(Canvas canvas, Paint paint) {
             paint.setColor(Color.WHITE);
             paint.setAlpha( ( activated ) ? 255 : 153 );
             canvas.drawCircle(center.x, center.y, radius, paint);
@@ -551,9 +563,9 @@ public class AlarmClock extends View {
                     Config.ACTION_ALARM_DELETED.equals(action)) {
                 Bundle extras = intent.getExtras();
                 SimpleTime time = null;
-                try {
+                if (extras != null) {
                     time = new SimpleTime(extras);
-                } catch (NullPointerException e) { }
+                }
                 updateTime(time);
             }
         }
