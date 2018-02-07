@@ -358,11 +358,11 @@ public class AlarmClock extends RelativeLayout {
 
         if (showAlarmTime()) {
             String l = getAlarmTimeFormatted();
+            alarmTimeTextView.setTextColor(customSecondaryColor);
             alarmTimeTextView.setText(l);
             alarmTimeTextView.setVisibility(VISIBLE);
         } else {
-            alarmTimeTextView.setText("");
-            alarmTimeTextView.setVisibility(INVISIBLE);
+            alarmTimeTextView.setVisibility(GONE);
         }
     }
 
