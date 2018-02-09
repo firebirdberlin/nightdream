@@ -93,9 +93,9 @@ public class AlarmClockView extends View {
 
         mGestureDetector = new GestureDetector(context, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
-        cornerLeft.setIconResource(getResources(), R.drawable.ic_audio);
+        cornerLeft.setIconResource(getResources(), R.drawable.ic_alarm_clock);
         cornerRight = new HotCorner(Position.RIGHT);
-        cornerRight.setIconResource(getResources(), R.drawable.ic_no_audio);
+        cornerRight.setIconResource(getResources(), R.drawable.ic_no_alarm_clock);
         initColorFilters();
     }
 
@@ -329,6 +329,8 @@ public class AlarmClockView extends View {
         if (showRightCorner()) {
             cornerRight.setCenter(w, h);
             cornerRight.setRadius(touch_zone_radius);
+            cornerRight.setIconResource(getResources(),
+                    alarmIsRunning() ? R.drawable.ic_no_audio : R.drawable.ic_no_alarm_clock);
             cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
             cornerRight.draw(canvas, paint);
         }
@@ -447,6 +449,8 @@ public class AlarmClockView extends View {
         Bitmap icon;
         Bitmap scaledIcon;
         Position position = Position.LEFT;
+        ColorFilter colorFilter = new PorterDuffColorFilter(
+                Color.BLACK, PorterDuff.Mode.SRC_ATOP);
 
         public HotCorner(Position position) {
             this.center = new Point();
@@ -486,6 +490,9 @@ public class AlarmClockView extends View {
 
         void setIconResource(Resources res, int iconID) {
             this.icon = BitmapFactory.decodeResource(res, iconID);
+            if (this.icon != null) {
+                this.scaledIcon = Bitmap.createScaledBitmap(this.icon, radius4, radius4, false);
+            }
         }
 
         void draw(Canvas canvas, Paint paint) {
@@ -500,11 +507,14 @@ public class AlarmClockView extends View {
             paint.setAlpha( ( activated ) ? 153 : 102 );
             canvas.drawCircle(center.x, center.y, radius3, paint);
 
+            ColorFilter filter = paint.getColorFilter();
+            paint.setColorFilter(colorFilter);
             if (position == Position.LEFT) {
                 canvas.drawBitmap(scaledIcon, 5, center.y - radius4 - 5, paint);
             } else {
                 canvas.drawBitmap(scaledIcon, center.x - radius4 - 5, center.y - radius4 - 5, paint);
             }
+            paint.setColorFilter(filter);
         }
     }
 
