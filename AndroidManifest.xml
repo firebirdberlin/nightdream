@@ -29,6 +29,7 @@
         tools:node="remove" />
 
     <application
+        android:name=".NightDreamApplication"
         android:icon="@drawable/ic_nightdream"
         android:label="@string/app_name">
         <service

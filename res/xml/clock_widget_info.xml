@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="144dp"
-    android:minHeight="72dp"
+    android:minWidth="80dp"
+    android:minHeight="40dp"
     android:updatePeriodMillis="0"
     android:previewImage="@drawable/ic_nightdream"
     android:initialLayout="@layout/clock_widget"
-    android:widgetCategory="home_screen">
+    android:widgetCategory="home_screen"
+    android:resizeMode="horizontal|vertical">
 </appwidget-provider>
-<!--  android:resizeMode="horizontal|vertical" -->
+<!--
+
+  correct height to use (for 1 row / block) is:
+   android:minHeight="40dp"
+
+  more params:
+  android:resizeMode="horizontal|vertical"
+   minResizeWidth
+   minResizeHeight
+-->

@@ -3,20 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--
-    <com.firebirdberlin.nightdream.ui.ClockLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/clockLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#44000000"
-        android:orientation="vertical"
-        android:translationX="0sp"
-        android:translationY="0sp"
-        />
-     -->
-
     <ImageView
         android:id="@+id/clockWidgetImageView"
         android:layout_width="match_parent"
