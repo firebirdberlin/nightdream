@@ -1,7 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
-import android.graphics.Canvas;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
@@ -10,22 +10,17 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 
 
 public class AlarmClock extends RelativeLayout {
-    private static String TAG ="NightDream.AlarmClock";
-
     private boolean daydreamMode = false;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
 
@@ -82,7 +77,15 @@ public class AlarmClock extends RelativeLayout {
         customSecondaryColor = secondary;
         initColorFilters();
         alarmClockView.setCustomColor(primary, secondary);
-        alarmTimeTextView.setTextColor(secondary);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{android.R.attr.state_pressed},
+                        new int[]{} // default
+                },
+                new int[]{primary, secondary}
+        );
+
+        alarmTimeTextView.setTextColor(colorStateList);
         invalidate();
     }
 
@@ -102,20 +105,6 @@ public class AlarmClock extends RelativeLayout {
 
     public boolean isInteractive() {
         return alarmClockView.isInteractive();
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas){
-        if ( !isClickable() ) return;
-
-//        if (showAlarmTime()) {
-//            String l = getAlarmTimeFormatted();
-//            alarmTimeTextView.setTextColor(customSecondaryColor);
-//            alarmTimeTextView.setText(l);
-//            alarmTimeTextView.setVisibility(VISIBLE);
-//        } else {
-//            alarmTimeTextView.setVisibility(GONE);
-//        }
     }
 
     @Override
