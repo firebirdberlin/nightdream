@@ -82,11 +82,6 @@ public class AlarmClockView extends View {
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private onAlarmChangeListener listener;
 
-    public interface onAlarmChangeListener {
-        void onAlarmChanged(String alarmString);
-    }
-
-
     public AlarmClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
@@ -243,24 +238,26 @@ public class AlarmClockView extends View {
     private boolean handleAlarmCancelling(MotionEvent e){
         Point click = getClickedPoint(e);
         Point lr = new Point(getWidth(), getHeight()); // lower right corner
+        float dist = distance(click, lr);
+        boolean isInside = dist > quiet_zone_size && cornerRight.isInside(click);
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                float dist = distance(click, lr);
-                if (dist > quiet_zone_size && cornerRight.isInside(click)) { // right corner
+                if (isInside) {
                     FingerDownDeleteAlarm = true;
-                    this.invalidate();
+                    invalidate();
                     return true;
                 }
                 return false;
             case MotionEvent.ACTION_UP:
-                if (FingerDownDeleteAlarm) {
+                if (FingerDownDeleteAlarm && isInside) {
                     FingerDownDeleteAlarm = false;
                     stopAlarm();
-                    Log.w(TAG, "alarm stopped");
                     postAlarmTime();
                     return true;
                 }
+                FingerDownDeleteAlarm = false;
+                invalidate();
                 return false;
         }
         return false;
@@ -419,7 +416,22 @@ public class AlarmClockView extends View {
         }
     }
 
+    private void updateTime(SimpleTime time) {
+        this.time = time;
+        postAlarmTime();
+        invalidate();
+        if (time == null) {
+            Log.w(TAG, "no next alarm");
+        } else {
+            Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
+        }
+    }
+
     private enum Position {LEFT, RIGHT}
+
+    public interface onAlarmChangeListener {
+        void onAlarmChanged(String alarmString);
+    }
 
     class LocalSimpleOnGestureListener extends GestureDetector.SimpleOnGestureListener {
 
@@ -533,17 +545,6 @@ public class AlarmClockView extends View {
                 }
                 updateTime(time);
             }
-        }
-    }
-
-    private void updateTime(SimpleTime time) {
-        this.time = time;
-        postAlarmTime();
-        invalidate();
-        if (time == null) {
-            Log.w(TAG, "no next alarm");
-        } else {
-            Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
         }
     }
 }
