@@ -31,14 +31,19 @@ public class WakeUpReceiver extends BroadcastReceiver {
     private final static String TAG = "WakeUpReceiver";
     private Settings settings;
 
+
     public static void schedule(Context context) {
         DataSource db = new DataSource(context);
         db.open();
+        schedule(context, db);
+        db.close();
+    }
+
+    public static void schedule(Context context, DataSource db) {
         SimpleTime next = db.getNextAlarmToSchedule();
         if (next != null) {
             setAlarm(context, next);
             next = db.setNextAlarm(next);
-            db.close();
         } else {
             PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
             AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
@@ -46,7 +51,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         }
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        if (next != null ){
+        if (next != null) {
             intent.putExtras(next.toBundle());
         }
         context.sendBroadcast(intent);
