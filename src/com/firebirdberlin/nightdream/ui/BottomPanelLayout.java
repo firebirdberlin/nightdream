@@ -49,6 +49,12 @@ public class BottomPanelLayout extends FrameLayout {
         view.setDaydreamMode(enabled);
     }
 
+    public void setUseAlarmSwipeGesture(boolean enabled) {
+        if (view != null && view.alarmClockView != null) {
+            view.alarmClockView.setUseAlarmSwipeGesture(enabled);
+        }
+    }
+
     public void hide() {
         isVisible = false;
         setClickable(false);

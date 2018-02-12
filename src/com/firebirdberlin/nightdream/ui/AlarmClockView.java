@@ -55,6 +55,7 @@ public class AlarmClockView extends View {
     private boolean FingerDown;
     private boolean userChangesAlarmTime = false;
     private boolean FingerDownDeleteAlarm = false;
+    private boolean useAlarmSwipeGesture = false;
     private Context ctx;
     private int customcolor = Color.parseColor("#33B5E5");
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
@@ -92,6 +93,10 @@ public class AlarmClockView extends View {
         cornerRight = new HotCorner(Position.RIGHT);
         cornerRight.setIconResource(getResources(), R.drawable.ic_no_alarm_clock);
         initColorFilters();
+    }
+
+    public void setUseAlarmSwipeGesture(boolean enabled) {
+        useAlarmSwipeGesture = enabled;
     }
 
     public void setOnAlarmChangedListener(onAlarmChangeListener listener) {
@@ -153,8 +158,6 @@ public class AlarmClockView extends View {
 
     private void initColorFilters() {
         customColorFilter = new LightingColorFilter(customcolor, 1);
-        ColorFilter customColorFilterImage = new PorterDuffColorFilter(
-                customSecondaryColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     public boolean isInteractive() {
@@ -338,8 +341,7 @@ public class AlarmClockView extends View {
     }
 
     private boolean showLeftCorner() {
-        if (locked) return false;
-        return !(isAlarmSet() && time.isRecurring());
+        return !locked && useAlarmSwipeGesture && !(isAlarmSet() && time.isRecurring());
 
     }
 

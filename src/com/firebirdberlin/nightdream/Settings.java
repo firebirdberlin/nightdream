@@ -63,6 +63,7 @@ public class Settings {
     public boolean showWindSpeed = false;
     public boolean useDeviceLock = false;
     public boolean useInternalAlarm = true;
+    public boolean useAlarmSwipeGesture = true;
     public boolean useRadioAlarmClock = false;
     public boolean isUIlocked = false;
     public float dim_offset = 0.8f;
@@ -223,6 +224,7 @@ public class Settings {
         useDeviceLock = settings.getBoolean("useDeviceLock", false);
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", true);
+        useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", true);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());

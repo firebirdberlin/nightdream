@@ -21,11 +21,10 @@ import com.firebirdberlin.nightdream.Utility;
 
 
 public class AlarmClock extends RelativeLayout {
+    protected AlarmClockView alarmClockView;
     private boolean daydreamMode = false;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
-
     private TextView alarmTimeTextView;
-    private AlarmClockView alarmClockView;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);

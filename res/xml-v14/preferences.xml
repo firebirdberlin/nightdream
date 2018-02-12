@@ -318,6 +318,12 @@
                 android:key="useInternalAlarm"
                 android:title="@string/use_internal_alarm" />
 
+            <SwitchPreference
+                android:defaultValue="true"
+                android:dependency="useInternalAlarm"
+                android:key="useAlarmSwipeGesture"
+                android:title="@string/useAlarmSwipeGesture" />
+
             <Preference
                 android:dependency="useInternalAlarm"
                 android:key="customAlarmToneUri"
