@@ -182,6 +182,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto Thin</string>
 <string name="typeface">Schriftart</string>
 <string name="uninstall">Anwendung deinstallieren</string>
+    <string name="useAlarmSwipeGesture">Alarm stellen via Wischgeste</string>
 <string name="useDeviceLockDescription">Diese Funktion benötigt die Berechtigung als Geräteadministrator. Falls Sie die App deinstallieren möchten, muss diese Funktion deaktiviert werden.</string>
 <string name="useDeviceLockExplanation">Gerät sperren während die Nachtuhr aktiv ist. Falls Sie die App deinstallieren möchten, muss diese Berechtigung zuvor entzogen werden.</string>
 <string name="useDeviceLock">Gerät sperren</string>

@@ -475,6 +475,7 @@ public class NightDreamUI {
 
         initSidePanel();
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
+        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
         bottomPanelLayout.setDaydreamMode(daydreamMode);
         bottomPanelLayout.setup();
         setupScreenAnimation();
@@ -747,6 +748,7 @@ public class NightDreamUI {
     private void setupAlarmClock() {
         bottomPanelLayout.setDaydreamMode(daydreamMode);
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
+        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
         bottomPanelLayout.setup();
         bottomPanelLayout.show();
     }

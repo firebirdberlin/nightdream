@@ -21,6 +21,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="action_stop">Detener</string>
 <string name="add_new_alarm">Añadir alarma</string>
 <string name="add_custom_alarm_tone">Añadir un tono de alarma particular</string>
+<string name="add_custom_font">Añadir nueva fuente</string>
 <string name="alarm">Alarma</string>
 <string name="alarmFadeIn">Incrementar volumen</string>
 <string name="alarmVolume">Volumen de la alarma</string>
@@ -90,6 +91,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">h</string>
 <string name="location_time">Hora local</string>
 <string name="maxBrightness">Brillo máximo de pantalla</string>
+<string name="maxBrightnessBattery">Brillo máximo de pantalla ( modo batería)</string>
 <string name="message_mobile_data_connection_confirmation">Estás conectado a una red móvil de datos. Reproducir emisoras de radio?</string>
 <string name="message_mobile_data_connection">Conexión móvil de datos</string>
 <string name="message_no_data_connection">No hay conexión de datos</string>
@@ -112,6 +114,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging">Estado de batería permanente</string>
 <string name="persistent_battery_value_while_charging_summary">Mostrar el estado de batería siempre durante la carga</string>
 <string name="preview">Vista previa</string>
+<string name="product_name_donation">Donación</string>
+<string name="product_name_pro">Versión completa</string>
 <string name="product_name_weather">Pronostico del tiempo Pack</string>
 <string name="product_name_webradio">Radio Web Pack</string>
 <string name="purchaseWeatherData">Compra una licencia</string>
@@ -120,12 +124,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_enabled">Activado</string>
 <string name="radio_stream">Emisoras de radio</string>
 <string name="radio_stream_failure">Fallo de emisión</string>
+<string name="radio_stream_manual_input_hint">Añadir estación de radio ( modo manual)</string>
+<string name="radio_stream_manual_input_url">URL de radio</string>
 <string name="radio_stream_manual_input_description">Nombre de la estación de radio</string>
 <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
 <string name="radio_stream_offline">Emisora fuera de línea</string>
 <string name="radio_stream_query_hint">Cadena de búsqueda</string>
 <string name="radio_stream_search">Buscar</string>
 <string name="radio_stream_start">Iniciar/detener radio</string>
+<string name="radio_stream_unreachable_url">La URL no está disponible</string>
 <string name="radio_stream_url">Emisora de radio</string>
 <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
 <string name="reactivate_on_ambient_light_value_summary">La pantalla se reactivará si el límite de la iluminación es excedido.</string>
@@ -152,6 +159,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Mostrar Temperatura</string>
 <string name="show_weather">Mostrar clima local</string>
 <string name="show_wind_speed">Velocidad del viento</string>
+<string name="sleep_time_default_value">Tiempo de dormir ( valor por defecto)</string>
+<string name="sleep_time_default_value_msg">Por favor ingrese el valor en minutos para entrar en modo Dormir</string>
+<string name="sleep_time_dialog_title">Temporizador para dormir</string>
 <string name="snoozeTime">Tiempo par aplazar</string>
 <string name="speedUnit">Unidad de velocidad del viento</string>
 <string name="standbyEnabledWhileConnectedSummary">Activar cuando la pantalla se apague</string>
@@ -173,6 +183,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto delgado</string>
 <string name="typeface">Tipo de letra</string>
 <string name="uninstall">Desinstalar aplicación</string>
+<string name="useDeviceLockDescription">La opción Bloquear Pantalla requiere permisos de administrador. Deshabilitar en caso de querer desinstalar la aplicación.</string>
 <string name="useDeviceLockExplanation">Bloquear el dispositivo mientras night clock esta en uso</string>
 <string name="useDeviceLock">Bloquear dispositivo</string>
 <string name="use_internal_alarm">Alarmas rápidas</string>

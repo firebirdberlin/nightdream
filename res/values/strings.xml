@@ -184,6 +184,7 @@ OR
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
     <string name="uninstall">Uninstall application</string>
+    <string name="useAlarmSwipeGesture">Set alarm via swipe gesture</string>
     <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>
     <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
     <string name="useDeviceLock">Lock device</string>

@@ -105,7 +105,8 @@ public class SetAlarmClockActivity extends Activity {
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 // Bug Android 4.1: Dialog is submitted twice
                 // >> ignore second call to this method.
-                if (!timePicker.isShown()) return;
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
+                        && !timePicker.isShown()) return;
 
                 SimpleTime entry = null;
                 boolean isNew = false;
@@ -137,7 +138,7 @@ public class SetAlarmClockActivity extends Activity {
                     }
                 }
                 update();
-                WakeUpReceiver.schedule(context);
+                WakeUpReceiver.schedule(context, db);
             }
         }, hour, min, Utility.is24HourFormat(context));
         mTimePicker.show();
@@ -148,7 +149,7 @@ public class SetAlarmClockActivity extends Activity {
         db.delete(entry);
         entries.remove(entry);
         update();
-        WakeUpReceiver.schedule(this);
+        WakeUpReceiver.schedule(this, db);
     }
 
     public void onTimeClicked(View view) {
