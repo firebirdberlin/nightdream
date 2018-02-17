@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -12,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -25,7 +29,10 @@ public class ClockLayoutPreviewPreference extends Preference {
     private ClockLayout clockLayout = null;
     private TextView textViewPurchaseHint = null;
     private View preferenceView = null;
+    private LinearLayout preferencesContainer = null;
+
     private Context context = null;
+
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -60,6 +67,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                 RelativeLayout previewContainer = (RelativeLayout) summaryParent2.findViewById(R.id.previewContainer);
                 clockLayout = (ClockLayout) summaryParent2.findViewById(R.id.clockLayout);
                 textViewPurchaseHint = (TextView) summaryParent2.findViewById(R.id.textViewPurchaseHint);
+                preferencesContainer = (LinearLayout) summaryParent2.findViewById(R.id.preferencesContainer);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     LayoutTransition lt = new LayoutTransition();
@@ -80,9 +88,10 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     protected void updateView() {
         Settings settings = new Settings(getContext());
+        int clockLayoutId = settings.getClockLayoutID(true);
         textViewPurchaseHint.setVisibility(showPurchaseHint(settings) ? View.VISIBLE : View.GONE);
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
-        clockLayout.setLayout(settings.getClockLayoutID(true));
+        clockLayout.setLayout(clockLayoutId);
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
@@ -107,6 +116,34 @@ public class ClockLayoutPreviewPreference extends Preference {
 
         clockLayout.requestLayout();
         clockLayout.invalidate();
+
+        setupPreferencesFragment(clockLayoutId, settings);
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void setupPreferencesFragment(int clockLayoutID, Settings settings) {
+        preferencesContainer.removeAllViews();
+        if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
+
+            CustomAnalogClockPreferencesLayout prefs =
+                    new CustomAnalogClockPreferencesLayout(context);
+            prefs.setIsPurchased(settings.purchasedWeatherData);
+            prefs.setOnConfigChangedListener(
+                    new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
+                        @Override
+                        public void onConfigChanged() {
+                            updateView();
+                        }
+
+                        @Override
+                        public void onPurchaseRequested() {
+                            ((PreferencesActivity) context).showPurchaseDialog();
+                        }
+                    }
+            );
+            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            preferencesContainer.addView(prefs, lp);
+        }
     }
 
     private WeatherEntry getWeatherEntry(Settings settings) {

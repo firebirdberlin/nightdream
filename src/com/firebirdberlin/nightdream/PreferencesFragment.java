@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
-import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -372,6 +371,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
 
     public void showPurchaseDialog() {
+        Log.i(TAG, "showPurchaseDialog()");
         if (purchased_donation) return;
         List<CharSequence> entries = new ArrayList<>();
         final List<Integer> values = new ArrayList<>();
