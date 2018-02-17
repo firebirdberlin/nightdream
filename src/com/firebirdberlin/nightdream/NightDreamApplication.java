@@ -30,10 +30,6 @@ public class NightDreamApplication extends Application {
      */
     private void notifyClockWidgets() {
         // update all widget instances via intent
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        final int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(this, appWidgetManager);
-        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, ClockWidgetProvider.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-        sendBroadcast(intent);
+        ClockWidgetProvider.updateAllWidgets(this);
     }
 }

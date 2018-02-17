@@ -10,6 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -19,17 +22,21 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
+import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 
 public class ClockWidgetProvider extends AppWidgetProvider {
 
-    private static final String TAG = "WidgetProvider";
+    private static final String TAG = "NightDream.WidgetProvider";
 
     private PendingIntent alarmIntent = null;
 
@@ -117,44 +124,56 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         View container = inflater.inflate(R.layout.clock_widget_clock_layout, null);
 
         ClockLayout clockLayout = (ClockLayout) container.findViewById(R.id.clockLayout);
-        //View container = rootView.findViewById(R.id.previewContainer);
-        //clockLayout.setScaleFactor(.8f);
 
-        // TODO: init all clockLayout params like in ClockLayoutPreviewPreference.updateView()
-        clockLayout.setLayout(ClockLayout.LAYOUT_ID_DIGITAL);
+        final boolean lightBackground = true;
+
+        updateClockLayoutSettings(context, clockLayout, lightBackground);
+
+        if (widgetSize.height < 100) {
+            // widget has only height of one cell -> hide weather anf for analog also date
+            clockLayout.showWeather(false);
+            if (!clockLayout.isDigital()) {
+                clockLayout.showDate(false);
+            }
+        }
+
+        // round corners
+        if (lightBackground) {
+            GradientDrawable shape =  new GradientDrawable();
+            shape.setCornerRadius(8);
+            shape.setColor(Color.LTGRAY);
+            clockLayout.setBackground(shape);
+        }
+        //clockLayout.setLayout(ClockLayout.LAYOUT_ID_DIGITAL);
         //clockLayout.setLayout(ClockLayout.LAYOUT_ID_ANALOG4);
+        //clockLayout.setLayout(ClockLayout.LAYOUT_ID_ANALOG);
+
+
+        Utility utility = new Utility(context);
+        Point size = utility.getDisplaySize();
+        Log.d(TAG, "display size ###" + size.x);
         Configuration config = context.getResources().getConfiguration();
+        //clockLayout.updateLayout(widthPixel * 2, config); // for analog clock
+        clockLayout.updateLayoutForWidget(widthPixel, heightPixel, config);
 
-        clockLayout.updateLayout(widgetSize.width, config); // use dip width here
-        clockLayout.requestLayout();
+        // give digital clock some padding
+        if (clockLayout.isDigital()) {
+            clockLayout.setPadding(15, 15, 15, 15);
+        }
 
-        // sourceView.measure(viewWidth, viewHeight); // this wont work, use with makeMeasureSpec below
-        clockLayout.measure(
+        Log.i(TAG, "widget height=" + heightPixel);
+
+        // container.measure(viewWidth, viewHeight); // this wont work, use with makeMeasureSpec below
+        container.measure(
                 View.MeasureSpec.makeMeasureSpec(widthPixel, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(heightPixel, View.MeasureSpec.EXACTLY));
-        clockLayout.layout(0, 0, widthPixel, heightPixel);
+        container.layout(0, 0, widthPixel, heightPixel);
 
         // not needed obviously
         //sourceView.requestLayout();
         //sourceView.invalidate();
 
-        //center after layout
-        /*
-        if (clockLayout.getWidth() > 0 && clockLayout.getWidth() < viewSize.width) {
-            //clockLayout.setLeft((viewSize.width - clockLayout.getWidth()) / 2);
-            int left = (viewSize.width - clockLayout.getWidth()) / 2;
-            int top = (viewSize.height - clockLayout.getHeight()) / 2;
-            if (Build.VERSION.SDK_INT >= 11) {
-                clockLayout.setTranslationX(left);
-                clockLayout.setTranslationY(-20);
-            } else {
-                //?
-                //clockLayout.setPadding(0, 0, 0, 0);
-            }
-        }
-        */
-
-        return clockLayout;
+        return container;
     }
 
 
@@ -183,6 +202,44 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         return sourceView;
     }
+
+    private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout, boolean lightBackground) {
+        Settings settings = new Settings(context);
+        //textViewPurchaseHint.setVisibility(View.GONE);
+        clockLayout.setBackgroundColor(Color.TRANSPARENT);
+        clockLayout.setLayout(settings.getClockLayoutID(true));
+        clockLayout.setTypeface(settings.typeface);
+        ClockLayoutPreviewPreference.PreviewMode previewMode = ClockLayoutPreviewPreference.PreviewMode.DAY;
+
+        if (lightBackground) {
+            clockLayout.setPrimaryColor(Color.DKGRAY);
+            clockLayout.setSecondaryColor(Color.DKGRAY);
+        } else {
+            clockLayout.setPrimaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
+            clockLayout.setSecondaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
+        }
+
+        clockLayout.setDateFormat(settings.dateFormat);
+        clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
+        clockLayout.showDate(settings.showDate);
+
+        clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
+        clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
+        clockLayout.showWeather(settings.showWeather);
+
+        WeatherEntry entry = getWeatherEntry(settings);
+        clockLayout.update(entry);
+    }
+
+
+    private static WeatherEntry getWeatherEntry(Settings settings) {
+        WeatherEntry entry = settings.weatherEntry;
+        if ( entry.timestamp ==  -1L) {
+            entry.setFakeData();
+        }
+        return entry;
+    }
+
 
     private static Dimension actualWidgetSize(Context context, WidgetDimension dimension) {
 
@@ -285,8 +342,13 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     }
 
-    public static void updateConfigurationChange() {
-
+    public static void updateAllWidgets(Context context) {
+        // update all widget instances via intent
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        final int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(context, appWidgetManager);
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, ClockWidgetProvider.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+        context.sendBroadcast(intent);
     }
 
 }

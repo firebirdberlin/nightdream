@@ -7,6 +7,12 @@
         android:id="@+id/clockWidgetImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#44000000"
+        android:background="#00000000"
         android:src="@drawable/ic_about" />
 </LinearLayout>
+<!--
+  semi transparent:
+   android:background="#44000000"
+  fully transparent:
+   android:background="#00000000"
+-->

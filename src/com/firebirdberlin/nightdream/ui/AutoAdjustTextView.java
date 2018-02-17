@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -16,6 +17,7 @@ public class AutoAdjustTextView extends TextView {
     private static final String TAG = "AutoAdjustTextView";
     Context context = null;
     private int maxWidth = -1;
+    private int maxHeight = -1;
 
     private int maxFontSizeSp = -1;
     private int minFontSizeSp = -1;
@@ -77,6 +79,10 @@ public class AutoAdjustTextView extends TextView {
         this.maxWidth = width;
     }
 
+    public void setMaxHeight(int height) {
+        this.maxHeight = height;
+    }
+
     public void setMaxFontSizesInSp(float minSize, float maxSize) {
         this.minFontSizeSp = (int) minSize;
         this.maxFontSizeSp = (int) maxSize;
@@ -91,6 +97,9 @@ public class AutoAdjustTextView extends TextView {
             if ( measureText() > maxWidth ) {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
                 break;
+            } else if (maxHeight > -1 && measureTextHeight() > maxHeight) {
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
+                break;
             }
         }
     }
@@ -103,5 +112,12 @@ public class AutoAdjustTextView extends TextView {
     private float measureText() {
         String text = (sampleText != null ) ? sampleText : getText().toString();
         return getPaint().measureText(text);
+    }
+
+    private float measureTextHeight() {
+        Rect bounds = new Rect(); // TODO make member field
+        String text = (sampleText != null ) ? sampleText : getText().toString();
+        getPaint().getTextBounds(text, 0, text.length(), bounds);
+        return bounds.height();
     }
 }

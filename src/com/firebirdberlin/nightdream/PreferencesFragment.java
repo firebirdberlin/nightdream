@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,6 +43,7 @@ import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
 import com.firebirdberlin.nightdream.ui.ManageFontsDialogFragment;
+import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -154,6 +156,12 @@ public class PreferencesFragment extends PreferenceFragment {
                             setupAlarmClock(sharedPreferences);
                             break;
                     }
+
+                    Log.i(TAG, "prefChangedListener called");
+
+                    // update all widgets via intent, so the are repainted with current settings
+                    ClockWidgetProvider.updateAllWidgets(mContext);
+
                 }
             };
     private boolean shallShowPurchaseDialog = false;
