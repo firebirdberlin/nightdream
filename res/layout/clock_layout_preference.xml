@@ -42,4 +42,13 @@
         android:text="@string/product_name_weather"
         tools:ignore="RelativeOverlap" />
 
+    <LinearLayout
+        android:id="@+id/preferencesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/clockLayout"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+    </LinearLayout>
+
 </RelativeLayout>

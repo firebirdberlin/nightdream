@@ -57,4 +57,10 @@ public class PreferencesActivity extends PreferenceActivity {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    public void showPurchaseDialog() {
+        if (fragment != null) {
+            fragment.showPurchaseDialog();
+        }
+    }
 }

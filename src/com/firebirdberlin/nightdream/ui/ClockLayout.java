@@ -18,6 +18,7 @@ import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayout extends LinearLayout {
@@ -98,9 +99,6 @@ public class ClockLayout extends LinearLayout {
         }
         if ( clock_ampm != null ) {
             clock_ampm.setTypeface(typeface);
-        }
-        if (analog_clock != null) {
-            analog_clock.setTypeface(typeface);
         }
     }
 
@@ -298,7 +296,7 @@ public class ClockLayout extends LinearLayout {
     private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config,
                                    boolean displayInWidget) {
         if (analog_clock != null) {
-            analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+            analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
         }
         final float minFontSize = 8.f; // in sp
         final float maxFontSize = 18.f; // in sp
@@ -328,16 +326,16 @@ public class ClockLayout extends LinearLayout {
                                     boolean displayInWidget) {
         switch (layoutId) {
             case LAYOUT_ID_ANALOG:
-                analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+                analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
                 break;
             case LAYOUT_ID_ANALOG2:
-                analog_clock.setStyle(CustomAnalogClock.Style.SIMPLE);
+                analog_clock.setStyle(AnalogClockConfig.Style.SIMPLE);
                 break;
             case LAYOUT_ID_ANALOG3:
-                analog_clock.setStyle(CustomAnalogClock.Style.ARC);
+                analog_clock.setStyle(AnalogClockConfig.Style.ARC);
                 break;
             case LAYOUT_ID_ANALOG4:
-                analog_clock.setStyle(CustomAnalogClock.Style.DEFAULT);
+                analog_clock.setStyle(AnalogClockConfig.Style.DEFAULT);
                 break;
         }
         final float minFontSize = (displayInWidget) ? 6f : 10f; // in sp
