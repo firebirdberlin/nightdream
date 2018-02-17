@@ -13,16 +13,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -39,42 +36,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "NightDream.WidgetProvider";
 
     private PendingIntent alarmIntent = null;
-
-    @Override
-    public void onEnabled(Context context) {
-        // call when first widget instance is put to home screen
-        super.onEnabled(context);
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // when last instance was removed
-        super.onDisabled(context);
-    }
-
-
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
-        Log.d(TAG, "onUpdate");
-
-        setupClockUpdateService(context);
-
-        updateAllWidgets(context, appWidgetManager, appWidgetIds);
-
-    }
-
-    @Override
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
-
-        Log.d(TAG, "onAppWidgetOptionsChanged");
-        WidgetDimension w = ClockWidgetProvider.widgetDimensionFromBundle(bundle);
-        Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
-
-        updateWidget(context, appWidgetManager, appWidgetId, w);
-
-    }
 
     static void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
@@ -95,7 +56,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         //final View sourceView = prepareSourceViewTest(context, dimension);
         final View sourceView = prepareSourceView(context, dimension);
-
 
         sourceView.setDrawingCacheEnabled(true);
         Bitmap widgetBitmap = sourceView.getDrawingCache();
@@ -140,14 +100,15 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         // round corners
         if (lightBackground) {
             GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius(8);
-            shape.setColor(Color.LTGRAY);
+            shape.setCornerRadius(30);
+            shape.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+            int[] colors = {
+                    Color.parseColor("#11000000"),
+                    Color.parseColor("#AA000000")
+            };
+            shape.setColors(colors);
             clockLayout.setBackground(shape);
         }
-        //clockLayout.setLayout(ClockLayout.LAYOUT_ID_DIGITAL);
-        //clockLayout.setLayout(ClockLayout.LAYOUT_ID_ANALOG4);
-        //clockLayout.setLayout(ClockLayout.LAYOUT_ID_ANALOG);
-
 
         Utility utility = new Utility(context);
         Point size = utility.getDisplaySize();
@@ -175,7 +136,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         return container;
     }
-
 
     private static View prepareSourceViewTest(Context context, WidgetDimension dimension) {
 
@@ -207,17 +167,12 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         Settings settings = new Settings(context);
         //textViewPurchaseHint.setVisibility(View.GONE);
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
-        clockLayout.setLayout(settings.getClockLayoutID(true));
+        clockLayout.setLayout(settings.getClockLayoutID(false));
         clockLayout.setTypeface(settings.typeface);
         ClockLayoutPreviewPreference.PreviewMode previewMode = ClockLayoutPreviewPreference.PreviewMode.DAY;
 
-        if (lightBackground) {
-            clockLayout.setPrimaryColor(Color.DKGRAY);
-            clockLayout.setSecondaryColor(Color.DKGRAY);
-        } else {
-            clockLayout.setPrimaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
-            clockLayout.setSecondaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
-        }
+        clockLayout.setPrimaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
+        clockLayout.setSecondaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
@@ -231,7 +186,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.update(entry);
     }
 
-
     private static WeatherEntry getWeatherEntry(Settings settings) {
         WeatherEntry entry = settings.weatherEntry;
         if ( entry.timestamp ==  -1L) {
@@ -239,7 +193,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
         return entry;
     }
-
 
     private static Dimension actualWidgetSize(Context context, WidgetDimension dimension) {
 
@@ -259,6 +212,68 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
 
         return new Dimension(width, height);
+    }
+
+    public static WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
+
+        // API 16 and up only
+        //portrait mode: width=minWidth, height=maxHeight, landscape mode: width=maxWidth, height=minHeight
+        int minwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+        int maxwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
+        int minheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+        int maxheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
+
+        return new WidgetDimension(minwidth, minheight, maxwidth, maxheight);
+    }
+
+    public static int[] appWidgetIds(Context context, AppWidgetManager appWidgetManager) {
+
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, ClockWidgetProvider.class));
+        return appWidgetIds;
+
+    }
+
+    public static void updateAllWidgets(Context context) {
+        // update all widget instances via intent
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        final int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(context, appWidgetManager);
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, ClockWidgetProvider.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+        context.sendBroadcast(intent);
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        // call when first widget instance is put to home screen
+        super.onEnabled(context);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        // when last instance was removed
+        super.onDisabled(context);
+    }
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
+        Log.d(TAG, "onUpdate");
+
+        setupClockUpdateService(context);
+
+        updateAllWidgets(context, appWidgetManager, appWidgetIds);
+
+    }
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
+
+        Log.d(TAG, "onAppWidgetOptionsChanged");
+        WidgetDimension w = ClockWidgetProvider.widgetDimensionFromBundle(bundle);
+        Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
+
+        updateWidget(context, appWidgetManager, appWidgetId, w);
+
     }
 
     private void setupClockUpdateService(Context context) {
@@ -296,18 +311,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public static WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
-
-        // API 16 and up only
-        //portrait mode: width=minWidth, height=maxHeight, landscape mode: width=maxWidth, height=minHeight
-        int minwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-        int maxwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
-        int minheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-        int maxheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
-
-        return new WidgetDimension(minwidth, minheight, maxwidth, maxheight);
-    }
-
     public static class UpdateService extends Service {
 
         @Nullable
@@ -333,22 +336,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             updateAllWidgets(this, appWidgetManager, appWidgetIds);
 
         }
-    }
-
-    public static int[] appWidgetIds(Context context, AppWidgetManager appWidgetManager) {
-
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, ClockWidgetProvider.class));
-        return appWidgetIds;
-
-    }
-
-    public static void updateAllWidgets(Context context) {
-        // update all widget instances via intent
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(context, appWidgetManager);
-        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, ClockWidgetProvider.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-        context.sendBroadcast(intent);
     }
 
 }
