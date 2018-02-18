@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
@@ -17,7 +18,6 @@ import com.firebirdberlin.nightdream.models.FontCache;
 
 public class AutoAdjustTextView extends TextView {
     private static final String TAG = "AutoAdjustTextView";
-    Context context = null;
     private int maxWidth = -1;
     private int maxHeight = -1;
 
@@ -30,13 +30,11 @@ public class AutoAdjustTextView extends TextView {
 
     public AutoAdjustTextView(Context context) {
         super(context);
-        this.context = context;
-        init(context);
+        init();
     }
 
     public AutoAdjustTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AutoAdjustTextView);
 
@@ -46,12 +44,12 @@ public class AutoAdjustTextView extends TextView {
 
         a.recycle();
 
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         if (fontPath != null) {
-            Typeface typeface = FontCache.get(context, fontPath);
+            Typeface typeface = FontCache.get(getContext(), fontPath);
             setTypeface(typeface);
         }
     }
@@ -69,12 +67,30 @@ public class AutoAdjustTextView extends TextView {
     @Override
     public void invalidate() {
         try {
-            adjustTextSize();
+            int size = getAdjustedTextSize();
+            if (size > 0) {
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
+            }
         } catch (NullPointerException e) {
             Log.e(TAG, "Could not adjust the text size");
             e.printStackTrace();
+            super.invalidate();
         }
-        super.invalidate();
+    }
+
+    private int getAdjustedTextSize() {
+        if (Build.VERSION.SDK_INT < 14) return -1;
+        if (maxWidth == -1) return -1;
+        if (maxFontSizeSp == -1 || minFontSizeSp == -1) return -1;
+        Paint paint = getPaint();
+        for (int size = minFontSizeSp; size <= maxFontSizeSp; size++) {
+            paint.setTextSize(Utility.spToPx(getContext(), size));
+            if (measureText(paint) > maxWidth ||
+                    (maxHeight > -1 && measureTextHeight(paint) > maxHeight)) {
+                return size;
+            }
+        }
+        return maxFontSizeSp;
     }
 
     public void setMaxWidth(int width) {
@@ -88,23 +104,6 @@ public class AutoAdjustTextView extends TextView {
     public void setMaxFontSizesInSp(float minSize, float maxSize) {
         this.minFontSizeSp = (int) minSize;
         this.maxFontSizeSp = (int) maxSize;
-    }
-
-    private void adjustTextSize() {
-        if (Build.VERSION.SDK_INT < 14) return;
-        if ( maxWidth == -1) return;
-        if ( maxFontSizeSp == -1 || minFontSizeSp == -1) return;
-        Paint paint = getPaint();
-        for(int size = minFontSizeSp; size <= maxFontSizeSp; size++) {
-            paint.setTextSize(Utility.spToPx(context, size));
-            if (measureText(paint) > maxWidth) {
-                paint.setTextSize(Utility.spToPx(context, size - 1));
-                break;
-            } else if (maxHeight > -1 && measureTextHeight(paint) > maxHeight) {
-                paint.setTextSize(Utility.spToPx(context, size - 1));
-                break;
-            }
-        }
     }
 
     // this text may be used as a sample to determine the font size
