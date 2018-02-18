@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
+import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
@@ -56,11 +57,10 @@ public class WeatherLayout extends LinearLayout {
         iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
         windText = (TextView) findViewById(R.id.windText);
-        /* causes memory leak in getdrawingcache(
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
+
+        Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
         iconText.setTypeface(typeface);
         iconWind.setTypeface(typeface);
-        */
     }
 
     public void setTemperature(boolean on, int unit) {
@@ -164,7 +164,7 @@ public class WeatherLayout extends LinearLayout {
         }
 
         //causes memory leak (widget)
-        //fixIconWindDirectionSize();
+        fixIconWindDirectionSize();
 
         windText.invalidate();
         iconText.invalidate();
@@ -241,7 +241,6 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void fixIconWindDirectionSize() {
-
         temperatureText.post(new Runnable() {
             public void run() {
                 int height = temperatureText.getHeight();

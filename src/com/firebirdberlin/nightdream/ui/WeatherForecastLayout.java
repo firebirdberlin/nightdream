@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
+import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.SimpleDateFormat;
@@ -69,7 +70,7 @@ public class WeatherForecastLayout extends LinearLayout {
         temperatureText = (TextView) findViewById(R.id.temperatureText);
         rainText = (TextView) findViewById(R.id.rainText);
         windText = (TextView) findViewById(R.id.windText);
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
+        Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
         iconClouds.setTypeface(typeface);
         iconText.setTypeface(typeface);
         iconWind.setTypeface(typeface);

@@ -19,10 +19,9 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FileUri;
+import com.firebirdberlin.nightdream.models.FontCache;
 
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -31,7 +30,6 @@ class FontAdapter extends ArrayAdapter<FileUri> {
     private int viewId = -1;
     private int selectedPosition = -1;
     private OnDeleteRequestListener listener;
-    private HashMap<FileUri, Typeface> typefaceMap = new HashMap<>();
 
     FontAdapter(Context context, int viewId, List<FileUri> values) {
         super(context, viewId, R.id.text1, values);
@@ -123,12 +121,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
 
 
     private Typeface loadTypefaceForItem(FileUri item) {
-        Typeface typeface = typefaceMap.get(item);
-        if (typeface == null) {
-            typeface = Utility.loadTypefacefromUri(context, item.uri.toString());
-            typefaceMap.put(item, typeface);
-        }
-        return typeface;
+        return FontCache.get(context, item.uri.toString());
     }
 
     public void release() {

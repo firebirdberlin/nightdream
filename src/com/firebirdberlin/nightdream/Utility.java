@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
@@ -272,22 +271,6 @@ public class Utility {
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                             | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
-
-    public static Typeface loadTypefacefromUri(Context context, String uri) {
-        final String ASSET_PATH = "file:///android_asset/";
-        try {
-            if (uri.contains(ASSET_PATH)) {
-                uri = uri.replace(ASSET_PATH, "");
-                return Typeface.createFromAsset(context.getAssets(), uri);
-            } else {
-                uri = uri.replace("file://", "");
-                return Typeface.createFromFile(uri);
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 

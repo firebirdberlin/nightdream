@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
@@ -308,11 +309,11 @@ public class Settings {
                     prefEditor.remove("typeface");
                     prefEditor.commit();
                 }
-                return Typeface.createFromAsset(mContext.getAssets(), path);
+                return FontCache.get(mContext, path);
             }
         }
         String path = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
-        return Utility.loadTypefacefromUri(mContext, path);
+        return FontCache.get(mContext, path);
     }
 
     private String mapIntToTypefacePath(int typeface) {

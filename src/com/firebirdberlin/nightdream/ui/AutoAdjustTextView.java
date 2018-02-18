@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.FontCache;
 
 
 public class AutoAdjustTextView extends TextView {
@@ -49,12 +50,10 @@ public class AutoAdjustTextView extends TextView {
     }
 
     private void init(Context context) {
-        /* causes leak in getDrawingCache()
         if (fontPath != null) {
-            Typeface typeface = Typeface.createFromAsset(context.getAssets(), fontPath);
+            Typeface typeface = FontCache.get(context, fontPath);
             setTypeface(typeface);
         }
-        */
     }
 
     @Override

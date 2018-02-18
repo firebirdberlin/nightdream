@@ -101,7 +101,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         // this causes a leak in view.getDrawingCache() !!
         updateClockLayoutSettings(context, clockLayout, lightBackground);
 
-
         if (widgetSize.height < 100) {
             // widget has only height of one cell -> hide weather anf for analog also date
             clockLayout.showWeather(false);
@@ -199,12 +198,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.showWeather(settings.showWeather);
 
-
-        /* causes memory leak in getdrawingcache
+        // causes memory leak in getdrawingcache
         WeatherEntry entry = getWeatherEntry(settings);
         clockLayout.update(entry);
-        */
-
     }
 
     private static WeatherEntry getWeatherEntry(Settings settings) {
