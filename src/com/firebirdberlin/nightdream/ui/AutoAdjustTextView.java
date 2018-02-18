@@ -2,15 +2,16 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 
 
 public class AutoAdjustTextView extends TextView {
@@ -92,13 +93,14 @@ public class AutoAdjustTextView extends TextView {
         if (Build.VERSION.SDK_INT < 14) return;
         if ( maxWidth == -1) return;
         if ( maxFontSizeSp == -1 || minFontSizeSp == -1) return;
+        Paint paint = getPaint();
         for(int size = minFontSizeSp; size <= maxFontSizeSp; size++) {
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
-            if ( measureText() > maxWidth ) {
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
+            paint.setTextSize(Utility.spToPx(context, size));
+            if (measureText(paint) > maxWidth) {
+                paint.setTextSize(Utility.spToPx(context, size - 1));
                 break;
-            } else if (maxHeight > -1 && measureTextHeight() > maxHeight) {
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
+            } else if (maxHeight > -1 && measureTextHeight(paint) > maxHeight) {
+                paint.setTextSize(Utility.spToPx(context, size - 1));
                 break;
             }
         }
@@ -109,15 +111,15 @@ public class AutoAdjustTextView extends TextView {
         this.sampleText = sample;
     }
 
-    private float measureText() {
+    private float measureText(Paint paint) {
         String text = (sampleText != null ) ? sampleText : getText().toString();
-        return getPaint().measureText(text);
+        return paint.measureText(text);
     }
 
-    private float measureTextHeight() {
+    private float measureTextHeight(Paint paint) {
         Rect bounds = new Rect(); // TODO make member field
         String text = (sampleText != null ) ? sampleText : getText().toString();
-        getPaint().getTextBounds(text, 0, text.length(), bounds);
+        paint.getTextBounds(text, 0, text.length(), bounds);
         return bounds.height();
     }
 }

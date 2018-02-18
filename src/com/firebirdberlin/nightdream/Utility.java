@@ -226,7 +226,6 @@ public class Utility {
                 context.getResources().getDisplayMetrics());
     }
 
-
     public static int getNearestEvenIntValue(float value) {
         int r = (int) Math.ceil(value);
         if (r % 2 != 0) {
