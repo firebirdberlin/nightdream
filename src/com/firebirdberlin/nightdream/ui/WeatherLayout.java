@@ -241,10 +241,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void fixIconWindDirectionSize() {
+
         temperatureText.post(new Runnable() {
             public void run() {
                 int height = temperatureText.getHeight();
-                iconWindDirection.setLayoutParams(new LinearLayout.LayoutParams(height, height));
+                LayoutParams layoutParams = (LayoutParams) iconWindDirection.getLayoutParams();
+                layoutParams.width = height;
+                layoutParams.height = height;
+                iconWindDirection.setLayoutParams(layoutParams);
                 iconWindDirection.requestLayout();
                 iconWindDirection.invalidate();
             }
