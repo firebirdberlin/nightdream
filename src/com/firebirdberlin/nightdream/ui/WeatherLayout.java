@@ -56,9 +56,11 @@ public class WeatherLayout extends LinearLayout {
         iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
         windText = (TextView) findViewById(R.id.windText);
+        /* causes memory leak in getdrawingcache(
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
         iconText.setTypeface(typeface);
         iconWind.setTypeface(typeface);
+        */
     }
 
     public void setTemperature(boolean on, int unit) {
@@ -138,11 +140,14 @@ public class WeatherLayout extends LinearLayout {
         Log.d("WeatherLayout", entry.toString());
         Log.d("WeatherLayout", formatTemperatureText(entry));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
+
             iconText.setText(iconToText(entry.weatherIcon));
+
             temperatureText.setText(formatTemperatureText(entry));
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(formatWindText(entry));
+
             update();
         } else {
             clear();
@@ -157,10 +162,14 @@ public class WeatherLayout extends LinearLayout {
             iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
             iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
         }
-        fixIconWindDirectionSize();
+
+        //causes memory leak (widget)
+        //fixIconWindDirectionSize();
+
         windText.invalidate();
         iconText.invalidate();
         iconWind.invalidate();
+
     }
 
     private String iconToText(String code) {
@@ -232,6 +241,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void fixIconWindDirectionSize() {
+
         temperatureText.post(new Runnable() {
             public void run() {
                 int height = temperatureText.getHeight();
@@ -240,6 +250,7 @@ public class WeatherLayout extends LinearLayout {
                 iconWindDirection.invalidate();
             }
         });
+
     }
 
     public int measureText() {

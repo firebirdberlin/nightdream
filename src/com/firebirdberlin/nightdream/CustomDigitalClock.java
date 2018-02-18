@@ -59,10 +59,11 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
+        /* causes the leak in getDrawingCache()
         mFormatChangeObserver = new FormatChangeObserver();
         getContext().getContentResolver().registerContentObserver(
                 Settings.System.CONTENT_URI, true, mFormatChangeObserver);
-
+        */
         setFormat();
         updateTextView();
     }

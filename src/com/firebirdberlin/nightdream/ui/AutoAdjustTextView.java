@@ -49,10 +49,12 @@ public class AutoAdjustTextView extends TextView {
     }
 
     private void init(Context context) {
+        /* causes leak in getDrawingCache()
         if (fontPath != null) {
             Typeface typeface = Typeface.createFromAsset(context.getAssets(), fontPath);
             setTypeface(typeface);
         }
+        */
     }
 
     @Override
@@ -116,8 +118,9 @@ public class AutoAdjustTextView extends TextView {
         return paint.measureText(text);
     }
 
-    private float measureTextHeight(Paint paint) {
-        Rect bounds = new Rect(); // TODO make member field
+    private float measureTextHeight() {
+        // TODO make bounds member field
+        Rect bounds = new Rect();
         String text = (sampleText != null ) ? sampleText : getText().toString();
         paint.getTextBounds(text, 0, text.length(), bounds);
         return bounds.height();

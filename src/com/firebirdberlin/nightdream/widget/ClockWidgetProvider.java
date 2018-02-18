@@ -54,11 +54,23 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static void updateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, WidgetDimension dimension) {
 
-        //final View sourceView = prepareSourceViewTest(context, dimension);
+       //final View sourceView = prepareSourceViewTest(context, dimension);
         final View sourceView = prepareSourceView(context, dimension);
 
         sourceView.setDrawingCacheEnabled(true);
         Bitmap widgetBitmap = sourceView.getDrawingCache();
+
+        // test to prevent mem leak, but didnt make a difference!
+        /*
+        sourceView.setDrawingCacheEnabled(false);
+        sourceView.buildDrawingCache();
+        Bitmap widgetBitmap = sourceView.getDrawingCache();
+        Bitmap bm_small = Bitmap.createScaledBitmap(widgetBitmap, 100, 100, true);
+        widgetBitmap.recycle();
+        widgetBitmap = null;
+        sourceView.destroyDrawingCache();
+        */
+
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
         updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
 
@@ -68,7 +80,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, updateViews);
-
     }
 
     private static View prepareSourceView(Context context, WidgetDimension dimension) {
@@ -87,7 +98,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         final boolean lightBackground = true;
 
+        // this causes a leak in view.getDrawingCache() !!
         updateClockLayoutSettings(context, clockLayout, lightBackground);
+
 
         if (widgetSize.height < 100) {
             // widget has only height of one cell -> hide weather anf for analog also date
@@ -114,13 +127,15 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         Point size = utility.getDisplaySize();
         Log.d(TAG, "display size ###" + size.x);
         Configuration config = context.getResources().getConfiguration();
-        //clockLayout.updateLayout(widthPixel * 2, config); // for analog clock
+
+        // causes memory leak for analog clock
         clockLayout.updateLayoutForWidget(widthPixel, heightPixel, config);
 
         // give digital clock some padding
         if (clockLayout.isDigital()) {
             clockLayout.setPadding(15, 15, 15, 15);
         }
+
 
         Log.i(TAG, "widget height=" + heightPixel);
 
@@ -165,6 +180,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout, boolean lightBackground) {
         Settings settings = new Settings(context);
+
         //textViewPurchaseHint.setVisibility(View.GONE);
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(settings.getClockLayoutID(false));
@@ -174,6 +190,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setPrimaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
+
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
         clockLayout.showDate(settings.showDate);
@@ -182,8 +199,12 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.showWeather(settings.showWeather);
 
+
+        /* causes memory leak in getdrawingcache
         WeatherEntry entry = getWeatherEntry(settings);
         clockLayout.update(entry);
+        */
+
     }
 
     private static WeatherEntry getWeatherEntry(Settings settings) {
