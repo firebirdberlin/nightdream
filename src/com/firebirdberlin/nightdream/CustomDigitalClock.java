@@ -26,6 +26,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     String mFormat;
     private String m12 = "h:mm aa";
     private String m24 = "HH:mm";
+    private SimpleDateFormat simpleDateFormat;
     private FormatChangeObserver mFormatChangeObserver;
 
 
@@ -66,8 +67,8 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             mCalendar = Calendar.getInstance();
         }
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat(mFormat);
-        String text = sdf.format(mCalendar.getTime());
+
+        String text = simpleDateFormat.format(mCalendar.getTime());
         if (text != getText() ) {
             setText(text);
             invalidate();
@@ -120,6 +121,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         } else {
             mFormat = m12;
         }
+        simpleDateFormat = new SimpleDateFormat(mFormat);
     }
 
     public void setFormat12Hour(String format) {

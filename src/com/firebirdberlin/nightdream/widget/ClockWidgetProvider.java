@@ -34,7 +34,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "NightDream.WidgetProvider";
-
+    private static Bitmap widgetBitmap;
     private PendingIntent alarmIntent = null;
 
     static void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -57,19 +57,15 @@ public class ClockWidgetProvider extends AppWidgetProvider {
        //final View sourceView = prepareSourceViewTest(context, dimension);
         final View sourceView = prepareSourceView(context, dimension);
 
+        if (widgetBitmap != null) {
+            sourceView.destroyDrawingCache();
+            widgetBitmap.recycle();
+            widgetBitmap = null;
+            System.gc();
+        }
+        sourceView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         sourceView.setDrawingCacheEnabled(true);
-        Bitmap widgetBitmap = sourceView.getDrawingCache();
-
-        // test to prevent mem leak, but didnt make a difference!
-        /*
-        sourceView.setDrawingCacheEnabled(false);
-        sourceView.buildDrawingCache();
-        Bitmap widgetBitmap = sourceView.getDrawingCache();
-        Bitmap bm_small = Bitmap.createScaledBitmap(widgetBitmap, 100, 100, true);
-        widgetBitmap.recycle();
-        widgetBitmap = null;
-        sourceView.destroyDrawingCache();
-        */
+        widgetBitmap = sourceView.getDrawingCache(true);
 
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
         updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);

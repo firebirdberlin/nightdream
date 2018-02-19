@@ -199,7 +199,7 @@ public class ClockLayout extends LinearLayout {
                     measuredHeight += Utility.getHeightOfView(clock);
                 }
                 if (date != null &&  date.getVisibility() == VISIBLE) {
-                    date.setMaxWidth((int) (parentWidth)); // 0.8 * 1.25 = 1
+                    date.setMaxWidth(parentWidth); // 0.8 * 1.25 = 1
                     // also set maxHeight
                     date.setMaxHeight((int) (0.2 * parentHeight));
                     date.setMaxFontSizesInSp(minFontSize, (25.f));
@@ -207,7 +207,7 @@ public class ClockLayout extends LinearLayout {
                     measuredHeight += Utility.getHeightOfView(date);
                 }
                 if (weatherLayout != null &&  weatherLayout.getVisibility() == VISIBLE) {
-                    weatherLayout.setMaxWidth((int) (parentWidth)); // 0.8 * 1.25 = 1
+                    weatherLayout.setMaxWidth(parentWidth); // 0.8 * 1.25 = 1
                     weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
                             Utility.spToPx(context, 25.f));
                     weatherLayout.update();
@@ -228,11 +228,11 @@ public class ClockLayout extends LinearLayout {
 
                     }
                     if (date != null &&  date.getVisibility() == VISIBLE) {
-                        date.setMaxWidth((int) (adjustedWidth)); // 0.8 * 1.25 = 1
+                        date.setMaxWidth(adjustedWidth); // 0.8 * 1.25 = 1
 
                     }
                     if (weatherLayout != null &&  weatherLayout.getVisibility() == VISIBLE) {
-                        weatherLayout.setMaxWidth((int) (adjustedWidth)); // 0.8 * 1.25 = 1
+                        weatherLayout.setMaxWidth(adjustedWidth); // 0.8 * 1.25 = 1
                         weatherLayout.update();
 
                     }
@@ -253,8 +253,10 @@ public class ClockLayout extends LinearLayout {
                         }
                         if (weatherLayout != null) {
                             weatherLayout.setMaxWidth(parentWidth / 2);
-                            weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
-                                    Utility.spToPx(context, 20.f));
+                            weatherLayout.setMaxFontSizesInPx(
+                                    Utility.spToPx(context, minFontSize),
+                                    Utility.spToPx(context, 20.f)
+                            );
                             weatherLayout.update();
                         }
                         break;
@@ -381,7 +383,7 @@ public class ClockLayout extends LinearLayout {
                 }
 
                 // get remaining space for the clock
-                int availClockHeight = (int) (parentHeight - additionalHeight);
+                int availClockHeight = parentHeight - additionalHeight;
                 int adjustedClockSize = (Math.min(availClockHeight, parentWidth));
                 analog_clock.getLayoutParams().width = adjustedClockSize;
                 analog_clock.getLayoutParams().height = adjustedClockSize;
@@ -403,7 +405,7 @@ public class ClockLayout extends LinearLayout {
                     Utility.spToPx(context, maxFontSize));
             weatherLayout.update();
         }
-    };
+    }
 
     private int getAnalogWidgetSize(int parentWidth, Configuration config) {
 

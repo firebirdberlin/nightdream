@@ -26,7 +26,7 @@ public class AutoAdjustTextView extends TextView {
 
     private String fontPath = null;
     private String sampleText = null;
-
+    private Rect bounds = null;
 
     public AutoAdjustTextView(Context context) {
         super(context);
@@ -116,9 +116,10 @@ public class AutoAdjustTextView extends TextView {
         return paint.measureText(text);
     }
 
-    private float measureTextHeight() {
-        // TODO make bounds member field
-        Rect bounds = new Rect();
+    private float measureTextHeight(Paint paint) {
+        if (bounds == null) {
+            bounds = new Rect();
+        }
         String text = (sampleText != null ) ? sampleText : getText().toString();
         paint.getTextBounds(text, 0, text.length(), bounds);
         return bounds.height();
