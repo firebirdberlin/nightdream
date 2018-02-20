@@ -1,22 +1,19 @@
 package com.firebirdberlin.nightdream.widget;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +30,9 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockWidgetProvider extends AppWidgetProvider {
 
-    private static final String TAG = "NightDream.WidgetProvider";
+    private static final String TAG = "WidgetProvider";
     private static Bitmap widgetBitmap;
-    private PendingIntent alarmIntent = null;
+    private static TimeReceiver timeReceiver;
 
     static void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
@@ -259,23 +256,33 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     public void onEnabled(Context context) {
         // call when first widget instance is put to home screen
         super.onEnabled(context);
+        Log.d(TAG, "onEnabled");
     }
 
     @Override
     public void onDisabled(Context context) {
         // when last instance was removed
         super.onDisabled(context);
+        if (timeReceiver != null) {
+            context.getApplicationContext().unregisterReceiver(timeReceiver);
+        }
+
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
         Log.d(TAG, "onUpdate");
-
-        setupClockUpdateService(context);
-
+        setTimeTick(context);
         updateAllWidgets(context, appWidgetManager, appWidgetIds);
+    }
 
+    void setTimeTick(Context context) {
+        if (timeReceiver != null) return;
+        timeReceiver = new TimeReceiver();
+        context.getApplicationContext().registerReceiver(
+                timeReceiver,
+                new IntentFilter(Intent.ACTION_TIME_TICK)
+        );
     }
 
     @Override
@@ -287,17 +294,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         updateWidget(context, appWidgetManager, appWidgetId, w);
 
-    }
-
-    private void setupClockUpdateService(Context context) {
-        final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        final Intent intent = new Intent(context, UpdateService.class);
-
-        if (alarmIntent == null) {
-            alarmIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        }
-
-        manager.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), 60000, alarmIntent);
     }
 
     public static final class Dimension {
@@ -324,30 +320,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public static class UpdateService extends Service {
-
-        @Nullable
+    class TimeReceiver extends BroadcastReceiver {
         @Override
-        public IBinder onBind(Intent intent) {
-            return null;
-        }
-
-        @Override
-        public int onStartCommand(Intent intent, int flags, int startId) {
-            Log.d(TAG, "UpdateService.onStartCommand");
-
-            updateWidgets();
-
-            return super.onStartCommand(intent, flags, startId);
-        }
-
-        private void updateWidgets() {
-
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-            int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(this, appWidgetManager);
-
-            updateAllWidgets(this, appWidgetManager, appWidgetIds);
-
+        public void onReceive(Context context, Intent arg1) {
+            Log.d(TAG, "time tick");
+            updateAllWidgets(context);
         }
     }
 
