@@ -19,7 +19,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">O autorach</string>
 <string name="action_snooze">Drzemka</string>
 <string name="action_stop">Stop</string>
+<string name="add_new_alarm">dodaj nowy alarm</string>
 <string name="add_custom_alarm_tone">dodaj własny dźwięk alarmu</string>
+<string name="add_custom_font">dodaj własną czcionkę</string>
 <string name="alarm">Alarm</string>
 <string name="alarmFadeIn">Zwiększenie głośności</string>
 <string name="alarmVolume">Głosność</string>
@@ -42,7 +44,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Jasność</string>
 <string name="brightness_offset">Intensywność świecenia</string>
 <string name="buttonAccessibilitySettings">Dostęp do powiadomień</string>
-<string name="buy">kup</string>
+<string name="buy">Kup</string>
 <string name="category_handle_power">....obszar działania....</string>
 <string name="category_handle_power_autostart_time">Rozpocznij w przedziale czasowym</string>
 <string name="choose_alarm_sound">Dzwięk alarmu</string>
@@ -65,7 +67,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="credits">Autorzy</string>
 <string name="credits_pull_requests">Oczekiwane przeciągnięcie</string>
 <string name="date_format">Format daty</string>
-<string name="delete">usuń</string>
+<string name="delete">Usuń</string>
 <string name="dialog_message_thank_you">Dziękuje Ci bardzo!</string>
 <string name="dialog_title_thank_you">Dziękuje</string>
 <string name="donate_bitcoin">Bitcoin</string>
@@ -157,6 +159,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Teperatura</string>
 <string name="show_weather">Pokaż lokalną temperturę</string>
 <string name="show_wind_speed">Szybkość wiatru</string>
+<string name="sleep_time_default_value">Domyślny czas zaśnięcia</string>
+<string name="sleep_time_default_value_msg">Proszę podaj domyślny czas zaśnięcia</string>
 <string name="sleep_time_dialog_title">Ustawienie czasu zaśnięcia</string>
 <string name="snoozeTime">Czas trwania drzemki</string>
 <string name="speedUnit">Jednostka szybkości wiatru</string>

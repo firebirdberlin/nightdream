@@ -97,7 +97,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="message_no_data_connection">Datu konexiorik gabe</string>
 <string name="minBrightness">Pantailako gutxienezko distira</string>
 <string name="minute">min</string>
-<string name="mute_ringer">Soinua isolarazi</string>
+<string name="mute_ringer">Soinua isilarazi</string>
 <string name="night_mode_activation_auto">automatikoa</string>
 <string name="night_mode_activation_manual">eskuzkoa</string>
 <string name="night_mode_activation_mode">Aktibazio modua</string>
@@ -140,10 +140,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="recommend_app_desc">Zure gomendio zabaltzeko app bat aukeratu</string>
 <string name="recommend_app_subject">Gaueko erlojuko app hau zuri gomendatu nahi dizut</string>
 <string name="recommend">Gomendatutako appa-a</string>
-<string name="remaining">faltatzen dena</string>
+<string name="remaining">falta dira</string>
 <string name="repeat">errepikatu</string>
 <string name="reset_to_defaults">Reset to default</string>
-<string name="restless_mode">Erlojua pantailatuk mugitu</string>
+<string name="restless_mode">Erlojua pantailatik mugitu</string>
 <string name="review_request">Mesedez, aplikazio hau baloratu. Eskerrik asko!</string>
 <string name="screen_orientation_automatic">automatikoa</string>
 <string name="screen_orientation_landscape">paisaia</string>
@@ -184,7 +184,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto thin</string>
 <string name="typeface">Letra tipoa</string>
 <string name="uninstall">Aplikazioa desinstalatu</string>
-<string name="useDeviceLockDescription">Pantaila blokeatzekonfuntzioak administradore baimena behar du. Aplikazioa desintalatu ahal izateko, mesedez aukera hau desaktibatu.</string>
+<string name="useDeviceLockDescription">Pantaila blokeatzeko funtzioak administradore baimena behar du. Aplikazioa desintalatu ahal izateko, mesedez aukera hau desaktibatu.</string>
 <string name="useDeviceLockExplanation">Mugikorra blokeatu aplikazioa martxan ari denean. Aplikazioa desinstalatu ahal izateko aukera hau desaktibatu.</string>
 <string name="useDeviceLock">Mugikorra blokeatu</string>
 <string name="use_internal_alarm">Alarma azkarrak</string>

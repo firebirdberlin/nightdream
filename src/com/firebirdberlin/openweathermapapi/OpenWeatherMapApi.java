@@ -275,7 +275,6 @@ public class OpenWeatherMapApi {
     }
 
     private static URL getUrlFindCity(String query) throws MalformedURLException {
-        query = query.replace(" ", "");
         Uri.Builder builder = getPathBuilder("find");
         String url = builder
                         .appendQueryParameter("q", query)
