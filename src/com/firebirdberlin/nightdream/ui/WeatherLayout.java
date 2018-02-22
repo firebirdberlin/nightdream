@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -163,7 +164,6 @@ public class WeatherLayout extends LinearLayout {
             iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
         }
 
-        //causes memory leak (widget)
         fixIconWindDirectionSize();
 
         windText.invalidate();
@@ -241,19 +241,13 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void fixIconWindDirectionSize() {
-
-        temperatureText.post(new Runnable() {
-            public void run() {
-                int height = temperatureText.getHeight();
-                LayoutParams layoutParams = (LayoutParams) iconWindDirection.getLayoutParams();
-                layoutParams.width = height;
-                layoutParams.height = height;
-                iconWindDirection.setLayoutParams(layoutParams);
-                iconWindDirection.requestLayout();
-                iconWindDirection.invalidate();
-            }
-        });
-
+        int height = Utility.getHeightOfView(temperatureText);
+        LayoutParams layoutParams = (LayoutParams) iconWindDirection.getLayoutParams();
+        layoutParams.width = height;
+        layoutParams.height = height;
+        iconWindDirection.setLayoutParams(layoutParams);
+        iconWindDirection.requestLayout();
+        iconWindDirection.invalidate();
     }
 
     public int measureText() {

@@ -189,54 +189,45 @@ public class ClockLayout extends LinearLayout {
 
             if (displayInWidget) {
                 //ignore orientation, 100% width, so it fills whole space of the widget area
-                int measuredHeight = 0;
                 if (clock != null &&  clock.getVisibility() == VISIBLE) {
-                    clock.setMaxWidth((int) (0.75f * parentWidth)); // 0.6 * 1.25 = 0.75
-                    // also set maxHeight
-                    clock.setMaxHeight((int) (0.6 * parentHeight));
+                    clock.setMaxWidth((int) (0.9 * parentWidth)); // 0.6 * 1.25 = 0.75
+                    clock.setMaxHeight((int) (0.5 * parentHeight));
                     clock.setMaxFontSizesInSp(minFontSize, (300.f));
                     clock.invalidate(); // must invalidate to get correct getHeightOfView below
-                    measuredHeight += Utility.getHeightOfView(clock);
                 }
                 if (date != null &&  date.getVisibility() == VISIBLE) {
-                    date.setMaxWidth(parentWidth); // 0.8 * 1.25 = 1
-                    // also set maxHeight
+                    date.setMaxWidth((int) (0.9 * parentWidth)); // 0.8 * 1.25 = 1
                     date.setMaxHeight((int) (0.2 * parentHeight));
-                    date.setMaxFontSizesInSp(minFontSize, (25.f));
+                    date.setMaxFontSizesInSp(minFontSize, 25.f);
                     date.invalidate(); // must invalidate to get correct getHeightOfView below
-                    measuredHeight += Utility.getHeightOfView(date);
                 }
                 if (weatherLayout != null &&  weatherLayout.getVisibility() == VISIBLE) {
-                    weatherLayout.setMaxWidth(parentWidth); // 0.8 * 1.25 = 1
-                    weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
-                            Utility.spToPx(context, 25.f));
+                    weatherLayout.setMaxWidth((int) (0.9 * parentWidth)); // 0.8 * 1.25 = 1
+                    weatherLayout.setMaxFontSizesInPx(
+                            Utility.spToPx(context, minFontSize),
+                            Utility.spToPx(context, 20.f));
                     weatherLayout.update();
                     weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
-                    measuredHeight += Utility.getHeightOfView(weatherLayout);
                 }
 
-                //int measuredHeight = Utility.getHeightOfView(this);
+                int measuredHeight = Utility.getHeightOfView(this);
                 Log.i(TAG, "### measuredHeight=" + measuredHeight + ", parentHeight=" + parentHeight);
 
                 if (measuredHeight > parentHeight) {
                     Log.i(TAG, "### measuredHeight > parentHeight");
-
                     // shrink clock width so that its height fits the widget height
-                    int adjustedWidth = Math.round((float) parentWidth / (float) measuredHeight * (float) parentHeight);
+                    int adjustedWidth = Math.round(parentWidth / (float) measuredHeight * (float) parentHeight);
                     if (clock != null) {
                         clock.setMaxWidth((int) (0.75f * adjustedWidth)); // 0.6 * 1.25 = 0.75
-
                     }
-                    if (date != null &&  date.getVisibility() == VISIBLE) {
+                    if (date != null && date.getVisibility() == VISIBLE) {
                         date.setMaxWidth(adjustedWidth); // 0.8 * 1.25 = 1
 
                     }
-                    if (weatherLayout != null &&  weatherLayout.getVisibility() == VISIBLE) {
+                    if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
                         weatherLayout.setMaxWidth(adjustedWidth); // 0.8 * 1.25 = 1
                         weatherLayout.update();
-
                     }
-
                 }
 
             } else {

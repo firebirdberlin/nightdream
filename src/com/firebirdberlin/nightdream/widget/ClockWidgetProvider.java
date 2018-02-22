@@ -25,7 +25,6 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
-import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 
 public class ClockWidgetProvider extends AppWidgetProvider {
@@ -49,9 +48,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private static void updateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, WidgetDimension dimension) {
+    private static void updateWidget(Context context, AppWidgetManager appWidgetManager,
+                                     int appWidgetId, WidgetDimension dimension) {
 
-       //final View sourceView = prepareSourceViewTest(context, dimension);
         final View sourceView = prepareSourceView(context, dimension);
 
         if (widgetBitmap != null) {
@@ -62,7 +61,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
         sourceView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         sourceView.setDrawingCacheEnabled(true);
-        widgetBitmap = sourceView.getDrawingCache(true);
+        widgetBitmap = sourceView.getDrawingCache(false);
 
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
         updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
@@ -92,10 +91,10 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         final boolean lightBackground = true;
 
         // this causes a leak in view.getDrawingCache() !!
-        updateClockLayoutSettings(context, clockLayout, lightBackground);
+        updateClockLayoutSettings(context, clockLayout);
 
         if (widgetSize.height < 100) {
-            // widget has only height of one cell -> hide weather anf for analog also date
+            // widget has only height of one cell -> hide weather and date
             clockLayout.showWeather(false);
             if (!clockLayout.isDigital()) {
                 clockLayout.showDate(false);
@@ -128,7 +127,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             clockLayout.setPadding(15, 15, 15, 15);
         }
 
-
         Log.i(TAG, "widget height=" + heightPixel);
 
         // container.measure(viewWidth, viewHeight); // this wont work, use with makeMeasureSpec below
@@ -144,36 +142,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return container;
     }
 
-    private static View prepareSourceViewTest(Context context, WidgetDimension dimension) {
-
-        final Dimension widgetSize = actualWidgetSize(context, dimension);
-
-        // convert width/height from dip to pixels, otherwise widgetBitmap is blurry
-        int widthPixel = Utility.dpToPx(context, widgetSize.width);
-        int heightPixel = Utility.dpToPx(context, widgetSize.height);
-
-        // load a view from resource
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        View sourceView = inflater.inflate(R.layout.widget_test_content, null);
-
-        // sourceView.measure(viewWidth, viewHeight); // this wont work, use with makeMeasureSpec below
-        sourceView.measure(
-                View.MeasureSpec.makeMeasureSpec(widthPixel, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(heightPixel, View.MeasureSpec.EXACTLY));
-        sourceView.layout(0, 0, widthPixel, heightPixel);
-
-        // not needed obviously
-        //sourceView.requestLayout();
-        //sourceView.invalidate();
-
-        return sourceView;
-    }
-
-    private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout, boolean lightBackground) {
+    private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout) {
         Settings settings = new Settings(context);
 
-        //textViewPurchaseHint.setVisibility(View.GONE);
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(settings.getClockLayoutID(false));
         clockLayout.setTypeface(settings.typeface);
@@ -191,17 +162,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.showWeather(settings.showWeather);
 
-        // causes memory leak in getdrawingcache
-        WeatherEntry entry = getWeatherEntry(settings);
-        clockLayout.update(entry);
-    }
-
-    private static WeatherEntry getWeatherEntry(Settings settings) {
-        WeatherEntry entry = settings.weatherEntry;
-        if ( entry.timestamp ==  -1L) {
-            entry.setFakeData();
-        }
-        return entry;
+        clockLayout.update(settings.weatherEntry);
     }
 
     private static Dimension actualWidgetSize(Context context, WidgetDimension dimension) {
