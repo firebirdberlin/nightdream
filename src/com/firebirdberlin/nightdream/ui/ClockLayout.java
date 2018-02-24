@@ -183,7 +183,7 @@ public class ClockLayout extends LinearLayout {
         if (layoutId == LAYOUT_ID_DIGITAL) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            if (clock != null) {
+            if (clock != null && !displayInWidget) {
                 clock.setSampleText("22:55");
             }
 
