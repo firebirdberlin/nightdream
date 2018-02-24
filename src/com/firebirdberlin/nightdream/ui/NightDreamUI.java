@@ -227,10 +227,11 @@ public class NightDreamUI {
         }
     };
     private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        int rect[] = new int[2];
+
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
-            int rect[] = new int[2];
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) return false;
 
@@ -269,7 +270,6 @@ public class NightDreamUI {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             if (clockLayoutContainer == null) return false;
-            int rect[] = new int[2];
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) {
                 Point size = utility.getDisplaySize();

@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,17 +88,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         ClockLayout clockLayout = (ClockLayout) container.findViewById(R.id.clockLayout);
 
         final boolean lightBackground = true;
-
-        // this causes a leak in view.getDrawingCache() !!
-        updateClockLayoutSettings(context, clockLayout);
-
-        if (widgetSize.height < 100) {
-            // widget has only height of one cell -> hide weather and date
-            clockLayout.showWeather(false);
-            if (!clockLayout.isDigital()) {
-                clockLayout.showDate(false);
-            }
-        }
+        updateClockLayoutSettings(context, clockLayout, widgetSize.height);
 
         // round corners
         if (lightBackground) {
@@ -114,12 +103,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             clockLayout.setBackground(shape);
         }
 
-        Utility utility = new Utility(context);
-        Point size = utility.getDisplaySize();
-        Log.d(TAG, "display size ###" + size.x);
         Configuration config = context.getResources().getConfiguration();
-
-        // causes memory leak for analog clock
         clockLayout.updateLayoutForWidget(widthPixel, heightPixel, config);
 
         // give digital clock some padding
@@ -142,7 +126,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return container;
     }
 
-    private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout) {
+    private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout,
+                                                  int widgetHeight) {
         Settings settings = new Settings(context);
 
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -153,14 +138,13 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setPrimaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
-
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
-        clockLayout.showDate(settings.showDate);
+        clockLayout.showDate(widgetHeight >= 100 && settings.showDate);
 
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
-        clockLayout.showWeather(settings.showWeather);
+        clockLayout.showWeather(widgetHeight >= 100 && settings.showWeather);
 
         clockLayout.update(settings.weatherEntry);
     }
@@ -189,12 +173,12 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         // API 16 and up only
         //portrait mode: width=minWidth, height=maxHeight, landscape mode: width=maxWidth, height=minHeight
-        int minwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
-        int maxwidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
-        int minheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-        int maxheight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
+        int minWidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+        int maxWidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH);
+        int minHeight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+        int maxHeight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
 
-        return new WidgetDimension(minwidth, minheight, maxwidth, maxheight);
+        return new WidgetDimension(minWidth, minHeight, maxWidth, maxHeight);
     }
 
     public static int[] appWidgetIds(Context context, AppWidgetManager appWidgetManager) {
@@ -227,7 +211,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         if (timeReceiver != null) {
             context.getApplicationContext().unregisterReceiver(timeReceiver);
         }
-
     }
 
     @Override
