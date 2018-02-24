@@ -140,7 +140,8 @@ public class WakeUpReceiver extends BroadcastReceiver {
         String textActionStop = context.getString(R.string.action_stop);
 
         Intent stopIntent = AlarmHandlerService.getStopIntent(context);
-        PendingIntent pStopIntent = PendingIntent.getService(context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pStopIntent = PendingIntent.getService(
+                context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder note = new NotificationCompat.Builder(context)
             .setAutoCancel(true)
@@ -158,8 +159,8 @@ public class WakeUpReceiver extends BroadcastReceiver {
         wearableExtender.addAction(stopAction);
 
         Intent snoozeIntent = AlarmHandlerService.getSnoozeIntent(context);
-        PendingIntent pSnoozeIntent = PendingIntent.getService(context, 0, snoozeIntent,
-                                                               PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pSnoozeIntent = PendingIntent.getService(
+                context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Action snoozeAction =
             new NotificationCompat.Action.Builder(0, textActionSnooze, pSnoozeIntent)

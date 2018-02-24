@@ -38,7 +38,7 @@ public class RadioStreamSleepTimeReceiver extends BroadcastReceiver {
         am.cancel(pI);
 
         if (Build.VERSION.SDK_INT >= 19) {
-            am.setExact(AlarmManager.RTC, millis, pI);
+            am.setExact(AlarmManager.RTC_WAKEUP, millis, pI);
         } else {
             deprecatedSetAlarm(context, millis, pI);
         }
@@ -48,7 +48,7 @@ public class RadioStreamSleepTimeReceiver extends BroadcastReceiver {
     @SuppressWarnings("deprecation")
     private static void deprecatedSetAlarm(Context context, long millis, PendingIntent pendingIntent) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, millis, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pendingIntent);
     }
 
     public static boolean isSleepTimeSet() {

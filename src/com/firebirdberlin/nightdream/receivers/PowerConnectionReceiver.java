@@ -66,9 +66,8 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     static public void schedule(Context context) {
         Intent alarmIntent = new Intent(context, PowerConnectionReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, PENDING_INTENT_START_APP,
-                                                                 alarmIntent,
-                                                                 PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context, PENDING_INTENT_START_APP, alarmIntent, 0);
 
         Settings settings = new Settings(context);
         Calendar start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();

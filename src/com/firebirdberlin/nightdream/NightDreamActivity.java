@@ -602,7 +602,7 @@ public class NightDreamActivity extends Activity
         return PendingIntent.getBroadcast(this,
                                           PENDING_INTENT_STOP_APP,
                                           alarmIntent,
-                                          PendingIntent.FLAG_UPDATE_CURRENT);
+                0);
     }
 
     private void scheduleShutdown() {
@@ -620,6 +620,7 @@ public class NightDreamActivity extends Activity
             PendingIntent pendingIntent = getShutdownIntent();
             Calendar calendar = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent);
             if (Build.VERSION.SDK_INT >= 19){
                 alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
             } else {
