@@ -445,7 +445,7 @@ public class CustomAnalogClock extends View {
         // calculate font-size for desired text width, so digits have equal size on any device
 
         // init typeface
-        paint.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
+        paint.setTypeface(typeface);
 
         /*
         ToDo: until now digits have fixed width of 0.8% of the radius -> should become configurable as well!
@@ -494,16 +494,13 @@ public class CustomAnalogClock extends View {
                     // 3,6,9,12
                     paint.setColorFilter(customColorFilter);
                     paint.setTextSize(digitFontSizeBig);
-                    paint.setTypeface(Typeface.create(typeface, Typeface.BOLD));
                 } else {
                     paint.setColorFilter(secondaryColorFilter);
                     paint.setTextSize(digitFontSizeSmall);
-                    paint.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
                 }
             } else {
                 paint.setColorFilter(secondaryColorFilter);
                 paint.setTextSize(digitFontSizeSmall);
-                paint.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
             }
 
             Rect bounds = new Rect();
