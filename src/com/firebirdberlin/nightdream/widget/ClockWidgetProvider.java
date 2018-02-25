@@ -41,7 +41,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
             WidgetDimension w = ClockWidgetProvider.widgetDimensionFromBundle(bundle);
 
-            Log.d(TAG, String.format("widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", widgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
+            //Log.d(TAG, String.format("widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", widgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
 
             updateWidget(context, appWidgetManager, widgetId, w);
         }
@@ -208,25 +208,35 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // when last instance was removed
         super.onDisabled(context);
-        if (timeReceiver != null) {
-            context.getApplicationContext().unregisterReceiver(timeReceiver);
-        }
+        //unsetTimeTick(context);
+        ClockWidgetTimeTickService.stopService(context);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
-        setTimeTick(context);
+        //setTimeTick(context);
+        // keep running a background service, which registers the ACTION_TIME_TICK broadcast receiver.
+        // without this the process might be killed and widget time is not updated (experienced on android 5.0 device)
+        // If this is still unreliable, use additionally JobScheduler/AlarmManager to schedule a job every minute to update the widgets
+        // (which restarts the service and time tick receiver)
+        ClockWidgetTimeTickService.startService(context);
         updateAllWidgets(context, appWidgetManager, appWidgetIds);
     }
 
     void setTimeTick(Context context) {
         if (timeReceiver != null) return;
         timeReceiver = new TimeReceiver();
-        context.getApplicationContext().registerReceiver(
-                timeReceiver,
-                new IntentFilter(Intent.ACTION_TIME_TICK)
-        );
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_TIME_TICK);
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        context.getApplicationContext().registerReceiver(timeReceiver, intentFilter);
+    }
+
+    void unsetTimeTick(Context context) {
+        if (timeReceiver != null) {
+            context.getApplicationContext().unregisterReceiver(timeReceiver);
+        }
     }
 
     @Override

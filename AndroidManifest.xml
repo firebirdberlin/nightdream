@@ -95,9 +95,6 @@
         <service
             android:name=".services.WeatherService"
             android:enabled="true" />
-        <service
-            android:name=".widget.ClockWidgetProvider$UpdateService"
-            android:enabled="true" />
 
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".PreferencesActivityv9" />
@@ -166,6 +163,8 @@
                 android:resource="@xml/clock_widget_info" />
         </receiver>
 
+        <service android:name=".widget.ClockWidgetTimeTickService" />
+
         <activity
             android:name=".WeatherForecastActivity"
             android:label="@string/forecast"
@@ -188,15 +187,7 @@
                 android:value="com.firebirdberlin.nightdream.NightDreamActivity" />
             >
         </activity>
-        <!--
-        <activity android:name=".widget.LayoutTestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
     </application>
 
 </manifest>
