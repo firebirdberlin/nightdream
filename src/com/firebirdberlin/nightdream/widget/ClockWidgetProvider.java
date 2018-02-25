@@ -1,6 +1,10 @@
 package com.firebirdberlin.nightdream.widget;
 
+import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.BroadcastReceiver;
@@ -12,7 +16,9 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +32,8 @@ import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+
+import java.util.Calendar;
 
 
 public class ClockWidgetProvider extends AppWidgetProvider {
@@ -248,19 +256,36 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // when last instance was removed
         super.onDisabled(context);
-        //unsetTimeTick(context);
-        ClockWidgetTimeTickService.stopService(context);
+        unsetTimeTick(context);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.cancelAll();
+        } else {
+            // stop alarm
+            stopAlarmManagerService(context);
+        }
+
+        // to be removed
+        //ClockWidgetTimeTickService.stopService(context);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
-        //setTimeTick(context);
+
+        setTimeTick(context);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            scheduleJob(context);
+        } else {
+            scheduleAlarmManagerService(context);
+        }
+
         // keep running a background service, which registers the ACTION_TIME_TICK broadcast receiver.
-        // without this the process might be killed and widget time is not updated (experienced on android 5.0 device)
-        // If this is still unreliable, use additionally JobScheduler/AlarmManager to schedule a job every minute to update the widgets
-        // (which restarts the service and time tick receiver)
-        ClockWidgetTimeTickService.startService(context);
+        // to be removed
+        //ClockWidgetTimeTickService.startService(context);
+
         updateAllWidgets(context, appWidgetManager, appWidgetIds);
     }
 
@@ -277,6 +302,52 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         if (timeReceiver != null) {
             context.getApplicationContext().unregisterReceiver(timeReceiver);
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void scheduleJob(Context context) {
+        ComponentName serviceComponent = new ComponentName(context.getPackageName(), ClockWidgetJobService.class.getName());
+        JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
+        builder.setPersisted(true);
+        builder.setPeriodic(240000);
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        int jobResult = jobScheduler.schedule(builder.build());
+        if (jobResult == JobScheduler.RESULT_SUCCESS){
+            Log.d(TAG, "scheduled ClockWidgetJobService job successfully");
+        }
+    }
+
+    private void scheduleAlarmManagerService(Context context) {
+        final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        final int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(context, appWidgetManager);
+        Intent alarmIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        alarmIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+
+        final int ALARM_ID = 0;
+        final int INTERVAL_MILLIS = 240000;
+
+        PendingIntent removedIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Log.d(TAG, "StartAlarm");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, INTERVAL_MILLIS);
+
+        manager.cancel(removedIntent);
+        manager.setRepeating(AlarmManager.ELAPSED_REALTIME, calendar.getTimeInMillis(), INTERVAL_MILLIS, pendingIntent);
+    }
+
+    private void stopAlarmManagerService(Context context) {
+
+        final int ALARM_ID = 0;
+
+        Intent alarmIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        manager.cancel(pendingIntent);
     }
 
     @Override
