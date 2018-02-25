@@ -114,6 +114,7 @@ public class Settings {
     public String timeFormat24h;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
+    public long lastWeatherRequestTime = -1L;
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
@@ -232,6 +233,7 @@ public class Settings {
         timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
         timeFormat24h = settings.getString("timeFormat_24h", "HH:mm");
         weatherCityID = settings.getString("weatherCityID", "");
+        lastWeatherRequestTime = settings.getLong("lastWeatherRequestTime", -1L);
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
@@ -551,6 +553,13 @@ public class Settings {
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
         prefEditor.putInt("weather_wind_direction", entry.windDirection);
+        prefEditor.commit();
+    }
+
+    public void setLastWeatherRequestTime(long time) {
+        this.lastWeatherRequestTime = time;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("lastWeatherRequestTime", time);
         prefEditor.commit();
     }
 

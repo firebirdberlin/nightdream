@@ -1,5 +1,7 @@
 package com.firebirdberlin.openweathermapapi.models;
 
+import java.util.Calendar;
+
 public class WeatherEntry {
     public static final int CELSIUS = 1;
     public static final int FAHRENHEIT = 2;
@@ -29,7 +31,7 @@ public class WeatherEntry {
     }
 
     public void setFakeData() {
-        timestamp = System.currentTimeMillis();
+        timestamp = System.currentTimeMillis() / 1000;
         temperature = 284.15;
         weatherIcon = "03d";
     }
@@ -45,5 +47,12 @@ public class WeatherEntry {
 
     public String toString() {
         return String.format("%2.2fK %2.2fm/s %d° %d", temperature, windSpeed, windDirection, timestamp);
+    }
+
+    public static WeatherEntry fakeWeatherWithRandomTemperature() {
+        WeatherEntry e = new WeatherEntry();
+        e.setFakeData();
+        e.temperature = Math.random() * 100;
+        return e;
     }
 }

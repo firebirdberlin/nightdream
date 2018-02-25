@@ -22,8 +22,10 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 
 public class ClockWidgetProvider extends AppWidgetProvider {
@@ -142,11 +144,49 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
         clockLayout.showDate(widgetHeight >= 100 && settings.showDate);
 
-        clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
-        clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
-        clockLayout.showWeather(widgetHeight >= 100 && settings.showWeather);
+        // needs some more testing
+        final boolean weatherUpdateEnabled = false;
+        //final boolean weatherUpdateEnabled = true;
 
-        clockLayout.update(settings.weatherEntry);
+        // update weather data via api if outdated
+        if (weatherUpdateEnabled && shallUpdateWeatherData(settings)) {
+            long requestAge = System.currentTimeMillis() - settings.lastWeatherRequestTime;
+            long age = (settings.weatherEntry != null ? settings.weatherEntry.ageMillis() : -1L);
+            Log.d(TAG, "Weather data outdated. Trying to refresh ! (age=" + age + ", requestAge=" + requestAge + ")");
+            settings.setLastWeatherRequestTime(System.currentTimeMillis());
+            WeatherService.start(context, settings.weatherCityID);
+        }
+
+        // update weather date if not outdated
+        if (settings.weatherEntry != null
+                && settings.weatherEntry.timestamp > -1L
+                && settings.weatherEntry.ageMillis() <= 8 * 60 * 60 * 1000) {
+            clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
+            clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
+            clockLayout.showWeather(widgetHeight >= 100 && settings.showWeather);
+
+            clockLayout.update(settings.weatherEntry);
+        } else {
+            clockLayout.clearWeather();
+        }
+    }
+
+    private static boolean shallUpdateWeatherData(Settings settings) {
+        long requestAge = System.currentTimeMillis() - settings.lastWeatherRequestTime;
+        long diff = (settings.weatherEntry != null ? settings.weatherEntry.ageMillis() : -1L);
+        //final int maxDiff = 90 * 60 * 1000;
+        final int maxDiff = 1000;
+        final int maxRequestAge = 15 * 60 * 1000;
+        //final int maxRequestAge = 1 * 10 * 1000;
+        final String cityID = (settings.weatherEntry != null ? String.valueOf(settings.weatherEntry.cityID) : "null");
+        final boolean cityIdChanged = (!settings.weatherCityID.isEmpty() && settings.weatherEntry != null
+                && ! settings.weatherCityID.equals(String.valueOf(settings.weatherEntry.cityID)));
+        //Log.d(TAG, String.format("Weather: data age %d => %b", diff, diff > maxDiff));
+        //Log.d(TAG, String.format("Time since last request %d => %b", requestAge, requestAge > maxRequestAge));
+        //Log.d(TAG, String.format("City ID changed => %b (%s =?= %s)",
+        //        cityIdChanged, settings.weatherCityID, (cityID != null ? cityID : "null")));
+        // todo: handle change of city id?
+        return  ((diff < 0L || diff > maxDiff) && requestAge > maxRequestAge);
     }
 
     private static Dimension actualWidgetSize(Context context, WidgetDimension dimension) {
@@ -242,9 +282,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
 
-        Log.d(TAG, "onAppWidgetOptionsChanged");
+        //Log.d(TAG, "onAppWidgetOptionsChanged");
         WidgetDimension w = ClockWidgetProvider.widgetDimensionFromBundle(bundle);
-        Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
+        //Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
 
         updateWidget(context, appWidgetManager, appWidgetId, w);
 

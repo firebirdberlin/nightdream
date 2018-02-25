@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
+
 public class ClockWidgetTimeTickService extends Service {
 
     private static final String TAG = "ClockWidgetTimeTickService";
@@ -77,15 +79,17 @@ public class ClockWidgetTimeTickService extends Service {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         registerReceiver(timeReceiver, intentFilter);
     }
 
     static final class TimeReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent arg1) {
-            //Log.d(TAG, "time tick in ClockWidgetTimeTickService");
+        public void onReceive(Context context, Intent intent) {
+            //Log.d(TAG, "TimeReceiver onReceive");
             ClockWidgetProvider.updateAllWidgets(context);
         }
     }
+
 
 }

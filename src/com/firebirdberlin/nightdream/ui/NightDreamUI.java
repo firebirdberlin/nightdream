@@ -53,6 +53,7 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.WeatherService;
+import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
@@ -513,6 +514,7 @@ public class NightDreamUI {
         if (shallUpdateWeatherData(entry)) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
             lastLocationRequest = System.currentTimeMillis();
+            settings.setLastWeatherRequestTime(lastLocationRequest);
             WeatherService.start(mContext, settings.weatherCityID);
         }
 
@@ -1438,6 +1440,7 @@ public class NightDreamUI {
                 Log.v(TAG, "Weather data updated");
                 settings.weatherEntry = settings.getWeatherEntry();
                 clockLayout.update(settings.weatherEntry);
+                ClockWidgetProvider.updateAllWidgets(context);
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 showAlarmClock();
