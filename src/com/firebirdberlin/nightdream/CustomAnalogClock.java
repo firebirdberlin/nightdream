@@ -17,6 +17,7 @@ import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.Calendar;
@@ -33,6 +34,7 @@ public class CustomAnalogClock extends View {
     ColorFilter customColorFilter;
     ColorFilter secondaryColorFilter;
     Typeface typeface = Typeface.DEFAULT;
+    Typeface boldTypeface = Typeface.DEFAULT;
     float centerX = 0.f;
     float centerY = 0.f;
     int radius = 0;
@@ -88,7 +90,9 @@ public class CustomAnalogClock extends View {
     }
 
     public void setTypeface(Typeface typeface) {
+
         this.typeface = typeface;
+        this.boldTypeface = Typeface.create(typeface, Typeface.BOLD);
     }
 
     @Override
@@ -494,13 +498,16 @@ public class CustomAnalogClock extends View {
                     // 3,6,9,12
                     paint.setColorFilter(customColorFilter);
                     paint.setTextSize(digitFontSizeBig);
+                    paint.setTypeface(boldTypeface);
                 } else {
                     paint.setColorFilter(secondaryColorFilter);
                     paint.setTextSize(digitFontSizeSmall);
+                    paint.setTypeface(typeface);
                 }
             } else {
                 paint.setColorFilter(secondaryColorFilter);
                 paint.setTextSize(digitFontSizeSmall);
+                paint.setTypeface(typeface);
             }
 
             Rect bounds = new Rect();

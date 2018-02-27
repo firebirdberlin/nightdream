@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.models;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import java.util.Hashtable;
 
@@ -9,9 +10,13 @@ public class FontCache {
 
     private static Hashtable<String, Typeface> fontCache = new Hashtable<>();
 
+    private static final String TAG = "FontCache";
+
     public static Typeface get(Context context, String name) {
-        Typeface tf = fontCache.get(name);
+        final String cacheKey = name;
+        Typeface tf = fontCache.get(cacheKey);
         if (tf == null) {
+            //Log.d(TAG, "cache miss: cacheKey=" +  cacheKey);
             final String ASSET_PATH = "file:///android_asset/";
 
             if (name.contains(ASSET_PATH)) {
@@ -28,7 +33,10 @@ public class FontCache {
                 e.printStackTrace();
                 return null;
             }
-            fontCache.put(name, tf);
+            //Log.d(TAG, "cache put: cacheKey=" + cacheKey + " value=" + (tf != null ? tf.toString() : "null"));
+            fontCache.put(cacheKey, tf);
+        } else {
+            //Log.d(TAG, "cache hit: name=" + name + " obj=" + tf.toString());
         }
         return tf;
     }
