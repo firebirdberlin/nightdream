@@ -309,7 +309,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
 
         builder.setPersisted(true);
-        builder.setPeriodic(240000);
+        builder.setPeriodic(60000);
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         int jobResult = jobScheduler.schedule(builder.build());
@@ -328,7 +328,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         alarmIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
         final int ALARM_ID = 0;
-        final int INTERVAL_MILLIS = 240000;
+        final int INTERVAL_MILLIS = 60000;
 
         PendingIntent removedIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
