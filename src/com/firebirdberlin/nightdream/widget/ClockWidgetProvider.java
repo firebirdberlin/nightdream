@@ -18,7 +18,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,6 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
-import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.util.Calendar;
 
@@ -98,7 +96,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         ClockLayout clockLayout = (ClockLayout) container.findViewById(R.id.clockLayout);
 
         final boolean lightBackground = true;
-        updateClockLayoutSettings(context, clockLayout, widgetSize.height);
+        updateClockLayoutSettings(context, clockLayout, widgetSize);
 
         // round corners
         if (lightBackground) {
@@ -137,7 +135,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     }
 
     private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout,
-                                                  int widgetHeight) {
+                                                  Dimension widgetDimension) {
         Settings settings = new Settings(context);
 
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -150,7 +148,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
-        clockLayout.showDate(widgetHeight >= 100 && settings.showDate);
+        clockLayout.showDate(widgetDimension.height >= 100 && widgetDimension.width >= 100 && settings.showDate);
 
         // needs some more testing
         final boolean weatherUpdateEnabled = false;
@@ -171,7 +169,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                 && settings.weatherEntry.ageMillis() <= 8 * 60 * 60 * 1000) {
             clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
             clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
-            clockLayout.showWeather(widgetHeight >= 100 && settings.showWeather);
+            clockLayout.showWeather(widgetDimension.height >= 100 && widgetDimension.width >= 100 && settings.showWeather);
 
             clockLayout.update(settings.weatherEntry);
         } else {
@@ -306,12 +304,16 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void scheduleJob(Context context) {
-        ComponentName serviceComponent = new ComponentName(context.getPackageName(), ClockWidgetJobService.class.getName());
+        ComponentName serviceComponent = new ComponentName(context.getPackageName(),
+                ClockWidgetJobService.class.getName());
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
+
         builder.setPersisted(true);
         builder.setPeriodic(240000);
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
         int jobResult = jobScheduler.schedule(builder.build());
+
         if (jobResult == JobScheduler.RESULT_SUCCESS){
             Log.d(TAG, "scheduled ClockWidgetJobService job successfully");
         }
@@ -352,13 +354,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
-
         //Log.d(TAG, "onAppWidgetOptionsChanged");
         WidgetDimension w = ClockWidgetProvider.widgetDimensionFromBundle(bundle);
-        //Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
+        Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
 
         updateWidget(context, appWidgetManager, appWidgetId, w);
-
     }
 
     public static final class Dimension {

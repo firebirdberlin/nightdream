@@ -257,9 +257,17 @@ public class WeatherLayout extends LinearLayout {
             textSize += measureText(temperatureText);
         }
         if ( showWindSpeed ) {
-            textSize += measureText(iconWind);
+            if (iconWindDirection != null) {
+                // temperatureText is used to determine the line height
+                textSize += measureText(temperatureText);
+            } else {
+                textSize += measureText(iconWind);
+            }
             textSize += measureText(windText);
         }
+
+        // add 10% for padding
+        textSize += textSize / 10;
         return textSize;
     }
 
