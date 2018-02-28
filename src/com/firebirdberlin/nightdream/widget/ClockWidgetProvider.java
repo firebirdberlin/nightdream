@@ -136,6 +136,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout,
                                                   Dimension widgetDimension) {
+        boolean showAdditionalLines = widgetDimension.height >= 130 && widgetDimension.width >= 130;
         Settings settings = new Settings(context);
 
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -148,7 +149,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
-        clockLayout.showDate(widgetDimension.height >= 100 && widgetDimension.width >= 100 && settings.showDate);
+        clockLayout.showDate(showAdditionalLines && settings.showDate);
 
         // needs some more testing
         final boolean weatherUpdateEnabled = false;
@@ -169,7 +170,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                 && settings.weatherEntry.ageMillis() <= 8 * 60 * 60 * 1000) {
             clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
             clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
-            clockLayout.showWeather(widgetDimension.height >= 100 && widgetDimension.width >= 100 && settings.showWeather);
+            clockLayout.showWeather(showAdditionalLines && settings.showWeather);
 
             clockLayout.update(settings.weatherEntry);
         } else {

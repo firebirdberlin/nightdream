@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -314,7 +315,8 @@ public class ClockLayout extends LinearLayout {
         }
         if (weatherLayout != null) {
             weatherLayout.setMaxWidth(widgetSize / 2);
-            weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
+            weatherLayout.setMaxFontSizesInPx(
+                    Utility.spToPx(context, minFontSize),
                     Utility.spToPx(context, maxFontSize));
             weatherLayout.update();
             weatherLayout.setTranslationY(-0.2f * widgetSize);
@@ -342,7 +344,7 @@ public class ClockLayout extends LinearLayout {
 
         int widgetSize;
         if (displayInWidget) {
-            widgetSize = (parentHeight > 0 && parentHeight < parentWidth) ? parentHeight * 7 / 10 : parentWidth;
+            widgetSize = (parentHeight > 0 && parentHeight < parentWidth) ? parentHeight : parentWidth;
         } else {
             widgetSize = getAnalogWidgetSize(parentWidth, config);
         }
@@ -366,6 +368,18 @@ public class ClockLayout extends LinearLayout {
         }
         int additionalHeight = (int) (getHeightOf(date) + getHeightOf(weatherLayout));
         setSize(widgetSize, widgetSize + additionalHeight);
+
+        int measuredHeight = Utility.getHeightOfView(this);
+        Log.i(TAG, "### measuredHeight=" + measuredHeight + ", parentHeight=" + parentHeight);
+
+        if (displayInWidget && parentHeight > 0 && measuredHeight > parentHeight) {
+            // shrink analog clock
+            int newHeight = parentHeight - additionalHeight;
+            LayoutParams params = (LayoutParams) analog_clock.getLayoutParams();
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+            params.width = newHeight;
+            params.height = newHeight;
+        }
     }
 
     private float getHeightOf(View view) {
