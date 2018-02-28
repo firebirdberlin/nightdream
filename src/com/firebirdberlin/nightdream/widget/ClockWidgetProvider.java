@@ -39,6 +39,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "WidgetProvider";
     private static Bitmap widgetBitmap;
     private static TimeReceiver timeReceiver;
+    private static ScreenReceiver screenReceiver;
 
     static void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
@@ -247,9 +248,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
-
         setTimeTick(context);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             scheduleJob(context);
         } else {
@@ -265,16 +264,31 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     void setTimeTick(Context context) {
         if (timeReceiver != null) return;
+        Log.d(TAG, "setTimeTick()");
+        if (screenReceiver != null) {
+            context.getApplicationContext().unregisterReceiver(screenReceiver);
+            screenReceiver = null;
+        }
         timeReceiver = new TimeReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
         intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         context.getApplicationContext().registerReceiver(timeReceiver, intentFilter);
     }
 
     void unsetTimeTick(Context context) {
+        Log.d(TAG, "unsetTimeTick");
         if (timeReceiver != null) {
             context.getApplicationContext().unregisterReceiver(timeReceiver);
+            timeReceiver = null;
+        }
+        if (screenReceiver == null) {
+            screenReceiver = new ScreenReceiver();
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+
+            context.getApplicationContext().registerReceiver(screenReceiver, intentFilter);
         }
     }
 
@@ -363,9 +377,24 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     class TimeReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent arg1) {
+        public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "time tick");
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+                unsetTimeTick(context);
+                return;
+            }
             updateAllWidgets(context);
+        }
+    }
+
+    class ScreenReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "screen ON");
+            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                updateAllWidgets(context);
+                return;
+            }
         }
     }
 
