@@ -151,15 +151,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
         clockLayout.showDate(showAdditionalLines && settings.showDate);
 
-        // needs some more testing
-        final boolean weatherUpdateEnabled = false;
-        //final boolean weatherUpdateEnabled = true;
-
         // update weather data via api if outdated
-        if (weatherUpdateEnabled && shallUpdateWeatherData(settings)) {
-            long requestAge = System.currentTimeMillis() - settings.lastWeatherRequestTime;
-            long age = (settings.weatherEntry != null ? settings.weatherEntry.ageMillis() : -1L);
-            Log.d(TAG, "Weather data outdated. Trying to refresh ! (age=" + age + ", requestAge=" + requestAge + ")");
+        if (WeatherService.shallUpdateWeatherData(settings)) {
             settings.setLastWeatherRequestTime(System.currentTimeMillis());
             WeatherService.start(context, settings.weatherCityID);
         }
@@ -176,24 +169,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         } else {
             clockLayout.clearWeather();
         }
-    }
-
-    private static boolean shallUpdateWeatherData(Settings settings) {
-        long requestAge = System.currentTimeMillis() - settings.lastWeatherRequestTime;
-        long diff = (settings.weatherEntry != null ? settings.weatherEntry.ageMillis() : -1L);
-        //final int maxDiff = 90 * 60 * 1000;
-        final int maxDiff = 1000;
-        final int maxRequestAge = 15 * 60 * 1000;
-        //final int maxRequestAge = 1 * 10 * 1000;
-        final String cityID = (settings.weatherEntry != null ? String.valueOf(settings.weatherEntry.cityID) : "null");
-        final boolean cityIdChanged = (!settings.weatherCityID.isEmpty() && settings.weatherEntry != null
-                && ! settings.weatherCityID.equals(String.valueOf(settings.weatherEntry.cityID)));
-        //Log.d(TAG, String.format("Weather: data age %d => %b", diff, diff > maxDiff));
-        //Log.d(TAG, String.format("Time since last request %d => %b", requestAge, requestAge > maxRequestAge));
-        //Log.d(TAG, String.format("City ID changed => %b (%s =?= %s)",
-        //        cityIdChanged, settings.weatherCityID, (cityID != null ? cityID : "null")));
-        // todo: handle change of city id?
-        return  ((diff < 0L || diff > maxDiff) && requestAge > maxRequestAge);
     }
 
     private static Dimension actualWidgetSize(Context context, WidgetDimension dimension) {

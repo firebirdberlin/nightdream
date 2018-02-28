@@ -1,22 +1,62 @@
 package com.firebirdberlin.nightdream.services;
 
-import java.lang.String;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
+
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherService extends Service
                             implements LocationUpdateReceiver.AsyncResponse {
     private static String TAG = "NightDream.WeatherService";
-
+    private static LocationUpdateReceiver locationReceiver = null;
+    private static long lastLocationRequest = 0L;
     private Context mContext = null;
     private boolean running = false;
-    private static LocationUpdateReceiver locationReceiver = null;
+
+    public static void start(Context context) {
+        Intent i = new Intent(context, WeatherService.class);
+        context.startService(i);
+    }
+
+    public static void start(Context context, String cityID) {
+        if (!cityID.isEmpty()) {
+            DownloadWeatherService.start(context, cityID);
+            return;
+        }
+
+        Intent i = new Intent(context, WeatherService.class);
+        context.startService(i);
+    }
+
+    public static boolean shallUpdateWeatherData(Settings settings) {
+        if (!settings.showWeather) return false;
+
+        WeatherEntry entry = settings.weatherEntry;
+        long requestAge = System.currentTimeMillis() - lastLocationRequest;
+        long diff = entry.ageMillis();
+        final int maxDiff = 90 * 60 * 1000;
+        final int maxRequestAge = 15 * 60 * 1000;
+        final String cityID = String.valueOf(entry.cityID);
+        Log.d(TAG, String.format("Weather: data age %d => %b", diff, diff > maxDiff));
+        Log.d(TAG, String.format("Time since last request %d => %b", requestAge, requestAge > maxRequestAge));
+        Log.d(TAG, String.format("City ID changed => %b (%s =?= %s)",
+                (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID)),
+                settings.weatherCityID, cityID));
+        boolean result = (
+                diff < 0L
+                        || (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID))
+                        || (diff > maxDiff && requestAge > maxRequestAge)
+        );
+        if (result) {
+            lastLocationRequest = System.currentTimeMillis();
+        }
+        return result;
+    }
 
     @Override
     public void onCreate(){
@@ -59,20 +99,5 @@ public class WeatherService extends Service
     public void onDestroy(){
         running = false;
         LocationUpdateReceiver.unregister(this, locationReceiver);
-    }
-
-    public static void start(Context context) {
-        Intent i = new Intent(context, WeatherService.class);
-        context.startService(i);
-    }
-
-    public static void start(Context context, String cityID) {
-        if (!cityID.isEmpty()) {
-            DownloadWeatherService.start(context, cityID);
-            return;
-        }
-
-        Intent i = new Intent(context, WeatherService.class);
-        context.startService(i);
     }
 }

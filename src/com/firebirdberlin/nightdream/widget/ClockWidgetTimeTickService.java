@@ -86,7 +86,6 @@ public class ClockWidgetTimeTickService extends Service {
     static final class TimeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //Log.d(TAG, "TimeReceiver onReceive");
             ClockWidgetProvider.updateAllWidgets(context);
         }
     }
