@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.hardware.display.DisplayManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
@@ -27,10 +28,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+
+import static android.content.Context.POWER_SERVICE;
 
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
@@ -198,7 +206,7 @@ public class Utility {
         try {
             @SuppressWarnings("deprecation")
             PowerManager.WakeLock wl =
-                    ((PowerManager) c.getSystemService(Context.POWER_SERVICE))
+                    ((PowerManager) c.getSystemService(POWER_SERVICE))
                             .newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
                                             PowerManager.ACQUIRE_CAUSES_WAKEUP,
                                     "WAKE_LOCK_TAG");
@@ -336,5 +344,56 @@ public class Utility {
     public void restoreSystemBrightnessMode() {
         System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
                 system_brightness_mode);
+    }
+
+    public static boolean isScreenOn(Context context) {
+        if (Build.VERSION.SDK_INT >= 20){
+            DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+            for (Display display : dm.getDisplays()) {
+                if (display.getState() != Display.STATE_OFF) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            PowerManager powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
+            return powerManager.isScreenOn();
+        }
+    }
+
+    private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static void logToFile(Context context, String logFileName, String text) {
+
+        // allow logging only in debug mode
+        if (!isDebuggable(context)) {
+            return;
+        }
+
+        String filePath = context.getFilesDir().getPath().toString() + "/" + logFileName;
+        Log.d(TAG, "log file locatin: " + filePath);
+        File logFile = new File(filePath);
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile();
+            } catch (IOException e) {
+                Log.i(TAG, "error creating log file ", e);
+            }
+        }
+
+        if (logFile.exists()) {
+
+            Date time = Calendar.getInstance().getTime();
+            String formattedTime = LOG_DATE_FORMAT.format(time);
+
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
+                writer.append(formattedTime + " " + text);
+                writer.newLine();
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                Log.i(TAG, "error writing to log file ", e);
+            }
+        }
     }
 }

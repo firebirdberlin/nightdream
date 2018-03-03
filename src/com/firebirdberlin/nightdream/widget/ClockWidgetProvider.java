@@ -41,6 +41,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     private static TimeReceiver timeReceiver;
     private static ScreenReceiver screenReceiver;
 
+    private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
+
     static void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
         for (int widgetId : appWidgetIds) {
@@ -58,6 +60,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static void updateWidget(Context context, AppWidgetManager appWidgetManager,
                                      int appWidgetId, WidgetDimension dimension) {
+
+        //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated widget");
 
         final View sourceView = prepareSourceView(context, dimension);
 
@@ -156,6 +160,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         if (WeatherService.shallUpdateWeatherData(settings)) {
             settings.setLastWeatherRequestTime(System.currentTimeMillis());
             WeatherService.start(context, settings.weatherCityID);
+            //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated weather");
         }
 
         // update weather date if not outdated
@@ -241,8 +246,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             stopAlarmManagerService(context);
         }
 
-        // to be removed
-        //ClockWidgetTimeTickService.stopService(context);
     }
 
     @Override
@@ -254,10 +257,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         } else {
             scheduleAlarmManagerService(context);
         }
-
-        // keep running a background service, which registers the ACTION_TIME_TICK broadcast receiver.
-        // to be removed
-        //ClockWidgetTimeTickService.startService(context);
 
         updateAllWidgets(context, appWidgetManager, appWidgetIds);
     }
