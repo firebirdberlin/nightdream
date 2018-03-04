@@ -194,7 +194,7 @@ public class ClockLayout extends LinearLayout {
                 if (clock != null) {
                     clock.setPadding(0, 0, 0, 0);
                     clock.setMaxWidth((int) (0.8 * parentWidth));
-                    clock.setMaxHeight((int) (0.45 * parentHeight));
+                    clock.setMaxHeight((int) (0.35 * parentHeight));
                     clock.setMaxFontSizesInSp(minFontSize, (300.f));
                     clock.invalidate(); // must invalidate to get correct getHeightOfView below
                 }

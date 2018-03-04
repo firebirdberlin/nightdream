@@ -278,14 +278,14 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         ComponentName serviceComponent = new ComponentName(
                 context.getPackageName(), ClockWidgetJobService.class.getName());
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
-
         builder.setPersisted(true);
         builder.setRequiresCharging(false);
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         builder.setPeriodic(60000);
 
+
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.cancel(0);
+//        jobScheduler.cancel(0);
 
         int jobResult = jobScheduler.schedule(builder.build());
 

@@ -20,14 +20,14 @@ public class ClockWidgetJobService extends JobService {
         if ( Utility.isScreenOn(this)) {
             long now = System.currentTimeMillis();
             Log.d(TAG, String.valueOf(now - lastExecutionTime));
-//            if (now - lastExecutionTime > 59000) {
+            if (now - lastExecutionTime > 59000) {
                 // on Android M the job executes multiple times when triggered
                 // don't do update too often.
                 lastExecutionTime = System.currentTimeMillis();
                 Log.d(TAG, " ... screen is on :)");
 
                 ClockWidgetProvider.updateAllWidgets(this);
-//            }
+            }
         }
         return false;
     }
