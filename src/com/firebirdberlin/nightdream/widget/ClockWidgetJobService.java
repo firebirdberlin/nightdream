@@ -12,12 +12,22 @@ import com.firebirdberlin.nightdream.Utility;
 public class ClockWidgetJobService extends JobService {
 
     private final static String TAG = "ClockWidgetJobService";
+    private static long lastExecutionTime = 0;
 
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob");
-        if (Utility.isScreenOn(this)) {
-            ClockWidgetProvider.updateAllWidgets(this);
+        if ( Utility.isScreenOn(this)) {
+            long now = System.currentTimeMillis();
+            Log.d(TAG, String.valueOf(now - lastExecutionTime));
+//            if (now - lastExecutionTime > 59000) {
+                // on Android M the job executes multiple times when triggered
+                // don't do update too often.
+                lastExecutionTime = System.currentTimeMillis();
+                Log.d(TAG, " ... screen is on :)");
+
+                ClockWidgetProvider.updateAllWidgets(this);
+//            }
         }
         return false;
     }

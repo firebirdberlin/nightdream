@@ -225,7 +225,7 @@ public class ClockLayout extends LinearLayout {
                     if (date != null) {
                         date.setMaxHeight(parentHeight / 6);
                     }
-                    if (weatherLayout != null) {
+                    if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
                         weatherLayout.setMaxWidth((int) (0.7 * parentWidth));
                         weatherLayout.update();
                     }

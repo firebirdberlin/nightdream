@@ -16,6 +16,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,11 +38,10 @@ import java.util.Calendar;
 public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
+    private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
     private static Bitmap widgetBitmap;
     private static TimeReceiver timeReceiver;
     private static ScreenReceiver screenReceiver;
-
-    private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
 
     static void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
@@ -63,27 +63,10 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated widget");
 
-        final View sourceView = prepareSourceView(context, dimension);
+        final PrepareBitmapTask task = new PrepareBitmapTask(context,
+                appWidgetManager, appWidgetId, dimension);
 
-        if (widgetBitmap != null) {
-            sourceView.destroyDrawingCache();
-            widgetBitmap.recycle();
-            widgetBitmap = null;
-            System.gc();
-        }
-        sourceView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-        sourceView.setDrawingCacheEnabled(true);
-        widgetBitmap = sourceView.getDrawingCache(false);
-
-        RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
-        updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
-
-        // click activates app
-        Intent intent = new Intent(context, NightDreamActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
-
-        appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+        task.execute();
     }
 
     private static View prepareSourceView(Context context, WidgetDimension dimension) {
@@ -351,6 +334,52 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
 
         updateWidget(context, appWidgetManager, appWidgetId, w);
+    }
+
+    private static class PrepareBitmapTask extends AsyncTask<Void, Void, Bitmap> {
+
+        private Context context;
+        private AppWidgetManager appWidgetManager;
+        private int appWidgetId;
+        private WidgetDimension dimension;
+
+        public PrepareBitmapTask(Context context, AppWidgetManager appWidgetManager,
+                                 int appWidgetId, WidgetDimension dimension) {
+            super();
+            this.context = context;
+            this.appWidgetManager = appWidgetManager;
+            this.appWidgetId = appWidgetId;
+            this.dimension = dimension;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            final View sourceView = prepareSourceView(context, dimension);
+
+            if (widgetBitmap != null) {
+                sourceView.destroyDrawingCache();
+                widgetBitmap.recycle();
+                widgetBitmap = null;
+                System.gc();
+            }
+            sourceView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+            sourceView.setDrawingCacheEnabled(true);
+            widgetBitmap = sourceView.getDrawingCache(false);
+            return widgetBitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap widgetBitmap) {
+            RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
+            updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
+
+            // click activates app
+            Intent intent = new Intent(context, NightDreamActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+
+            appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+        }
     }
 
     public static final class Dimension {
