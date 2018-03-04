@@ -74,8 +74,8 @@ public class AutoAdjustTextView extends TextView {
         } catch (NullPointerException e) {
             Log.e(TAG, "Could not adjust the text size");
             e.printStackTrace();
-            super.invalidate();
         }
+        super.invalidate();
     }
 
     private int getAdjustedTextSize() {
