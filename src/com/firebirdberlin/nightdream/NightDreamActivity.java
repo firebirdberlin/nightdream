@@ -82,7 +82,7 @@ public class NightDreamActivity extends Activity
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private ReceiverRadioStream receiverRadioStream = null;
-    private PowerManager pm;
+
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -153,8 +153,6 @@ public class NightDreamActivity extends Activity
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
-
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
         // allow the app to be displayed above the keyguard
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -304,7 +302,8 @@ public class NightDreamActivity extends Activity
         unregister(receiverRadioStream);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
-        if (mySettings.allow_screen_off && mode == 0 && screenWasOn && !isScreenOn() ){ // screen off in night mode
+        if (mySettings.allow_screen_off && mode == 0
+                && screenWasOn && !Utility.isScreenOn(this) ){ // screen off in night mode
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
@@ -325,18 +324,6 @@ public class NightDreamActivity extends Activity
         } catch ( IllegalArgumentException ignored) {
 
         }
-    }
-
-    protected boolean isScreenOn() {
-        if (Build.VERSION.SDK_INT <= 19){
-            return deprecatedIsScreenOn();
-        }
-        return pm.isInteractive();
-    }
-
-    @SuppressWarnings("deprecation")
-    protected boolean deprecatedIsScreenOn() {
-        return pm.isScreenOn();
     }
 
     @Override
@@ -504,7 +491,7 @@ public class NightDreamActivity extends Activity
     }
 
     private boolean shallKeepScreenOn(int mode) {
-        screenWasOn = screenWasOn || isScreenOn();
+        screenWasOn = screenWasOn || Utility.isScreenOn(this);
 
         Log.d(TAG, "screenWasOn = " + String.valueOf(screenWasOn));
         if (mode > 0

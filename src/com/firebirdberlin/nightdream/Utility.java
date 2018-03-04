@@ -346,21 +346,6 @@ public class Utility {
                 system_brightness_mode);
     }
 
-    public static boolean isScreenOn(Context context) {
-        if (Build.VERSION.SDK_INT >= 20){
-            DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
-            for (Display display : dm.getDisplays()) {
-                if (display.getState() != Display.STATE_OFF) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            PowerManager powerManager = (PowerManager) context.getSystemService(POWER_SERVICE);
-            return powerManager.isScreenOn();
-        }
-    }
-
     private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     public static void logToFile(Context context, String logFileName, String text) {
 
@@ -395,5 +380,18 @@ public class Utility {
                 Log.i(TAG, "error writing to log file ", e);
             }
         }
+    }
+
+    public static boolean isScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (Build.VERSION.SDK_INT <= 19){
+            return deprecatedIsScreenOn(pm);
+        }
+        return pm.isInteractive();
+    }
+
+    @SuppressWarnings("deprecation")
+    protected static boolean deprecatedIsScreenOn(PowerManager pm) {
+        return pm.isScreenOn();
     }
 }
