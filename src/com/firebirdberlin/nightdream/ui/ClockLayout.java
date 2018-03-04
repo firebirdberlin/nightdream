@@ -198,13 +198,13 @@ public class ClockLayout extends LinearLayout {
                     clock.setMaxFontSizesInSp(minFontSize, (300.f));
                     clock.invalidate(); // must invalidate to get correct getHeightOfView below
                 }
-                if (date != null) {
+                if (date != null  && date.getVisibility() == VISIBLE) {
                     date.setMaxWidth((int) (0.9 * parentWidth));
                     date.setMaxHeight(parentHeight / 5);
                     date.setMaxFontSizesInSp(minFontSize, 20.f);
                     date.invalidate(); // must invalidate to get correct getHeightOfView below
                 }
-                if (weatherLayout != null) {
+                if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
                     weatherLayout.setMaxWidth((int) (0.9 * parentWidth));
                     weatherLayout.setMaxFontSizesInPx(
                             Utility.spToPx(context, minFontSize),

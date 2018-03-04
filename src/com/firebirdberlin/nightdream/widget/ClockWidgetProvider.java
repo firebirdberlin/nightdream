@@ -240,7 +240,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.cancelAll();
+            jobScheduler.cancel(0);
         } else {
             // stop alarm
             stopAlarmManagerService(context);
@@ -271,7 +271,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         timeReceiver = new TimeReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         context.getApplicationContext().registerReceiver(timeReceiver, intentFilter);
     }
@@ -293,13 +292,17 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void scheduleJob(Context context) {
-        ComponentName serviceComponent = new ComponentName(context.getPackageName(),
-                ClockWidgetJobService.class.getName());
+        ComponentName serviceComponent = new ComponentName(
+                context.getPackageName(), ClockWidgetJobService.class.getName());
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
 
         builder.setPersisted(true);
+        builder.setRequiresCharging(false);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         builder.setPeriodic(60000);
+
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(0);
 
         int jobResult = jobScheduler.schedule(builder.build());
 
@@ -378,11 +381,12 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "time tick");
-            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+            String action = intent.getAction();
+            if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 unsetTimeTick(context);
-                return;
+            } else if (Intent.ACTION_TIME_TICK.equals(action)) {
+                updateAllWidgets(context);
             }
-            updateAllWidgets(context);
         }
     }
 
@@ -392,7 +396,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             Log.d(TAG, "screen ON");
             if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
                 updateAllWidgets(context);
-                return;
             }
         }
     }
