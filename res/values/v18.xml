@@ -3,4 +3,5 @@
     <bool name="use_NotificationListenerService">false</bool>
     <bool name="use_Daydream">false</bool>
     <bool name="use_Activity">true</bool>
+    <bool name="use_widget">false</bool>
 </resources>

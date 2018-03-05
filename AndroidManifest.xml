@@ -152,7 +152,9 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".widget.ClockWidgetProvider">
+        <receiver
+            android:name=".widget.ClockWidgetProvider"
+            android:enabled="@bool/use_widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
@@ -165,8 +167,8 @@
 
         <service
             android:name=".widget.ClockWidgetJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
             android:name=".WeatherForecastActivity"

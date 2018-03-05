@@ -189,25 +189,25 @@ public class ClockLayout extends LinearLayout {
             }
 
             if (displayInWidget) {
-
+                setPadding(15, 15, 15, 15);
                 //ignore orientation, 100% width, so it fills whole space of the widget area
                 if (clock != null) {
                     clock.setPadding(0, 0, 0, 0);
                     clock.setMaxWidth((int) (0.8 * parentWidth));
                     clock.setMaxHeight((int) (0.35 * parentHeight));
-                    clock.setMaxFontSizesInSp(minFontSize, (300.f));
+                    clock.setMaxFontSizesInSp(6.f, 300.f);
                     clock.invalidate(); // must invalidate to get correct getHeightOfView below
                 }
                 if (date != null  && date.getVisibility() == VISIBLE) {
                     date.setMaxWidth((int) (0.9 * parentWidth));
                     date.setMaxHeight(parentHeight / 5);
-                    date.setMaxFontSizesInSp(minFontSize, 20.f);
+                    date.setMaxFontSizesInSp(6.f, 20.f);
                     date.invalidate(); // must invalidate to get correct getHeightOfView below
                 }
                 if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
                     weatherLayout.setMaxWidth((int) (0.9 * parentWidth));
                     weatherLayout.setMaxFontSizesInPx(
-                            Utility.spToPx(context, minFontSize),
+                            Utility.spToPx(context, 6.f),
                             Utility.spToPx(context, 20.f));
                     weatherLayout.update();
                     weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below

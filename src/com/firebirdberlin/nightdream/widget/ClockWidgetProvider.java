@@ -30,44 +30,17 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
-import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 
 import java.util.Calendar;
 
-
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
-    private static Bitmap widgetBitmap;
     private static TimeReceiver timeReceiver;
     private static ScreenReceiver screenReceiver;
 
-    static void updateAllWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
-        for (int widgetId : appWidgetIds) {
-
-            // API 16 and up only
-            Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
-
-            WidgetDimension w = ClockWidgetProvider.widgetDimensionFromBundle(bundle);
-
-            //Log.d(TAG, String.format("widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", widgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
-
-            updateWidget(context, appWidgetManager, widgetId, w);
-        }
-    }
-
-    private static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                     int appWidgetId, WidgetDimension dimension) {
-
-        //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated widget");
-
-        final PrepareBitmapTask task = new PrepareBitmapTask(context,
-                appWidgetManager, appWidgetId, dimension);
-
-        task.execute();
-    }
 
     private static View prepareSourceView(Context context, WidgetDimension dimension) {
 
@@ -83,41 +56,16 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         ClockLayout clockLayout = (ClockLayout) container.findViewById(R.id.clockLayout);
 
-        final boolean lightBackground = true;
         updateClockLayoutSettings(context, clockLayout, widgetSize);
-
-        // round corners
-        if (lightBackground) {
-            GradientDrawable shape =  new GradientDrawable();
-            shape.setCornerRadius(30);
-            shape.setGradientType(GradientDrawable.LINEAR_GRADIENT);
-            int[] colors = {
-                    Color.parseColor("#11000000"),
-                    Color.parseColor("#AA000000")
-            };
-            shape.setColors(colors);
-            clockLayout.setBackground(shape);
-        }
 
         Configuration config = context.getResources().getConfiguration();
         clockLayout.updateLayoutForWidget(widthPixel, heightPixel, config);
 
-        // give digital clock some padding
-        if (clockLayout.isDigital()) {
-            clockLayout.setPadding(15, 15, 15, 15);
-        }
-
-        Log.i(TAG, "widget height=" + heightPixel);
-
-        // container.measure(viewWidth, viewHeight); // this wont work, use with makeMeasureSpec below
         container.measure(
                 View.MeasureSpec.makeMeasureSpec(widthPixel, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(heightPixel, View.MeasureSpec.EXACTLY));
+                View.MeasureSpec.makeMeasureSpec(heightPixel, View.MeasureSpec.EXACTLY)
+        );
         container.layout(0, 0, widthPixel, heightPixel);
-
-        // not needed obviously
-        //sourceView.requestLayout();
-        //sourceView.invalidate();
 
         return container;
     }
@@ -130,11 +78,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(settings.getClockLayoutID(false));
         clockLayout.setTypeface(settings.typeface);
-        ClockLayoutPreviewPreference.PreviewMode previewMode = ClockLayoutPreviewPreference.PreviewMode.DAY;
-
-        clockLayout.setPrimaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
-        clockLayout.setSecondaryColor(previewMode == ClockLayoutPreviewPreference.PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
-
+        clockLayout.setPrimaryColor(settings.clockColor);
+        clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
         clockLayout.showDate(showAdditionalLines && settings.showDate);
@@ -158,6 +103,18 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         } else {
             clockLayout.clearWeather();
         }
+
+        {   // draw background
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(30);
+            shape.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+            int[] colors = {
+                    Color.parseColor("#11000000"),
+                    Color.parseColor("#AA000000")
+            };
+            shape.setColors(colors);
+            clockLayout.setBackground(shape);
+        }
     }
 
     private static Dimension actualWidgetSize(Context context, WidgetDimension dimension) {
@@ -180,7 +137,20 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return new Dimension(width, height);
     }
 
-    public static WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
+    public static void updateAllWidgets(Context context) {
+        // update all widget instances via intent
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        final int[] appWidgetIds = getAppWidgetIds(context, appWidgetManager);
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, ClockWidgetProvider.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+        context.sendBroadcast(intent);
+    }
+
+    public static int[] getAppWidgetIds(Context context, AppWidgetManager appWidgetManager) {
+        return appWidgetManager.getAppWidgetIds(new ComponentName(context, ClockWidgetProvider.class));
+    }
+
+    public WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
 
         // API 16 and up only
         //portrait mode: width=minWidth, height=maxHeight, landscape mode: width=maxWidth, height=minHeight
@@ -190,22 +160,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         int maxHeight = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT);
 
         return new WidgetDimension(minWidth, minHeight, maxWidth, maxHeight);
-    }
-
-    public static int[] appWidgetIds(Context context, AppWidgetManager appWidgetManager) {
-
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, ClockWidgetProvider.class));
-        return appWidgetIds;
-
-    }
-
-    public static void updateAllWidgets(Context context) {
-        // update all widget instances via intent
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(context, appWidgetManager);
-        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, ClockWidgetProvider.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-        context.sendBroadcast(intent);
     }
 
     @Override
@@ -223,7 +177,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.cancel(0);
+            if (jobScheduler != null) {
+                jobScheduler.cancel(0);
+            }
         } else {
             // stop alarm
             stopAlarmManagerService(context);
@@ -241,7 +197,23 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             scheduleAlarmManagerService(context);
         }
 
-        updateAllWidgets(context, appWidgetManager, appWidgetIds);
+        for (int widgetId : appWidgetIds) {
+
+            // API 16 and up only
+            Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
+
+            WidgetDimension w = widgetDimensionFromBundle(bundle);
+            updateWidget(context, appWidgetManager, widgetId, w);
+        }
+    }
+
+    private void updateWidget(Context context, AppWidgetManager appWidgetManager,
+                              int appWidgetId, WidgetDimension dimension) {
+
+        //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated widget");
+
+        final PrepareBitmapTask task = new PrepareBitmapTask(appWidgetManager, appWidgetId, dimension);
+        task.execute(context);
     }
 
     void setTimeTick(Context context) {
@@ -285,7 +257,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-//        jobScheduler.cancel(0);
+        if (jobScheduler == null) {
+            return;
+        }
 
         int jobResult = jobScheduler.schedule(builder.build());
 
@@ -296,9 +270,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private void scheduleAlarmManagerService(Context context) {
         final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
+        if (manager == null) {
+            return;
+        }
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final int[] appWidgetIds = ClockWidgetProvider.appWidgetIds(context, appWidgetManager);
+        final int[] appWidgetIds = ClockWidgetProvider.getAppWidgetIds(context, appWidgetManager);
         Intent alarmIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         alarmIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
@@ -324,52 +300,45 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (manager == null) {
+            return;
+        }
         manager.cancel(pendingIntent);
     }
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
         //Log.d(TAG, "onAppWidgetOptionsChanged");
-        WidgetDimension w = ClockWidgetProvider.widgetDimensionFromBundle(bundle);
+        WidgetDimension w = widgetDimensionFromBundle(bundle);
         Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
 
         updateWidget(context, appWidgetManager, appWidgetId, w);
     }
 
-    private static class PrepareBitmapTask extends AsyncTask<Void, Void, Bitmap> {
+    private static class PrepareBitmapTask extends AsyncTask<Context, Void, RemoteViews> {
 
-        private Context context;
         private AppWidgetManager appWidgetManager;
         private int appWidgetId;
         private WidgetDimension dimension;
 
-        public PrepareBitmapTask(Context context, AppWidgetManager appWidgetManager,
-                                 int appWidgetId, WidgetDimension dimension) {
+        PrepareBitmapTask(AppWidgetManager appWidgetManager, int appWidgetId,
+                          WidgetDimension dimension) {
             super();
-            this.context = context;
             this.appWidgetManager = appWidgetManager;
             this.appWidgetId = appWidgetId;
             this.dimension = dimension;
         }
 
         @Override
-        protected Bitmap doInBackground(Void... voids) {
+        protected RemoteViews doInBackground(Context... contexts) {
+            Context context = contexts[0];
             final View sourceView = prepareSourceView(context, dimension);
 
-            if (widgetBitmap != null) {
-                sourceView.destroyDrawingCache();
-                widgetBitmap.recycle();
-                widgetBitmap = null;
-                System.gc();
-            }
             sourceView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
             sourceView.setDrawingCacheEnabled(true);
-            widgetBitmap = sourceView.getDrawingCache(false);
-            return widgetBitmap;
-        }
+            Bitmap widgetBitmap = sourceView.getDrawingCache(false);
 
-        @Override
-        protected void onPostExecute(Bitmap widgetBitmap) {
+            System.gc();
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
             updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
 
@@ -378,6 +347,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
 
+            return updateViews;
+        }
+
+        @Override
+        protected void onPostExecute(RemoteViews updateViews) {
             appWidgetManager.updateAppWidget(appWidgetId, updateViews);
         }
     }
@@ -386,19 +360,19 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         public final int width;
         public final int height;
 
-        public Dimension(int width, int height) {
+        Dimension(int width, int height) {
             this.width = width;
             this.height = height;
         }
     }
 
-    public static final class WidgetDimension {
-        public final int minWidth;
-        public final int minHeight;
-        public final int maxWidth;
-        public final int maxHeight;
+    final class WidgetDimension {
+        final int minWidth;
+        final int minHeight;
+        final int maxWidth;
+        final int maxHeight;
 
-        public WidgetDimension(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+        WidgetDimension(int minWidth, int minHeight, int maxWidth, int maxHeight) {
             this.minWidth = minWidth;
             this.minHeight = minHeight;
             this.maxWidth = maxWidth;
