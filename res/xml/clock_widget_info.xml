@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="80dp"
-    android:minHeight="40dp"
-    android:updatePeriodMillis="0"
-    android:previewImage="@drawable/ic_nightdream"
+    xmlns:tools="http://schemas.android.com/tools"
     android:initialLayout="@layout/clock_widget"
+    android:minHeight="100dp"
+    android:minWidth="120dp"
+    android:previewImage="@drawable/widget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0"
     android:widgetCategory="home_screen"
-    android:resizeMode="horizontal|vertical">
+    tools:targetApi="jelly_bean_mr1">
 </appwidget-provider>
 <!--
 
