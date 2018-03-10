@@ -17,19 +17,15 @@ import java.util.List;
 
 public class PlaylistParser {
 
-    private static String TAG = "NightDream.PlaylistParser";
-
-    private static int READ_TIMEOUT = 3000;
-    private static int CONNECT_TIMEOUT = 3000;
-
     private static final String M3U_EXT_FILE_HEADER = "#EXTM3U";
     private static final String M3U_EXT_INFO_PREFIX = "#EXTINF:";
-
     private static final String PLS_FILE_HEADER = "[playlist]";
     private static final String PLS_FILE_FILE1_PREFIX = "File1=";
     private static final String PLS_FILE_TITLE1_PREFIX = "Title1=";
-
     private static final Integer[] USUAL_BITRATES = new Integer[] { 64, 96, 128, 192, 256};
+    private static String TAG = "NightDream.PlaylistParser";
+    private static int READ_TIMEOUT = 3000;
+    private static int CONNECT_TIMEOUT = 3000;
 
     public static boolean isPlaylistUrl(URL url) {
         return (getPlaylistFormat(url.getPath()) != null);
@@ -125,12 +121,12 @@ public class PlaylistParser {
     private static List<String> getResponseLines(InputStream inputStream) throws IOException {
         List<String> lines = new ArrayList<>();
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
             lines.add(line);
         }
         br.close();
+        br = null;
         return lines;
     }
 

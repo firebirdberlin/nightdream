@@ -53,6 +53,7 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.WeatherService;
+import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
@@ -144,7 +145,6 @@ public class NightDreamUI {
     private boolean daydreamMode = false;
     private boolean locked = false;
     private float last_ambient = 4.0f;
-    private long lastLocationRequest = 0L;
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
     private float LIGHT_VALUE_DAYLIGHT = 300.0f;
@@ -227,10 +227,11 @@ public class NightDreamUI {
         }
     };
     private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+        int rect[] = new int[2];
+
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
-            int rect[] = new int[2];
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) return false;
 
@@ -269,7 +270,6 @@ public class NightDreamUI {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             if (clockLayoutContainer == null) return false;
-            int rect[] = new int[2];
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) {
                 Point size = utility.getDisplaySize();
@@ -510,9 +510,9 @@ public class NightDreamUI {
         WeatherEntry entry = settings.weatherEntry;
         long diff = entry.ageMillis();
 
-        if (shallUpdateWeatherData(entry)) {
+        if (WeatherService.shallUpdateWeatherData(settings)) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
-            lastLocationRequest = System.currentTimeMillis();
+            settings.setLastWeatherRequestTime(System.currentTimeMillis());
             WeatherService.start(mContext, settings.weatherCityID);
         }
 
@@ -521,22 +521,6 @@ public class NightDreamUI {
             clockLayout.clearWeather();
         }
     }
-
-    private boolean shallUpdateWeatherData(WeatherEntry entry) {
-        long requestAge = System.currentTimeMillis() - lastLocationRequest;
-        long diff = entry.ageMillis();
-        final int maxDiff = 90 * 60 * 1000;
-        final int maxRequestAge = 15 * 60 * 1000;
-        final String cityID = String.valueOf(entry.cityID);
-        Log.d(TAG, String.format("Weather: data age %d => %b", diff, diff > maxDiff));
-        Log.d(TAG, String.format("Time since last request %d => %b", requestAge, requestAge > maxRequestAge));
-        Log.d(TAG, String.format("City ID changed => %b (%s =?= %s)",
-                    (!settings.weatherCityID.isEmpty() && ! settings.weatherCityID.equals(cityID)),
-                     settings.weatherCityID, cityID));
-        return (diff < 0L
-                || (!settings.weatherCityID.isEmpty() && ! settings.weatherCityID.equals(cityID))
-                || ( diff > maxDiff && requestAge > maxRequestAge));
-        }
 
     private void setupClockLayout() {
 
@@ -1438,6 +1422,7 @@ public class NightDreamUI {
                 Log.v(TAG, "Weather data updated");
                 settings.weatherEntry = settings.getWeatherEntry();
                 clockLayout.update(settings.weatherEntry);
+                ClockWidgetProvider.updateAllWidgets(context);
             } else
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 showAlarmClock();

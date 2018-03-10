@@ -12,7 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
+import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
@@ -56,7 +58,8 @@ public class WeatherLayout extends LinearLayout {
         iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
         temperatureText = (TextView) findViewById(R.id.temperatureText);
         windText = (TextView) findViewById(R.id.windText);
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/meteocons.ttf");
+
+        Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
         iconText.setTypeface(typeface);
         iconWind.setTypeface(typeface);
     }
@@ -138,11 +141,14 @@ public class WeatherLayout extends LinearLayout {
         Log.d("WeatherLayout", entry.toString());
         Log.d("WeatherLayout", formatTemperatureText(entry));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
+
             iconText.setText(iconToText(entry.weatherIcon));
+
             temperatureText.setText(formatTemperatureText(entry));
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(formatWindText(entry));
+
             update();
         } else {
             clear();
@@ -157,10 +163,13 @@ public class WeatherLayout extends LinearLayout {
             iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
             iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
         }
+
         fixIconWindDirectionSize();
+
         windText.invalidate();
         iconText.invalidate();
         iconWind.invalidate();
+
     }
 
     private String iconToText(String code) {
@@ -232,14 +241,13 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void fixIconWindDirectionSize() {
-        temperatureText.post(new Runnable() {
-            public void run() {
-                int height = temperatureText.getHeight();
-                iconWindDirection.setLayoutParams(new LinearLayout.LayoutParams(height, height));
-                iconWindDirection.requestLayout();
-                iconWindDirection.invalidate();
-            }
-        });
+        int height = Utility.getHeightOfView(temperatureText);
+        LayoutParams layoutParams = (LayoutParams) iconWindDirection.getLayoutParams();
+        layoutParams.width = height;
+        layoutParams.height = height;
+        iconWindDirection.setLayoutParams(layoutParams);
+        iconWindDirection.requestLayout();
+        iconWindDirection.invalidate();
     }
 
     public int measureText() {
@@ -249,9 +257,17 @@ public class WeatherLayout extends LinearLayout {
             textSize += measureText(temperatureText);
         }
         if ( showWindSpeed ) {
-            textSize += measureText(iconWind);
+            if (iconWindDirection != null) {
+                // temperatureText is used to determine the line height
+                textSize += measureText(temperatureText);
+            } else {
+                textSize += measureText(iconWind);
+            }
             textSize += measureText(windText);
         }
+
+        // add 10% for padding
+        textSize += textSize / 10;
         return textSize;
     }
 

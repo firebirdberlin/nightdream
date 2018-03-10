@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- copied from clock_layout_preference.xml -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/previewContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@android:id/summary"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:layout_centerInParent="true"
+    android:animateLayoutChanges="false"
+    android:orientation="vertical"
+    tools:targetApi="honeycomb">
+
+    <com.firebirdberlin.nightdream.ui.ClockLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/clockLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:animateLayoutChanges="false"
+        android:background="@android:color/black"
+        android:orientation="vertical"
+        android:translationX="0sp"
+        android:translationY="0sp"
+        tools:targetApi="honeycomb">
+
+    </com.firebirdberlin.nightdream.ui.ClockLayout>
+
+        <!--
+          transparent:
+            android:background="@android:color/transparent"
+
+        -->
+
+</RelativeLayout>

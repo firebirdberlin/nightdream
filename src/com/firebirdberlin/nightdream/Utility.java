@@ -11,9 +11,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.hardware.display.DisplayManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
@@ -28,10 +28,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+
+import static android.content.Context.POWER_SERVICE;
 
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
@@ -199,7 +206,7 @@ public class Utility {
         try {
             @SuppressWarnings("deprecation")
             PowerManager.WakeLock wl =
-                    ((PowerManager) c.getSystemService(Context.POWER_SERVICE))
+                    ((PowerManager) c.getSystemService(POWER_SERVICE))
                             .newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
                                             PowerManager.ACQUIRE_CAUSES_WAKEUP,
                                     "WAKE_LOCK_TAG");
@@ -225,7 +232,6 @@ public class Utility {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
                 context.getResources().getDisplayMetrics());
     }
-
 
     public static int getNearestEvenIntValue(float value) {
         int r = (int) Math.ceil(value);
@@ -273,22 +279,6 @@ public class Utility {
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                             | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
-
-    public static Typeface loadTypefacefromUri(Context context, String uri) {
-        final String ASSET_PATH = "file:///android_asset/";
-        try {
-            if (uri.contains(ASSET_PATH)) {
-                uri = uri.replace(ASSET_PATH, "");
-                return Typeface.createFromAsset(context.getAssets(), uri);
-            } else {
-                uri = uri.replace("file://", "");
-                return Typeface.createFromFile(uri);
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -354,5 +344,54 @@ public class Utility {
     public void restoreSystemBrightnessMode() {
         System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
                 system_brightness_mode);
+    }
+
+    private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static void logToFile(Context context, String logFileName, String text) {
+
+        // allow logging only in debug mode
+        if (!isDebuggable(context)) {
+            return;
+        }
+
+        String filePath = context.getFilesDir().getPath().toString() + "/" + logFileName;
+        Log.d(TAG, "log file locatin: " + filePath);
+        File logFile = new File(filePath);
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile();
+            } catch (IOException e) {
+                Log.i(TAG, "error creating log file ", e);
+            }
+        }
+
+        if (logFile.exists()) {
+
+            Date time = Calendar.getInstance().getTime();
+            String formattedTime = LOG_DATE_FORMAT.format(time);
+
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
+                writer.append(formattedTime + " " + text);
+                writer.newLine();
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                Log.i(TAG, "error writing to log file ", e);
+            }
+        }
+    }
+
+    public static boolean isScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (Build.VERSION.SDK_INT <= 19){
+            return deprecatedIsScreenOn(pm);
+        }
+        return pm.isInteractive();
+    }
+
+    @SuppressWarnings("deprecation")
+    protected static boolean deprecatedIsScreenOn(PowerManager pm) {
+        return pm.isScreenOn();
     }
 }

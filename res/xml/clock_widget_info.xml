@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:initialLayout="@layout/clock_widget"
+    android:minHeight="100dp"
+    android:minWidth="120dp"
+    android:previewImage="@drawable/widget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen"
+    tools:targetApi="jelly_bean_mr1">
+</appwidget-provider>
+<!--
+
+  correct height to use (for 1 row / block) is:
+   android:minHeight="40dp"
+
+  more params:
+  android:resizeMode="horizontal|vertical"
+   minResizeWidth
+   minResizeHeight
+-->

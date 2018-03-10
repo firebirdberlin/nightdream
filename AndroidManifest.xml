@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="192"
-    android:versionName="2.7.3">
+    android:versionCode="193"
+    android:versionName="2.7.4">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -29,6 +29,7 @@
         tools:node="remove" />
 
     <application
+        android:name=".NightDreamApplication"
         android:icon="@drawable/ic_nightdream"
         android:label="@string/app_name">
         <service
@@ -151,6 +152,24 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".widget.ClockWidgetProvider"
+            android:enabled="@bool/use_widget"
+            android:icon="@drawable/widget_preview">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/clock_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.ClockWidgetJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
             android:name=".WeatherForecastActivity"
@@ -174,6 +193,7 @@
                 android:value="com.firebirdberlin.nightdream.NightDreamActivity" />
             >
         </activity>
+
     </application>
 
 </manifest>

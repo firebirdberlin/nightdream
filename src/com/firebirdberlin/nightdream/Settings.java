@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.models.BatteryValue;
+import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
@@ -113,6 +114,7 @@ public class Settings {
     public String timeFormat24h;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
+    public long lastWeatherRequestTime = -1L;
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
@@ -231,6 +233,7 @@ public class Settings {
         timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
         timeFormat24h = settings.getString("timeFormat_24h", "HH:mm");
         weatherCityID = settings.getString("weatherCityID", "");
+        lastWeatherRequestTime = settings.getLong("lastWeatherRequestTime", -1L);
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
@@ -308,11 +311,11 @@ public class Settings {
                     prefEditor.remove("typeface");
                     prefEditor.commit();
                 }
-                return Typeface.createFromAsset(mContext.getAssets(), path);
+                return FontCache.get(mContext, path);
             }
         }
         String path = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
-        return Utility.loadTypefacefromUri(mContext, path);
+        return FontCache.get(mContext, path);
     }
 
     private String mapIntToTypefacePath(int typeface) {
@@ -550,6 +553,13 @@ public class Settings {
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
         prefEditor.putInt("weather_wind_direction", entry.windDirection);
+        prefEditor.commit();
+    }
+
+    public void setLastWeatherRequestTime(long time) {
+        this.lastWeatherRequestTime = time;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("lastWeatherRequestTime", time);
         prefEditor.commit();
     }
 

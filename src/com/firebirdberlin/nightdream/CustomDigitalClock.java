@@ -1,24 +1,22 @@
 package com.firebirdberlin.nightdream;
 
-import java.lang.IllegalArgumentException;
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
-
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class CustomDigitalClock extends AutoAdjustTextView {
 
@@ -28,6 +26,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     String mFormat;
     private String m12 = "h:mm aa";
     private String m24 = "HH:mm";
+    private SimpleDateFormat simpleDateFormat;
     private FormatChangeObserver mFormatChangeObserver;
 
 
@@ -59,10 +58,6 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
-        mFormatChangeObserver = new FormatChangeObserver();
-        getContext().getContentResolver().registerContentObserver(
-                Settings.System.CONTENT_URI, true, mFormatChangeObserver);
-
         setFormat();
         updateTextView();
     }
@@ -72,8 +67,8 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             mCalendar = Calendar.getInstance();
         }
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat(mFormat);
-        String text = sdf.format(mCalendar.getTime());
+
+        String text = simpleDateFormat.format(mCalendar.getTime());
         if (text != getText() ) {
             setText(text);
             invalidate();
@@ -84,6 +79,11 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     public void onAttachedToWindow(){
         super.onAttachedToWindow();
         setTimeTick();
+
+        mFormatChangeObserver = new FormatChangeObserver();
+        getContext().getContentResolver().registerContentObserver(
+                Settings.System.CONTENT_URI, true, mFormatChangeObserver);
+
     }
 
     @Override
@@ -97,18 +97,15 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             }
             timeReceiver = null;
         }
+        if (mFormatChangeObserver != null) {
+            ContentResolver cr = getContext().getContentResolver();
+            cr.unregisterContentObserver(mFormatChangeObserver);
+        }
     }
 
     void setTimeTick() {
         timeReceiver = new TimeReceiver();
         context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
-    }
-
-    class TimeReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent arg1) {
-            updateTextView();
-        }
     }
 
     /**
@@ -124,17 +121,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         } else {
             mFormat = m12;
         }
-    }
-
-    private class FormatChangeObserver extends ContentObserver {
-        public FormatChangeObserver() {
-            super(new Handler());
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            setFormat();
-        }
+        simpleDateFormat = new SimpleDateFormat(mFormat);
     }
 
     public void setFormat12Hour(String format) {
@@ -147,6 +134,24 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         this.m24 = format;
         setFormat();
         updateTextView();
+    }
+
+    class TimeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent arg1) {
+            updateTextView();
+        }
+    }
+
+    private class FormatChangeObserver extends ContentObserver {
+        public FormatChangeObserver() {
+            super(new Handler());
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            setFormat();
+        }
     }
 
 }

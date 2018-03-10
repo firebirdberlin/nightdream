@@ -29,8 +29,8 @@ public class WeatherEntry {
     }
 
     public void setFakeData() {
-        timestamp = System.currentTimeMillis();
-        temperature = 284.15;
+        timestamp = System.currentTimeMillis() / 1000;
+        temperature = 273.15 + randomFromRange(0, 40); // in K
         weatherIcon = "03d";
     }
 
@@ -39,11 +39,16 @@ public class WeatherEntry {
             return INVALID;
         }
 
-        long now = System.currentTimeMillis();
-        return now - 1000 * timestamp;
+        return System.currentTimeMillis() - 1000 * timestamp;
     }
 
     public String toString() {
         return String.format("%2.2fK %2.2fm/s %d° %d", temperature, windSpeed, windDirection, timestamp);
+    }
+
+
+    private int randomFromRange(int min, int max) {
+        int range = (max - min) + 1;
+        return (int) (Math.random() * range) + min;
     }
 }
