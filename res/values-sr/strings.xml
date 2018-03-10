@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -48,9 +47,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_primary_color">Boja istaknutog teksta</string>
 <string name="choose_secondary_color">Boja teksta</string>
 <string name="clear">Obrisati</string>
-<string name="clock_layout">Izgled</string>
-<string name="clock_layout_digital">Digitalni</string>
 <string name="clock_layout_analog">Klasičan</string>
+<string name="clock_layout_digital">Digitalni</string>
+<string name="clock_layout">Izgled</string>
 <string name="colors">Boje</string>
 <string name="confirm_reset_question">Da li zaista želite da vratite sva podešavanja na početna?</string>
 <string name="confirm_reset">Vratiti na početna podešavanja</string>
@@ -80,19 +79,19 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hour">h</string>
 <string name="location_time">lokalno vreme</string>
 <string name="maxBrightness">Maksimalno osvetljenje ekrana</string>
-<string name="message_no_data_connection">Nema internet konekcije</string>
-<string name="message_mobile_data_connection">Internet konekcija preko mobilne mreže</string>
 <string name="message_mobile_data_connection_confirmation">Povezani ste preko mobilne mreže. Želite li da slušate radio?</string>
+<string name="message_mobile_data_connection">Internet konekcija preko mobilne mreže</string>
+<string name="message_no_data_connection">Nema internet konekcije</string>
 <string name="minute">min</string>
 <string name="mute_ringer">Isključiti budilnik</string>
-<string name="night_mode">Noćni režim</string>
-<string name="night_mode_activation_mode">Aktiviranje</string>
-<string name="night_mode_activation_manual">ručno</string>
 <string name="night_mode_activation_auto">automatsko</string>
+<string name="night_mode_activation_manual">ručno</string>
+<string name="night_mode_activation_mode">Aktiviranje</string>
 <string name="night_mode_activation_scheduled">Zakazano</string>
-<string name="night_mode_timerange_title">Period noci</string>
+<string name="night_mode">Noćni režim</string>
 <string name="night_mode_timerange_label_end">Vreme zavrsetka</string>
 <string name="night_mode_timerange_label_start">Pocetno vreme</string>
+<string name="night_mode_timerange_title">Period noci</string>
 <string name="noise_sensitivity">Osetljivost mikrofona</string>
 <string name="notification_alarm">Kliknite da zaustavite alarm.</string>
 <string name="other_apps">Ostale aplikacije</string>
@@ -105,9 +104,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWebRadio">Kupiti licencu</string>
 <string name="radio">Radio</string>
 <string name="radio_stream_enabled">Omogućeno</string>
+<string name="radio_stream">Radio strimovi</string>
 <string name="radio_stream_no_search_results">Nema rezultata pretrage.</string>
 <string name="radio_stream_query_hint">Niz za pretraživanje</string>
-<string name="radio_stream">Radio strimovi</string>
 <string name="radio_stream_search">Pretraživanje</string>
 <string name="radio_stream_start">Start/stop radio strim</string>
 <string name="radio_stream_url">Radio strim URL</string>
@@ -135,9 +134,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_wind_speed">Prikazati brzinu vetra</string>
 <string name="snoozeTime">Vreme odlaganja</string>
 <string name="speedUnit">Jedinica za brzinu vetra</string>
-<string name="titlePrivacyPolicy">Pravila o privatnosti</string>
 <string name="temperatureUnit">Jedinica za temperaturu</string>
 <string name="timeFormat">Format za vreme</string>
+<string name="titlePrivacyPolicy">Pravila o privatnosti</string>
 <string name="translations">Prevodi</string>
 <string name="typeface_7_segment">7-segmentni LED</string>
 <string name="typeface_roboto_condensed">Roboto  skupljena</string>
@@ -147,9 +146,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto tanka</string>
 <string name="typeface">Vrsta fonta</string>
 <string name="uninstall">Deinstalacija aplikacije</string>
-<string name="use_internal_alarm">Brzi alarmi</string>
-<string name="useDeviceLock">Zaključavanje uređaja</string>
 <string name="useDeviceLockExplanation">Zaključaj uređaj dok je Night Clock aktivan.</string>
+<string name="useDeviceLock">Zaključavanje uređaja</string>
+<string name="use_internal_alarm">Brzi alarmi</string>
 <string name="weather_calculation_time">ašuriranje na svakih</string>
 <string name="weather_city_id_summary">Ostaviti prazno za automatsku detekciju lokacije.</string>
 <string name="weather_city_id_title">ID grada</string>
