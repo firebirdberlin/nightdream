@@ -129,7 +129,7 @@ public class AlarmClockLayout extends LinearLayout {
         View child = inflater.inflate(R.layout.alarm_clock_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
-        mainLayout = (View) findViewById(R.id.mainLayout);
+        mainLayout = findViewById(R.id.mainLayout);
         timeView = (TextView) findViewById(R.id.timeView);
         textViewWhen = (TextView) findViewById(R.id.textViewWhen);
         layoutDays = (LinearLayout) findViewById(R.id.layoutDays);
@@ -190,7 +190,12 @@ public class AlarmClockLayout extends LinearLayout {
                 ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
             }
         });
-
+        timeView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((SetAlarmClockActivity) context).onTimeClicked(view);
+            }
+        });
     }
 
     private void update() {
