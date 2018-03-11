@@ -15,7 +15,6 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -126,11 +125,7 @@ public class SetAlarmClockActivity extends Activity {
                     entry.min = selectedMinute;
                     entry.isActive = true;
                     if (isNew) {
-                        entry.addRecurringDay(Calendar.MONDAY);
-                        entry.addRecurringDay(Calendar.TUESDAY);
-                        entry.addRecurringDay(Calendar.WEDNESDAY);
-                        entry.addRecurringDay(Calendar.THURSDAY);
-                        entry.addRecurringDay(Calendar.FRIDAY);
+                        entry.autocompleteRecurringDays();
                     }
                     db.save(entry);
                     if (entry_id == null) {

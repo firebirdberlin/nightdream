@@ -194,17 +194,31 @@ public class SimpleTime {
         DateFormatSymbols symbols = new DateFormatSymbols();
         String[] dayNames = symbols.getShortWeekdays();
         int firstDayOfWeek = Calendar.getInstance().getFirstDayOfWeek();
-        String result = "";
-
+        StringBuilder builder = new StringBuilder();
         for (int d = 0; d < 7; d++) {
             int day = (firstDayOfWeek - 1 + d) % 7 + 1;
             if (hasDay(day)) {
-                if (!result.isEmpty()) result += ", ";
-                result += dayNames[day];
+                if (!builder.toString().isEmpty()) builder.append(", ");
+                builder.append(dayNames[day]);
             }
         }
 
-        return result;
+        return builder.toString();
+    }
+
+    public void autocompleteRecurringDays() {
+        Calendar nextAlarm = getCalendar();
+        int dayOfWeek = nextAlarm.get(Calendar.DAY_OF_WEEK);
+        if (Calendar.SATURDAY == dayOfWeek || Calendar.SUNDAY == dayOfWeek) {
+            addRecurringDay(Calendar.SATURDAY);
+            addRecurringDay(Calendar.SUNDAY);
+        } else {
+            addRecurringDay(Calendar.MONDAY);
+            addRecurringDay(Calendar.TUESDAY);
+            addRecurringDay(Calendar.WEDNESDAY);
+            addRecurringDay(Calendar.THURSDAY);
+            addRecurringDay(Calendar.FRIDAY);
+        }
     }
 }
 
