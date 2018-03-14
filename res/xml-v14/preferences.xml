@@ -376,6 +376,12 @@
                     android:key="radioStreamURL"
                     android:title="@string/radio_stream_url"/>
 
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:dependency="useRadioAlarmClock"
+                    android:key="radioStreamMusicIsAllowedForAlarms"
+                    android:title="@string/radio_stream_music_allowed" />
+
                 <Preference
                     android:dependency="useRadioAlarmClock"
                     android:key="startAudioStream"

@@ -126,6 +126,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_manual_input_hint">Sender hinzufügen</string>
 <string name="radio_stream_manual_input_url">Stream URL</string>
 <string name="radio_stream_manual_input_description">Sendername</string>
+    <string name="radio_stream_music_allowed">Headset verwenden (wenn verfügbar)</string>
 <string name="radio_stream_no_search_results">Es gab keine Suchergebnisse.</string>
 <string name="radio_stream_offline">offline</string>
 <string name="radio_stream_query_hint">Suchbegriff</string>
