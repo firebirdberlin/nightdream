@@ -19,6 +19,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">О программе</string>
 <string name="action_snooze">Дремать</string>
 <string name="action_stop">Стоп</string>
+<string name="add_new_alarm">Добавить новый будильник </string>
+<string name="add_custom_alarm_tone">Добавить свою мелодию</string>
+<string name="add_custom_font">Добавить свой шрифт</string>
+<string name="alarm">Будильник </string>
 <string name="alarmFadeIn">Нарастание громкости</string>
 <string name="alarmVolume">Громкость</string>
 <string name="allow_screen_off_summary">Выключать экран в ночное время</string>
@@ -61,7 +65,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="contribute_translation">Перевод</string>
 <string name="country">Страна</string>
 <string name="credits">Разработчики</string>
-<string name="credits_pull_requests">Pull requests</string>
+<string name="credits_pull_requests">Вытянуть вопросы</string>
 <string name="date_format">Формат даты</string>
 <string name="delete">Удалить</string>
 <string name="dialog_message_thank_you">Огромное вам спасибо!</string>
@@ -155,6 +159,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Показывать температуру</string>
 <string name="show_weather">Показывать местную погоду</string>
 <string name="show_wind_speed">Показывать скорость ветра</string>
+<string name="sleep_time_default_value">Время сна по умолчанию </string>
+<string name="sleep_time_default_value_msg">Введите время ожидания по умолчанию в минутах.</string>
 <string name="sleep_time_dialog_title">Таймер сна</string>
 <string name="snoozeTime">Время повтора</string>
 <string name="speedUnit">Ед. скорости ветра</string>
@@ -177,6 +183,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto thin</string>
 <string name="typeface">Шрифт</string>
 <string name="uninstall">Удалить приложение</string>
+<string name="useAlarmSwipeGesture">Установите будильник с помощью жестов</string>
 <string name="useDeviceLockDescription">Функция блокировки экрана требует разрешения администратора устройства. Чтобы удалить приложение, отключите эту функцию.</string>
 <string name="useDeviceLockExplanation">Заблокировать устройство когда Night Clock запущен.</string>
 <string name="useDeviceLock">Заблокировать устройство</string>
