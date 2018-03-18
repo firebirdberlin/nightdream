@@ -156,6 +156,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="showcase_text_screen_lock">Der Bildschirm ist gesperrt. Drücken Sie das Symbol lange, um den Bildschirm zu entsperren.</string>
 <string name="showcase_title_screen_lock">Bildschirmsperre</string>
 <string name="show_date">Datum anzeigen</string>
+    <string name="show_divider">Trennlinie anzeigen</string>
 <string name="show_temperature">Temperatur anzeigen</string>
 <string name="show_weather">Wetter anzeigen</string>
 <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>

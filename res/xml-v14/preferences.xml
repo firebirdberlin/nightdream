@@ -109,20 +109,19 @@
                     android:key="purchaseDesignPackage"
                     android:title="@string/purchaseWeatherData" />
 
-                <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:key="clockLayoutPreview"
-                    android:selectable="false"
-                    android:title="@string/preview"
-                    />
-
                 <ListPreference
                     android:defaultValue="0"
                     android:entries="@array/clockLayout"
                     android:entryValues="@array/clockLayoutValues"
                     android:key="clockLayout"
                     android:title="@string/clock_layout" />
+
+                <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:key="clockLayoutPreview"
+                    android:selectable="false"
+                    android:title="@string/preview" />
 
                 <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
                     android:descendantFocusability="afterDescendants"

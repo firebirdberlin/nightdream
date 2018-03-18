@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
@@ -40,7 +41,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
 
         final AnalogClockConfig config =
                 new AnalogClockConfig(getContext(), AnalogClockConfig.Style.DEFAULT);
-        Button fontButton = (Button) child.findViewById(R.id.fontButton);
+        TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
         fontButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {

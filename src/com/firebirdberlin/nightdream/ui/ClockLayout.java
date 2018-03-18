@@ -37,6 +37,7 @@ public class ClockLayout extends LinearLayout {
     private AutoAdjustTextView date = null;
     private WeatherLayout weatherLayout = null;
     private View divider = null;
+    private boolean showDivider = true;
 
     public ClockLayout(Context context) {
         super(context);
@@ -138,6 +139,10 @@ public class ClockLayout extends LinearLayout {
         weatherLayout.setWindSpeed(on, unit);
     }
 
+    public void setShowDivider(boolean on) {
+        this.showDivider = on;
+    }
+
     public void showDate(boolean on) {
         date.setVisibility( (on) ? View.VISIBLE : View.GONE);
         toggleDivider();
@@ -150,13 +155,22 @@ public class ClockLayout extends LinearLayout {
 
     private void toggleDivider() {
         if (divider == null) return;
-        if (date.getVisibility() != View.VISIBLE
-                && weatherLayout.getVisibility() != View.VISIBLE) {
 
-            divider.setVisibility(View.INVISIBLE);
+        if (!showDivider) {
+            divider.setVisibility(GONE);
+        }
+
+        if (date.getVisibility() != VISIBLE
+                && weatherLayout.getVisibility() != VISIBLE) {
+
+            if (showDivider) {
+                divider.setVisibility(INVISIBLE);
+            }
             setBackgroundColor(Color.parseColor("#00000000"));
         } else {
-            divider.setVisibility(View.VISIBLE);
+            if (showDivider) {
+                divider.setVisibility(VISIBLE);
+            }
             setBackgroundColor(Color.parseColor("#44000000"));
         }
     }

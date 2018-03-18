@@ -8,8 +8,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -39,7 +41,19 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
 //        child.setBackgroundResource(R.drawable.border);
         addView(child, lp);
 
-        Button fontButton = (Button) child.findViewById(R.id.fontButton);
+        Switch switchShowDivider = (Switch) child.findViewById(R.id.switch_show_divider);
+        switchShowDivider.setChecked(settings.showDivider);
+        switchShowDivider.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                settings.setShowDivider(isChecked);
+                if (mListener != null) {
+                    mListener.onConfigChanged();
+                }
+            }
+        });
+
+        TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
         fontButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
