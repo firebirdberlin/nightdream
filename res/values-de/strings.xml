@@ -21,7 +21,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="action_stop">Beenden</string>
 <string name="add_new_alarm">neuen Wecker hinzufügen</string>
 <string name="add_custom_alarm_tone">Weckton hinzufügen</string>
-    <string name="add_custom_font">Schriftart hinzufügen</string>
+<string name="add_custom_font">Schriftart hinzufügen</string>
 <string name="alarmFadeIn">ansteigende Lautstärke</string>
 <string name="alarmVolume">Lautstärke</string>
 <string name="alarm">Wecker</string>
@@ -60,11 +60,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
 <string name="confirm_reset">Zurücksetzen</string>
 <string name="contribute">Beitragen</string>
-<string name="contribute_source_code">Quellcode </string>
-<string name="contribute_translation">Übersetzungen </string>
+<string name="contribute_source_code">Quellcode</string>
+<string name="contribute_translation">Übersetzungen</string>
 <string name="country">Land</string>
-    <string name="credits">Credits</string>
-    <string name="credits_pull_requests">Mitwirkende</string>
+<string name="credits">Credits</string>
+<string name="credits_pull_requests">Mitwirkende</string>
 <string name="date_format">Datumsformat</string>
 <string name="delete">löschen</string>
 <string name="dialog_message_thank_you">Vielen Dank für Ihre Unterstützung.</string>
@@ -91,7 +91,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="location_time">Zeit der letzten Standortbestimmung</string>
 <string name="maxBrightness">max. Bildschirmhelligkeit</string>
 <string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
-<string name="message_mobile_data_connection_confirmation">Sie haben eine mobile Datenverbindung. Soll der Radiostream jetzt abgespielt werden? </string>
+<string name="message_mobile_data_connection_confirmation">Sie haben eine mobile Datenverbindung. Soll der Radiostream jetzt abgespielt werden?</string>
 <string name="message_mobile_data_connection">Mobile Datenverbindung</string>
 <string name="message_no_data_connection">Keine Datenverbindung</string>
 <string name="minBrightness">min. Bildschirmhelligkeit</string>
@@ -99,7 +99,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="mute_ringer">lautlos</string>
 <string name="night_mode_activation_auto">automatisch</string>
 <string name="night_mode_activation_manual">manuell</string>
-    <string name="night_mode_activation_mode">Aktivierung</string>
+<string name="night_mode_activation_mode">Aktivierung</string>
 <string name="night_mode_activation_scheduled">nach Zeitplan</string>
 <string name="night_mode">Nachtmodus</string>
 <string name="night_mode_timerange_label_end">Endzeit</string>
@@ -126,6 +126,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_manual_input_hint">Sender hinzufügen</string>
 <string name="radio_stream_manual_input_url">Stream URL</string>
 <string name="radio_stream_manual_input_description">Sendername</string>
+<string name="radio_stream_music_allowed">Musikkanal verwenden</string>
 <string name="radio_stream_no_search_results">Es gab keine Suchergebnisse.</string>
 <string name="radio_stream_offline">offline</string>
 <string name="radio_stream_query_hint">Suchbegriff</string>
@@ -158,9 +159,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Temperatur anzeigen</string>
 <string name="show_weather">Wetter anzeigen</string>
 <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
-    <string name="sleep_time_default_value_msg">Welcher Wert soll Standardmäßig für den Sleep Timer gesetzt werden (in Minuten)?</string>
-    <string name="sleep_time_default_value">Standard-Einschlafzeit</string>
-    <string name="sleep_time_dialog_title">Sleep Timer</string>
+<string name="sleep_time_default_value_msg">Welcher Wert soll Standardmäßig für den Sleep Timer gesetzt werden (in Minuten)?</string>
+<string name="sleep_time_default_value">Standard-Einschlafzeit</string>
+<string name="sleep_time_dialog_title">Sleep Timer</string>
 <string name="snoozeTime">Schlummerzeit</string>
 <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
 <string name="standbyEnabledWhileConnectedSummary">Aktiviere erst, wenn der Bildschirm abgeschaltet wird.</string>
@@ -182,7 +183,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto Thin</string>
 <string name="typeface">Schriftart</string>
 <string name="uninstall">Anwendung deinstallieren</string>
-    <string name="useAlarmSwipeGesture">Alarm stellen via Wischgeste</string>
+<string name="useAlarmSwipeGesture">Alarm stellen via Wischgeste</string>
 <string name="useDeviceLockDescription">Diese Funktion benötigt die Berechtigung als Geräteadministrator. Falls Sie die App deinstallieren möchten, muss diese Funktion deaktiviert werden.</string>
 <string name="useDeviceLockExplanation">Gerät sperren während die Nachtuhr aktiv ist. Falls Sie die App deinstallieren möchten, muss diese Berechtigung zuvor entzogen werden.</string>
 <string name="useDeviceLock">Gerät sperren</string>

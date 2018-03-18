@@ -127,6 +127,7 @@ OR
     <string name="radio_stream_manual_input_hint">Add a station manually</string>
     <string name="radio_stream_manual_input_url">Stream URL</string>
     <string name="radio_stream_manual_input_description">Station name</string>
+    <string name="radio_stream_music_allowed">Use music stream</string>
     <string name="radio_stream_no_search_results">There were no search results.</string>
     <string name="radio_stream_offline">offline</string>
     <string name="radio_stream_query_hint">Search string</string>

@@ -173,8 +173,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                 alarmIsRunning = true;
                 streamingMode = StreamingMode.ALARM;
             }
-            currentStreamType = AudioManager.STREAM_ALARM;
-            setAlarmVolume(settings.alarmVolume);
+            setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
             streamURL = settings.radioStreamURL;
             checkStreamAndStart(-1);
         } else
@@ -251,9 +250,18 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         sendBroadcast(intent);
     }
 
-    public void setAlarmVolume(int volume) {
+    public void setAlarmVolume(int volume, boolean useMusicStream) {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
+
+        currentStreamType =
+                (useMusicStream) ? AudioManager.STREAM_MUSIC : AudioManager.STREAM_ALARM;
+
+        int maxVolume = audioManager.getStreamMaxVolume(currentStreamType);
+        volume = (int) (volume / 7. * maxVolume);
+
+        Log.i(TAG, "max volume: " + String.valueOf(maxVolume));
+        Log.i(TAG, "volume: " + String.valueOf(volume));
+        audioManager.setStreamVolume(currentStreamType, volume, 0);
     }
 
     @Override

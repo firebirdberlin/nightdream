@@ -23,12 +23,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="add_custom_alarm_tone">加入鈴聲</string>
 <string name="add_custom_font">新增自訂字型</string>
 <string name="alarm">鬧鐘</string>
-<string name="alarmFadeIn">逐漸增加音量</string>
+<string name="alarmFadeIn">音量漸大</string>
 <string name="alarmVolume">音量</string>
-<string name="allow_screen_off_summary">於夜晚時關閉螢幕</string>
+<string name="allow_screen_off_summary">夜晚關閉螢幕</string>
 <string name="allow_screen_off">關閉螢幕</string>
 <string name="ambient_noise">環境雜訊偵測</string>
-<string name="ambient_noise_summary">偵測雜訊以防止夜間模式被啟用。</string>
+<string name="ambient_noise_summary">偵測雜訊以防止啟用夜間模式</string>
 <string name="appearance">樣式</string>
 <string name="app_name">夜鐘</string>
 <string name="auto_brightness">自動調節螢幕亮度</string>
@@ -70,7 +70,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="delete">刪除</string>
 <string name="dialog_message_thank_you">十分感謝！</string>
 <string name="dialog_title_thank_you">謝謝</string>
-<string name="donate_bitcoin">Bitcoin</string>
+<string name="donate_bitcoin">比特幣</string>
 <string name="donate">贊助</string>
 <string name="doubleTapToFinishSummary">雙擊螢幕以完成應用程式</string>
 <string name="doubleTapToFinishTitle">雙擊以完成</string>
@@ -78,7 +78,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="force_auto_rotation">強制 Daydream 的旋轉方向</string>
 <string name="force_auto_rotation_summary">當使用 Daydream 時強制螢幕的旋轉方向。</string>
 <string name="forecast">5日天氣預報</string>
-<string name="handle_power_ac">AC</string>
+<string name="handle_power_ac">AC電源</string>
 <string name="handle_power">自動開啟</string>
 <string name="handle_power_car">汽車座</string>
 <string name="handle_power_desk">桌面座</string>
@@ -115,7 +115,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="persistent_battery_value_while_charging_summary">充電時永遠顯示電池狀態。</string>
 <string name="preview">預覽</string>
 <string name="product_name_donation">贊助</string>
-<string name="product_name_pro">完全版本</string>
+<string name="product_name_pro">完整版</string>
 <string name="product_name_weather">天氣與設計組件</string>
 <string name="product_name_webradio">網路收音機組件</string>
 <string name="purchaseWeatherData">購買授權</string>
