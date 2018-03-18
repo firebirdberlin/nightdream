@@ -250,15 +250,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         sendBroadcast(intent);
     }
 
-    public void setAlarmVolume(int volume, boolean useHeadset) {
+    public void setAlarmVolume(int volume, boolean useMusicStream) {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        if (useHeadset &&
-                (audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn())) {
-            currentStreamType = AudioManager.STREAM_MUSIC;
-        } else {
-            currentStreamType = AudioManager.STREAM_ALARM;
-        }
+        currentStreamType =
+                (useMusicStream) ? AudioManager.STREAM_MUSIC : AudioManager.STREAM_ALARM;
 
         int maxVolume = audioManager.getStreamMaxVolume(currentStreamType);
         volume = (int) (volume / 7. * maxVolume);
