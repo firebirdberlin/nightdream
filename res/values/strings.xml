@@ -157,6 +157,7 @@ OR
     <string name="showcase_text_screen_lock">The screen is currently locked. Long press the icon to unlock !</string>
     <string name="showcase_title_screen_lock">Screen lock</string>
     <string name="show_date">Show date</string>
+    <string name="show_divider">Show divider</string>
     <string name="show_temperature">Show temperature</string>
     <string name="show_weather">Show local weather</string>
     <string name="show_wind_speed">Show wind speed</string>

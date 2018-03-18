@@ -83,6 +83,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
+        clockLayout.setShowDivider(settings.showDivider);
         clockLayout.showDate(showAdditionalLines && settings.showDate);
 
         // update weather data via api if outdated

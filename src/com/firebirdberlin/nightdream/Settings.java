@@ -59,6 +59,7 @@ public class Settings {
     public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
     public boolean showDate = true;
+    public boolean showDivider = true;
     public boolean showWeather = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
@@ -213,6 +214,7 @@ public class Settings {
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
+        showDivider = settings.getBoolean("showDivider", true);
         showWeather = settings.getBoolean("showWeather", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
@@ -242,6 +244,13 @@ public class Settings {
 
         typeface = loadTypeface();
         weatherEntry = getWeatherEntry();
+    }
+
+    public void setShowDivider(boolean on) {
+        showDivider = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("showDivider", on);
+        prefEditor.apply();
     }
 
     private boolean is24HourMode() {
