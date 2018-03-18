@@ -12,47 +12,45 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.models.AnalogClockConfig;
+import com.firebirdberlin.nightdream.Settings;
 
-public class CustomAnalogClockPreferencesLayout extends LinearLayout {
+public class CustomDigitalClockPreferencesLayout extends LinearLayout {
 
     private OnConfigChangedListener mListener = null;
+    private Settings settings = null;
     private boolean isPurchased = false;
 
-    public CustomAnalogClockPreferencesLayout(Context context) {
+    public CustomDigitalClockPreferencesLayout(Context context, Settings settings) {
         super(context);
+        this.settings = settings;
         init(context);
     }
 
-    public CustomAnalogClockPreferencesLayout(Context context, @Nullable AttributeSet attrs) {
+    public CustomDigitalClockPreferencesLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.custom_analog_clock_preferences_layout, null);
+        View child = inflater.inflate(R.layout.custom_digital_clock_preferences_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 //        child.setBackgroundResource(R.drawable.border);
         addView(child, lp);
 
-        final AnalogClockConfig config =
-                new AnalogClockConfig(getContext(), AnalogClockConfig.Style.DEFAULT);
         Button fontButton = (Button) child.findViewById(R.id.fontButton);
-        fontButton.setOnClickListener(new Button.OnClickListener() {
+        fontButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = ((Activity) getContext()).getFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
-                dialog.setSelectedUri(config.fontUri);
+                dialog.setSelectedUri(settings.fontUri);
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {
-                        config.fontUri = uri.toString();
-                        config.save();
+                        settings.setFontUri(uri.toString(), name);
                         if (mListener != null) {
                             mListener.onConfigChanged();
                         }

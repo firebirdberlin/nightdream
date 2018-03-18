@@ -123,7 +123,26 @@ public class ClockLayoutPreviewPreference extends Preference {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setupPreferencesFragment(int clockLayoutID, Settings settings) {
         preferencesContainer.removeAllViews();
-        if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
+        if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
+            CustomDigitalClockPreferencesLayout prefs =
+                    new CustomDigitalClockPreferencesLayout(context, settings);
+            prefs.setIsPurchased(settings.purchasedWeatherData);
+            prefs.setOnConfigChangedListener(
+                    new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
+                        @Override
+                        public void onConfigChanged() {
+                            updateView();
+                        }
+
+                        @Override
+                        public void onPurchaseRequested() {
+                            ((PreferencesActivity) context).showPurchaseDialog();
+                        }
+                    }
+            );
+            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            preferencesContainer.addView(prefs, lp);
+        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
 
             CustomAnalogClockPreferencesLayout prefs =
                     new CustomAnalogClockPreferencesLayout(context);

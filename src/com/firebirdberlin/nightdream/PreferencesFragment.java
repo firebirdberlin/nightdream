@@ -41,7 +41,6 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
-import com.firebirdberlin.nightdream.ui.ManageFontsDialogFragment;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 import org.json.JSONException;
@@ -615,7 +614,6 @@ public class PreferencesFragment extends PreferenceFragment {
 
 
         setupCustomAlarmTonePreference();
-        setupCustomTypeFacePreference();
         setupLightSensorPreferences();
         setupDaydreamPreferences();
         setupTranslationRequest();
@@ -655,38 +653,6 @@ public class PreferencesFragment extends PreferenceFragment {
 
                 });
                 dialog.show(fm, "custom sounds");
-                return false;
-            }
-        });
-    }
-
-    private void setupCustomTypeFacePreference() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) return;
-
-        final Preference customTypefaceUri = findPreference("customTypefaceUri");
-        customTypefaceUri.setSummary(settings.fontName);
-        customTypefaceUri.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                FragmentManager fm = getFragmentManager();
-                ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
-                dialog.setIsPurchased(purchased_weather_data);
-
-                dialog.setSelectedUri(settings.fontUri);
-                dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
-                    @Override
-                    public void onFontSelected(Uri uri, String name) {
-                        settings.setFontUri(uri != null ? uri.toString() : null, name);
-                        customTypefaceUri.setSummary(name);
-                    }
-
-                    @Override
-                    public void onPurchaseRequested() {
-                        Log.w(TAG, "purchase requested");
-                        showPurchaseDialog();
-                    }
-                });
-                dialog.show(fm, "custom fonts");
                 return false;
             }
         });
