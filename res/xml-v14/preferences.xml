@@ -131,10 +131,6 @@
                     android:title="@string/colors"
                     />
 
-                <Preference
-                    android:key="customTypefaceUri"
-                    android:title="@string/typeface" />
-
                 <SwitchPreference
                     android:defaultValue="true"
                     android:key="showDate"

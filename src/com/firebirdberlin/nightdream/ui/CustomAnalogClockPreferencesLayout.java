@@ -33,7 +33,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.custom_analog_clock_preferences_fragment, null);
+        View child = inflater.inflate(R.layout.custom_analog_clock_preferences_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 //        child.setBackgroundResource(R.drawable.border);
         addView(child, lp);
