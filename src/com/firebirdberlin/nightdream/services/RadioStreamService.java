@@ -23,11 +23,16 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
+import com.firebirdberlin.radiostreamapi.IcecastMetadataRetriever;
+import com.firebirdberlin.radiostreamapi.StreamMetadataTask;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
@@ -384,6 +389,44 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
             intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
             sendBroadcast( intent );
+
+            // test metadata retriever
+
+            URL url = null;
+            try {
+                url = new URL(streamURL);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            if (url != null) {
+                StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
+
+                    @Override
+                    public void onMetadataRequestFinished(Map<String, String> metadata) {
+                        Log.i(TAG, "meta data for url:" + streamURL);
+                        if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
+
+                            for (String key : metadata.keySet()) {
+                                Log.i(TAG, key + ":" + metadata.get(key));
+                            }
+
+                            String title = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
+                            if (!title.isEmpty()) {
+                                Toast.makeText(getApplicationContext(), title, title.length()).show();
+                            }
+
+                        } else {
+                            Log.i(TAG, "null/empty");
+                        }
+                    }
+
+                };
+
+                new StreamMetadataTask(metadataCallback, getApplicationContext()).execute(url);
+            }
+
+
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }
