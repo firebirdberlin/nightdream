@@ -189,11 +189,11 @@ public class WeatherForecastLayout extends LinearLayout {
     private String formatTemperatureText(WeatherEntry entry) {
         switch (temperatureUnit) {
             case WeatherEntry.CELSIUS:
-                return String.format("%.0f°C", toDegreesCelcius(entry.temperature));
+                return String.format("%d°C", Math.round(toDegreesCelcius(entry.temperature)));
             case WeatherEntry.FAHRENHEIT:
-                return String.format("%.0f°F", toDegreesFahrenheit(entry.temperature));
+                return String.format("%d°F", Math.round(toDegreesFahrenheit(entry.temperature)));
             default:
-                return String.format("%.0f K", entry.temperature);
+                return String.format("%d K", Math.round(entry.temperature));
         }
     }
     private double toDegreesCelcius(double kelvin) {
