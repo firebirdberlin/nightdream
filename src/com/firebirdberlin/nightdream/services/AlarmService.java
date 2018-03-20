@@ -180,6 +180,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         if ( settings.alarmFadeIn ) {
             currentVolume = 0.f;
+            // mute mediaplayer volume immediately, before it starts playing
+            if (mMediaPlayer != null) {
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+            }
             handler.post(fadeIn);
         };
 
