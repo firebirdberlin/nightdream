@@ -22,6 +22,7 @@ import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayoutPreviewPreference extends Preference {
@@ -143,10 +144,14 @@ public class ClockLayoutPreviewPreference extends Preference {
             );
             LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             preferencesContainer.addView(prefs, lp);
-        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
+        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG2 ||
+                clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG3 ||
+                clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
 
+            AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
             CustomAnalogClockPreferencesLayout prefs =
-                    new CustomAnalogClockPreferencesLayout(context);
+                    new CustomAnalogClockPreferencesLayout(context, preset);
+
             prefs.setIsPurchased(settings.purchasedWeatherData);
             prefs.setOnConfigChangedListener(
                     new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {

@@ -1,11 +1,11 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,27 +20,19 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
     private OnConfigChangedListener mListener = null;
     private boolean isPurchased = false;
 
-    public CustomAnalogClockPreferencesLayout(Context context) {
+    public CustomAnalogClockPreferencesLayout(Context context, AnalogClockConfig.Style preset) {
         super(context);
-        init(context);
+        init(context, preset);
     }
 
-    public CustomAnalogClockPreferencesLayout(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-
-    private void init(Context context) {
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    private void init(Context context, AnalogClockConfig.Style preset) {
+        LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child = inflater.inflate(R.layout.custom_analog_clock_preferences_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-//        child.setBackgroundResource(R.drawable.border);
         addView(child, lp);
 
-        final AnalogClockConfig config =
-                new AnalogClockConfig(getContext(), AnalogClockConfig.Style.DEFAULT);
+        final AnalogClockConfig config = new AnalogClockConfig(getContext(), preset);
         TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
         fontButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -69,6 +61,35 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 dialog.show(fm, "custom fonts");
             }
         });
+
+        TextView digitStylePreference = (TextView) child.findViewById(R.id.digit_style_preference);
+        final String[] values = getResources().getStringArray(R.array.numberStyles);
+        String text = digitStylePreference.getText().toString();
+        text = String.format("%s: %s", text, values[config.digitStyle.getValue()]);
+        digitStylePreference.setText(text);
+        digitStylePreference.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.numberStyle)
+                        .setItems(R.array.numberStyles, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                config.digitStyle = AnalogClockConfig.DigitStyle.fromValue(which);
+                                configHasChanged(config);
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                            }
+                        });
+                builder.show();
+            }
+        });
+    }
+
+    private void configHasChanged(AnalogClockConfig config) {
+        config.save();
+        if (mListener != null) {
+            mListener.onConfigChanged();
+        }
     }
 
     public void setIsPurchased(boolean isPurchased) {
