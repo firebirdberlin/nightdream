@@ -33,7 +33,18 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
         addView(child, lp);
 
         final AnalogClockConfig config = new AnalogClockConfig(getContext(), preset);
+
         TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
+        String fontButtonText = fontButton.getText().toString();
+        String[] segments = config.fontUri.split("/");
+        if (segments.length > 0) {
+            String name =
+                    ManageFontsDialogFragment.getUserFriendlyFileName(segments[segments.length - 1]);
+
+            fontButtonText = String.format("%s: %s", fontButtonText, name);
+        }
+        fontButton.setText(fontButtonText);
+
         fontButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,6 +52,8 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(config.fontUri);
+                dialog.setDefaultFonts("roboto_regular.ttf", "roboto_light.ttf",
+                        "roboto_thin.ttf", "dancingscript_regular.ttf");
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {

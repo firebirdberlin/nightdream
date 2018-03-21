@@ -54,6 +54,9 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         });
 
         TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
+        String fontButtonText = fontButton.getText().toString();
+        fontButtonText = String.format("%s: %s", fontButtonText, settings.fontName);
+        fontButton.setText(fontButtonText);
         fontButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,6 +64,9 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(settings.fontUri);
+                dialog.setDefaultFonts("roboto_regular.ttf", "roboto_light.ttf",
+                        "roboto_thin.ttf", "7_segment_digital.ttf",
+                        "dancingscript_regular.ttf");
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {

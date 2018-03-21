@@ -153,7 +153,7 @@ public class Settings {
         AlarmToneUri = settings.getString("AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         AlarmToneName = settings.getString("AlarmToneName", "");
-        fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
+        fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
         fontName = settings.getString("fontName", "7-Segment Digital Font");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
@@ -325,7 +325,7 @@ public class Settings {
                 return FontCache.get(mContext, path);
             }
         }
-        String path = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
+        String path = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
         return FontCache.get(mContext, path);
     }
 
@@ -337,7 +337,8 @@ public class Settings {
                 return "fonts/roboto_regular.ttf";
             case 2: return "fonts/roboto_light.ttf";
             case 4: return "fonts/roboto_thin.ttf";
-            case 6: return "fonts/7segment.ttf";
+            case 6:
+                return "fonts/7_segment_digital.ttf";
             case 7:
                 return "fonts/dancingscript_regular.ttf";
             default: return null;
