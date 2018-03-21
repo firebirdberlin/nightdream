@@ -3,6 +3,8 @@ package com.firebirdberlin.nightdream.models;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.firebirdberlin.nightdream.ui.ClockLayout;
+
 public class AnalogClockConfig {
     public Decoration decoration = Decoration.NONE;
     public float digitPosition = 0.85f;
@@ -36,6 +38,21 @@ public class AnalogClockConfig {
             save();
         } else {
             load();
+        }
+    }
+
+    public static Style toClockStyle(int layoutId) {
+        switch (layoutId) {
+            case ClockLayout.LAYOUT_ID_ANALOG:
+                return Style.MINIMALISTIC;
+            case ClockLayout.LAYOUT_ID_ANALOG2:
+                return Style.SIMPLE;
+            case ClockLayout.LAYOUT_ID_ANALOG3:
+                return Style.ARC;
+            case ClockLayout.LAYOUT_ID_ANALOG4:
+                return Style.DEFAULT;
+            default:
+                return Style.MINIMALISTIC;
         }
     }
 
@@ -210,15 +227,29 @@ public class AnalogClockConfig {
 
     }
 
-    public enum DigitStyle {NONE, ARABIC, ROMAN}
-
-
     public enum HandShape {TRIANGLE, BAR, ARC}
-
     public enum TickStyle {NONE, DASH, CIRCLE}
-
     public enum Decoration {NONE, MINUTE_HAND, LABELS}
-
     public enum Style {DEFAULT, SIMPLE, ARC, MINIMALISTIC}
 
+    public enum DigitStyle {
+        NONE(0), ARABIC(1), ROMAN(2);
+
+        private final int value;
+
+        DigitStyle(int value) {
+            this.value = value;
+        }
+
+        public static DigitStyle fromValue(int i) {
+            for (DigitStyle style : values()) {
+                if (style.value == i) return style;
+            }
+            return DigitStyle.NONE;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 }

@@ -108,6 +108,10 @@ OR
     <string name="night_mode_timerange_title">Night time</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
+    <string name="numberStyle">Number style</string>
+    <string name="numberStyleArabic">Arabic</string>
+    <string name="numberStyleRoman">Roman</string>
+    <string name="numberStyleNone">None</string>
     <string name="other_apps">Other apps</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>

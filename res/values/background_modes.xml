@@ -12,4 +12,10 @@
         <item>@string/background_gradient</item>
         <item>@string/background_image</item>
     </string-array>
+
+    <string-array name="numberStyles">
+        <item>@string/numberStyleNone</item>
+        <item>@string/numberStyleArabic</item>
+        <item>@string/numberStyleRoman</item>
+    </string-array>
 </resources>
