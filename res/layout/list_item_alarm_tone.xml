@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_weight="1"
+    android:animateLayoutChanges="true"
     android:background="@android:color/transparent"
     android:baselineAligned="true"
     android:gravity="center_vertical"
@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-            android:text="RadioButton" />
+            android:text="" />
 
         <ImageView
             android:id="@+id/buttonDelete"
@@ -29,7 +29,10 @@
             android:layout_weight="1"
             android:baselineAlignBottom="false"
             android:contentDescription="@string/delete"
+            android:gravity="end"
+            android:paddingEnd="5dp"
             android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:paddingStart="5dp"
             android:src="@drawable/ic_delete"
             android:textAlignment="viewEnd"
