@@ -12,11 +12,13 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
@@ -345,35 +347,16 @@ public class CustomAnalogClock extends View {
 
         paint.setTextSize(digitFontSizeBig);
 
-
-        final boolean preventDigitsFromOverlapWithTicks = true;
-
         float minTickStart = Math.min(config.tickStartMinutes, config.tickStartHours);
         float minTickLength = Math.min(config.tickLengthMinutes, config.tickLengthHours);
-
-        float correctedAbsoluteDigitPosition = config.digitPosition * radius;
-        if (preventDigitsFromOverlapWithTicks && minTickStart > 0 && minTickLength > 0) {
-
-            // get bounding box of the widest possible digit "12" -> assumes all number glyphs of the font have equal height -> maybe move this into the hour loop.
-            Rect dummyBounds = new Rect();
-            final String dummyHourText = getHourTextOfDigitStyle(1);
-            paint.getTextBounds(dummyHourText, 0, dummyHourText.length(), dummyBounds);
-            float dummyTextWidth = paint.measureText(dummyHourText, 0, dummyHourText.length());
-
-            // take the larger of width or height, so this should also work for very wide fonts
-            float maxDigitDimension = Math.max(dummyTextWidth, dummyBounds.height());
-
-            // use digitPosition, of the corrected position if digitPosition would overlap with ticks
-            correctedAbsoluteDigitPosition = Math.min(config.digitPosition * radius,
-                    (minTickStart * radius)  // abs start of tick
-                            - (minTickLength * 0.5f * radius)  // leave distance of half the tick length between digit and tick
-                            - (maxDigitDimension / 2f));
-        }
 
         paint.setStrokeWidth(0);
 
         int digitCounter = 0;
 
+        final float defaultDigitPosition = config.digitPosition * radius;
+        final float ticksDistancePosition = (minTickStart * radius)  // abs start of tick
+                - (minTickLength * 0.5f * radius);  // leave distance of half the tick length between digit and tick
         for (double angle = 0; angle < 2 * Math.PI; angle += Math.PI / 6) {
 
             int currentHour = (digitCounter + 2) % 12 + 1;
@@ -402,8 +385,14 @@ public class CustomAnalogClock extends View {
 
             // for width measureText returns more exact result than textbounds
             // for height textbounds is ok
-            float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
-            float textHeight = bounds.height();
+            final float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
+            final float textHeight = bounds.height();
+
+            // ToDo: leave here only for roman digits, otherwise before the loop via dummy text bounds?
+            final float distanceDigitCenterToBorder = distanceHourTextBoundsCenterToBorder(currentHour, angle, textWidth, textHeight);
+
+            // use digitPosition, of the corrected position if digitPosition would overlap with ticks
+            final float correctedAbsoluteDigitPosition = Math.min(defaultDigitPosition, ticksDistancePosition - distanceDigitCenterToBorder);
 
             float x = (float) (centerX + correctedAbsoluteDigitPosition * Math.cos(angle));
             float y = (float) (centerY + correctedAbsoluteDigitPosition * Math.sin(angle));
@@ -413,8 +402,61 @@ public class CustomAnalogClock extends View {
             y -= textHeight / 2f + 1f;
 
             canvas.drawText(currentHourText, x, y + textHeight, paint);
+
+            // debug: show text bounds
+            /*
+            paint.setStyle(Paint.Style.STROKE);
+            canvas.drawRect(x, y, x + textWidth, y + textHeight, paint);
+            */
+
             digitCounter++;
         }
+    }
+
+    private float distanceHourTextBoundsCenterToBorder(int currentHour, double angle, float textWidth, float textHeight) {
+        float distanceDigitCenterToBorder;
+        if (currentHour == 6 || currentHour == 12) {
+            // hour arm orientation is vertically: use half height as distance
+            distanceDigitCenterToBorder = (float) textHeight / 2f;
+        } else if (currentHour == 3 || currentHour == 9) {
+            // hour arm orientation is horizontally: use half width as distance
+            distanceDigitCenterToBorder = textWidth / 2f;
+        } else {
+            // hour arm orientation is diagonally: calculate distance from center to the intersection point of rectangles border
+            distanceDigitCenterToBorder = (float) distanceOfRectangleCentreToIntersectionPoint(angle, textWidth, textHeight);
+        }
+        return distanceDigitCenterToBorder;
+    }
+
+    private double distanceOfRectangleCentreToIntersectionPoint(double angle, float textWidth, float textHeight) {
+
+        double degree = angle / (2 * Math.PI) * 360.0;
+
+        double sharpAngle = angle;
+        double triangleAdjacentLength;
+        if ((degree >= 315 || degree < 45)) {
+            // intersects right edge
+            if (degree >= 45) {
+                sharpAngle = 2 * Math.PI - angle;
+            }
+            triangleAdjacentLength = (double)textWidth / 2f;
+         } else if (degree >= 45 && degree < 135) {
+            // intersects bottom edge
+            sharpAngle = Math.abs(Math.PI / 2f - angle);
+            triangleAdjacentLength = (double)textHeight / 2f;
+        } else if (degree >= 135 && degree < 225) {
+            // intersects left edge
+            sharpAngle = Math.abs(Math.PI - angle);
+            triangleAdjacentLength = (double)textWidth / 2f;
+        } else {
+            // 225 to 315: intersects top edge
+            sharpAngle = Math.abs(Math.PI * 1.5 - angle);
+            triangleAdjacentLength = (double)textHeight / 2f;
+        }
+
+        double result = Math.abs(triangleAdjacentLength / Math.cos(sharpAngle));
+        //Log.i(TAG, "angle=" + angle + " degree=" + degree + " sharpAngle=" + sharpAngle + ", triangleAdjacentLength=" + triangleAdjacentLength + ", dist=" + result);
+        return result;
     }
 
     private String getHourTextOfDigitStyle(int currentHour) {
