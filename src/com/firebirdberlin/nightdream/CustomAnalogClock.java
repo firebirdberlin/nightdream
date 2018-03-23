@@ -30,6 +30,36 @@ import java.util.Calendar;
 public class CustomAnalogClock extends View {
     private static final String TAG = "CustomAnalogClock";
     final String[] ROMAN_DIGITS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
+
+    /**
+     * precalculated sine/cosine values
+     */
+    private static final float COSINE_OF_30_DEGREE = (float)Math.cos(Math.PI / 6.0);
+    private static final double[] MINUTE_ANGLES_SINE = new double[60];
+    private static final double[] MINUTE_ANGLES_COSINE = new double[60];
+    private static final double[] HOUR_ANGLES_SINE = new double[12];
+    private static final double[] HOUR_ANGLES_COSINE = new double[12];
+
+    static {
+
+        // precalculate angles and its sine/cosine for all 60 minute hands
+        double PI_PER_MINUTE = Math.PI / 30.;
+        for (int minuteCounter = 0; minuteCounter < 60; minuteCounter++) {
+            double angle = (double) minuteCounter * PI_PER_MINUTE;
+            MINUTE_ANGLES_SINE[minuteCounter] = Math.sin(angle);
+            MINUTE_ANGLES_COSINE[minuteCounter] = Math.cos(angle);
+        }
+
+        // precalculate angles and its sine/cosine for all 12 hour hands
+
+        double PI_PER_HOUR = Math.PI / 6.;
+        for (int hourCounter = 0; hourCounter < 12; hourCounter++) {
+            double angle = (double) hourCounter * PI_PER_HOUR;
+            HOUR_ANGLES_SINE[hourCounter] = Math.sin(angle);
+            HOUR_ANGLES_COSINE[hourCounter] = Math.cos(angle);
+        }
+    }
+
     protected Paint paint = new Paint();
     Context context;
     TimeReceiver timeReceiver;
@@ -289,11 +319,8 @@ public class CustomAnalogClock extends View {
         paint.setColorFilter(secondaryColorFilter);
 
         paint.setStyle(Paint.Style.FILL); //filled circle for every hour
-        int minuteCounter = 0;
 
-        float angleDelta = (float) Math.PI / 30f;
-        float angleMax = (float) (2f * Math.PI);
-        for (double angle = 0; angle < angleMax; angle += angleDelta) {
+        for (int minuteCounter = 0; minuteCounter < 60; minuteCounter++) {
 
             boolean isHourTick = (minuteCounter % 5 == 0);
             AnalogClockConfig.TickStyle tickStyle = (isHourTick)
@@ -303,10 +330,10 @@ public class CustomAnalogClock extends View {
             int width = (int) ((isHourTick)
                     ? config.tickWidthHours * radius : config.tickWidthMinutes * radius);
             paint.setStrokeWidth(width);
-            float tickStartX = (float) (centerX + tickStart * radius * Math.cos(angle));
-            float tickStartY = (float) (centerY + tickStart * radius * Math.sin(angle));
-            float tickEndX = (float) (centerX + (tickStart + tickLength) * radius * Math.cos(angle));
-            float tickEndY = (float) (centerY + (tickStart + tickLength) * radius * Math.sin(angle));
+            float tickStartX = (float) (centerX + tickStart * radius * MINUTE_ANGLES_COSINE[minuteCounter]);
+            float tickStartY = (float) (centerY + tickStart * radius * MINUTE_ANGLES_SINE[minuteCounter]);
+            float tickEndX = (float) (centerX + (tickStart + tickLength) * radius * MINUTE_ANGLES_COSINE[minuteCounter]);
+            float tickEndY = (float) (centerY + (tickStart + tickLength) * radius * MINUTE_ANGLES_SINE[minuteCounter]);
             switch (tickStyle) {
                 case NONE:
                     break;
@@ -318,8 +345,8 @@ public class CustomAnalogClock extends View {
                         drawTriangle(canvas, paint, tickEndX, tickEndY - triangleHeight * .1f, triangleWidth, triangleHeight);
                     } else {
                         float roundTickRadius = tickLength * .5f * radius;
-                        float roundTickCenterX = (centerX + (tickStart + tickLength * .5f) * (float) radius * (float) Math.cos(angle));
-                        float roundTickCenterY = (centerY + (tickStart + tickLength * .5f) * (float) radius * (float) Math.sin(angle));
+                        float roundTickCenterX = (centerX + (tickStart + tickLength * .5f) * (float) radius * (float) MINUTE_ANGLES_COSINE[minuteCounter]);
+                        float roundTickCenterY = (centerY + (tickStart + tickLength * .5f) * (float) radius * (float) MINUTE_ANGLES_SINE[minuteCounter]);
                         canvas.drawCircle(roundTickCenterX, roundTickCenterY, roundTickRadius, paint);
                     }
                     break;
@@ -327,13 +354,11 @@ public class CustomAnalogClock extends View {
                     canvas.drawLine(tickStartX, tickStartY, tickEndX, tickEndY, paint);
                     break;
             }
-            minuteCounter++;
         }
     }
 
     private void drawHourDigits(Canvas canvas, float centerX, float centerY, int radius) {
         if (config.digitStyle == AnalogClockConfig.DigitStyle.NONE) return;
-        // calculate font-size for desired text width, so digits have equal size on any device
 
         // init typeface
         paint.setTypeface(typeface);
@@ -352,12 +377,11 @@ public class CustomAnalogClock extends View {
 
         paint.setStrokeWidth(0);
 
-        int digitCounter = 0;
-
         final float defaultDigitPosition = config.digitPosition * radius;
         final float ticksDistancePosition = (minTickStart * radius)  // abs start of tick
                 - (minTickLength * 0.5f * radius);  // leave distance of half the tick length between digit and tick
-        for (double angle = 0; angle < 2 * Math.PI; angle += Math.PI / 6) {
+
+        for (int digitCounter = 0; digitCounter < 12; digitCounter++) {
 
             int currentHour = (digitCounter + 2) % 12 + 1;
 
@@ -388,14 +412,13 @@ public class CustomAnalogClock extends View {
             final float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
             final float textHeight = bounds.height();
 
-            // ToDo: leave here only for roman digits, otherwise before the loop via dummy text bounds?
-            final float distanceDigitCenterToBorder = distanceHourTextBoundsCenterToBorder(currentHour, angle, textWidth, textHeight);
+            final float distanceDigitCenterToBorder = distanceHourTextBoundsCenterToBorder(currentHour, textWidth, textHeight);
 
             // use digitPosition, of the corrected position if digitPosition would overlap with ticks
             final float correctedAbsoluteDigitPosition = Math.min(defaultDigitPosition, ticksDistancePosition - distanceDigitCenterToBorder);
 
-            float x = (float) (centerX + correctedAbsoluteDigitPosition * Math.cos(angle));
-            float y = (float) (centerY + correctedAbsoluteDigitPosition * Math.sin(angle));
+            float x = (float) (centerX + correctedAbsoluteDigitPosition * HOUR_ANGLES_COSINE[digitCounter]);
+            float y = (float) (centerY + correctedAbsoluteDigitPosition * HOUR_ANGLES_SINE[digitCounter]);
 
             // move center of text bounding box to x/y
             x -= textWidth / 2.;
@@ -409,26 +432,32 @@ public class CustomAnalogClock extends View {
             canvas.drawRect(x, y, x + textWidth, y + textHeight, paint);
             */
 
-            digitCounter++;
+
         }
     }
 
-    private float distanceHourTextBoundsCenterToBorder(int currentHour, double angle, float textWidth, float textHeight) {
-        float distanceDigitCenterToBorder;
+    private float distanceHourTextBoundsCenterToBorder(int currentHour, float textWidth, float textHeight) {
+        float distanceDigitCenterToBorder = 0;
         if (currentHour == 6 || currentHour == 12) {
-            // hour arm orientation is vertically: use half height as distance
+            // hour hand orientation is vertically: use half height as distance
             distanceDigitCenterToBorder = (float) textHeight / 2f;
         } else if (currentHour == 3 || currentHour == 9) {
-            // hour arm orientation is horizontally: use half width as distance
+            // hour hand orientation is horizontally: use half width as distance
             distanceDigitCenterToBorder = textWidth / 2f;
-        } else {
-            // hour arm orientation is diagonally: calculate distance from center to the intersection point of rectangles border
-            distanceDigitCenterToBorder = (float) distanceOfRectangleCentreToIntersectionPoint(angle, textWidth, textHeight);
+        } else if (currentHour == 2 || currentHour == 4 || currentHour == 8 || currentHour == 10) {
+            // intersects left/right edge
+            distanceDigitCenterToBorder = Math.abs((textWidth / 2f) / COSINE_OF_30_DEGREE);
+        } else if (currentHour == 1 || currentHour == 5 || currentHour == 7 || currentHour == 11) {
+            // intersects top/bottom edge
+            distanceDigitCenterToBorder = Math.abs((textHeight / 2f) / COSINE_OF_30_DEGREE);
         }
         return distanceDigitCenterToBorder;
     }
 
-    private double distanceOfRectangleCentreToIntersectionPoint(double angle, float textWidth, float textHeight) {
+    /**
+     * same as distanceHourTextBoundsCenterToBorder but for any given angle (keep for future use?)
+     */
+    private double distanceHourTextBoundsCenterToBorderByAngle(double angle, float textWidth, float textHeight) {
 
         double degree = angle / (2 * Math.PI) * 360.0;
 
@@ -440,7 +469,7 @@ public class CustomAnalogClock extends View {
                 sharpAngle = 2 * Math.PI - angle;
             }
             triangleAdjacentLength = (double)textWidth / 2f;
-         } else if (degree >= 45 && degree < 135) {
+        } else if (degree >= 45 && degree < 135) {
             // intersects bottom edge
             sharpAngle = Math.abs(Math.PI / 2f - angle);
             triangleAdjacentLength = (double)textHeight / 2f;
