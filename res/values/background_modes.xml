@@ -13,14 +13,24 @@
         <item>@string/background_image</item>
     </string-array>
 
+    <string-array name="decorationStyles">
+        <item>@string/decoration_style_none</item>
+        <item>@string/decoration_style_minute_hand</item>
+        <item>@string/decoration_style_labels</item>
+    </string-array>
+    <string-array name="handShapes">
+        <item>@string/hand_shape_bar</item>
+        <item>@string/hand_shape_triangle</item>
+        <item>@string/hand_shape_arc</item>
+    </string-array>
     <string-array name="numberStyles">
         <item>@string/numberStyleNone</item>
         <item>@string/numberStyleArabic</item>
         <item>@string/numberStyleRoman</item>
     </string-array>
-    <string-array name="decorationStyles">
-        <item>@string/decoration_style_none</item>
-        <item>@string/decoration_style_minute_hand</item>
-        <item>@string/decoration_style_labels</item>
+    <string-array name="tickStyles">
+        <item>@string/tick_style_none</item>
+        <item>@string/tick_style_dash</item>
+        <item>@string/tick_style_circle</item>
     </string-array>
 </resources>

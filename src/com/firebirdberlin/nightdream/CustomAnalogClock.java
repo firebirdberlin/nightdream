@@ -360,11 +360,14 @@ public class CustomAnalogClock extends View {
         final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
         final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
 
-        float minTickStart = Math.max(config.tickStartMinutes, config.tickStartHours);
-        float minTickLength = Math.max(config.tickLengthMinutes, config.tickLengthHours);
+        float minTickStart = Math.min(config.tickStartMinutes, config.tickStartHours);
+        float minTickLength;
         if (config.handShape == AnalogClockConfig.HandShape.ARC) {
             minTickStart = config.handLengthHours - config.handWidthHours;
             minTickLength = config.handWidthHours;
+        } else {
+            minTickLength = config.tickStartMinutes < config.tickStartHours ?
+                    config.tickLengthMinutes : config.tickLengthHours;
         }
 
         final float defaultDigitPosition = config.digitPosition * radius;

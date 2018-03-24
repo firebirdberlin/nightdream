@@ -91,8 +91,13 @@ public class ClockLayoutPreviewPreference extends Preference {
         Settings settings = new Settings(getContext());
         int clockLayoutId = settings.getClockLayoutID(true);
         textViewPurchaseHint.setVisibility(showPurchaseHint(settings) ? View.VISIBLE : View.GONE);
-        clockLayout.setBackgroundColor(Color.TRANSPARENT);
+        updateClockLayout(clockLayoutId, settings);
+        setupPreferencesFragment(clockLayoutId, settings);
+    }
+
+    private void updateClockLayout(int clockLayoutId, Settings settings) {
         clockLayout.setLayout(clockLayoutId);
+        clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
@@ -113,17 +118,15 @@ public class ClockLayoutPreviewPreference extends Preference {
         Point size = utility.getDisplaySize();
         Configuration config = context.getResources().getConfiguration();
         clockLayout.updateLayout(size.x - preferenceView.getPaddingLeft()
-                                        - preferenceView.getPaddingRight(),
-                                 config);
+                        - preferenceView.getPaddingRight(),
+                config);
 
         clockLayout.requestLayout();
         clockLayout.invalidate();
-
-        setupPreferencesFragment(clockLayoutId, settings);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private void setupPreferencesFragment(int clockLayoutID, Settings settings) {
+    private void setupPreferencesFragment(final int clockLayoutID, final Settings settings) {
         preferencesContainer.removeAllViews();
         if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
             CustomDigitalClockPreferencesLayout prefs =
@@ -133,7 +136,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                     new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
                         @Override
                         public void onConfigChanged() {
-                            updateView();
+                            updateClockLayout(clockLayoutID, settings);
                         }
 
                         @Override
@@ -157,7 +160,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                     new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
                         @Override
                         public void onConfigChanged() {
-                            updateView();
+                            updateClockLayout(clockLayoutID, settings);
                         }
 
                         @Override
