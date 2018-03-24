@@ -69,6 +69,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="delete">löschen</string>
 <string name="dialog_message_thank_you">Vielen Dank für Ihre Unterstützung.</string>
 <string name="dialog_title_thank_you">Dankeschön!</string>
+    <string name="decoration_style">Dekoration</string>
+    <string name="decoration_style_none">Keine</string>
+    <string name="decoration_style_minute_hand">Minutenzeiger</string>
+    <string name="decoration_style_labels">Ziffern</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Spenden</string>
 <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
@@ -107,6 +111,10 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode_timerange_title">Nachtzeit</string>
 <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
 <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
+    <string name="numberStyle">Ziffernstil</string>
+    <string name="numberStyleArabic">Arabisch</string>
+    <string name="numberStyleRoman">Römisch</string>
+    <string name="numberStyleNone">Keiner</string>
 <string name="other_apps">Andere Apps</string>
 <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
 <string name="other_apps_tinytimetracker">Zeiterfassung</string>

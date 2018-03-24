@@ -76,10 +76,12 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
         });
 
         TextView digitStylePreference = (TextView) child.findViewById(R.id.digit_style_preference);
-        final String[] values = getResources().getStringArray(R.array.numberStyles);
-        String text = digitStylePreference.getText().toString();
-        text = String.format("%s: %s", text, values[config.digitStyle.getValue()]);
-        digitStylePreference.setText(text);
+        {
+            final String[] values = getResources().getStringArray(R.array.numberStyles);
+            String text = digitStylePreference.getText().toString();
+            text = String.format("%s: %s", text, values[config.digitStyle.getValue()]);
+            digitStylePreference.setText(text);
+        }
         digitStylePreference.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,6 +90,30 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                         .setItems(R.array.numberStyles, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 config.digitStyle = AnalogClockConfig.DigitStyle.fromValue(which);
+                                configHasChanged(config);
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                            }
+                        });
+                builder.show();
+            }
+        });
+
+        TextView decorationStylePreference = (TextView) child.findViewById(R.id.decoration_preference);
+        {
+            final String[] values = getResources().getStringArray(R.array.decorationStyles);
+            String text = decorationStylePreference.getText().toString();
+            text = String.format("%s: %s", text, values[config.decoration.getValue()]);
+            decorationStylePreference.setText(text);
+        }
+        decorationStylePreference.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.decoration_style)
+                        .setItems(R.array.decorationStyles, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                config.decoration = AnalogClockConfig.Decoration.fromValue(which);
                                 configHasChanged(config);
                                 // The 'which' argument contains the index position
                                 // of the selected item

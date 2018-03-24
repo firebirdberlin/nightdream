@@ -18,4 +18,9 @@
         <item>@string/numberStyleArabic</item>
         <item>@string/numberStyleRoman</item>
     </string-array>
+    <string-array name="decorationStyles">
+        <item>@string/decoration_style_none</item>
+        <item>@string/decoration_style_minute_hand</item>
+        <item>@string/decoration_style_labels</item>
+    </string-array>
 </resources>
