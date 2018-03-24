@@ -229,7 +229,8 @@ public class AnalogClockConfig {
 
     public enum HandShape {TRIANGLE, BAR, ARC}
     public enum TickStyle {NONE, DASH, CIRCLE}
-    public enum Decoration {NONE, MINUTE_HAND, LABELS}
+
+    //    public enum Decoration {NONE, MINUTE_HAND, LABELS}
     public enum Style {DEFAULT, SIMPLE, ARC, MINIMALISTIC}
 
     public enum DigitStyle {
@@ -246,6 +247,27 @@ public class AnalogClockConfig {
                 if (style.value == i) return style;
             }
             return DigitStyle.NONE;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    public enum Decoration {
+        NONE(0), MINUTE_HAND(1), LABELS(2);
+
+        private final int value;
+
+        Decoration(int value) {
+            this.value = value;
+        }
+
+        public static Decoration fromValue(int i) {
+            for (Decoration style : values()) {
+                if (style.value == i) return style;
+            }
+            return Decoration.NONE;
         }
 
         public int getValue() {

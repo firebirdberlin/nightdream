@@ -70,6 +70,10 @@ OR
     <string name="delete">delete</string>
     <string name="dialog_message_thank_you">Thank you very much!</string>
     <string name="dialog_title_thank_you">Thanks</string>
+    <string name="decoration_style">Decoration style</string>
+    <string name="decoration_style_none">None</string>
+    <string name="decoration_style_minute_hand">Minute hand</string>
+    <string name="decoration_style_labels">Numbers</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
