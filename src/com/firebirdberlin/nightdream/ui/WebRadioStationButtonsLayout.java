@@ -35,6 +35,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
     private Integer activeStationIndex;
     private int accentColor;
     private int textColor;
+    private boolean showSmallButtons = false;
     private OnClickListener buttonOnClickListener = new OnClickListener() {
         @Override
         public void onClick(final View v) {
@@ -85,8 +86,8 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
 
         Utility utility = new Utility(getContext());
         Point displaySize = utility.getDisplaySize();
-        //Log.d(TAG, "displayWidth=" + displaySize.x);
-        final int buttonWidthPixels = (displaySize.x > 480 ? 40 : 35);
+        showSmallButtons = (displaySize.x <= 480);
+        final int buttonWidthPixels = (showSmallButtons ? 35 : 40);
 
         final int maxNumButtons = FavoriteRadioStations.getMaxNumEntries();
         for (int i = 0; i < maxNumButtons; i++) {
@@ -128,10 +129,22 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         for (int i = 0; i < getChildCount(); i++) {
             Button b = (Button) getChildAt(i);
             b.setVisibility(i <= lastButtonInUseIndex + 1 ? VISIBLE : GONE);
-            b.setText(String.valueOf(i + 1));
 
-            int color = (activeStationIndex != null && activeStationIndex.intValue() == i)
-                    ? accentColor : textColor;
+            final boolean active = (activeStationIndex != null && activeStationIndex.intValue() == i);
+            int color = active ? accentColor : textColor;
+
+            if (active) {
+                // draw stop button: empty text, use shape containing additional "stop" shape
+                b.setText("");
+                b.setBackgroundResource(
+                        showSmallButtons
+                                ? R.drawable.webradio_station_stop_button_small
+                                : R.drawable.webradio_station_stop_button
+                );
+            } else {
+                b.setText(String.valueOf(i + 1));
+                b.setBackgroundResource(R.drawable.webradio_station_button);
+            }
 
             Drawable border = b.getBackground();
             if (stations != null && stations.get(i) == null) {

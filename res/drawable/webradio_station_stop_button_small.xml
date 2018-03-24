@@ -15,4 +15,17 @@
                 android:color="#FFFFFF" />
         </shape>
     </item>
+
+    <!-- draw square as stop button, for button width = 35 pixels  -->
+    <item
+        android:bottom="11dp"
+        android:left="13dp"
+        android:right="13dp"
+        android:top="11dp">
+
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+        </shape>
+    </item>
 </layer-list>
