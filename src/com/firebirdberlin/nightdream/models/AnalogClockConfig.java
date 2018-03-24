@@ -27,7 +27,7 @@ public class AnalogClockConfig {
     public float tickLengthHours = 0.04f;
     public float outerCircleRadius = 1.f;
     public float outerCircleWidth = 0f;
-    public String fontUri = "file:///android_asset/fonts/7_segment_digital.ttf";
+    public String fontUri = "file:///android_asset/fonts/dancingscript_regular.ttf";
     Context context;
     Style style;
     public AnalogClockConfig(Context context, Style style) {
@@ -98,7 +98,7 @@ public class AnalogClockConfig {
         outerCircleRadius = settings.getFloat("outerCircleRadius", 1.f);
         outerCircleWidth = settings.getFloat("outerCircleWidth", 0.f);
 
-        fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
+        fontUri = settings.getString("fontUri", "file:///android_asset/fonts/dancingscript_regular.ttf");
     }
 
     public void save(){

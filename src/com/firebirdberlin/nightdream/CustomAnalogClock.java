@@ -12,13 +12,11 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
@@ -29,8 +27,6 @@ import java.util.Calendar;
 
 public class CustomAnalogClock extends View {
     private static final String TAG = "CustomAnalogClock";
-    final String[] ROMAN_DIGITS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
-
     /**
      * precalculated sine/cosine values
      */
@@ -41,8 +37,7 @@ public class CustomAnalogClock extends View {
     private static final double[] HOUR_ANGLES_COSINE = new double[12];
 
     static {
-
-        // precalculate angles and its sine/cosine for all 60 minute hands
+        // calculate angles and its sine/cosine for all 60 minute hands
         double PI_PER_MINUTE = Math.PI / 30.;
         for (int minuteCounter = 0; minuteCounter < 60; minuteCounter++) {
             double angle = (double) minuteCounter * PI_PER_MINUTE;
@@ -50,8 +45,7 @@ public class CustomAnalogClock extends View {
             MINUTE_ANGLES_COSINE[minuteCounter] = Math.cos(angle);
         }
 
-        // precalculate angles and its sine/cosine for all 12 hour hands
-
+        // calculate angles and its sine/cosine for all 12 hour hands
         double PI_PER_HOUR = Math.PI / 6.;
         for (int hourCounter = 0; hourCounter < 12; hourCounter++) {
             double angle = (double) hourCounter * PI_PER_HOUR;
@@ -60,6 +54,7 @@ public class CustomAnalogClock extends View {
         }
     }
 
+    final String[] ROMAN_DIGITS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
     protected Paint paint = new Paint();
     Context context;
     TimeReceiver timeReceiver;
@@ -317,11 +312,9 @@ public class CustomAnalogClock extends View {
         // ticks
         paint.setAlpha(255);
         paint.setColorFilter(secondaryColorFilter);
-
         paint.setStyle(Paint.Style.FILL); //filled circle for every hour
 
         for (int minuteCounter = 0; minuteCounter < 60; minuteCounter++) {
-
             boolean isHourTick = (minuteCounter % 5 == 0);
             AnalogClockConfig.TickStyle tickStyle = (isHourTick)
                     ? config.tickStyleHours : config.tickStyleMinutes;
@@ -360,22 +353,15 @@ public class CustomAnalogClock extends View {
     private void drawHourDigits(Canvas canvas, float centerX, float centerY, int radius) {
         if (config.digitStyle == AnalogClockConfig.DigitStyle.NONE) return;
 
-        // init typeface
         paint.setTypeface(typeface);
 
-        /*
-        ToDo: until now digits have fixed width of 0.8% of the radius -> should become configurable as well!
-               Then digitPosition should also be configurable.
-        */
+        /* ToDo: Currently digits have fixed width of 0.8% of the radius -> should become
+                 configurable as well! Then digitPosition should also be configurable. */
         final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
         final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
 
-        paint.setTextSize(digitFontSizeBig);
-
-        float minTickStart = Math.min(config.tickStartMinutes, config.tickStartHours);
-        float minTickLength = Math.min(config.tickLengthMinutes, config.tickLengthHours);
-
-        paint.setStrokeWidth(0);
+        float minTickStart = Math.max(config.tickStartMinutes, config.tickStartHours);
+        float minTickLength = Math.max(config.tickLengthMinutes, config.tickLengthHours);
 
         final float defaultDigitPosition = config.digitPosition * radius;
         final float ticksDistancePosition = (minTickStart * radius)  // abs start of tick
@@ -385,37 +371,33 @@ public class CustomAnalogClock extends View {
 
             int currentHour = (digitCounter + 2) % 12 + 1;
 
-            if (config.highlightQuarterOfHour) {
-                if (currentHour % 3 == 0) {
-                    // 3,6,9,12
-                    paint.setColorFilter(customColorFilter);
-                    paint.setTextSize(digitFontSizeBig);
-                    paint.setTypeface(boldTypeface);
-                } else {
-                    paint.setColorFilter(secondaryColorFilter);
-                    paint.setTextSize(digitFontSizeSmall);
-                    paint.setTypeface(typeface);
-                }
+            if (config.highlightQuarterOfHour && currentHour % 3 == 0) {
+                // 3,6,9,12
+                paint.setColorFilter(customColorFilter);
+                paint.setTextSize(digitFontSizeBig);
+                paint.setTypeface(boldTypeface);
             } else {
                 paint.setColorFilter(secondaryColorFilter);
                 paint.setTextSize(digitFontSizeSmall);
                 paint.setTypeface(typeface);
             }
 
-            Rect bounds = new Rect();
             final String currentHourText = getHourTextOfDigitStyle(currentHour);
 
+            // Determine the text size
+            // - For the width measureText returns more exact results than textbounds
+            // - For the height using getTextBounds is ok
+            Rect bounds = new Rect();
             paint.getTextBounds(currentHourText, 0, currentHourText.length(), bounds);
-
-            // for width measureText returns more exact result than textbounds
-            // for height textbounds is ok
             final float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
             final float textHeight = bounds.height();
 
-            final float distanceDigitCenterToBorder = distanceHourTextBoundsCenterToBorder(currentHour, textWidth, textHeight);
+            final float distanceDigitCenterToBorder =
+                    distanceHourTextBoundsCenterToBorder(currentHour, textWidth, textHeight);
 
             // use digitPosition, of the corrected position if digitPosition would overlap with ticks
-            final float correctedAbsoluteDigitPosition = Math.min(defaultDigitPosition, ticksDistancePosition - distanceDigitCenterToBorder);
+            final float correctedAbsoluteDigitPosition =
+                    Math.min(defaultDigitPosition, ticksDistancePosition - distanceDigitCenterToBorder);
 
             float x = (float) (centerX + correctedAbsoluteDigitPosition * HOUR_ANGLES_COSINE[digitCounter]);
             float y = (float) (centerY + correctedAbsoluteDigitPosition * HOUR_ANGLES_SINE[digitCounter]);
@@ -431,27 +413,26 @@ public class CustomAnalogClock extends View {
             paint.setStyle(Paint.Style.STROKE);
             canvas.drawRect(x, y, x + textWidth, y + textHeight, paint);
             */
-
-
         }
     }
 
     private float distanceHourTextBoundsCenterToBorder(int currentHour, float textWidth, float textHeight) {
-        float distanceDigitCenterToBorder = 0;
-        if (currentHour == 6 || currentHour == 12) {
-            // hour hand orientation is vertically: use half height as distance
-            distanceDigitCenterToBorder = (float) textHeight / 2f;
-        } else if (currentHour == 3 || currentHour == 9) {
-            // hour hand orientation is horizontally: use half width as distance
-            distanceDigitCenterToBorder = textWidth / 2f;
-        } else if (currentHour == 2 || currentHour == 4 || currentHour == 8 || currentHour == 10) {
-            // intersects left/right edge
-            distanceDigitCenterToBorder = Math.abs((textWidth / 2f) / COSINE_OF_30_DEGREE);
-        } else if (currentHour == 1 || currentHour == 5 || currentHour == 7 || currentHour == 11) {
-            // intersects top/bottom edge
-            distanceDigitCenterToBorder = Math.abs((textHeight / 2f) / COSINE_OF_30_DEGREE);
+        switch (currentHour) {
+            case 6:
+            case 12: // hour hand orientation is horizontally: use half width as distance
+                return textHeight / 2f;
+            case 3:
+            case 9: // hour hand orientation is vertically: use half height as distance
+                return textWidth / 2f;
+            case 2:
+            case 4:
+            case 8:
+            case 10: // intersects left/right edge
+                return Math.abs((textWidth / 2f) / COSINE_OF_30_DEGREE);
+            default: // 1,5,7,8
+                // intersects top/bottom edge
+                return Math.abs((textHeight / 2f) / COSINE_OF_30_DEGREE);
         }
-        return distanceDigitCenterToBorder;
     }
 
     /**
@@ -489,10 +470,9 @@ public class CustomAnalogClock extends View {
     }
 
     private String getHourTextOfDigitStyle(int currentHour) {
-        String currentHourText = (config.digitStyle == AnalogClockConfig.DigitStyle.ARABIC)
+        return (config.digitStyle == AnalogClockConfig.DigitStyle.ARABIC)
                 ? String.valueOf(currentHour)
                 : ROMAN_DIGITS[currentHour - 1];
-        return currentHourText;
     }
 
     private double radiansToDegrees(double rad) {

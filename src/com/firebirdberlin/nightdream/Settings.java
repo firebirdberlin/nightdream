@@ -149,11 +149,19 @@ public class Settings {
 
     }
 
+    private String getFontUri() {
+        String fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
+        if ("file:///android_asset/fonts/7segment.ttf".equals(fontUri)) {
+            return "file:///android_asset/fonts/7_segment_digital.ttf";
+        }
+        return fontUri;
+    }
+
     public void reload() {
         AlarmToneUri = settings.getString("AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         AlarmToneName = settings.getString("AlarmToneName", "");
-        fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
+        fontUri = getFontUri();
         fontName = settings.getString("fontName", "7-Segment Digital Font");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
@@ -220,6 +228,7 @@ public class Settings {
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
 
+        Log.w(TAG, "fontUri2: " + fontUri);
         String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
         sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
 
@@ -325,7 +334,7 @@ public class Settings {
                 return FontCache.get(mContext, path);
             }
         }
-        String path = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
+        String path = getFontUri();
         return FontCache.get(mContext, path);
     }
 
