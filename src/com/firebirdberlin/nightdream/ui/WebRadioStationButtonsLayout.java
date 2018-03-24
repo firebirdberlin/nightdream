@@ -136,7 +136,11 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             if (active) {
                 // draw stop button: empty text, use shape containing additional "stop" shape
                 b.setText("");
-                b.setBackgroundResource(showSmallButtons ? R.drawable.webradio_station_stop_button_small : R.drawable.webradio_station_stop_button);
+                b.setBackgroundResource(
+                        showSmallButtons
+                                ? R.drawable.webradio_station_stop_button_small
+                                : R.drawable.webradio_station_stop_button
+                );
             } else {
                 b.setText(String.valueOf(i + 1));
                 b.setBackgroundResource(R.drawable.webradio_station_button);
