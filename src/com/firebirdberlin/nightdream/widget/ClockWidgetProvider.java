@@ -333,21 +333,34 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         protected RemoteViews doInBackground(Context... contexts) {
             Context context = contexts[0];
             final View sourceView = prepareSourceView(context, dimension);
+            Bitmap widgetBitmap = loadBitmapFromView(sourceView);
 
-            sourceView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-            sourceView.setDrawingCacheEnabled(true);
-            Bitmap widgetBitmap = sourceView.getDrawingCache(false);
-
-            System.gc();
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
-            updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
+            if (widgetBitmap != null) {
+                updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
 
-            // click activates app
-            Intent intent = new Intent(context, NightDreamActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
-
+                // click activates app
+                Intent intent = new Intent(context, NightDreamActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+                updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+            }
+            System.gc();
             return updateViews;
+        }
+
+        private Bitmap loadBitmapFromView(View view) {
+            Bitmap bitmap = null;
+            if (view != null) {
+                view.setDrawingCacheEnabled(true);
+                view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+                try {
+                    view.buildDrawingCache();
+                    bitmap = Bitmap.createBitmap(view.getDrawingCache());
+                } finally {
+                    view.setDrawingCacheEnabled(false);
+                }
+            }
+            return bitmap;
         }
 
         @Override
