@@ -132,24 +132,24 @@ public class AnalogClockConfig {
     public void initStyle(Style style) {
         switch (style) {
             case DEFAULT:
-                decoration = Decoration.NONE;
+                decoration = Decoration.NONE; // OK
                 digitPosition = 0.85f;
-                digitStyle = DigitStyle.ARABIC;
+                digitStyle = DigitStyle.ARABIC; // OK
                 emphasizeHour12 = true;
-                handShape = HandShape.TRIANGLE;
-                handLengthHours = 0.8f;
-                handLengthMinutes = 0.95f;
-                handWidthHours = 0.04f;
-                handWidthMinutes = 0.04f;
+                handShape = HandShape.TRIANGLE; // OK
+                handLengthHours = 0.8f; // OK
+                handLengthMinutes = 0.95f; // OK
+                handWidthHours = 0.04f; // OK
+                handWidthMinutes = 0.04f; // OK
                 highlightQuarterOfHour = true;
                 innerCircleRadius = 0.045f;
                 outerCircleRadius = 1.f;
                 outerCircleWidth = 0.f;
                 tickStartMinutes = 0.95f;
-                tickStyleMinutes = TickStyle.DASH;
+                tickStyleMinutes = TickStyle.DASH; // OK
                 tickLengthMinutes = 0.04f;
                 tickStartHours = 0.95f;
-                tickStyleHours = TickStyle.CIRCLE;
+                tickStyleHours = TickStyle.CIRCLE; // OK
                 tickLengthHours = 0.04f;
                 tickWidthHours = 0.01f;
                 tickWidthMinutes = 0.01f;
@@ -227,10 +227,6 @@ public class AnalogClockConfig {
 
     }
 
-    public enum HandShape {TRIANGLE, BAR, ARC}
-    public enum TickStyle {NONE, DASH, CIRCLE}
-
-    //    public enum Decoration {NONE, MINUTE_HAND, LABELS}
     public enum Style {DEFAULT, SIMPLE, ARC, MINIMALISTIC}
 
     public enum DigitStyle {
@@ -254,6 +250,26 @@ public class AnalogClockConfig {
         }
     }
 
+    public enum TickStyle {
+        NONE(0), DASH(1), CIRCLE(2);
+
+        private final int value;
+
+        TickStyle(int value) {
+            this.value = value;
+        }
+
+        public static TickStyle fromValue(int i) {
+            for (TickStyle style : values()) {
+                if (style.value == i) return style;
+            }
+            return TickStyle.NONE;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
     public enum Decoration {
         NONE(0), MINUTE_HAND(1), LABELS(2);
 
@@ -268,6 +284,27 @@ public class AnalogClockConfig {
                 if (style.value == i) return style;
             }
             return Decoration.NONE;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    public enum HandShape {
+        BAR(0), TRIANGLE(1), ARC(2);
+
+        private final int value;
+
+        HandShape(int value) {
+            this.value = value;
+        }
+
+        public static HandShape fromValue(int i) {
+            for (HandShape style : values()) {
+                if (style.value == i) return style;
+            }
+            return HandShape.BAR;
         }
 
         public int getValue() {

@@ -51,6 +51,7 @@ OR
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
     <string name="clear">clear</string>
+    <string name="clock_hands">Hands</string>
     <string name="clock_layout_analog">analog clock</string>
     <string name="clock_layout_digital">digital clock</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
@@ -82,6 +83,10 @@ OR
     <string name="force_auto_rotation">Force orientation in Daydream</string>
     <string name="force_auto_rotation_summary">Enforce the screen orientation if the Daydream is used.</string>
     <string name="forecast">5-day Weather Forecast</string>
+    <string name="hand_shape">Hand shape</string>
+    <string name="hand_shape_arc">Arc</string>
+    <string name="hand_shape_bar">Bar</string>
+    <string name="hand_shape_triangle">Triangle</string>
     <string name="handle_power_ac">AC</string>
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">car dock</string>
@@ -93,6 +98,7 @@ OR
     <string name="hide_background_image_in_night_mode">Hide</string>
     <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="hour">h</string>
+    <string name="length">Length</string>
     <string name="location_time">location time</string>
     <string name="maxBrightness">Maximum screen brightness</string>
     <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
@@ -102,6 +108,7 @@ OR
     <string name="minBrightness">Minimum screen brightness</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Mute ringer</string>
+    <string name="next">next</string>
     <string name="night_mode_activation_auto">automatic</string>
     <string name="night_mode_activation_manual">manual</string>
     <string name="night_mode_activation_mode">Activation mode</string>
@@ -112,6 +119,7 @@ OR
     <string name="night_mode_timerange_title">Night time</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
+    <string name="numbers">Numbers</string>
     <string name="numberStyle">Number style</string>
     <string name="numberStyleArabic">Arabic</string>
     <string name="numberStyleRoman">Roman</string>
@@ -121,6 +129,7 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
+    <string name="prev">previous</string>
     <string name="preview">Preview</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Full version</string>
@@ -180,6 +189,13 @@ OR
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
     <string name="standbyNotificationText">Standby service is running.</string>
     <string name="temperatureUnit">Temperature unit</string>
+    <string name="tick_style">Tick style</string>
+    <string name="tick_style_hours">Hour tick style</string>
+    <string name="tick_style_minutes">Minute tick style</string>
+    <string name="tick_style_circle">circle</string>
+    <string name="tick_style_dash">dash</string>
+    <string name="tick_style_none">none</string>
+    <string name="ticks">Ticks</string>
     <string name="timeFormat">Time format</string>
     <string name="titlePrivacyPolicy">Privacy policy</string>
     <string name="today">today</string>
@@ -212,4 +228,5 @@ OR
     <string name="welcome_screen_title2">Preferences</string>
     <string name="welcome_screen_title3">Screen brightness</string>
     <string name="welcome_screen_title4">Clock size</string>
+    <string name="width">Width</string>
 </resources>
