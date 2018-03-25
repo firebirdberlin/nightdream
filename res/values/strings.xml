@@ -71,6 +71,7 @@ OR
     <string name="delete">delete</string>
     <string name="dialog_message_thank_you">Thank you very much!</string>
     <string name="dialog_title_thank_you">Thanks</string>
+    <string name="digit_emphasize_quarters">Emphasize quarters</string>
     <string name="decoration_style">Decoration style</string>
     <string name="decoration_style_none">None</string>
     <string name="decoration_style_minute_hand">Minute hand</string>
@@ -192,9 +193,9 @@ OR
     <string name="tick_style">Tick style</string>
     <string name="tick_style_hours">Hour tick style</string>
     <string name="tick_style_minutes">Minute tick style</string>
-    <string name="tick_style_circle">circle</string>
-    <string name="tick_style_dash">dash</string>
-    <string name="tick_style_none">none</string>
+    <string name="tick_style_circle">Circle</string>
+    <string name="tick_style_dash">Dash</string>
+    <string name="tick_style_none">None</string>
     <string name="ticks">Ticks</string>
     <string name="timeFormat">Time format</string>
     <string name="titlePrivacyPolicy">Privacy policy</string>

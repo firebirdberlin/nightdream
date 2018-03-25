@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
@@ -78,7 +80,6 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
 
         final TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
         setFontButtonText(fontButton, config);
-
         fontButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,6 +105,34 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                     }
                 });
                 dialog.show(fm, "custom fonts");
+            }
+        });
+
+        SeekBar digitPositionSeekBar = (SeekBar) child.findViewById(R.id.digit_position_preference);
+        digitPositionSeekBar.setProgress((int) (config.digitPosition * 100));
+        digitPositionSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.digitPosition = progress / 100f;
+                configHasChanged(config);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        Switch emphasizeQuarters = (Switch) child.findViewById(R.id.switch_emphasize_quarters);
+        emphasizeQuarters.setChecked(config.highlightQuarterOfHour);
+        emphasizeQuarters.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                config.highlightQuarterOfHour = checked;
+                configHasChanged(config);
             }
         });
 
