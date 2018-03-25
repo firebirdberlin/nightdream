@@ -72,7 +72,7 @@ OR
     <string name="dialog_message_thank_you">Thank you very much!</string>
     <string name="dialog_title_thank_you">Thanks</string>
     <string name="digit_emphasize_quarters">Emphasize quarters</string>
-    <string name="decoration_style">Decoration style</string>
+    <string name="decoration">Decoration</string>
     <string name="decoration_style_none">None</string>
     <string name="decoration_style_minute_hand">Minute hand</string>
     <string name="decoration_style_labels">Numbers</string>
@@ -84,7 +84,6 @@ OR
     <string name="force_auto_rotation">Force orientation in Daydream</string>
     <string name="force_auto_rotation_summary">Enforce the screen orientation if the Daydream is used.</string>
     <string name="forecast">5-day Weather Forecast</string>
-    <string name="hand_shape">Hand shape</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Bar</string>
     <string name="hand_shape_triangle">Triangle</string>
@@ -99,6 +98,7 @@ OR
     <string name="hide_background_image_in_night_mode">Hide</string>
     <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="hour">h</string>
+    <string name="inner_circle_radius">Inner circle radius</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
     <string name="maxBrightness">Maximum screen brightness</string>
@@ -121,15 +121,17 @@ OR
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
     <string name="numbers">Numbers</string>
-    <string name="numberStyle">Number style</string>
     <string name="numberStyleArabic">Arabic</string>
     <string name="numberStyleRoman">Roman</string>
     <string name="numberStyleNone">None</string>
     <string name="other_apps">Other apps</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="outer_circle_radius">Outer circle radius</string>
+    <string name="outer_circle_width">Outer circle width</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
+    <string name="position">Position</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
     <string name="product_name_donation">Donation</string>
@@ -189,8 +191,8 @@ OR
     <string name="standbyEnabledWhileDisconnectedSummary">This feature quickly drains your battery!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
     <string name="standbyNotificationText">Standby service is running.</string>
+    <string name="style">Style</string>
     <string name="temperatureUnit">Temperature unit</string>
-    <string name="tick_style">Tick style</string>
     <string name="tick_style_hours">Hour tick style</string>
     <string name="tick_style_minutes">Minute tick style</string>
     <string name="tick_style_circle">Circle</string>

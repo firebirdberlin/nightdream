@@ -158,7 +158,7 @@ public class AnalogClockConfig {
                 decoration = Decoration.MINUTE_HAND;
                 digitPosition = 0.85f;
                 digitStyle = DigitStyle.NONE;
-                emphasizeHour12 = false;
+                emphasizeHour12 = true;
                 handShape = HandShape.TRIANGLE;
                 handLengthHours = 0.6f;
                 handLengthMinutes = 0.9f;
@@ -181,7 +181,7 @@ public class AnalogClockConfig {
                 decoration = Decoration.NONE;
                 digitPosition = 0.85f;
                 digitStyle = DigitStyle.NONE;
-                emphasizeHour12 = false;
+                emphasizeHour12 = true;
                 handShape = HandShape.ARC;
                 handLengthHours = 0.80f;
                 handLengthMinutes = 0.90f;
@@ -204,7 +204,7 @@ public class AnalogClockConfig {
                 decoration = Decoration.NONE;
                 digitPosition = 0.7f;
                 digitStyle = DigitStyle.NONE;
-                emphasizeHour12 = false;
+                emphasizeHour12 = true;
                 handShape = HandShape.BAR;
                 handLengthHours = 0.6f;
                 handLengthMinutes = 0.8f;

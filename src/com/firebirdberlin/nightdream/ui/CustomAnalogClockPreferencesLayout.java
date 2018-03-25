@@ -55,8 +55,9 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
         final LinearLayout labelsLayout = (LinearLayout) child.findViewById(R.id.labels_preference_layout);
         final LinearLayout handsLayout = (LinearLayout) child.findViewById(R.id.hands_preference_layout);
         final LinearLayout ticksLayout = (LinearLayout) child.findViewById(R.id.ticks_preference_layout);
+        final LinearLayout decorationLayout = (LinearLayout) child.findViewById(R.id.decoration_preference_layout);
 
-        final LinearLayout[] layouts = {labelsLayout, handsLayout, ticksLayout};
+        final LinearLayout[] layouts = {labelsLayout, handsLayout, ticksLayout, decorationLayout};
 
         activateLayout(layouts, toggleText, active_layout);
         toggleNext.setOnClickListener(new OnClickListener() {
@@ -142,7 +143,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.tick_style)
+                builder.setTitle(R.string.style)
                         .setItems(R.array.tickStyles, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 config.tickStyleHours = AnalogClockConfig.TickStyle.fromValue(which);
@@ -159,7 +160,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.tick_style)
+                builder.setTitle(R.string.style)
                         .setItems(R.array.tickStyles, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 config.tickStyleMinutes = AnalogClockConfig.TickStyle.fromValue(which);
@@ -177,7 +178,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.numberStyle)
+                builder.setTitle(R.string.style)
                         .setItems(R.array.numberStyles, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 config.digitStyle = AnalogClockConfig.DigitStyle.fromValue(which);
@@ -195,7 +196,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.decoration_style)
+                builder.setTitle(R.string.style)
                         .setItems(R.array.decorationStyles, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 config.decoration = AnalogClockConfig.Decoration.fromValue(which);
@@ -213,7 +214,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.hand_shape)
+                builder.setTitle(R.string.style)
                         .setItems(R.array.handShapes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 config.handShape = AnalogClockConfig.HandShape.fromValue(which);
@@ -351,6 +352,57 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 config.tickLengthHours = progress / 100f;
+                configHasChanged(config);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        SeekBar outerCirclePosition = (SeekBar) child.findViewById(R.id.outer_circle_position);
+        outerCirclePosition.setProgress((int) (config.outerCircleRadius * 100));
+        outerCirclePosition.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.outerCircleRadius = progress / 100f;
+                configHasChanged(config);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        SeekBar outerCircleWidth = (SeekBar) child.findViewById(R.id.outer_circle_width);
+        outerCircleWidth.setProgress((int) (config.outerCircleWidth * 100));
+        outerCircleWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.outerCircleWidth = progress / 100f;
+                configHasChanged(config);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        SeekBar innerCircleRadius = (SeekBar) child.findViewById(R.id.inner_circle_radius);
+        innerCircleRadius.setProgress((int) (config.innerCircleRadius * 100));
+        innerCircleRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.innerCircleRadius = progress / 100f;
                 configHasChanged(config);
             }
 
