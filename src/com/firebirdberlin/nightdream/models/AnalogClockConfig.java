@@ -133,7 +133,7 @@ public class AnalogClockConfig {
         switch (style) {
             case DEFAULT:
                 decoration = Decoration.NONE; // OK
-                digitPosition = 0.85f;
+                digitPosition = 0.85f; // OK
                 digitStyle = DigitStyle.ARABIC; // OK
                 emphasizeHour12 = true;
                 handShape = HandShape.TRIANGLE; // OK
@@ -141,16 +141,16 @@ public class AnalogClockConfig {
                 handLengthMinutes = 0.95f; // OK
                 handWidthHours = 0.04f; // OK
                 handWidthMinutes = 0.04f; // OK
-                highlightQuarterOfHour = true;
+                highlightQuarterOfHour = true; // OK
                 innerCircleRadius = 0.045f;
                 outerCircleRadius = 1.f;
                 outerCircleWidth = 0.f;
-                tickStartMinutes = 0.95f;
+                tickStartMinutes = 0.95f; // OK
                 tickStyleMinutes = TickStyle.DASH; // OK
-                tickLengthMinutes = 0.04f;
-                tickStartHours = 0.95f;
+                tickLengthMinutes = 0.04f; // OK
+                tickStartHours = 0.95f; // OK
                 tickStyleHours = TickStyle.CIRCLE; // OK
-                tickLengthHours = 0.04f;
+                tickLengthHours = 0.04f; // OK
                 tickWidthHours = 0.01f;
                 tickWidthMinutes = 0.01f;
                 break;

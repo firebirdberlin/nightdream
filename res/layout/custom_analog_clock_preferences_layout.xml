@@ -113,6 +113,24 @@
             android:textSize="16sp"
             tools:targetApi="ice_cream_sandwich" />
 
+        <SeekBar
+            android:id="@+id/digit_position_preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:padding="6dp" />
+
+        <Switch
+            android:id="@+id/switch_emphasize_quarters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:text="@string/digit_emphasize_quarters"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            tools:targetApi="ice_cream_sandwich" />
+
         <TextView
             android:id="@+id/decoration_preference"
             android:layout_width="match_parent"
