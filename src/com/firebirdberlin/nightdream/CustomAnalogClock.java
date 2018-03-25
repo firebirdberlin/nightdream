@@ -360,19 +360,12 @@ public class CustomAnalogClock extends View {
         final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
         final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
 
-        float minTickStart = Math.min(config.tickStartMinutes, config.tickStartHours);
-        float minTickLength;
-        if (config.handShape == AnalogClockConfig.HandShape.ARC) {
-            minTickStart = config.handLengthHours - config.handWidthHours;
-            minTickLength = config.handWidthHours;
-        } else {
-            minTickLength = config.tickStartMinutes < config.tickStartHours ?
-                    config.tickLengthMinutes : config.tickLengthHours;
-        }
+        float minTickStart = config.tickStartHours - config.tickLengthHours * 0.5f;
+        float maxTickStart = config.tickStartHours + config.tickLengthHours * 1.5f;
 
         final float defaultDigitPosition = config.digitPosition * radius;
-        final float maxDigitPosition = (minTickStart * radius)  // abs start of tick
-                - (minTickLength * 0.5f * radius);  // leave distance of half the tick length between digit and tick
+        final float maxDigitPosition = (minTickStart * radius);
+        final float minDigitPosition = (maxTickStart * radius);
 
         for (int digitCounter = 0; digitCounter < 12; digitCounter++) {
 
@@ -402,8 +395,17 @@ public class CustomAnalogClock extends View {
             // find a position for the digits which does not interfere with the ticks
             final float distanceDigitCenterToBorder =
                     distanceHourTextBoundsCenterToBorder(currentHour, textWidth, textHeight);
-            final float correctedAbsoluteDigitPosition = Math.min(defaultDigitPosition,
-                    maxDigitPosition - distanceDigitCenterToBorder);
+
+            float correctedAbsoluteDigitPosition = defaultDigitPosition;
+            if (config.digitPosition < config.tickStartHours) {
+                if (defaultDigitPosition + distanceDigitCenterToBorder > maxDigitPosition) {
+                    correctedAbsoluteDigitPosition = maxDigitPosition - distanceDigitCenterToBorder;
+                }
+            } else if (config.digitPosition >= config.tickStartHours) {
+                if (defaultDigitPosition - distanceDigitCenterToBorder < minDigitPosition) {
+                    correctedAbsoluteDigitPosition = minDigitPosition + distanceDigitCenterToBorder;
+                }
+            }
 
             float x = (float) (centerX + correctedAbsoluteDigitPosition * HOUR_ANGLES_COSINE[digitCounter]);
             float y = (float) (centerY + correctedAbsoluteDigitPosition * HOUR_ANGLES_SINE[digitCounter]);

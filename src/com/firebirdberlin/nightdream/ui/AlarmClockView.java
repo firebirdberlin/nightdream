@@ -463,8 +463,7 @@ public class AlarmClockView extends View {
         Bitmap icon;
         Bitmap scaledIcon;
         Position position = Position.LEFT;
-        ColorFilter colorFilter = new PorterDuffColorFilter(
-                Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        ColorFilter colorFilter = new PorterDuffColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
 
         public HotCorner(Position position) {
             this.center = new Point();
