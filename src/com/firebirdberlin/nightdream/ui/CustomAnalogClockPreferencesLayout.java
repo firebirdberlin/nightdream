@@ -38,6 +38,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
         LinearLayout layout = layouts[active_layout];
         toggleText.setText((String) layout.getTag());
         layout.setVisibility(VISIBLE);
+        layout.invalidate();
     }
 
     private void init(Context context, AnalogClockConfig.Style preset) {

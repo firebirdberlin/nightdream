@@ -150,7 +150,10 @@ public class ClockLayoutPreviewPreference extends Preference {
         } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG2 ||
                 clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG3 ||
                 clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
-
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                // the view is not drawn correctly. We have issues with invalidation.
+                return;
+            }
             AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
             CustomAnalogClockPreferencesLayout prefs =
                     new CustomAnalogClockPreferencesLayout(context, preset);
