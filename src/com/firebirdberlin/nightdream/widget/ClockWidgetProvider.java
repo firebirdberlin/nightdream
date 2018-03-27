@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
@@ -355,10 +356,34 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                 view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
                 try {
                     view.buildDrawingCache();
-                    bitmap = Bitmap.createBitmap(view.getDrawingCache());
+                    Bitmap drawingCache = view.getDrawingCache();
+                    if (drawingCache != null) {
+                        bitmap = Bitmap.createBitmap(drawingCache);
+                    }
                 } finally {
                     view.setDrawingCacheEnabled(false);
                 }
+            }
+
+            if (bitmap == null) {
+                bitmap = createLargeBitmapFromView(view);
+            }
+
+            return bitmap;
+        }
+
+        /**
+         * fallback if  getDrawingCache returns null
+         */
+        private Bitmap createLargeBitmapFromView(View view)
+        {
+            int w = view.getWidth();
+            int h = view.getHeight();
+            Bitmap bitmap = null;
+            if (w > 0 && h > 0) {
+                bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                view.draw(canvas);
             }
             return bitmap;
         }
