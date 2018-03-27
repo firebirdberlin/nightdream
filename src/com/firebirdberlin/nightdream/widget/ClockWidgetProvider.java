@@ -363,20 +363,19 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                 } finally {
                     view.setDrawingCacheEnabled(false);
                 }
-            }
 
-            if (bitmap == null) {
-                bitmap = createLargeBitmapFromView(view);
+                if (bitmap == null) {
+                    bitmap = createLargeBitmapFromView(view);
+                }
             }
 
             return bitmap;
         }
 
         /**
-         * fallback if  getDrawingCache returns null
+         * fallback if getDrawingCache() returns null
          */
-        private Bitmap createLargeBitmapFromView(View view)
-        {
+        private Bitmap createLargeBitmapFromView(View view) {
             int w = view.getWidth();
             int h = view.getHeight();
             Bitmap bitmap = null;
