@@ -81,6 +81,7 @@
             android:text="Sun, 30. October 2016"
             android:textColor="#C2C2C2"
             android:textStyle="bold"
+            android:visibility="gone"
             custom:fontPath="fonts/roboto_light.ttf"
             custom:format12Hr="dd. MMMM yyyy"
             custom:format24Hr="dd. MMMM yyyy"/>
@@ -90,6 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="gone"
             />
     </LinearLayout>
 </LinearLayout>

@@ -54,7 +54,7 @@ public class ClockLayout extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater)
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View child = null;
+        View child;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
         } else
@@ -295,7 +295,8 @@ public class ClockLayout extends LinearLayout {
         invalidate();
     }
 
-    private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config, boolean displayInWidget) {
+    private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config,
+                                   boolean displayInWidget) {
         if (analog_clock != null) {
             analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
         }
@@ -323,8 +324,8 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    private void setupLayoutAnalog2(
-            int parentWidth, int parentHeight, Configuration config, boolean displayInWidget) {
+    private void setupLayoutAnalog2(int parentWidth, int parentHeight, Configuration config,
+                                    boolean displayInWidget) {
         switch (layoutId) {
             case LAYOUT_ID_ANALOG:
                 analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
@@ -352,21 +353,23 @@ public class ClockLayout extends LinearLayout {
         analog_clock.getLayoutParams().width = widgetSize;
         analog_clock.getLayoutParams().height = widgetSize;
 
-        if (date != null) {
+        if (date != null && date.getVisibility() == VISIBLE) {
             date.setMaxWidth(widgetSize / 3 * 2);
             date.setMaxHeight(widgetSize / 10);
             date.setMaxFontSizesInSp(minFontSize, maxFontSize);
             date.invalidate();
         }
-        if (weatherLayout != null) {
+        if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
             weatherLayout.setMaxWidth(widgetSize / 3 * 2);
             weatherLayout.setMaxFontSizesInPx(
                     Utility.spToPx(context, minFontSize),
-                    Utility.spToPx(context, maxFontSize));
+                    Utility.spToPx(context, maxFontSize)
+            );
             weatherLayout.update();
             weatherLayout.invalidate();
         }
         int additionalHeight = (int) (getHeightOf(date) + getHeightOf(weatherLayout));
+        Log.i(TAG, String.format("additionalHeight: %s", additionalHeight));
         setSize(widgetSize, widgetSize + additionalHeight);
 
         int measuredHeight = Utility.getHeightOfView(this);
@@ -384,7 +387,10 @@ public class ClockLayout extends LinearLayout {
 
     private float getHeightOf(View view) {
         if (view == null || view.getVisibility() == GONE) return 0f;
-        return 1.2f * Utility.getHeightOfView(view);
+        float height = 1.2f * Utility.getHeightOfView(view);
+        Log.i(TAG, String.format("visibility %d", view.getVisibility()));
+        Log.i(TAG, String.format("height %f", height));
+        return height;
     }
 
     private int getAnalogWidgetSize(int parentWidth, Configuration config) {
