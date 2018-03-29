@@ -337,14 +337,17 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             Bitmap widgetBitmap = loadBitmapFromView(sourceView);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
-            if (widgetBitmap != null) {
-                updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
-
-                // click activates app
-                Intent intent = new Intent(context, NightDreamActivity.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-                updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+            if (widgetBitmap == null) {
+                return null;
             }
+
+            updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
+
+            // click activates app
+            Intent intent = new Intent(context, NightDreamActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+
             System.gc();
             return updateViews;
         }
@@ -389,6 +392,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         @Override
         protected void onPostExecute(RemoteViews updateViews) {
+            if (updateViews == null) return;
             appWidgetManager.updateAppWidget(appWidgetId, updateViews);
         }
     }
