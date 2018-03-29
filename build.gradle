@@ -7,23 +7,23 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.0'
     }
 }
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile(project(':externals:ShowcaseView:library')) {
+    implementation(project(':externals:ShowcaseView:library')) {
         exclude module: 'support-v4'
         exclude module: 'support-annotations'
     }
-    compile project(':externals:android-preferences')
-    compile fileTree(include: '*.jar', dir: 'libs')
+    implementation project(':externals:android-preferences')
+    implementation fileTree(include: '*.jar', dir: 'libs')
 }
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
 
     sourceSets {
         main {
@@ -37,7 +37,7 @@ android {
         }
 
         // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
+        androidTest.setRoot('tests')
 
         // Move the build types to build-types/<type>
         // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
