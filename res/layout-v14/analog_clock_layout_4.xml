@@ -26,7 +26,6 @@
         android:layout_gravity="center"
         android:ellipsize="none"
         android:fontFamily="sans-serif-light"
-        android:maxLines="1"
         android:text="Sun, 30. October 2016"
         android:textColor="#C2C2C2"
         android:textSize="16sp"
@@ -34,6 +33,7 @@
         android:translationY="0px"
         android:visibility="gone"
         custom:format12Hr="dd. MMMM yyyy"
+        android:singleLine="true"
         custom:format24Hr="dd. MMMM yyyy" />
 
     <com.firebirdberlin.nightdream.ui.WeatherLayout
