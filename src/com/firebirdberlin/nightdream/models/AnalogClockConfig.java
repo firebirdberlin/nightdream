@@ -27,6 +27,7 @@ public class AnalogClockConfig {
     public float tickLengthHours = 0.04f;
     public float outerCircleRadius = 1.f;
     public float outerCircleWidth = 0f;
+    public float fontSize = 0.08f;
     public String fontUri = "file:///android_asset/fonts/dancingscript_regular.ttf";
     Context context;
     Style style;
@@ -98,6 +99,9 @@ public class AnalogClockConfig {
         outerCircleRadius = settings.getFloat("outerCircleRadius", 1.f);
         outerCircleWidth = settings.getFloat("outerCircleWidth", 0.f);
 
+
+        fontSize = settings.getFloat("fontSize", 0.08f);
+
         fontUri = settings.getString("fontUri", "file:///android_asset/fonts/dancingscript_regular.ttf");
     }
 
@@ -125,6 +129,7 @@ public class AnalogClockConfig {
         editor.putFloat("tickWidthHours", tickWidthHours);
         editor.putFloat("outerCircleRadius", outerCircleRadius);
         editor.putFloat("outerCircleWidth", outerCircleWidth);
+        editor.putFloat("fontSize", fontSize);
         editor.putString("fontUri", fontUri);
         editor.apply();
     }
@@ -132,25 +137,26 @@ public class AnalogClockConfig {
     public void initStyle(Style style) {
         switch (style) {
             case DEFAULT:
-                decoration = Decoration.NONE; // OK
-                digitPosition = 0.85f; // OK
-                digitStyle = DigitStyle.ARABIC; // OK
+                decoration = Decoration.NONE;
+                digitPosition = 0.85f;
+                digitStyle = DigitStyle.ARABIC;
                 emphasizeHour12 = true;
-                handShape = HandShape.TRIANGLE; // OK
-                handLengthHours = 0.8f; // OK
-                handLengthMinutes = 0.95f; // OK
-                handWidthHours = 0.04f; // OK
-                handWidthMinutes = 0.04f; // OK
-                highlightQuarterOfHour = true; // OK
+                fontSize = 0.08f;
+                handShape = HandShape.TRIANGLE;
+                handLengthHours = 0.8f;
+                handLengthMinutes = 0.95f;
+                handWidthHours = 0.04f;
+                handWidthMinutes = 0.04f;
+                highlightQuarterOfHour = true;
                 innerCircleRadius = 0.045f;
                 outerCircleRadius = 1.f;
                 outerCircleWidth = 0.f;
-                tickStartMinutes = 0.95f; // OK
-                tickStyleMinutes = TickStyle.DASH; // OK
-                tickLengthMinutes = 0.04f; // OK
-                tickStartHours = 0.95f; // OK
-                tickStyleHours = TickStyle.CIRCLE; // OK
-                tickLengthHours = 0.04f; // OK
+                tickStartMinutes = 0.95f;
+                tickStyleMinutes = TickStyle.DASH;
+                tickLengthMinutes = 0.04f;
+                tickStartHours = 0.95f;
+                tickStyleHours = TickStyle.CIRCLE;
+                tickLengthHours = 0.04f;
                 tickWidthHours = 0.01f;
                 tickWidthMinutes = 0.01f;
                 break;
@@ -159,6 +165,7 @@ public class AnalogClockConfig {
                 digitPosition = 0.85f;
                 digitStyle = DigitStyle.NONE;
                 emphasizeHour12 = true;
+                fontSize = 0.08f;
                 handShape = HandShape.TRIANGLE;
                 handLengthHours = 0.6f;
                 handLengthMinutes = 0.9f;
@@ -182,6 +189,7 @@ public class AnalogClockConfig {
                 digitPosition = 0.85f;
                 digitStyle = DigitStyle.NONE;
                 emphasizeHour12 = true;
+                fontSize = 0.08f;
                 handShape = HandShape.ARC;
                 handLengthHours = 0.80f;
                 handLengthMinutes = 0.90f;
@@ -205,6 +213,7 @@ public class AnalogClockConfig {
                 digitPosition = 0.7f;
                 digitStyle = DigitStyle.NONE;
                 emphasizeHour12 = true;
+                fontSize = 0.08f;
                 handShape = HandShape.BAR;
                 handLengthHours = 0.6f;
                 handLengthMinutes = 0.8f;

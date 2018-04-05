@@ -99,7 +99,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <Switch
             android:id="@+id/switch_emphasize_quarters"
@@ -129,6 +132,16 @@
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp"
             tools:targetApi="ice_cream_sandwich" />
+
+        <SeekBar
+            android:id="@+id/digit_size_preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
     </LinearLayout>
 
@@ -174,14 +187,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <SeekBar
             android:id="@+id/minute_hand_length"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp" />
 
         <TextView
             android:id="@+id/textViewHandWidth"
@@ -197,14 +218,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="30"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <SeekBar
             android:id="@+id/minute_hand_width"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="30"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -240,14 +267,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <SeekBar
             android:id="@+id/hour_tick_length"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <TextView
             android:id="@+id/tick_style_minutes_preference"
@@ -273,14 +306,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <SeekBar
             android:id="@+id/minute_tick_length"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -324,7 +363,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="50"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -339,7 +381,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -354,7 +399,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="30"
-            android:padding="6dp" />
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
 
     </LinearLayout>
     <!--android:layout_marginBottom="6dip"-->

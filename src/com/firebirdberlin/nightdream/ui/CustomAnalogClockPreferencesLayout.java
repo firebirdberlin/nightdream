@@ -128,6 +128,24 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
+        SeekBar digitSizeSeekBar = (SeekBar) child.findViewById(R.id.digit_size_preference);
+        digitSizeSeekBar.setProgress((int) (config.fontSize * 100 - 5));
+        digitSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.fontSize = (5 + progress) / 100f;
+                configHasChanged(config);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
         Switch emphasizeQuarters = (Switch) child.findViewById(R.id.switch_emphasize_quarters);
         emphasizeQuarters.setChecked(config.highlightQuarterOfHour);
         emphasizeQuarters.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
