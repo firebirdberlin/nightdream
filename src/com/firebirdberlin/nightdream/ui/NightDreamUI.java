@@ -1387,6 +1387,7 @@ public class NightDreamUI {
                 showcaseView.hide();
                 break;
         }
+        hideSystemUI();
     }
 
     private void setupShowcaseForScreenLock() {

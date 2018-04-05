@@ -355,10 +355,10 @@ public class CustomAnalogClock extends View {
 
         paint.setTypeface(typeface);
 
-        /* ToDo: Currently digits have fixed width of 0.8% of the radius -> should become
-                 configurable as well! Then digitPosition should also be configurable. */
-        final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
-        final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
+        final float fontSizeBig = config.fontSize * radius;
+        final float fontSizeSmall = 0.75f * config.fontSize * radius;
+        final float textSizeBig = fontSizeForWidth("5", fontSizeBig, paint);
+        final float textSizeSmall = fontSizeForWidth("5", fontSizeSmall, paint);
 
         float minTickStart = config.tickStartHours - config.tickLengthHours * 0.5f;
         float maxTickStart = config.tickStartHours + config.tickLengthHours * 1.5f;
@@ -374,11 +374,11 @@ public class CustomAnalogClock extends View {
             if (config.highlightQuarterOfHour && currentHour % 3 == 0) {
                 // 3,6,9,12
                 paint.setColorFilter(customColorFilter);
-                paint.setTextSize(digitFontSizeBig);
+                paint.setTextSize(textSizeBig);
                 paint.setTypeface(boldTypeface);
             } else {
                 paint.setColorFilter(secondaryColorFilter);
-                paint.setTextSize(digitFontSizeSmall);
+                paint.setTextSize(textSizeSmall);
                 paint.setTypeface(typeface);
             }
 
