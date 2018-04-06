@@ -35,8 +35,7 @@ public class AnalogClockConfig {
         this.context = context;
         this.style = style;
         if (!stored_preferences_exists()) {
-            initStyle(style);
-            save();
+            reset();
         } else {
             load();
         }
@@ -55,6 +54,11 @@ public class AnalogClockConfig {
             default:
                 return Style.MINIMALISTIC;
         }
+    }
+
+    public void reset() {
+        initStyle(this.style);
+        save();
     }
 
     public boolean stored_preferences_exists() {

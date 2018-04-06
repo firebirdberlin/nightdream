@@ -1,11 +1,13 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CustomAnalogClockPreferencesLayout extends LinearLayout {
 
     static int active_layout = 0;
@@ -80,6 +83,34 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
+        setupLayoutForLabels(child, config);
+        setupLayoutForHands(child, config);
+        setupLayoutForTicks(child, config);
+        setupLayoutForDecoration(child, config);
+    }
+
+    private void setupLayoutForLabels(View child, final AnalogClockConfig config) {
+        final TextView info = (TextView) child.findViewById(R.id.info_text_labels);
+        info.setVisibility(INVISIBLE);
+
+        final TextView digitStylePreference = (TextView) child.findViewById(R.id.digit_style_preference);
+        setChoice(digitStylePreference, R.array.numberStyles, config.digitStyle.getValue());
+        digitStylePreference.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.style)
+                        .setItems(R.array.numberStyles, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                config.digitStyle = AnalogClockConfig.DigitStyle.fromValue(which);
+                                setChoice(digitStylePreference, R.array.numberStyles, config.digitStyle.getValue());
+                                configHasChanged(config);
+                            }
+                        });
+                builder.show();
+            }
+        });
+
         final TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
         setFontButtonText(fontButton, config);
         fontButton.setOnClickListener(new Button.OnClickListener() {
@@ -89,8 +120,10 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(config.fontUri);
-                dialog.setDefaultFonts("roboto_regular.ttf", "roboto_light.ttf",
-                        "roboto_thin.ttf", "dancingscript_regular.ttf");
+                dialog.setDefaultFonts(
+                        "roboto_regular.ttf", "roboto_light.ttf", "roboto_thin.ttf",
+                        "dancingscript_regular.ttf"
+                );
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {
@@ -117,14 +150,17 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 config.digitPosition = progress / 100f;
                 configHasChanged(config);
+                info.setText(String.valueOf(progress));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
             }
         });
 
@@ -135,14 +171,17 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 config.fontSize = (5 + progress) / 100f;
                 configHasChanged(config);
+                info.setText(String.valueOf(5 + progress));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
             }
         });
 
@@ -155,6 +194,118 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 configHasChanged(config);
             }
         });
+    }
+
+    private void setupLayoutForHands(View child, final AnalogClockConfig config) {
+        final TextView info = (TextView) child.findViewById(R.id.info_text_hands);
+        info.setVisibility(INVISIBLE);
+
+        final TextView handShapePreference = (TextView) child.findViewById(R.id.hand_shape_preference);
+        setChoice(handShapePreference, R.array.handShapes, config.handShape.getValue());
+        handShapePreference.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.style)
+                        .setItems(R.array.handShapes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                config.handShape = AnalogClockConfig.HandShape.fromValue(which);
+                                setChoice(handShapePreference, R.array.handShapes, config.handShape.getValue());
+                                configHasChanged(config);
+                            }
+                        });
+                builder.show();
+            }
+        });
+
+        SeekBar hourHandLength = (SeekBar) child.findViewById(R.id.hour_hand_length);
+        hourHandLength.setProgress((int) (config.handLengthHours * 100));
+        hourHandLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.handLengthHours = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
+            }
+        });
+        SeekBar minuteHandLength = (SeekBar) child.findViewById(R.id.minute_hand_length);
+        minuteHandLength.setProgress((int) (config.handLengthMinutes * 100));
+        minuteHandLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.handLengthMinutes = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
+            }
+        });
+
+        SeekBar hourHandWidth = (SeekBar) child.findViewById(R.id.hour_hand_width);
+        hourHandWidth.setProgress((int) (config.handWidthHours * 100));
+        hourHandWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.handWidthHours = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
+            }
+        });
+        SeekBar minuteHandWidth = (SeekBar) child.findViewById(R.id.minute_hand_width);
+        minuteHandWidth.setProgress((int) (config.handWidthMinutes * 100));
+        minuteHandWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.handWidthMinutes = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
+            }
+        });
+
+    }
+
+    private void setupLayoutForTicks(View child, final AnalogClockConfig config) {
+
+        final TextView info = (TextView) child.findViewById(R.id.info_text_ticks);
+        info.setVisibility(INVISIBLE);
 
         final TextView tickStyleHoursPreference = (TextView) child.findViewById(R.id.tick_style_hours_preference);
         setChoice(tickStyleHoursPreference, R.array.tickStyles, config.tickStyleHours.getValue());
@@ -191,23 +342,92 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        final TextView digitStylePreference = (TextView) child.findViewById(R.id.digit_style_preference);
-        setChoice(digitStylePreference, R.array.numberStyles, config.digitStyle.getValue());
-        digitStylePreference.setOnClickListener(new OnClickListener() {
+        SeekBar minuteTickStart = (SeekBar) child.findViewById(R.id.minute_tick_start);
+        minuteTickStart.setProgress((int) (config.tickStartMinutes * 100));
+        minuteTickStart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.style)
-                        .setItems(R.array.numberStyles, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                config.digitStyle = AnalogClockConfig.DigitStyle.fromValue(which);
-                                setChoice(digitStylePreference, R.array.numberStyles, config.digitStyle.getValue());
-                                configHasChanged(config);
-                            }
-                        });
-                builder.show();
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.tickStartMinutes = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
             }
         });
+        SeekBar minuteTickLength = (SeekBar) child.findViewById(R.id.minute_tick_length);
+        minuteTickLength.setProgress((int) (config.tickLengthMinutes * 100));
+        minuteTickLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.tickLengthMinutes = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
+            }
+        });
+        SeekBar hourTickStart = (SeekBar) child.findViewById(R.id.hour_tick_start);
+        hourTickStart.setProgress((int) (config.tickStartHours * 100));
+        hourTickStart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.tickStartHours = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
+            }
+        });
+        SeekBar hourTickLength = (SeekBar) child.findViewById(R.id.hour_tick_length);
+        hourTickLength.setProgress((int) (config.tickLengthHours * 100));
+        hourTickLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                config.tickLengthHours = progress / 100f;
+                configHasChanged(config);
+                info.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
+            }
+        });
+    }
+
+    private void setupLayoutForDecoration(View child, final AnalogClockConfig config) {
+
+        final TextView info = (TextView) child.findViewById(R.id.info_text_decoration);
+        info.setVisibility(INVISIBLE);
 
         final TextView decorationStylePreference = (TextView) child.findViewById(R.id.decoration_preference);
         setChoice(decorationStylePreference, R.array.decorationStyles, config.decoration.getValue());
@@ -227,161 +447,6 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        final TextView handShapePreference = (TextView) child.findViewById(R.id.hand_shape_preference);
-        setChoice(handShapePreference, R.array.handShapes, config.handShape.getValue());
-        handShapePreference.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.style)
-                        .setItems(R.array.handShapes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                config.handShape = AnalogClockConfig.HandShape.fromValue(which);
-                                setChoice(handShapePreference, R.array.handShapes, config.handShape.getValue());
-                                configHasChanged(config);
-                            }
-                        });
-                builder.show();
-            }
-        });
-
-        SeekBar hourHandLength = (SeekBar) child.findViewById(R.id.hour_hand_length);
-        hourHandLength.setProgress((int) (config.handLengthHours * 100));
-        hourHandLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.handLengthHours = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        SeekBar minuteHandLength = (SeekBar) child.findViewById(R.id.minute_hand_length);
-        minuteHandLength.setProgress((int) (config.handLengthMinutes * 100));
-        minuteHandLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.handLengthMinutes = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-
-        SeekBar hourHandWidth = (SeekBar) child.findViewById(R.id.hour_hand_width);
-        hourHandWidth.setProgress((int) (config.handWidthHours * 100));
-        hourHandWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.handWidthHours = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        SeekBar minuteHandWidth = (SeekBar) child.findViewById(R.id.minute_hand_width);
-        minuteHandWidth.setProgress((int) (config.handWidthMinutes * 100));
-        minuteHandWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.handWidthMinutes = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        SeekBar minuteTickStart = (SeekBar) child.findViewById(R.id.minute_tick_start);
-        minuteTickStart.setProgress((int) (config.tickStartMinutes * 100));
-        minuteTickStart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.tickStartMinutes = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        SeekBar minuteTickLength = (SeekBar) child.findViewById(R.id.minute_tick_length);
-        minuteTickLength.setProgress((int) (config.tickLengthMinutes * 100));
-        minuteTickLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.tickLengthMinutes = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        SeekBar hourTickStart = (SeekBar) child.findViewById(R.id.hour_tick_start);
-        hourTickStart.setProgress((int) (config.tickStartHours * 100));
-        hourTickStart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.tickStartHours = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        SeekBar hourTickLength = (SeekBar) child.findViewById(R.id.hour_tick_length);
-        hourTickLength.setProgress((int) (config.tickLengthHours * 100));
-        hourTickLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                config.tickLengthHours = progress / 100f;
-                configHasChanged(config);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
         SeekBar outerCirclePosition = (SeekBar) child.findViewById(R.id.outer_circle_position);
         outerCirclePosition.setProgress((int) (config.outerCircleRadius * 100));
         outerCirclePosition.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -389,14 +454,17 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 config.outerCircleRadius = progress / 100f;
                 configHasChanged(config);
+                info.setText(String.valueOf(progress));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
             }
         });
         SeekBar outerCircleWidth = (SeekBar) child.findViewById(R.id.outer_circle_width);
@@ -406,14 +474,17 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 config.outerCircleWidth = progress / 100f;
                 configHasChanged(config);
+                info.setText(String.valueOf(progress));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
             }
         });
         SeekBar innerCircleRadius = (SeekBar) child.findViewById(R.id.inner_circle_radius);
@@ -423,14 +494,17 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 config.innerCircleRadius = progress / 100f;
                 configHasChanged(config);
+                info.setText(String.valueOf(progress));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(VISIBLE);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                info.setVisibility(INVISIBLE);
             }
         });
     }

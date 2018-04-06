@@ -58,8 +58,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="clock_layout_modern_analog">moderne Analoguhr</string>
 <string name="clock_layout_digit_analog">Analoguhr mit Ziffern</string>
 <string name="colors">Farben</string>
-<string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
 <string name="confirm_reset">Zurücksetzen</string>
+<string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
+<string name="confirm_reset_question_layout">Möchten Sie dieses Layout wirklich zurücksetzen ?</string>
 <string name="contribute">Beitragen</string>
 <string name="contribute_source_code">Quellcode</string>
 <string name="contribute_translation">Übersetzungen</string>
