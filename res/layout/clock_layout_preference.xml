@@ -25,6 +25,15 @@
 
     </com.firebirdberlin.nightdream.ui.ClockLayout>
 
+    <LinearLayout
+        android:id="@+id/preferencesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/clockLayout"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+    </LinearLayout>
+
     <TextView
         android:id="@+id/textViewPurchaseHint"
         android:layout_width="wrap_content"
@@ -42,13 +51,17 @@
         android:text="@string/product_name_weather"
         tools:ignore="RelativeOverlap" />
 
-    <LinearLayout
-        android:id="@+id/preferencesContainer"
-        android:layout_width="match_parent"
+    <ImageButton
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/clockLayout"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
-    </LinearLayout>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/preferencesContainer"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/ic_undo_white_24dp" />
 
 </RelativeLayout>

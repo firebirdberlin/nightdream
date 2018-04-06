@@ -60,6 +60,7 @@ OR
     <string name="clock_layout_modern_analog">modern analog clock</string>
     <string name="colors">Colors</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
+    <string name="confirm_reset_question_layout">Do you really want to reset this layout to defaults ?</string>
     <string name="confirm_reset">Reset</string>
     <string name="contribute">Contribute</string>
     <string name="contribute_source_code">Source code</string>
