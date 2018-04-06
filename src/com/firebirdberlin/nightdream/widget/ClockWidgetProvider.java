@@ -342,7 +342,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                 return null;
             }
 
-            updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
+            try {
+                updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
 
             // click activates app
             Intent intent = new Intent(context, NightDreamActivity.class);
