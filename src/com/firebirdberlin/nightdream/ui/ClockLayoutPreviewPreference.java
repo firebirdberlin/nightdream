@@ -1,8 +1,12 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
@@ -12,12 +16,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayoutPreviewPreference extends Preference {
@@ -25,7 +34,11 @@ public class ClockLayoutPreviewPreference extends Preference {
     private ClockLayout clockLayout = null;
     private TextView textViewPurchaseHint = null;
     private View preferenceView = null;
+    private LinearLayout preferencesContainer = null;
+    private ImageButton resetButton = null;
+
     private Context context = null;
+
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -59,7 +72,9 @@ public class ClockLayoutPreviewPreference extends Preference {
 
                 RelativeLayout previewContainer = (RelativeLayout) summaryParent2.findViewById(R.id.previewContainer);
                 clockLayout = (ClockLayout) summaryParent2.findViewById(R.id.clockLayout);
+                resetButton = (ImageButton) summaryParent2.findViewById(R.id.resetButton);
                 textViewPurchaseHint = (TextView) summaryParent2.findViewById(R.id.textViewPurchaseHint);
+                preferencesContainer = (LinearLayout) summaryParent2.findViewById(R.id.preferencesContainer);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     LayoutTransition lt = new LayoutTransition();
@@ -80,15 +95,24 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     protected void updateView() {
         Settings settings = new Settings(getContext());
+        int clockLayoutId = settings.getClockLayoutID(true);
         textViewPurchaseHint.setVisibility(showPurchaseHint(settings) ? View.VISIBLE : View.GONE);
+        resetButton.setVisibility(showResetButton(settings) ? View.VISIBLE : View.GONE);
+        updateClockLayout(clockLayoutId, settings);
+        setupPreferencesFragment(clockLayoutId, settings);
+        setupResetButton(clockLayoutId, settings);
+    }
+
+    private void updateClockLayout(int clockLayoutId, Settings settings) {
+        clockLayout.setLayout(clockLayoutId);
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
-        clockLayout.setLayout(settings.getClockLayoutID(true));
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
+        clockLayout.setShowDivider(settings.showDivider);
         clockLayout.showDate(settings.showDate);
 
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
@@ -102,11 +126,86 @@ public class ClockLayoutPreviewPreference extends Preference {
         Point size = utility.getDisplaySize();
         Configuration config = context.getResources().getConfiguration();
         clockLayout.updateLayout(size.x - preferenceView.getPaddingLeft()
-                                        - preferenceView.getPaddingRight(),
-                                 config);
+                        - preferenceView.getPaddingRight(),
+                config);
 
         clockLayout.requestLayout();
         clockLayout.invalidate();
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void setupPreferencesFragment(final int clockLayoutID, final Settings settings) {
+        preferencesContainer.removeAllViews();
+        if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
+            CustomDigitalClockPreferencesLayout prefs =
+                    new CustomDigitalClockPreferencesLayout(context, settings);
+            prefs.setIsPurchased(settings.purchasedWeatherData);
+            prefs.setOnConfigChangedListener(
+                    new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
+                        @Override
+                        public void onConfigChanged() {
+                            updateClockLayout(clockLayoutID, settings);
+                        }
+
+                        @Override
+                        public void onPurchaseRequested() {
+                            ((PreferencesActivity) context).showPurchaseDialog();
+                        }
+                    }
+            );
+            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            preferencesContainer.addView(prefs, lp);
+        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG2 ||
+                clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG3 ||
+                clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                // the view is not drawn correctly. We have issues with invalidation.
+                return;
+            }
+            AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
+            CustomAnalogClockPreferencesLayout prefs =
+                    new CustomAnalogClockPreferencesLayout(context, preset);
+
+            prefs.setIsPurchased(settings.purchasedWeatherData);
+            prefs.setOnConfigChangedListener(
+                    new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
+                        @Override
+                        public void onConfigChanged() {
+                            updateClockLayout(clockLayoutID, settings);
+                        }
+
+                        @Override
+                        public void onPurchaseRequested() {
+                            ((PreferencesActivity) context).showPurchaseDialog();
+                        }
+                    }
+            );
+            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            preferencesContainer.addView(prefs, lp);
+        }
+    }
+
+    private void setupResetButton(final int clockLayoutID, final Settings settings) {
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getContext();
+                Resources res = context.getResources();
+                new AlertDialog.Builder(context)
+                        .setTitle(res.getString(R.string.confirm_reset))
+                        .setMessage(res.getString(R.string.confirm_reset_question_layout))
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
+                                AnalogClockConfig config = new AnalogClockConfig(getContext(), preset);
+                                config.reset();
+                                updateView();
+                            }
+                        }).show();
+            }
+        });
+
     }
 
     private WeatherEntry getWeatherEntry(Settings settings) {
@@ -119,6 +218,14 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private boolean showPurchaseHint(Settings settings) {
         return (!settings.purchasedWeatherData && settings.getClockLayoutID(true) > 1);
+    }
+
+    private boolean showResetButton(Settings settings) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return false;
+        }
+
+        return settings.getClockLayoutID(true) > 1;
     }
 
     public enum PreviewMode {DAY, NIGHT}

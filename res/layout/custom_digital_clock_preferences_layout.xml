@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/typeface_preference"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dip"
+        android:layout_marginTop="6dip"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:singleLine="true"
+        android:text="@string/typeface"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="16sp"
+        tools:targetApi="ice_cream_sandwich" />
+
+    <Switch
+        android:id="@+id/switch_show_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:checked="false"
+        android:minWidth="200dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="@string/show_divider"
+        android:textSize="18sp"
+        tools:checked="false" />
+
+</LinearLayout>

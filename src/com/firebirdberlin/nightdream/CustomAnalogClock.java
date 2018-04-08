@@ -17,14 +17,43 @@ import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
+import com.firebirdberlin.nightdream.models.AnalogClockConfig;
+import com.firebirdberlin.nightdream.models.FontCache;
 
 import java.util.Calendar;
 
 
 public class CustomAnalogClock extends View {
     private static final String TAG = "CustomAnalogClock";
+    /**
+     * precalculated sine/cosine values
+     */
+    private static final float COSINE_OF_30_DEGREE = (float)Math.cos(Math.PI / 6.0);
+    private static final double[] MINUTE_ANGLES_SINE = new double[60];
+    private static final double[] MINUTE_ANGLES_COSINE = new double[60];
+    private static final double[] HOUR_ANGLES_SINE = new double[12];
+    private static final double[] HOUR_ANGLES_COSINE = new double[12];
+
+    static {
+        // calculate angles and its sine/cosine for all 60 minute hands
+        double PI_PER_MINUTE = Math.PI / 30.;
+        for (int minuteCounter = 0; minuteCounter < 60; minuteCounter++) {
+            double angle = (double) minuteCounter * PI_PER_MINUTE;
+            MINUTE_ANGLES_SINE[minuteCounter] = Math.sin(angle);
+            MINUTE_ANGLES_COSINE[minuteCounter] = Math.cos(angle);
+        }
+
+        // calculate angles and its sine/cosine for all 12 hour hands
+        double PI_PER_HOUR = Math.PI / 6.;
+        for (int hourCounter = 0; hourCounter < 12; hourCounter++) {
+            double angle = (double) hourCounter * PI_PER_HOUR;
+            HOUR_ANGLES_SINE[hourCounter] = Math.sin(angle);
+            HOUR_ANGLES_COSINE[hourCounter] = Math.cos(angle);
+        }
+    }
+
     final String[] ROMAN_DIGITS = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
     protected Paint paint = new Paint();
     Context context;
@@ -39,29 +68,7 @@ public class CustomAnalogClock extends View {
     float centerY = 0.f;
     int radius = 0;
 
-    Decoration decoration = Decoration.NONE;
-    float digitPosition = 0.85f;
-    DigitStyle digitStyle = DigitStyle.ARABIC;
-    boolean emphasizeHour12 = true;
-    HandShape handShape = HandShape.TRIANGLE;
-    float handLengthHours = 0.8f;
-    float handLengthMinutes = 0.95f;
-    float handWidthHours = 0.04f;
-    float handWidthMinutes = 0.04f;
-    boolean highlightQuarterOfHour = true;
-    float innerCircleRadius = 0.045f;
-    float tickStartMinutes = 0.95f;
-    TickStyle tickStyleMinutes = TickStyle.DASH;
-    float tickLengthMinutes = 0.04f;
-    float tickStartHours = 0.95f;
-    float tickWidthHours = 0.01f;
-    float tickWidthMinutes = 0.01f;
-    TickStyle tickStyleHours = TickStyle.CIRCLE;
-    float tickLengthHours = 0.04f;
-    float outerCircleRadius = 1.f;
-    float outerCircleWidth = 0f;
-
-
+    AnalogClockConfig config;
 
     public CustomAnalogClock(Context context) {
         super(context);
@@ -87,12 +94,6 @@ public class CustomAnalogClock extends View {
         customColorFilter = new LightingColorFilter(Color.BLUE, 1);
         secondaryColorFilter = new LightingColorFilter(Color.WHITE, 1);
 
-    }
-
-    public void setTypeface(Typeface typeface) {
-
-        this.typeface = typeface;
-        this.boldTypeface = Typeface.create(typeface, Typeface.BOLD);
     }
 
     @Override
@@ -126,102 +127,11 @@ public class CustomAnalogClock extends View {
         invalidate();
     }
 
-    public void setStyle(Style style) {
-        switch (style) {
-            case DEFAULT:
-                decoration = Decoration.NONE;
-                digitPosition = 0.85f;
-                digitStyle = DigitStyle.ARABIC;
-                emphasizeHour12 = true;
-                handShape = HandShape.TRIANGLE;
-                handLengthHours = 0.8f;
-                handLengthMinutes = 0.95f;
-                handWidthHours = 0.04f;
-                handWidthMinutes = 0.04f;
-                highlightQuarterOfHour = true;
-                innerCircleRadius = 0.045f;
-                outerCircleRadius = 1.f;
-                outerCircleWidth = 0.f;
-                tickStartMinutes = 0.95f;
-                tickStyleMinutes = TickStyle.DASH;
-                tickLengthMinutes = 0.04f;
-                tickStartHours = 0.95f;
-                tickStyleHours = TickStyle.CIRCLE;
-                tickLengthHours = 0.04f;
-                tickWidthHours = 0.01f;
-                tickWidthMinutes = 0.01f;
-                break;
-            case SIMPLE:
-                decoration = Decoration.MINUTE_HAND;
-                digitPosition = 0.85f;
-                digitStyle = DigitStyle.NONE;
-                emphasizeHour12 = false;
-                handShape = HandShape.TRIANGLE;
-                handLengthHours = 0.6f;
-                handLengthMinutes = 0.9f;
-                handWidthHours = 0.04f;
-                handWidthMinutes = 0.04f;
-                highlightQuarterOfHour = false;
-                innerCircleRadius = 0.045f;
-                outerCircleRadius = 1.f;
-                outerCircleWidth = 0.f;
-                tickStartMinutes = 0.87f;
-                tickStyleMinutes = TickStyle.NONE;
-                tickLengthMinutes = 0.06f;
-                tickStartHours = 0.87f;
-                tickStyleHours = TickStyle.DASH;
-                tickLengthHours = 0.06f;
-                tickWidthHours = 0.01f;
-                tickWidthMinutes = 0.01f;
-                break;
-            case ARC:
-                decoration = Decoration.NONE;
-                digitPosition = 0.85f;
-                digitStyle = DigitStyle.NONE;
-                emphasizeHour12 = false;
-                handShape = HandShape.ARC;
-                handLengthHours = 0.80f;
-                handLengthMinutes = 0.90f;
-                handWidthHours = 0.06f;
-                handWidthMinutes = 0.06f;
-                highlightQuarterOfHour = false;
-                innerCircleRadius = 0.045f;
-                outerCircleRadius = 1.f;
-                outerCircleWidth = 0.f;
-                tickStartMinutes = 0.87f;
-                tickStyleMinutes = TickStyle.NONE;
-                tickLengthMinutes = 0.06f;
-                tickStartHours = 0.87f;
-                tickStyleHours = TickStyle.DASH;
-                tickLengthHours = 0.06f;
-                tickWidthHours = 0.01f;
-                tickWidthMinutes = 0.01f;
-                break;
-            case MINIMALISTIC:
-                decoration = Decoration.NONE;
-                digitPosition = 0.7f;
-                digitStyle = DigitStyle.NONE;
-                emphasizeHour12 = false;
-                handShape = HandShape.BAR;
-                handLengthHours = 0.6f;
-                handLengthMinutes = 0.8f;
-                handWidthHours = 0.02f;
-                handWidthMinutes = 0.02f;
-                highlightQuarterOfHour = false;
-                innerCircleRadius = 0.0f;
-                outerCircleRadius = 1.f;
-                outerCircleWidth = 0.01f;
-                tickStartMinutes = 0.87f;
-                tickStyleMinutes = TickStyle.NONE;
-                tickLengthMinutes = 0.06f;
-                tickStartHours = 0.84f;
-                tickStyleHours = TickStyle.DASH;
-                tickLengthHours = 0.1f;
-                tickWidthHours = 0.025f;
-                tickWidthMinutes = 0.025f;
-                break;
-        }
+    public void setStyle(AnalogClockConfig.Style style) {
+        config = new AnalogClockConfig(context, style);
 
+        this.typeface = FontCache.get(context, config.fontUri);
+        this.boldTypeface = Typeface.create(typeface, Typeface.BOLD);
     }
 
     public void onDraw(Canvas canvas) {
@@ -264,23 +174,23 @@ public class CustomAnalogClock extends View {
         canvas.save();
         paint.setColorFilter(customColorFilter);
         canvas.rotate((float) radiansToDegrees(min_angle), centerX, centerY);
-        drawHand(canvas, paint, centerX, centerY, (int) (handLengthMinutes * radius),
-                (int) (handWidthMinutes * radius));
+        drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthMinutes * radius),
+                (int) (config.handWidthMinutes * radius));
         canvas.restore();
 
         // hour hand
         canvas.save();
         paint.setColorFilter(secondaryColorFilter);
         canvas.rotate((float) radiansToDegrees(hour_angle), centerX, centerY);
-        drawHand(canvas, paint, centerX, centerY, (int) (handLengthHours * radius),
-                (int) (handWidthHours * radius));
+        drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthHours * radius),
+                (int) (config.handWidthHours * radius));
         canvas.restore();
 
         drawInnerCircle(canvas);
     }
 
     private void drawHand(Canvas canvas, Paint paint, float baseX, float baseY, int height, int width) {
-        switch (handShape) {
+        switch (config.handShape) {
             case ARC:
                 drawHandArc(canvas, height, width);
                 break;
@@ -325,18 +235,18 @@ public class CustomAnalogClock extends View {
     }
 
     private void drawInnerCircle(Canvas canvas) {
-        if (handShape == HandShape.ARC) return;
+        if (config.handShape == AnalogClockConfig.HandShape.ARC) return;
 
         paint.setColorFilter(secondaryColorFilter);
         paint.setAlpha(255);
-        canvas.drawCircle(centerX, centerY, innerCircleRadius * radius, paint);
+        canvas.drawCircle(centerX, centerY, config.innerCircleRadius * radius, paint);
         paint.setColorFilter(null);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(2);
         canvas.drawPoint(centerX, centerY, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.WHITE);
-        canvas.drawCircle(centerX, centerY, innerCircleRadius * radius, paint);
+        canvas.drawCircle(centerX, centerY, config.innerCircleRadius * radius, paint);
     }
 
     private void drawTriangle(Canvas canvas, Paint paint, float baseX, float baseY, float width, float height) {
@@ -351,7 +261,7 @@ public class CustomAnalogClock extends View {
     }
 
     private void drawBackgroundArc(Canvas canvas, float centerX, float centerY, int radius, double angle) {
-        if (decoration != Decoration.MINUTE_HAND) return;
+        if (config.decoration != AnalogClockConfig.Decoration.MINUTE_HAND) return;
         canvas.save();
         paint.setAlpha(70);
         paint.setColorFilter(customColorFilter);
@@ -365,13 +275,13 @@ public class CustomAnalogClock extends View {
 
         paint.setShader(gradient);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        canvas.drawCircle(centerX, centerY, handLengthMinutes * radius, paint);
+        canvas.drawCircle(centerX, centerY, config.handLengthMinutes * radius, paint);
         paint.setShader(null);
         canvas.restore();
     }
 
     private void applyShader(Paint paint, float centerX, float centerY, int radius) {
-        if (decoration != Decoration.LABELS) return;
+        if (config.decoration != AnalogClockConfig.Decoration.LABELS) return;
 
         int x1 = (int) (centerX - radius), y1 = (int) (centerY - radius);
 
@@ -388,51 +298,48 @@ public class CustomAnalogClock extends View {
     }
 
     private void drawOuterCircle(Canvas canvas) {
-        if (outerCircleWidth == 0.00f) return;
+        if (config.outerCircleWidth == 0.00f) return;
         paint.setAlpha(255);
         paint.setColor(Color.WHITE);
         paint.setColorFilter(secondaryColorFilter);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(outerCircleWidth * radius);
+        paint.setStrokeWidth(config.outerCircleWidth * radius);
 
-        canvas.drawCircle(centerX, centerY, outerCircleRadius * radius, paint);
+        canvas.drawCircle(centerX, centerY, config.outerCircleRadius * radius, paint);
     }
 
     private void drawTicks(Canvas canvas, float centerX, float centerY, int radius) {
         // ticks
         paint.setAlpha(255);
         paint.setColorFilter(secondaryColorFilter);
-
         paint.setStyle(Paint.Style.FILL); //filled circle for every hour
-        int minuteCounter = 0;
 
-        float angleDelta = (float) Math.PI / 30f;
-        float angleMax = (float) (2f * Math.PI);
-        for (double angle = 0; angle < angleMax; angle += angleDelta) {
-
+        for (int minuteCounter = 0; minuteCounter < 60; minuteCounter++) {
             boolean isHourTick = (minuteCounter % 5 == 0);
-            TickStyle tickStyle = (isHourTick) ? tickStyleHours : tickStyleMinutes;
-            float tickStart = (isHourTick) ? tickStartHours : tickStartMinutes;
-            float tickLength = (isHourTick) ? tickLengthHours : tickLengthMinutes;
-            int width = (int) ((isHourTick) ? tickWidthHours * radius : tickWidthMinutes * radius);
+            AnalogClockConfig.TickStyle tickStyle = (isHourTick)
+                    ? config.tickStyleHours : config.tickStyleMinutes;
+            float tickStart = (isHourTick) ? config.tickStartHours : config.tickStartMinutes;
+            float tickLength = (isHourTick) ? config.tickLengthHours : config.tickLengthMinutes;
+            int width = (int) ((isHourTick)
+                    ? config.tickWidthHours * radius : config.tickWidthMinutes * radius);
             paint.setStrokeWidth(width);
-            float tickStartX = (float) (centerX + tickStart * radius * Math.cos(angle));
-            float tickStartY = (float) (centerY + tickStart * radius * Math.sin(angle));
-            float tickEndX = (float) (centerX + (tickStart + tickLength) * radius * Math.cos(angle));
-            float tickEndY = (float) (centerY + (tickStart + tickLength) * radius * Math.sin(angle));
+            float tickStartX = (float) (centerX + tickStart * radius * MINUTE_ANGLES_COSINE[minuteCounter]);
+            float tickStartY = (float) (centerY + tickStart * radius * MINUTE_ANGLES_SINE[minuteCounter]);
+            float tickEndX = (float) (centerX + (tickStart + tickLength) * radius * MINUTE_ANGLES_COSINE[minuteCounter]);
+            float tickEndY = (float) (centerY + (tickStart + tickLength) * radius * MINUTE_ANGLES_SINE[minuteCounter]);
             switch (tickStyle) {
                 case NONE:
                     break;
                 case CIRCLE:
-                    if (isHourTick && emphasizeHour12 && minuteCounter == 45) {
+                    if (isHourTick && config.emphasizeHour12 && minuteCounter == 45) {
                         // for "12" digit draw a special marker
                         float triangleHeight = tickLength * radius * 1.2f;
                         float triangleWidth = triangleHeight * 1.2f;
                         drawTriangle(canvas, paint, tickEndX, tickEndY - triangleHeight * .1f, triangleWidth, triangleHeight);
                     } else {
                         float roundTickRadius = tickLength * .5f * radius;
-                        float roundTickCenterX = (centerX + (tickStart + tickLength * .5f) * (float) radius * (float) Math.cos(angle));
-                        float roundTickCenterY = (centerY + (tickStart + tickLength * .5f) * (float) radius * (float) Math.sin(angle));
+                        float roundTickCenterX = (centerX + (tickStart + tickLength * .5f) * (float) radius * (float) MINUTE_ANGLES_COSINE[minuteCounter]);
+                        float roundTickCenterY = (centerY + (tickStart + tickLength * .5f) * (float) radius * (float) MINUTE_ANGLES_SINE[minuteCounter]);
                         canvas.drawCircle(roundTickCenterX, roundTickCenterY, roundTickRadius, paint);
                     }
                     break;
@@ -440,103 +347,140 @@ public class CustomAnalogClock extends View {
                     canvas.drawLine(tickStartX, tickStartY, tickEndX, tickEndY, paint);
                     break;
             }
-            minuteCounter++;
         }
     }
 
     private void drawHourDigits(Canvas canvas, float centerX, float centerY, int radius) {
-        if (digitStyle == DigitStyle.NONE) return;
-        // calculate font-size for desired text width, so digits have equal size on any device
+        if (config.digitStyle == AnalogClockConfig.DigitStyle.NONE) return;
 
-        // init typeface
         paint.setTypeface(typeface);
 
-        /*
-        ToDo: until now digits have fixed width of 0.8% of the radius -> should become configurable as well!
-               Then digitPosition should also be configurable.
-        */
-        final float digitFontSizeBig = fontSizeForWidth("5", 0.08f * radius, paint);
-        final float digitFontSizeSmall = fontSizeForWidth("5", 0.06f * radius, paint);
+        final float fontSizeBig = config.fontSize * radius;
+        final float fontSizeSmall = 0.75f * config.fontSize * radius;
+        final float textSizeBig = fontSizeForWidth("5", fontSizeBig, paint);
+        final float textSizeSmall = fontSizeForWidth("5", fontSizeSmall, paint);
 
-        paint.setTextSize(digitFontSizeBig);
+        float minTickStart = config.tickStartHours - config.tickLengthHours * 0.5f;
+        float maxTickStart = config.tickStartHours + config.tickLengthHours * 1.5f;
 
+        final float defaultDigitPosition = config.digitPosition * radius;
+        final float maxDigitPosition = (minTickStart * radius);
+        final float minDigitPosition = (maxTickStart * radius);
 
-        final boolean preventDigitsFromOverlapWithTicks = true;
-
-        float minTickStart = Math.min(tickStartMinutes, tickStartHours);
-        float minTickLength = Math.min(tickLengthMinutes, tickLengthHours);
-
-        float correctedAbsoluteDigitPosition = digitPosition * radius;
-        if (preventDigitsFromOverlapWithTicks && minTickStart > 0 && minTickLength > 0) {
-
-            // get bounding box of the widest possible digit "12" -> assumes all number glyphs of the font have equal height -> maybe move this into the hour loop.
-            Rect dummyBounds = new Rect();
-            final String dummyHourText = getHourTextOfDigitStyle(1);
-            paint.getTextBounds(dummyHourText, 0, dummyHourText.length(), dummyBounds);
-            float dummyTextWidth = paint.measureText(dummyHourText, 0, dummyHourText.length());
-
-            // take the larger of width or height, so this should also work for very wide fonts
-            float maxDigitDimension = Math.max(dummyTextWidth, dummyBounds.height());
-
-            // use digitPosition, of the corrected position if digitPosition would overlap with ticks
-            correctedAbsoluteDigitPosition = Math.min(digitPosition * radius,
-                    (minTickStart * radius)  // abs start of tick
-                            - (minTickLength * 0.5f * radius)  // leave distance of half the tick length between digit and tick
-                            - (maxDigitDimension / 2f));
-        }
-
-        paint.setStrokeWidth(0);
-
-        int digitCounter = 0;
-
-        for (double angle = 0; angle < 2 * Math.PI; angle += Math.PI / 6) {
+        for (int digitCounter = 0; digitCounter < 12; digitCounter++) {
 
             int currentHour = (digitCounter + 2) % 12 + 1;
 
-            if (highlightQuarterOfHour) {
-                if (currentHour % 3 == 0) {
-                    // 3,6,9,12
-                    paint.setColorFilter(customColorFilter);
-                    paint.setTextSize(digitFontSizeBig);
-                    paint.setTypeface(boldTypeface);
-                } else {
-                    paint.setColorFilter(secondaryColorFilter);
-                    paint.setTextSize(digitFontSizeSmall);
-                    paint.setTypeface(typeface);
-                }
+            if (config.highlightQuarterOfHour && currentHour % 3 == 0) {
+                // 3,6,9,12
+                paint.setColorFilter(customColorFilter);
+                paint.setTextSize(textSizeBig);
+                paint.setTypeface(boldTypeface);
             } else {
                 paint.setColorFilter(secondaryColorFilter);
-                paint.setTextSize(digitFontSizeSmall);
+                paint.setTextSize(textSizeSmall);
                 paint.setTypeface(typeface);
             }
 
-            Rect bounds = new Rect();
             final String currentHourText = getHourTextOfDigitStyle(currentHour);
 
+            // Determine the text size
+            // - For the width measureText returns more exact results than textbounds
+            // - For the height using getTextBounds is ok
+            Rect bounds = new Rect();
             paint.getTextBounds(currentHourText, 0, currentHourText.length(), bounds);
+            final float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
+            final float textHeight = bounds.height();
 
-            // for width measureText returns more exact result than textbounds
-            // for height textbounds is ok
-            float textWidth = paint.measureText(currentHourText, 0, currentHourText.length());
-            float textHeight = bounds.height();
+            // find a position for the digits which does not interfere with the ticks
+            final float distanceDigitCenterToBorder =
+                    distanceHourTextBoundsCenterToBorder(currentHour, textWidth, textHeight);
 
-            float x = (float) (centerX + correctedAbsoluteDigitPosition * Math.cos(angle));
-            float y = (float) (centerY + correctedAbsoluteDigitPosition * Math.sin(angle));
+            float correctedAbsoluteDigitPosition = defaultDigitPosition;
+            if (config.digitPosition < config.tickStartHours) {
+                if (defaultDigitPosition + distanceDigitCenterToBorder > maxDigitPosition) {
+                    correctedAbsoluteDigitPosition = maxDigitPosition - distanceDigitCenterToBorder;
+                }
+            } else if (config.digitPosition >= config.tickStartHours) {
+                if (defaultDigitPosition - distanceDigitCenterToBorder < minDigitPosition) {
+                    correctedAbsoluteDigitPosition = minDigitPosition + distanceDigitCenterToBorder;
+                }
+            }
+
+            float x = (float) (centerX + correctedAbsoluteDigitPosition * HOUR_ANGLES_COSINE[digitCounter]);
+            float y = (float) (centerY + correctedAbsoluteDigitPosition * HOUR_ANGLES_SINE[digitCounter]);
 
             // move center of text bounding box to x/y
             x -= textWidth / 2.;
             y -= textHeight / 2f + 1f;
 
             canvas.drawText(currentHourText, x, y + textHeight, paint);
-            digitCounter++;
+
+            // debug: show text bounds
+            /*
+            paint.setStyle(Paint.Style.STROKE);
+            canvas.drawRect(x, y, x + textWidth, y + textHeight, paint);
+            */
         }
     }
 
+    private float distanceHourTextBoundsCenterToBorder(int currentHour, float textWidth, float textHeight) {
+        switch (currentHour) {
+            case 6:
+            case 12: // hour hand orientation is horizontally: use half width as distance
+                return textHeight / 2f;
+            case 3:
+            case 9: // hour hand orientation is vertically: use half height as distance
+                return textWidth / 2f;
+            case 2:
+            case 4:
+            case 8:
+            case 10: // intersects left/right edge
+                return Math.abs((textWidth / 2f) / COSINE_OF_30_DEGREE);
+            default: // 1,5,7,8
+                // intersects top/bottom edge
+                return Math.abs((textHeight / 2f) / COSINE_OF_30_DEGREE);
+        }
+    }
+
+    /**
+     * same as distanceHourTextBoundsCenterToBorder but for any given angle (keep for future use?)
+     */
+    private double distanceHourTextBoundsCenterToBorderByAngle(double angle, float textWidth, float textHeight) {
+
+        double degree = angle / (2 * Math.PI) * 360.0;
+
+        double sharpAngle = angle;
+        double triangleAdjacentLength;
+        if ((degree >= 315 || degree < 45)) {
+            // intersects right edge
+            if (degree >= 45) {
+                sharpAngle = 2 * Math.PI - angle;
+            }
+            triangleAdjacentLength = (double)textWidth / 2f;
+        } else if (degree >= 45 && degree < 135) {
+            // intersects bottom edge
+            sharpAngle = Math.abs(Math.PI / 2f - angle);
+            triangleAdjacentLength = (double)textHeight / 2f;
+        } else if (degree >= 135 && degree < 225) {
+            // intersects left edge
+            sharpAngle = Math.abs(Math.PI - angle);
+            triangleAdjacentLength = (double)textWidth / 2f;
+        } else {
+            // 225 to 315: intersects top edge
+            sharpAngle = Math.abs(Math.PI * 1.5 - angle);
+            triangleAdjacentLength = (double)textHeight / 2f;
+        }
+
+        double result = Math.abs(triangleAdjacentLength / Math.cos(sharpAngle));
+        //Log.i(TAG, "angle=" + angle + " degree=" + degree + " sharpAngle=" + sharpAngle + ", triangleAdjacentLength=" + triangleAdjacentLength + ", dist=" + result);
+        return result;
+    }
+
     private String getHourTextOfDigitStyle(int currentHour) {
-        String currentHourText = (digitStyle == DigitStyle.ARABIC)
+        return (config.digitStyle == AnalogClockConfig.DigitStyle.ARABIC)
                 ? String.valueOf(currentHour)
                 : ROMAN_DIGITS[currentHour - 1];
-        return currentHourText;
     }
 
     private double radiansToDegrees(double rad) {
@@ -547,16 +491,6 @@ public class CustomAnalogClock extends View {
         timeReceiver = new TimeReceiver();
         context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
     }
-
-    public enum DigitStyle {NONE, ARABIC, ROMAN}
-
-    public enum HandShape {TRIANGLE, BAR, ARC}
-
-    public enum TickStyle {NONE, DASH, CIRCLE}
-
-    public enum Decoration {NONE, MINUTE_HAND, LABELS}
-
-    public enum Style {DEFAULT, SIMPLE, ARC, MINIMALISTIC}
 
     class TimeReceiver extends BroadcastReceiver {
         @Override

@@ -535,6 +535,7 @@ public class NightDreamUI {
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
 
+        clockLayout.setShowDivider(settings.showDivider);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
         Configuration config = getConfiguration();
@@ -1386,6 +1387,7 @@ public class NightDreamUI {
                 showcaseView.hide();
                 break;
         }
+        hideSystemUI();
     }
 
     private void setupShowcaseForScreenLock() {

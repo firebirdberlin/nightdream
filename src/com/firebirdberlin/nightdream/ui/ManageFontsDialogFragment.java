@@ -44,6 +44,8 @@ public class ManageFontsDialogFragment extends DialogFragment {
     final static String TAG = "ManageFontsDialog";
     final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     protected File DIRECTORY = null;
+
+    String defaultFonts[];
     ManageFontsDialogListener mListener;
     ListView listView;
     Button btnAddCustomFont;
@@ -64,6 +66,31 @@ public class ManageFontsDialogFragment extends DialogFragment {
 
             outChannel.close();
         }
+    }
+
+    public static String getUserFriendlyFileName(String name) {
+        // make an eye-friendly name
+        name = name.replace("_", " ");
+        name = name.replaceAll(".(?i)ttf", "");
+        name = name.replaceAll(".(?i)otf", "");
+
+        return capitalize(name);
+    }
+
+    private static String capitalize(String input) {
+        String[] words = input.toLowerCase().split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+
+            if (i > 0 && word.length() > 0) {
+                builder.append(" ");
+            }
+
+            String cap = word.substring(0, 1).toUpperCase() + word.substring(1);
+            builder.append(cap);
+        }
+        return builder.toString();
     }
 
     public void setIsPurchased(boolean isPurchased) {
@@ -188,8 +215,8 @@ public class ManageFontsDialogFragment extends DialogFragment {
             }
 
         }
-        arrayAdapter = new FontAdapter(getActivity(), R.layout.list_item_alarm_tone,
-                staticFiles);
+        arrayAdapter =
+                new FontAdapter(getActivity(), R.layout.list_item_alarm_tone, staticFiles);
         arrayAdapter.setSelectedUri(selectedUri);
         arrayAdapter.setOnDeleteRequestListener(new FontAdapter.OnDeleteRequestListener() {
             @Override
@@ -206,31 +233,26 @@ public class ManageFontsDialogFragment extends DialogFragment {
         listView.setAdapter(arrayAdapter);
     }
 
+    public void setDefaultFonts(String... fileNames) {
+        this.defaultFonts = fileNames;
+    }
+
     public ArrayList<FileUri> getCustomFiles() {
         ArrayList<FileUri> list = new ArrayList<>();
-        list.add(getFileUri("roboto_regular.ttf", R.string.typeface_roboto_regular));
-        list.add(getFileUri("roboto_light.ttf", R.string.typeface_roboto_light));
-        list.add(getFileUri("roboto_thin.ttf", R.string.typeface_roboto_thin));
-        list.add(getFileUri("7segment.ttf", R.string.typeface_7_segment));
-        list.add(getFileUri("dancingscript_regular.ttf", R.string.typeface_dancing_script));
-
-//        list.add(new FileUri( Uri.parse("file:///android_asset/fonts/roboto_regular.ttf"), getContext().getString(R.string.typeface_roboto_medium)))
-//        try {
-//            String[] assets = getActivity().getAssets().list("fonts");
-//            for (String file : assets) {
-//                if ""
-//                Uri uri = Uri.parse("file:///android_asset/fonts/" + file);
-//                list.add(new FileUri(uri, file));
-//            }
-//        } catch (IOException e) {
-//
-//        }
+        for (String name : defaultFonts) {
+            list.add(getFileUri(name, R.string.typeface_roboto_regular));
+        }
+//        list.add(getFileUri("roboto_regular.ttf", R.string.typeface_roboto_regular));
+//        list.add(getFileUri("roboto_light.ttf", R.string.typeface_roboto_light));
+//        list.add(getFileUri("roboto_thin.ttf", R.string.typeface_roboto_thin));
+//        list.add(getFileUri("7segment.ttf", R.string.typeface_7_segment));
+//        list.add(getFileUri("dancingscript_regular.ttf", R.string.typeface_dancing_script));
         return list;
     }
 
     private FileUri getFileUri(String file, int resId) {
         Uri uri = Uri.parse("file:///android_asset/fonts/" + file);
-        return new FileUri(uri, getActivity().getString(resId));
+        return new FileUri(uri, getUserFriendlyFileName(file));
     }
 
     @Override
@@ -366,14 +388,6 @@ public class ManageFontsDialogFragment extends DialogFragment {
             arrayAdapter.add(uri);
             arrayAdapter.notifyDataSetChanged();
         }
-    }
-
-    private String getUserFriendlyFileName(String name) {
-        // make an eye-friendly name
-        name = name.replace("_", " ");
-        name = name.replaceAll(".(?i)ttf", "");
-        name = name.replaceAll(".(?i)otf", "");
-        return name;
     }
 
     public void setOnFontSelectedListener(ManageFontsDialogListener listener) {

@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        tools:targetApi="ice_cream_sandwich">
+
+
+        <ImageButton
+            android:id="@+id/toggle_preference_prev"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/prev"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:src="@drawable/ic_keyboard_arrow_left_black_24dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/toggle_preference"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:text="@string/clock_hands"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/toggle_preference_next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/next"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/labels_preference_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:tag="@string/numbers"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/digit_style_preference"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:ellipsize="end"
+                android:fadingEdge="horizontal"
+                android:focusable="true"
+                android:singleLine="true"
+                android:tag="@string/style"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                tools:targetApi="ice_cream_sandwich" />
+            <TextView
+                android:id="@+id/info_text_labels"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:background="?android:attr/selectableItemBackground"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                tools:targetApi="ice_cream_sandwich" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/digit_position_preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <Switch
+            android:id="@+id/switch_emphasize_quarters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/digit_emphasize_quarters"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            tools:targetApi="ice_cream_sandwich" />
+
+        <TextView
+            android:id="@+id/typeface_preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:focusable="true"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:singleLine="true"
+            android:tag="@string/typeface"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            tools:targetApi="ice_cream_sandwich" />
+
+        <SeekBar
+            android:id="@+id/digit_size_preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/hands_preference_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:tag="@string/clock_hands"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hand_shape_preference"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:ellipsize="end"
+                android:fadingEdge="horizontal"
+                android:focusable="true"
+                android:singleLine="true"
+                android:tag="@string/style"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                tools:targetApi="ice_cream_sandwich" />
+            <TextView
+                android:id="@+id/info_text_hands"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:background="?android:attr/selectableItemBackground"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                tools:targetApi="ice_cream_sandwich" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewHandLength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/length"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/hour_hand_length"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <SeekBar
+            android:id="@+id/minute_hand_length"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:id="@+id/textViewHandWidth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/width"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/hour_hand_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="30"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <SeekBar
+            android:id="@+id/minute_hand_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="30"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ticks_preference_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:tag="@string/ticks"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tick_style_hours_preference"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:ellipsize="end"
+                android:fadingEdge="horizontal"
+                android:focusable="true"
+                android:singleLine="true"
+                android:tag="@string/tick_style_hours"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                tools:targetApi="ice_cream_sandwich" />
+
+            <TextView
+                android:id="@+id/info_text_ticks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:background="?android:attr/selectableItemBackground"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                tools:targetApi="ice_cream_sandwich" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/hour_tick_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <SeekBar
+            android:id="@+id/hour_tick_length"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:id="@+id/tick_style_minutes_preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:focusable="true"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:singleLine="true"
+            android:tag="@string/tick_style_minutes"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            tools:targetApi="ice_cream_sandwich" />
+
+        <SeekBar
+            android:id="@+id/minute_tick_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <SeekBar
+            android:id="@+id/minute_tick_length"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/decoration_preference_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:tag="@string/decoration"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/decoration_preference"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:ellipsize="end"
+                android:fadingEdge="horizontal"
+                android:focusable="true"
+                android:singleLine="true"
+                android:tag="@string/style"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                tools:targetApi="ice_cream_sandwich" />
+
+            <TextView
+                android:id="@+id/info_text_decoration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:background="?android:attr/selectableItemBackground"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                tools:targetApi="ice_cream_sandwich" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/inner_circle_radius"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/inner_circle_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="50"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/outer_circle_radius"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/outer_circle_position"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/outer_circle_width"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/outer_circle_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="30"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp" />
+
+    </LinearLayout>
+    <!--android:layout_marginBottom="6dip"-->
+    <!--android:paddingBottom="6dip"-->
+</LinearLayout>
