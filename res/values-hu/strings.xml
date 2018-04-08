@@ -127,6 +127,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_manual_input_hint">Rádióállomás hozzáadása manuálisan</string>
 <string name="radio_stream_manual_input_url">Rádióadás webcíme</string>
 <string name="radio_stream_manual_input_description">Állomás neve</string>
+<string name="radio_stream_music_allowed">Internetes zene alkalmazása</string>
 <string name="radio_stream_no_search_results">Nem volt keresési eredmény.</string>
 <string name="radio_stream_offline">nem elérhető</string>
 <string name="radio_stream_query_hint">Sor keresése</string>

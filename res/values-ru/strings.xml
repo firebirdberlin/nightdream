@@ -127,6 +127,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_manual_input_hint">Добавить станцию вручную</string>
 <string name="radio_stream_manual_input_url">Поток URL</string>
 <string name="radio_stream_manual_input_description">Название станции</string>
+<string name="radio_stream_music_allowed">Использовать музыкальный поток</string>
 <string name="radio_stream_no_search_results">Поиск не дал результатов</string>
 <string name="radio_stream_offline">Отключено</string>
 <string name="radio_stream_query_hint">Строка поиска</string>
