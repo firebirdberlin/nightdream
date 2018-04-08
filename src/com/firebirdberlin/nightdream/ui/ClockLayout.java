@@ -18,6 +18,7 @@ import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayout extends LinearLayout {
@@ -36,6 +37,7 @@ public class ClockLayout extends LinearLayout {
     private AutoAdjustTextView date = null;
     private WeatherLayout weatherLayout = null;
     private View divider = null;
+    private boolean showDivider = true;
 
     public ClockLayout(Context context) {
         super(context);
@@ -99,9 +101,6 @@ public class ClockLayout extends LinearLayout {
         if ( clock_ampm != null ) {
             clock_ampm.setTypeface(typeface);
         }
-        if (analog_clock != null) {
-            analog_clock.setTypeface(typeface);
-        }
     }
 
     public void setPrimaryColor(int color) {
@@ -140,6 +139,10 @@ public class ClockLayout extends LinearLayout {
         weatherLayout.setWindSpeed(on, unit);
     }
 
+    public void setShowDivider(boolean on) {
+        this.showDivider = on;
+    }
+
     public void showDate(boolean on) {
         date.setVisibility( (on) ? View.VISIBLE : View.GONE);
         toggleDivider();
@@ -152,13 +155,22 @@ public class ClockLayout extends LinearLayout {
 
     private void toggleDivider() {
         if (divider == null) return;
-        if (date.getVisibility() != View.VISIBLE
-                && weatherLayout.getVisibility() != View.VISIBLE) {
 
-            divider.setVisibility(View.INVISIBLE);
+        if (!showDivider) {
+            divider.setVisibility(GONE);
+        }
+
+        if (date.getVisibility() != VISIBLE
+                && weatherLayout.getVisibility() != VISIBLE) {
+
+            if (showDivider) {
+                divider.setVisibility(INVISIBLE);
+            }
             setBackgroundColor(Color.parseColor("#00000000"));
         } else {
-            divider.setVisibility(View.VISIBLE);
+            if (showDivider) {
+                divider.setVisibility(VISIBLE);
+            }
             setBackgroundColor(Color.parseColor("#44000000"));
         }
     }
@@ -298,7 +310,7 @@ public class ClockLayout extends LinearLayout {
     private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config,
                                    boolean displayInWidget) {
         if (analog_clock != null) {
-            analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+            analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
         }
         final float minFontSize = 8.f; // in sp
         final float maxFontSize = 18.f; // in sp
@@ -328,16 +340,16 @@ public class ClockLayout extends LinearLayout {
                                     boolean displayInWidget) {
         switch (layoutId) {
             case LAYOUT_ID_ANALOG:
-                analog_clock.setStyle(CustomAnalogClock.Style.MINIMALISTIC);
+                analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
                 break;
             case LAYOUT_ID_ANALOG2:
-                analog_clock.setStyle(CustomAnalogClock.Style.SIMPLE);
+                analog_clock.setStyle(AnalogClockConfig.Style.SIMPLE);
                 break;
             case LAYOUT_ID_ANALOG3:
-                analog_clock.setStyle(CustomAnalogClock.Style.ARC);
+                analog_clock.setStyle(AnalogClockConfig.Style.ARC);
                 break;
             case LAYOUT_ID_ANALOG4:
-                analog_clock.setStyle(CustomAnalogClock.Style.DEFAULT);
+                analog_clock.setStyle(AnalogClockConfig.Style.DEFAULT);
                 break;
         }
         final float minFontSize = (displayInWidget) ? 6f : 10f; // in sp

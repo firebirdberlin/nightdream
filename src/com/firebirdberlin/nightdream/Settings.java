@@ -59,6 +59,7 @@ public class Settings {
     public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
     public boolean showDate = true;
+    public boolean showDivider = true;
     public boolean showWeather = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
@@ -148,11 +149,19 @@ public class Settings {
 
     }
 
+    private String getFontUri() {
+        String fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
+        if ("file:///android_asset/fonts/7segment.ttf".equals(fontUri)) {
+            return "file:///android_asset/fonts/7_segment_digital.ttf";
+        }
+        return fontUri;
+    }
+
     public void reload() {
         AlarmToneUri = settings.getString("AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         AlarmToneName = settings.getString("AlarmToneName", "");
-        fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
+        fontUri = getFontUri();
         fontName = settings.getString("fontName", "7-Segment Digital Font");
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
@@ -213,11 +222,13 @@ public class Settings {
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showDate = settings.getBoolean("showDate", true);
+        showDivider = settings.getBoolean("showDivider", true);
         showWeather = settings.getBoolean("showWeather", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
 
+        Log.w(TAG, "fontUri2: " + fontUri);
         String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
         sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
 
@@ -242,6 +253,13 @@ public class Settings {
 
         typeface = loadTypeface();
         weatherEntry = getWeatherEntry();
+    }
+
+    public void setShowDivider(boolean on) {
+        showDivider = on;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("showDivider", on);
+        prefEditor.apply();
     }
 
     private boolean is24HourMode() {
@@ -316,7 +334,7 @@ public class Settings {
                 return FontCache.get(mContext, path);
             }
         }
-        String path = settings.getString("fontUri", "file:///android_asset/fonts/7segment.ttf");
+        String path = getFontUri();
         return FontCache.get(mContext, path);
     }
 
@@ -328,7 +346,8 @@ public class Settings {
                 return "fonts/roboto_regular.ttf";
             case 2: return "fonts/roboto_light.ttf";
             case 4: return "fonts/roboto_thin.ttf";
-            case 6: return "fonts/7segment.ttf";
+            case 6:
+                return "fonts/7_segment_digital.ttf";
             case 7:
                 return "fonts/dancingscript_regular.ttf";
             default: return null;

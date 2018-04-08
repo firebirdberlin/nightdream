@@ -51,6 +51,7 @@ OR
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
     <string name="clear">clear</string>
+    <string name="clock_hands">Hands</string>
     <string name="clock_layout_analog">analog clock</string>
     <string name="clock_layout_digital">digital clock</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
@@ -59,6 +60,7 @@ OR
     <string name="clock_layout_modern_analog">modern analog clock</string>
     <string name="colors">Colors</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
+    <string name="confirm_reset_question_layout">Do you really want to reset this layout to defaults ?</string>
     <string name="confirm_reset">Reset</string>
     <string name="contribute">Contribute</string>
     <string name="contribute_source_code">Source code</string>
@@ -70,6 +72,11 @@ OR
     <string name="delete">delete</string>
     <string name="dialog_message_thank_you">Thank you very much!</string>
     <string name="dialog_title_thank_you">Thanks</string>
+    <string name="digit_emphasize_quarters">Emphasize quarters</string>
+    <string name="decoration">Decoration</string>
+    <string name="decoration_style_none">None</string>
+    <string name="decoration_style_minute_hand">Minute hand</string>
+    <string name="decoration_style_labels">Numbers</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
@@ -78,6 +85,9 @@ OR
     <string name="force_auto_rotation">Force orientation in Daydream</string>
     <string name="force_auto_rotation_summary">Enforce the screen orientation if the Daydream is used.</string>
     <string name="forecast">5-day Weather Forecast</string>
+    <string name="hand_shape_arc">Arc</string>
+    <string name="hand_shape_bar">Bar</string>
+    <string name="hand_shape_triangle">Triangle</string>
     <string name="handle_power_ac">AC</string>
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">car dock</string>
@@ -89,6 +99,8 @@ OR
     <string name="hide_background_image_in_night_mode">Hide</string>
     <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="hour">h</string>
+    <string name="inner_circle_radius">Inner circle radius</string>
+    <string name="length">Length</string>
     <string name="location_time">location time</string>
     <string name="maxBrightness">Maximum screen brightness</string>
     <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
@@ -98,6 +110,7 @@ OR
     <string name="minBrightness">Minimum screen brightness</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Mute ringer</string>
+    <string name="next">next</string>
     <string name="night_mode_activation_auto">automatic</string>
     <string name="night_mode_activation_manual">manual</string>
     <string name="night_mode_activation_mode">Activation mode</string>
@@ -108,11 +121,19 @@ OR
     <string name="night_mode_timerange_title">Night time</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_alarm">Click to stop the alarm.</string>
+    <string name="numbers">Numbers</string>
+    <string name="numberStyleArabic">Arabic</string>
+    <string name="numberStyleRoman">Roman</string>
+    <string name="numberStyleNone">None</string>
     <string name="other_apps">Other apps</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="outer_circle_radius">Outer circle radius</string>
+    <string name="outer_circle_width">Outer circle width</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
+    <string name="position">Position</string>
+    <string name="prev">previous</string>
     <string name="preview">Preview</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Full version</string>
@@ -157,6 +178,7 @@ OR
     <string name="showcase_text_screen_lock">The screen is currently locked. Long press the icon to unlock !</string>
     <string name="showcase_title_screen_lock">Screen lock</string>
     <string name="show_date">Show date</string>
+    <string name="show_divider">Show divider</string>
     <string name="show_temperature">Show temperature</string>
     <string name="show_weather">Show local weather</string>
     <string name="show_wind_speed">Show wind speed</string>
@@ -170,7 +192,14 @@ OR
     <string name="standbyEnabledWhileDisconnectedSummary">This feature quickly drains your battery!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
     <string name="standbyNotificationText">Standby service is running.</string>
+    <string name="style">Style</string>
     <string name="temperatureUnit">Temperature unit</string>
+    <string name="tick_style_hours">Hour tick style</string>
+    <string name="tick_style_minutes">Minute tick style</string>
+    <string name="tick_style_circle">Circle</string>
+    <string name="tick_style_dash">Dash</string>
+    <string name="tick_style_none">None</string>
+    <string name="ticks">Ticks</string>
     <string name="timeFormat">Time format</string>
     <string name="titlePrivacyPolicy">Privacy policy</string>
     <string name="today">today</string>
@@ -203,4 +232,5 @@ OR
     <string name="welcome_screen_title2">Preferences</string>
     <string name="welcome_screen_title3">Screen brightness</string>
     <string name="welcome_screen_title4">Clock size</string>
+    <string name="width">Width</string>
 </resources>

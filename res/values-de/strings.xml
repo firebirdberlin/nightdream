@@ -51,14 +51,16 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_primary_color">Akzentfarbe</string>
 <string name="choose_secondary_color">Textfarbe</string>
 <string name="clear">löschen</string>
+<string name="clock_hands">Zeiger</string>
 <string name="clock_layout_analog">Analoguhr</string>
 <string name="clock_layout_digital">Digitaluhr</string>
 <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
 <string name="clock_layout_modern_analog">moderne Analoguhr</string>
 <string name="clock_layout_digit_analog">Analoguhr mit Ziffern</string>
 <string name="colors">Farben</string>
-<string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
 <string name="confirm_reset">Zurücksetzen</string>
+<string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
+<string name="confirm_reset_question_layout">Möchten Sie dieses Layout wirklich zurücksetzen ?</string>
 <string name="contribute">Beitragen</string>
 <string name="contribute_source_code">Quellcode</string>
 <string name="contribute_translation">Übersetzungen</string>
@@ -69,6 +71,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="delete">löschen</string>
 <string name="dialog_message_thank_you">Vielen Dank für Ihre Unterstützung.</string>
 <string name="dialog_title_thank_you">Dankeschön!</string>
+<string name="digit_emphasize_quarters">Viertel hervorheben</string>
+<string name="decoration">Dekoration</string>
+<string name="decoration_style_none">Keiner</string>
+<string name="decoration_style_minute_hand">Minutenzeiger</string>
+<string name="decoration_style_labels">Ziffern</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Spenden</string>
 <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
@@ -77,6 +84,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="force_auto_rotation">Erzwinge Ausrichtung im DayDream</string>
 <string name="force_auto_rotation_summary">Bei Verwendung des Daydreams die festgelegte Ausrichtung erzwingen.</string>
 <string name="forecast">5-Tage-Vorhersage</string>
+<string name="hand_shape_arc">Bogen</string>
+<string name="hand_shape_bar">Balken</string>
+<string name="hand_shape_triangle">Dreieck</string>
 <string name="handle_power_ac">einem Ladegerät</string>
 <string name="handle_power">Autostart</string>
 <string name="handle_power_car">Dock (Auto)</string>
@@ -88,6 +98,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode">Ausblenden</string>
 <string name="hide_background_image_in_night_mode_summary">Das Hintergrundbild soll im Nachtmodus ausgeblendet werden.</string>
 <string name="hour">h</string>
+<string name="inner_circle_radius">Radius des inneren Kreises</string>
+<string name="length">Länge</string>
 <string name="location_time">Zeit der letzten Standortbestimmung</string>
 <string name="maxBrightness">max. Bildschirmhelligkeit</string>
 <string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
@@ -107,9 +119,15 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode_timerange_title">Nachtzeit</string>
 <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
 <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
+<string name="numbers">Ziffern</string>
+<string name="numberStyleArabic">Arabisch</string>
+<string name="numberStyleRoman">Römisch</string>
+<string name="numberStyleNone">Keiner</string>
 <string name="other_apps">Andere Apps</string>
 <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
 <string name="other_apps_tinytimetracker">Zeiterfassung</string>
+<string name="outer_circle_radius">Radius des äußeren Kreises</string>
+<string name="outer_circle_width">Dicke des äußeren Kreises</string>
 <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
 <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
 <string name="preview">Vorschau</string>
@@ -156,6 +174,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="showcase_text_screen_lock">Der Bildschirm ist gesperrt. Drücken Sie das Symbol lange, um den Bildschirm zu entsperren.</string>
 <string name="showcase_title_screen_lock">Bildschirmsperre</string>
 <string name="show_date">Datum anzeigen</string>
+<string name="show_divider">Trennlinie anzeigen</string>
 <string name="show_temperature">Temperatur anzeigen</string>
 <string name="show_weather">Wetter anzeigen</string>
 <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
@@ -169,7 +188,14 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="standbyEnabledWhileDisconnectedSummary">Diese Funktion entlädt den Akku sehr schnell!</string>
 <string name="standbyEnabledWhileDisconnectedTitle">Standbymodus auch beim Entladen</string>
 <string name="standbyNotificationText">Standby-Service läuft.</string>
+<string name="style">Stil</string>
 <string name="temperatureUnit">Temperatureinheit</string>
+<string name="tick_style_hours">Stundenmarker</string>
+<string name="tick_style_minutes">Minutenmarker</string>
+<string name="tick_style_circle">Kreis</string>
+<string name="tick_style_dash">Strich</string>
+<string name="tick_style_none">Keiner</string>
+<string name="ticks">Marker</string>
 <string name="timeFormat">Zeitformat</string>
 <string name="titlePrivacyPolicy">Datenschutzerklärung</string>
 <string name="today">heute</string>
@@ -201,4 +227,5 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Einstellungen</string>
 <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
 <string name="welcome_screen_title4">Größe</string>
+<string name="width">Breite</string>
 </resources>
