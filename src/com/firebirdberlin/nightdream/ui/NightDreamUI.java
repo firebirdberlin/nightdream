@@ -872,8 +872,8 @@ public class NightDreamUI {
 
     private void dimScreen(int millis, float light_value, float add_brightness){
         LIGHT_VALUE_DARK = settings.minIlluminance;
-        float v = 0.f;
-        float brightness = 0.f;
+        float v;
+        float brightness;
         if (mode != 0 && settings.autoBrightness && Utility.getLightSensor(mContext) != null) {
             float luminance_offset = LIGHT_VALUE_BRIGHT * add_brightness;
             if (light_value > LIGHT_VALUE_BRIGHT && add_brightness > 0.f) {
@@ -887,7 +887,6 @@ public class NightDreamUI {
             if (mode == 0) {
                 v = 1.f + settings.nightModeBrightness;
                 brightness = settings.nightModeBrightness;
-
             } else {
                 v = 1.f + add_brightness;
                 brightness = add_brightness;
@@ -900,20 +899,15 @@ public class NightDreamUI {
         }
 
         float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.05f);
-
         v = to_range(v, minBrightness, 1.f);
         if (settings.background_mode == Settings.BACKGROUND_IMAGE) {
             v = to_range(v, 0.5f, 1.f);
         }
 
-        // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
-        // Therefore a minimum value must be set to preserve the visibility of the clock.
-        minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
-        float maxBrightness = getMaxAllowedBrightness();
-        brightness = to_range(brightness, minBrightness, maxBrightness);
+        brightness = getValidBrightnessValue(brightness);
         setBrightness(brightness);
 
-        if ( showcaseView == null ) {
+        if ( showcaseView == null && !AlarmHandlerService.alarmIsRunning()) {
             setAlpha(clockLayout, v, millis);
         }
 
@@ -941,6 +935,19 @@ public class NightDreamUI {
         if ( light_value + 0.2f < settings.minIlluminance ) {
             settings.setMinIlluminance(light_value + 0.2f);
         }
+    }
+    private float getValidBrightnessValue(float value) {
+        float minBrightness = getMinAllowedBrightness();
+        float maxBrightness = getMaxAllowedBrightness();
+        return to_range(value, minBrightness, maxBrightness);
+    }
+
+    private float getMinAllowedBrightness() {
+        // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
+        // Therefore a minimum value must be set to preserve the visibility of the clock.
+        float minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
+        if (AlarmHandlerService.alarmIsRunning()) return 0.5f;
+        return minBrightness;
     }
 
     private float getMaxAllowedBrightness() {
