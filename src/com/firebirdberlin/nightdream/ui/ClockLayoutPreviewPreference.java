@@ -125,9 +125,10 @@ public class ClockLayoutPreviewPreference extends Preference {
         Utility utility = new Utility(getContext());
         Point size = utility.getDisplaySize();
         Configuration config = context.getResources().getConfiguration();
-        clockLayout.updateLayout(size.x - preferenceView.getPaddingLeft()
-                        - preferenceView.getPaddingRight(),
-                config);
+        clockLayout.updateLayout(
+            size.x - preferenceView.getPaddingLeft() - preferenceView.getPaddingRight(),
+            config
+        );
 
         clockLayout.requestLayout();
         clockLayout.invalidate();
@@ -144,7 +145,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                     new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
                         @Override
                         public void onConfigChanged() {
-                            updateClockLayout(clockLayoutID, settings);
+                            updateView();
                         }
 
                         @Override
