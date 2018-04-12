@@ -6,10 +6,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.os.Build;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,11 +38,13 @@ public class WebRadioLayout extends RelativeLayout {
     private Context context;
     private TextView textView;
     private ImageView buttonSleepTimer;
+    private ImageView volumeMutedIndicator;
     private boolean showConnectingHint = false;
     private ProgressBar spinner;
     private WebRadioStationButtonsLayout webRadioButtons;
     private Settings settings;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
+    private AudioVolumeContentObserver audioVolumeContentObserver = null;
 
     public WebRadioLayout(Context context) {
         super(context);
@@ -100,6 +107,9 @@ public class WebRadioLayout extends RelativeLayout {
         lp4.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         lp4.addRule(RelativeLayout.CENTER_IN_PARENT);
         addView(webRadioButtons, lp4);
+
+        initVolumeMutedIndicator(padding);
+
         setText(null);
     }
 
@@ -107,6 +117,7 @@ public class WebRadioLayout extends RelativeLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         broadcastReceiver = registerBroadcastReceiver();
+        registerAudioVolumeContentObserver();
     }
 
     private NightDreamBroadcastReceiver registerBroadcastReceiver() {
@@ -119,11 +130,26 @@ public class WebRadioLayout extends RelativeLayout {
         return receiver;
     }
 
+    private void registerAudioVolumeContentObserver() {
+        audioVolumeContentObserver = new AudioVolumeContentObserver(context, new Handler());
+        context.getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, audioVolumeContentObserver );
+    }
+
+    private void unregisterAudioVolumeContentObserver() {
+
+        if (audioVolumeContentObserver != null) {
+            context.getContentResolver().unregisterContentObserver(audioVolumeContentObserver);
+            audioVolumeContentObserver = null;
+        }
+
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         try {
             context.unregisterReceiver(broadcastReceiver);
+            unregisterAudioVolumeContentObserver();
         } catch (IllegalArgumentException ignored) {
         }
     }
@@ -136,12 +162,18 @@ public class WebRadioLayout extends RelativeLayout {
                 RadioStreamSleepTimeReceiver.isSleepTimeSet() ? accentColor : textColor,
                 PorterDuff.Mode.SRC_ATOP
         );
+        volumeMutedIndicator.setColorFilter(
+                textColor,
+                PorterDuff.Mode.SRC_ATOP
+        );
         textView.setTextColor(textColor);
 
         if (webRadioButtons != null) {
             webRadioButtons.setCustomColor(accentColor, textColor);
         }
     }
+
+
 
     public void setLocked(boolean locked) {
         this.locked = locked;
@@ -168,6 +200,7 @@ public class WebRadioLayout extends RelativeLayout {
             spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
         }
         webRadioButtons.invalidate();
+        updateVolumeMutedIndicator();
     }
 
     protected void setShowConnectingHint(boolean showConnectingHint) {
@@ -181,6 +214,52 @@ public class WebRadioLayout extends RelativeLayout {
         super.setClickable(clickable);
         buttonSleepTimer.setClickable(clickable);
         webRadioButtons.setClickable(clickable);
+    }
+
+    private void initVolumeMutedIndicator(int padding) {
+        volumeMutedIndicator = new ImageView(context);
+        volumeMutedIndicator.setImageResource(R.drawable.ic_no_audio);
+        volumeMutedIndicator.setPadding(padding, padding, padding, padding);
+
+        RelativeLayout.LayoutParams lp5 = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp5.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        lp5.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        addView(volumeMutedIndicator, lp5);
+
+        volumeMutedIndicator.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                if (audio != null) {
+                    int maxVol = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                    //Log.i(TAG, "maxVol=" + maxVol);
+                    audio.setStreamVolume(AudioManager.STREAM_MUSIC, Math.round((float) maxVol * 0.1f), AudioManager.FLAG_SHOW_UI);
+                }
+            }
+        });
+
+        updateVolumeMutedIndicator();
+    }
+
+    private void updateVolumeMutedIndicator() {
+        AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+        boolean muted = false;
+        if (Build.VERSION.SDK_INT >= 23) {
+            muted = audio.isStreamMute(AudioManager.STREAM_MUSIC);
+        }
+
+        updateVolumeMutedIndicatorVisibility(currentVolume, muted);
+    }
+
+    private void updateVolumeMutedIndicatorVisibility(int currentVolume, boolean muted) {
+        Log.i(TAG, "currentVolume=" + currentVolume + ", muted=" + muted);
+
+        if (volumeMutedIndicator != null) {
+            volumeMutedIndicator.setVisibility(currentVolume > 0 && !muted ? GONE : VISIBLE);
+        }
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
@@ -198,6 +277,46 @@ public class WebRadioLayout extends RelativeLayout {
             } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setText(null);
                 setShowConnectingHint(false);
+            }
+        }
+    }
+
+    class AudioVolumeContentObserver extends ContentObserver {
+
+        private int previousVolume = -1;
+        private boolean previousMuted = false;
+
+        public AudioVolumeContentObserver(Context context, Handler handler) {
+            super(handler);
+            AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            previousVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
+
+        @Override
+        public boolean deliverSelfNotifications() {
+            return super.deliverSelfNotifications();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+
+            AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+            boolean muted = false;
+            if (Build.VERSION.SDK_INT >= 23) {
+                muted = audio.isStreamMute(AudioManager.STREAM_MUSIC);
+            }
+
+
+            if (previousVolume != currentVolume || muted != previousMuted) {
+                previousVolume = currentVolume;
+                previousMuted = muted;
+
+                Log.i(TAG, "volume/muted changed");
+
+                updateVolumeMutedIndicatorVisibility(currentVolume, muted);
             }
         }
     }
