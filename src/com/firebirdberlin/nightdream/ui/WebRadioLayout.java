@@ -227,6 +227,18 @@ public class WebRadioLayout extends RelativeLayout {
         lp5.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         addView(volumeMutedIndicator, lp5);
 
+        volumeMutedIndicator.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                if (audio != null) {
+                    int maxVol = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                    //Log.i(TAG, "maxVol=" + maxVol);
+                    audio.setStreamVolume(AudioManager.STREAM_MUSIC, Math.round((float) maxVol * 0.1f), AudioManager.FLAG_SHOW_UI);
+                }
+            }
+        });
+
         updateVolumeMutedIndicator();
     }
 
