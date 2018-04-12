@@ -159,9 +159,9 @@ public class PreferencesFragment extends PreferenceFragment {
 
                     // update all widgets via intent, so the are repainted with current settings
                     ClockWidgetProvider.updateAllWidgets(mContext);
-
                 }
             };
+
     private boolean shallShowPurchaseDialog = false;
     ServiceConnection mServiceConn = new ServiceConnection() {
         @Override
@@ -272,8 +272,7 @@ public class PreferencesFragment extends PreferenceFragment {
                     ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
             ArrayList<String> signatureList =
                     ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
-            String continuationToken =
-                    ownedItems.getString("INAPP_CONTINUATION_TOKEN");
+            String continuationToken = ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
             boolean weatherDataIsPurchased = false;
             boolean radioIsPurchased = false;
@@ -359,8 +358,10 @@ public class PreferencesFragment extends PreferenceFragment {
         if (mService == null) return;
         try {
             String developerPayload = "abcdefghijklmnopqrstuvwxyz";
-            Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(),
-                    sku, "inapp", developerPayload);
+            Bundle buyIntentBundle = mService.getBuyIntent(
+                    3, getActivity().getPackageName(),
+                    sku, "inapp", developerPayload
+            );
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
                     REQUEST_CODE, new Intent(), 0, 0, 0);
@@ -438,7 +439,7 @@ public class PreferencesFragment extends PreferenceFragment {
         HashMap<String, String> map = new HashMap<>();
         if (mService == null) return map;
 
-        ArrayList skuList = new ArrayList();
+        ArrayList<String> skuList = new ArrayList<String>();
         skuList.add(ITEM_WEATHER_DATA);
         skuList.add(ITEM_WEB_RADIO);
         skuList.add(ITEM_DONATION);

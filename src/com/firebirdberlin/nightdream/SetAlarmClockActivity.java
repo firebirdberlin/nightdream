@@ -3,21 +3,31 @@ package com.firebirdberlin.nightdream;
 import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.TimePickerDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SetAlarmClockActivity extends Activity {
     static final String TAG = "SetAlarmClockActivity";
@@ -26,6 +36,30 @@ public class SetAlarmClockActivity extends Activity {
     private Settings settings = null;
     private String timeFormat = "h:mm";
     private List<SimpleTime> entries = null;
+    IInAppBillingService mService;
+    Map<String, Boolean> purchases;
+    ServiceConnection mServiceConn = new ServiceConnection() {
+
+        BillingHelper billingHelper;
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i(TAG, "IIAB service disconnected");
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(TAG, "IIAB service connected");
+            mService = IInAppBillingService.Stub.asInterface(service);
+            billingHelper = new BillingHelper(getApplicationContext(), mService);
+            purchases = billingHelper.getPurchases();
+            if (billingHelper.isPurchased(BillingHelper.ITEM_WEB_RADIO)) {
+                Log.i(TAG, "Web Radio is purchased");
+            } else {
+                Log.i(TAG, "Web Radio is NOT purchased");
+            }
+        }
+    };
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -35,6 +69,12 @@ public class SetAlarmClockActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // bind the in-app billing service
+        Intent serviceIntent =
+                new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+
         setContentView(R.layout.activity_set_alarm_clock);
         setTheme(R.style.DialogTheme);
 
@@ -44,6 +84,12 @@ public class SetAlarmClockActivity extends Activity {
             LayoutTransition layoutTransition = scrollView.getLayoutTransition();
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConn);
     }
 
     @Override
