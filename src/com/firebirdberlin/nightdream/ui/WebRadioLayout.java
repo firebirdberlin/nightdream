@@ -45,13 +45,14 @@ public class WebRadioLayout extends RelativeLayout {
     private Settings settings;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
+    final private Handler handler = new Handler();
 
     public WebRadioLayout(Context context) {
         super(context);
         this.context = context;
     }
 
-    public WebRadioLayout(Context context, AttributeSet attrs) {
+    public WebRadioLayout(final Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         setBackgroundResource(R.drawable.webradiopanelborder);
@@ -68,6 +69,13 @@ public class WebRadioLayout extends RelativeLayout {
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RadioStreamService.updateMetaData(context);
+            }
+        });
 
         buttonSleepTimer = new ImageView(context);
         buttonSleepTimer.setImageResource(R.drawable.ic_nightmode);
@@ -126,6 +134,7 @@ public class WebRadioLayout extends RelativeLayout {
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
+        filter.addAction(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
         context.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -202,7 +211,22 @@ public class WebRadioLayout extends RelativeLayout {
         updateVolumeMutedIndicator();
     }
 
-    protected void setShowConnectingHint(boolean showConnectingHint) {
+
+
+    private Runnable resetDefaultText = new Runnable() {
+        @Override
+        public void run() {
+            updateText();
+        }
+    };
+
+    private void showMetaTitle(String metaTitle) {
+        textView.setText(metaTitle);
+        // switch back to radio name after x seconds
+        handler.postDelayed(resetDefaultText, 5000);
+    }
+
+    private void setShowConnectingHint(boolean showConnectingHint) {
         this.showConnectingHint = showConnectingHint;
         spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
         invalidate();
@@ -274,6 +298,10 @@ public class WebRadioLayout extends RelativeLayout {
             } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 updateText();
                 setShowConnectingHint(false);
+            } else if (Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE.equals(action)) {
+                String metaTitle = intent.getStringExtra(RadioStreamService.EXTRA_RADIO_META_TITLE);
+                //Toast.makeText(context, metaTitle, metaTitle.length()).show();
+                showMetaTitle(metaTitle);
             }
         }
     }
