@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +42,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
+    private static String ACTION_NEXT_STATION = "next station";
     private static String ACTION_START_SLEEP_TIME = "start sleep time";
     static private int radioStationIndex;
     final private Handler handler = new Handler();
@@ -156,11 +158,15 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         settings = new Settings(this);
         isRunning = true;
 
-        Notification note = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder noteBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.radio))
                 .setSmallIcon(R.drawable.ic_radio)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .build();
+                .setPriority(NotificationCompat.PRIORITY_MIN);
+
+        addActionButtonsToNotificationBuilder(noteBuilder, intent);
+
+        Notification note = noteBuilder.build();
+
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
@@ -192,6 +198,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             stopSelf();
         } else if (ACTION_START_SLEEP_TIME.equals(action)) {
             handler.post(fadeOut);
+        } else if (ACTION_NEXT_STATION.equals(action)) {
+            switchToNextStation();
         }
 
         return Service.START_REDELIVER_INTENT;
@@ -373,6 +381,87 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             }
             mMediaPlayer.release();
             mMediaPlayer = null;
+        }
+    }
+
+    /**
+     * add stop button for normal radio, and for alarm radio preview (stream started in preferences dialog), but not for alarm
+     */
+    private void addActionButtonsToNotificationBuilder(NotificationCompat.Builder noteBuilder, Intent intent) {
+
+        String action = intent.getAction();
+
+        boolean hasExtraDebug = intent.getBooleanExtra(EXTRA_DEBUG, false);
+
+        if ( ACTION_START_STREAM.equals(action) || (ACTION_START.equals(action) && hasExtraDebug) ) {
+            noteBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+            noteBuilder.addAction(notificationStopAction());
+
+            // show radio station name in notification
+            String currentStationName = currentRadioStationName(intent);
+            if (currentStationName != null) {
+                noteBuilder.setContentText(currentStationName);
+            }
+        }
+
+        // if normal radio is playing and multiple stations are configured, also add button to switch to next station
+        if ( ACTION_START_STREAM.equals(action) ) {
+            FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+            if (stations != null && stations.numAvailableStations() > 1)
+            noteBuilder.addAction(notificationNextStationAction());
+        }
+    }
+
+    private NotificationCompat.Action notificationStopAction() {
+        return notificationAction(ACTION_STOP, getString(R.string.action_stop));
+    }
+
+    private NotificationCompat.Action notificationNextStationAction() {
+        return notificationAction(ACTION_NEXT_STATION, getString(R.string.next));
+    }
+
+    private NotificationCompat.Action notificationAction(String intentAction, String text) {
+
+        Intent intent = new Intent(this, RadioStreamService.class);
+        intent.setAction(intentAction);
+
+        PendingIntent pi = PendingIntent.getService(
+                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(0, text, pi).build();
+        return action;
+    }
+
+    private String currentRadioStationName(Intent intent) {
+        int currentIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
+        RadioStation station = settings.getFavoriteRadioStation(currentIndex);
+        if (station != null && station.name != null && !station.name.isEmpty()) {
+            return station.name;
+        } else {
+            return null;
+        }
+    }
+
+    private void switchToNextStation() {
+        Log.d(TAG,"switchToNextStation() called.");
+        if (streamingMode != StreamingMode.RADIO) {
+            return;
+        }
+
+        int currentIndex = getCurrentRadioStationIndex();
+        if (currentIndex < 0) {
+            return;
+        }
+
+        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+        int nextStationIndex = stations.nextAvailableIndex(currentIndex);
+        Log.d(TAG,"nextStationIndex: " + nextStationIndex);
+
+        // always stop and restart, so a new notification occurs
+        stopSelf();
+        if (nextStationIndex > -1) {
+            startStream(this, nextStationIndex);
         }
     }
 
