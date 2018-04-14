@@ -21,6 +21,7 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.radiostreamapi.IcecastMetadataCache;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
 import com.firebirdberlin.radiostreamapi.IcecastMetadataRetriever;
@@ -44,6 +45,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
+    public static String EXTRA_RADIO_META_TITLE = "radioMetaTitle";
     public static String EXTRA_DEBUG = "ExtraDebug";
     private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
@@ -51,8 +53,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String ACTION_STOP = "stop";
     private static String ACTION_NEXT_STATION = "next station";
     private static String ACTION_START_SLEEP_TIME = "start sleep time";
+    private static String ACTION_UPDATE_META_DATA = "update meta data";
     static private int radioStationIndex;
     static private RadioStation radioStation;
+    private final IcecastMetadataCache metadataCache = new IcecastMetadataCache();
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private boolean debug = false;
@@ -157,6 +161,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         context.startService(i);
     }
 
+    public static void updateMetaData(Context context) {
+        Log.i(TAG, "updateMetaData");
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setAction(ACTION_UPDATE_META_DATA);
+        context.startService(i);
+    }
+
     private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, RadioStreamService.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -234,6 +245,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             handler.post(fadeOut);
         } else if (ACTION_NEXT_STATION.equals(action)) {
             switchToNextStation();
+        } else if (ACTION_UPDATE_META_DATA.equals(action)) {
+            if (streamingMode == StreamingMode.RADIO) {
+                updateMetaData(false);
+            }
         }
 
         return Service.START_REDELIVER_INTENT;
@@ -366,7 +381,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
-
     }
 
     @Override
@@ -401,42 +415,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
             sendBroadcast( intent );
 
-            // test metadata retriever
-
-            URL url = null;
-            try {
-                url = new URL(streamURL);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+            if (streamingMode == StreamingMode.RADIO) {
+                updateMetaData(true);
             }
-
-            if (url != null) {
-                StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
-
-                    @Override
-                    public void onMetadataRequestFinished(Map<String, String> metadata) {
-                        Log.i(TAG, "meta data for url:" + streamURL);
-                        if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
-
-                            for (String key : metadata.keySet()) {
-                                Log.i(TAG, key + ":" + metadata.get(key));
-                            }
-
-                            String title = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
-                            if (!title.isEmpty()) {
-                                Toast.makeText(getApplicationContext(), title, title.length()).show();
-                            }
-
-                        } else {
-                            Log.i(TAG, "null/empty");
-                        }
-                    }
-
-                };
-
-                new StreamMetadataTask(metadataCallback, getApplicationContext()).execute(url);
-            }
-
 
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
@@ -514,7 +495,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     private void switchToNextStation() {
-        Log.d(TAG,"switchToNextStation() called.");
+        Log.d(TAG, "switchToNextStation() called.");
         if (streamingMode != StreamingMode.RADIO) {
             return;
         }
@@ -526,12 +507,60 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         FavoriteRadioStations stations = settings.getFavoriteRadioStations();
         int nextStationIndex = stations.nextAvailableIndex(currentIndex);
-        Log.d(TAG,"nextStationIndex: " + nextStationIndex);
+        Log.d(TAG, "nextStationIndex: " + nextStationIndex);
 
         // always stop and restart, so a new notification occurs
         stopSelf();
         if (nextStationIndex > -1) {
             startStream(this, nextStationIndex);
+        }
+    }
+
+    private void updateMetaData(boolean invalidateCache) {
+        URL url = null;
+        try {
+            url = new URL(streamURL);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, "prepareMetaData for url:" + streamURL);
+        if (url != null) {
+            StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
+
+                @Override
+                public void onMetadataRequestFinished(Map<String, String> metadata) {
+                    Log.i(TAG, "meta data for url:" + streamURL);
+
+                    if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
+                        /*
+                        for (String key : metadata.keySet()) {
+                            Log.i(TAG, key + ":" + metadata.get(key));
+                        }
+                        */
+
+                        String title = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
+                        if (!title.isEmpty()) {
+
+                            // notifiy that meta data is available
+                            Intent intent = new Intent(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
+                            intent.putExtra(EXTRA_RADIO_META_TITLE, title);
+                            sendBroadcast( intent );
+                        }
+
+                    } else {
+                        Log.i(TAG, "null/empty");
+                    }
+                }
+
+            };
+
+            //new StreamMetadataTask(metadataCallback, getApplicationContext()).execute(url);
+            if (invalidateCache) {
+                metadataCache.invalidate();
+            }
+            metadataCache.retrieveMetadata(streamURL, metadataCallback, getApplicationContext());
+
         }
     }
 
