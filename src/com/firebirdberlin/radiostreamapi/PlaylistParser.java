@@ -14,6 +14,8 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PlaylistParser {
 
@@ -23,6 +25,12 @@ public class PlaylistParser {
     private static final String PLS_FILE_FILE1_PREFIX = "File1=";
     private static final String PLS_FILE_TITLE1_PREFIX = "Title1=";
     private static final Integer[] USUAL_BITRATES = new Integer[] { 64, 96, 128, 192, 256};
+
+    private static final String ASHX_CONTENT_TYPE_PLAIN = "audio/x-mpegurl";
+    private static final String ASHX_CONTENT_TYPE_JSON = "application/json";
+    private static final Pattern URL_PATTERH = Pattern.compile("https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+
+
     private static String TAG = "NightDream.PlaylistParser";
     private static int READ_TIMEOUT = 3000;
     private static int CONNECT_TIMEOUT = 3000;
@@ -52,6 +60,7 @@ public class PlaylistParser {
             urlConnection.connect();
 
             int responseCode = urlConnection.getResponseCode();
+            String contentType = urlConnection.getContentType();
             if ( responseCode == 200 ) {
                 List<String> lines = getResponseLines(url.openStream());
                 if (lines != null && !lines.isEmpty()) {
@@ -61,6 +70,8 @@ public class PlaylistParser {
                             return parseM3U(lines);
                         } else if (format == PlaylistInfo.Format.PLS) {
                             return parsePLS(lines);
+                        } else if (format == PlaylistInfo.Format.ASHX && isASHXContentType(contentType)) {
+                            return parseASHX(lines);
                         } else {
                             return errorneousPlaylist(PlaylistInfo.Error.UNSUPPORTED_FORMAT);
                         }
@@ -130,12 +141,14 @@ public class PlaylistParser {
         return lines;
     }
 
-    private static PlaylistInfo.Format getPlaylistFormat(String url) {
+    public static PlaylistInfo.Format getPlaylistFormat(String url) {
         String sLower = url.toLowerCase();
         if (sLower.endsWith(".m3u")) {
             return PlaylistInfo.Format.M3U;
         } else if (sLower.endsWith(".pls")) {
             return PlaylistInfo.Format.PLS;
+        } else if (sLower.indexOf(".ashx") > -1) {
+            return PlaylistInfo.Format.ASHX;
         }
         return null;
     }
@@ -273,5 +286,38 @@ public class PlaylistParser {
         }
 
         return null;
+    }
+
+    private static boolean isASHXContentType(String contentType) {
+        return (contentType != null &&
+                (contentType.toLowerCase().indexOf(ASHX_CONTENT_TYPE_PLAIN) > -1 || contentType.toLowerCase().indexOf(ASHX_CONTENT_TYPE_JSON) > -1));
+    }
+
+    private static PlaylistInfo parseASHX(List<String> lines) {
+
+        String protoHttp = "http://";
+        String protoHttps = "https://";
+
+        String streamUrl = null;
+        for (String line : lines) {
+            //Log.i(TAG, "matcher line: " + line);
+            if (line.indexOf(protoHttp) > -1 || line.indexOf(protoHttps) > -1) {
+                Matcher matcher = URL_PATTERH.matcher(line);
+                if (matcher.find()) {
+                    streamUrl = matcher.group();
+                    //Log.i(TAG, "matcher found url: " + url);
+                    break;
+                }
+            }
+        }
+
+        if (streamUrl == null || streamUrl.isEmpty()) {
+            return null;
+        }
+
+        PlaylistInfo p = new PlaylistInfo();
+        p.streamUrl = streamUrl;
+        p.format = PlaylistInfo.Format.ASHX;
+        return p;
     }
 }
