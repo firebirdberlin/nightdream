@@ -52,6 +52,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String ACTION_NEXT_STATION = "next station";
     private static String ACTION_START_SLEEP_TIME = "start sleep time";
     static private int radioStationIndex;
+    static private RadioStation radioStation;
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private boolean debug = false;
@@ -118,6 +119,15 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         return radioStationIndex;
     }
+
+    public static RadioStation getCurrentRadioStation() {
+        if (streamingMode != StreamingMode.RADIO) {
+            return null;
+        }
+
+        return radioStation;
+    }
+
     public static void startStream(Context context) {
         startStream(context, 0);
     }
@@ -237,9 +247,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             streamURL = settings.radioStreamURLUI;
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
             if (stations != null) {
-                RadioStation station = stations.get(radioStationIndex);
-                if (station != null) {
-                    streamURL = station.stream;
+                radioStation = stations.get(radioStationIndex);
+                if (radioStation != null) {
+                    streamURL = radioStation.stream;
                 }
             }
         }
@@ -275,6 +285,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         isRunning = false;
         alarmIsRunning = false;
         radioStationIndex = -1;
+        radioStation = null;
         streamingMode = StreamingMode.INACTIVE;
         debug = false;
 

@@ -110,7 +110,7 @@ public class WebRadioLayout extends RelativeLayout {
 
         initVolumeMutedIndicator(padding);
 
-        setText(null);
+        updateText();
     }
 
     @Override
@@ -179,16 +179,15 @@ public class WebRadioLayout extends RelativeLayout {
         this.locked = locked;
     }
 
-    protected void setText(Integer radioStationIndex) {
+    protected void updateText() {
         if (textView == null) return;
 
-        if (radioStationIndex == null) {
-            radioStationIndex = RadioStreamService.getCurrentRadioStationIndex();
-        }
+        int radioStationIndex = RadioStreamService.getCurrentRadioStationIndex();
+        RadioStation station = RadioStreamService.getCurrentRadioStation();
+
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
 
-            if (radioStationIndex >= 0) {
-                RadioStation station = settings.getFavoriteRadioStation(radioStationIndex);
+            if (radioStationIndex >= 0 && station != null) {
                 textView.setText(station.name);
                 webRadioButtons.setActiveStation(radioStationIndex);
             }
@@ -268,14 +267,12 @@ public class WebRadioLayout extends RelativeLayout {
             String action = intent.getAction();
             if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 setShowConnectingHint(true);
-                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
-                setText(radioStationIndex);
+                updateText();
             } else if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-                int radioStationIndex = intent.getExtras().getInt(RadioStreamService.EXTRA_RADIO_STATION_INDEX, 0);
                 setShowConnectingHint(false);
-                setText(radioStationIndex);
+                updateText();
             } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
-                setText(null);
+                updateText();
                 setShowConnectingHint(false);
             }
         }

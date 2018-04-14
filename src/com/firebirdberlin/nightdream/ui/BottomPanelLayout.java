@@ -117,7 +117,7 @@ public class BottomPanelLayout extends FrameLayout {
         Log.i(TAG, "showWebRadioView");
 
         if (webRadioLayout != null) {
-            webRadioLayout.setText(null);
+            webRadioLayout.updateText();
             invalidate();
             return; // already visible
         }
