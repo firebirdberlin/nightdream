@@ -31,6 +31,33 @@ public class FavoriteRadioStations {
         return radioStations[index];
     }
 
+    public int numAvailableStations() {
+        int total = 0;
+        for (int i = 0; i < radioStations.length; i++) {
+            RadioStation s = (radioStations[i]);
+            if (s != null) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    public int nextAvailableIndex(int currentIndex) {
+        if (currentIndex < 0 || currentIndex >= radioStations.length) {
+            return -1;
+        }
+
+        for (int i = 0; i < radioStations.length; i++) {
+            int nextIndex = (i + currentIndex + 1) % radioStations.length;
+            RadioStation s = (radioStations[nextIndex]);
+            if (s != null) {
+                return nextIndex;
+            }
+        }
+        // should never happen
+        return -1;
+    }
+
     private static final String JSON_FAVORITES = "favorites";
 
     public static FavoriteRadioStations fromJson(String json) throws JSONException {
