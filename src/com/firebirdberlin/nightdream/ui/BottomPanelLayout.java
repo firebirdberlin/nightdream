@@ -22,6 +22,7 @@ public class BottomPanelLayout extends FrameLayout {
     private int accentColor;
     private int textColor;
     private AlarmClock view = null;
+    private UserInteractionObserver userInteractionObserver;
 
     public BottomPanelLayout(Context context) {
         super(context);
@@ -42,6 +43,10 @@ public class BottomPanelLayout extends FrameLayout {
     public void setActivePanel(Panel panel) {
         activePanel = panel;
         setup();
+    }
+
+    public void setUserInteractionObserver(UserInteractionObserver o) {
+        userInteractionObserver = o;
     }
 
     public void setDaydreamMode(boolean enabled) {
@@ -125,6 +130,7 @@ public class BottomPanelLayout extends FrameLayout {
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
+        webRadioLayout.setUserInteractionObserver(userInteractionObserver);
         addView(webRadioLayout);
         invalidate();
     }

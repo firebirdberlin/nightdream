@@ -207,6 +207,16 @@ public class NightDreamUI {
             hideSidePanel();
         }
     };
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
+        public void notifyAction() {
+            resetAlarmClockHideDelay();
+        }
+    };
+    private void resetAlarmClockHideDelay() {
+        removeCallbacks(hideAlarmClock);
+        handler.postDelayed(hideAlarmClock, 20000);
+    }
+
     private boolean blinkStateOn = false;
     private Runnable blink = new Runnable() {
         public void run() {
@@ -253,8 +263,7 @@ public class NightDreamUI {
             Log.w(TAG, "single tap up");
 
             showAlarmClock();
-            removeCallbacks(hideAlarmClock);
-            handler.postDelayed(hideAlarmClock, 20000);
+            resetAlarmClockHideDelay();
 
             if (AlarmHandlerService.alarmIsRunning()) {
                 alarmClock.snooze();
@@ -401,6 +410,7 @@ public class NightDreamUI {
         clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
         clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
         bottomPanelLayout = (BottomPanelLayout) rootView.findViewById(R.id.bottomPanel);
+        bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
         notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
         menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);

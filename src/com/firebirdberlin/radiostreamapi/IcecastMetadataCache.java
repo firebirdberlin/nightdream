@@ -13,8 +13,8 @@ public class IcecastMetadataCache {
 
     private static String TAG = "IcecastMetadataCache";
 
-    //private static final int UPDATE_INTERVAL_MILLIS = 60 * 1000;
-    private static final int UPDATE_INTERVAL_MILLIS = 5 * 1000;
+    private static final int UPDATE_INTERVAL_MILLIS = 60 * 1000;
+    //private static final int UPDATE_INTERVAL_MILLIS = 5 * 1000;
 
     private long lastUpdateMillis = -1;
 
