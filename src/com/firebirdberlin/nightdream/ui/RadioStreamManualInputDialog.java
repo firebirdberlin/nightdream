@@ -147,10 +147,7 @@ public class RadioStreamManualInputDialog {
 
                 progressSpinner.setVisibility(View.VISIBLE);
 
-                final PlaylistInfo.Format playlistFormat = PlaylistParser.getPlaylistFormat(url.getPath());
-                boolean isPlaylistUrl = (playlistFormat != null);
-
-                if (isPlaylistUrl) {
+                if (PlaylistParser.isPlaylistUrl(url)) {
                     PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
                         @Override
                         public void onPlaylistRequestFinished(PlaylistInfo result) {
@@ -160,9 +157,7 @@ public class RadioStreamManualInputDialog {
                             if (result != null && result.valid && resultStreamUrl != null) {
                                 String stationName = getStationName(description, result.description, resultStreamUrl);
                                 int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
-                                // return playlist url itself, but only for ASHX return the embedded url (ASHX urls seem to be volatile and not to be stored settings directly)
-                                final String storedUrl = (playlistFormat == PlaylistInfo.Format.ASHX ? result.streamUrl : urlString);
-                                persistAndDismissDialog(manualInputDialog, listener, stationName, storedUrl, bitrate);
+                                persistAndDismissDialog(manualInputDialog, listener, stationName, urlString, bitrate);
                             } else {
                                 showUrlErrorMessage(invalidUrlMessage);
                             }
