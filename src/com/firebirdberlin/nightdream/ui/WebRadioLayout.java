@@ -73,7 +73,7 @@ public class WebRadioLayout extends RelativeLayout {
         textView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                RadioStreamService.updateMetaData(context);
+                startMetaDataUpdate();
             }
         });
 
@@ -135,6 +135,7 @@ public class WebRadioLayout extends RelativeLayout {
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
         filter.addAction(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
+        filter.addAction(Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED);
         context.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -220,7 +221,12 @@ public class WebRadioLayout extends RelativeLayout {
         }
     };
 
+    private void startMetaDataUpdate() {
+        RadioStreamService.updateMetaData(context);
+    }
+
     private void showMetaTitle(String metaTitle) {
+        setShowConnectingHint(false);
         textView.setText(metaTitle);
         // switch back to radio name after x seconds
         handler.postDelayed(resetDefaultText, 5000);
@@ -298,9 +304,10 @@ public class WebRadioLayout extends RelativeLayout {
             } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 updateText();
                 setShowConnectingHint(false);
+            } else if (Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED.equals(action)) {
+                setShowConnectingHint(true);
             } else if (Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE.equals(action)) {
                 String metaTitle = intent.getStringExtra(RadioStreamService.EXTRA_RADIO_META_TITLE);
-                //Toast.makeText(context, metaTitle, metaTitle.length()).show();
                 showMetaTitle(metaTitle);
             }
         }

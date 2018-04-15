@@ -529,7 +529,14 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
 
                 @Override
-                public void onMetadataRequestFinished(Map<String, String> metadata) {
+                public void onMetadataRequestStarted() {
+                    // notifiy that meta data request has started
+                    Intent intent = new Intent(Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED);
+                    sendBroadcast( intent );
+                }
+
+                @Override
+                public void onMetadataAvailable(Map<String, String> metadata) {
                     Log.i(TAG, "meta data for url:" + streamURL);
 
                     if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
@@ -555,7 +562,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
             };
 
-            //new StreamMetadataTask(metadataCallback, getApplicationContext()).execute(url);
             if (invalidateCache) {
                 metadataCache.invalidate();
             }
