@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -45,6 +46,7 @@ public class WebRadioLayout extends RelativeLayout {
     private Settings settings;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
+    private UserInteractionObserver userInteractionObserver;
     final private Handler handler = new Handler();
 
     public WebRadioLayout(Context context) {
@@ -73,6 +75,7 @@ public class WebRadioLayout extends RelativeLayout {
         textView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                notifyUserInteraction();
                 startMetaDataUpdate();
             }
         });
@@ -154,6 +157,10 @@ public class WebRadioLayout extends RelativeLayout {
 
     }
 
+    public void setUserInteractionObserver(UserInteractionObserver o) {
+        userInteractionObserver = o;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -229,6 +236,7 @@ public class WebRadioLayout extends RelativeLayout {
         setShowConnectingHint(false);
         textView.setText(metaTitle);
         // switch back to radio name after x seconds
+        handler.removeCallbacks(resetDefaultText);
         handler.postDelayed(resetDefaultText, 5000);
     }
 
@@ -289,6 +297,18 @@ public class WebRadioLayout extends RelativeLayout {
         if (volumeMutedIndicator != null) {
             volumeMutedIndicator.setVisibility(currentVolume > 0 && !muted ? GONE : VISIBLE);
         }
+    }
+
+    private void notifyUserInteraction() {
+        if (userInteractionObserver != null) {
+            userInteractionObserver.notifyAction();
+        }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        notifyUserInteraction();
+        return false;
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
