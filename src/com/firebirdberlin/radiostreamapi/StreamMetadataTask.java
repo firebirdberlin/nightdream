@@ -9,7 +9,8 @@ import java.util.Map;
 public class StreamMetadataTask extends AsyncTask<URL, Void, Map<String, String>> {
 
     public interface AsyncResponse {
-        public void onMetadataRequestFinished(Map<String, String> metadata);
+        public void onMetadataRequestStarted();
+        public void onMetadataAvailable(Map<String, String> metadata);
     }
 
     private StreamMetadataTask.AsyncResponse delegate = null;
@@ -29,7 +30,7 @@ public class StreamMetadataTask extends AsyncTask<URL, Void, Map<String, String>
 
     @Override
     protected void onPostExecute(Map<String, String> metadata) {
-        delegate.onMetadataRequestFinished(metadata);
+        delegate.onMetadataAvailable(metadata);
     }
 
 }

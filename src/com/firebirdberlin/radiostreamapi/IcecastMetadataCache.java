@@ -29,6 +29,10 @@ public class IcecastMetadataCache {
         boolean needsUpdate = time - lastUpdateMillis > UPDATE_INTERVAL_MILLIS;
 
         if (!radioStationMetaDataAvaiable) {
+            // inform listener even if no meta data are available
+            if (listener != null) {
+                listener.onMetadataAvailable(null);
+            }
             return;
         }
 
@@ -36,7 +40,7 @@ public class IcecastMetadataCache {
             Log.i(TAG, "cache hit");
             // cached result
             if (listener != null) {
-                listener.onMetadataRequestFinished(cachedMetadata);
+                listener.onMetadataAvailable(cachedMetadata);
             }
             return;
         }
@@ -45,6 +49,10 @@ public class IcecastMetadataCache {
 
         updateInProgress = true;
 
+        // delegate to outer callback, so the progress spinner can be displayed
+        if (listener != null) {
+            listener.onMetadataRequestStarted();
+        }
 
         URL url = null;
         try {
@@ -54,10 +62,17 @@ public class IcecastMetadataCache {
         }
 
         if (url != null) {
+
+            // intermediate callback to update the cache
             StreamMetadataTask.AsyncResponse cacheCallback = new StreamMetadataTask.AsyncResponse() {
 
                 @Override
-                public void onMetadataRequestFinished(Map<String, String> metadata) {
+                public void onMetadataRequestStarted() {
+                    // nothing to do here
+                }
+
+                @Override
+                public void onMetadataAvailable(Map<String, String> metadata) {
 
                     updateInProgress = false;
                     lastUpdateMillis = System.currentTimeMillis();
@@ -71,11 +86,11 @@ public class IcecastMetadataCache {
                         if (!title.isEmpty()) {
                             radioStationMetaDataAvaiable = true;
                         }
-
                     }
 
+                    // delegate to outer callback (even if no metadata available)
                     if (listener != null) {
-                        listener.onMetadataRequestFinished(metadata);
+                        listener.onMetadataAvailable(metadata);
                     }
                 }
 

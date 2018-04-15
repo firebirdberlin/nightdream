@@ -10,6 +10,7 @@ public class Config {
     public final static String ACTION_RADIO_STREAM_STARTED = "com.firebirdberlin.nightdream.action_radio_stream_started";
     public final static String ACTION_RADIO_STREAM_STOPPED = "com.firebirdberlin.nightdream.action_radio_stream_stopped";
     public final static String ACTION_RADIO_STREAM_READY_FOR_PLAYBACK = "com.firebirdberlin.nightdream.action_radio_stream_ready_for_playback";
+    public final static String ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED = "com.firebirdberlin.nightdream.action_radio_stream_meta_data_request_started";
     public final static String ACTION_RADIO_STREAM_META_DATA_AVAILABLE = "com.firebirdberlin.nightdream.action_radio_stream_meta_data_available";
     public final static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
     public final static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
