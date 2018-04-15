@@ -47,6 +47,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     public static String EXTRA_RADIO_META_TITLE = "radioMetaTitle";
     public static String EXTRA_DEBUG = "ExtraDebug";
+    public static String EXTRA_FORCE_UPDATE_META_DATA = "force meta data update";
     private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
@@ -161,10 +162,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         context.startService(i);
     }
 
-    public static void updateMetaData(Context context) {
+    public static void updateMetaData(Context context, boolean forcedUpdate) {
         Log.i(TAG, "updateMetaData");
         Intent i = new Intent(context, RadioStreamService.class);
         i.setAction(ACTION_UPDATE_META_DATA);
+        i.putExtra(EXTRA_FORCE_UPDATE_META_DATA, forcedUpdate);
         context.startService(i);
     }
 
@@ -247,7 +249,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             switchToNextStation();
         } else if (ACTION_UPDATE_META_DATA.equals(action)) {
             if (streamingMode == StreamingMode.RADIO) {
-                updateMetaData(false);
+                boolean forcedUpdate = intent.getBooleanExtra(EXTRA_FORCE_UPDATE_META_DATA, false);
+                updateMetaData(false, forcedUpdate);
             }
         }
 
@@ -416,7 +419,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             sendBroadcast( intent );
 
             if (streamingMode == StreamingMode.RADIO) {
-                updateMetaData(true);
+                updateMetaData(true, false);
             }
 
         } catch (IllegalStateException e) {
@@ -440,7 +443,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             mMediaPlayer = null;
         }
     }
-
+    
     /**
      * add stop button for normal radio, and for alarm radio preview (stream started in
      * preferences dialog), but not for alarm
@@ -516,7 +519,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     }
 
-    private void updateMetaData(boolean invalidateCache) {
+    private void updateMetaData(boolean invalidateCache, boolean forcedUpdate) {
         URL url = null;
         try {
             url = new URL(streamURL);
@@ -524,7 +527,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             e.printStackTrace();
         }
 
-        Log.i(TAG, "prepareMetaData for url:" + streamURL);
+        //Log.i(TAG, "prepareMetaData for url:" + streamURL);
         if (url != null) {
             StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
 
@@ -537,7 +540,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
                 @Override
                 public void onMetadataAvailable(Map<String, String> metadata) {
-                    Log.i(TAG, "meta data for url:" + streamURL);
+                    //Log.i(TAG, "meta data for url:" + streamURL);
 
                     if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
                         /*
@@ -565,8 +568,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             if (invalidateCache) {
                 metadataCache.invalidate();
             }
-            metadataCache.retrieveMetadata(streamURL, metadataCallback, getApplicationContext());
-
+            metadataCache.retrieveMetadata(streamURL, metadataCallback, getApplicationContext(), forcedUpdate);
         }
     }
 
