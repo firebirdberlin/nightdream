@@ -161,7 +161,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         NotificationCompat.Builder noteBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.radio))
                 .setSmallIcon(R.drawable.ic_radio)
-                .setPriority(NotificationCompat.PRIORITY_MIN);
+                .setPriority(NotificationCompat.PRIORITY_MAX);
 
         addActionButtonsToNotificationBuilder(noteBuilder, intent);
 
@@ -394,7 +394,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         boolean hasExtraDebug = intent.getBooleanExtra(EXTRA_DEBUG, false);
 
         if ( ACTION_START_STREAM.equals(action) || (ACTION_START.equals(action) && hasExtraDebug) ) {
-            noteBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
             noteBuilder.addAction(notificationStopAction());
 
             // show radio station name in notification
