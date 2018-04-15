@@ -16,6 +16,9 @@ public class IcecastMetadataCache {
     private static final int UPDATE_INTERVAL_MILLIS = 60 * 1000;
     //private static final int UPDATE_INTERVAL_MILLIS = 5 * 1000;
 
+    // forced updates (long press) at most every 3 seconds
+    private static final int FORCED_UPDATE_INTERVAL_MILLIS = 3 * 1000;
+
     private long lastUpdateMillis = -1;
 
     private boolean updateInProgress = false;
@@ -24,9 +27,10 @@ public class IcecastMetadataCache {
 
     private Map<String, String> cachedMetadata;
 
-    public void retrieveMetadata(final String streamUrl, final StreamMetadataTask.AsyncResponse listener, Context context) {
+    public void retrieveMetadata(final String streamUrl, final StreamMetadataTask.AsyncResponse listener, Context context, boolean forceUpdate) {
         long time = System.currentTimeMillis();
         boolean needsUpdate = time - lastUpdateMillis > UPDATE_INTERVAL_MILLIS;
+        boolean needsForcedUpdate = time - lastUpdateMillis > FORCED_UPDATE_INTERVAL_MILLIS;
 
         if (!radioStationMetaDataAvaiable) {
             // inform listener even if no meta data are available
@@ -36,10 +40,21 @@ public class IcecastMetadataCache {
             return;
         }
 
-        if (!needsUpdate || updateInProgress) {
+        if ((!needsUpdate && !forceUpdate) || updateInProgress) {
             Log.i(TAG, "cache hit");
             // cached result
             if (listener != null) {
+                listener.onMetadataAvailable(cachedMetadata);
+            }
+            return;
+        }
+
+        if ((!needsForcedUpdate && forceUpdate) || updateInProgress) {
+            Log.i(TAG, "cache hit");
+            // cached result
+            if (listener != null) {
+                // for forced updates simulate a real request so on-pregress occures
+                listener.onMetadataRequestStarted();
                 listener.onMetadataAvailable(cachedMetadata);
             }
             return;

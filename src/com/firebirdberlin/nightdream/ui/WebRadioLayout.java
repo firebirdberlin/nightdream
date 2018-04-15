@@ -76,7 +76,15 @@ public class WebRadioLayout extends RelativeLayout {
             @Override
             public void onClick(View view) {
                 notifyUserInteraction();
-                startMetaDataUpdate();
+                startMetaDataUpdate(false); // normal update
+            }
+        });
+        textView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                notifyUserInteraction();
+                startMetaDataUpdate(true); // forced update
+                return true;
             }
         });
 
@@ -228,8 +236,8 @@ public class WebRadioLayout extends RelativeLayout {
         }
     };
 
-    private void startMetaDataUpdate() {
-        RadioStreamService.updateMetaData(context);
+    private void startMetaDataUpdate(boolean forcedUpdate) {
+        RadioStreamService.updateMetaData(context, forcedUpdate);
     }
 
     private void showMetaTitle(String metaTitle) {
