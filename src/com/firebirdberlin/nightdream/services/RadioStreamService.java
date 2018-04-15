@@ -340,9 +340,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             AlarmService.startAlarm(this);
             stopSelf();
             return true;
-        } else {
-            Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
-            stopSelf();
         }
         return false;
     }
