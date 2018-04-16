@@ -109,6 +109,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="minBrightness">min. Bildschirmhelligkeit</string>
 <string name="minute">min</string>
 <string name="mute_ringer">lautlos</string>
+<string name="next">weiter</string>
 <string name="night_mode_activation_auto">automatisch</string>
 <string name="night_mode_activation_manual">manuell</string>
 <string name="night_mode_activation_mode">Aktivierung</string>
