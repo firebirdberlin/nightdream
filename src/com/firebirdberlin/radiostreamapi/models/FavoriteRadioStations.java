@@ -1,6 +1,5 @@
 package com.firebirdberlin.radiostreamapi.models;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +28,32 @@ public class FavoriteRadioStations {
             return null;
         }
         return radioStations[index];
+    }
+
+    public int numAvailableStations() {
+        int total = 0;
+        for (RadioStation radioStation : radioStations) {
+            if (radioStation != null) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    public int nextAvailableIndex(int currentIndex) {
+        if (currentIndex < 0 || currentIndex >= radioStations.length) {
+            return -1;
+        }
+
+        for (int i = 0; i < radioStations.length; i++) {
+            int nextIndex = (i + currentIndex + 1) % radioStations.length;
+            RadioStation s = radioStations[nextIndex];
+            if (s != null) {
+                return nextIndex;
+            }
+        }
+        // should never happen
+        return -1;
     }
 
     private static final String JSON_FAVORITES = "favorites";
@@ -60,7 +85,7 @@ public class FavoriteRadioStations {
             if (station != null) {
                 try {
                     favorites.put(String.valueOf(i), station.toJsonObject());
-                } catch (JSONException e) {
+                } catch (JSONException ignored) {
                 }
             }
         }
