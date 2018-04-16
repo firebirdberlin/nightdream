@@ -542,6 +542,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                 public void onMetadataAvailable(Map<String, String> metadata) {
                     //Log.i(TAG, "meta data for url:" + streamURL);
 
+                    String metaTitle = null;
                     if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
                         /*
                         for (String key : metadata.keySet()) {
@@ -549,18 +550,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                         }
                         */
 
-                        String title = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
-                        if (!title.isEmpty()) {
+                        metaTitle = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
 
-                            // notifiy that meta data is available
-                            Intent intent = new Intent(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
-                            intent.putExtra(EXTRA_RADIO_META_TITLE, title);
-                            sendBroadcast( intent );
-                        }
 
                     } else {
                         Log.i(TAG, "null/empty");
                     }
+
+                    // notifiy in any case about the meta data result (maybe empty)
+                    Intent intent = new Intent(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
+                    intent.putExtra(EXTRA_RADIO_META_TITLE, metaTitle);
+                    sendBroadcast( intent );
                 }
 
             };
