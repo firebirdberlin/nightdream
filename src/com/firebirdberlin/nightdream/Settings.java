@@ -137,7 +137,6 @@ public class Settings {
     private static FavoriteRadioStations getFavoriteRadioStations(SharedPreferences preferences) {
         String json = preferences.getString(FAVORITE_RADIO_STATIONS_KEY, null);
         if (json != null) {
-            Log.i(TAG, json);
             try {
                 FavoriteRadioStations stations = FavoriteRadioStations.fromJson(json);
                 return stations;

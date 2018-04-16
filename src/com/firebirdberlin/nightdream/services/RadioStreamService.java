@@ -260,7 +260,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     public void setAlarmVolume(int volume, boolean useMusicStream) {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-
+        if (audioManager == null) {
+            return;
+        }
         currentStreamType =
                 (useMusicStream) ? AudioManager.STREAM_MUSIC : AudioManager.STREAM_ALARM;
 
@@ -385,25 +387,24 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     /**
-     * add stop button for normal radio, and for alarm radio preview (stream started in preferences dialog), but not for alarm
+     * add stop button for normal radio, and for alarm radio preview (stream started in
+     * preferences dialog), but not for alarm
      */
-    private void addActionButtonsToNotificationBuilder(NotificationCompat.Builder noteBuilder, Intent intent) {
+    private void addActionButtonsToNotificationBuilder(NotificationCompat.Builder noteBuilder,
+                                                       Intent intent) {
 
         String action = intent.getAction();
-
         boolean hasExtraDebug = intent.getBooleanExtra(EXTRA_DEBUG, false);
 
         if ( ACTION_START_STREAM.equals(action) || (ACTION_START.equals(action) && hasExtraDebug) ) {
             noteBuilder.addAction(notificationStopAction());
 
             // show radio station name in notification
-            String currentStationName = currentRadioStationName(intent);
-            if (currentStationName != null) {
-                noteBuilder.setContentText(currentStationName);
-            }
+            noteBuilder.setContentText(currentRadioStationName(intent));
         }
 
-        // if normal radio is playing and multiple stations are configured, also add button to switch to next station
+        // if normal radio is playing and multiple stations are configured, also add button to
+        // switch to next station
         if ( ACTION_START_STREAM.equals(action) ) {
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
             if (stations != null && stations.numAvailableStations() > 1)
@@ -420,16 +421,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     private NotificationCompat.Action notificationAction(String intentAction, String text) {
-
         Intent intent = new Intent(this, RadioStreamService.class);
         intent.setAction(intentAction);
 
         PendingIntent pi = PendingIntent.getService(
                 this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(0, text, pi).build();
-        return action;
+        return new NotificationCompat.Action.Builder(0, text, pi).build();
     }
 
     private String currentRadioStationName(Intent intent) {
@@ -437,9 +435,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         RadioStation station = settings.getFavoriteRadioStation(currentIndex);
         if (station != null && station.name != null && !station.name.isEmpty()) {
             return station.name;
-        } else {
-            return null;
         }
+        return "";
     }
 
     private void switchToNextStation() {
