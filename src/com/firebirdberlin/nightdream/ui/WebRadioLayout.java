@@ -18,6 +18,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -64,8 +66,13 @@ public class WebRadioLayout extends RelativeLayout {
         textView = new TextView(context);
         textView.setId(R.id.web_radio_text_view); // id for placing spinner LEFT_OF this view
         textView.setEllipsize(TextUtils.TruncateAt.END);
+        // more than one lines of text whould appear below the preset buttons
+        textView.setSingleLine(true);
         int padding = Utility.dpToPx(context, 6.f);
-        textView.setPadding(padding, padding, padding, padding);
+        int paddingRight = Utility.dpToPx(context, 40.f); // let text end before sleep button
+        //textView.setPadding(padding, padding, padding, padding);
+        textView.setPadding(padding, padding, paddingRight, padding);
+
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -236,16 +243,25 @@ public class WebRadioLayout extends RelativeLayout {
         }
     };
 
+    private Runnable hideConnectingHint = new Runnable() {
+        @Override
+        public void run() {
+            setShowConnectingHint(false);
+        }
+    };
+
     private void startMetaDataUpdate(boolean forcedUpdate) {
         RadioStreamService.updateMetaData(context, forcedUpdate);
     }
 
     private void showMetaTitle(String metaTitle) {
         setShowConnectingHint(false);
-        textView.setText(metaTitle);
-        // switch back to radio name after x seconds
-        handler.removeCallbacks(resetDefaultText);
-        handler.postDelayed(resetDefaultText, 5000);
+        if (metaTitle != null && !metaTitle.isEmpty()) {
+            textView.setText(metaTitle);
+            // switch back to radio name after x seconds
+            handler.removeCallbacks(resetDefaultText);
+            handler.postDelayed(resetDefaultText, 5000);
+        }
     }
 
     private void setShowConnectingHint(boolean showConnectingHint) {
@@ -334,6 +350,7 @@ public class WebRadioLayout extends RelativeLayout {
                 setShowConnectingHint(false);
             } else if (Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED.equals(action)) {
                 setShowConnectingHint(true);
+                handler.postDelayed(hideConnectingHint, 10000); // hide animation after 10s if anything goes wrong
             } else if (Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE.equals(action)) {
                 String metaTitle = intent.getStringExtra(RadioStreamService.EXTRA_RADIO_META_TITLE);
                 showMetaTitle(metaTitle);
