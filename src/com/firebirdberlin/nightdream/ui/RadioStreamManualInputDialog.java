@@ -50,6 +50,12 @@ public class RadioStreamManualInputDialog {
         // test of faulty stream url (connection timeout)
         //inputUrl.setText("http://pub8.rockradio.com:80/rr_classicrock");
         //inputDescription.setText("Rockradio timeout test");
+        // test ashx json
+        //inputUrl.setText("https://opml.radiotime.com/Tune.ashx?audience=%3BVZ_Altice%3Ball%3B&id=s96162&render=json&listenId=1523703277&formats=mp3,aac,ogg,flash,html&type=station&serial=a9bbfdc9-1157-46a2-87a8-f2909d897169&partnerId=RadioTime&version=2.29&itemUrlScheme=secure&build=2.29.0&reqAttempt=1");
+        //inputDescription.setText("ashx json test");
+        // test ashx plain
+        //inputUrl.setText("https://opml.radiotime.com/Tune.ashx?audience=%3BVZ_Altice%3Ball%3B&id=s96162&listenId=1523703277&formats=mp3,aac,ogg,flash,html&type=station&serial=a9bbfdc9-1157-46a2-87a8-f2909d897169&partnerId=RadioTime&version=2.29&itemUrlScheme=secure&build=2.29.0&reqAttempt=1");
+        //inputDescription.setText("ashx plain test");
 
         // test playlist
         //inputUrl.setText("http://www.radioberlin.de/live.m3u");
@@ -147,8 +153,8 @@ public class RadioStreamManualInputDialog {
                         public void onPlaylistRequestFinished(PlaylistInfo result) {
                             progressSpinner.setVisibility(View.GONE);
 
-                            final URL resultStreamUrl = validateUrlInput(result.streamUrl);
-                            if (result.valid && resultStreamUrl != null) {
+                            final URL resultStreamUrl = (result != null ? validateUrlInput(result.streamUrl) : null);
+                            if (result != null && result.valid && resultStreamUrl != null) {
                                 String stationName = getStationName(description, result.description, resultStreamUrl);
                                 int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
                                 persistAndDismissDialog(manualInputDialog, listener, stationName, urlString, bitrate);
