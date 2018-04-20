@@ -111,8 +111,12 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="other_apps">Andere apps</string>
 <string name="other_apps_tinytimetracker_summary">Hou je werkuren bij</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+<string name="outer_circle_radius">Buitenste circel radius</string>
+<string name="outer_circle_width">Diameter</string>
 <string name="persistent_battery_value_while_charging">Geforceerde batterijstatus</string>
 <string name="persistent_battery_value_while_charging_summary">Geef de batterijstatus altijd weer bij het opladen</string>
+<string name="position">Positie</string>
+<string name="prev">Vorige</string>
 <string name="preview">Voorbeeld</string>
 <string name="product_name_donation">Donatie</string>
 <string name="product_name_pro">Volledige versie</string>
@@ -127,6 +131,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_manual_input_hint">Handmatig een station toevoegen</string>
 <string name="radio_stream_manual_input_url">URL streamen</string>
 <string name="radio_stream_manual_input_description">Naam station</string>
+<string name="radio_stream_music_allowed">Muziek streamen toegestaan</string>
 <string name="radio_stream_no_search_results">Geen zoekresultaten</string>
 <string name="radio_stream_offline">Offline</string>
 <string name="radio_stream_query_hint">Zoek</string>
@@ -169,6 +174,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="standbyEnabledWhileDisconnectedSummary">Deze optie zorgt ervoor dat je batterij snel leeg gaat.</string>
 <string name="standbyEnabledWhileDisconnectedTitle">Standby modus tijdens ontladen</string>
 <string name="standbyNotificationText">Standby service is geactiveerd</string>
+<string name="style">Stijl</string>
 <string name="temperatureUnit">Temperatuur eenheid</string>
 <string name="timeFormat">Tijdseenheid</string>
 <string name="titlePrivacyPolicy">Privacy beleid</string>
@@ -176,6 +182,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="tomorrow">Morgen</string>
 <string name="translations">Vertalingen</string>
 <string name="typeface_7_segment">7-segment LED</string>
+<string name="typeface_dancing_script">Dancing script regular</string>
 <string name="typeface_roboto_condensed">Roboto compact</string>
 <string name="typeface_roboto_light">Roboto licht</string>
 <string name="typeface_roboto_medium">Roboto medium</string>
@@ -183,6 +190,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">Roboto dun</string>
 <string name="typeface">Lettertype</string>
 <string name="uninstall">App deinstalleren</string>
+<string name="useAlarmSwipeGesture">Zet alarm middels swipe beweging</string>
 <string name="useDeviceLockDescription">De vergrendeloptie heeft administrator toestemming nodig. Zet deze optie uit voordat u de app verwijdert</string>
 <string name="useDeviceLockExplanation">Apparaat vergrendelen wanneer night clock is geactiveerd</string>
 <string name="useDeviceLock">Apparaat vergrendelen</string>
@@ -200,4 +208,5 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="welcome_screen_title2">Voorkeuren</string>
 <string name="welcome_screen_title3">Scherm helderheid</string>
 <string name="welcome_screen_title4">Klok grootte</string>
+<string name="width">Breedte</string>
 </resources>
