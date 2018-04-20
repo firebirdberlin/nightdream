@@ -238,9 +238,12 @@ public class ManageFontsDialogFragment extends DialogFragment {
     }
 
     public ArrayList<FileUri> getCustomFiles() {
+
         ArrayList<FileUri> list = new ArrayList<>();
-        for (String name : defaultFonts) {
-            list.add(getFileUri(name, R.string.typeface_roboto_regular));
+        if (defaultFonts != null) {
+            for (String name : defaultFonts) {
+                list.add(getFileUri(name, R.string.typeface_roboto_regular));
+            }
         }
 //        list.add(getFileUri("roboto_regular.ttf", R.string.typeface_roboto_regular));
 //        list.add(getFileUri("roboto_light.ttf", R.string.typeface_roboto_light));
