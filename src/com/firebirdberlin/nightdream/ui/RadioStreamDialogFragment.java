@@ -65,7 +65,9 @@ public class RadioStreamDialogFragment extends DialogFragment {
             public void onRadioStreamSelected(RadioStation station) {
                 getDialog().dismiss();
                 // delegate to listener
-                listener.onRadioStreamSelected(station);
+                if (listener != null) {
+                    listener.onRadioStreamSelected(station);
+                }
             }
             @Override
             public void onCancel() {

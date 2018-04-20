@@ -3,7 +3,7 @@ package com.firebirdberlin.radiostreamapi.models;
 
 public class PlaylistInfo {
 
-    public enum Format {M3U, PLS};
+    public enum Format {M3U, PLS, ASHX};
 
     public enum Error {INVALID_URL, INVALID_CONTENT, UNREACHABLE_URL, UNSUPPORTED_FORMAT}
 
