@@ -29,7 +29,7 @@ public class PlaylistParser {
     private static final String ASHX_CONTENT_TYPE_PLAIN = "audio/x-mpegurl";
     private static final String ASHX_CONTENT_TYPE_JSON = "application/json";
     private static final Pattern URL_PATTERN =
-            Pattern.compile("https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+            Pattern.compile("https?://[-a-zA-Z0-9+&@#/%?=~_|!:,.;()]*[-a-zA-Z0-9+&@#/%=~_|()]");
 
 
     private static String TAG = "NightDream.PlaylistParser";
@@ -95,28 +95,6 @@ public class PlaylistParser {
         }
 
         return erroneousPlaylist(PlaylistInfo.Error.UNREACHABLE_URL);
-    }
-
-    public static boolean checkStreamURLAvailability(String urlString) {
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(urlString);
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.setReadTimeout(READ_TIMEOUT);
-            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
-
-            int responseCode = urlConnection.getResponseCode();
-            Log.d(TAG, "status code " + responseCode);
-            return ( responseCode == 200 );
-        } catch (IOException e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-        }
-        return false;
     }
 
     private static PlaylistInfo erroneousPlaylist(PlaylistInfo.Error error) {
