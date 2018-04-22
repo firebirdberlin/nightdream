@@ -288,9 +288,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         stopSelf();
     }
 
-    public void onStatusCheckFinished(Boolean success, String url, int numRedirects) {
-        if ( success ) {
-            streamURL = url;
+    @Override
+    public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
+        if ( checkResult != null && checkResult.isSuccess() ) {
+            streamURL = checkResult.url;
             playStream();
             return;
         } else if ( alarmIsRunning ) {

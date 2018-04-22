@@ -1,8 +1,10 @@
 package com.firebirdberlin.nightdream.ui;
 
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,11 +13,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.HttpStatusCheckTask;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.radiostreamapi.IcyHeaderInfo;
+import com.firebirdberlin.radiostreamapi.IcyHeaderReader;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
-import com.firebirdberlin.radiostreamapi.StreamURLAvailabilityCheckTask;
+import com.firebirdberlin.radiostreamapi.StreamInfo;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
@@ -24,6 +29,7 @@ import java.net.URL;
 
 public class RadioStreamManualInputDialog {
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void showDialog(final Context context, RadioStation persistedRadioStation, final RadioStreamDialogListener listener) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
@@ -56,6 +62,11 @@ public class RadioStreamManualInputDialog {
         // test ashx plain
         //inputUrl.setText("https://opml.radiotime.com/Tune.ashx?audience=%3BVZ_Altice%3Ball%3B&id=s96162&listenId=1523703277&formats=mp3,aac,ogg,flash,html&type=station&serial=a9bbfdc9-1157-46a2-87a8-f2909d897169&partnerId=RadioTime&version=2.29&itemUrlScheme=secure&build=2.29.0&reqAttempt=1");
         //inputDescription.setText("ashx plain test");
+
+        //bsp: stream url 302 redirect:
+        //inputUrl.setText("http://stream.laut.fm/zeiten");
+        //bsp: stream url can contain braces
+        //inputUrl.setText("http://opml.radiotime.com/Tune.ashx?id=s136389");
 
         // test playlist
         //inputUrl.setText("http://www.radioberlin.de/live.m3u");
@@ -98,23 +109,83 @@ public class RadioStreamManualInputDialog {
 
                 boolean networkConnection = Utility.hasNetworkConnection(context);
                 final URL url = validateUrlInput(urlString);
-                if (networkConnection && url != null && PlaylistParser.isPlaylistUrl(url)) {
+                if (networkConnection && url != null) {
                     progressSpinner.setVisibility(View.VISIBLE);
 
-                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
-                        @Override
-                        public void onPlaylistRequestFinished(PlaylistInfo result) {
-                            progressSpinner.setVisibility(View.GONE);
+                    if (PlaylistParser.isPlaylistUrl(url)) {
 
-                            if (result.valid) {
-                                String stationName = getStationName(description, result.description, url);
-                                inputDescription.setText(stationName);
-                            } else {
-                                showUrlErrorMessage(invalidUrlMessage);
+                        PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                            @Override
+                            public void onPlaylistRequestFinished(final PlaylistInfo result) {
+
+
+                                if (result.valid) {
+
+                                    HttpStatusCheckTask.AsyncResponse streamCheckResponseListener = new HttpStatusCheckTask.AsyncResponse() {
+                                        @Override
+                                        public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
+                                            progressSpinner.setVisibility(View.GONE);
+
+                                            IcyHeaderInfo icyHeaderInfo = (checkResult != null ? IcyHeaderReader.getHeaderInfos(checkResult.responseHeaders) : null);
+
+                                            if (checkResult != null && checkResult.isSuccess()
+                                                    && icyHeaderInfo != null
+                                                    && icyHeaderInfo.getName() != null
+                                                    && !icyHeaderInfo.getName().isEmpty()) {
+
+                                                inputDescription.setText(icyHeaderInfo.getName());
+                                            } else {
+
+                                                // if no title is available from icy headers, use host name of stream url as fallback
+                                                URL urlOfHostnameFallback;
+                                                try {
+                                                    urlOfHostnameFallback = new URL(result.streamUrl);
+                                                } catch (MalformedURLException e) {
+                                                    urlOfHostnameFallback = url;
+                                                }
+
+                                                String stationName = getStationName(description, result.description, urlOfHostnameFallback);
+                                                inputDescription.setText(stationName);
+                                            }
+                                        }
+                                    };
+
+                                    // step 2: check stream url itself (extracted from playlist) to get the station name from icy headers
+                                    new HttpStatusCheckTask(streamCheckResponseListener).execute(result.streamUrl);
+
+                                } else {
+
+                                    progressSpinner.setVisibility(View.GONE);
+                                    showUrlErrorMessage(invalidUrlMessage);
+                                }
                             }
-                        }
-                    };
-                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                        };
+
+                        // step 1: check if url is play list and extract a stream url from it
+                        new PlaylistRequestTask(playListResponseListener).execute(urlString);
+
+                    } else { // plain stream url
+
+                        // fill description input field from icy-name header
+                        HttpStatusCheckTask.AsyncResponse streamCheckResponseListener = new HttpStatusCheckTask.AsyncResponse() {
+                            @Override
+                            public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
+                                progressSpinner.setVisibility(View.GONE);
+
+                                IcyHeaderInfo icyHeaderInfo = (checkResult != null ? IcyHeaderReader.getHeaderInfos(checkResult.responseHeaders) : null);
+
+                                if (checkResult != null && checkResult.isSuccess()
+                                        && icyHeaderInfo != null
+                                        && icyHeaderInfo.getName() != null
+                                        && !icyHeaderInfo.getName().isEmpty()) {
+
+                                    inputDescription.setText(icyHeaderInfo.getName());
+                                }
+                            }
+                        };
+                        new HttpStatusCheckTask(streamCheckResponseListener).execute(urlString);
+
+                    }
                 }
             }
         });
@@ -166,19 +237,38 @@ public class RadioStreamManualInputDialog {
                     };
                     new PlaylistRequestTask(playListResponseListener).execute(urlString);
                 } else { // its a plain stream url
-                    StreamURLAvailabilityCheckTask.AsyncResponse streamCheckResponseListener = new StreamURLAvailabilityCheckTask.AsyncResponse() {
+                    HttpStatusCheckTask.AsyncResponse streamCheckResponseListener = new HttpStatusCheckTask.AsyncResponse() {
                         @Override
-                        public void onRequestFinished(Boolean result) {
+                        public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
                             progressSpinner.setVisibility(View.GONE);
-                            if (result != null && result) {
-                                String name = (!description.isEmpty() ? description : url.getHost());
-                                persistAndDismissDialog(manualInputDialog, listener, name, urlString, 0);
+
+                            if (checkResult != null && checkResult.isSuccess()) {
+
+                                IcyHeaderInfo icyHeaderInfo = IcyHeaderReader.getHeaderInfos(checkResult.responseHeaders);
+
+                                String name;
+                                if (!description.isEmpty()) {
+                                    name = description;
+                                } else if (icyHeaderInfo != null
+                                        && icyHeaderInfo.getName() != null
+                                        && !icyHeaderInfo.getName().isEmpty()) {
+                                    name = icyHeaderInfo.getName();
+                                } else {
+                                    name = url.getHost();
+                                }
+
+                                int bitrate = 0;
+                                if (icyHeaderInfo != null && icyHeaderInfo.getBitrate() != null) {
+                                    bitrate = icyHeaderInfo.getBitrate().intValue();
+                                }
+
+                                persistAndDismissDialog(manualInputDialog, listener, name, urlString, bitrate);
                             } else {
                                 showUrlErrorMessage(invalidUrlMessage);
                             }
                         }
                     };
-                    new StreamURLAvailabilityCheckTask(streamCheckResponseListener).execute(urlString);
+                    new HttpStatusCheckTask(streamCheckResponseListener).execute(urlString);
                 }
 
             }
