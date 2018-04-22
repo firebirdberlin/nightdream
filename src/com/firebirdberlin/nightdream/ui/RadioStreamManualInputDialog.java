@@ -68,6 +68,9 @@ public class RadioStreamManualInputDialog {
         //bsp: stream url can contain braces
         //inputUrl.setText("http://opml.radiotime.com/Tune.ashx?id=s136389");
 
+        //bsp: nested m3u inside ashx
+        //inputUrl.setText("http://opml.radiotime.com/Tune.ashx?id=s84194");
+
         // test playlist
         //inputUrl.setText("http://www.radioberlin.de/live.m3u");
         //inputUrl.setText("http://www.radioberlin.de/live.pls");

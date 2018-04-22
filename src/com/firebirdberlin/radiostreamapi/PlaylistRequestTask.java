@@ -19,7 +19,8 @@ public class PlaylistRequestTask extends AsyncTask<String, Void, PlaylistInfo> {
     @Override
     protected PlaylistInfo doInBackground(String... query) {
         String playlistUrl = query[0];
-        return PlaylistParser.parsePlaylistUrl(playlistUrl);
+        PlaylistParser parser = new PlaylistParser();
+        return parser.parsePlaylistUrl(playlistUrl);
     }
 
     @Override
