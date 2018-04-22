@@ -36,6 +36,9 @@ public class PlaylistParser {
     private static int READ_TIMEOUT = 3000;
     private static int CONNECT_TIMEOUT = 3000;
 
+    private static final int MAX_NESTED_COUNT = 10;
+    private int nestedCount = 0;
+
     public static boolean isPlaylistUrl(URL url) {
         return (getPlaylistFormat(url.getPath()) != null);
     }
@@ -44,7 +47,7 @@ public class PlaylistParser {
         return (getPlaylistFormat(url) != null);
     }
 
-    public static PlaylistInfo parsePlaylistUrl(String playlistUrl) {
+    public PlaylistInfo parsePlaylistUrl(String playlistUrl) {
 
         HttpURLConnection urlConnection = null;
         try {
@@ -97,14 +100,14 @@ public class PlaylistParser {
         return erroneousPlaylist(PlaylistInfo.Error.UNREACHABLE_URL);
     }
 
-    private static PlaylistInfo erroneousPlaylist(PlaylistInfo.Error error) {
+    private PlaylistInfo erroneousPlaylist(PlaylistInfo.Error error) {
         PlaylistInfo p = new PlaylistInfo();
         p.valid = false;
         p.error = error;
         return p;
     }
 
-    private static List<String> getResponseLines(InputStream inputStream) throws IOException {
+    private List<String> getResponseLines(InputStream inputStream) throws IOException {
         List<String> lines = new ArrayList<>();
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String line;
@@ -127,7 +130,7 @@ public class PlaylistParser {
         return null;
     }
 
-    private static PlaylistInfo parseM3U(List<String> lines) {
+    private PlaylistInfo parseM3U(List<String> lines) {
 
         if (lines.isEmpty()) {
             return null;
@@ -174,7 +177,7 @@ public class PlaylistParser {
         return null;
     }
 
-    private static boolean isValidUrl(String s) {
+    private boolean isValidUrl(String s) {
         if (s.startsWith("http://") || s.startsWith("https://")) {
             try {
                 String urlString = s.trim();
@@ -190,7 +193,7 @@ public class PlaylistParser {
     /**
      * find bitrate hints in a url
      */
-    private static Integer bitrateFromUrl(String url) {
+    private Integer bitrateFromUrl(String url) {
         for (Integer bitrate : USUAL_BITRATES) {
             if (url.indexOf("/" + String.valueOf(bitrate) + "/") > 0) {
                 return bitrate;
@@ -199,7 +202,7 @@ public class PlaylistParser {
         return null;
     }
 
-    private static String m3UExtInfoDescription(String line) {
+    private String m3UExtInfoDescription(String line) {
         if (line.length() > M3U_EXT_INFO_PREFIX.length()) {
             //get part after first comma, skipping runtime, which is usually -1 for streams
             int offsetDescription = line.indexOf(',');
@@ -210,7 +213,7 @@ public class PlaylistParser {
         return null;
     }
 
-    private static PlaylistInfo parsePLS(List<String> lines) {
+    private PlaylistInfo parsePLS(List<String> lines) {
 
         if (lines.isEmpty()) {
             return null;
@@ -261,13 +264,13 @@ public class PlaylistParser {
         return null;
     }
 
-    private static boolean isASHXContentType(String contentType) {
+    private boolean isASHXContentType(String contentType) {
         return (contentType != null &&
                 (contentType.toLowerCase().contains(ASHX_CONTENT_TYPE_PLAIN) ||
                         contentType.toLowerCase().contains(ASHX_CONTENT_TYPE_JSON)));
     }
 
-    private static PlaylistInfo parseASHX(List<String> lines) {
+    private PlaylistInfo parseASHX(List<String> lines) {
 
         String protoHttp = "http://";
         String protoHttps = "https://";
@@ -287,9 +290,16 @@ public class PlaylistParser {
             return null;
         }
 
-        PlaylistInfo p = new PlaylistInfo();
-        p.streamUrl = streamUrl;
-        p.format = PlaylistInfo.Format.ASHX;
-        return p;
+        // handle nested m3u/pls playlist urls
+        if (isPlaylistUrl(streamUrl) && nestedCount < MAX_NESTED_COUNT) {
+            nestedCount++;
+            Log.i(TAG, "nested playlist url found: " + streamUrl);
+            return parsePlaylistUrl(streamUrl);
+        } else {
+            PlaylistInfo p = new PlaylistInfo();
+            p.streamUrl = streamUrl;
+            p.format = PlaylistInfo.Format.ASHX;
+            return p;
+        }
     }
 }
