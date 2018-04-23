@@ -74,6 +74,7 @@ public class RadioStreamManualInputDialog {
         // test playlist
         //inputUrl.setText("http://www.radioberlin.de/live.m3u");
         //inputUrl.setText("http://www.radioberlin.de/live.pls");
+        //inputUrl.setText("http://www.acks.nl/acksmedia/acksradio/sb/listen192.asx");
 
         final TextView invalidUrlMessage = (TextView) v.findViewById(R.id.invalid_url);
         invalidUrlMessage.setVisibility(View.GONE);

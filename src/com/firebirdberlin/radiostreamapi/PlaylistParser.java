@@ -78,6 +78,8 @@ public class PlaylistParser {
                     return parseM3U(lines);
                 } else if (format == PlaylistInfo.Format.PLS) {
                     return parsePLS(lines);
+                } else if (format == PlaylistInfo.Format.ASX) {
+                    return parseASX(lines);
                 } else if (format == PlaylistInfo.Format.ASHX && isASHXContentType(contentType)) {
                     return parseASHX(lines);
                 } else {
@@ -124,6 +126,8 @@ public class PlaylistParser {
             return PlaylistInfo.Format.M3U;
         } else if (sLower.endsWith(".pls")) {
             return PlaylistInfo.Format.PLS;
+        } else if (sLower.endsWith(".asx")) {
+            return PlaylistInfo.Format.ASX;
         } else if (sLower.contains(".ashx")) {
             return PlaylistInfo.Format.ASHX;
         }
@@ -301,5 +305,28 @@ public class PlaylistParser {
             p.format = PlaylistInfo.Format.ASHX;
             return p;
         }
+    }
+
+    private PlaylistInfo parseASX(List<String> lines) {
+
+        if (lines.isEmpty()) {
+            return null;
+        }
+
+        Pattern pattern = Pattern.compile("[^<]*<refhref=\"(https?://[^\"]*)\"/>.*");
+
+        for (String line : lines) {
+            Matcher m = pattern.matcher(line.replaceAll(" ", ""));
+            if (m.matches()) {
+                String url = m.group(1);
+
+                PlaylistInfo p = new PlaylistInfo();
+                p.streamUrl = url;
+                p.format = PlaylistInfo.Format.ASX;
+                return p;
+            }
+        }
+
+        return null;
     }
 }
