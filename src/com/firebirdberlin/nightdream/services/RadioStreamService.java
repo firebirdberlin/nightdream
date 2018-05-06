@@ -21,10 +21,10 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.radiostreamapi.IcecastMetadata;
 import com.firebirdberlin.radiostreamapi.IcecastMetadataCache;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
-import com.firebirdberlin.radiostreamapi.IcecastMetadataRetriever;
 import com.firebirdberlin.radiostreamapi.StreamMetadataTask;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
@@ -33,7 +33,6 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
@@ -57,7 +56,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String ACTION_UPDATE_META_DATA = "update meta data";
     static private int radioStationIndex;
     static private RadioStation radioStation;
-    private final IcecastMetadataCache metadataCache = new IcecastMetadataCache();
+    private static final IcecastMetadataCache METADATA_CACHE = new IcecastMetadataCache();
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private boolean debug = false;
@@ -131,6 +130,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
 
         return radioStation;
+    }
+
+    public static IcecastMetadata getCurrentIcecastMetadata() {
+        return METADATA_CACHE.getCachedMetadata();
     }
 
     public static void startStream(Context context) {
@@ -238,10 +241,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
+            METADATA_CACHE.invalidate();
 
             checkStreamAndStart(radioStationIndex);
         } else
         if ( ACTION_STOP.equals(action) ) {
+            METADATA_CACHE.invalidate();
             stopSelf();
         } else if (ACTION_START_SLEEP_TIME.equals(action)) {
             handler.post(fadeOut);
@@ -539,36 +544,23 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                 }
 
                 @Override
-                public void onMetadataAvailable(Map<String, String> metadata) {
+                public void onMetadataAvailable(IcecastMetadata metadata) {
                     //Log.i(TAG, "meta data for url:" + streamURL);
 
-                    String metaTitle = null;
-                    if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
-                        /*
-                        for (String key : metadata.keySet()) {
-                            Log.i(TAG, key + ":" + metadata.get(key));
-                        }
-                        */
-
-                        metaTitle = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
-
-
-                    } else {
-                        Log.i(TAG, "null/empty");
-                    }
+                    String streamTitle = (metadata != null ? metadata.streamTitle : null);
 
                     // notifiy in any case about the meta data result (maybe empty)
                     Intent intent = new Intent(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
-                    intent.putExtra(EXTRA_RADIO_META_TITLE, metaTitle);
+                    intent.putExtra(EXTRA_RADIO_META_TITLE, streamTitle);
                     sendBroadcast( intent );
                 }
 
             };
 
             if (invalidateCache) {
-                metadataCache.invalidate();
+                METADATA_CACHE.invalidate();
             }
-            metadataCache.retrieveMetadata(streamURL, metadataCallback, getApplicationContext(), forcedUpdate);
+            METADATA_CACHE.retrieveMetadata(streamURL, metadataCallback, getApplicationContext(), forcedUpdate);
         }
     }
 

@@ -83,7 +83,8 @@ public class WebRadioLayout extends RelativeLayout {
             @Override
             public void onClick(View view) {
                 notifyUserInteraction();
-                startMetaDataUpdate(false); // normal update
+                //startMetaDataUpdate(false); // normal update
+                showInfoDialog();
             }
         });
         textView.setOnLongClickListener(new OnLongClickListener() {
@@ -252,6 +253,12 @@ public class WebRadioLayout extends RelativeLayout {
 
     private void startMetaDataUpdate(boolean forcedUpdate) {
         RadioStreamService.updateMetaData(context, forcedUpdate);
+    }
+
+    private void showInfoDialog() {
+        FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+        RadioInfoDialogFragment dialog = new RadioInfoDialogFragment();
+        dialog.show(fm, "radio info");
     }
 
     private void showMetaTitle(String metaTitle) {
