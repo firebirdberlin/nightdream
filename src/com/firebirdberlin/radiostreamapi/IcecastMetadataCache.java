@@ -25,7 +25,7 @@ public class IcecastMetadataCache {
 
     private boolean radioStationMetaDataAvaiable = false;
 
-    private Map<String, String> cachedMetadata;
+    private IcecastMetadata cachedMetadata;
 
     public void retrieveMetadata(final String streamUrl, final StreamMetadataTask.AsyncResponse listener, Context context, boolean forceUpdate) {
         long time = System.currentTimeMillis();
@@ -87,7 +87,7 @@ public class IcecastMetadataCache {
                 }
 
                 @Override
-                public void onMetadataAvailable(Map<String, String> metadata) {
+                public void onMetadataAvailable(IcecastMetadata metadata) {
 
                     updateInProgress = false;
                     lastUpdateMillis = System.currentTimeMillis();
@@ -95,12 +95,11 @@ public class IcecastMetadataCache {
 
                     Log.i(TAG, "meta data for url:" + streamUrl);
                     radioStationMetaDataAvaiable = false;
-                    if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
 
-                        String title = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
-                        if (!title.isEmpty()) {
-                            radioStationMetaDataAvaiable = true;
-                        }
+                    String streamTitle = (metadata != null ? metadata.streamTitle : null);
+
+                    if (streamTitle != null && !streamTitle.isEmpty()) {
+                        radioStationMetaDataAvaiable = true;
                     }
 
                     // delegate to outer callback (even if no metadata available)
@@ -113,6 +112,10 @@ public class IcecastMetadataCache {
 
             new StreamMetadataTask(cacheCallback, context).execute(url);
         }
+    }
+
+    public IcecastMetadata getCachedMetadata() {
+        return cachedMetadata;
     }
 
     public void invalidate() {

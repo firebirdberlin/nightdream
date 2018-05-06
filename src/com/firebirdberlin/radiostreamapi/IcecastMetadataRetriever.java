@@ -12,17 +12,20 @@ import java.util.regex.Pattern;
 
 public class IcecastMetadataRetriever {
 
+    public static String META_KEY_INTERVAL = "icy-metaint";
     public static String META_KEY_STREAM_TITLE = "StreamTitle";
 
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
-    public static Map<String, String> retrieveMetadata(URL streamUrl) {
+    public static IcecastMetadata retrieveMetadata(URL streamUrl) {
 
 
         InputStream stream = null;
 
-        Map<String, String> metadata = null;
+        String metaTitle = null;
+        IcyHeaderInfo headerInfos = null;
+
         try {
 
             URLConnection urlConnection = streamUrl.openConnection();
@@ -39,18 +42,31 @@ public class IcecastMetadataRetriever {
             Map<String, List<String>> headers = urlConnection.getHeaderFields();
             stream = urlConnection.getInputStream();
 
-            if (headers.containsKey("icy-metaint")) {
-                metaDataOffset = Integer.parseInt(headers.get("icy-metaint").get(0));
+            // parse infos from icy* headers
+            headerInfos = IcyHeaderReader.getHeaderInfos(headers);
+
+            // check if there is meta data embedded in the stream
+            if (headers.containsKey(META_KEY_INTERVAL)) {
+                metaDataOffset = Integer.parseInt(headers.get(META_KEY_INTERVAL).get(0));
             }
 
-            // In case no data was sent
             if (metaDataOffset == 0) {
-                return null;
+                // no embedded data, but possible meta keys
+                return new IcecastMetadata(headerInfos, null, false);
             }
 
             String metaDataString = readMetadata(stream, metaDataOffset);
             if (metaDataString != null) {
-                metadata = parseMetadata(metaDataString);
+                Map<String, String> metadata = parseMetadata(metaDataString);
+
+                /*
+                for (String key : metadata.keySet()) {
+                    Log.i(TAG, key + ":" + metadata.get(key));
+                }
+                */
+                if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
+                    metaTitle = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
+                }
             }
 
             stream.close();
@@ -67,7 +83,7 @@ public class IcecastMetadataRetriever {
             }
         }
 
-        return metadata;
+        return new IcecastMetadata(headerInfos, metaTitle, true);
     }
 
     private static String readMetadata(InputStream stream, int metaDataOffset) throws IOException {

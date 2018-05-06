@@ -45,6 +45,7 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
+import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
@@ -58,7 +59,9 @@ public class NightDreamActivity extends BillingHelperActivity
                                 implements View.OnTouchListener,
                                            NightModeReceiver.Event,
                                            LocationUpdateReceiver.AsyncResponse,
-                                           SleepTimerDialogFragment.SleepTimerDialogListener {
+                                           SleepTimerDialogFragment.SleepTimerDialogListener,
+                                           RadioInfoDialogFragment.RadioInfoDialogListener
+{
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
     final private Handler handler = new Handler();
@@ -643,6 +646,11 @@ public class NightDreamActivity extends BillingHelperActivity
 
     @Override
     public void onSleepTimeDismissed() {
+        nightDreamUI.reconfigure();
+    }
+
+    @Override
+    public void onRadioInfoDialogClosed()  {
         nightDreamUI.reconfigure();
     }
 
