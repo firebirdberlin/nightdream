@@ -42,8 +42,19 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     private static TimeReceiver timeReceiver;
     private static ScreenReceiver screenReceiver;
 
+    private static final class ViewInfo {
+        public final View view;
+        public final int widgetWidthPixel;
+        public final int widgetHeightPixel;
 
-    private static View prepareSourceView(Context context, WidgetDimension dimension) {
+        public ViewInfo(View view, int widgetWidthPixel, int widgetHeightPixel) {
+            this.view = view;
+            this.widgetWidthPixel = widgetWidthPixel;
+            this.widgetHeightPixel = widgetHeightPixel;
+        }
+    }
+
+    private static ViewInfo prepareSourceView(Context context, WidgetDimension dimension) {
 
         final Dimension widgetSize = actualWidgetSize(context, dimension);
 
@@ -68,7 +79,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         );
         container.layout(0, 0, widthPixel, heightPixel);
 
-        return container;
+        return new ViewInfo(container, widthPixel, heightPixel);
     }
 
     private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout,
@@ -334,7 +345,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         @Override
         protected RemoteViews doInBackground(Context... contexts) {
             Context context = contexts[0];
-            final View sourceView = prepareSourceView(context, dimension);
+            final ViewInfo sourceView = prepareSourceView(context, dimension);
             Bitmap widgetBitmap = loadBitmapFromView(sourceView);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
@@ -357,8 +368,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             return updateViews;
         }
 
-        private Bitmap loadBitmapFromView(View view) {
+        private Bitmap loadBitmapFromView(ViewInfo viewInfo) {
             Bitmap bitmap = null;
+            View view = viewInfo.view;
             if (view != null) {
                 view.setDrawingCacheEnabled(true);
                 view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
@@ -366,14 +378,20 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                     view.buildDrawingCache();
                     Bitmap drawingCache = view.getDrawingCache();
                     if (drawingCache != null) {
-                        bitmap = Bitmap.createBitmap(drawingCache);
+                        // assert that the bitmap is not larger than the widget area (bitmaps larger than the screen cause IllegalArgumentException in RemoteViews)
+                        if (view.getWidth() > viewInfo.widgetWidthPixel || view.getHeight() > viewInfo.widgetHeightPixel) {
+                            // down-scale the bitmap
+                            bitmap = Bitmap.createScaledBitmap(drawingCache, viewInfo.widgetWidthPixel, viewInfo.widgetHeightPixel, true);
+                        } else {
+                            bitmap = Bitmap.createBitmap(drawingCache);
+                        }
                     }
                 } finally {
                     view.setDrawingCacheEnabled(false);
                 }
 
                 if (bitmap == null) {
-                    bitmap = createLargeBitmapFromView(view);
+                    bitmap = createLargeBitmapFromView(viewInfo);
                 }
             }
 
@@ -383,14 +401,23 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         /**
          * fallback if getDrawingCache() returns null
          */
-        private Bitmap createLargeBitmapFromView(View view) {
+        private Bitmap createLargeBitmapFromView(ViewInfo viewInfo) {
+            View view = viewInfo.view;
+
             int w = view.getWidth();
             int h = view.getHeight();
+
             Bitmap bitmap = null;
             if (w > 0 && h > 0) {
                 bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);
                 view.draw(canvas);
+
+                // assert that the bitmap is not larger than the widget area (bitmaps larger than the screen cause IllegalArgumentException in RemoteViews)
+                if (view.getWidth() > viewInfo.widgetWidthPixel || view.getHeight() > viewInfo.widgetHeightPixel) {
+                    // down-scale the bitmap
+                    bitmap = Bitmap.createScaledBitmap(bitmap, viewInfo.widgetWidthPixel, viewInfo.widgetHeightPixel, true);
+                }
             }
             return bitmap;
         }
@@ -398,7 +425,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         @Override
         protected void onPostExecute(RemoteViews updateViews) {
             if (updateViews == null) return;
-            appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+            try {
+                appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+            } catch (IllegalArgumentException ignore) {
+
+            }
         }
     }
 
