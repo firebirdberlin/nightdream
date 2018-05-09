@@ -36,7 +36,9 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.content.Context.POWER_SERVICE;
 
@@ -388,6 +390,13 @@ public class Utility {
             return deprecatedIsScreenOn(pm);
         }
         return pm.isInteractive();
+    }
+
+    public static void logResponseHeaders(Map<String, List<String>> responseHeaders) {
+        for (String key : responseHeaders.keySet()) {
+            List<String> v = responseHeaders.get(key);
+            Log.i(TAG, "header: " + key + "=" + (v != null && !v.isEmpty() ? v.get(0) : "null"));
+        }
     }
 
     @SuppressWarnings("deprecation")
