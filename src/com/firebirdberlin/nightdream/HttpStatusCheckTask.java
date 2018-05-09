@@ -6,28 +6,49 @@ import android.util.Log;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
-public class HttpStatusCheckTask extends AsyncTask<String, Void, Boolean> {
+public class HttpStatusCheckTask extends AsyncTask<String, Void, HttpStatusCheckTask.HttpStatusCheckResult> {
     private static String TAG = "NightDream.HttpStatusCheckTask";
     private static int MAX_NUM_REDIRECTS = 5;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
     public interface AsyncResponse {
-        public void onStatusCheckFinished(Boolean success, String url, int numRedirects);
+        void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult);
+    }
+
+    public static final class HttpStatusCheckResult {
+        public final String url;
+        public final int responseCode;
+        public final Map<String, List<String>> responseHeaders;
+        public final int numRedirects;
+
+        public boolean isSuccess() {
+            return responseCode == HttpURLConnection.HTTP_OK;
+        }
+
+        public HttpStatusCheckResult(String url, int responseCode, Map<String, List<String>> responseHeaders, int numRedirects) {
+            this.url = url;
+            this.responseCode = responseCode;
+            this.responseHeaders = responseHeaders;
+            this.numRedirects = numRedirects;
+        }
     }
 
     private AsyncResponse delegate = null;
     private int numRedirects = 0;
     private String latestURL = "";
     private int responseCode = 0;
+    private Map<String, List<String>> responseHeaders;
 
     public HttpStatusCheckTask(AsyncResponse listener) {
         this.delegate = listener;
     }
 
     @Override
-    protected Boolean doInBackground(String... urls) {
+    protected HttpStatusCheckTask.HttpStatusCheckResult doInBackground(String... urls) {
         String url = urls[0];
         numRedirects = 0;
         responseCode = 0;
@@ -37,12 +58,13 @@ public class HttpStatusCheckTask extends AsyncTask<String, Void, Boolean> {
             Log.e(TAG, Log.getStackTraceString(e));
             e.printStackTrace();
         }
-        return responseCode == HttpURLConnection.HTTP_OK;
+        //return responseCode == HttpURLConnection.HTTP_OK;
+        return new HttpStatusCheckTask.HttpStatusCheckResult(latestURL, responseCode, responseHeaders, numRedirects);
     }
 
     @Override
-    protected void onPostExecute(Boolean success) {
-        delegate.onStatusCheckFinished(success, latestURL, numRedirects);
+    protected void onPostExecute(HttpStatusCheckTask.HttpStatusCheckResult result) {
+        delegate.onStatusCheckFinished(result);
     }
 
     private void getFinalURL(URL url) throws IOException {
@@ -52,6 +74,7 @@ public class HttpStatusCheckTask extends AsyncTask<String, Void, Boolean> {
         con.setConnectTimeout(CONNECT_TIMEOUT);
         con.setReadTimeout(READ_TIMEOUT);
         responseCode = con.getResponseCode();
+        responseHeaders = con.getHeaderFields();
         latestURL = url.toString();
         if (numRedirects < MAX_NUM_REDIRECTS &&
                 (responseCode == HttpURLConnection.HTTP_MOVED_PERM ||
