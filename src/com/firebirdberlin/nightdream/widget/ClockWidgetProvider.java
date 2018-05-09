@@ -425,7 +425,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         @Override
         protected void onPostExecute(RemoteViews updateViews) {
             if (updateViews == null) return;
-            appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+            try {
+                appWidgetManager.updateAppWidget(appWidgetId, updateViews);
+            } catch (IllegalArgumentException ignore) {
+
+            }
         }
     }
 
