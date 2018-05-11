@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.HttpStatusCheckTask;
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -158,9 +159,15 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         settings = new Settings(this);
         isRunning = true;
 
+        Intent notificationIntent = new Intent(this, NightDreamActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+
         NotificationCompat.Builder noteBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.radio))
                 .setSmallIcon(R.drawable.ic_radio)
+                .setContentIntent(contentIntent)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
         addActionButtonsToNotificationBuilder(noteBuilder, intent);
