@@ -104,6 +104,9 @@ public class BillingHelper {
    }
 
    public boolean isPurchased(String sku) {
+       if (Utility.isDebuggable(context)) {
+           return true;
+       }
        if (purchases.containsKey(sku)){
            return purchases.get(sku);
        }

@@ -64,97 +64,107 @@
                 android:text="@string/today"
                 android:textAppearance="@android:style/TextAppearance.Small" />
 
-            <CheckBox
-                android:id="@+id/checkBoxIsRepeating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewWhen"
-                android:text="@string/repeat"
-                android:visibility="gone" />
-
             <LinearLayout
-                android:id="@+id/layoutDays"
+                android:id="@+id/secondaryLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/checkBoxIsRepeating"
-                android:animateLayoutChanges="false"
-                android:orientation="horizontal"
+                android:layout_below="@+id/textViewWhen"
+                android:orientation="vertical"
                 android:visibility="gone">
 
-                <ToggleButton
-                    android:id="@+id/dayButton1"
-                    android:layout_width="40dp"
+                <CheckBox
+                    android:id="@+id/checkBoxIsRepeating"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textOff="M"
-                    android:textOn="M"
-                    tools:ignore="HardcodedText" />
+                    android:text="@string/repeat" />
 
-                <ToggleButton
-                    android:id="@+id/dayButton2"
-                    android:layout_width="40dp"
+                <LinearLayout
+                    android:id="@+id/layoutDays"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textOff="T"
-                    android:textOn="T" />
+                    android:animateLayoutChanges="false"
+                    android:orientation="horizontal">
 
-                <ToggleButton
-                    android:id="@+id/dayButton3"
-                    android:layout_width="40dp"
+                    <ToggleButton
+                        android:id="@+id/dayButton1"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="M"
+                        android:textOn="M"
+                        tools:ignore="HardcodedText" />
+
+                    <ToggleButton
+                        android:id="@+id/dayButton2"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="T"
+                        android:textOn="T" />
+
+                    <ToggleButton
+                        android:id="@+id/dayButton3"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="W"
+                        android:textOn="W" />
+
+                    <ToggleButton
+                        android:id="@+id/dayButton4"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="T"
+                        android:textOn="T" />
+
+                    <ToggleButton
+                        android:id="@+id/dayButton5"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="F"
+                        android:textOn="F" />
+
+                    <ToggleButton
+                        android:id="@+id/dayButton6"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="S"
+                        android:textOn="S" />
+
+                    <ToggleButton
+                        android:id="@+id/dayButton7"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOff="S"
+                        android:textOn="S" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textViewSound"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textOff="W"
-                    android:textOn="W" />
+                    android:drawableLeft="@drawable/ic_music_note_24dp"
+                    android:drawableStart="@drawable/ic_music_note_24dp"
+                    android:paddingBottom="6dp"
+                    android:paddingTop="6dp"
+                    android:text="Alarm sound"
+                    android:textAppearance="@android:style/TextAppearance.Small" />
 
-                <ToggleButton
-                    android:id="@+id/dayButton4"
-                    android:layout_width="40dp"
+                <Button
+                    android:id="@+id/button_delete"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textOff="T"
-                    android:textOn="T" />
-
-                <ToggleButton
-                    android:id="@+id/dayButton5"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textOff="F"
-                    android:textOn="F" />
-
-                <ToggleButton
-                    android:id="@+id/dayButton6"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textOff="S"
-                    android:textOn="S" />
-
-                <ToggleButton
-                    android:id="@+id/dayButton7"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textOff="S"
-                    android:textOn="S" />
-
+                    android:drawableLeft="@drawable/ic_delete"
+                    android:drawableStart="@drawable/ic_delete"
+                    android:onClick="onButtonDeleteClick"
+                    android:text="@string/delete"
+                    tools:drawableLeft="@drawable/ic_delete" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/button_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/layoutDays"
-                android:layout_toEndOf="@+id/textViewWhen"
-                android:layout_toRightOf="@+id/textViewWhen"
-                android:drawableLeft="@drawable/ic_delete"
-                android:drawableStart="@drawable/ic_delete"
-                android:onClick="onButtonDeleteClick"
-                android:text="@string/delete"
-                android:visibility="gone"
-                tools:drawableLeft="@drawable/ic_delete" />
 
             <ImageView
                 android:id="@+id/button_down"

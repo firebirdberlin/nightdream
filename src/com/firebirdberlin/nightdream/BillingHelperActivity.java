@@ -18,13 +18,13 @@ public abstract class BillingHelperActivity extends Activity {
 
     IInAppBillingService mService;
     Map<String, Boolean> purchases;
+    BillingHelper billingHelper;
+
     ServiceConnection mServiceConn = new ServiceConnection() {
-
-        BillingHelper billingHelper;
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.i(TAG, "IIAB service disconnected");
+            billingHelper = null;
             mService = null;
         }
 
@@ -41,6 +41,18 @@ public abstract class BillingHelperActivity extends Activity {
             }
         }
     };
+
+    public boolean isPurchased(String sku) {
+        Log.i(TAG, "Checking purchase " + sku);
+        if (Utility.isDebuggable(this)) {
+            return true;
+        }
+        if (billingHelper == null) {
+            return false;
+        }
+        Log.i(TAG, " => " + String.valueOf(billingHelper.isPurchased(sku)));
+        return billingHelper.isPurchased(sku);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
