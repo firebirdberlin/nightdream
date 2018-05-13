@@ -233,7 +233,7 @@ public class AlarmClockLayout extends LinearLayout {
                     @Override
                     public void onPurchaseRequested() {
                         Log.w(TAG, "purchase requested");
-//                        showPurchaseDialog();
+                        ((BillingHelperActivity) context).showPurchaseDialog();
                     }
 
                 });
