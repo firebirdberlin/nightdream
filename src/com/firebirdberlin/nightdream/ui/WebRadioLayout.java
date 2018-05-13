@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -18,8 +19,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -27,10 +26,11 @@ import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
+import com.firebirdberlin.radiostreamapi.IcecastMetadata;
+import com.firebirdberlin.radiostreamapi.StreamMetadataTask;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 public class WebRadioLayout extends RelativeLayout {
@@ -45,7 +45,6 @@ public class WebRadioLayout extends RelativeLayout {
     private boolean showConnectingHint = false;
     private ProgressBar spinner;
     private WebRadioStationButtonsLayout webRadioButtons;
-    private Settings settings;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
     private UserInteractionObserver userInteractionObserver;
@@ -60,8 +59,6 @@ public class WebRadioLayout extends RelativeLayout {
         super(context, attrs);
         this.context = context;
         setBackgroundResource(R.drawable.webradiopanelborder);
-
-        settings = new Settings(context);
 
         textView = new TextView(context);
         textView.setId(R.id.web_radio_text_view); // id for placing spinner LEFT_OF this view
@@ -83,7 +80,6 @@ public class WebRadioLayout extends RelativeLayout {
             @Override
             public void onClick(View view) {
                 notifyUserInteraction();
-                //startMetaDataUpdate(false); // normal update
                 showInfoDialog();
             }
         });
@@ -91,7 +87,7 @@ public class WebRadioLayout extends RelativeLayout {
             @Override
             public boolean onLongClick(View view) {
                 notifyUserInteraction();
-                startMetaDataUpdate(true); // forced update
+                updateMetaData();
                 return true;
             }
         });
@@ -104,9 +100,7 @@ public class WebRadioLayout extends RelativeLayout {
         buttonSleepTimer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
-                SleepTimerDialogFragment dialog = new SleepTimerDialogFragment();
-                dialog.show(fm, "sleep_timer");
+                showSleepTimerDialog();
             }
         });
         RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(
@@ -153,8 +147,6 @@ public class WebRadioLayout extends RelativeLayout {
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-        filter.addAction(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
-        filter.addAction(Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED);
         context.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -206,7 +198,12 @@ public class WebRadioLayout extends RelativeLayout {
         }
     }
 
-
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void showSleepTimerDialog() {
+        FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+        SleepTimerDialogFragment dialog = new SleepTimerDialogFragment();
+        dialog.show(fm, "sleep_timer");
+    }
 
     public void setLocked(boolean locked) {
         this.locked = locked;
@@ -251,14 +248,42 @@ public class WebRadioLayout extends RelativeLayout {
         }
     };
 
-    private void startMetaDataUpdate(boolean forcedUpdate) {
-        RadioStreamService.updateMetaData(context, forcedUpdate);
+    private void updateMetaData() {
+
+        if (RadioStreamService.getCurrentRadioStation() == null) {
+            return;
+        };
+
+        StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
+
+            @Override
+            public void onMetadataRequestStarted() {
+                setShowConnectingHint(true, true);
+            }
+
+            @Override
+            public void onMetadataAvailable(IcecastMetadata metadata) {
+                String streamTitle = (metadata != null ? metadata.streamTitle : null);
+                showMetaTitle(streamTitle);
+            }
+
+        };
+
+        RadioStreamService.updateMetaData(metadataCallback, context);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void showInfoDialog() {
+
+        // dialog not available while stream is still loading or stopped
+        if (!RadioStreamService.isReadyForPlayback() || RadioStreamService.getCurrentRadioStation() == null) {
+            return;
+        };
+
         FragmentManager fm = ((Activity) getContext()).getFragmentManager();
         RadioInfoDialogFragment dialog = new RadioInfoDialogFragment();
         dialog.show(fm, "radio info");
+
     }
 
     private void showMetaTitle(String metaTitle) {
@@ -272,9 +297,17 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     private void setShowConnectingHint(boolean showConnectingHint) {
+        setShowConnectingHint(showConnectingHint, false);
+    }
+
+    private void setShowConnectingHint(boolean showConnectingHint, boolean autoHide) {
         this.showConnectingHint = showConnectingHint;
         spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
         invalidate();
+
+        if (autoHide) {
+            handler.postDelayed(hideConnectingHint, 10000); // hide animation after 10s if anything goes wrong
+        }
     }
 
     @Override
@@ -312,6 +345,9 @@ public class WebRadioLayout extends RelativeLayout {
 
     private void updateVolumeMutedIndicator() {
         AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (audio == null) {
+            return;
+        }
         int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         boolean muted = false;
@@ -323,7 +359,6 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     private void updateVolumeMutedIndicatorVisibility(int currentVolume, boolean muted) {
-        Log.i(TAG, "currentVolume=" + currentVolume + ", muted=" + muted);
 
         if (volumeMutedIndicator != null) {
             volumeMutedIndicator.setVisibility(currentVolume > 0 && !muted ? GONE : VISIBLE);
@@ -351,16 +386,11 @@ public class WebRadioLayout extends RelativeLayout {
                 updateText();
             } else if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
                 setShowConnectingHint(false);
+                updateMetaData();
                 updateText();
             } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 updateText();
                 setShowConnectingHint(false);
-            } else if (Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED.equals(action)) {
-                setShowConnectingHint(true);
-                handler.postDelayed(hideConnectingHint, 10000); // hide animation after 10s if anything goes wrong
-            } else if (Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE.equals(action)) {
-                String metaTitle = intent.getStringExtra(RadioStreamService.EXTRA_RADIO_META_TITLE);
-                showMetaTitle(metaTitle);
             }
         }
     }
@@ -370,10 +400,12 @@ public class WebRadioLayout extends RelativeLayout {
         private int previousVolume = -1;
         private boolean previousMuted = false;
 
-        public AudioVolumeContentObserver(Context context, Handler handler) {
+        AudioVolumeContentObserver(Context context, Handler handler) {
             super(handler);
             AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            previousVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+            if (audio != null) {
+                previousVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+            }
         }
 
         @Override
@@ -386,6 +418,9 @@ public class WebRadioLayout extends RelativeLayout {
             super.onChange(selfChange);
 
             AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audio == null) {
+                return;
+            }
             int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
 
             boolean muted = false;

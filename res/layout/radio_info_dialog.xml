@@ -20,32 +20,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textIsSelectable="true"
-        android:visibility="gone"
-        android:paddingBottom="8dp"/>
+        android:paddingBottom="8dp"
+        android:textSize="18sp"
+        android:visibility="gone" />
     <TextView
         android:id="@+id/stationNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textIsSelectable="true"
+        android:textSize="18sp"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/genreText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textIsSelectable="true"
+        android:textSize="18sp"
         android:visibility="gone"/>
 
     <TextView
         android:id="@+id/kbpsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
     <TextView
         android:id="@+id/urlText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textIsSelectable="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
 
 
 </LinearLayout>

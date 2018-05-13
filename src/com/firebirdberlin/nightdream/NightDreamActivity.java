@@ -650,7 +650,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
-    public void onRadioInfoDialogClosed()  {
+    public void onRadioInfoDialogDismissed()  {
         nightDreamUI.reconfigure();
     }
 
