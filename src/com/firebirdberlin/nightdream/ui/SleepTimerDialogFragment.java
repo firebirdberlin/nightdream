@@ -47,6 +47,14 @@ public class SleepTimerDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (mListener != null) {
+            mListener.onSleepTimeDismissed();
+        }
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
         // Get the layout inflater
