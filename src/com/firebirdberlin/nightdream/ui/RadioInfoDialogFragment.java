@@ -6,11 +6,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
@@ -22,36 +20,28 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.radiostreamapi.IcecastMetadata;
+import com.firebirdberlin.radiostreamapi.StreamMetadataTask;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
-
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class RadioInfoDialogFragment extends DialogFragment {
 
     public static String TAG = "RadioInfoDialogFragment";
 
     private RadioInfoDialogListener listener;
     private Context context;
-
-    private WebRadioLayout.NightDreamBroadcastReceiver broadcastReceiver = null;
-
     private String stationTitle;
-
     private TextView stationNameTextView;
     private TextView metaTitleTextView;
     private TextView urlTextView;
     private TextView kbpsTextView;
     private TextView genreTextView;
-
     private ContentLoadingProgressBar progressBar;
-
     final private Handler handler = new Handler();
-
     // dont update infos twice if multiple broadcasts occur
     private boolean infosUpdated = false;
 
@@ -60,7 +50,6 @@ public class RadioInfoDialogFragment extends DialogFragment {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
         // Get the layout inflater
@@ -89,6 +78,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
                     if (!urlText.startsWith("http://") && !urlText.startsWith("https://")) {
                         urlText = "http://" + urlText;
                     }
+                    Log.i(TAG, "open url in browser: " + urlText);
                     try {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlText));
                         startActivity(browserIntent);
@@ -100,11 +90,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
 
         RadioStation station = RadioStreamService.getCurrentRadioStation();
 
-        if (station == null) {
-            getDialog().cancel();
-        }
-
-        stationTitle = station.name;
+        stationTitle = station != null ? station.name : "";
 
         builder.setTitle(stationTitle)
                 .setIcon(R.drawable.ic_radio)
@@ -113,13 +99,12 @@ public class RadioInfoDialogFragment extends DialogFragment {
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (listener != null) {
-                            listener.onRadioInfoDialogClosed();
+                            listener.onRadioInfoDialogDismissed();
                         }
                     }
                 });
 
-        startMetaDataUpdate();
-        registerBroadcastReceiver(); // register here, after all view elements are ready
+        updateMetaData();
 
         final Dialog dialog = builder.create();
 
@@ -134,9 +119,8 @@ public class RadioInfoDialogFragment extends DialogFragment {
                     dialog.cancel();
 
                     if (listener != null) {
-                        listener.onRadioInfoDialogClosed();
+                        listener.onRadioInfoDialogDismissed();
                     }
-
                     return true;
                 }
                 return false;
@@ -167,34 +151,33 @@ public class RadioInfoDialogFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         listener = null;
-        unregisterBroadcastReceiver();
     }
 
-    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
-        //Log.i(TAG, "registerBroadcastReceiver");
-        unregisterBroadcastReceiver();
-        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
-        context.registerReceiver(receiver, filter);
-        return receiver;
-    }
+    private void updateMetaData() {
 
-    private void unregisterBroadcastReceiver() {
-        //Log.i(TAG, "unregisterBroadcastReceiver");
-        try {
-            if (broadcastReceiver != null) {
-                context.unregisterReceiver(broadcastReceiver);
+        StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
+
+            @Override
+            public void onMetadataRequestStarted() {
+                if (!infosUpdated) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
             }
 
-        } catch (IllegalArgumentException ignored) {
-        }
-    }
+            @Override
+            public void onMetadataAvailable(IcecastMetadata metadata) {
+                if (!infosUpdated) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateInfo();
+                        }
+                    });
+                }
+            }
+        };
 
-    private void startMetaDataUpdate() {
-        boolean forcedUpdate = false; // get from cache
-        RadioStreamService.updateMetaData(context, forcedUpdate);
+        RadioStreamService.updateMetaData(metadataCallback, context);
     }
 
     private void updateInfo() {
@@ -232,7 +215,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
             urlTextView.setVisibility(View.GONE);
         }
 
-        String kbps = (data != null && data.icyHeaderInfo != null && data.icyHeaderInfo.getBitrate() != null ? (data.icyHeaderInfo.getBitrate().intValue() + " kbps") : null);
+        String kbps = (data != null && data.icyHeaderInfo != null && data.icyHeaderInfo.getBitrate() != null ? (data.icyHeaderInfo.getBitrate() + " kbps") : null);
         if (kbps != null) {
             kbpsTextView.setVisibility(View.VISIBLE);
             kbpsTextView.setText(kbps);
@@ -251,33 +234,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
     }
 
     public interface RadioInfoDialogListener {
-        void onRadioInfoDialogClosed();
+        void onRadioInfoDialogDismissed();
     }
-
-    class NightDreamBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            if (Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED.equals(action)) {
-                Log.i(TAG, "ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED");
-                if (!infosUpdated) {
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-            } else if (Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE.equals(action)) {
-                Log.i(TAG, "ACTION_RADIO_STREAM_META_DATA_AVAILABLE");
-                if (!infosUpdated) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateInfo();
-                        }
-                    });
-
-                }
-            }
-        }
-    }
-
 
 }

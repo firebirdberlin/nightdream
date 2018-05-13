@@ -6,11 +6,17 @@ public class IcecastMetadata {
 
     public final IcyHeaderInfo icyHeaderInfo;
     public final String streamTitle;
-    public final boolean streamMetaDataAvailable;
+    public final boolean streamMetaDataNotSupported;
 
-    public IcecastMetadata(IcyHeaderInfo icyHeaderInfo, String streamTitle, boolean streamMetaDataAvailable) {
+    public IcecastMetadata(IcyHeaderInfo icyHeaderInfo, String streamTitle) {
         this.icyHeaderInfo = icyHeaderInfo;
         this.streamTitle = streamTitle;
-        this.streamMetaDataAvailable = streamMetaDataAvailable;
+        this.streamMetaDataNotSupported = false;
+    }
+
+    public IcecastMetadata(IcyHeaderInfo icyHeaderInfo, String streamTitle, boolean streamMetaDataNotSupported) {
+        this.icyHeaderInfo = icyHeaderInfo;
+        this.streamTitle = streamTitle;
+        this.streamMetaDataNotSupported = streamMetaDataNotSupported;
     }
 }

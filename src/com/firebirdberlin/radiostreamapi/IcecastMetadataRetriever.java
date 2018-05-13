@@ -52,7 +52,7 @@ public class IcecastMetadataRetriever {
 
             if (metaDataOffset == 0) {
                 // no embedded data, but possible meta keys
-                return new IcecastMetadata(headerInfos, null, false);
+                return new IcecastMetadata(headerInfos, null, true);
             }
 
             String metaDataString = readMetadata(stream, metaDataOffset);
@@ -83,7 +83,7 @@ public class IcecastMetadataRetriever {
             }
         }
 
-        return new IcecastMetadata(headerInfos, metaTitle, true);
+        return new IcecastMetadata(headerInfos, metaTitle);
     }
 
     private static String readMetadata(InputStream stream, int metaDataOffset) throws IOException {

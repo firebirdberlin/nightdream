@@ -13,26 +13,32 @@ public class IcecastMetadataCache {
 
     private static String TAG = "IcecastMetadataCache";
 
-    private static final int UPDATE_INTERVAL_MILLIS = 60 * 1000;
-    //private static final int UPDATE_INTERVAL_MILLIS = 5 * 1000;
-
-    // forced updates (long press) at most every 3 seconds
-    private static final int FORCED_UPDATE_INTERVAL_MILLIS = 3 * 1000;
+    // fetch new meta infos from stream not more often than every 10 seconds
+    private static final int UPDATE_INTERVAL_MILLIS = 10 * 1000;
 
     private long lastUpdateMillis = -1;
 
     private boolean updateInProgress = false;
 
-    private boolean radioStationMetaDataAvaiable = false;
+    private boolean streamMetaDataNotSupported = false;
 
     private IcecastMetadata cachedMetadata;
 
-    public void retrieveMetadata(final String streamUrl, final StreamMetadataTask.AsyncResponse listener, Context context, boolean forceUpdate) {
+    // this cache is a singleton
+
+    private static final IcecastMetadataCache INSTANCE = new IcecastMetadataCache();
+
+    public static IcecastMetadataCache getInstance() { return INSTANCE; }
+
+    private IcecastMetadataCache() {}
+
+    public void retrieveMetadata(final String streamUrl, final StreamMetadataTask.AsyncResponse listener, Context context) {
         long time = System.currentTimeMillis();
         boolean needsUpdate = time - lastUpdateMillis > UPDATE_INTERVAL_MILLIS;
-        boolean needsForcedUpdate = time - lastUpdateMillis > FORCED_UPDATE_INTERVAL_MILLIS;
 
-        if (!radioStationMetaDataAvaiable) {
+        Log.i(TAG, "retrieveMetadata streamMetaDataNotSupported=" + streamMetaDataNotSupported);
+
+        if (streamMetaDataNotSupported) {
             // inform listener even if no meta data are available
             if (listener != null) {
                 listener.onMetadataAvailable(null);
@@ -40,21 +46,10 @@ public class IcecastMetadataCache {
             return;
         }
 
-        if ((!needsUpdate && !forceUpdate) || updateInProgress) {
+        if (!needsUpdate || updateInProgress) {
             Log.i(TAG, "cache hit");
             // cached result
             if (listener != null) {
-                listener.onMetadataAvailable(cachedMetadata);
-            }
-            return;
-        }
-
-        if ((!needsForcedUpdate && forceUpdate) || updateInProgress) {
-            Log.i(TAG, "cache hit");
-            // cached result
-            if (listener != null) {
-                // for forced updates simulate a real request so on-pregress occures
-                listener.onMetadataRequestStarted();
                 listener.onMetadataAvailable(cachedMetadata);
             }
             return;
@@ -92,15 +87,9 @@ public class IcecastMetadataCache {
                     updateInProgress = false;
                     lastUpdateMillis = System.currentTimeMillis();
                     cachedMetadata = metadata;
+                    streamMetaDataNotSupported = metadata.streamMetaDataNotSupported;
 
                     Log.i(TAG, "meta data for url:" + streamUrl);
-                    radioStationMetaDataAvaiable = false;
-
-                    String streamTitle = (metadata != null ? metadata.streamTitle : null);
-
-                    if (streamTitle != null && !streamTitle.isEmpty()) {
-                        radioStationMetaDataAvaiable = true;
-                    }
 
                     // delegate to outer callback (even if no metadata available)
                     if (listener != null) {
@@ -118,11 +107,11 @@ public class IcecastMetadataCache {
         return cachedMetadata;
     }
 
-    public void invalidate() {
+    public void clearCache() {
         updateInProgress = false;
         lastUpdateMillis = -1;
         cachedMetadata = null;
-        radioStationMetaDataAvaiable = true;
+        streamMetaDataNotSupported = false;
     }
 
 }

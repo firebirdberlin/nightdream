@@ -43,20 +43,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
+    private static boolean readyForPlayback = false;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
-    public static String EXTRA_RADIO_META_TITLE = "radioMetaTitle";
     public static String EXTRA_DEBUG = "ExtraDebug";
-    public static String EXTRA_FORCE_UPDATE_META_DATA = "force meta data update";
     private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
     private static String ACTION_NEXT_STATION = "next station";
     private static String ACTION_START_SLEEP_TIME = "start sleep time";
-    private static String ACTION_UPDATE_META_DATA = "update meta data";
     static private int radioStationIndex;
     static private RadioStation radioStation;
-    private static final IcecastMetadataCache METADATA_CACHE = new IcecastMetadataCache();
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private boolean debug = false;
@@ -64,7 +61,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
-    private String streamURL = "";
+    private static String streamURL = "";
     private HttpStatusCheckTask statusCheckTask = null;
     private PlaylistRequestTask resolveStreamUrlTask = null;
     private Runnable fadeIn = new Runnable() {
@@ -116,6 +113,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         context.startService(i);
     }
 
+    public static boolean isReadyForPlayback() {
+        return readyForPlayback;
+    }
+
     public static int getCurrentRadioStationIndex() {
         if (streamingMode != StreamingMode.RADIO) {
             return -1;
@@ -133,7 +134,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     public static IcecastMetadata getCurrentIcecastMetadata() {
-        return METADATA_CACHE.getCachedMetadata();
+        return IcecastMetadataCache.getInstance().getCachedMetadata();
     }
 
     public static void startStream(Context context) {
@@ -162,14 +163,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.i(TAG, "startSleepTime");
         Intent i = new Intent(context, RadioStreamService.class);
         i.setAction(ACTION_START_SLEEP_TIME);
-        context.startService(i);
-    }
-
-    public static void updateMetaData(Context context, boolean forcedUpdate) {
-        Log.i(TAG, "updateMetaData");
-        Intent i = new Intent(context, RadioStreamService.class);
-        i.setAction(ACTION_UPDATE_META_DATA);
-        i.putExtra(EXTRA_FORCE_UPDATE_META_DATA, forcedUpdate);
         context.startService(i);
     }
 
@@ -241,22 +234,18 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
-            METADATA_CACHE.invalidate();
-
+            IcecastMetadataCache.getInstance().clearCache();
+            readyForPlayback = false;
             checkStreamAndStart(radioStationIndex);
         } else
         if ( ACTION_STOP.equals(action) ) {
-            METADATA_CACHE.invalidate();
+            IcecastMetadataCache.getInstance().clearCache();
+            readyForPlayback = false;
             stopSelf();
         } else if (ACTION_START_SLEEP_TIME.equals(action)) {
             handler.post(fadeOut);
         } else if (ACTION_NEXT_STATION.equals(action)) {
             switchToNextStation();
-        } else if (ACTION_UPDATE_META_DATA.equals(action)) {
-            if (streamingMode == StreamingMode.RADIO) {
-                boolean forcedUpdate = intent.getBooleanExtra(EXTRA_FORCE_UPDATE_META_DATA, false);
-                updateMetaData(false, forcedUpdate);
-            }
         }
 
         return Service.START_REDELIVER_INTENT;
@@ -419,14 +408,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
         try {
             mp.start();
+            readyForPlayback = true;
             Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
             intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
             sendBroadcast( intent );
-
-            if (streamingMode == StreamingMode.RADIO) {
-                updateMetaData(true, false);
-            }
-
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }
@@ -524,44 +509,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     }
 
-    private void updateMetaData(boolean invalidateCache, boolean forcedUpdate) {
-        URL url = null;
-        try {
-            url = new URL(streamURL);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+    public static void updateMetaData(StreamMetadataTask.AsyncResponse metadataCallback, Context context) {
+        if (streamingMode != StreamingMode.RADIO) {
+            return;
         }
 
-        //Log.i(TAG, "prepareMetaData for url:" + streamURL);
-        if (url != null) {
-            StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
-
-                @Override
-                public void onMetadataRequestStarted() {
-                    // notifiy that meta data request has started
-                    Intent intent = new Intent(Config.ACTION_RADIO_STREAM_META_DATA_REQUEST_STARTED);
-                    sendBroadcast( intent );
-                }
-
-                @Override
-                public void onMetadataAvailable(IcecastMetadata metadata) {
-                    //Log.i(TAG, "meta data for url:" + streamURL);
-
-                    String streamTitle = (metadata != null ? metadata.streamTitle : null);
-
-                    // notifiy in any case about the meta data result (maybe empty)
-                    Intent intent = new Intent(Config.ACTION_RADIO_STREAM_META_DATA_AVAILABLE);
-                    intent.putExtra(EXTRA_RADIO_META_TITLE, streamTitle);
-                    sendBroadcast( intent );
-                }
-
-            };
-
-            if (invalidateCache) {
-                METADATA_CACHE.invalidate();
-            }
-            METADATA_CACHE.retrieveMetadata(streamURL, metadataCallback, getApplicationContext(), forcedUpdate);
-        }
+        IcecastMetadataCache.getInstance().retrieveMetadata(streamURL, metadataCallback, context);
     }
 
     public enum StreamingMode {INACTIVE, ALARM, RADIO}
