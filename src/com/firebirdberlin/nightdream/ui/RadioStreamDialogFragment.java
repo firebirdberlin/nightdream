@@ -134,4 +134,12 @@ public class RadioStreamDialogFragment extends DialogFragment {
         return dialog;
 
     }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (listener != null) {
+            listener.onCancel();
+        }
+    }
 }

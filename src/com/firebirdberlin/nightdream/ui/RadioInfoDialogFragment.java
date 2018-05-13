@@ -106,28 +106,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
 
         updateMetaData();
 
-        final Dialog dialog = builder.create();
-
-        // detect back button and also call onCancel listener so systemUI can be hidden afterwards
-        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey (DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK &&
-                        event.getAction() == KeyEvent.ACTION_UP &&
-                        !event.isCanceled()) {
-
-                    dialog.cancel();
-
-                    if (listener != null) {
-                        listener.onRadioInfoDialogDismissed();
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        return dialog;
+        return builder.create();
     }
 
     @SuppressWarnings("deprecation")
@@ -151,6 +130,14 @@ public class RadioInfoDialogFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (listener != null) {
+            listener.onRadioInfoDialogDismissed();
+        }
     }
 
     private void updateMetaData() {
