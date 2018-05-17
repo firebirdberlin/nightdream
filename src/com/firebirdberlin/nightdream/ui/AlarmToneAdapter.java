@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FileUri;
 
 import java.io.IOException;
@@ -26,8 +27,8 @@ import java.util.List;
 
 
 class AlarmToneAdapter extends ArrayAdapter<FileUri> {
-    private Context context = null;
-    private int viewId = -1;
+    private Context context;
+    private int viewId;
     private int selectedPosition = -1;
     private MediaPlayer mediaPlayer;
     private OnDeleteRequestListener listener;
@@ -52,7 +53,8 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         View v = inflater.inflate(viewId, parent, false);
         RadioButton button = (RadioButton) v.findViewById(R.id.text1);
         final FileUri item = getItem(position);
-        button.setText(item != null ? item.name : "");
+        String name = Utility.getSoundFileTitleFromUri(context, item.uri.toString());
+        button.setText(name);
         button.setChecked(position == selectedPosition);
         button.setTag(position);
         button.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +106,9 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
                 FileUri selected = getSelectedUri();
                 remove(item);
                 notifyDataSetChanged();
-                setSelectedUri(selected.uri);
+                if (selected != null) {
+                    setSelectedUri(selected.uri);
+                }
                 releaseMediaplayer();
 
             }

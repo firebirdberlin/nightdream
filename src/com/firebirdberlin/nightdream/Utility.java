@@ -13,9 +13,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.hardware.display.DisplayManager;
+import android.media.MediaMetadataRetriever;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
@@ -403,4 +406,42 @@ public class Utility {
     protected static boolean deprecatedIsScreenOn(PowerManager pm) {
         return pm.isScreenOn();
     }
+
+    public static String getSoundFileTitleFromUri(Context context, String uriString) {
+        Log.w(TAG, "uri: " + uriString);
+        Uri uri = null;
+        try {
+            uri = Uri.parse(uriString);
+        } catch (NullPointerException ignore) {
+        }
+
+        if (uri == null) return "";
+
+        // get the name from android content
+        if ("content".equals(uri.getScheme())) {
+            Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
+            String title = ringtone.getTitle(context);
+            ringtone.stop();
+            return title;
+        }
+
+        // get the name from meta data
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD_MR1) {
+            String filePath = uri.getPath();
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            try {
+                mmr.setDataSource(filePath);
+                String title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                if (title != null && !title.isEmpty()) {
+                    return title;
+                }
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // get the file name
+        return uri.getLastPathSegment();
+    }
+
 }
