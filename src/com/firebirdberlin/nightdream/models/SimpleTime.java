@@ -27,6 +27,7 @@ public class SimpleTime {
     public int recurringDays = 0;
     public boolean isActive = false;
     public boolean isNextAlarm = false;
+    public String soundUri;
 
     public SimpleTime() {
 
@@ -70,6 +71,7 @@ public class SimpleTime {
         this.recurringDays = bundle.getInt("recurringDays", 0);
         this.isActive = bundle.getBoolean("isActive", false);
         this.isNextAlarm = bundle.getBoolean("isNextAlarm", false);
+        this.soundUri = bundle.getString("soundUri");
     }
 
     public static SimpleTime getNextFromList(List<SimpleTime> entries) {
@@ -130,6 +132,7 @@ public class SimpleTime {
         bundle.putBoolean("isNextAlarm", this.isNextAlarm);
         bundle.putBoolean("isActive", this.isActive);
         bundle.putInt("alarmTimeMinutes", this.toMinutes());
+        bundle.putString("soundUri", this.soundUri);
         return bundle;
     }
 

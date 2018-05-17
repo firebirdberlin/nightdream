@@ -209,25 +209,25 @@ public class AlarmClockLayout extends LinearLayout {
         textViewSound.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (alarmClockEntry == null) return;
+
                 FragmentManager fm = ((Activity) getContext()).getFragmentManager();
                 ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
                 dialog.setIsPurchased(
                         ((BillingHelperActivity) context).isPurchased(BillingHelper.ITEM_WEB_RADIO)
                 );
-//                dialog.setSelectedUri(settings.AlarmToneUri);
+                // TODO set the default sound file if soundUri is null 
+                dialog.setSelectedUri(alarmClockEntry.soundUri);
                 dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
                     @Override
                     public void onAlarmToneSelected(Uri uri, String name) {
                         Log.i(TAG, "onAlarmToneSelected: " + uri + ", " + name);
-//                        String summary;
-//                        if (purchased_web_radio || !uri.getScheme().equals("file")) {
-//                            settings.setAlarmToneUri(uri != null ? uri.toString() : null, name);
-//                            summary = name;
-//                        } else {
-//                            summary = String.format("%s (%s)", name,
-//                                    mContext.getString(R.string.product_name_webradio));
-//                        }
-//                        customAlarmToneURI.setSummary(summary);
+                        if (alarmClockEntry == null) {
+                            return;
+                        }
+                        alarmClockEntry.soundUri = uri.toString();
+                        update();
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                     }
 
                     @Override
@@ -266,6 +266,10 @@ public class AlarmClockLayout extends LinearLayout {
                 int day = (int) dayButtons[i].getTag();
                 dayButtons[i].setChecked(alarmClockEntry.hasDay(day));
             }
+
+            String soundDisplayName =
+                    Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
+            textViewSound.setText(soundDisplayName);
         }
 
         invalidate();
