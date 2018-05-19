@@ -16,15 +16,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.radiostreamapi.IcecastMetadata;
-import com.firebirdberlin.radiostreamapi.StreamMetadataTask;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -142,7 +141,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
 
     private void updateMetaData() {
 
-        StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
+        RadioStreamMetadataListener listener = new RadioStreamMetadataListener() {
 
             @Override
             public void onMetadataRequestStarted() {
@@ -152,7 +151,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
             }
 
             @Override
-            public void onMetadataAvailable(IcecastMetadata metadata) {
+            public void onMetadataAvailable(RadioStreamMetadata metadata) {
                 if (!infosUpdated) {
                     handler.post(new Runnable() {
                         @Override
@@ -164,7 +163,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
             }
         };
 
-        RadioStreamService.updateMetaData(metadataCallback, context);
+        RadioStreamService.updateMetaData(listener, context);
     }
 
     private void updateInfo() {
@@ -173,7 +172,7 @@ public class RadioInfoDialogFragment extends DialogFragment {
 
         infosUpdated = true;
 
-        IcecastMetadata data = RadioStreamService.getCurrentIcecastMetadata();
+        RadioStreamMetadata data = RadioStreamService.getCurrentIcecastMetadata();
 
         String metaTitle = (data != null && data.streamTitle != null && !data.streamTitle.isEmpty() ? data.streamTitle : null);
         if (metaTitle != null) {

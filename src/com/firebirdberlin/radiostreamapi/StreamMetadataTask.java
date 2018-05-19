@@ -4,16 +4,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import java.net.URL;
-import java.util.Map;
 
-public class StreamMetadataTask extends AsyncTask<URL, Void, IcecastMetadata> {
+public class StreamMetadataTask extends AsyncTask<URL, Void, RadioStreamMetadata> {
 
     public interface AsyncResponse {
-        public void onMetadataRequestStarted();
-        public void onMetadataAvailable(IcecastMetadata metadata);
+        void onMetadataAvailable(RadioStreamMetadata metadata);
     }
 
-    private StreamMetadataTask.AsyncResponse delegate = null;
+    private StreamMetadataTask.AsyncResponse delegate;
     private Context context;
 
     public StreamMetadataTask(StreamMetadataTask.AsyncResponse listener, Context context) {
@@ -22,14 +20,14 @@ public class StreamMetadataTask extends AsyncTask<URL, Void, IcecastMetadata> {
     }
 
     @Override
-    protected IcecastMetadata doInBackground(URL... params) {
+    protected RadioStreamMetadata doInBackground(URL... params) {
 
-        IcecastMetadata metadata = IcecastMetadataRetriever.retrieveMetadata(params[0]);
+        RadioStreamMetadata metadata = IcecastMetadataRetriever.retrieveMetadata(params[0]);
         return metadata;
     }
 
     @Override
-    protected void onPostExecute(IcecastMetadata metadata) {
+    protected void onPostExecute(RadioStreamMetadata metadata) {
         delegate.onMetadataAvailable(metadata);
     }
 

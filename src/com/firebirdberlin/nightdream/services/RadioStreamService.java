@@ -21,18 +21,16 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
-import com.firebirdberlin.radiostreamapi.IcecastMetadata;
-import com.firebirdberlin.radiostreamapi.IcecastMetadataCache;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
-import com.firebirdberlin.radiostreamapi.StreamMetadataTask;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
                                                            MediaPlayer.OnBufferingUpdateListener,
@@ -133,8 +131,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         return radioStation;
     }
 
-    public static IcecastMetadata getCurrentIcecastMetadata() {
-        return IcecastMetadataCache.getInstance().getCachedMetadata();
+    public static RadioStreamMetadata getCurrentIcecastMetadata() {
+        return RadioStreamMetadataRetriever.getInstance().getCachedMetadata();
     }
 
     public static void startStream(Context context) {
@@ -234,12 +232,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
-            IcecastMetadataCache.getInstance().clearCache();
+            RadioStreamMetadataRetriever.getInstance().clearCache();
             readyForPlayback = false;
             checkStreamAndStart(radioStationIndex);
         } else
         if ( ACTION_STOP.equals(action) ) {
-            IcecastMetadataCache.getInstance().clearCache();
+            RadioStreamMetadataRetriever.getInstance().clearCache();
             readyForPlayback = false;
             stopSelf();
         } else if (ACTION_START_SLEEP_TIME.equals(action)) {
@@ -509,12 +507,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     }
 
-    public static void updateMetaData(StreamMetadataTask.AsyncResponse metadataCallback, Context context) {
+    public static void updateMetaData(RadioStreamMetadataListener listener, Context context) {
         if (streamingMode != StreamingMode.RADIO) {
             return;
         }
 
-        IcecastMetadataCache.getInstance().retrieveMetadata(streamURL, metadataCallback, context);
+        RadioStreamMetadataRetriever.getInstance().retrieveMetadata(streamURL, listener, context);
     }
 
     public enum StreamingMode {INACTIVE, ALARM, RADIO}
