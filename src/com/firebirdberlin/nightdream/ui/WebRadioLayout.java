@@ -43,6 +43,7 @@ public class WebRadioLayout extends RelativeLayout {
     private ImageView buttonSleepTimer;
     private ImageView volumeMutedIndicator;
     private boolean showConnectingHint = false;
+    private boolean isVisible = false;
     private ProgressBar spinner;
     private WebRadioStationButtonsLayout webRadioButtons;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
@@ -209,6 +210,10 @@ public class WebRadioLayout extends RelativeLayout {
         this.locked = locked;
     }
 
+    protected void hide() {
+        isVisible = false;
+    }
+
     protected void updateText() {
         if (textView == null) return;
 
@@ -221,6 +226,11 @@ public class WebRadioLayout extends RelativeLayout {
                 textView.setText(station.name);
                 webRadioButtons.setActiveStation(radioStationIndex);
             }
+
+            if (!isVisible) {
+                // display current meta infos when panel was hidden and becomes visible
+                updateMetaData();
+            }
         } else {
             textView.setText("");
             webRadioButtons.clearActiveStation();
@@ -230,6 +240,7 @@ public class WebRadioLayout extends RelativeLayout {
         }
         webRadioButtons.invalidate();
         updateVolumeMutedIndicator();
+        isVisible = true;
     }
 
 
@@ -264,6 +275,7 @@ public class WebRadioLayout extends RelativeLayout {
             @Override
             public void onMetadataAvailable(IcecastMetadata metadata) {
                 String streamTitle = (metadata != null ? metadata.streamTitle : null);
+                //Log.i(TAG, "onMetadataAvailable, streamTitle=" + (streamTitle != null ? streamTitle : "null"));
                 showMetaTitle(streamTitle);
             }
 
@@ -286,10 +298,20 @@ public class WebRadioLayout extends RelativeLayout {
 
     }
 
-    private void showMetaTitle(String metaTitle) {
+    private void showMetaTitle(final String metaTitle) {
+        Log.i(TAG, "showMetaTitle");
         setShowConnectingHint(false);
         if (metaTitle != null && !metaTitle.isEmpty()) {
-            textView.setText(metaTitle);
+
+            // use hander.post to update text, otherwise updated text doesnt show up sometimes
+            // (e.g. on update after panel becomes visible)
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setText(metaTitle);
+                }
+            });
+
             // switch back to radio name after x seconds
             handler.removeCallbacks(resetDefaultText);
             handler.postDelayed(resetDefaultText, 5000);

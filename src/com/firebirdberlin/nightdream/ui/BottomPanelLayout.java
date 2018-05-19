@@ -63,6 +63,9 @@ public class BottomPanelLayout extends FrameLayout {
     public void hide() {
         isVisible = false;
         setClickable(false);
+        if (webRadioLayout != null) {
+            webRadioLayout.hide();
+        }
     }
 
     public void show() {
