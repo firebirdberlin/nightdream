@@ -53,7 +53,7 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         View v = inflater.inflate(viewId, parent, false);
         RadioButton button = (RadioButton) v.findViewById(R.id.text1);
         final FileUri item = getItem(position);
-        String name = Utility.getSoundFileTitleFromUri(context, item.uri.toString());
+        String name = Utility.getSoundFileTitleFromUri(context, item.uri);
         button.setText(name);
         button.setChecked(position == selectedPosition);
         button.setTag(position);
