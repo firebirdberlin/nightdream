@@ -267,9 +267,14 @@ public class AlarmClockLayout extends LinearLayout {
                 dayButtons[i].setChecked(alarmClockEntry.hasDay(day));
             }
 
-            String soundDisplayName =
-                    Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
-            textViewSound.setText(soundDisplayName);
+            String displayName;
+            if (alarmClockEntry.soundUri == null || alarmClockEntry.soundUri.isEmpty()) {
+                Uri soundUri = Utility.getDefaultAlarmToneUri();
+                displayName = Utility.getSoundFileTitleFromUri(context, soundUri);
+            } else {
+                displayName = Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
+            }
+            textViewSound.setText(displayName);
         }
 
         invalidate();

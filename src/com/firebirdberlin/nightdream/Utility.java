@@ -414,7 +414,10 @@ public class Utility {
             uri = Uri.parse(uriString);
         } catch (NullPointerException ignore) {
         }
+        return getSoundFileTitleFromUri(context, uri);
+    }
 
+    public static String getSoundFileTitleFromUri(Context context, Uri uri) {
         if (uri == null) return "";
 
         // get the name from android content
@@ -444,4 +447,7 @@ public class Utility {
         return uri.getLastPathSegment();
     }
 
+    public static Uri getDefaultAlarmToneUri() {
+        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    }
 }
