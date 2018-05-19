@@ -18,7 +18,7 @@ public class IcecastMetadataRetriever {
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
-    public static IcecastMetadata retrieveMetadata(URL streamUrl) {
+    public static RadioStreamMetadata retrieveMetadata(URL streamUrl) {
 
 
         InputStream stream = null;
@@ -52,7 +52,7 @@ public class IcecastMetadataRetriever {
 
             if (metaDataOffset == 0) {
                 // no embedded data, but possible meta keys
-                return new IcecastMetadata(headerInfos, null, true);
+                return new RadioStreamMetadata(headerInfos, null, true);
             }
 
             String metaDataString = readMetadata(stream, metaDataOffset);
@@ -83,7 +83,7 @@ public class IcecastMetadataRetriever {
             }
         }
 
-        return new IcecastMetadata(headerInfos, metaTitle);
+        return new RadioStreamMetadata(headerInfos, metaTitle);
     }
 
     private static String readMetadata(InputStream stream, int metaDataOffset) throws IOException {

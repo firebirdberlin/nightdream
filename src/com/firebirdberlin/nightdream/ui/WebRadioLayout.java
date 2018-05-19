@@ -29,8 +29,8 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.radiostreamapi.IcecastMetadata;
-import com.firebirdberlin.radiostreamapi.StreamMetadataTask;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 public class WebRadioLayout extends RelativeLayout {
@@ -265,7 +265,7 @@ public class WebRadioLayout extends RelativeLayout {
             return;
         };
 
-        StreamMetadataTask.AsyncResponse metadataCallback = new StreamMetadataTask.AsyncResponse() {
+        RadioStreamMetadataListener listener = new RadioStreamMetadataListener() {
 
             @Override
             public void onMetadataRequestStarted() {
@@ -273,7 +273,7 @@ public class WebRadioLayout extends RelativeLayout {
             }
 
             @Override
-            public void onMetadataAvailable(IcecastMetadata metadata) {
+            public void onMetadataAvailable(RadioStreamMetadata metadata) {
                 String streamTitle = (metadata != null ? metadata.streamTitle : null);
                 //Log.i(TAG, "onMetadataAvailable, streamTitle=" + (streamTitle != null ? streamTitle : "null"));
                 showMetaTitle(streamTitle);
@@ -281,7 +281,7 @@ public class WebRadioLayout extends RelativeLayout {
 
         };
 
-        RadioStreamService.updateMetaData(metadataCallback, context);
+        RadioStreamService.updateMetaData(listener, context);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)

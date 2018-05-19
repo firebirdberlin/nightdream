@@ -7,11 +7,10 @@ import android.util.Log;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
-public class IcecastMetadataCache {
+public class RadioStreamMetadataRetriever {
 
-    private static String TAG = "IcecastMetadataCache";
+    private static String TAG = "RadioStreamMetadataRetriever";
 
     // fetch new meta infos from stream not more often than every 10 seconds
     private static final int UPDATE_INTERVAL_MILLIS = 10 * 1000;
@@ -22,17 +21,17 @@ public class IcecastMetadataCache {
 
     private boolean streamMetaDataNotSupported = false;
 
-    private IcecastMetadata cachedMetadata;
+    private RadioStreamMetadata cachedMetadata;
 
     // this cache is a singleton
 
-    private static final IcecastMetadataCache INSTANCE = new IcecastMetadataCache();
+    private static final RadioStreamMetadataRetriever INSTANCE = new RadioStreamMetadataRetriever();
 
-    public static IcecastMetadataCache getInstance() { return INSTANCE; }
+    public static RadioStreamMetadataRetriever getInstance() { return INSTANCE; }
 
-    private IcecastMetadataCache() {}
+    private RadioStreamMetadataRetriever() {}
 
-    public void retrieveMetadata(final String streamUrl, final StreamMetadataTask.AsyncResponse listener, Context context) {
+    public void retrieveMetadata(final String streamUrl, final RadioStreamMetadataListener listener, Context context) {
         long time = System.currentTimeMillis();
         boolean needsUpdate = time - lastUpdateMillis > UPDATE_INTERVAL_MILLIS;
 
@@ -77,12 +76,7 @@ public class IcecastMetadataCache {
             StreamMetadataTask.AsyncResponse cacheCallback = new StreamMetadataTask.AsyncResponse() {
 
                 @Override
-                public void onMetadataRequestStarted() {
-                    // nothing to do here
-                }
-
-                @Override
-                public void onMetadataAvailable(IcecastMetadata metadata) {
+                public void onMetadataAvailable(RadioStreamMetadata metadata) {
 
                     updateInProgress = false;
                     lastUpdateMillis = System.currentTimeMillis();
@@ -103,7 +97,7 @@ public class IcecastMetadataCache {
         }
     }
 
-    public IcecastMetadata getCachedMetadata() {
+    public RadioStreamMetadata getCachedMetadata() {
         return cachedMetadata;
     }
 
@@ -114,4 +108,8 @@ public class IcecastMetadataCache {
         streamMetaDataNotSupported = false;
     }
 
+    public interface RadioStreamMetadataListener {
+        public void onMetadataRequestStarted();
+        public void onMetadataAvailable(RadioStreamMetadata metadata);
+    }
 }
