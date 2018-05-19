@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 public class SQLiteDBHelper extends SQLiteOpenHelper {
-
+    Context context;
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "sqlite.db";
@@ -26,6 +26,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
     public SQLiteDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public void onCreate(SQLiteDatabase db) {
@@ -38,6 +39,13 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
             onCreate(db);
         } else if (newVersion == 3 && oldVersion < 3) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_ALARM_SOUND_URI + " text");
+            // migrate the current setting of the alarm tone uri
+            Settings settings = new Settings(this.context);
+            if (settings.AlarmToneUri != null && !settings.AlarmToneUri.isEmpty()) {
+                db.execSQL("UPDATE " + AlarmEntry.TABLE_NAME + " SET " +
+                        AlarmEntry.COLUMN_ALARM_SOUND_URI + " = '" + settings.AlarmToneUri + "';");
+            }
+
         }
     }
 
