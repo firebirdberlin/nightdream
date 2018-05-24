@@ -6,23 +6,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.util.Log;
-import java.io.IOException;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+
+import java.io.IOException;
 
 public class AlarmService extends Service implements MediaPlayer.OnErrorListener,
                                                      MediaPlayer.OnBufferingUpdateListener,
@@ -37,6 +35,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private Settings settings = null;
     private float currentVolume = 0.f;
     private Context context;
+    private SimpleTime alarmTime = null;
 
     @Override
     public void onCreate(){
@@ -53,35 +52,14 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         return null;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand() called.");
-
-        Notification note = new NotificationCompat.Builder(this)
-            .setContentTitle(getString(R.string.alarm))
-            .setSmallIcon(R.drawable.ic_audio)
-            .setPriority(NotificationCompat.PRIORITY_MIN)
-            .build();
-
-        note.flags |= Notification.FLAG_NO_CLEAR;
-        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-        startForeground(1337, note);
-
-
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            if ( intent.hasExtra("stop alarm") ){
-                stopAlarm();
-            } else
-            if ( intent.hasExtra("start alarm") ){
-                settings = new Settings(this);
-                setVolume(settings.alarmVolume);
-                AlarmPlay();
-                handler.postDelayed(timeout, 120000);
-            }
+    public static void startAlarm(Context context, SimpleTime alarmTime) {
+        if (AlarmService.isRunning) return;
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("start alarm", true);
+        if (alarmTime != null) {
+            i.putExtras(alarmTime.toBundle());
         }
-
-        return Service.START_REDELIVER_INTENT;
+        context.startService(i);
     }
 
 
@@ -142,6 +120,68 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand() called.");
+
+        Notification note = new NotificationCompat.Builder(this)
+                .setContentTitle(getString(R.string.alarm))
+                .setSmallIcon(R.drawable.ic_audio)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .build();
+
+        note.flags |= Notification.FLAG_NO_CLEAR;
+        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+        startForeground(1337, note);
+
+
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            if (intent.hasExtra("stop alarm")) {
+                stopAlarm();
+            } else if (intent.hasExtra("start alarm")) {
+                settings = new Settings(this);
+                alarmTime = new SimpleTime(intent.getExtras());
+                setVolume(settings.alarmVolume);
+                AlarmPlay();
+                handler.postDelayed(timeout, 120000);
+            }
+        }
+
+        return Service.START_REDELIVER_INTENT;
+    }
+
+    private boolean setDataSource(Uri soundUri) {
+        if (soundUri == null) return false;
+        try {
+            mMediaPlayer.setDataSource(this, soundUri);
+        } catch (IOException e) {
+            Log.e(TAG, String.format("Setting the Uri %s failed !", soundUri.toString()));
+            return false;
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+            return false;
+        }
+        return true;
+
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
+        return false;
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        Log.e(TAG, "onBufferingUpdate " + String.valueOf(percent));
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        Log.e(TAG, "onCompletion ");
+    }
+
     public void AlarmPlay() {
         AlarmStop();
         Log.i(TAG, "AlarmPlay()");
@@ -185,51 +225,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
             }
             handler.post(fadeIn);
-        };
+        }
 
         mMediaPlayer.start();
-    }
-
-    private boolean setDataSource(Uri soundUri) {
-        if (soundUri == null) return false;
-        try {
-            mMediaPlayer.setDataSource(this, soundUri);
-        } catch (IOException e) {
-            Log.e(TAG, String.format("Setting the Uri %s failed !", soundUri.toString()));
-            return false;
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
-            return false;
-        }
-        return true;
-
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
-        return false;
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        Log.e(TAG, "onBufferingUpdate " + String.valueOf(percent));
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        Log.e(TAG, "onCompletion ");
-    }
-
-    public Uri getAlarmToneUri() {
-        Log.i(TAG, settings.AlarmToneUri);
-        try {
-            return Uri.parse(settings.AlarmToneUri);
-        } catch (Exception e) {
-            Log.e(TAG, "Exception", e);
-        }
-
-        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
     }
 
     public void AlarmStop(){
@@ -243,11 +241,17 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     }
 
-    public static void startAlarm(Context context) {
-        if ( AlarmService.isRunning ) return;
-        Intent i = new Intent(context, AlarmService.class);
-        i.putExtra("start alarm", true);
-        context.startService(i);
+    public Uri getAlarmToneUri() {
+        if (alarmTime != null && alarmTime.soundUri != null) {
+            Log.d(TAG, "soundUri = " + alarmTime.soundUri);
+            try {
+                return Uri.parse(alarmTime.soundUri);
+            } catch (Exception e) {
+                Log.e(TAG, "Exception", e);
+            }
+        }
+
+        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
     }
 
     public static void stop(Context context) {

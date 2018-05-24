@@ -74,7 +74,7 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
     }
 
     public void setSelectedUri(String uriString) {
-        selectedUri = Uri.parse(uriString);
+        selectedUri = (uriString != null) ? Uri.parse(uriString) : null;
     }
 
     @Override
