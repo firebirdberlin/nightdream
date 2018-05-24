@@ -20,6 +20,7 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
@@ -50,6 +51,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private MediaPlayer mMediaPlayer = null;
     private boolean debug = false;
     private Settings settings = null;
+    private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
     private String streamURL = "";
@@ -85,11 +87,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     };
 
-    public static void start(Context context) {
-        start(context, false);
+    public static void start(Context context, SimpleTime alarmTime) {
+        start(context, alarmTime, false);
     }
 
-    public static void start(Context context, boolean debug) {
+    public static void start(Context context, SimpleTime alarmTime, boolean debug) {
         if (!Utility.hasNetworkConnection(context)) {
             Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
             return;
@@ -98,6 +100,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Intent i = new Intent(context, RadioStreamService.class);
         i.setAction(ACTION_START);
         i.putExtra(EXTRA_DEBUG, debug);
+        if (alarmTime != null) {
+            i.putExtras(alarmTime.toBundle());
+        }
         context.startService(i);
     }
 
@@ -184,17 +189,20 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         startForeground(1337, note);
 
+        alarmTime = null;
         if (ACTION_START.equals(action)) {
             debug = intent.getBooleanExtra(EXTRA_DEBUG, false);
             if (!debug) {
                 alarmIsRunning = true;
                 streamingMode = StreamingMode.ALARM;
             }
+            alarmTime = new SimpleTime(intent.getExtras());
             setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
             streamURL = settings.radioStreamURL;
             checkStreamAndStart(-1);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
+            alarmTime = new SimpleTime(intent.getExtras());
             radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
 
             Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
@@ -292,7 +300,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             statusCheckTask.execute(result.streamUrl);
             return;
         } else if ( alarmIsRunning ) {
-            AlarmService.startAlarm(this);
+            AlarmService.startAlarm(this, alarmTime);
         }
 
         Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
@@ -306,7 +314,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             playStream();
             return;
         } else if ( alarmIsRunning ) {
-            AlarmService.startAlarm(this);
+            AlarmService.startAlarm(this, alarmTime);
         }
 
         Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
@@ -349,7 +357,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
         if ( alarmIsRunning ) {
-            AlarmService.startAlarm(this);
+            AlarmService.startAlarm(this, alarmTime);
             stopSelf();
             return true;
         }

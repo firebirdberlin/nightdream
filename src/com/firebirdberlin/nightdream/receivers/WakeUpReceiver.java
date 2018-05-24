@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -45,7 +46,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             setAlarm(context, next);
             next = db.setNextAlarm(next);
         } else {
-            PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
+            PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null);
             AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
             am.cancel(pI);
         }
@@ -74,9 +75,10 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     public static void cancelAlarm(Context context) {
-        PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
+        PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
         am.cancel(pI);
+
 
         DataSource db = new DataSource(context);
         db.open();
@@ -84,14 +86,17 @@ public class WakeUpReceiver extends BroadcastReceiver {
         db.close();
     }
 
-    public static PendingIntent getPendingIntent(Context context) {
+    public static PendingIntent getPendingIntent(Context context, SimpleTime alarmTime) {
         Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
-        intent.putExtra("action", "start alarm");
+        if (alarmTime != null) {
+            intent.putExtras(alarmTime.toBundle());
+        }
+        logIntent("getPendingIntent", intent);
         //return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
         // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
         // already cancelled alarm times afterwards.
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private static PendingIntent getShowIntent(Context context) {
@@ -100,10 +105,11 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     private static void setAlarm(Context context, SimpleTime nextAlarmEntry) {
-        PendingIntent pI = WakeUpReceiver.getPendingIntent(context);
+        PendingIntent pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pI);
 
+        pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry);
         long nextAlarmTime = nextAlarmEntry.getMillis();
         if (Build.VERSION.SDK_INT >= 21) {
             PendingIntent pi = getShowIntent(context);
@@ -116,18 +122,34 @@ public class WakeUpReceiver extends BroadcastReceiver {
         }
     }
 
+    private static void logIntent(String msg, Intent data) {
+        Log.d(TAG, msg);
+        Bundle bundle = data.getExtras();
+        if (bundle != null) {
+            for (String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                String strValue = (value != null) ? value.toString() : "";
+                Log.d(TAG, String.format("%s = '%s'", key, strValue));
+            }
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        logIntent("onReceive()", intent);
         settings = new Settings(context);
         if ( !settings.useInternalAlarm ) return;
+        Bundle extras = (intent != null) ? intent.getExtras() : null;
+        SimpleTime alarmTime = (extras != null) ? new SimpleTime(extras) : null;
 
         if ( settings.useRadioAlarmClock && Utility.hasFastNetworkConnection(context) ) {
-            RadioStreamService.start(context);
+            RadioStreamService.start(context, alarmTime);
         } else {
             if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.INACTIVE ) {
                 RadioStreamService.stop(context);
             }
-            AlarmService.startAlarm(context);
+            AlarmService.startAlarm(context, alarmTime);
         }
 
         buildNotification(context);
