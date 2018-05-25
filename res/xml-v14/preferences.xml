@@ -324,11 +324,6 @@
                 android:key="useAlarmSwipeGesture"
                 android:title="@string/useAlarmSwipeGesture" />
 
-            <Preference
-                android:dependency="useInternalAlarm"
-                android:key="customAlarmToneUri"
-                android:title="@string/choose_alarm_sound" />
-
             <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                 android:defaultValue="3"

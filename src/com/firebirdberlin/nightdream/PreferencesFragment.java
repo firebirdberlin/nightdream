@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -40,7 +39,6 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
-import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 import org.json.JSONException;
@@ -614,49 +612,9 @@ public class PreferencesFragment extends PreferenceFragment {
         });
 
 
-        setupCustomAlarmTonePreference();
         setupLightSensorPreferences();
         setupDaydreamPreferences();
         setupTranslationRequest();
-    }
-
-    private void setupCustomAlarmTonePreference() {
-        final Preference customAlarmToneURI = findPreference("customAlarmToneUri");
-        customAlarmToneURI.setSummary(settings.AlarmToneName);
-        customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-
-        {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                FragmentManager fm = getFragmentManager();
-                ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
-                dialog.setIsPurchased(purchased_web_radio);
-                dialog.setSelectedUri(settings.AlarmToneUri);
-                dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
-                    @Override
-                    public void onAlarmToneSelected(Uri uri, String name) {
-                        String summary;
-                        if (purchased_web_radio || !uri.getScheme().equals("file")) {
-                            settings.setAlarmToneUri(uri != null ? uri.toString() : null, name);
-                            summary = name;
-                        } else {
-                            summary = String.format("%s (%s)", name,
-                                    mContext.getString(R.string.product_name_webradio));
-                        }
-                        customAlarmToneURI.setSummary(summary);
-                    }
-
-                    @Override
-                    public void onPurchaseRequested() {
-                        Log.w(TAG, "purchase requested");
-                        showPurchaseDialog();
-                    }
-
-                });
-                dialog.show(fm, "custom sounds");
-                return false;
-            }
-        });
     }
 
     private void setupLightSensorPreferences() {
