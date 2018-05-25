@@ -19,19 +19,14 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.AlarmService;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class WakeUpReceiver extends BroadcastReceiver {
     private final static String TAG = "WakeUpReceiver";
-    private Settings settings;
-
 
     public static void schedule(Context context) {
         DataSource db = new DataSource(context);
@@ -138,25 +133,13 @@ public class WakeUpReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         logIntent("onReceive()", intent);
-        settings = new Settings(context);
-        if ( !settings.useInternalAlarm ) return;
-        Bundle extras = (intent != null) ? intent.getExtras() : null;
-        SimpleTime alarmTime = (extras != null) ? new SimpleTime(extras) : null;
-
-        if ( settings.useRadioAlarmClock && Utility.hasFastNetworkConnection(context) ) {
-            RadioStreamService.start(context, alarmTime);
-        } else {
-            if ( RadioStreamService.streamingMode != RadioStreamService.StreamingMode.INACTIVE ) {
-                RadioStreamService.stop(context);
-            }
-            AlarmService.startAlarm(context, alarmTime);
-        }
-
+        AlarmHandlerService.start(context, intent);
         buildNotification(context);
         NightDreamActivity.start(context);
     }
 
     private Notification buildNotification(Context context) {
+        Settings settings = new Settings(context);
         String text = dateAsString(settings.getTimeFormat());
         String textActionSnooze = context.getString(R.string.action_snooze);
         String textActionStop = context.getString(R.string.action_stop);
