@@ -79,7 +79,7 @@ public class BillingHelper {
 //                try {
 //                    JSONObject o = new JSONObject(purchaseData);
 //                    String purchaseToken = o.getString("purchaseToken");
-//                    mService.consumePurchase(3, getActivity().getPackageName(), purchaseToken);
+//                    mService.consumePurchase(3, context.getPackageName(), purchaseToken);
 //                }
 //                catch (Exception e) {
 //                    e.printStackTrace();
