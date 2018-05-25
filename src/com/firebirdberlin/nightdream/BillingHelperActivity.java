@@ -55,11 +55,6 @@ public abstract class BillingHelperActivity extends Activity {
             mService = IInAppBillingService.Stub.asInterface(service);
             billingHelper = new BillingHelper(getApplicationContext(), mService);
             purchases = billingHelper.getPurchases();
-            if (billingHelper.isPurchased(BillingHelper.ITEM_WEB_RADIO)) {
-                Log.i(TAG, "Web Radio is purchased");
-            } else {
-                Log.i(TAG, "Web Radio is NOT purchased");
-            }
         }
     };
 
@@ -127,7 +122,7 @@ public abstract class BillingHelperActivity extends Activity {
             values.add(PRODUCT_ID_DONATION);
         }
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DialogTheme)
                 .setTitle(getResources().getString(R.string.buy))
                 .setItems(
                         entries.toArray(new CharSequence[entries.size()]),
@@ -251,7 +246,7 @@ public abstract class BillingHelperActivity extends Activity {
     }
 
     public void showThankYouDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DialogTheme)
                 .setTitle(getResources().getString(R.string.dialog_title_thank_you))
                 .setMessage(R.string.dialog_message_thank_you)
                 .setPositiveButton(android.R.string.ok, null)
