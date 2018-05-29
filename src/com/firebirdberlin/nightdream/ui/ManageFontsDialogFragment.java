@@ -389,6 +389,7 @@ public class ManageFontsDialogFragment extends DialogFragment {
             uri.name = getUserFriendlyFileName(uri.name);
 
             arrayAdapter.add(uri);
+            arrayAdapter.setSelectedUri(uri.uri);
             arrayAdapter.notifyDataSetChanged();
         }
     }

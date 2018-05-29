@@ -139,6 +139,9 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     private Notification buildNotification(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH ) {
+            return null;
+        }
         Settings settings = new Settings(context);
         String text = dateAsString(settings.getTimeFormat());
         String textActionSnooze = context.getString(R.string.action_snooze);

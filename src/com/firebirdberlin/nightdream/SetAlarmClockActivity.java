@@ -16,6 +16,7 @@ import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class SetAlarmClockActivity extends BillingHelperActivity {
@@ -25,6 +26,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private Settings settings = null;
     private String timeFormat = "h:mm";
     private List<SimpleTime> entries = null;
+    private HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -86,7 +88,11 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         });
         scrollView.removeAllViews();
         for (SimpleTime entry : entries) {
-            AlarmClockLayout layout = new AlarmClockLayout(this, entry, timeFormat);
+            AlarmClockLayout layout = layoutHashMap.get(entry.id);
+            if (layout == null) {
+                layout = new AlarmClockLayout(this, entry, timeFormat);
+                layoutHashMap.put(entry.id, layout);
+            }
             scrollView.addView(layout);
         }
         scrollView.invalidate();
