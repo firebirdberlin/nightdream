@@ -249,7 +249,13 @@ public class NightDreamActivity extends Activity
 
         setupNightMode();
         setupRadioStreamUI();
-        bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
+
+        BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
+        if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
+            activePanel = BottomPanelLayout.Panel.WEB_RADIO;
+        }
+
+        bottomPanelLayout.setActivePanel(activePanel);
     }
 
     public void onSwitchNightMode() {

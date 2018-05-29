@@ -159,10 +159,15 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         settings = new Settings(this);
         isRunning = true;
 
+        String action = intent.getAction();
+
         Intent notificationIntent = new Intent(this, NightDreamActivity.class);
+        if ( ACTION_START_STREAM.equals(action) ) {
+            // uses action (using only extra params would cause android to treat this PI as identical with the PI of the widget, ignoring extra params)
+            notificationIntent.setAction(Config.ACTION_SHOW_RADIO_PANEL);
+        }
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
 
         NotificationCompat.Builder noteBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.radio))
@@ -179,7 +184,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         startForeground(1337, note);
 
-        String action = intent.getAction();
         if (ACTION_START.equals(action)) {
             debug = intent.getBooleanExtra(EXTRA_DEBUG, false);
             if (!debug) {
