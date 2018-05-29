@@ -38,6 +38,7 @@ public class ClockLayout extends LinearLayout {
     private WeatherLayout weatherLayout = null;
     private View divider = null;
     private boolean showDivider = true;
+    private boolean mirrorText = true;
 
     public ClockLayout(Context context) {
         super(context);
@@ -141,6 +142,10 @@ public class ClockLayout extends LinearLayout {
 
     public void setShowDivider(boolean on) {
         this.showDivider = on;
+    }
+
+    public void setMirrorText(boolean on) {
+        this.mirrorText = on;
     }
 
     public void showDate(boolean on) {
@@ -299,14 +304,27 @@ public class ClockLayout extends LinearLayout {
         requestLayout();
     }
 
-    public void setScaleFactor(float factor) {
-        if (Build.VERSION.SDK_INT < 11) return;
-
-        setScaleX(factor);
-        setScaleY(factor);
-        invalidate();
+    public float getAbsScaleFactor() {
+        if (Build.VERSION.SDK_INT < 11) return 1.f;
+        return Math.abs(getScaleX());
     }
 
+    public void setScaleFactor(float factor) {
+        setScaleFactor(factor, false);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    public void setScaleFactor(float factor, boolean animated) {
+        if (Build.VERSION.SDK_INT < 11) return;
+        float sign = mirrorText ? -1.f : 1.f;
+        if (animated) {
+            animate().setDuration(1000).scaleX(sign * factor).scaleY(factor);
+        } else {
+            setScaleX(sign * factor);
+            setScaleY(factor);
+            invalidate();
+        }
+    }
     private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config,
                                    boolean displayInWidget) {
         if (analog_clock != null) {
