@@ -45,6 +45,7 @@ public class Settings {
     public boolean standbyEnabledWhileConnected = false;
     public boolean standbyEnabledWhileDisconnected = false;
     public boolean autoBrightness = false;
+    public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
     public boolean force_auto_rotation = false;
     public boolean handle_power = false;
@@ -170,6 +171,7 @@ public class Settings {
         standbyEnabledWhileConnected = settings.getBoolean("standbyEnabledWhileConnected", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
+        clockLayoutMirrorText = settings.getBoolean("clockLayoutMirrorText", false);
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
         autostartTimeRangeStartInMinutes = settings.getInt("autostart_time_range_start_minutes", -1);
         autostartTimeRangeEndInMinutes = settings.getInt("autostart_time_range_end_minutes", -1);

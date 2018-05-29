@@ -106,7 +106,7 @@ public class NightDreamUI {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
             if (Build.VERSION.SDK_INT < 11) return;
-            float s = clockLayout.getScaleX();
+            float s = clockLayout.getAbsScaleFactor();
             Configuration config = getConfiguration();
             settings.setScaleClock(s, config.orientation);
         }
@@ -158,7 +158,7 @@ public class NightDreamUI {
             //clockLayout.update(settings.weatherEntry);
 
             float s = getScaleFactor(config);
-            clockLayout.animate().setDuration(1000).scaleX(s).scaleY(s);
+            clockLayout.setScaleFactor(s, true);
             if (! daydreamMode ) {
                 Utility.turnScreenOn(mContext);
             }
@@ -444,8 +444,7 @@ public class NightDreamUI {
         if (Build.VERSION.SDK_INT >= 12){
             menuIcon.setScaleX(.8f);
             menuIcon.setScaleY(.8f);
-            clockLayout.setScaleX(.1f);
-            clockLayout.setScaleY(.1f);
+            clockLayout.setScaleFactor(.1f);
         }
 
         utility = new Utility(context);
@@ -536,6 +535,7 @@ public class NightDreamUI {
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
 
         clockLayout.setShowDivider(settings.showDivider);
+        clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
         Configuration config = getConfiguration();
@@ -842,8 +842,8 @@ public class NightDreamUI {
         } else {
             // determine a random position
             // api level 12
-            int scaled_width = (int) (clockLayout.getWidth() * clockLayout.getScaleX());
-            int scaled_height = (int) (clockLayout.getHeight() * clockLayout.getScaleY());
+            int scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
+            int scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
             Log.i(TAG, String.valueOf(scaled_width) + "x" + String.valueOf(scaled_height));
             int rxpos = w - scaled_width;
             int rypos = h - scaled_height;
@@ -1174,7 +1174,7 @@ public class NightDreamUI {
     private void applyScaleFactor(float factor) {
         int width = clockLayoutContainer.getWidth();
         int height = clockLayoutContainer.getHeight();
-        factor *= clockLayout.getScaleX();
+        factor *= clockLayout.getAbsScaleFactor();
         int new_width = (int) (clockLayout.getWidth() * factor);
         int new_height = (int) (clockLayout.getHeight() * factor);
         if (factor > 0.5f && new_width < width  && new_height < height) {
