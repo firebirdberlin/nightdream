@@ -253,6 +253,8 @@ public class NightDreamActivity extends Activity
         BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
         if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
             activePanel = BottomPanelLayout.Panel.WEB_RADIO;
+            // clear the action so that it won't be re-delivered.
+            intent.setAction("");
         }
 
         bottomPanelLayout.setActivePanel(activePanel);
