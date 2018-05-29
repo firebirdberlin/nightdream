@@ -197,6 +197,10 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         }
     }
 
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
     interface OnDeleteRequestListener {
         void onDeleteRequested(FileUri file);
     }

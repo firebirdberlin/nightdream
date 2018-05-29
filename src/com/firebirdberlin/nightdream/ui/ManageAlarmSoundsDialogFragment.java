@@ -122,10 +122,12 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        Log.d("debug", "ok clicked");
                         if (arrayAdapter != null) {
                             if (mListener != null) {
                                 FileUri fileUri = arrayAdapter.getSelectedUri();
                                 if (fileUri != null) {
+                                    Log.d("debug", fileUri.uri.toString());
                                     mListener.onAlarmToneSelected(fileUri.uri, fileUri.name);
                                 }
                             }
@@ -200,7 +202,8 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
             }
         });
         listView.setAdapter(arrayAdapter);
-
+        // scroll to the position
+        listView.setSelection(arrayAdapter.getSelectedPosition());
     }
 
     public ArrayList<FileUri> getAlarmSounds() {
@@ -249,7 +252,7 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                 File dstFile = new File(DIRECTORY, fileName);
                 FileUri uriDst = new FileUri(dstFile);
 
-                boolean isCreated = false;
+                boolean isCreated;
                 try {
                     isCreated = dstFile.createNewFile();
                 } catch (IOException e) {
@@ -281,7 +284,9 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
 
                 if (arrayAdapter != null) {
                     arrayAdapter.add(uriDst);
-                    arrayAdapter.notifyDataSetChanged();
+                    arrayAdapter.setSelectedUri(uriDst.uri);
+                    // scroll to the position
+                    listView.setSelection(arrayAdapter.getSelectedPosition());
                 }
             }
         }

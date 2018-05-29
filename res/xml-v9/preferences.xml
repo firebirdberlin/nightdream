@@ -187,14 +187,6 @@
                 android:title="@string/use_internal_alarm"
                 android:defaultValue="true" />
 
-            <RingtonePreference
-                android:key="AlarmToneUri"
-                android:title="@string/choose_alarm_sound"
-                android:dependency="useInternalAlarm"
-                android:ringtoneType="alarm"
-                android:showDefault="false"
-                android:showSilent="false"/>
-
             <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
                 android:key="alarmVolume"

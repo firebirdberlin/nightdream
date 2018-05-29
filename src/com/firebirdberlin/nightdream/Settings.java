@@ -362,20 +362,6 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public void setAlarmToneUri(String uriString, String name) {
-        AlarmToneUri = uriString;
-        AlarmToneName = name;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        if ( uriString != null ) {
-            prefEditor.putString("AlarmToneUri", uriString);
-            prefEditor.putString("AlarmToneName", name);
-        } else {
-            prefEditor.remove("AlarmToneUri");
-            prefEditor.remove("AlarmToneName");
-        }
-        prefEditor.commit();
-    }
-
     public void setFontUri(String uriString, String name) {
         SharedPreferences.Editor prefEditor = settings.edit();
         fontUri = uriString;

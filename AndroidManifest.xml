@@ -184,6 +184,7 @@
         </activity>
         <activity
             android:name=".SetAlarmClockActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/alarm"
             android:parentActivityName=".NightDreamActivity">
 

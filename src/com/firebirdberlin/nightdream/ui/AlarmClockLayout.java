@@ -216,7 +216,6 @@ public class AlarmClockLayout extends LinearLayout {
                 dialog.setIsPurchased(
                         ((BillingHelperActivity) context).isPurchased(BillingHelper.ITEM_WEB_RADIO)
                 );
-                // TODO set the default sound file if soundUri is null 
                 dialog.setSelectedUri(alarmClockEntry.soundUri);
                 dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
                     @Override
