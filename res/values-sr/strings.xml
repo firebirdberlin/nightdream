@@ -64,9 +64,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Hvala</string>
 <string name="donate_bitcoin">Bitkoin</string>
 <string name="donate">Donirajte</string>
-<string name="force_auto_rotation">Automatska rotacija ekrana kada je Daydream mod uključen</string>
-<string name="force_auto_rotation_summary">Primeniti orijentaciju ekrana kada je Daydream mod uključen.</string>
-<string name="handle_power_ac">Napajanje</string>
+    <string name="handle_power_ac">Napajanje</string>
 <string name="handle_power">Automatsko pokretanje</string>
 <string name="handle_power_car">automobilska baza za napajanje</string>
 <string name="handle_power_desk">stona baza za napajanje</string>

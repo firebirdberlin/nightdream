@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -52,7 +51,6 @@ public class Utility {
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     private Context mContext;
 
-    // constructor
     public Utility(Context context){
         this.mContext = context;
         getSystemBrightnessMode();
@@ -178,7 +176,6 @@ public class Utility {
     }
 
     public static long getFirstInstallTime(Context context) {
-        if(Build.VERSION.SDK_INT < 9) return 0L;
         try {
             return context.getPackageManager()
                           .getPackageInfo(context.getPackageName(), 0)
@@ -289,9 +286,7 @@ public class Utility {
 
     public Point getDisplaySize() {
         Point size = new Point();
-        if (Build.VERSION.SDK_INT < 13) {
-            size = getDisplaySizeV12();
-        } else if (Build.VERSION.SDK_INT < 17) {
+        if (Build.VERSION.SDK_INT < 17) {
             DisplayMetrics metrics = new DisplayMetrics();
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(metrics);
@@ -303,17 +298,6 @@ public class Utility {
             display.getSize(size);
         }
 
-        return size;
-    }
-
-    @TargetApi(12)
-    @SuppressWarnings("deprecation")
-    public Point getDisplaySizeV12() {
-        Point size = new Point();
-        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        size.x = display.getWidth();
-        size.y = display.getHeight();
         return size;
     }
 
@@ -429,18 +413,16 @@ public class Utility {
         }
 
         // get the name from meta data
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD_MR1) {
-            String filePath = uri.getPath();
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            try {
-                mmr.setDataSource(filePath);
-                String title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                if (title != null && !title.isEmpty()) {
-                    return title;
-                }
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+        String filePath = uri.getPath();
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        try {
+            mmr.setDataSource(filePath);
+            String title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            if (title != null && !title.isEmpty()) {
+                return title;
             }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
 
         // get the file name

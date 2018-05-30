@@ -68,9 +68,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishTitle">Duplo toque para terminar</string>
 <string name="expertPreferences">Preferências avançadas</string>
 <string name="forecast">Previsão temporal para 5 dias</string>
-<string name="force_auto_rotation">Forçar a orientação no Protetor de Tela</string>
-<string name="force_auto_rotation_summary">Forçar a orientação da tela caso o Protetor de Tela for utilizado.</string>
-<string name="handle_power_ac">Cabo de alimentação</string>
+    <string name="handle_power_ac">Cabo de alimentação</string>
 <string name="handle_power">Inicio automático</string>
 <string name="handle_power_car">Dock de automóvel</string>
 <string name="handle_power_desk">Dock de mesa</string>

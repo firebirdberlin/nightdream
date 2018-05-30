@@ -1004,18 +1004,6 @@ public class PreferencesFragment extends PreferenceFragment {
         boolean on = pref.isEnabled();
         String summary = on ? "" : getString(R.string.autostart_message_disabled);
         pref.setSummary(summary);
-
-
-        PreferenceCategory category = (PreferenceCategory) findPreference("category_behaviour");
-        removePreference("force_auto_rotation");
-        if (!on) {
-            SwitchPreference forceAutoRotation = new SwitchPreference(mContext);
-            forceAutoRotation.setKey("force_auto_rotation");
-            forceAutoRotation.setTitle(getString(R.string.force_auto_rotation));
-            forceAutoRotation.setSummary(getString(R.string.force_auto_rotation_summary));
-            forceAutoRotation.setDefaultValue(false);
-            category.addPreference(forceAutoRotation);
-        }
     }
 
     private class DaydreamSettingsObserver extends ContentObserver {

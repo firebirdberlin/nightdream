@@ -75,9 +75,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">APPa itzali pantailan bi bider ukituta</string>
 <string name="doubleTapToFinishTitle">Pantaila bi bider ukitu amaitzeko</string>
 <string name="expertPreferences">Adituentzako ezarpenak</string>
-<string name="force_auto_rotation">Daydream-ean orientazioa behartu</string>
-<string name="force_auto_rotation_summary">Daydream erabiliz gero pantailaren orientazioa behartu</string>
-<string name="forecast">5 eguneko eguraldi aurreikuspena</string>
+    <string name="forecast">5 eguneko eguraldi aurreikuspena</string>
 <string name="handle_power_ac">AC</string>
 <string name="handle_power">Automatikoki hasi</string>
 <string name="handle_power_car">Kotxeko dock-a</string>

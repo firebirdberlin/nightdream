@@ -83,8 +83,6 @@ OR
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
     <string name="expertPreferences">Expert preferences</string>
-    <string name="force_auto_rotation">Force orientation in Daydream</string>
-    <string name="force_auto_rotation_summary">Enforce the screen orientation if the Daydream is used.</string>
     <string name="forecast">5-day Weather Forecast</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Bar</string>

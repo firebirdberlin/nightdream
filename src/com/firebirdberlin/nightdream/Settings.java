@@ -47,7 +47,6 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
-    public boolean force_auto_rotation = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
     public boolean handle_power_desk = false;
@@ -178,7 +177,6 @@ public class Settings {
         autostartTimeRangeStart = settings.getLong("autostart_time_range_start", -1L); // deprecated
         autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", -1L); // deprecated
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
-        force_auto_rotation = settings.getBoolean("force_auto_rotation", true);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
