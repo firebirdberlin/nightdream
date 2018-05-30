@@ -75,9 +75,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Chiudi l\'app facendo doppio tap sullo schermo</string>
 <string name="doubleTapToFinishTitle">Doppio tap per terminare</string>
 <string name="expertPreferences">Opzioni avanzate</string>
-<string name="force_auto_rotation">Forza l\'orientamento in Daydream</string>
-<string name="force_auto_rotation_summary">forza l\'orientamento dello schermo se Daydream è in uso</string>
-<string name="forecast">Previsioni meteo a 5 giorni</string>
+    <string name="forecast">Previsioni meteo a 5 giorni</string>
 <string name="handle_power_ac">rete elettrica</string>
 <string name="handle_power">Autostart</string>
 <string name="handle_power_car">Caricatore per auto</string>

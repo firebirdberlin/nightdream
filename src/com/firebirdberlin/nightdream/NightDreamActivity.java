@@ -430,8 +430,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void setupWeatherForecastIcon() {
         String cityID = mySettings.getValidCityID();
-        if (Build.VERSION.SDK_INT < 14
-                || ! mySettings.showWeather
+        if (!mySettings.showWeather
                 || cityID == null
                 || cityID.isEmpty() ) {
             weatherIcon.setVisibility(View.GONE);
@@ -446,7 +445,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void setupAlarmClockIcon() {
 
-        if (Build.VERSION.SDK_INT < 14 || !mySettings.useInternalAlarm) {
+        if (!mySettings.useInternalAlarm) {
             alarmClockIcon.setVisibility(View.GONE);
         } else {
             alarmClockIcon.setVisibility(View.VISIBLE);

@@ -68,9 +68,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishTitle">Dubbelklicka för att slutföra</string>
 <string name="expertPreferences">Expertinställningar</string>
 <string name="forecast">5-dagars väderprognos</string>
-<string name="force_auto_rotation">Tvinga rotation för skärmsläckare</string>
-<string name="force_auto_rotation_summary">Tvinga rotation om skärmsläckaren används</string>
-<string name="handle_power_ac">Strömkälla</string>
+    <string name="handle_power_ac">Strömkälla</string>
 <string name="handle_power">Autostart</string>
 <string name="handle_power_car">Dockningsstation</string>
 <string name="handle_power_desk">Skrivbordsdocka</string>

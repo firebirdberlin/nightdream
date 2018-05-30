@@ -69,9 +69,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishTitle">Pokliknutím dokončíte</string>
 <string name="expertPreferences">Nastavení pro experty</string>
 <string name="forecast">5 denní předpověď počasí</string>
-<string name="force_auto_rotation">Vynucení orientace</string>
-<string name="force_auto_rotation_summary">Vynutit orientaci obrazovky při spuštěném spořiči displeje</string>
-<string name="handle_power_ac">externí napájení</string>
+    <string name="handle_power_ac">externí napájení</string>
 <string name="handle_power">Automatický start</string>
 <string name="handle_power_car">dokovaní v autě</string>
 <string name="handle_power_desk">dokovací stanice</string>

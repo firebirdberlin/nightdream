@@ -11,20 +11,8 @@ public class PreferencesActivity extends PreferenceActivity {
     PreferencesFragment fragment = null;
 
     public static void start(Context context) {
-        if (Build.VERSION.SDK_INT > 10) {
             Intent intent = new Intent(context, PreferencesActivity.class);
             context.startActivity(intent);
-        } else {
-            PreferencesActivityv9.start(context);
-        }
-    }
-
-    public static void startWithPurchaseDialog(Context context) {
-        if (Build.VERSION.SDK_INT > 10) {
-            Intent intent = new Intent(context, PreferencesActivity.class);
-            intent.putExtra("shallShowPurchaseDialog", true);
-            context.startActivity(intent);
-        }
     }
 
     @Override

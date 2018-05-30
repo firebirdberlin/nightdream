@@ -72,9 +72,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Hoàn tất ứng dụng bằng cách nhấn đúp vào màn hình.</string>
 <string name="doubleTapToFinishTitle">Nhấn đúp để kết thúc</string>
 <string name="expertPreferences">Chuyên gia yêu thích</string>
-<string name="force_auto_rotation">Định hướng trong Daydream</string>
-<string name="force_auto_rotation_summary">Thực thi định hướng màn hình nếu sử dụng Daydream.</string>
-<string name="forecast">Dự báo thời tiết 5 ngày</string>
+    <string name="forecast">Dự báo thời tiết 5 ngày</string>
 <string name="handle_power_ac">Nguồn AC</string>
 <string name="handle_power">Tự khởi động</string>
 <string name="handle_power_car">Chế độ trên xe</string>

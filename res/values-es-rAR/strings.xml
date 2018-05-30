@@ -74,9 +74,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
 <string name="doubleTapToFinishTitle">Doble pulsación para finalizar</string>
 <string name="expertPreferences">Preferencias avanzadas</string>
-<string name="force_auto_rotation">Forzar la orientación de la pantalla en modo daydream</string>
-<string name="force_auto_rotation_summary">Forzar la orientación de la pantalla si el modo Daydream está en uso.</string>
-<string name="forecast">Prediccion de 5 dias</string>
+    <string name="forecast">Prediccion de 5 dias</string>
 <string name="handle_power_ac">Corriente alterna</string>
 <string name="handle_power">Inicio automático</string>
 <string name="handle_power_car">Base de automóvil</string>

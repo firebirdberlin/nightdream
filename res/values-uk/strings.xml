@@ -72,9 +72,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Щоб закрити додаток, двічі торкніться екрану.</string>
 <string name="doubleTapToFinishTitle">Торкніться двічі, щоб закрити</string>
 <string name="expertPreferences">Експертні налаштування</string>
-<string name="force_auto_rotation">Орієнтація екрану в Daydream</string>
-<string name="force_auto_rotation_summary">Фіксована орієнтація екрану в режимі Daydream</string>
-<string name="forecast">Прогноз погоди на 5 днів</string>
+    <string name="forecast">Прогноз погоди на 5 днів</string>
 <string name="handle_power_ac">мережевий адаптер</string>
 <string name="handle_power">Автозапуск</string>
 <string name="handle_power_car">автомобільна док-станція</string>
