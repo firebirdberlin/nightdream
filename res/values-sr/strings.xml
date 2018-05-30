@@ -16,16 +16,19 @@ Please preserve the xml tags and the utf8 encoding.
 
 
 <resources>
-<string name="about">O nama</string>
-<string name="action_snooze">Odlaganje alarma</string>
-<string name="action_stop">Zaustavljanje</string>
-<string name="alarm">Alarm</string>
-<string name="alarmFadeIn">Pojačanje  zvuka alarma</string>
-<string name="alarmVolume">Jačina zvuka</string>
-<string name="allow_screen_off_summary">Ugasiti ekran tokom noći</string>
-<string name="allow_screen_off">Ugasiti ekran</string>
-<string name="ambient_noise">Detekcija zvuka okoline</string>
-<string name="ambient_noise_summary">Kada je omogućeno, zvuci okoline sprečavaju noćni režim</string>
+<string name="about">О нама</string>
+<string name="action_snooze">Oдлагање аларма</string>
+<string name="action_stop">Заустављање</string>
+<string name="add_new_alarm">Додај нови аларм</string>
+<string name="add_custom_alarm_tone">Додај подразумевани тон аларма</string>
+<string name="add_custom_font">Додај подразумевани фонт</string>
+<string name="alarm">Аларм</string>
+<string name="alarmFadeIn">Појачање звука</string>
+<string name="alarmVolume">Jачина звука</string>
+<string name="allow_screen_off_summary">Угаси екран током ноћи</string>
+<string name="allow_screen_off">Дозволи гашење екрана</string>
+<string name="ambient_noise">Бука околине</string>
+<string name="ambient_noise_summary">Да ли бука околине спречава активирање ноћног начина рада</string>
 <string name="appearance">Izgled</string>
 <string name="app_name">Noćni sat</string>
 <string name="auto_brightness">Automatsko osvetljenje</string>
@@ -64,7 +67,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Hvala</string>
 <string name="donate_bitcoin">Bitkoin</string>
 <string name="donate">Donirajte</string>
-    <string name="handle_power_ac">Napajanje</string>
+<string name="handle_power_ac">Napajanje</string>
 <string name="handle_power">Automatsko pokretanje</string>
 <string name="handle_power_car">automobilska baza za napajanje</string>
 <string name="handle_power_desk">stona baza za napajanje</string>

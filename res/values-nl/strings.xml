@@ -75,7 +75,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">2 keer op het scherm tikken om de app te sluiten</string>
 <string name="doubleTapToFinishTitle">2 keer tikken om te sluiten</string>
 <string name="expertPreferences">Expert instellingen</string>
-    <string name="forecast">Weer vijf dagen</string>
+<string name="forecast">Weer vijf dagen</string>
 <string name="handle_power_ac">Netstroom</string>
 <string name="handle_power">Automatisch starten</string>
 <string name="handle_power_car">Autohouder</string>

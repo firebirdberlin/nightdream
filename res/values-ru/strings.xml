@@ -82,7 +82,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Дважды коснитесь экрана, что бы выйти из приложения</string>
 <string name="doubleTapToFinishTitle">Двойное косание для завершения</string>
 <string name="expertPreferences">Экспертные настройки</string>
-    <string name="forecast">Прогноз на 5 дней</string>
+<string name="forecast">Прогноз на 5 дней</string>
 <string name="hand_shape_arc">Арка</string>
 <string name="hand_shape_bar">Прямоугольник</string>
 <string name="hand_shape_triangle">Треугольник</string>

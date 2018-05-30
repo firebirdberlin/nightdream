@@ -45,8 +45,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_primary_color">Boja isticanja</string>
 <string name="choose_secondary_color">Boja teksta</string>
 <string name="clear">Ukloni</string>
-<string name="clock_layout_digital">Digitalni</string>
 <string name="clock_layout_analog">Analogni</string>
+<string name="clock_layout_digital">Digitalni</string>
 <string name="colors">Boje</string>
 <string name="confirm_reset_question">Želiš li zaista poništiti sva podešenja?</string>
 <string name="confirm_reset">Resetiraj</string>
@@ -61,7 +61,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Doniraj</string>
 <string name="doubleTapToFinishSummary">Zatvori aplikaciju dvostrukim kuhanjem po zaslonu</string>
-    <string name="handle_power_ac">Punjenje</string>
+<string name="handle_power_ac">Punjenje</string>
 <string name="handle_power">Automatsko pokretanje</string>
 <string name="handle_power_car">Automobilska baza za punjenje</string>
 <string name="handle_power_desk">Stolna baza za punjenje</string>
@@ -82,9 +82,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWeatherData">Kupi licencu</string>
 <string name="purchaseWebRadio">Kupi licencu</string>
 <string name="radio_stream_enabled">Omogućeno</string>
+<string name="radio_stream">Radio streamovi</string>
 <string name="radio_stream_no_search_results">Nema rezultata pretraživanja.</string>
 <string name="radio_stream_query_hint">Niz za pretraživanje</string>
-<string name="radio_stream">Radio streamovi</string>
 <string name="radio_stream_start">Pokreni/zaustavi radio stream</string>
 <string name="radio_stream_url">Radio stream URL</string>
 <string name="reactivate_on_ambient_light_value">Prag osvjetljenja</string>
