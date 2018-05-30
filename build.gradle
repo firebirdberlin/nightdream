@@ -7,7 +7,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath 'com.android.tools.build:gradle:3.1.2'
     }
 }
 apply plugin: 'com.android.application'
@@ -52,7 +52,9 @@ android {
     buildTypes {
         release {
             lintOptions {
+                checkReleaseBuilds false
                 disable 'MissingTranslation'
+                abortOnError false
             }
             proguardFile '/home/stefan/android/projects/nightdream/proguard-project.txt'
             minifyEnabled true

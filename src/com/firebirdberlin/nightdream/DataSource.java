@@ -66,6 +66,7 @@ public class DataSource {
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_DAYS, time.recurringDays);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE, time.isActive);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM, time.isNextAlarm);
+        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_ALARM_SOUND_URI, time.soundUri);
         return values;
     }
 
@@ -120,7 +121,8 @@ public class DataSource {
                 SQLiteDBHelper.AlarmEntry.COLUMN_MINUTE,
                 SQLiteDBHelper.AlarmEntry.COLUMN_DAYS,
                 SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE,
-                SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM
+                SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM,
+                SQLiteDBHelper.AlarmEntry.COLUMN_ALARM_SOUND_URI
         };
 
         return db.query(SQLiteDBHelper.AlarmEntry.TABLE_NAME, projection, where, whereArgs,
@@ -136,6 +138,7 @@ public class DataSource {
         SimpleTime time = new SimpleTime(id, hour, minute, days);
         time.isActive = (cursor.getInt(4) == 1);
         time.isNextAlarm = (cursor.getInt(5) == 1);
+        time.soundUri = cursor.getString(6);
         return time;
     }
 

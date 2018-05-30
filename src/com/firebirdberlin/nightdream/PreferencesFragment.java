@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -40,7 +39,6 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
-import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 import org.json.JSONException;
@@ -159,9 +157,9 @@ public class PreferencesFragment extends PreferenceFragment {
 
                     // update all widgets via intent, so the are repainted with current settings
                     ClockWidgetProvider.updateAllWidgets(mContext);
-
                 }
             };
+
     private boolean shallShowPurchaseDialog = false;
     ServiceConnection mServiceConn = new ServiceConnection() {
         @Override
@@ -272,8 +270,7 @@ public class PreferencesFragment extends PreferenceFragment {
                     ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
             ArrayList<String> signatureList =
                     ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
-            String continuationToken =
-                    ownedItems.getString("INAPP_CONTINUATION_TOKEN");
+            String continuationToken = ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
             boolean weatherDataIsPurchased = false;
             boolean radioIsPurchased = false;
@@ -359,8 +356,10 @@ public class PreferencesFragment extends PreferenceFragment {
         if (mService == null) return;
         try {
             String developerPayload = "abcdefghijklmnopqrstuvwxyz";
-            Bundle buyIntentBundle = mService.getBuyIntent(3, getActivity().getPackageName(),
-                    sku, "inapp", developerPayload);
+            Bundle buyIntentBundle = mService.getBuyIntent(
+                    3, getActivity().getPackageName(),
+                    sku, "inapp", developerPayload
+            );
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
                     REQUEST_CODE, new Intent(), 0, 0, 0);
@@ -438,7 +437,7 @@ public class PreferencesFragment extends PreferenceFragment {
         HashMap<String, String> map = new HashMap<>();
         if (mService == null) return map;
 
-        ArrayList skuList = new ArrayList();
+        ArrayList<String> skuList = new ArrayList<String>();
         skuList.add(ITEM_WEATHER_DATA);
         skuList.add(ITEM_WEB_RADIO);
         skuList.add(ITEM_DONATION);
@@ -604,7 +603,7 @@ public class PreferencesFragment extends PreferenceFragment {
         startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 if (!RadioStreamService.isRunning) {
-                    RadioStreamService.start(context, true);
+                    RadioStreamService.start(context, null, true);
                 } else {
                     RadioStreamService.stop(context);
                 }
@@ -613,49 +612,9 @@ public class PreferencesFragment extends PreferenceFragment {
         });
 
 
-        setupCustomAlarmTonePreference();
         setupLightSensorPreferences();
         setupDaydreamPreferences();
         setupTranslationRequest();
-    }
-
-    private void setupCustomAlarmTonePreference() {
-        final Preference customAlarmToneURI = findPreference("customAlarmToneUri");
-        customAlarmToneURI.setSummary(settings.AlarmToneName);
-        customAlarmToneURI.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-
-        {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                FragmentManager fm = getFragmentManager();
-                ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
-                dialog.setIsPurchased(purchased_web_radio);
-                dialog.setSelectedUri(settings.AlarmToneUri);
-                dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
-                    @Override
-                    public void onAlarmToneSelected(Uri uri, String name) {
-                        String summary;
-                        if (purchased_web_radio || !uri.getScheme().equals("file")) {
-                            settings.setAlarmToneUri(uri != null ? uri.toString() : null, name);
-                            summary = name;
-                        } else {
-                            summary = String.format("%s (%s)", name,
-                                    mContext.getString(R.string.product_name_webradio));
-                        }
-                        customAlarmToneURI.setSummary(summary);
-                    }
-
-                    @Override
-                    public void onPurchaseRequested() {
-                        Log.w(TAG, "purchase requested");
-                        showPurchaseDialog();
-                    }
-
-                });
-                dialog.show(fm, "custom sounds");
-                return false;
-            }
-        });
     }
 
     private void setupLightSensorPreferences() {
@@ -1045,18 +1004,6 @@ public class PreferencesFragment extends PreferenceFragment {
         boolean on = pref.isEnabled();
         String summary = on ? "" : getString(R.string.autostart_message_disabled);
         pref.setSummary(summary);
-
-
-        PreferenceCategory category = (PreferenceCategory) findPreference("category_behaviour");
-        removePreference("force_auto_rotation");
-        if (!on) {
-            SwitchPreference forceAutoRotation = new SwitchPreference(mContext);
-            forceAutoRotation.setKey("force_auto_rotation");
-            forceAutoRotation.setTitle(getString(R.string.force_auto_rotation));
-            forceAutoRotation.setSummary(getString(R.string.force_auto_rotation_summary));
-            forceAutoRotation.setDefaultValue(false);
-            category.addPreference(forceAutoRotation);
-        }
     }
 
     private class DaydreamSettingsObserver extends ContentObserver {

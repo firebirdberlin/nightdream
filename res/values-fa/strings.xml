@@ -64,9 +64,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">با دو ضربه روی صفحه برنامه را خاتمه دهید</string>
 <string name="doubleTapToFinishTitle">دو ضربه بزنید تا تمام شود</string>
 <string name="expertPreferences">تنظیمات حرفه ای</string>
-<string name="force_auto_rotation"> جهت گیری صفحه در طی رویاپردازی اعمال شود</string>
-<string name="force_auto_rotation_summary"> جهت گیری صفحه اگر رویاپردازی استفاده شد، اعمال گردد</string>
-<string name="handle_power_ac">شارژ</string>
+    <string name="handle_power_ac">شارژ</string>
 <string name="handle_power">شروع خودکار</string>
 <string name="handle_power_car">ساعت ماشین</string>
 <string name="handle_power_desk">ساعت رومیزی</string>

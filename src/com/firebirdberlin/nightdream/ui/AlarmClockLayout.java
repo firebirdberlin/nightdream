@@ -3,14 +3,18 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +27,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.firebirdberlin.nightdream.BillingHelper;
+import com.firebirdberlin.nightdream.BillingHelperActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
@@ -34,14 +40,16 @@ import java.util.Calendar;
 public class AlarmClockLayout extends LinearLayout {
 
     private static final String TAG = "AlarmClockLayout";
-    private Context context = null;
+    private Context context;
     private String timeFormat = "h:mm";
     private View mainLayout = null;
     private SimpleTime alarmClockEntry = null;
     private TextView timeView = null;
+    private TextView textViewSound = null;
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
     private LinearLayout layoutDays = null;
+    private LinearLayout secondaryLayout = null;
     private Button buttonDelete = null;
     private Switch switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
@@ -82,9 +90,8 @@ public class AlarmClockLayout extends LinearLayout {
     private ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View view) {
-            boolean gone = buttonDelete.getVisibility() == View.GONE;
-            buttonDelete.setVisibility(gone ? View.VISIBLE : View.GONE);
-            checkBoxIsRepeating.setVisibility(gone ? View.VISIBLE : View.GONE);
+            boolean gone = secondaryLayout.getVisibility() == View.GONE;
+            secondaryLayout.setVisibility(gone ? View.VISIBLE : View.GONE);
             buttonDown.setImageResource(gone ? R.drawable.ic_collapse : R.drawable.ic_expand);
             layoutDays.setVisibility(
                     (gone && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
@@ -124,6 +131,7 @@ public class AlarmClockLayout extends LinearLayout {
     }
 
     private void init() {
+
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child = inflater.inflate(R.layout.alarm_clock_layout, null);
@@ -131,10 +139,12 @@ public class AlarmClockLayout extends LinearLayout {
         addView(child, lp);
         mainLayout = findViewById(R.id.mainLayout);
         timeView = (TextView) findViewById(R.id.timeView);
+        textViewSound = (TextView) findViewById(R.id.textViewSound);
         textViewWhen = (TextView) findViewById(R.id.textViewWhen);
         layoutDays = (LinearLayout) findViewById(R.id.layoutDays);
         buttonDown = (ImageView) findViewById(R.id.button_down);
         buttonDelete = (Button) findViewById(R.id.button_delete);
+        secondaryLayout = (LinearLayout) findViewById(R.id.secondaryLayout);
         switchActive = (Switch) findViewById(R.id.enabled);
         checkBoxIsRepeating = (CheckBox) findViewById(R.id.checkBoxIsRepeating);
 
@@ -196,6 +206,39 @@ public class AlarmClockLayout extends LinearLayout {
                 ((SetAlarmClockActivity) context).onTimeClicked(view);
             }
         });
+        textViewSound.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (alarmClockEntry == null) return;
+
+                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
+                dialog.setIsPurchased(
+                        ((BillingHelperActivity) context).isPurchased(BillingHelper.ITEM_WEB_RADIO)
+                );
+                dialog.setSelectedUri(alarmClockEntry.soundUri);
+                dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
+                    @Override
+                    public void onAlarmToneSelected(Uri uri, String name) {
+                        Log.i(TAG, "onAlarmToneSelected: " + uri + ", " + name);
+                        if (alarmClockEntry == null) {
+                            return;
+                        }
+                        alarmClockEntry.soundUri = uri.toString();
+                        update();
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    }
+
+                    @Override
+                    public void onPurchaseRequested() {
+                        Log.w(TAG, "purchase requested");
+                        ((BillingHelperActivity) context).showPurchaseDialog();
+                    }
+
+                });
+                dialog.show(fm, "custom sounds");
+            }
+        });
     }
 
     private void update() {
@@ -222,6 +265,15 @@ public class AlarmClockLayout extends LinearLayout {
                 int day = (int) dayButtons[i].getTag();
                 dayButtons[i].setChecked(alarmClockEntry.hasDay(day));
             }
+
+            String displayName;
+            if (alarmClockEntry.soundUri == null || alarmClockEntry.soundUri.isEmpty()) {
+                Uri soundUri = Utility.getDefaultAlarmToneUri();
+                displayName = Utility.getSoundFileTitleFromUri(context, soundUri);
+            } else {
+                displayName = Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
+            }
+            textViewSound.setText(displayName);
         }
 
         invalidate();

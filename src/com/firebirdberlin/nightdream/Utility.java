@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,9 +12,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.hardware.display.DisplayManager;
+import android.media.MediaMetadataRetriever;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
@@ -49,7 +51,6 @@ public class Utility {
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     private Context mContext;
 
-    // constructor
     public Utility(Context context){
         this.mContext = context;
         getSystemBrightnessMode();
@@ -175,7 +176,6 @@ public class Utility {
     }
 
     public static long getFirstInstallTime(Context context) {
-        if(Build.VERSION.SDK_INT < 9) return 0L;
         try {
             return context.getPackageManager()
                           .getPackageInfo(context.getPackageName(), 0)
@@ -286,9 +286,7 @@ public class Utility {
 
     public Point getDisplaySize() {
         Point size = new Point();
-        if (Build.VERSION.SDK_INT < 13) {
-            size = getDisplaySizeV12();
-        } else if (Build.VERSION.SDK_INT < 17) {
+        if (Build.VERSION.SDK_INT < 17) {
             DisplayMetrics metrics = new DisplayMetrics();
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(metrics);
@@ -300,17 +298,6 @@ public class Utility {
             display.getSize(size);
         }
 
-        return size;
-    }
-
-    @TargetApi(12)
-    @SuppressWarnings("deprecation")
-    public Point getDisplaySizeV12() {
-        Point size = new Point();
-        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        size.x = display.getWidth();
-        size.y = display.getHeight();
         return size;
     }
 
@@ -402,5 +389,47 @@ public class Utility {
     @SuppressWarnings("deprecation")
     protected static boolean deprecatedIsScreenOn(PowerManager pm) {
         return pm.isScreenOn();
+    }
+
+    public static String getSoundFileTitleFromUri(Context context, String uriString) {
+        Log.w(TAG, "uri: " + uriString);
+        Uri uri = null;
+        try {
+            uri = Uri.parse(uriString);
+        } catch (NullPointerException ignore) {
+        }
+        return getSoundFileTitleFromUri(context, uri);
+    }
+
+    public static String getSoundFileTitleFromUri(Context context, Uri uri) {
+        if (uri == null) return "";
+
+        // get the name from android content
+        if ("content".equals(uri.getScheme())) {
+            Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
+            String title = ringtone.getTitle(context);
+            ringtone.stop();
+            return title;
+        }
+
+        // get the name from meta data
+        String filePath = uri.getPath();
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        try {
+            mmr.setDataSource(filePath);
+            String title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            if (title != null && !title.isEmpty()) {
+                return title;
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
+        // get the file name
+        return uri.getLastPathSegment();
+    }
+
+    public static Uri getDefaultAlarmToneUri() {
+        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
     }
 }
