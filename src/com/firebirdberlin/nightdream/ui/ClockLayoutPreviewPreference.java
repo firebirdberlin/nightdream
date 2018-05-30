@@ -113,6 +113,8 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.timeFormat12h, settings.timeFormat24h);
         clockLayout.setShowDivider(settings.showDivider);
+        clockLayout.setMirrorText(settings.clockLayoutMirrorText);
+        clockLayout.setScaleFactor(1.f);
         clockLayout.showDate(settings.showDate);
 
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
