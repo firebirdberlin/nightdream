@@ -70,9 +70,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_title_thank_you">Mulțumesc</string>
 <string name="donate_bitcoin">Bitcoin</string>
 <string name="donate">Doneză</string>
-<string name="force_auto_rotation">Forțează orientarea in daydream</string>
-<string name="force_auto_rotation_summary">Forțează orientarea ecranului dacă Daydream este utilizat</string>
-<string name="handle_power_ac">AC</string>
+    <string name="handle_power_ac">AC</string>
 <string name="handle_power">Pornire automată</string>
 <string name="handle_power_car">Dock maşină</string>
 <string name="handle_power_desk">Dock birou</string>

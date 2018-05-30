@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
@@ -55,7 +54,7 @@ import java.util.Calendar;
 import de.greenrobot.event.EventBus;
 
 
-public class NightDreamActivity extends Activity
+public class NightDreamActivity extends BillingHelperActivity
                                 implements View.OnTouchListener,
                                            NightModeReceiver.Event,
                                            LocationUpdateReceiver.AsyncResponse,
@@ -344,7 +343,7 @@ public class NightDreamActivity extends Activity
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy()");
 
@@ -396,8 +395,8 @@ public class NightDreamActivity extends Activity
         if ( AlarmHandlerService.alarmIsRunning() ) {
             AlarmHandlerService.stop(this);
         }
-        if (!mySettings.purchasedWebRadio && !mySettings.hasLegacyRadioStation()) {
-            PreferencesActivity.startWithPurchaseDialog(this);
+        if (!isPurchased(BillingHelper.ITEM_WEB_RADIO) && !mySettings.hasLegacyRadioStation()) {
+            showPurchaseDialog();
             return;
         }
         mySettings.upgradeLegacyRadioStationToFirstFavoriteRadioStation();
@@ -431,8 +430,7 @@ public class NightDreamActivity extends Activity
 
     private void setupWeatherForecastIcon() {
         String cityID = mySettings.getValidCityID();
-        if (Build.VERSION.SDK_INT < 14
-                || ! mySettings.showWeather
+        if (!mySettings.showWeather
                 || cityID == null
                 || cityID.isEmpty() ) {
             weatherIcon.setVisibility(View.GONE);
@@ -447,7 +445,7 @@ public class NightDreamActivity extends Activity
 
     private void setupAlarmClockIcon() {
 
-        if (Build.VERSION.SDK_INT < 14 || !mySettings.useInternalAlarm) {
+        if (!mySettings.useInternalAlarm) {
             alarmClockIcon.setVisibility(View.GONE);
         } else {
             alarmClockIcon.setVisibility(View.VISIBLE);

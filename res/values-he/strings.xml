@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
 Translations wanted !
 =====================
@@ -20,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">אודות</string>
 <string name="action_snooze">נודניק</string>
 <string name="action_stop">לעצור</string>
+<string name="add_new_alarm">הוסף שעון מעורר חדש</string>
+<string name="add_custom_alarm_tone">הוסף צליל שעון מעורר מותאם אישית</string>
 <string name="alarm">שעון מעורר</string>
 <string name="alarmFadeIn">צלצול  מתגבר</string>
 <string name="alarmVolume">ווליום</string>
@@ -48,9 +49,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="choose_primary_color">צבע ראשי</string>
 <string name="choose_secondary_color">צבע משני של טקסט </string>
 <string name="clear">נקה</string>
-<string name="clock_layout">עיצוב</string>
-<string name="clock_layout_digital">דיגיטלי</string>
 <string name="clock_layout_analog">אנלוגי</string>
+<string name="clock_layout_digital">דיגיטלי</string>
+<string name="clock_layout">עיצוב</string>
 <string name="colors">צבעים</string>
 <string name="confirm_reset_question">האם ברצונך לאפס את כל ההגדרות? </string>
 <string name="confirm_reset">איפוס</string>
@@ -68,8 +69,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">סיים את הישומון על ידי לחיצה כפולה על המסך</string>
 <string name="doubleTapToFinishTitle">לחיצה כפולה לסיום</string>
 <string name="expertPreferences">אפיון מתקדם</string>
-<string name="force_auto_rotation">כפה סיבוב מסך במצב daydrean</string>
-<string name="force_auto_rotation_summary">אכוף את סיבוב המסך אם מצב DayDream מופעל</string>
 <string name="handle_power_ac">מטען</string>
 <string name="handle_power">הפעלה אוטומטית</string>
 <string name="handle_power_car">דיבורית </string>
@@ -82,19 +81,19 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="hide_background_image_in_night_mode_summary">הסתר את תמונת הרקע  במצב לילה</string>
 <string name="location_time">זמן מקומי</string>
 <string name="maxBrightness">בהירות מסך מקסימאלית</string>
-<string name="message_no_data_connection">אין חיבור נתונים</string>
-<string name="message_mobile_data_connection">נותונים סלולריים</string>
 <string name="message_mobile_data_connection_confirmation">אתה מחובר לרשת סלולרית. האם להפעיל את נגן הרדיו</string>
+<string name="message_mobile_data_connection">נותונים סלולריים</string>
+<string name="message_no_data_connection">אין חיבור נתונים</string>
 <string name="minute">דקה</string>
 <string name="mute_ringer">השתק צלצול</string>
-<string name="night_mode">מצב לילה</string>
-<string name="night_mode_activation_mode">מצב הפעלה</string>
-<string name="night_mode_activation_manual">ידני</string>
 <string name="night_mode_activation_auto">אוטומטי</string>
+<string name="night_mode_activation_manual">ידני</string>
+<string name="night_mode_activation_mode">מצב הפעלה</string>
 <string name="night_mode_activation_scheduled">מתוכנן</string>
-<string name="night_mode_timerange_title">לילה</string>
+<string name="night_mode">מצב לילה</string>
 <string name="night_mode_timerange_label_end">זמן סיום</string>
 <string name="night_mode_timerange_label_start">זמן התחלה</string>
+<string name="night_mode_timerange_title">לילה</string>
 <string name="noise_sensitivity">רגישות מיקרופון</string>
 <string name="notification_alarm">לחץ להפסקת הצלצול</string>
 <string name="other_apps">אפליקציות אחרות</string>
@@ -107,9 +106,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="purchaseWebRadio">קנה רשיון</string>
 <string name="radio">רדיו</string>
 <string name="radio_stream_enabled">מופעל</string>
+<string name="radio_stream">הזרמת תחנות רדיו</string>
 <string name="radio_stream_no_search_results">לא נמצאו תוצאות</string>
 <string name="radio_stream_query_hint">טקסט חיפוש</string>
-<string name="radio_stream">הזרמת תחנות רדיו</string>
 <string name="radio_stream_search">חפש</string>
 <string name="radio_stream_start">הפעל/כבה הזרמת רדיו</string>
 <string name="radio_stream_url">כתובת הזרמת רדיו</string>
@@ -139,14 +138,14 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_wind_speed">הצג מהירות הרוח</string>
 <string name="snoozeTime">זמן נדנוד</string>
 <string name="speedUnit">יחידת מידה לרוח</string>
-<string name="standbyEnabledWhileConnectedTitle">מצב המתנה</string>
 <string name="standbyEnabledWhileConnectedSummary">הפעל כאשר המסך נכבה</string>
-<string name="standbyEnabledWhileDisconnectedTitle">מצב המתנה בזמן ניצול הסוללה</string>
+<string name="standbyEnabledWhileConnectedTitle">מצב המתנה</string>
 <string name="standbyEnabledWhileDisconnectedSummary">האפשרות הזו תנצל את הסוללה במהירות</string>
+<string name="standbyEnabledWhileDisconnectedTitle">מצב המתנה בזמן ניצול הסוללה</string>
 <string name="standbyNotificationText">שרות ההמתנה מופעל</string>
-<string name="titlePrivacyPolicy">מדיניות פרטיות</string>
 <string name="temperatureUnit">יחידת מידה לטמפרטורה</string>
 <string name="timeFormat">מבנה הזמן</string>
+<string name="titlePrivacyPolicy">מדיניות פרטיות</string>
 <string name="translations">תרגומים</string>
 <string name="typeface_7_segment">7 לדים</string>
 <string name="typeface_roboto_condensed">רובוטו צפוף</string>
@@ -156,9 +155,9 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="typeface_roboto_thin">רובוטו דק</string>
 <string name="typeface">סגנון פונט</string>
 <string name="uninstall">הסרת הישומות</string>
-<string name="use_internal_alarm">התראות מהירות</string>
-<string name="useDeviceLock">נעילת המכשיר</string>
 <string name="useDeviceLockExplanation">נעל את המכשיר בזמן ששעון הלילה פעיל</string>
+<string name="useDeviceLock">נעילת המכשיר</string>
+<string name="use_internal_alarm">התראות מהירות</string>
 <string name="weather_calculation_time">זמן חישוב מזג האוויר</string>
 <string name="weather_city_id_summary">OpenWeatherMap City ID. השאר ריק לזיהוי אוטומטי של המיקום</string>
 <string name="weather_city_id_title">מזהה עיר</string>

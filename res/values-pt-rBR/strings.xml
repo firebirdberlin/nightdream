@@ -75,8 +75,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Encerre o app com toque duplo na tela.</string>
 <string name="doubleTapToFinishTitle">Toque duplo para encerrar.</string>
 <string name="expertPreferences">Configurações Avançadas</string>
-<string name="force_auto_rotation">Força a orientação no Daydream</string>
-<string name="force_auto_rotation_summary">Reforça a orientação da tela caso o Daydream seja utilizado.</string>
 <string name="forecast">Previsão do tempo para 5 dias</string>
 <string name="handle_power_ac">Cabo de força</string>
 <string name="handle_power">Inicio automático</string>

@@ -10,6 +10,7 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 
@@ -24,6 +25,7 @@ public class AlarmHandlerService extends IntentService {
     private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
     private Context context = null;
     private Settings settings;
+    private static SimpleTime alarmTime;
 
     public AlarmHandlerService() {
         super("AlarmHandlerService");
@@ -38,7 +40,25 @@ public class AlarmHandlerService extends IntentService {
                 || RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM);
     }
 
+    public static void start(Context context, Intent intent) {
+        Settings settings = new Settings(context);
+        if (!settings.useInternalAlarm) return;
+        Bundle extras = (intent != null) ? intent.getExtras() : null;
+        alarmTime = (extras != null) ? new SimpleTime(extras) : null;
+
+        if (settings.useRadioAlarmClock && Utility.hasFastNetworkConnection(context)) {
+            RadioStreamService.start(context, alarmTime);
+        } else {
+            if (RadioStreamService.streamingMode != RadioStreamService.StreamingMode.INACTIVE) {
+                RadioStreamService.stop(context);
+            }
+            AlarmService.startAlarm(context, alarmTime);
+        }
+
+    }
+
     public static void stop(Context context) {
+        alarmTime = null;
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_STOP_ALARM);
         context.startService(i);
@@ -51,6 +71,7 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void cancel(Context context) {
+        alarmTime = null;
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_CANCEL_ALARM);
         context.startService(i);
@@ -134,8 +155,10 @@ public class AlarmHandlerService extends IntentService {
     private void snoozeAlarm() {
         stopAlarm();
         Calendar now = Calendar.getInstance();
+
         SimpleTime time = new SimpleTime(now.getTimeInMillis() + settings.snoozeTimeInMillis);
         time.isActive = true;
+        time.soundUri = (alarmTime != null) ? alarmTime.soundUri : null;
         setAlarm(time);
     }
 

@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,7 +32,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
-import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -105,7 +103,6 @@ public class NightDreamUI {
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
-            if (Build.VERSION.SDK_INT < 11) return;
             float s = clockLayout.getAbsScaleFactor();
             Configuration config = getConfiguration();
             settings.setScaleClock(s, config.orientation);
@@ -113,12 +110,11 @@ public class NightDreamUI {
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            return Build.VERSION.SDK_INT >= 11;
+            return true;
         }
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            if (Build.VERSION.SDK_INT < 11) return false;
             float s = detector.getScaleFactor();
             applyScaleFactor(s);
             return true;
@@ -148,9 +144,8 @@ public class NightDreamUI {
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
     private float LIGHT_VALUE_DAYLIGHT = 300.0f;
-    // only called for apilevel >= 12
+
     private Runnable zoomIn = new Runnable() {
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
         @Override
         public void run() {
             Configuration config = getConfiguration();
@@ -342,13 +337,11 @@ public class NightDreamUI {
 
             showAlarmClock();
             setupShowcase();
-            if (Build.VERSION.SDK_INT >= 12) {
-                clockLayout.post(new Runnable() {
-                    public void run() {
-                        handler.postDelayed(zoomIn, 500);
-                    }
-                });
-            }
+            clockLayout.post(new Runnable() {
+                public void run() {
+                    handler.postDelayed(zoomIn, 500);
+                }
+            });
         }
     };
     private Runnable setupSidePanel = new Runnable() {
@@ -387,7 +380,7 @@ public class NightDreamUI {
             for (LinearLayout layout : layouts) {
                 layout.setOrientation(orientation);
             }
-            if (Build.VERSION.SDK_INT > 11 && sidePanel.getX() < 0) {
+            if (sidePanel.getX() < 0) {
                 initSidePanel();
             }
 
@@ -398,9 +391,7 @@ public class NightDreamUI {
         mContext = context;
 
         mGestureDetector = new GestureDetector(mContext, mSimpleOnGestureListener);
-        if (Build.VERSION.SDK_INT >= 11) {
-            mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
-        }
+        mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
 
         this.window = window;
         View rootView = window.getDecorView().findViewById(android.R.id.content);
@@ -440,12 +431,9 @@ public class NightDreamUI {
         menuIcon.setOnLongClickListener(onMenuItemLongClickListener);
 
         // prepare zoom-in effect
-        // API level 11
-        if (Build.VERSION.SDK_INT >= 12){
-            menuIcon.setScaleX(.8f);
-            menuIcon.setScaleY(.8f);
-            clockLayout.setScaleFactor(.1f);
-        }
+        menuIcon.setScaleX(.8f);
+        menuIcon.setScaleY(.8f);
+        clockLayout.setScaleFactor(.1f);
 
         utility = new Utility(context);
         settings = new Settings(context);
@@ -594,11 +582,6 @@ public class NightDreamUI {
     }
 
     private void setNightModeIcon() {
-        if (Build.VERSION.SDK_INT < 14) {
-            nightModeIcon.setVisibility(View.GONE);
-            return;
-        }
-
         if (settings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL
                 || Utility.getLightSensor(mContext) == null ) {
             nightModeIcon.setVisibility(View.VISIBLE);
@@ -807,12 +790,8 @@ public class NightDreamUI {
     }
 
     private void centerClockLayout() {
-        if (Build.VERSION.SDK_INT >= 11) {
-            clockLayout.setTranslationX(0);
-            clockLayout.setTranslationY(0);
-        } else {
-            clockLayout.setPadding(0, 0, 0, 0);
-        }
+        clockLayout.setTranslationX(0);
+        clockLayout.setTranslationY(0);
         clockLayout.invalidate();
     }
 
@@ -824,44 +803,21 @@ public class NightDreamUI {
         int w = clockLayoutContainer.getWidth();
         int h = clockLayoutContainer.getHeight();
         Log.i(TAG, String.valueOf(w) + "x" + String.valueOf(h));
-        if (Build.VERSION.SDK_INT < 12) {
-            // make back panel fully transparent
-            clockLayout.setBackgroundColor(Color.parseColor("#00000000"));
+        // determine a random position
+        // api level 12
+        int scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
+        int scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
+        Log.i(TAG, String.valueOf(scaled_width) + "x" + String.valueOf(scaled_height));
+        int rxpos = w - scaled_width;
+        int rypos = h - scaled_height;
 
-            int rxpos = (w - clockLayout.getWidth()) / 2;
-            int rypos = (h - clockLayout.getHeight()) / 2; // API level 1
+        int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
+        int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
 
-            rxpos = to_range(rxpos, 1, w);
-            rypos = to_range(rypos, 1, h);
-
-            int i1 = random.nextInt(2 * rxpos);
-            int i2 = 90 + random.nextInt(2 * rypos);
-
-            clockLayout.setPadding(i1, i2, 0, 0);
-            clockLayout.invalidate();
-        } else {
-            // determine a random position
-            // api level 12
-            int scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
-            int scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
-            Log.i(TAG, String.valueOf(scaled_width) + "x" + String.valueOf(scaled_height));
-            int rxpos = w - scaled_width;
-            int rypos = h - scaled_height;
-
-            int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
-            int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
-
-            i1 -= (clockLayout.getWidth() - scaled_width) / 2;
-            i2 -= (clockLayout.getHeight() - scaled_height) / 2;
-            Log.i(TAG, String.valueOf(i1) + "x" + String.valueOf(i2));
-            clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
-        }
-    }
-
-    private int to_range(int value, int min, int max){
-        if (value > max) return max;
-        if (value < min) return min;
-        return value;
+        i1 -= (clockLayout.getWidth() - scaled_width) / 2;
+        i2 -= (clockLayout.getHeight() - scaled_height) / 2;
+        Log.i(TAG, String.valueOf(i1) + "x" + String.valueOf(i2));
+        clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
     }
 
     private float to_range(float value, float min, float max){
@@ -1043,16 +999,9 @@ public class NightDreamUI {
     private void setAlpha(View v, float alpha, int millis) {
         if (v == null) return;
 
-        if (Build.VERSION.SDK_INT < 14) {
-             final AlphaAnimation animation = new AlphaAnimation(alpha, alpha);
-             animation.setDuration(millis);
-             animation.setFillAfter(true);
-             v.startAnimation(animation);
-        } else { // should work from 12 on but had a bug report for 13 !?!
-            float oldValue = v.getAlpha();
-            if (alpha != oldValue) {
-                v.animate().setDuration(millis).alpha(alpha);
-            }
+        float oldValue = v.getAlpha();
+        if (alpha != oldValue) {
+            v.animate().setDuration(millis).alpha(alpha);
         }
     }
 
@@ -1064,59 +1013,32 @@ public class NightDreamUI {
     }
 
     private void toggleSidePanel() {
-        if (Build.VERSION.SDK_INT > 11) {
-           float x = sidePanel.getX();
-           if (x < 0.f ) {
-               showSidePanel();
-           } else {
-               hideSidePanel();
-           }
+        float x = sidePanel.getX();
+        if (x < 0.f) {
+            showSidePanel();
         } else {
-            if ( sidePanel.getVisibility() == View.VISIBLE ) {
-               hideSidePanel();
-            } else {
-               showSidePanel();
-            }
+            hideSidePanel();
         }
     }
 
     private void showSidePanel() {
-        if (Build.VERSION.SDK_INT > 11) {
-            sidePanel.animate().setDuration(250).x(0);
-        } else {
-            sidePanel.setVisibility(View.VISIBLE);
-            sidePanel.setClickable(true);
-        }
+        sidePanel.animate().setDuration(250).x(0);
         handler.postDelayed(hideAlarmClock, 20000);
     }
 
     private void hideSidePanel() {
         int w = sidePanel.getWidth();
-        if (Build.VERSION.SDK_INT > 11) {
-            sidePanel.animate().setDuration(250).x(-w);
-        } else {
-            sidePanel.setVisibility(View.INVISIBLE);
-            sidePanel.setClickable(false);
-        }
+        sidePanel.animate().setDuration(250).x(-w);
     }
 
     public boolean sidePanelIsHidden() {
-        if (Build.VERSION.SDK_INT > 11) {
-            float x = sidePanel.getX();
-            return (x < 0.f);
-        } else {
-            return (sidePanel.getVisibility() != View.VISIBLE);
-        }
+        float x = sidePanel.getX();
+        return (x < 0.f);
     }
 
     public void initSidePanel() {
         if (sidePanel == null) return;
-        if (Build.VERSION.SDK_INT > 11) {
-            sidePanel.setX(-1000f);
-        } else {
-            sidePanel.setVisibility(View.INVISIBLE);
-            sidePanel.setClickable(false);
-        }
+        sidePanel.setX(-1000f);
     }
 
     private void hideBatteryView(int millis) {
@@ -1170,7 +1092,6 @@ public class NightDreamUI {
         return mContext.getResources().getConfiguration();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void applyScaleFactor(float factor) {
         int width = clockLayoutContainer.getWidth();
         int height = clockLayoutContainer.getHeight();
@@ -1237,8 +1158,6 @@ public class NightDreamUI {
     }
 
     private void checkForReviewRequest() {
-        if (Build.VERSION.SDK_INT < 11) return;
-
         // ask only once
         if (settings.lastReviewRequestTime != 0L) return;
 
