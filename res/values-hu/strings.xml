@@ -75,7 +75,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Bezárja az alkalmazást a képernyő kettős megérintésével.</string>
 <string name="doubleTapToFinishTitle">Koppintson duplán a befejezéshez</string>
 <string name="expertPreferences">Haladó beállítások</string>
-    <string name="forecast">5 napos előrejelzés</string>
+<string name="forecast">5 napos előrejelzés</string>
 <string name="handle_power_ac">Hálózati töltő</string>
 <string name="handle_power">Automatikus indulás</string>
 <string name="handle_power_car">Autós dokkoló</string>

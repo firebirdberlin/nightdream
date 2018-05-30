@@ -75,7 +75,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="doubleTapToFinishSummary">Dokončite aplikáciu dvojitým poklepaním na obrazovku.</string>
 <string name="doubleTapToFinishTitle">Dvojitým klepnutím dokončíte</string>
 <string name="expertPreferences">Nastavenia pre expertov</string>
-    <string name="forecast">5 ~ dňová predpoveď počasia</string>
+<string name="forecast">5 ~ dňová predpoveď počasia</string>
 <string name="handle_power_ac">externému napájaniu</string>
 <string name="handle_power">Automatický štart</string>
 <string name="handle_power_car">dokovanie v aute</string>
