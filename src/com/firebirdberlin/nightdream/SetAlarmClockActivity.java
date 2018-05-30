@@ -76,7 +76,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     private void init() {
         openDB();
-        entries = db.getAlarms();
+        if (entries == null) {
+            entries = db.getAlarms();
+        }
         update();
     }
 
