@@ -58,6 +58,7 @@ OR
     <string name="clock_layout_digit_analog">analog clock with digits</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_modern_analog">modern analog clock</string>
+    <string name="clock_layout_mirror_text">Mirror text</string>
     <string name="colors">Colors</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="confirm_reset_question_layout">Do you really want to reset this layout to defaults ?</string>

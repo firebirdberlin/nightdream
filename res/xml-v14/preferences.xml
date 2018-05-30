@@ -219,6 +219,11 @@
 
             <SwitchPreference
                 android:defaultValue="false"
+                android:key="clockLayoutMirrorText"
+                android:title="@string/clock_layout_mirror_text" />
+
+            <SwitchPreference
+                android:defaultValue="false"
                 android:key="doubleTapToFinish"
                 android:summary="@string/doubleTapToFinishSummary"
                 android:title="@string/doubleTapToFinishTitle" />
