@@ -138,7 +138,6 @@ public class NightDreamUI {
             setupShowcaseView();
         }
     };
-    private boolean daydreamMode = false;
     private boolean locked = false;
     private float last_ambient = 4.0f;
     private float LIGHT_VALUE_DARK = 4.2f;
@@ -154,9 +153,7 @@ public class NightDreamUI {
 
             float s = getScaleFactor(config);
             clockLayout.setScaleFactor(s, true);
-            if (! daydreamMode ) {
-                Utility.turnScreenOn(mContext);
-            }
+            Utility.turnScreenOn(mContext);
         }
     };
     private Runnable hideBrightnessView = new Runnable() {
@@ -453,11 +450,6 @@ public class NightDreamUI {
         isDebuggable = utility.isDebuggable();
     }
 
-    public NightDreamUI(Context context, Window window, boolean daydreamMode) {
-        this(context, window);
-        this.daydreamMode = daydreamMode;
-    }
-
     public void onStart() {
         handler.postDelayed(moveAround, 30000);
     }
@@ -473,7 +465,6 @@ public class NightDreamUI {
         initSidePanel();
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
-        bottomPanelLayout.setDaydreamMode(daydreamMode);
         bottomPanelLayout.setup();
         setupScreenAnimation();
         lockUI(this.locked);
@@ -724,7 +715,6 @@ public class NightDreamUI {
     }
 
     private void setupAlarmClock() {
-        bottomPanelLayout.setDaydreamMode(daydreamMode);
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
         bottomPanelLayout.setup();
@@ -857,11 +847,6 @@ public class NightDreamUI {
                 v = 1.f + add_brightness;
                 brightness = add_brightness;
             }
-
-            if ( daydreamMode ) {
-                v *= 0.5f;
-                brightness = 0.f;
-            }
         }
 
         float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.05f);
@@ -934,7 +919,6 @@ public class NightDreamUI {
     }
 
     private void setScreenOrientation(int orientation) {
-        if (daydreamMode) return;
         ((Activity) mContext).setRequestedOrientation(orientation);
     }
 
@@ -1242,8 +1226,7 @@ public class NightDreamUI {
     }
 
     private void setupShowcase() {
-        // daydreams cannot be cast to an activity
-        if ( showcaseView != null || daydreamMode) {
+        if (showcaseView != null) {
             return;
         }
 
@@ -1327,7 +1310,7 @@ public class NightDreamUI {
     }
 
     private void setupShowcaseForScreenLock() {
-        if ( showcaseView != null || daydreamMode) {
+        if (showcaseView != null) {
             return;
         }
 
