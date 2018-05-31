@@ -94,7 +94,9 @@
             android:name=".services.WeatherService"
             android:enabled="true" />
 
-        <activity android:name=".PreferencesActivity" />
+        <activity
+            android:name=".PreferencesActivity"
+            android:configChanges="orientation|keyboard|screenSize" />
         <activity
             android:name=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize"
