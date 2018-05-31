@@ -158,7 +158,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     @Override
     public void setClickable(boolean clickable) {
-        //Log.w(TAG, "setClickable " + ((clickable) ? "true" : "false"));
+        Log.i(TAG, "setClickable " + ((clickable) ? "true" : "false"));
         super.setClickable(clickable);
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).setClickable(clickable);
