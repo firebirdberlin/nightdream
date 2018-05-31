@@ -14,7 +14,6 @@ public class BottomPanelLayout extends FrameLayout {
     public boolean isVisible = true;
     public boolean useInternalAlarm = false;
     Panel activePanel = Panel.ALARM_CLOCK;
-    private boolean daydreamMode = false;
     private Context context;
     private AttributeSet attrs;
     private StockAlarmLayout stockAlarmView = null;
@@ -23,6 +22,7 @@ public class BottomPanelLayout extends FrameLayout {
     private int textColor;
     private AlarmClock view = null;
     private UserInteractionObserver userInteractionObserver;
+    private boolean locked = false;
 
     public BottomPanelLayout(Context context) {
         super(context);
@@ -49,11 +49,6 @@ public class BottomPanelLayout extends FrameLayout {
         userInteractionObserver = o;
     }
 
-    public void setDaydreamMode(boolean enabled) {
-        this.daydreamMode = enabled;
-        view.setDaydreamMode(enabled);
-    }
-
     public void setUseAlarmSwipeGesture(boolean enabled) {
         if (view != null && view.alarmClockView != null) {
             view.alarmClockView.setUseAlarmSwipeGesture(enabled);
@@ -70,7 +65,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     public void show() {
         isVisible = true;
-        setClickable(true);
+        setClickable(!locked);
     }
 
     public void setCustomColor(int accentColor, int textColor) {
@@ -86,7 +81,7 @@ public class BottomPanelLayout extends FrameLayout {
     public void setup() {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
-        } else if (activePanel == Panel.WEB_RADIO & !daydreamMode) {
+        } else if (activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
         } else if (!useInternalAlarm) {
             showStockAlarmView();
@@ -151,6 +146,7 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     public void setLocked(boolean locked) {
+        this.locked = locked;
         view.setLocked(locked);
         if (stockAlarmView != null) stockAlarmView.setLocked(locked);
         if (webRadioLayout != null) webRadioLayout.setLocked(locked);

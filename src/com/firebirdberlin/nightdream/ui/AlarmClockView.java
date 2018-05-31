@@ -50,7 +50,6 @@ public class AlarmClockView extends View {
     SimpleTime time = null;
     GestureDetector mGestureDetector = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
-    private boolean daydreamMode = false;
     private boolean locked = false;
     private boolean FingerDown;
     private boolean userChangesAlarmTime = false;
@@ -108,10 +107,6 @@ public class AlarmClockView extends View {
         if (listener != null) {
             listener.onAlarmChanged(getAlarmTimeFormatted());
         }
-    }
-
-    public void setDaydreamMode(boolean enabled) {
-        this.daydreamMode = enabled;
     }
 
     @Override
@@ -184,7 +179,7 @@ public class AlarmClockView extends View {
         }
         if (showLeftCorner()) {
             boolean success = mGestureDetector.onTouchEvent(e) || handleAlarmSetEvents(e);
-            if (success) return true;
+            return success;
         }
         return false;
     }
@@ -440,9 +435,6 @@ public class AlarmClockView extends View {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             super.onSingleTapConfirmed(e);
-            if (daydreamMode || Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                return false;
-            }
             Point click = getClickedPoint(e);
             if ((showAlarmTime() && alarmTimeRect.contains(click.x, click.y)) ||
                     (showLeftCorner() && cornerLeft.isInside(click))) {
