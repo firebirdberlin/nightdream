@@ -22,9 +22,14 @@ import com.firebirdberlin.nightdream.Utility;
 
 public class AlarmClock extends RelativeLayout {
     protected AlarmClockView alarmClockView;
-    private boolean daydreamMode = false;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
     private TextView alarmTimeTextView;
+    private TextView.OnClickListener alarmTimeTextVieOnCLickListener = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            SetAlarmClockActivity.start(getContext());
+        }
+    };
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,18 +42,11 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView = new TextView(context);
         alarmTimeTextView.setEllipsize(TextUtils.TruncateAt.END);
         alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        alarmTimeTextView.setOnClickListener(alarmTimeTextVieOnCLickListener);
 
         LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_VERTICAL);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        alarmTimeTextView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (daydreamMode) return;
-                SetAlarmClockActivity.start(getContext());
-            }
-        });
 
         alarmClockView.setOnAlarmChangedListener(new AlarmClockView.onAlarmChangeListener() {
             @Override
@@ -61,11 +59,6 @@ public class AlarmClock extends RelativeLayout {
 
         addView(alarmClockView, layoutAlarmClockView);
         addView(alarmTimeTextView, lp);
-    }
-
-    public void setDaydreamMode(boolean enabled) {
-        this.daydreamMode = enabled;
-        alarmClockView.setDaydreamMode(enabled);
     }
 
     public void setLocked(boolean on) {
@@ -111,7 +104,6 @@ public class AlarmClock extends RelativeLayout {
         super.setClickable(clickable);
         alarmTimeTextView.setClickable(clickable);
         alarmClockView.setClickable(clickable);
-
     }
 
     public void activateAlarmUI() {

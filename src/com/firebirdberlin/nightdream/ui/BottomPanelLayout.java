@@ -14,7 +14,6 @@ public class BottomPanelLayout extends FrameLayout {
     public boolean isVisible = true;
     public boolean useInternalAlarm = false;
     Panel activePanel = Panel.ALARM_CLOCK;
-    private boolean daydreamMode = false;
     private Context context;
     private AttributeSet attrs;
     private StockAlarmLayout stockAlarmView = null;
@@ -22,6 +21,8 @@ public class BottomPanelLayout extends FrameLayout {
     private int accentColor;
     private int textColor;
     private AlarmClock view = null;
+    private UserInteractionObserver userInteractionObserver;
+    private boolean locked = false;
 
     public BottomPanelLayout(Context context) {
         super(context);
@@ -44,9 +45,8 @@ public class BottomPanelLayout extends FrameLayout {
         setup();
     }
 
-    public void setDaydreamMode(boolean enabled) {
-        this.daydreamMode = enabled;
-        view.setDaydreamMode(enabled);
+    public void setUserInteractionObserver(UserInteractionObserver o) {
+        userInteractionObserver = o;
     }
 
     public void setUseAlarmSwipeGesture(boolean enabled) {
@@ -58,11 +58,20 @@ public class BottomPanelLayout extends FrameLayout {
     public void hide() {
         isVisible = false;
         setClickable(false);
+        if (webRadioLayout != null) {
+            webRadioLayout.hide();
+        }
+    }
+
+    public void onResume() {
+        if (webRadioLayout != null) {
+            webRadioLayout.showMetaInfoOnNextUpdate();
+        }
     }
 
     public void show() {
         isVisible = true;
-        setClickable(true);
+        setClickable(!locked);
     }
 
     public void setCustomColor(int accentColor, int textColor) {
@@ -78,7 +87,7 @@ public class BottomPanelLayout extends FrameLayout {
     public void setup() {
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
-        } else if (activePanel == Panel.WEB_RADIO & !daydreamMode) {
+        } else if (activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
         } else if (!useInternalAlarm) {
             showStockAlarmView();
@@ -117,7 +126,7 @@ public class BottomPanelLayout extends FrameLayout {
         Log.i(TAG, "showWebRadioView");
 
         if (webRadioLayout != null) {
-            webRadioLayout.setText(null);
+            webRadioLayout.updateText();
             invalidate();
             return; // already visible
         }
@@ -125,6 +134,7 @@ public class BottomPanelLayout extends FrameLayout {
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
         webRadioLayout.setCustomColor(accentColor, textColor);
+        webRadioLayout.setUserInteractionObserver(userInteractionObserver);
         addView(webRadioLayout);
         invalidate();
     }
@@ -142,6 +152,7 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     public void setLocked(boolean locked) {
+        this.locked = locked;
         view.setLocked(locked);
         if (stockAlarmView != null) stockAlarmView.setLocked(locked);
         if (webRadioLayout != null) webRadioLayout.setLocked(locked);
@@ -153,7 +164,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     @Override
     public void setClickable(boolean clickable) {
-        //Log.w(TAG, "setClickable " + ((clickable) ? "true" : "false"));
+        Log.i(TAG, "setClickable " + ((clickable) ? "true" : "false"));
         super.setClickable(clickable);
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).setClickable(clickable);

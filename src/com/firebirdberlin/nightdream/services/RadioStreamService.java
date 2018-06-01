@@ -23,6 +23,9 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever;
+import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -38,6 +41,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
+    private static boolean readyForPlayback = false;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     public static String EXTRA_DEBUG = "ExtraDebug";
     private static String TAG = "RadioStreamService";
@@ -47,6 +51,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String ACTION_NEXT_STATION = "next station";
     private static String ACTION_START_SLEEP_TIME = "start sleep time";
     static private int radioStationIndex;
+    static private RadioStation radioStation;
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
     private boolean debug = false;
@@ -54,7 +59,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
-    private String streamURL = "";
+    private static String streamURL = "";
     private HttpStatusCheckTask statusCheckTask = null;
     private PlaylistRequestTask resolveStreamUrlTask = null;
     private Runnable fadeIn = new Runnable() {
@@ -106,6 +111,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         context.startService(i);
     }
 
+    public static boolean isReadyForPlayback() {
+        return readyForPlayback;
+    }
+
     public static int getCurrentRadioStationIndex() {
         if (streamingMode != StreamingMode.RADIO) {
             return -1;
@@ -113,6 +122,19 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         return radioStationIndex;
     }
+
+    public static RadioStation getCurrentRadioStation() {
+        if (streamingMode != StreamingMode.RADIO) {
+            return null;
+        }
+
+        return radioStation;
+    }
+
+    public static RadioStreamMetadata getCurrentIcecastMetadata() {
+        return RadioStreamMetadataRetriever.getInstance().getCachedMetadata();
+    }
+
     public static void startStream(Context context) {
         startStream(context, 0);
     }
@@ -210,10 +232,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
-
+            RadioStreamMetadataRetriever.getInstance().clearCache();
+            readyForPlayback = false;
             checkStreamAndStart(radioStationIndex);
         } else
         if ( ACTION_STOP.equals(action) ) {
+            RadioStreamMetadataRetriever.getInstance().clearCache();
+            readyForPlayback = false;
             stopSelf();
         } else if (ACTION_START_SLEEP_TIME.equals(action)) {
             handler.post(fadeOut);
@@ -232,9 +257,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             streamURL = settings.radioStreamURLUI;
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
             if (stations != null) {
-                RadioStation station = stations.get(radioStationIndex);
-                if (station != null) {
-                    streamURL = station.stream;
+                radioStation = stations.get(radioStationIndex);
+                if (radioStation != null) {
+                    streamURL = radioStation.stream;
                 }
             }
         }
@@ -270,6 +295,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         isRunning = false;
         alarmIsRunning = false;
         radioStationIndex = -1;
+        radioStation = null;
         streamingMode = StreamingMode.INACTIVE;
         debug = false;
 
@@ -350,7 +376,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
-
     }
 
     @Override
@@ -381,6 +406,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
         try {
             mp.start();
+            readyForPlayback = true;
             Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
             intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
             sendBroadcast( intent );
@@ -405,7 +431,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             mMediaPlayer = null;
         }
     }
-
+    
     /**
      * add stop button for normal radio, and for alarm radio preview (stream started in
      * preferences dialog), but not for alarm
@@ -460,7 +486,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     private void switchToNextStation() {
-        Log.d(TAG,"switchToNextStation() called.");
+        Log.d(TAG, "switchToNextStation() called.");
         if (streamingMode != StreamingMode.RADIO) {
             return;
         }
@@ -472,13 +498,21 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         FavoriteRadioStations stations = settings.getFavoriteRadioStations();
         int nextStationIndex = stations.nextAvailableIndex(currentIndex);
-        Log.d(TAG,"nextStationIndex: " + nextStationIndex);
+        Log.d(TAG, "nextStationIndex: " + nextStationIndex);
 
         // always stop and restart, so a new notification occurs
         stopSelf();
         if (nextStationIndex > -1) {
             startStream(this, nextStationIndex);
         }
+    }
+
+    public static void updateMetaData(RadioStreamMetadataListener listener, Context context) {
+        if (streamingMode != StreamingMode.RADIO) {
+            return;
+        }
+
+        RadioStreamMetadataRetriever.getInstance().retrieveMetadata(streamURL, listener, context);
     }
 
     public enum StreamingMode {INACTIVE, ALARM, RADIO}

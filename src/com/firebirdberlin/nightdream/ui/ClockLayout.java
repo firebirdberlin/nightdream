@@ -1,11 +1,9 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,7 +36,7 @@ public class ClockLayout extends LinearLayout {
     private WeatherLayout weatherLayout = null;
     private View divider = null;
     private boolean showDivider = true;
-    private boolean mirrorText = true;
+    private boolean mirrorText = false;
 
     public ClockLayout(Context context) {
         super(context);
@@ -184,17 +182,14 @@ public class ClockLayout extends LinearLayout {
         return layoutId == LAYOUT_ID_DIGITAL;
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void updateLayout(int parentWidth, Configuration config){
         updateLayout(parentWidth, -1, config, false);
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void updateLayoutForWidget(int parentWidth, int parentHeight, Configuration config){
         updateLayout(parentWidth, parentHeight, config, true);
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void updateLayout(int parentWidth, int parentHeight, Configuration config, boolean displayInWidget){
         final float minFontSize = 8.f; // in sp
 
@@ -305,7 +300,6 @@ public class ClockLayout extends LinearLayout {
     }
 
     public float getAbsScaleFactor() {
-        if (Build.VERSION.SDK_INT < 11) return 1.f;
         return Math.abs(getScaleX());
     }
 
@@ -313,9 +307,7 @@ public class ClockLayout extends LinearLayout {
         setScaleFactor(factor, false);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     public void setScaleFactor(float factor, boolean animated) {
-        if (Build.VERSION.SDK_INT < 11) return;
         float sign = mirrorText ? -1.f : 1.f;
         if (animated) {
             animate().setDuration(1000).scaleX(sign * factor).scaleY(factor);
