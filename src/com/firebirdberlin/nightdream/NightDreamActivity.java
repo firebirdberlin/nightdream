@@ -257,6 +257,7 @@ public class NightDreamActivity extends BillingHelperActivity
             activePanel = BottomPanelLayout.Panel.WEB_RADIO;
             // clear the action so that it won't be re-delivered.
             intent.setAction("");
+            bottomPanelLayout.onResume();
         }
 
         bottomPanelLayout.setActivePanel(activePanel);

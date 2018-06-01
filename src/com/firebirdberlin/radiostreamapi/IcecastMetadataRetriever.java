@@ -24,6 +24,7 @@ public class IcecastMetadataRetriever {
         InputStream stream = null;
 
         String metaTitle = null;
+        boolean streamMetaDataNotSupported = false;
         IcyHeaderInfo headerInfos = null;
 
         try {
@@ -66,7 +67,11 @@ public class IcecastMetadataRetriever {
                 */
                 if (metadata != null && !metadata.isEmpty() && metadata.containsKey(IcecastMetadataRetriever.META_KEY_STREAM_TITLE)) {
                     metaTitle = metadata.get(IcecastMetadataRetriever.META_KEY_STREAM_TITLE);
+                } else {
+                    streamMetaDataNotSupported = true;
                 }
+            } else {
+                streamMetaDataNotSupported = true;
             }
 
             stream.close();
@@ -83,7 +88,7 @@ public class IcecastMetadataRetriever {
             }
         }
 
-        return new RadioStreamMetadata(headerInfos, metaTitle);
+        return new RadioStreamMetadata(headerInfos, metaTitle, streamMetaDataNotSupported);
     }
 
     private static String readMetadata(InputStream stream, int metaDataOffset) throws IOException {

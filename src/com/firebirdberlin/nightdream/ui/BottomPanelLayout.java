@@ -63,6 +63,12 @@ public class BottomPanelLayout extends FrameLayout {
         }
     }
 
+    public void onResume() {
+        if (webRadioLayout != null) {
+            webRadioLayout.showMetaInfoOnNextUpdate();
+        }
+    }
+
     public void show() {
         isVisible = true;
         setClickable(!locked);

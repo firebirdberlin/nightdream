@@ -43,7 +43,7 @@ public class WebRadioLayout extends RelativeLayout {
     private ImageView buttonSleepTimer;
     private ImageView volumeMutedIndicator;
     private boolean showConnectingHint = false;
-    private boolean isVisible = false;
+    private boolean showMetaInfoOnNextUpdate = true;
     private ProgressBar spinner;
     private WebRadioStationButtonsLayout webRadioButtons;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
@@ -257,7 +257,11 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     protected void hide() {
-        isVisible = false;
+        showMetaInfoOnNextUpdate = true;
+    }
+
+    protected void showMetaInfoOnNextUpdate() {
+        showMetaInfoOnNextUpdate = true;
     }
 
     protected void updateText() {
@@ -273,7 +277,7 @@ public class WebRadioLayout extends RelativeLayout {
                 webRadioButtons.setActiveStation(radioStationIndex);
             }
 
-            if (!isVisible) {
+            if (showMetaInfoOnNextUpdate) {
                 // display current meta info when panel was hidden and becomes visible
                 updateMetaData();
             }
@@ -286,7 +290,7 @@ public class WebRadioLayout extends RelativeLayout {
         }
         webRadioButtons.invalidate();
         updateVolumeMutedIndicator();
-        isVisible = true;
+        showMetaInfoOnNextUpdate = false;
     }
 
 
