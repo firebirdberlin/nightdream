@@ -53,8 +53,10 @@ public class RadioInfoDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
         // Get the layout inflater
 
-        // Warning: must use context of AlertDialog.Builder here so that the changed theme is applied by LayoutInflater in RadioStreamDialog!
-        // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme for this DialogFragment)
+        // Warning: must use context of AlertDialog.Builder here so that the changed theme is
+        // applied by LayoutInflater in RadioStreamDialog!
+        // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme for this
+        // DialogFragment)
         LayoutInflater inflater = (LayoutInflater)
                 builder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 

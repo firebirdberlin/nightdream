@@ -83,6 +83,10 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     private void update() {
+        update(null);
+    }
+
+    private void update(Long highlight_entry_id) {
         Collections.sort(entries, new Comparator<SimpleTime>() {
             public int compare(SimpleTime obj1, SimpleTime obj2) {
                 return obj1.getCalendar().compareTo(obj2.getCalendar());
@@ -94,6 +98,10 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             if (layout == null) {
                 layout = new AlarmClockLayout(this, entry, timeFormat);
                 layoutHashMap.put(entry.id, layout);
+            }
+
+            if (highlight_entry_id != null && entry.id == highlight_entry_id) {
+                layout.showSecondaryLayout(true);
             }
             scrollView.addView(layout);
         }
@@ -134,12 +142,12 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                     if (isNew) {
                         entry.autocompleteRecurringDays();
                     }
-                    db.save(entry);
+                    entry = db.save(entry);
                     if (entry_id == null) {
                         entries.add(entry);
                     }
                 }
-                update();
+                update(entry.id);
                 WakeUpReceiver.schedule(context, db);
             }
         }, hour, min, Utility.is24HourFormat(context));
