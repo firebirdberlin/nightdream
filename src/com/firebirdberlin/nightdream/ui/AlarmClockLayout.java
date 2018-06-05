@@ -91,12 +91,7 @@ public class AlarmClockLayout extends LinearLayout {
         @Override
         public void onClick(View view) {
             boolean gone = secondaryLayout.getVisibility() == View.GONE;
-            secondaryLayout.setVisibility(gone ? View.VISIBLE : View.GONE);
-            buttonDown.setImageResource(gone ? R.drawable.ic_collapse : R.drawable.ic_expand);
-            layoutDays.setVisibility(
-                    (gone && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
-            );
-            mainLayout.setBackgroundColor(gone ? Color.DKGRAY : Color.TRANSPARENT);
+            showSecondaryLayout(gone);
         }
     };
 
@@ -128,6 +123,15 @@ public class AlarmClockLayout extends LinearLayout {
 
     public static boolean isToday(Calendar d) {
         return DateUtils.isToday(d.getTimeInMillis());
+    }
+
+    public void showSecondaryLayout(boolean on) {
+        secondaryLayout.setVisibility(on ? View.VISIBLE : View.GONE);
+        buttonDown.setImageResource(on ? R.drawable.ic_collapse : R.drawable.ic_expand);
+        layoutDays.setVisibility(
+                (on && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
+        );
+        mainLayout.setBackgroundColor(on ? Color.DKGRAY : Color.TRANSPARENT);
     }
 
     private void init() {
