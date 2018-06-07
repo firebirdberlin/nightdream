@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        google()
         jcenter()
         maven {
             url "https://maven.google.com"
@@ -12,6 +13,7 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
         jcenter()
         maven {
             url "https://maven.google.com"
@@ -74,7 +76,4 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
-}
-repositories {
-    google()
 }
