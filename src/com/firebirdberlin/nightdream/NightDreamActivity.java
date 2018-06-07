@@ -2,6 +2,8 @@ package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -17,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -51,9 +54,8 @@ import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
 import java.util.Calendar;
-
-import de.greenrobot.event.EventBus;
-
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class NightDreamActivity extends BillingHelperActivity
                                 implements View.OnTouchListener,
@@ -191,6 +193,59 @@ public class NightDreamActivity extends BillingHelperActivity
 
         BatteryValue batteryValue = new BatteryStats(this).reference;
         this.isChargingWireless = batteryValue.isChargingWireless;
+
+        createNotificationChannels();
+    }
+
+    private void createNotificationChannels() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
+        NotificationChannel channelAlarms = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_ALARMS,
+                R.string.notification_channel_name_alarms,
+                R.string.notification_channel_desc_alarms,
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationChannel channelRadio = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_RADIO,
+                R.string.notification_channel_name_radio,
+                R.string.notification_channel_desc_radio,
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationChannel channelMessages = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_DEVMSG,
+                R.string.notification_channel_name_devmsg,
+                R.string.notification_channel_desc_devmsg,
+                NotificationManager.IMPORTANCE_LOW
+        );
+        NotificationChannel channelServices = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_SERVICES,
+                R.string.notification_channel_name_services,
+                R.string.notification_channel_desc_services,
+                NotificationManager.IMPORTANCE_MIN
+        );
+
+        notificationManager.createNotificationChannel(channelAlarms);
+        notificationManager.createNotificationChannel(channelMessages);
+        notificationManager.createNotificationChannel(channelRadio);
+        notificationManager.createNotificationChannel(channelServices);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    NotificationChannel prepareNotificationChannel(String channelName, int idName, int idDesc,
+                                                   int importance) {
+        String name = getString(idName);
+        String description = getString(idDesc);
+        NotificationChannel mChannel = new NotificationChannel(channelName, name, importance);
+        mChannel.setDescription(description);
+        mChannel.enableLights(false);
+        mChannel.enableVibration(false);
+        mChannel.setSound(null, null);
+        return mChannel;
     }
 
     @Override
@@ -536,18 +591,21 @@ public class NightDreamActivity extends BillingHelperActivity
         finish();
     }
 
+    @Subscribe
     public void onEvent(OnNewLightSensorValue event){
         Log.i(TAG, String.valueOf(event.value) + " lux, n=" + String.valueOf(event.n));
         last_ambient = event.value;
         handleBrightnessChange();
     }
 
+    @Subscribe
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         handleBrightnessChange();
     }
 
+    @Subscribe
     public void onEvent(OnNewAmbientNoiseValue event) {
         last_ambient_noise = event.value;
         handleBrightnessChange();
@@ -560,6 +618,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
+    @Subscribe
     public void onEvent(OnPowerDisconnected event) {
         if ( mySettings.handle_power_disconnection ) {
             handler.removeCallbacks(finishApp);
@@ -571,6 +630,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
+    @Subscribe
     public void onEvent(OnPowerConnected event) {
         handler.removeCallbacks(finishApp);
         if ( event != null ) {

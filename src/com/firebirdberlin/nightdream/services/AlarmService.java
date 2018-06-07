@@ -18,6 +18,7 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
 import java.io.IOException;
@@ -124,11 +125,13 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() called.");
 
-        Notification note = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder noteBuilder =
+                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
                 .setContentTitle(getString(R.string.alarm))
                 .setSmallIcon(R.drawable.ic_audio)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .build();
+                .setPriority(NotificationCompat.PRIORITY_MIN);
+
+        Notification note = noteBuilder.build();
 
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;

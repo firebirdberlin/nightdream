@@ -4,7 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.util.Log;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 public class mAudioManager{
     final static String TAG = "NightDream.mAudioManager";

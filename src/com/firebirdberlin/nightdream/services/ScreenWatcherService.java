@@ -9,8 +9,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 
 
@@ -25,12 +27,14 @@ public class ScreenWatcherService extends Service {
     @Override
     public void onCreate(){
         Log.i(TAG, "onCreate()");
-        Notification note = new NotificationCompat.Builder(this)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.standbyNotificationText))
-                .setSmallIcon(R.drawable.ic_expert)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .build();
+        NotificationCompat.Builder noteBuilder =
+                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(getString(R.string.standbyNotificationText))
+                        .setSmallIcon(R.drawable.ic_expert)
+                        .setPriority(NotificationCompat.PRIORITY_MIN);
+
+        Notification note = noteBuilder.build();
 
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;

@@ -65,7 +65,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 
 public class NightDreamUI {
@@ -1059,11 +1060,13 @@ public class NightDreamUI {
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
+    @Subscribe
     public void onEvent(OnPowerConnected event) {
         setupScreenAnimation();
         showAlarmClock();
     }
 
+    @Subscribe
     public void onEvent(OnPowerDisconnected event) {
         setupScreenAnimation();
         showAlarmClock();
@@ -1177,14 +1180,16 @@ public class NightDreamUI {
             PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 
             // build notification
-            Notification n = new NotificationCompat.Builder(mContext)
+            NotificationCompat.Builder note =
+                    Utility.buildNotification(mContext, Config.NOTIFICATION_CHANNEL_ID_DEVMSG)
                 .setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.review_request))
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
-                .setDefaults(0)
-                .build();
+                .setDefaults(0);
+
+            Notification n = note.build();
 
             NotificationManager notificationManager =
                     (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1215,11 +1220,13 @@ public class NightDreamUI {
 
     }
 
+    @Subscribe
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
+    @Subscribe
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);

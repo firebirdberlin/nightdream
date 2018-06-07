@@ -14,10 +14,11 @@ import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-import de.greenrobot.event.EventBus;
+import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+
 
 public class NightModeListener extends Service {
     private static String TAG = "NightModeListener";
@@ -78,7 +79,7 @@ public class NightModeListener extends Service {
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
         NotificationCompat.Builder mBuilder =
-            new NotificationCompat.Builder(this)
+            Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
             .setSmallIcon(R.drawable.ic_nightdream)
             .setOngoing(true)
             .setContentTitle(getString(R.string.app_name))
@@ -217,6 +218,7 @@ public class NightModeListener extends Service {
         }
     }
 
+    @Subscribe
     public void onEvent(OnNewLightSensorValue event){
         if (event.value > (float) reactivate_on_ambient_light_value) {
             Log.d(TAG,"It's getting bright ... stopSelf();");

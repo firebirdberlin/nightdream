@@ -19,7 +19,7 @@ package com.firebirdberlin.nightdream;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.lang.RuntimeException;
 
