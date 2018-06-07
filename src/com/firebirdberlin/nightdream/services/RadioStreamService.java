@@ -196,7 +196,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        NotificationCompat.Builder noteBuilder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder noteBuilder =
+                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_RADIO)
                 .setContentTitle(getString(R.string.radio))
                 .setSmallIcon(R.drawable.ic_radio)
                 .setContentIntent(contentIntent)

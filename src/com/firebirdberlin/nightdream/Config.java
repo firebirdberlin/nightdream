@@ -18,5 +18,10 @@ public class Config {
     public final static String ACTION_SWITCH_NIGHT_MODE = "com.firebirdberlin.nightdream.ACTION_SWITCH_NIGHT_MODE";
     public final static String ACTION_START_SLEEP_TIME = "com.firebirdberlin.nightdream.ACTION_START_SLEEP_TIME";
     public final static String ACTION_SHOW_RADIO_PANEL = "com.firebirdberlin.nightdream.ACTION_SHOW_RADIO_PANEL";
+
     public final static int NOTIFICATION_ID_DISMISS_ALARMS = 1338;
+    public final static String NOTIFICATION_CHANNEL_ID_ALARMS = "com.firebirdberlin.nightdream.notification_channel_alarms";
+    public final static String NOTIFICATION_CHANNEL_ID_RADIO = "com.firebirdberlin.nightdream.notification_channel_radio";
+    public final static String NOTIFICATION_CHANNEL_ID_SERVICES = "com.firebirdberlin.nightdream.notification_channel_services";
+    public final static String NOTIFICATION_CHANNEL_ID_DEVMSG = "com.firebirdberlin.nightdream.notification_channel_devmsg";
 }

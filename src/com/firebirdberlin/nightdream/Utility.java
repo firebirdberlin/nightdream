@@ -22,6 +22,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings.System;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -432,5 +433,14 @@ public class Utility {
 
     public static Uri getDefaultAlarmToneUri() {
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    }
+
+    public static NotificationCompat.Builder buildNotification(Context context, String channel_id) {
+        NotificationCompat.Builder note;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return new NotificationCompat.Builder(context);
+        } else {
+            return new NotificationCompat.Builder(context, channel_id);
+        }
     }
 }
