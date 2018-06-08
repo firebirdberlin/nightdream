@@ -44,6 +44,7 @@ import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
@@ -53,9 +54,10 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
-import java.util.Calendar;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Calendar;
 
 public class NightDreamActivity extends BillingHelperActivity
                                 implements View.OnTouchListener,
@@ -162,11 +164,11 @@ public class NightDreamActivity extends BillingHelperActivity
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
         setKeepScreenOn(true);
-        bottomPanelLayout = (BottomPanelLayout) findViewById(R.id.bottomPanel);
-        weatherIcon = (ImageView) findViewById(R.id.icon_weather_forecast);
-        alarmClockIcon = (ImageView) findViewById(R.id.alarm_clock_icon);
-        radioIcon = (WebRadioImageView) findViewById(R.id.radio_icon);
-        background_image = (ImageView) findViewById(R.id.background_view);
+        bottomPanelLayout = findViewById(R.id.bottomPanel);
+        weatherIcon = findViewById(R.id.icon_weather_forecast);
+        alarmClockIcon = findViewById(R.id.alarm_clock_icon);
+        radioIcon = findViewById(R.id.radio_icon);
+        background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         cn = new ComponentName(this, AdminReceiver.class);
@@ -485,6 +487,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onLocationUpdated() {
         // we need to reload the location
         mySettings = new Settings(this);
+        DownloadWeatherService.start(this, mySettings.getLocation());
     }
 
     private void setupWeatherForecastIcon() {

@@ -1,9 +1,5 @@
 package com.firebirdberlin.nightdream.services;
 
-import java.lang.Runnable;
-import java.lang.String;
-import java.util.List;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +14,10 @@ import android.provider.Settings.Secure;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
-import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
+
+import java.util.List;
 
 public class LocationService extends Service {
     private static String TAG = "NightDream.LocationService";
@@ -36,36 +34,36 @@ public class LocationService extends Service {
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     }
 
+    Runnable gpsTimeout = new Runnable() {
+        public void run() {
+            Log.i(TAG, "gpsTimeout.run()");
+            stopWithSuccess(knownLocation);
+        }
+    };
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if ( running ) {
-            Log.i(TAG, "LocationService starts NOT");
             return Service.START_REDELIVER_INTENT;
         }
-        Log.i(TAG, "LocationService starts");
         running = true;
-
         mContext = this;
 
         final Settings settings = new Settings(mContext);
         if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
             Log.w(TAG, "No location permissions granted !");
-            LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
-            stopSelf();
+            stopWithFailure();
             return Service.START_REDELIVER_INTENT;
         }
-
 
         knownLocation = getLastKnownLocation(settings);
         long now = System.currentTimeMillis();
         if ( knownLocation != null && now - knownLocation.getTime() < MAX_AGE_IN_MILLIS ) {
-            storeLocation(knownLocation);
-            stopSelf();
+            stopWithSuccess(knownLocation);
         } else {
             locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
-                    storeLocation(location);
-                    stopSelf();
+                    stopWithSuccess(location);
                 }
 
                 public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -82,16 +80,19 @@ public class LocationService extends Service {
                     setTimeout(60000);
                 } catch (IllegalArgumentException e) {
                     //java.lang.IllegalArgumentException: provider doesn't exist: network
-                    LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
-                    stopSelf();
+                    stopWithFailure();
                 }
             } else {
-                LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
-                stopSelf();
+                stopWithFailure();
             }
 
         }
         return Service.START_REDELIVER_INTENT;
+    }
+
+    private void stopWithSuccess(Location location) {
+        storeLocation(location);
+        stopSelf();
     }
 
     public void setTimeout(long time) {
@@ -102,13 +103,10 @@ public class LocationService extends Service {
         new Handler().removeCallbacks(gpsTimeout);
     }
 
-    Runnable gpsTimeout = new Runnable() {
-        public void run() {
-            Log.i(TAG, "gpsTimeout.run()");
-            storeLocation(knownLocation);
-            stopSelf();
-        }
-    };
+    private void stopWithFailure() {
+        LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
+        stopSelf();
+    }
 
     private void storeLocation(Location location) {
         Log.w(TAG, "storeLocation()");
