@@ -72,7 +72,7 @@ public class DownloadWeatherService extends IntentService {
     }
 
     private void broadcastResult() {
-        Intent i = new  Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        Intent i = new Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         sendBroadcast(i);
     }
 }
