@@ -96,7 +96,8 @@
 
         <activity
             android:name=".PreferencesActivity"
-            android:configChanges="orientation|keyboard|screenSize" />
+            android:configChanges="orientation|keyboard|screenSize"
+            android:theme="@style/PreferencesTheme" />
         <activity
             android:name=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize"
