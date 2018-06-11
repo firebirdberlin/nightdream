@@ -170,7 +170,7 @@
         <activity
             android:name=".WeatherForecastActivity"
             android:label="@string/forecast"
-            android:theme="@android:style/Theme.DeviceDefault"
+            android:theme="@style/SecondaryActivityTheme"
             android:parentActivityName=".NightDreamActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -183,7 +183,7 @@
             android:name=".SetAlarmClockActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/alarm"
-            android:theme="@android:style/Theme.DeviceDefault"
+            android:theme="@style/SecondaryActivityTheme"
             android:parentActivityName=".NightDreamActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
