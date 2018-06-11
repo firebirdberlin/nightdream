@@ -84,6 +84,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
     public static PendingIntent getPendingIntent(Context context, SimpleTime alarmTime) {
         Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
+        intent.setClass(context, WakeUpReceiver.class);
         if (alarmTime != null) {
             intent.putExtras(alarmTime.toBundle());
         }
