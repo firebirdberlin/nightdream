@@ -105,6 +105,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 layout.showSecondaryLayout(true);
             }
             scrollView.addView(layout);
+            layout.update();
         }
         scrollView.invalidate();
     }
@@ -124,10 +125,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                         && !timePicker.isShown()) return;
 
                 SimpleTime entry = null;
-                boolean isNew = false;
-                if (entry_id == null) {
+                boolean isNew = (entry_id == null);
+                if (isNew) {
                     entry = new SimpleTime();
-                    isNew = true;
                 } else {
                     for (SimpleTime e : entries) {
                         if (e.id == entry_id) {
@@ -146,9 +146,12 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                     entry = db.save(entry);
                     if (entry_id == null) {
                         entries.add(entry);
+                        update(entry.id);
+                    } else {
+                        update();
                     }
+
                 }
-                update(entry.id);
                 WakeUpReceiver.schedule(context, db);
             }
         }, hour, min, Utility.is24HourFormat(context));
