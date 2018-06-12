@@ -37,9 +37,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_alarm_clock);
-        setTheme(R.style.DialogTheme);
+        setTheme(R.style.SecondaryActivityTheme);
 
-        scrollView = (LinearLayout) findViewById(R.id.scroll_view);
+        scrollView = findViewById(R.id.scroll_view);
         // https://www.youtube.com/watch?v=55wLsaWpQ4g
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             LayoutTransition layoutTransition = scrollView.getLayoutTransition();
@@ -95,6 +95,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         scrollView.removeAllViews();
         for (SimpleTime entry : entries) {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
+
             if (layout == null) {
                 layout = new AlarmClockLayout(this, entry, timeFormat);
                 layoutHashMap.put(entry.id, layout);
