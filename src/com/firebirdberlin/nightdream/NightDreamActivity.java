@@ -425,8 +425,10 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        Log.d(TAG, "registerReceiver()");
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
-        IntentFilter filter = new IntentFilter(Config.ACTION_SHUT_DOWN);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_SHUT_DOWN);
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         registerReceiver(receiver, filter);
         return receiver;
@@ -661,26 +663,29 @@ public class NightDreamActivity extends BillingHelperActivity
         Intent alarmIntent = new Intent(Config.ACTION_SHUT_DOWN);
         return PendingIntent.getBroadcast(this,
                                           PENDING_INTENT_STOP_APP,
-                                          alarmIntent,
-                0);
+                alarmIntent, 0);
     }
 
     private void scheduleShutdown() {
         if (mySettings == null) return;
 
-        Calendar start = new SimpleTime(mySettings.autostartTimeRangeStart).getCalendar();
-        Calendar end = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
+        Calendar start = new SimpleTime(mySettings.autostartTimeRangeStartInMinutes).getCalendar();
+        Calendar end = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes).getCalendar();
         if( start.equals(end)) {
             cancelShutdown();
             return;
         }
 
+
         if ( ! mySettings.standbyEnabledWhileConnected
                 && PowerConnectionReceiver.shallAutostart(this, mySettings)) {
             PendingIntent pendingIntent = getShutdownIntent();
-            Calendar calendar = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
+            SimpleTime simpleEndTime = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes);
+            Calendar calendar = simpleEndTime.getCalendar();
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
+
+            pendingIntent = getShutdownIntent();
             if (Build.VERSION.SDK_INT >= 19){
                 alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
             } else {
@@ -721,8 +726,10 @@ public class NightDreamActivity extends BillingHelperActivity
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "onReceive() -> ");
             if (intent == null) return;
             String action = intent.getAction();
+            Log.i(TAG, "action -> " + action);
             if (Config.ACTION_SHUT_DOWN.equals(action)) {
                 // this receiver is needed to shutdown the app at the end of the autostart time range
                 if (mySettings.handle_power_disconnection) {
