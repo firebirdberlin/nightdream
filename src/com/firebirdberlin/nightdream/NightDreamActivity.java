@@ -87,7 +87,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private LocationUpdateReceiver locationReceiver = null;
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
-    private ReceiverRadioStream receiverRadioStream = null;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -267,7 +266,6 @@ public class NightDreamActivity extends BillingHelperActivity
         nReceiver = registerNotificationReceiver();
         nightModeReceiver = NightModeReceiver.register(this, this);
         broadcastReceiver = registerBroadcastReceiver();
-        receiverRadioStream = registerReceiverRadioStream();
         locationReceiver = LocationUpdateReceiver.register(this, this);
 
         nReceiver.setColor(mySettings.secondaryColor);
@@ -275,7 +273,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (Build.VERSION.SDK_INT >= 18){
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command", "list");
-            sendBroadcast(i);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         }
 
         Intent intent = getIntent();
@@ -364,10 +362,9 @@ public class NightDreamActivity extends BillingHelperActivity
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         NightModeReceiver.cancel(this);
-        unregisterLocalReceiver(nReceiver);
         unregister(nightModeReceiver);
-        unregister(broadcastReceiver);
-        unregister(receiverRadioStream);
+        unregisterLocalReceiver(nReceiver);
+        unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if (mySettings.allow_screen_off && mode == 0
@@ -429,17 +426,10 @@ public class NightDreamActivity extends BillingHelperActivity
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_SHUT_DOWN);
-        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
-        registerReceiver(receiver, filter);
-        return receiver;
-    }
-
-    private ReceiverRadioStream registerReceiverRadioStream() {
-        ReceiverRadioStream receiver = new ReceiverRadioStream();
-        IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
-        registerReceiver(receiver, filter);
+        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         return receiver;
     }
 
@@ -735,18 +725,14 @@ public class NightDreamActivity extends BillingHelperActivity
                 if (mySettings.handle_power_disconnection) {
                     finish();
                 }
-            } else
-            if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
+            } else if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 mySettings = new Settings(context);
                 setupWeatherForecastIcon();
+            } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)
+                    || Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
+                setupRadioStreamUI();
             }
-        }
-    }
 
-    class ReceiverRadioStream extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setupRadioStreamUI();
         }
     }
 }

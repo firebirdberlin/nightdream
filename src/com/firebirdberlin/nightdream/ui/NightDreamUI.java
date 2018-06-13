@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -60,13 +61,13 @@ import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 
 public class NightDreamUI {
@@ -402,19 +403,19 @@ public class NightDreamUI {
 
         this.window = window;
         View rootView = window.getDecorView().findViewById(android.R.id.content);
-        background_image = (ImageView) rootView.findViewById(R.id.background_view);
-        brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
-        batteryIconView = (BatteryIconView) rootView.findViewById(R.id.batteryIconView);
-        clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
-        clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
-        bottomPanelLayout = (BottomPanelLayout) rootView.findViewById(R.id.bottomPanel);
+        background_image = rootView.findViewById(R.id.background_view);
+        brightnessProgress = rootView.findViewById(R.id.brightness_progress);
+        batteryIconView = rootView.findViewById(R.id.batteryIconView);
+        clockLayoutContainer = rootView.findViewById(R.id.clockLayoutContainer);
+        clockLayout = rootView.findViewById(R.id.clockLayout);
+        bottomPanelLayout = rootView.findViewById(R.id.bottomPanel);
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
-        notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
-        menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
-        nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
-        radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
-        sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
+        notificationbar = rootView.findViewById(R.id.notificationbar);
+        menuIcon = rootView.findViewById(R.id.burger_icon);
+        nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
+        radioIcon = rootView.findViewById(R.id.radio_icon);
+        sidePanel = rootView.findViewById(R.id.side_panel);
         sidePanel.post(setupSidePanel);
 
         OnClickListener onMenuItemClickListener = new OnClickListener() {
@@ -1208,13 +1209,13 @@ public class NightDreamUI {
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-        mContext.registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(receiver, filter);
         return receiver;
     }
 
     private void unregister(BroadcastReceiver receiver) {
         try {
-            mContext.unregisterReceiver(receiver);
+            LocalBroadcastManager.getInstance(mContext).unregisterReceiver(receiver);
         } catch (IllegalArgumentException ignored) {
         }
 

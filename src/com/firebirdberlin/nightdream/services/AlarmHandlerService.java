@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
@@ -140,10 +141,10 @@ public class AlarmHandlerService extends IntentService {
             notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
 
             Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
-            context.sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         } else {
             Intent intent = new Intent(Config.ACTION_ALARM_DELETED);
-            context.sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
         WakeUpReceiver.schedule(context);
     }

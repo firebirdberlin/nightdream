@@ -19,6 +19,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -122,7 +123,7 @@ public class AlarmClockView extends View {
         filter.addAction(Config.ACTION_ALARM_SET);
         filter.addAction(Config.ACTION_ALARM_STOPPED);
         filter.addAction(Config.ACTION_ALARM_DELETED);
-        ctx.registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(ctx).registerReceiver(receiver, filter);
         return receiver;
     }
 
@@ -134,7 +135,7 @@ public class AlarmClockView extends View {
 
     private void unregister(BroadcastReceiver receiver) {
         try {
-            ctx.unregisterReceiver(receiver);
+            LocalBroadcastManager.getInstance(ctx).unregisterReceiver(receiver);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
