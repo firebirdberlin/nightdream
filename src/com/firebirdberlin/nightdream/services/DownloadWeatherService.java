@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
@@ -72,7 +73,7 @@ public class DownloadWeatherService extends IntentService {
     }
 
     private void broadcastResult() {
-        Intent i = new Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
-        sendBroadcast(i);
+        Intent intent = new Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

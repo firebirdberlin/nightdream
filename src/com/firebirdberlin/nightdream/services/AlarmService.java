@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
@@ -81,7 +82,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         handler.removeCallbacks(timeout);
         handler.removeCallbacks(fadeIn);
         AlarmStop();
-        sendBroadcast(new Intent(Config.ACTION_ALARM_STOPPED));
+        Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         stopForeground(false); // bool: true = remove Notification
         stopSelf();
     }
