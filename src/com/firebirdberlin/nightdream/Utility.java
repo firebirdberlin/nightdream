@@ -408,6 +408,9 @@ public class Utility {
         // get the name from android content
         if ("content".equals(uri.getScheme())) {
             Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
+            if ( ringtone == null ) {
+                return "";
+            }
             String title = ringtone.getTitle(context);
             ringtone.stop();
             return title;
