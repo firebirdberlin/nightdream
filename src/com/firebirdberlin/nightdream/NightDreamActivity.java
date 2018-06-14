@@ -223,6 +223,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 R.string.notification_channel_desc_devmsg,
                 NotificationManager.IMPORTANCE_LOW
         );
+        channelMessages.setShowBadge(true);
         NotificationChannel channelServices = prepareNotificationChannel(
                 Config.NOTIFICATION_CHANNEL_ID_SERVICES,
                 R.string.notification_channel_name_services,
@@ -246,6 +247,7 @@ public class NightDreamActivity extends BillingHelperActivity
         mChannel.enableLights(false);
         mChannel.enableVibration(false);
         mChannel.setSound(null, null);
+        mChannel.setShowBadge(false);
         return mChannel;
     }
 
