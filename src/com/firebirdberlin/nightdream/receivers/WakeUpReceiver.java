@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
@@ -51,7 +52,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         if (next != null) {
             intent.putExtras(next.toBundle());
         }
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public static void broadcastNextAlarm(Context context) {
@@ -67,7 +68,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         } else {
             Log.w(TAG, "no next alarm");
         }
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public static void cancelAlarm(Context context) {
