@@ -1146,6 +1146,12 @@ public class NightDreamUI {
             setAlpha(bottomPanelLayout, 1.f, 250);
             controlsVisible = true;
             handler.postDelayed(hideAlarmClock, 5000);
+
+            // allow to snooze alarms in locked mode
+            if (AlarmHandlerService.alarmIsRunning()) {
+                alarmClock.snooze();
+            }
+
             return true;
         }
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
