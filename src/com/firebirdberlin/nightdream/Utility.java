@@ -146,9 +146,13 @@ public class Utility {
         return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), "screensaver_activate_on_sleep", -1);
     }
 
-    public static String getSelectedDaydreamClassName(final Context c) {
+    static String getSelectedDaydreamClassName(final Context c) {
         String names = android.provider.Settings.Secure.getString(c.getContentResolver(), SCREENSAVER_COMPONENTS);
-        return names == null ? null : componentsFromString(names)[0].getClassName();
+        if (names != null && !names.isEmpty()) {
+            ComponentName componentName = componentsFromString(names)[0];
+            return componentName == null ? null : componentName.getClassName();
+        }
+        return null;
     }
 
     private static ComponentName[] componentsFromString(String names) {
