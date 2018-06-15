@@ -54,7 +54,6 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Calendar;
@@ -183,7 +182,7 @@ public class NightDreamActivity extends BillingHelperActivity
         super.onStart();
         setKeepScreenOn(true);
         Log.i(TAG, "onStart()");
-        EventBus.getDefault().register(this);
+        Utility.registerEventBus(this);
 
         nightDreamUI.onStart();
 
@@ -399,7 +398,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onStop()");
 
         nightDreamUI.onStop();
-        EventBus.getDefault().unregister(this);
+        Utility.unregisterEventBus(this);
     }
 
     @Override

@@ -14,7 +14,6 @@ import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
@@ -95,18 +94,12 @@ public class NightModeListener extends Service {
             handler.postDelayed(startRecording, 1000);
         }
 
-        registerEventBus();
+        Utility.registerEventBus(this);
 
         lightSensorEventListener = new LightSensorEventListener(this);
         lightSensorEventListener.register();
 
         return Service.START_REDELIVER_INTENT;
-    }
-
-    private void registerEventBus() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
     }
 
     @Override
@@ -125,7 +118,7 @@ public class NightModeListener extends Service {
             soundmeter = null;
         }
 
-        EventBus.getDefault().unregister(this);
+        Utility.unregisterEventBus(this);
         unregisterReceiver(pwrReceiver);
         unregister(broadcastReceiver);
         lightSensorEventListener.unregister();
