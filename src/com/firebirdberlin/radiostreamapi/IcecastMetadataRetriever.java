@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 
 public class IcecastMetadataRetriever {
 
-    public static String META_KEY_INTERVAL = "icy-metaint";
-    public static String META_KEY_STREAM_TITLE = "StreamTitle";
+    private static String META_KEY_INTERVAL = "icy-metaint";
+    private static String META_KEY_STREAM_TITLE = "StreamTitle";
 
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
@@ -77,13 +77,13 @@ public class IcecastMetadataRetriever {
             stream.close();
             stream = null;
 
-        } catch (IOException e) {
+        } catch (IOException ignored) {
 
         } finally {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
         }
@@ -136,19 +136,18 @@ public class IcecastMetadataRetriever {
         }
 
         // assume utf-8 encoded text in byte array
-        String text = new String(dataBuffer, "UTF-8");
-        return text;
+        return new String(dataBuffer, "UTF-8");
     }
 
     private static Map<String, String> parseMetadata(String metaString) {
-        Map<String, String> metadata = new HashMap();
+        Map<String, String> metadata = new HashMap<>();
         String[] metaParts = metaString.split(";");
-        Pattern p = Pattern.compile("^([a-zA-Z]+)=\\'([^\\']*)\\'$");
+        Pattern p = Pattern.compile("^([a-zA-Z]+)='([^']*)'$");
         Matcher m;
-        for (int i = 0; i < metaParts.length; i++) {
-            m = p.matcher(metaParts[i]);
+        for (String metaPart : metaParts) {
+            m = p.matcher(metaPart);
             if (m.find()) {
-                metadata.put((String)m.group(1), (String)m.group(2));
+                metadata.put(m.group(1), m.group(2));
             }
         }
 
