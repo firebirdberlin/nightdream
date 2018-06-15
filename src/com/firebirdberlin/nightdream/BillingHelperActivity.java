@@ -163,7 +163,7 @@ public abstract class BillingHelperActivity extends Activity {
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
             startIntentSenderForResult(pendingIntent.getIntentSender(),
                     REQUEST_CODE, new Intent(), 0, 0, 0);
-        } catch (RemoteException | IntentSender.SendIntentException ignored) {
+        } catch (RemoteException | IntentSender.SendIntentException | NullPointerException ignored) {
         }
     }
 
