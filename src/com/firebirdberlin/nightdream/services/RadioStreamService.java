@@ -5,8 +5,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -358,7 +360,18 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.setAudioStreamType(currentStreamType);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int usage = ( currentStreamType == AudioManager.STREAM_ALARM ) ?
+                             AudioAttributes.USAGE_ALARM : AudioAttributes.USAGE_MEDIA;
+            mMediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                     .setUsage(usage)
+                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                     .build()
+            );
+        } else {
+            mMediaPlayer.setAudioStreamType(currentStreamType);
+        }
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 
         try {
