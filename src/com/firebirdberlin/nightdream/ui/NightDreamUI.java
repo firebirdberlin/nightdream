@@ -61,7 +61,6 @@ import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.FileDescriptor;
@@ -72,8 +71,6 @@ import java.util.Random;
 
 public class NightDreamUI {
     static final long SHOWCASE_ID_ONBOARDING = 1;
-    static final long SHOWCASE_ID_ALARMS = 2;
-    static final long SHOWCASE_ID_ALARM_DELETION = 3;
     private static final long SHOWCASE_ID_SCREEN_LOCK = 4;
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -101,7 +98,7 @@ public class NightDreamUI {
     private LinearLayout notificationbar;
     private LinearLayout sidePanel;
     private BottomPanelLayout bottomPanelLayout;
-    private Settings settings = null;
+    private Settings settings;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
@@ -473,7 +470,7 @@ public class NightDreamUI {
 
         clockLayoutContainer.post(initClockLayout);
 
-        EventBus.getDefault().register(this);
+        Utility.registerEventBus(this);
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
         if (settings.useAmbientNoiseDetection()){
@@ -729,7 +726,7 @@ public class NightDreamUI {
     }
 
     public void onPause() {
-        EventBus.getDefault().unregister(this);
+        Utility.unregisterEventBus(this);
         if ( lightSensorEventListener != null ) {
             lightSensorEventListener.unregister();
         }

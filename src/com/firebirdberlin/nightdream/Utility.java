@@ -31,6 +31,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -445,5 +447,16 @@ public class Utility {
         } else {
             return new NotificationCompat.Builder(context, channel_id);
         }
+    }
+
+    public static void registerEventBus(Object subscriber) {
+        EventBus bus = EventBus.getDefault();
+        if (! bus.isRegistered(subscriber)) {
+            bus.register(subscriber);
+        }
+    }
+
+    public static void unregisterEventBus(Object subscriber) {
+        EventBus.getDefault().unregister(subscriber);
     }
 }
