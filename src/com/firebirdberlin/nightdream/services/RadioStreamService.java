@@ -233,7 +233,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
             Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
             broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
             RadioStreamMetadataRetriever.getInstance().clearCache();
