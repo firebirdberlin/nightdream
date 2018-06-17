@@ -413,13 +413,13 @@ public class Utility {
 
         // get the name from android content
         if ("content".equals(uri.getScheme())) {
-            Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
-            if ( ringtone == null ) {
-                return "";
+            try {
+                Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
+                String title = ringtone.getTitle(context);
+                ringtone.stop();
+                return title;
+            } catch (RuntimeException ignored) {
             }
-            String title = ringtone.getTitle(context);
-            ringtone.stop();
-            return title;
         }
 
         // get the name from meta data
@@ -431,9 +431,7 @@ public class Utility {
             if (title != null && !title.isEmpty()) {
                 return title;
             }
-        } catch (Throwable t) {
-            // throwable also catches Runtime Exceptions thrown by MediaMetadataRetriever for malicious files
-            // catching only IllegalArgumentException is not sufficient.
+        } catch (RuntimeException ignored) {
         }
 
         // get the file name
