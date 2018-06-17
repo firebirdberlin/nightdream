@@ -142,29 +142,29 @@ public class AlarmClockLayout extends LinearLayout {
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
         mainLayout = findViewById(R.id.mainLayout);
-        timeView = (TextView) findViewById(R.id.timeView);
-        textViewSound = (TextView) findViewById(R.id.textViewSound);
-        textViewWhen = (TextView) findViewById(R.id.textViewWhen);
-        layoutDays = (LinearLayout) findViewById(R.id.layoutDays);
-        buttonDown = (ImageView) findViewById(R.id.button_down);
-        buttonDelete = (Button) findViewById(R.id.button_delete);
-        secondaryLayout = (LinearLayout) findViewById(R.id.secondaryLayout);
-        switchActive = (Switch) findViewById(R.id.enabled);
-        checkBoxIsRepeating = (CheckBox) findViewById(R.id.checkBoxIsRepeating);
+        timeView = findViewById(R.id.timeView);
+        textViewSound = findViewById(R.id.textViewSound);
+        textViewWhen = findViewById(R.id.textViewWhen);
+        layoutDays = findViewById(R.id.layoutDays);
+        buttonDown = findViewById(R.id.button_down);
+        buttonDelete = findViewById(R.id.button_delete);
+        secondaryLayout = findViewById(R.id.secondaryLayout);
+        switchActive = findViewById(R.id.enabled);
+        checkBoxIsRepeating = findViewById(R.id.checkBoxIsRepeating);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            RelativeLayout middle = (RelativeLayout) findViewById(R.id.middle);
+            RelativeLayout middle = findViewById(R.id.middle);
             LayoutTransition layoutTransition = middle.getLayoutTransition();
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         }
 
-        dayButtons[0] = (ToggleButton) findViewById(R.id.dayButton1);
-        dayButtons[1] = (ToggleButton) findViewById(R.id.dayButton2);
-        dayButtons[2] = (ToggleButton) findViewById(R.id.dayButton3);
-        dayButtons[3] = (ToggleButton) findViewById(R.id.dayButton4);
-        dayButtons[4] = (ToggleButton) findViewById(R.id.dayButton5);
-        dayButtons[5] = (ToggleButton) findViewById(R.id.dayButton6);
-        dayButtons[6] = (ToggleButton) findViewById(R.id.dayButton7);
+        dayButtons[0] = findViewById(R.id.dayButton1);
+        dayButtons[1] = findViewById(R.id.dayButton2);
+        dayButtons[2] = findViewById(R.id.dayButton3);
+        dayButtons[3] = findViewById(R.id.dayButton4);
+        dayButtons[4] = findViewById(R.id.dayButton5);
+        dayButtons[5] = findViewById(R.id.dayButton6);
+        dayButtons[6] = findViewById(R.id.dayButton7);
 
         String[] weekdayStrings = Utility.getWeekdayStrings();
         for (int i : SimpleTime.DAYS) {
@@ -245,7 +245,7 @@ public class AlarmClockLayout extends LinearLayout {
         });
     }
 
-    private void update() {
+    public void update() {
         if (alarmClockEntry != null) {
             Calendar time = alarmClockEntry.getCalendar();
             String text = Utility.formatTime(timeFormat, time);

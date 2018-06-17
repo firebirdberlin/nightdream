@@ -97,8 +97,6 @@ public class Settings {
     public int autostartTimeRangeEndInMinutes = -1;
     public int nightModeTimeRangeStartInMinutes = -1;
     public int nightModeTimeRangeEndInMinutes = -1;
-    public long autostartTimeRangeStart = -1L; // deprecated
-    public long autostartTimeRangeEnd = -1L; // deprecated
     public int nextAlarmTimeMinutes = 0;
     public long lastReviewRequestTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
@@ -174,8 +172,6 @@ public class Settings {
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
         autostartTimeRangeStartInMinutes = settings.getInt("autostart_time_range_start_minutes", -1);
         autostartTimeRangeEndInMinutes = settings.getInt("autostart_time_range_end_minutes", -1);
-        autostartTimeRangeStart = settings.getLong("autostart_time_range_start", -1L); // deprecated
-        autostartTimeRangeEnd = settings.getLong("autostart_time_range_end", -1L); // deprecated
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);

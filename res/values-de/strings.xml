@@ -118,6 +118,14 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode_timerange_label_start">Startzeit</string>
 <string name="night_mode_timerange_title">Nachtzeit</string>
 <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
+<string name="notification_channel_name_alarms">Wecker</string>
+<string name="notification_channel_name_devmsg">Benachrichtigungen</string>
+<string name="notification_channel_name_radio">Radio</string>
+<string name="notification_channel_name_services">Services</string>
+<string name="notification_channel_desc_alarms">Benachrichtigung, die einen aktiven Weckalarm anzeigt.</string>
+<string name="notification_channel_desc_devmsg">Benachrichtigungen, die die Nachtuhr betreffen.</string>
+<string name="notification_channel_desc_radio">Benachrichtigung, die einen aktiven Radiostream anzeigt.</string>
+<string name="notification_channel_desc_services">Diese Benachrichtigung weist auf laufende Hintergrundservices hin.</string>
 <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
 <string name="numbers">Ziffern</string>
 <string name="numberStyleArabic">Arabisch</string>

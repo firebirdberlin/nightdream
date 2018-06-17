@@ -11,6 +11,9 @@
     -->
 
     <!-- must set default theme as parent, otherwise changing theme in AlertDialog.Builder wont work at least for API level 16 -->
+    <style name="SecondaryActivityTheme" parent="@android:style/Theme.DeviceDefault">
+    </style>
+
     <style name="DialogTheme" parent="@android:style/Theme.DeviceDefault">
     </style>
 

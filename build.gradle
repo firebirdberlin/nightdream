@@ -1,28 +1,34 @@
 buildscript {
     repositories {
-        jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
         google()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.android.tools.build:gradle:3.1.3'
     }
 }
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+
 apply plugin: 'com.android.application'
 
 dependencies {
-    implementation(project(':externals:ShowcaseView:library')) {
-        exclude module: 'support-v4'
-        exclude module: 'support-annotations'
-    }
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:support-annotations:27.1.1'
     implementation project(':externals:android-preferences')
+    implementation project(':externals:ShowcaseView:library')
     implementation fileTree(include: '*.jar', dir: 'libs')
 }
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
     sourceSets {
