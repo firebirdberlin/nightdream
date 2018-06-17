@@ -155,6 +155,8 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 WakeUpReceiver.schedule(context, db);
             }
         }, hour, min, Utility.is24HourFormat(context));
+        // fix broken dialog appearance on some devices
+        mTimePicker.setTitle(null);
         mTimePicker.show();
     }
 
