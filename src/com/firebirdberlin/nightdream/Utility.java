@@ -443,7 +443,6 @@ public class Utility {
     }
 
     public static NotificationCompat.Builder buildNotification(Context context, String channel_id) {
-        NotificationCompat.Builder note;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return new NotificationCompat.Builder(context);
         } else {
