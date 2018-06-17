@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -77,7 +79,18 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
                 }
 
                 mediaPlayer = new MediaPlayer();
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mediaPlayer.setAudioAttributes(
+                            new AudioAttributes.Builder()
+                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                    .build()
+                    );
+                } else {
+                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                }
+
                 try {
                     mediaPlayer.setDataSource(context, item.uri);
                     mediaPlayer.setLooping(false);

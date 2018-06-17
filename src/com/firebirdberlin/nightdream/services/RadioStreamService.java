@@ -5,12 +5,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -196,7 +199,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        NotificationCompat.Builder noteBuilder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder noteBuilder =
+                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_RADIO)
                 .setContentTitle(getString(R.string.radio))
                 .setSmallIcon(R.drawable.ic_radio)
                 .setContentIntent(contentIntent)
@@ -229,7 +233,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
             Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
             broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-            sendBroadcast(broadcastIndex);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
             RadioStreamMetadataRetriever.getInstance().clearCache();
@@ -286,7 +290,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         if (streamingMode == StreamingMode.ALARM) {
             Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
-            sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
 
         handler.removeCallbacks(fadeIn);
@@ -300,7 +304,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         debug = false;
 
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     public void setAlarmVolume(int volume, boolean useMusicStream) {
@@ -356,7 +360,18 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.setAudioStreamType(currentStreamType);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int usage = ( currentStreamType == AudioManager.STREAM_ALARM ) ?
+                             AudioAttributes.USAGE_ALARM : AudioAttributes.USAGE_MEDIA;
+            mMediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                     .setUsage(usage)
+                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                     .build()
+            );
+        } else {
+            mMediaPlayer.setAudioStreamType(currentStreamType);
+        }
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 
         try {
@@ -409,7 +424,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             readyForPlayback = true;
             Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
             intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-            sendBroadcast( intent );
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }

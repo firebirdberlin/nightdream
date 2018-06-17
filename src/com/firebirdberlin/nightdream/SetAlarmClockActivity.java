@@ -37,9 +37,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_alarm_clock);
-        setTheme(R.style.DialogTheme);
+        setTheme(R.style.SecondaryActivityTheme);
 
-        scrollView = (LinearLayout) findViewById(R.id.scroll_view);
+        scrollView = findViewById(R.id.scroll_view);
         // https://www.youtube.com/watch?v=55wLsaWpQ4g
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             LayoutTransition layoutTransition = scrollView.getLayoutTransition();
@@ -95,6 +95,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         scrollView.removeAllViews();
         for (SimpleTime entry : entries) {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
+
             if (layout == null) {
                 layout = new AlarmClockLayout(this, entry, timeFormat);
                 layoutHashMap.put(entry.id, layout);
@@ -104,6 +105,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 layout.showSecondaryLayout(true);
             }
             scrollView.addView(layout);
+            layout.update();
         }
         scrollView.invalidate();
     }
@@ -123,10 +125,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                         && !timePicker.isShown()) return;
 
                 SimpleTime entry = null;
-                boolean isNew = false;
-                if (entry_id == null) {
+                boolean isNew = (entry_id == null);
+                if (isNew) {
                     entry = new SimpleTime();
-                    isNew = true;
                 } else {
                     for (SimpleTime e : entries) {
                         if (e.id == entry_id) {
@@ -145,12 +146,17 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                     entry = db.save(entry);
                     if (entry_id == null) {
                         entries.add(entry);
+                        update(entry.id);
+                    } else {
+                        update();
                     }
+
                 }
-                update(entry.id);
                 WakeUpReceiver.schedule(context, db);
             }
         }, hour, min, Utility.is24HourFormat(context));
+        // fix broken dialog appearance on some devices
+        mTimePicker.setTitle(null);
         mTimePicker.show();
     }
 

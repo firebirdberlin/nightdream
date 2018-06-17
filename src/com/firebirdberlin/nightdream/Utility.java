@@ -22,6 +22,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings.System;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -29,6 +30,8 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -143,9 +146,13 @@ public class Utility {
         return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), "screensaver_activate_on_sleep", -1);
     }
 
-    public static String getSelectedDaydreamClassName(final Context c) {
+    static String getSelectedDaydreamClassName(final Context c) {
         String names = android.provider.Settings.Secure.getString(c.getContentResolver(), SCREENSAVER_COMPONENTS);
-        return names == null ? null : componentsFromString(names)[0].getClassName();
+        if (names != null && !names.isEmpty()) {
+            ComponentName componentName = componentsFromString(names)[0];
+            return componentName == null ? null : componentName.getClassName();
+        }
+        return null;
     }
 
     private static ComponentName[] componentsFromString(String names) {
@@ -406,10 +413,13 @@ public class Utility {
 
         // get the name from android content
         if ("content".equals(uri.getScheme())) {
-            Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
-            String title = ringtone.getTitle(context);
-            ringtone.stop();
-            return title;
+            try {
+                Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
+                String title = ringtone.getTitle(context);
+                ringtone.stop();
+                return title;
+            } catch (RuntimeException ignored) {
+            }
         }
 
         // get the name from meta data
@@ -421,9 +431,7 @@ public class Utility {
             if (title != null && !title.isEmpty()) {
                 return title;
             }
-        } catch (Throwable t) {
-            // throwable also catches Runtime Exceptions thrown by MediaMetadataRetriever for malicious files
-            // catching only IllegalArgumentException is not sufficient.
+        } catch (RuntimeException ignored) {
         }
 
         // get the file name
@@ -432,5 +440,24 @@ public class Utility {
 
     public static Uri getDefaultAlarmToneUri() {
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    }
+
+    public static NotificationCompat.Builder buildNotification(Context context, String channel_id) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return new NotificationCompat.Builder(context);
+        } else {
+            return new NotificationCompat.Builder(context, channel_id);
+        }
+    }
+
+    public static void registerEventBus(Object subscriber) {
+        EventBus bus = EventBus.getDefault();
+        if (! bus.isRegistered(subscriber)) {
+            bus.register(subscriber);
+        }
+    }
+
+    public static void unregisterEventBus(Object subscriber) {
+        EventBus.getDefault().unregister(subscriber);
     }
 }

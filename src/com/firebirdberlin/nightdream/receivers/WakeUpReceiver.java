@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
@@ -19,6 +20,7 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 
@@ -50,7 +52,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         if (next != null) {
             intent.putExtras(next.toBundle());
         }
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public static void broadcastNextAlarm(Context context) {
@@ -66,7 +68,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         } else {
             Log.w(TAG, "no next alarm");
         }
-        context.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public static void cancelAlarm(Context context) {
@@ -83,6 +85,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
     public static PendingIntent getPendingIntent(Context context, SimpleTime alarmTime) {
         Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
+        intent.setClass(context, WakeUpReceiver.class);
         if (alarmTime != null) {
             intent.putExtras(alarmTime.toBundle());
         }
@@ -147,38 +150,38 @@ public class WakeUpReceiver extends BroadcastReceiver {
         String textActionSnooze = context.getString(R.string.action_snooze);
         String textActionStop = context.getString(R.string.action_stop);
 
-        Intent stopIntent = AlarmHandlerService.getStopIntent(context);
-        PendingIntent pStopIntent = PendingIntent.getService(
-                context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder note = new NotificationCompat.Builder(context)
-            .setAutoCancel(true)
-            .setContentTitle(context.getString(R.string.alarm))
-            .setContentText(text)
-            .setSmallIcon(R.drawable.ic_audio)
-            .setPriority(NotificationCompat.PRIORITY_MAX);
+        NotificationCompat.Builder note =
+            Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_ALARMS)
+                .setAutoCancel(true)
+                .setContentTitle(context.getString(R.string.alarm))
+                .setContentText(text)
+                .setSmallIcon(R.drawable.ic_audio)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationCompat.WearableExtender wearableExtender =
             new NotificationCompat.WearableExtender().setHintHideIcon(true);
 
+        Intent stopIntent = AlarmHandlerService.getStopIntent(context);
+        PendingIntent pStopIntent = PendingIntent.getService(
+                context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action stopAction =
             new NotificationCompat.Action.Builder(0, textActionStop, pStopIntent).build();
-        note.addAction(stopAction);
-        wearableExtender.addAction(stopAction);
 
         Intent snoozeIntent = AlarmHandlerService.getSnoozeIntent(context);
         PendingIntent pSnoozeIntent = PendingIntent.getService(
                 context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationCompat.Action snoozeAction =
-            new NotificationCompat.Action.Builder(0, textActionSnooze, pSnoozeIntent)
-                                         .build();
-        note.addAction(snoozeAction);
-        wearableExtender.addAction(snoozeAction);
+            new NotificationCompat.Action.Builder(0, textActionSnooze, pSnoozeIntent).build();
 
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
         bigStyle.bigText(text);
+
         note.setStyle(bigStyle);
+        note.addAction(stopAction);
+        note.addAction(snoozeAction);
+        wearableExtender.addAction(stopAction);
+        wearableExtender.addAction(snoozeAction);
+
 
         note.extend(wearableExtender);
 

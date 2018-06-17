@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -25,7 +24,7 @@ public class mNotificationListener extends NotificationListenerService {
         nlservicereciver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
-        registerReceiver(nlservicereciver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(nlservicereciver, filter);
         Log.i(TAG,"**********  Notification listener STARTED");
     }
 
@@ -33,7 +32,7 @@ public class mNotificationListener extends NotificationListenerService {
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG,"**********  Notification listener STOPPED");
-        unregisterReceiver(nlservicereciver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(nlservicereciver);
     }
 
     @Override
@@ -57,6 +56,7 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void listNotifications() {
+        Log.i(TAG, "listNotifications()");
         clearNotificationUI();
         HashSet<String> groupKeys = new HashSet<>();
 

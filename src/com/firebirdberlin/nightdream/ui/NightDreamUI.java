@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -60,18 +61,16 @@ import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-import de.greenrobot.event.EventBus;
-
 
 public class NightDreamUI {
     static final long SHOWCASE_ID_ONBOARDING = 1;
-    static final long SHOWCASE_ID_ALARMS = 2;
-    static final long SHOWCASE_ID_ALARM_DELETION = 3;
     private static final long SHOWCASE_ID_SCREEN_LOCK = 4;
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -99,7 +98,7 @@ public class NightDreamUI {
     private LinearLayout notificationbar;
     private LinearLayout sidePanel;
     private BottomPanelLayout bottomPanelLayout;
-    private Settings settings = null;
+    private Settings settings;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
@@ -401,19 +400,19 @@ public class NightDreamUI {
 
         this.window = window;
         View rootView = window.getDecorView().findViewById(android.R.id.content);
-        background_image = (ImageView) rootView.findViewById(R.id.background_view);
-        brightnessProgress = (ProgressBar) rootView.findViewById(R.id.brightness_progress);
-        batteryIconView = (BatteryIconView) rootView.findViewById(R.id.batteryIconView);
-        clockLayoutContainer = (FrameLayout) rootView.findViewById(R.id.clockLayoutContainer);
-        clockLayout = (ClockLayout) rootView.findViewById(R.id.clockLayout);
-        bottomPanelLayout = (BottomPanelLayout) rootView.findViewById(R.id.bottomPanel);
+        background_image = rootView.findViewById(R.id.background_view);
+        brightnessProgress = rootView.findViewById(R.id.brightness_progress);
+        batteryIconView = rootView.findViewById(R.id.batteryIconView);
+        clockLayoutContainer = rootView.findViewById(R.id.clockLayoutContainer);
+        clockLayout = rootView.findViewById(R.id.clockLayout);
+        bottomPanelLayout = rootView.findViewById(R.id.bottomPanel);
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
-        notificationbar = (LinearLayout) rootView.findViewById(R.id.notificationbar);
-        menuIcon = (ImageView) rootView.findViewById(R.id.burger_icon);
-        nightModeIcon = (ImageView) rootView.findViewById(R.id.night_mode_icon);
-        radioIcon = (WebRadioImageView) rootView.findViewById(R.id.radio_icon);
-        sidePanel = (LinearLayout) rootView.findViewById(R.id.side_panel);
+        notificationbar = rootView.findViewById(R.id.notificationbar);
+        menuIcon = rootView.findViewById(R.id.burger_icon);
+        nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
+        radioIcon = rootView.findViewById(R.id.radio_icon);
+        sidePanel = rootView.findViewById(R.id.side_panel);
         sidePanel.post(setupSidePanel);
 
         OnClickListener onMenuItemClickListener = new OnClickListener() {
@@ -471,7 +470,7 @@ public class NightDreamUI {
 
         clockLayoutContainer.post(initClockLayout);
 
-        EventBus.getDefault().register(this);
+        Utility.registerEventBus(this);
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
         if (settings.useAmbientNoiseDetection()){
@@ -727,7 +726,7 @@ public class NightDreamUI {
     }
 
     public void onPause() {
-        EventBus.getDefault().unregister(this);
+        Utility.unregisterEventBus(this);
         if ( lightSensorEventListener != null ) {
             lightSensorEventListener.unregister();
         }
@@ -1059,11 +1058,13 @@ public class NightDreamUI {
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
+    @Subscribe
     public void onEvent(OnPowerConnected event) {
         setupScreenAnimation();
         showAlarmClock();
     }
 
+    @Subscribe
     public void onEvent(OnPowerDisconnected event) {
         setupScreenAnimation();
         showAlarmClock();
@@ -1142,6 +1143,12 @@ public class NightDreamUI {
             setAlpha(bottomPanelLayout, 1.f, 250);
             controlsVisible = true;
             handler.postDelayed(hideAlarmClock, 5000);
+
+            // allow to snooze alarms in locked mode
+            if (AlarmHandlerService.alarmIsRunning()) {
+                alarmClock.snooze();
+            }
+
             return true;
         }
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
@@ -1177,14 +1184,16 @@ public class NightDreamUI {
             PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 
             // build notification
-            Notification n = new NotificationCompat.Builder(mContext)
+            NotificationCompat.Builder note =
+                    Utility.buildNotification(mContext, Config.NOTIFICATION_CHANNEL_ID_DEVMSG)
                 .setContentTitle(mContext.getString(R.string.app_name))
                 .setContentText(mContext.getString(R.string.review_request))
                 .setSmallIcon(R.drawable.ic_clock)
                 .setContentIntent(pIntent)
                 .setAutoCancel(true)
-                .setDefaults(0)
-                .build();
+                .setDefaults(0);
+
+            Notification n = note.build();
 
             NotificationManager notificationManager =
                     (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1203,23 +1212,25 @@ public class NightDreamUI {
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-        mContext.registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(receiver, filter);
         return receiver;
     }
 
     private void unregister(BroadcastReceiver receiver) {
         try {
-            mContext.unregisterReceiver(receiver);
+            LocalBroadcastManager.getInstance(mContext).unregisterReceiver(receiver);
         } catch (IllegalArgumentException ignored) {
         }
 
     }
 
+    @Subscribe
     public void onEvent(OnNewLightSensorValue event){
         last_ambient = event.value;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
+    @Subscribe
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);

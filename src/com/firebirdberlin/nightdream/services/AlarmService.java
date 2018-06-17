@@ -4,20 +4,24 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
 import java.io.IOException;
@@ -80,7 +84,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         handler.removeCallbacks(timeout);
         handler.removeCallbacks(fadeIn);
         AlarmStop();
-        sendBroadcast(new Intent(Config.ACTION_ALARM_STOPPED));
+        Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         stopForeground(false); // bool: true = remove Notification
         stopSelf();
     }
@@ -124,11 +129,13 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() called.");
 
-        Notification note = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder noteBuilder =
+                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
                 .setContentTitle(getString(R.string.alarm))
                 .setSmallIcon(R.drawable.ic_audio)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .build();
+                .setPriority(NotificationCompat.PRIORITY_MIN);
+
+        Notification note = noteBuilder.build();
 
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
@@ -187,7 +194,16 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         Log.i(TAG, "AlarmPlay()");
         isRunning = true;
         mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mMediaPlayer.setAudioAttributes(
+                    new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build()
+            );
+        } else {
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+        }
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);

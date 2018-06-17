@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.PowerManager;
+import android.util.Log;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
@@ -31,19 +32,9 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         Calendar now = new GregorianCalendar();
-        Calendar start;
-        Calendar end;
-        if (settings.autostartTimeRangeStartInMinutes > -1) {
-            start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
-        } else { // deprecated
-            start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
-        }
-        if (settings.autostartTimeRangeEndInMinutes > -1) {
-            end = new SimpleTime(settings.autostartTimeRangeEndInMinutes).getCalendar();
-        } else { // deprecated
-            end = new SimpleTime(settings.autostartTimeRangeEnd).getCalendar();
-        }
-
+        Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
+        Calendar end = new SimpleTime(settings.autostartTimeRangeEndInMinutes).getCalendar();
+        Log.i(TAG, String.valueOf(start.getTimeInMillis()) + " != " + String.valueOf(end.getTimeInMillis()));
         boolean shall_auto_start = true;
         if (end.before(start)){
             shall_auto_start = ( now.after(start) || now.before(end) );
@@ -70,7 +61,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
                 context, PENDING_INTENT_START_APP, alarmIntent, 0);
 
         Settings settings = new Settings(context);
-        Calendar start = new SimpleTime(settings.autostartTimeRangeStart).getCalendar();
+        Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);

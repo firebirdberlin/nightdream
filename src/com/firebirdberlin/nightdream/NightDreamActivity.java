@@ -2,6 +2,8 @@ package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -17,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -41,6 +44,7 @@ import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
@@ -50,10 +54,9 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.Calendar;
-
-import de.greenrobot.event.EventBus;
-
 
 public class NightDreamActivity extends BillingHelperActivity
                                 implements View.OnTouchListener,
@@ -83,7 +86,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private LocationUpdateReceiver locationReceiver = null;
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
-    private ReceiverRadioStream receiverRadioStream = null;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -160,11 +162,11 @@ public class NightDreamActivity extends BillingHelperActivity
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
         setKeepScreenOn(true);
-        bottomPanelLayout = (BottomPanelLayout) findViewById(R.id.bottomPanel);
-        weatherIcon = (ImageView) findViewById(R.id.icon_weather_forecast);
-        alarmClockIcon = (ImageView) findViewById(R.id.alarm_clock_icon);
-        radioIcon = (WebRadioImageView) findViewById(R.id.radio_icon);
-        background_image = (ImageView) findViewById(R.id.background_view);
+        bottomPanelLayout = findViewById(R.id.bottomPanel);
+        weatherIcon = findViewById(R.id.icon_weather_forecast);
+        alarmClockIcon = findViewById(R.id.alarm_clock_icon);
+        radioIcon = findViewById(R.id.radio_icon);
+        background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         cn = new ComponentName(this, AdminReceiver.class);
@@ -180,7 +182,7 @@ public class NightDreamActivity extends BillingHelperActivity
         super.onStart();
         setKeepScreenOn(true);
         Log.i(TAG, "onStart()");
-        EventBus.getDefault().register(this);
+        Utility.registerEventBus(this);
 
         nightDreamUI.onStart();
 
@@ -191,6 +193,61 @@ public class NightDreamActivity extends BillingHelperActivity
 
         BatteryValue batteryValue = new BatteryStats(this).reference;
         this.isChargingWireless = batteryValue.isChargingWireless;
+
+        createNotificationChannels();
+    }
+
+    private void createNotificationChannels() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
+        NotificationChannel channelAlarms = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_ALARMS,
+                R.string.notification_channel_name_alarms,
+                R.string.notification_channel_desc_alarms,
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationChannel channelRadio = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_RADIO,
+                R.string.notification_channel_name_radio,
+                R.string.notification_channel_desc_radio,
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationChannel channelMessages = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_DEVMSG,
+                R.string.notification_channel_name_devmsg,
+                R.string.notification_channel_desc_devmsg,
+                NotificationManager.IMPORTANCE_LOW
+        );
+        channelMessages.setShowBadge(true);
+        NotificationChannel channelServices = prepareNotificationChannel(
+                Config.NOTIFICATION_CHANNEL_ID_SERVICES,
+                R.string.notification_channel_name_services,
+                R.string.notification_channel_desc_services,
+                NotificationManager.IMPORTANCE_MIN
+        );
+
+        notificationManager.createNotificationChannel(channelAlarms);
+        notificationManager.createNotificationChannel(channelMessages);
+        notificationManager.createNotificationChannel(channelRadio);
+        notificationManager.createNotificationChannel(channelServices);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    NotificationChannel prepareNotificationChannel(String channelName, int idName, int idDesc,
+                                                   int importance) {
+        String name = getString(idName);
+        String description = getString(idDesc);
+        NotificationChannel mChannel = new NotificationChannel(channelName, name, importance);
+        mChannel.setDescription(description);
+        mChannel.enableLights(false);
+        mChannel.enableVibration(false);
+        mChannel.setSound(null, null);
+        mChannel.setShowBadge(false);
+        return mChannel;
     }
 
     @Override
@@ -210,7 +267,6 @@ public class NightDreamActivity extends BillingHelperActivity
         nReceiver = registerNotificationReceiver();
         nightModeReceiver = NightModeReceiver.register(this, this);
         broadcastReceiver = registerBroadcastReceiver();
-        receiverRadioStream = registerReceiverRadioStream();
         locationReceiver = LocationUpdateReceiver.register(this, this);
 
         nReceiver.setColor(mySettings.secondaryColor);
@@ -218,7 +274,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (Build.VERSION.SDK_INT >= 18){
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command", "list");
-            sendBroadcast(i);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         }
 
         Intent intent = getIntent();
@@ -307,10 +363,9 @@ public class NightDreamActivity extends BillingHelperActivity
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         NightModeReceiver.cancel(this);
-        unregisterLocalReceiver(nReceiver);
         unregister(nightModeReceiver);
-        unregister(broadcastReceiver);
-        unregister(receiverRadioStream);
+        unregisterLocalReceiver(nReceiver);
+        unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if (mySettings.allow_screen_off && mode == 0
@@ -343,7 +398,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onStop()");
 
         nightDreamUI.onStop();
-        EventBus.getDefault().unregister(this);
+        Utility.unregisterEventBus(this);
     }
 
     @Override
@@ -368,19 +423,14 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        Log.d(TAG, "registerReceiver()");
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
-        IntentFilter filter = new IntentFilter(Config.ACTION_SHUT_DOWN);
-        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
-        registerReceiver(receiver, filter);
-        return receiver;
-    }
-
-    private ReceiverRadioStream registerReceiverRadioStream() {
-        ReceiverRadioStream receiver = new ReceiverRadioStream();
         IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_SHUT_DOWN);
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
-        registerReceiver(receiver, filter);
+        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         return receiver;
     }
 
@@ -430,6 +480,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onLocationUpdated() {
         // we need to reload the location
         mySettings = new Settings(this);
+        DownloadWeatherService.start(this, mySettings.getLocation());
     }
 
     private void setupWeatherForecastIcon() {
@@ -536,18 +587,21 @@ public class NightDreamActivity extends BillingHelperActivity
         finish();
     }
 
+    @Subscribe
     public void onEvent(OnNewLightSensorValue event){
         Log.i(TAG, String.valueOf(event.value) + " lux, n=" + String.valueOf(event.n));
         last_ambient = event.value;
         handleBrightnessChange();
     }
 
+    @Subscribe
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         handleBrightnessChange();
     }
 
+    @Subscribe
     public void onEvent(OnNewAmbientNoiseValue event) {
         last_ambient_noise = event.value;
         handleBrightnessChange();
@@ -560,6 +614,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
+    @Subscribe
     public void onEvent(OnPowerDisconnected event) {
         if ( mySettings.handle_power_disconnection ) {
             handler.removeCallbacks(finishApp);
@@ -571,6 +626,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
+    @Subscribe
     public void onEvent(OnPowerConnected event) {
         handler.removeCallbacks(finishApp);
         if ( event != null ) {
@@ -598,26 +654,29 @@ public class NightDreamActivity extends BillingHelperActivity
         Intent alarmIntent = new Intent(Config.ACTION_SHUT_DOWN);
         return PendingIntent.getBroadcast(this,
                                           PENDING_INTENT_STOP_APP,
-                                          alarmIntent,
-                0);
+                alarmIntent, 0);
     }
 
     private void scheduleShutdown() {
         if (mySettings == null) return;
 
-        Calendar start = new SimpleTime(mySettings.autostartTimeRangeStart).getCalendar();
-        Calendar end = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
+        Calendar start = new SimpleTime(mySettings.autostartTimeRangeStartInMinutes).getCalendar();
+        Calendar end = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes).getCalendar();
         if( start.equals(end)) {
             cancelShutdown();
             return;
         }
 
+
         if ( ! mySettings.standbyEnabledWhileConnected
                 && PowerConnectionReceiver.shallAutostart(this, mySettings)) {
             PendingIntent pendingIntent = getShutdownIntent();
-            Calendar calendar = new SimpleTime(mySettings.autostartTimeRangeEnd).getCalendar();
+            SimpleTime simpleEndTime = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes);
+            Calendar calendar = simpleEndTime.getCalendar();
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
+
+            pendingIntent = getShutdownIntent();
             if (Build.VERSION.SDK_INT >= 19){
                 alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
             } else {
@@ -658,25 +717,23 @@ public class NightDreamActivity extends BillingHelperActivity
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "onReceive() -> ");
             if (intent == null) return;
             String action = intent.getAction();
+            Log.i(TAG, "action -> " + action);
             if (Config.ACTION_SHUT_DOWN.equals(action)) {
                 // this receiver is needed to shutdown the app at the end of the autostart time range
                 if (mySettings.handle_power_disconnection) {
                     finish();
                 }
-            } else
-            if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
+            } else if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 mySettings = new Settings(context);
                 setupWeatherForecastIcon();
+            } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)
+                    || Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
+                setupRadioStreamUI();
             }
-        }
-    }
 
-    class ReceiverRadioStream extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setupRadioStreamUI();
         }
     }
 }

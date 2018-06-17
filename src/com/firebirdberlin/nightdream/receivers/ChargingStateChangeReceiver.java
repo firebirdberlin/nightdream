@@ -10,7 +10,7 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 public class ChargingStateChangeReceiver extends BroadcastReceiver {
 
