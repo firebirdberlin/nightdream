@@ -421,8 +421,9 @@ public class Utility {
             if (title != null && !title.isEmpty()) {
                 return title;
             }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+            // throwable also catches Runtime Exceptions thrown by MediaMetadataRetriever for malicious files
+            // catching only IllegalArgumentException is not sufficient.
         }
 
         // get the file name
