@@ -111,7 +111,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         if (alarmTime != null) {
             i.putExtras(alarmTime.toBundle());
         }
-        context.startService(i);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(i);
+        } else {
+            context.startService(i);
+        }
     }
 
     public static boolean isReadyForPlayback() {
@@ -138,10 +143,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         return RadioStreamMetadataRetriever.getInstance().getCachedMetadata();
     }
 
-    public static void startStream(Context context) {
-        startStream(context, 0);
-    }
-
     public static void startStream(Context context, int radioStationIndex) {
         if (!Utility.hasNetworkConnection(context)) {
             Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
@@ -152,7 +153,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         i.setAction(ACTION_START_STREAM);
         i.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
         Log.i(TAG, "put extra " + radioStationIndex);
-        context.startService(i);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(i);
+        } else {
+            context.startService(i);
+        }
+
     }
 
     public static void stop(Context context) {
@@ -164,7 +170,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.i(TAG, "startSleepTime");
         Intent i = new Intent(context, RadioStreamService.class);
         i.setAction(ACTION_START_SLEEP_TIME);
-        context.startService(i);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(i);
+        } else {
+            context.startService(i);
+        }
     }
 
     private static Intent getStopIntent(Context context) {
