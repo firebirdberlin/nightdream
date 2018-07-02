@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -150,6 +151,9 @@ public class PreferencesFragment extends PreferenceFragment {
                             break;
                         case "useInternalAlarm":
                             setupAlarmClock(sharedPreferences);
+                            break;
+                        case "Night.muteRinger":
+                            setupNotificationAccessPermission(sharedPreferences);
                             break;
                     }
 
@@ -910,6 +914,23 @@ public class PreferencesFragment extends PreferenceFragment {
         }
     }
 
+
+    private void setupNotificationAccessPermission(SharedPreferences sharedPreferences) {
+        if (!isAdded() ) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return;
+        }
+        boolean on = sharedPreferences.getBoolean("Night.muteRinger", false);
+        NotificationManager notificationManager =
+            (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (on && !notificationManager.isNotificationPolicyAccessGranted() ) {
+
+            Intent intent =
+                new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+            startActivity(intent);
+        }
+    }
 
     private void setupDeviceAdministratorPermissions(SharedPreferences sharedPreferences) {
         if (!isAdded() ) return;

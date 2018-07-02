@@ -2,6 +2,8 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -21,7 +23,6 @@ public class mAudioManager{
          }
     };
 
-    // constructor
     public mAudioManager(Context context){
         this.mContext = context;
         audiomanage = null;
@@ -30,6 +31,15 @@ public class mAudioManager{
     }
 
     public void setRingerModeSilent(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if ( !notificationManager.isNotificationPolicyAccessGranted() ) {
+                return;
+            }
+        }
+
         currentRingerMode = audiomanage.getRingerMode(); // ringer mode to restore
         Log.i(TAG, String.format(" currentRingerMode = %d", currentRingerMode));
         Log.i(TAG, "setRingerModeSilent()");
