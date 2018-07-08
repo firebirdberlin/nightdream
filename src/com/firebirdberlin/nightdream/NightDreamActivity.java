@@ -172,7 +172,10 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
 
-        if (mySettings.standbyEnabledWhileConnected || mySettings.standbyEnabledWhileDisconnected) {
+        if (mySettings.handle_power ||
+                mySettings.handle_power_disconnection ||
+                mySettings.standbyEnabledWhileConnected ||
+                mySettings.standbyEnabledWhileDisconnected) {
             ScreenWatcherService.start(context);
         }
     }
