@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
@@ -26,6 +27,21 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     private static int PENDING_INTENT_START_APP = 0;
 
     private Settings settings = null;
+
+    public static PowerConnectionReceiver register(Context ctx) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_POWER_CONNECTED);
+        filter.addAction(Intent.ACTION_MY_PACKAGE_REPLACED);
+        PowerConnectionReceiver receiver = new PowerConnectionReceiver();
+        ctx.registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    public static void unregister(Context ctx, BroadcastReceiver receiver) {
+        if (receiver != null) {
+            ctx.unregisterReceiver(receiver);
+        }
+    }
 
     public static boolean shallAutostart(Context context, Settings settings) {
         if (!settings.handle_power) return false;
