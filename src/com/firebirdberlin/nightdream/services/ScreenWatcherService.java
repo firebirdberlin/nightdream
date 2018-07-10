@@ -13,6 +13,8 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
+import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 
 
@@ -23,9 +25,11 @@ public class ScreenWatcherService extends Service {
     private Context mContext = null;
 
     private ScreenReceiver mReceiver;
+    private PowerConnectionReceiver powerConnectionReceiver;
+    private ChargingStateChangeReceiver chargingStateChangeReceiver;
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         Log.i(TAG, "onCreate()");
         NotificationCompat.Builder noteBuilder =
                 Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
@@ -41,6 +45,8 @@ public class ScreenWatcherService extends Service {
         startForeground(NOTIFICATION_ID, note);
 
         mReceiver = ScreenReceiver.register(this);
+        powerConnectionReceiver = PowerConnectionReceiver.register(this);
+        chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
     }
 
     @Nullable
@@ -53,6 +59,8 @@ public class ScreenWatcherService extends Service {
     public void onDestroy() {
         Log.i(TAG, "ScreenWatcherService destroyed.");
         ScreenReceiver.unregister(this, mReceiver);
+        PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
+        ChargingStateChangeReceiver.unregister(this, chargingStateChangeReceiver);
     }
 
 
