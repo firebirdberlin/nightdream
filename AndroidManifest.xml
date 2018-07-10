@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="204"
-    android:versionName="2.7.15">
+    android:versionCode="205"
+    android:versionName="2.7.16">
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -114,8 +114,6 @@
             android:name=".receivers.PowerConnectionReceiver"
             android:enabled="true">
             <intent-filter>
-                <!--<action android:name="android.intent.action.ACTION_POWER_CONNECTED" />-->
-                <!--<action android:name="android.intent.action.PACKAGE_REPLACED" />-->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
@@ -124,9 +122,6 @@
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <!--<action android:name="android.intent.action.AIRPLANE_MODE" />-->
-                <!--<action android:name="android.intent.action.ACTION_POWER_CONNECTED" />-->
-                <!--<action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />-->
             </intent-filter>
         </receiver>
         <receiver android:name=".receivers.WakeUpReceiver">
