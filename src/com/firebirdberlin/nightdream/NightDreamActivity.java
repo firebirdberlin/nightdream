@@ -86,6 +86,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private LocationUpdateReceiver locationReceiver = null;
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
+    private ShutdownReceiver shutdownReceiver = null;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -172,7 +173,10 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
 
-        if (mySettings.standbyEnabledWhileConnected || mySettings.standbyEnabledWhileDisconnected) {
+        if (mySettings.handle_power ||
+                mySettings.handle_power_disconnection ||
+                mySettings.standbyEnabledWhileConnected ||
+                mySettings.standbyEnabledWhileDisconnected) {
             ScreenWatcherService.start(context);
         }
     }
@@ -267,6 +271,7 @@ public class NightDreamActivity extends BillingHelperActivity
         nReceiver = registerNotificationReceiver();
         nightModeReceiver = NightModeReceiver.register(this, this);
         broadcastReceiver = registerBroadcastReceiver();
+        shutdownReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
 
         nReceiver.setColor(mySettings.secondaryColor);
@@ -364,6 +369,7 @@ public class NightDreamActivity extends BillingHelperActivity
         cancelShutdown();
         NightModeReceiver.cancel(this);
         unregister(nightModeReceiver);
+        unregister(shutdownReceiver);
         unregisterLocalReceiver(nReceiver);
         unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
@@ -412,6 +418,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         nightModeReceiver = null;
         broadcastReceiver = null;
+        shutdownReceiver = null;
         nReceiver  = null;
     }
 
@@ -426,11 +433,19 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG, "registerReceiver()");
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_SHUT_DOWN);
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+        return receiver;
+    }
+
+    private ShutdownReceiver registerShutdownReceiver() {
+        Log.d(TAG, "registerShutdownReceiver()");
+        ShutdownReceiver receiver = new ShutdownReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_SHUT_DOWN);
+        registerReceiver(receiver, filter);
         return receiver;
     }
 
@@ -721,12 +736,7 @@ public class NightDreamActivity extends BillingHelperActivity
             if (intent == null) return;
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
-            if (Config.ACTION_SHUT_DOWN.equals(action)) {
-                // this receiver is needed to shutdown the app at the end of the autostart time range
-                if (mySettings.handle_power_disconnection) {
-                    finish();
-                }
-            } else if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
+            if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 mySettings = new Settings(context);
                 setupWeatherForecastIcon();
             } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)
@@ -734,6 +744,21 @@ public class NightDreamActivity extends BillingHelperActivity
                 setupRadioStreamUI();
             }
 
+        }
+    }
+    class ShutdownReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "onReceive() -> ");
+            if (intent == null) return;
+            String action = intent.getAction();
+            Log.i(TAG, "action -> " + action);
+            if (Config.ACTION_SHUT_DOWN.equals(action)) {
+                // this receiver is needed to shutdown the app at the end of the autostart time range
+                if (mySettings.handle_power_disconnection) {
+                    finish();
+                }
+            }
         }
     }
 }

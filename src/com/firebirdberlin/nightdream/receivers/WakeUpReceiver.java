@@ -43,7 +43,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             setAlarm(context, next);
             next = db.setNextAlarm(next);
         } else {
-            PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null);
+            PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
             AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
             am.cancel(pI);
         }
@@ -72,7 +72,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     public static void cancelAlarm(Context context) {
-        PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null);
+        PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
         am.cancel(pI);
 
@@ -83,7 +83,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         db.close();
     }
 
-    public static PendingIntent getPendingIntent(Context context, SimpleTime alarmTime) {
+    public static PendingIntent getPendingIntent(Context context, SimpleTime alarmTime, int flags) {
         Intent intent = new Intent("com.firebirdberlin.nightdream.WAKEUP");
         intent.setClass(context, WakeUpReceiver.class);
         if (alarmTime != null) {
@@ -94,7 +94,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
         // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
         // already cancelled alarm times afterwards.
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getBroadcast(context, 0, intent, flags);
     }
 
     private static PendingIntent getShowIntent(Context context) {
@@ -103,11 +103,11 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     private static void setAlarm(Context context, SimpleTime nextAlarmEntry) {
-        PendingIntent pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry);
+        PendingIntent pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pI);
 
-        pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry);
+        pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry, PendingIntent.FLAG_CANCEL_CURRENT);
         long nextAlarmTime = nextAlarmEntry.getMillis();
         if (Build.VERSION.SDK_INT >= 21) {
             PendingIntent pi = getShowIntent(context);
