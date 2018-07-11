@@ -64,11 +64,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             i.putExtras(alarmTime.toBundle());
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(i);
-        } else {
-            context.startService(i);
-        }
+        Utility.startForegroundService(context, i);
     }
 
 

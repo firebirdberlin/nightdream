@@ -460,4 +460,12 @@ public class Utility {
     public static void unregisterEventBus(Object subscriber) {
         EventBus.getDefault().unregister(subscriber);
     }
+
+   public static void startForegroundService(Context context, Intent i) {
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+           context.startForegroundService(i);
+       } else {
+           context.startService(i);
+       }
+   }
 }

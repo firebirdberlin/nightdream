@@ -66,7 +66,7 @@ public class ScreenWatcherService extends Service {
 
     public static void start(Context context) {
         Intent i = new Intent(context, ScreenWatcherService.class);
-        context.startService(i);
+        Utility.startForegroundService(context, i);
     }
 
     public static void stop(Context context) {
