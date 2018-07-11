@@ -34,7 +34,9 @@
         android:visibility="gone"
         custom:format12Hr="dd. MMMM yyyy"
         android:singleLine="true"
-        custom:format24Hr="dd. MMMM yyyy" />
+        custom:format24Hr="dd. MMMM yyyy"
+        custom:capitalize="true"
+        />
 
     <com.firebirdberlin.nightdream.ui.WeatherLayout
         android:id="@+id/weatherLayout"

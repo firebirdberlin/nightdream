@@ -30,6 +30,7 @@
             android:translationY="0px"
             custom:format12Hr="dd. MMMM yyyy"
             custom:format24Hr="dd. MMMM yyyy"
+            custom:capitalize="true"
             />
 
 <!--
