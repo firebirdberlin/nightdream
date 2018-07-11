@@ -111,12 +111,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         if (alarmTime != null) {
             i.putExtras(alarmTime.toBundle());
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(i);
-        } else {
-            context.startService(i);
-        }
+        Utility.startForegroundService(context, i);
     }
 
     public static boolean isReadyForPlayback() {
@@ -153,12 +148,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         i.setAction(ACTION_START_STREAM);
         i.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
         Log.i(TAG, "put extra " + radioStationIndex);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(i);
-        } else {
-            context.startService(i);
-        }
-
+        Utility.startForegroundService(context, i);
     }
 
     public static void stop(Context context) {
@@ -170,11 +160,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.i(TAG, "startSleepTime");
         Intent i = new Intent(context, RadioStreamService.class);
         i.setAction(ACTION_START_SLEEP_TIME);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(i);
-        } else {
-            context.startService(i);
-        }
+
+        Utility.startForegroundService(context, i);
     }
 
     private static Intent getStopIntent(Context context) {
