@@ -3,6 +3,7 @@
     <declare-styleable name="CustomDigitalClock">
         <attr name="format12Hr" format="string"/>
         <attr name="format24Hr" format="string"/>
+        <attr name="capitalize" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="AutoAdjustTextView">
         <attr name="fontPath" format="string"/>

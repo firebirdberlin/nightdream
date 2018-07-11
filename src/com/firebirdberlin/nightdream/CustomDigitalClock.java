@@ -26,6 +26,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     String mFormat;
     private String m12 = "h:mm aa";
     private String m24 = "HH:mm";
+    private boolean capitalize = false;
     private SimpleDateFormat simpleDateFormat;
     private FormatChangeObserver mFormatChangeObserver;
 
@@ -44,6 +45,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
         m12 = a.getString(R.styleable.CustomDigitalClock_format12Hr);
         m24 = a.getString(R.styleable.CustomDigitalClock_format24Hr);
+        capitalize = a.getBoolean(R.styleable.CustomDigitalClock_capitalize, false);
 
         a.recycle();
 
@@ -154,4 +156,26 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         }
     }
 
+    @Override
+    public void invalidate() {
+        if (capitalize) {
+            String text = capitalize(getText().toString());
+            setText(text);
+        }
+        super.invalidate();
+    }
+
+    private String capitalize(String input) {
+        if (input == null) {
+            return null;
+        }
+        if (input.length() > 1 ) {
+            return input.substring(0, 1).toUpperCase() + input.substring(1);
+        } else
+        if (input.length() > 0 ) {
+            return input.substring(0, 1).toUpperCase();
+        }
+
+        return input;
+    }
 }

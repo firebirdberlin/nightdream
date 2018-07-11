@@ -85,12 +85,12 @@ public class ClockLayout extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         Log.v(TAG, "onFinishInflate");
-        clock = (AutoAdjustTextView) findViewById(R.id.clock);
-        clock_ampm = (AutoAdjustTextView) findViewById(R.id.clock_ampm);
-        date = (AutoAdjustTextView) findViewById(R.id.date);
-        weatherLayout = (WeatherLayout) findViewById(R.id.weatherLayout);
+        clock = findViewById(R.id.clock);
+        clock_ampm = findViewById(R.id.clock_ampm);
+        date = findViewById(R.id.date);
+        weatherLayout = findViewById(R.id.weatherLayout);
         divider = findViewById(R.id.divider);
-        analog_clock = (CustomAnalogClock) findViewById(R.id.analog_clock);
+        analog_clock = findViewById(R.id.analog_clock);
     }
 
     public void setTypeface(Typeface typeface) {
@@ -289,8 +289,12 @@ public class ClockLayout extends LinearLayout {
             setupLayoutAnalog2(parentWidth, parentHeight, config, displayInWidget);
         }
 
-        if ( date != null ) date.invalidate();
-        if (clock != null ) clock.invalidate();
+        if ( date != null ) {
+            date.invalidate();
+        }
+        if (clock != null ) {
+            clock.invalidate();
+        }
     }
 
     private void setSize(int width, int height) {

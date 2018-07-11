@@ -74,10 +74,10 @@ public class ManageFontsDialogFragment extends DialogFragment {
         name = name.replaceAll(".(?i)ttf", "");
         name = name.replaceAll(".(?i)otf", "");
 
-        return capitalize(name);
+        return toTitleCase(name);
     }
 
-    private static String capitalize(String input) {
+    private static String toTitleCase(String input) {
         String[] words = input.toLowerCase().split(" ");
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < words.length; i++) {
