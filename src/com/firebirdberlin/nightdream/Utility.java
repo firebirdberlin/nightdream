@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -467,5 +468,20 @@ public class Utility {
        } else {
            context.startService(i);
        }
+   }
+
+   public static Notification getForegroundServiceNotification(Context context) {
+       NotificationCompat.Builder noteBuilder =
+               Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
+                       .setContentTitle(context.getString(R.string.app_name))
+                       .setContentText(context.getString(R.string.backgroundServiceNotificationText))
+                       .setSmallIcon(R.drawable.ic_expert)
+                       .setPriority(NotificationCompat.PRIORITY_MIN);
+
+       Notification note = noteBuilder.build();
+
+       note.flags |= Notification.FLAG_NO_CLEAR;
+       note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+       return note;
    }
 }

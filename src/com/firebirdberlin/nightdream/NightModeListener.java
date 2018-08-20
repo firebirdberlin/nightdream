@@ -77,18 +77,9 @@ public class NightModeListener extends Service {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
-        NotificationCompat.Builder mBuilder =
-            Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
-            .setSmallIcon(R.drawable.ic_nightdream)
-            .setOngoing(true)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText("The night mode listener is active.")
-            .setContentIntent(pi); //Required on Gingerbread and below
 
-        Notification note = mBuilder.build();
-        note.flags|=Notification.FLAG_NO_CLEAR;
-        note.flags|=Notification.FLAG_FOREGROUND_SERVICE;
-        startForeground(1337, note);
+        Notification note = Utility.getForegroundServiceNotification(this);
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
         if (reactivate_on_noise ) {
             handler.postDelayed(startRecording, 1000);

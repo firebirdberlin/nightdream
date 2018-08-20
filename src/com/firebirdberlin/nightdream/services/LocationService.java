@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +15,9 @@ import android.provider.Settings.Secure;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 
 import java.util.List;
@@ -48,6 +51,9 @@ public class LocationService extends Service {
         }
         running = true;
         mContext = this;
+
+        Notification note = Utility.getForegroundServiceNotification(this);
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
         final Settings settings = new Settings(mContext);
         if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
@@ -194,6 +200,6 @@ public class LocationService extends Service {
     public static void start(Context context) {
         Intent i = new Intent(context, LocationService.class);
         //i.putExtra("start alarm", true);
-        context.startService(i);
+        Utility.startForegroundService(context, i);
     }
 }
