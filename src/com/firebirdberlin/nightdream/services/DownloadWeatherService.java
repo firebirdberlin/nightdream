@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.services;
 
 import android.annotation.TargetApi;
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -10,7 +11,9 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
@@ -32,19 +35,22 @@ public class DownloadWeatherService extends IntentService {
         Intent i = new Intent(context, DownloadWeatherService.class);
         i.putExtra("lat", (float) location.getLatitude());
         i.putExtra("lon", (float) location.getLongitude());
-        context.startService(i);
+        Utility.startForegroundService(context, i);
     }
 
     public static void start(Context context, String cityID) {
         Intent i = new Intent(context, DownloadWeatherService.class);
         i.putExtra("cityID", cityID);
-        context.startService(i);
+        Utility.startForegroundService(context, i);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         mContext = this;
         Log.d(TAG, TAG + " started");
+
+        Notification note = Utility.getForegroundServiceNotification(this);
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
         Bundle bundle = intent.getExtras();
         float lat = bundle.getFloat("lat");

@@ -20,9 +20,6 @@ import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 
 public class ScreenWatcherService extends Service {
     private static String TAG = "ScreenWatcherService";
-    private static int NOTIFICATION_ID = 1339;
-
-    private Context mContext = null;
 
     private ScreenReceiver mReceiver;
     private PowerConnectionReceiver powerConnectionReceiver;
@@ -31,18 +28,8 @@ public class ScreenWatcherService extends Service {
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate()");
-        NotificationCompat.Builder noteBuilder =
-                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText(getString(R.string.standbyNotificationText))
-                        .setSmallIcon(R.drawable.ic_expert)
-                        .setPriority(NotificationCompat.PRIORITY_MIN);
-
-        Notification note = noteBuilder.build();
-
-        note.flags |= Notification.FLAG_NO_CLEAR;
-        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-        startForeground(NOTIFICATION_ID, note);
+        Notification note = Utility.getForegroundServiceNotification(this);
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
         mReceiver = ScreenReceiver.register(this);
         powerConnectionReceiver = PowerConnectionReceiver.register(this);

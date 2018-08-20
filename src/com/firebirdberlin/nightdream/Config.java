@@ -20,6 +20,7 @@ public class Config {
     public final static String ACTION_SHOW_RADIO_PANEL = "com.firebirdberlin.nightdream.ACTION_SHOW_RADIO_PANEL";
 
     public final static int NOTIFICATION_ID_DISMISS_ALARMS = 1338;
+    public final static int NOTIFICATION_ID_FOREGROUND_SERVICES = 1339;
     public final static String NOTIFICATION_CHANNEL_ID_ALARMS = "com.firebirdberlin.nightdream.notification_channel_alarms";
     public final static String NOTIFICATION_CHANNEL_ID_RADIO = "com.firebirdberlin.nightdream.notification_channel_radio";
     public final static String NOTIFICATION_CHANNEL_ID_SERVICES = "com.firebirdberlin.nightdream.notification_channel_services";
