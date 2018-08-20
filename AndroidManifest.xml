@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="206"
-    android:versionName="2.7.17">
+    android:versionCode="207"
+    android:versionName="2.7.18">
 
     <uses-sdk
         android:minSdkVersion="14"
