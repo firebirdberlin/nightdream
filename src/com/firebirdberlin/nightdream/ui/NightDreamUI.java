@@ -153,6 +153,7 @@ public class NightDreamUI {
             float s = getScaleFactor(config);
             clockLayout.setScaleFactor(s, true);
             Utility.turnScreenOn(mContext);
+            Utility.hideSystemUI(mContext);
         }
     };
     private Runnable hideBrightnessView = new Runnable() {
