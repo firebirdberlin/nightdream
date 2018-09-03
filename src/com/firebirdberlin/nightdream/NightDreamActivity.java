@@ -2,8 +2,6 @@ package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -19,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -198,60 +195,7 @@ public class NightDreamActivity extends BillingHelperActivity
         BatteryValue batteryValue = new BatteryStats(this).reference;
         this.isChargingWireless = batteryValue.isChargingWireless;
 
-        createNotificationChannels();
-    }
-
-    private void createNotificationChannels() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return;
-        }
-
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-
-        NotificationChannel channelAlarms = prepareNotificationChannel(
-                Config.NOTIFICATION_CHANNEL_ID_ALARMS,
-                R.string.notification_channel_name_alarms,
-                R.string.notification_channel_desc_alarms,
-                NotificationManager.IMPORTANCE_DEFAULT
-        );
-        NotificationChannel channelRadio = prepareNotificationChannel(
-                Config.NOTIFICATION_CHANNEL_ID_RADIO,
-                R.string.notification_channel_name_radio,
-                R.string.notification_channel_desc_radio,
-                NotificationManager.IMPORTANCE_DEFAULT
-        );
-        NotificationChannel channelMessages = prepareNotificationChannel(
-                Config.NOTIFICATION_CHANNEL_ID_DEVMSG,
-                R.string.notification_channel_name_devmsg,
-                R.string.notification_channel_desc_devmsg,
-                NotificationManager.IMPORTANCE_LOW
-        );
-        channelMessages.setShowBadge(true);
-        NotificationChannel channelServices = prepareNotificationChannel(
-                Config.NOTIFICATION_CHANNEL_ID_SERVICES,
-                R.string.notification_channel_name_services,
-                R.string.notification_channel_desc_services,
-                NotificationManager.IMPORTANCE_MIN
-        );
-
-        notificationManager.createNotificationChannel(channelAlarms);
-        notificationManager.createNotificationChannel(channelMessages);
-        notificationManager.createNotificationChannel(channelRadio);
-        notificationManager.createNotificationChannel(channelServices);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    NotificationChannel prepareNotificationChannel(String channelName, int idName, int idDesc,
-                                                   int importance) {
-        String name = getString(idName);
-        String description = getString(idDesc);
-        NotificationChannel mChannel = new NotificationChannel(channelName, name, importance);
-        mChannel.setDescription(description);
-        mChannel.enableLights(false);
-        mChannel.enableVibration(false);
-        mChannel.setSound(null, null);
-        mChannel.setShowBadge(false);
-        return mChannel;
+        Utility.createNotificationChannels(this);
     }
 
     @Override

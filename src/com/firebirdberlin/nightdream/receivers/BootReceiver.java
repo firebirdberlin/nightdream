@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 
 public class BootReceiver extends BroadcastReceiver {
@@ -13,6 +14,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "BootReceiver: " + intent.getAction());
+        Utility.createNotificationChannels(context);
         PowerConnectionReceiver.schedule(context);
         Settings settings = new Settings(context);
         if (settings.useInternalAlarm) {
