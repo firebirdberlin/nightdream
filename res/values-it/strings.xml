@@ -25,7 +25,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarm">Sveglia</string>
     <string name="alarmFadeIn">Volume incrementale</string>
     <string name="alarmVolume">Volume</string>
-    <string name="allow_screen_off_summary">Di notte spegni lo schermo</string>
+    <string name="allow_screen_off_summary">Spegni lo schermo durante la notte</string>
     <string name="allow_screen_off">Spegni lo schermo</string>
     <string name="ambient_noise">Rilevamento del rumore ambientale</string>
     <string name="ambient_noise_summary">Il rumore ambientale deve impedire la modalità \'notte\'?</string>
@@ -58,6 +58,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_digit_analog">Orologio analogico con numeri</string>
     <string name="clock_layout">Tipo orologio</string>
     <string name="clock_layout_modern_analog">Orologio analogico moderno</string>
+    <string name="clock_layout_mirror_text">Testo a specchio</string>
     <string name="colors">Colori</string>
     <string name="confirm_reset_question">Vuoi davvero riportare alla configurazione iniziale?</string>
     <string name="confirm_reset_question_layout">Vuoi davvero resettare questo layout come default ?</string>
@@ -83,6 +84,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishTitle">Doppio tap per terminare</string>
     <string name="expertPreferences">Opzioni avanzate</string>
     <string name="forecast">Previsioni meteo a 5 giorni</string>
+    <string name="hand_shape_bar">Barra</string>
+    <string name="hand_shape_triangle">Triangolo</string>
     <string name="handle_power_ac">rete elettrica</string>
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">Caricatore per auto</string>
@@ -93,7 +96,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_wireless">Caricatore wireless</string>
     <string name="hide_background_image_in_night_mode">Nascondi</string>
     <string name="hide_background_image_in_night_mode_summary">In modalità Notte, nascondi l\'immagine di sfondo</string>
-    <string name="hour">Ora</string>
+    <string name="hour">h</string>
     <string name="inner_circle_radius">Raggio cerchio interno</string>
     <string name="length">Lunghezza</string>
     <string name="location_time">Ora locale</string>
@@ -103,7 +106,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="message_mobile_data_connection">Collegamento dati da rete cellulare</string>
     <string name="message_no_data_connection">Nessun collegamento dati</string>
     <string name="minBrightness">Minima luminosità schermo</string>
-    <string name="minute">Minuti</string>
+    <string name="minute">min</string>
     <string name="mute_ringer">Spegni la suoneria</string>
     <string name="next">Prossimo</string>
     <string name="night_mode_activation_auto">Automatico</string>
@@ -117,6 +120,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="noise_sensitivity">Sensibilità del microfono</string>
     <string name="notification_alarm">Fai click per fermare la sveglia</string>
     <string name="numbers">Numeri</string>
+    <string name="numberStyleArabic">Arabico</string>
+    <string name="numberStyleRoman">Romano</string>
     <string name="numberStyleNone">Nessuno</string>
     <string name="other_apps">Altre app</string>
     <string name="other_apps_tinytimetracker_summary">Tieni traccia del tuo tempo di lavoro quotidiano</string>
@@ -190,6 +195,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_hours">Stile tick ore</string>
     <string name="tick_style_minutes">Stile tick minuti</string>
     <string name="tick_style_circle">Cerchio</string>
+    <string name="tick_style_none">Nessuno</string>
     <string name="timeFormat">Formato ora</string>
     <string name="titlePrivacyPolicy">Regolamento sulla privacy</string>
     <string name="today">Oggi</string>
@@ -203,6 +209,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto leggero</string>
     <string name="typeface">carattere tipografico</string>
     <string name="uninstall">Disinstalla l\'applicazione</string>
+    <string name="useAlarmSwipeGesture">Setta l\'allarme con uno swipe</string>
     <string name="useDeviceLockDescription">La funzione di blocco schermo richiede privilegi amministrativi. Per disinstallare questa app per favore disabilitare questa funzione</string>
     <string name="useDeviceLockExplanation">Blocca il dispositivo mentre l\'app è attiva. Per disinstallare l\'app, si prega di revocare questa autorizzazione.</string>
     <string name="useDeviceLock">Blocca dispositivo</string>
@@ -220,4 +227,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="welcome_screen_title2">Preferenze</string>
     <string name="welcome_screen_title3">Luminosità schermo</string>
     <string name="welcome_screen_title4">Dimensione orologio</string>
+    <string name="width">Width</string>
 </resources>
