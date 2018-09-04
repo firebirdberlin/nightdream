@@ -51,14 +51,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Couleur principale</string>
     <string name="choose_secondary_color">Couleur du texte</string>
     <string name="clear">Nettoyer</string>
+    <string name="clock_hands">Trotteuse</string>
     <string name="clock_layout_analog">Analogique</string>
     <string name="clock_layout_digital">Numérique</string>
     <string name="clock_layout_elegant_analog">Visuel horloge analogique élégante</string>
     <string name="clock_layout_digit_analog">Horloge analogique digitale</string>
     <string name="clock_layout">Type d\'horloge</string>
     <string name="clock_layout_modern_analog">Visuel horloge analogique modern</string>
+    <string name="clock_layout_mirror_text">Texte en miroir</string>
     <string name="colors">Couleurs</string>
     <string name="confirm_reset_question">Voulez-vous vraiment réinitialiser tous les paramètres?</string>
+    <string name="confirm_reset_question_layout">Voulez-vous vraiment réinitialiser l\'apparence</string>
     <string name="confirm_reset">Réinitialiser</string>
     <string name="contribute">Contribuer</string>
     <string name="contribute_source_code">Code source</string>
@@ -70,6 +73,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Effacer</string>
     <string name="dialog_message_thank_you">Merci beaucoup!</string>
     <string name="dialog_title_thank_you">Merci</string>
+    <string name="decoration">Décoration</string>
+    <string name="decoration_style_none">Pas de décoration</string>
+    <string name="decoration_style_minute_hand">Décoration de la trotteuse</string>
+    <string name="decoration_style_labels">Nom des styles de décoration</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Faire un don</string>
     <string name="doubleTapToFinishSummary">Fermer l\'application en double cliquant</string>
@@ -87,6 +94,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="hide_background_image_in_night_mode">Masquer</string>
     <string name="hide_background_image_in_night_mode_summary">Masquer l\'image d\'arrière-plan en mode nuit.</string>
     <string name="hour"> h</string>
+    <string name="length">Hauteur</string>
     <string name="location_time">Localisation déterminée à:</string>
     <string name="maxBrightness">Luminosité maximale</string>
     <string name="maxBrightnessBattery">Luminosité maximale sur batterie</string>
@@ -96,6 +104,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="minBrightness">Luminosité mimimale</string>
     <string name="minute"> min</string>
     <string name="mute_ringer">Mettre la sourdine</string>
+    <string name="next">Suivant</string>
     <string name="night_mode_activation_auto">automatique</string>
     <string name="night_mode_activation_manual">manuel</string>
     <string name="night_mode_activation_mode">Activation du mode nuit</string>
@@ -106,11 +115,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_title">Nuit</string>
     <string name="noise_sensitivity">Sensibilité du micro</string>
     <string name="notification_alarm">Cliquer pour arrêter l\'alarme</string>
+    <string name="numbers">Nombre</string>
+    <string name="numberStyleRoman">Roman</string>
     <string name="other_apps">Autres applications</string>
     <string name="other_apps_tinytimetracker_summary">Suivre votre temps de travail quotidien.</string>
     <string name="other_apps_tinytimetracker"> TinyTimeTracker</string>
     <string name="persistent_battery_value_while_charging">État de la batterie en permanence</string>
     <string name="persistent_battery_value_while_charging_summary">Afficher l\'état de la batterie en permanence lors de la charge.</string>
+    <string name="position">Position</string>
+    <string name="prev">Précédent</string>
     <string name="preview">Aperçu</string>
     <string name="product_name_donation">Don</string>
     <string name="product_name_pro">Version complete</string>
@@ -125,6 +138,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_manual_input_hint">Ajouter manuellement une station de radio</string>
     <string name="radio_stream_manual_input_url">Adresse URL du flux</string>
     <string name="radio_stream_manual_input_description">Nom de la station</string>
+    <string name="radio_stream_music_allowed">Utiliser flux musique</string>
     <string name="radio_stream_no_search_results">Aucun résultat de recherche</string>
     <string name="radio_stream_offline">Hors ligne</string>
     <string name="radio_stream_query_hint">Chaîne de recherche</string>
@@ -154,6 +168,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showcase_text_screen_lock">Ecran verrouillé. Appuyer longtemps pour le débloquer !</string>
     <string name="showcase_title_screen_lock">Verrouillage de l\'écran</string>
     <string name="show_date">Afficher la date</string>
+    <string name="show_divider">Montrer séparations</string>
     <string name="show_temperature">Température</string>
     <string name="show_weather">Afficher la météo locale</string>
     <string name="show_wind_speed">Vitesse du vent</string>
@@ -167,7 +182,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">Cette fonctionnalité consomme beaucoup de batterie !</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Mode veille durant la décharge</string>
     <string name="standbyNotificationText">Mode veille activé</string>
+    <string name="style">Style</string>
     <string name="temperatureUnit">Unité - Température</string>
+    <string name="tick_style_circle">Cercle</string>
+    <string name="tick_style_none">Non</string>
     <string name="timeFormat">Format d\'affichage de l\'heure</string>
     <string name="titlePrivacyPolicy">Politique de confidentialité</string>
     <string name="today">Aujourd\'hui</string>
@@ -181,6 +199,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto mince</string>
     <string name="typeface">Type de caractère</string>
     <string name="uninstall">Désintaller l\'application</string>
+    <string name="useAlarmSwipeGesture">Régler alarme d\'un geste</string>
     <string name="useDeviceLockDescription">Le verrouillage de l\'écran nécessite les droits administrateur. Désactiver cette fonctionnalité pour désinstaller l\'application</string>
     <string name="useDeviceLockExplanation">Verrouille l\'appareil quand l\'applicaiton est active. Révoquer cette permission pour désinstaller l\'application</string>
     <string name="useDeviceLock">Verrouiller l\'appareil</string>
@@ -198,4 +217,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="welcome_screen_title2">Préférences</string>
     <string name="welcome_screen_title3">Luminosité de l\'écran</string>
     <string name="welcome_screen_title4">Taille de l\'horloge</string>
+    <string name="width">Largeur</string>
 </resources>
