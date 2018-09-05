@@ -122,5 +122,4 @@ public class SimpleTimeTest extends TestCase {
         assertEquals(null, result);
     }
 
-
 }
