@@ -28,6 +28,7 @@ public class SimpleTime {
     public boolean isActive = false;
     public boolean isNextAlarm = false;
     public String soundUri;
+    public Long nextEventAfter = null;
 
     public SimpleTime() {
 

@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
 public class SQLiteDBHelper extends SQLiteOpenHelper {
     Context context;
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "sqlite.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + AlarmEntry.TABLE_NAME + " (" +
@@ -19,7 +19,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                     AlarmEntry.COLUMN_DAYS + " INTEGER DEFAULT 0," +
                     AlarmEntry.COLUMN_IS_ACTIVE + " INTEGER DEFAULT 0," +
                     AlarmEntry.COLUMN_IS_NEXT_ALARM + " INTEGER DEFAULT 0," +
-                    AlarmEntry.COLUMN_ALARM_SOUND_URI + " text" +
+                    AlarmEntry.COLUMN_ALARM_SOUND_URI + " text," +
+                    AlarmEntry.COLUMN_NEXT_EVENT_AFTER + " INTEGER DEFAULT NULL" +
                     ")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + AlarmEntry.TABLE_NAME;
@@ -37,7 +38,10 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         if (newVersion <= 2) {
             db.execSQL(SQL_DELETE_ENTRIES);
             onCreate(db);
-        } else if (newVersion == 3 && oldVersion < 3) {
+            return;
+        }
+
+        if (newVersion >= 3 && oldVersion < 3) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_ALARM_SOUND_URI + " text");
             // migrate the current setting of the alarm tone uri
             Settings settings = new Settings(this.context);
@@ -46,6 +50,10 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                         AlarmEntry.COLUMN_ALARM_SOUND_URI + " = '" + settings.AlarmToneUri + "';");
             }
 
+        }
+
+        if (newVersion >= 4 && oldVersion < 4) {
+            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NEXT_EVENT_AFTER + " INTEGER DEFAULT NULL");
         }
     }
 
@@ -62,5 +70,6 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_IS_ACTIVE = "isActive";
         public static final String COLUMN_IS_NEXT_ALARM = "isNextAlarm";
         public static final String COLUMN_ALARM_SOUND_URI = "alarmSoundUri";
+        public static final String COLUMN_NEXT_EVENT_AFTER = "nextEventAfter";
     }
 }
