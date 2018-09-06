@@ -23,6 +23,7 @@ public class AlarmHandlerService extends IntentService {
     private static String ACTION_CANCEL_ALARM = "com.firebirdberlin.nightdream.ACTION_CANCEL_ALARM";
     private static String ACTION_SET_ALARM = "com.firebirdberlin.nightdream.ACTION_SET_ALARM";
     private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
+    private static String ACTION_SKIP_ALARM = "com.firebirdberlin.nightdream.ACTION_SKIP_ALARM";
     private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
     private Context context = null;
     private Settings settings;
@@ -91,6 +92,12 @@ public class AlarmHandlerService extends IntentService {
         return i;
     }
 
+    public static Intent getSkipIntent(Context context) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.setAction(ACTION_SKIP_ALARM);
+        return i;
+    }
+
     public static Intent getSnoozeIntent(Context context) {
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_SNOOZE_ALARM);
@@ -106,20 +113,17 @@ public class AlarmHandlerService extends IntentService {
         if (ACTION_STOP_ALARM.equals(action) ) {
             stopAlarm();
         }
-        else
-        if (ACTION_SET_ALARM.equals(action) ) {
+        else if (ACTION_SKIP_ALARM.equals(action)) {
+            skipAlarm();
+        } else if (ACTION_SET_ALARM.equals(action) ) {
             Bundle extras = intent.getExtras();
             if ( extras != null ) {
                 SimpleTime time = new SimpleTime(extras);
                 setNewAlarm(time);
             }
-        }
-        else
-        if (ACTION_CANCEL_ALARM.equals(action) ) {
+        } else if (ACTION_CANCEL_ALARM.equals(action) ) {
             cancelAlarm();
-        }
-        else
-        if (ACTION_SNOOZE_ALARM.equals(action) ) {
+        } else if (ACTION_SNOOZE_ALARM.equals(action) ) {
             snoozeAlarm();
         }
     }
@@ -146,6 +150,18 @@ public class AlarmHandlerService extends IntentService {
             Intent intent = new Intent(Config.ACTION_ALARM_DELETED);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
+        WakeUpReceiver.schedule(context);
+    }
+
+    private void skipAlarm() {
+        AlarmNotificationService.cancelNotification(this);
+        DataSource db = new DataSource(this);
+        db.open();
+        SimpleTime next = db.getNextAlarmToSchedule();
+        // the next allowed alarm time is after the next alarm.
+        next.nextEventAfter = next.getMillis();
+        db.save(next);
+        db.close();
         WakeUpReceiver.schedule(context);
     }
 

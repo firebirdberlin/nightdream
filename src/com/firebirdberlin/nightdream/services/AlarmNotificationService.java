@@ -95,6 +95,12 @@ public class AlarmNotificationService extends JobService {
         return false;
     }
 
+    public static void cancelNotification(Context context) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
+    }
+
     private Notification buildNotification(Context context, SimpleTime nextAlarmTime) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return null;
@@ -117,7 +123,7 @@ public class AlarmNotificationService extends JobService {
 
         // TODO Replace by a proper intent
         String textActionSkip = context.getString(R.string.action_skip);
-        Intent skipIntent = AlarmHandlerService.getStopIntent(context);
+        Intent skipIntent = AlarmHandlerService.getSkipIntent(context);
         PendingIntent pSkipIntent = PendingIntent.getService(
                 context, 0, skipIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action skipAction =
