@@ -73,6 +73,24 @@ public class SimpleTimeTest extends TestCase {
         assertEquals(1507634700000L, next.getTimeInMillis());
     }
 
+    public void testGetNextAlarmTimeRecurring__TuesdayIsMuted() throws Exception {
+        Calendar reference = getReference(12, 00);
+        SimpleTime time = new SimpleTime(13, 25, SimpleTime.TUESDAY | SimpleTime.WEDNESDAY);
+        time.nextEventAfter = 1507634700000L;
+
+        Calendar next = time.getNextAlarmTime(reference);
+        assertEquals(1507721100000L, next.getTimeInMillis());
+    }
+
+    public void testGetNextAlarmTimeRecurring__WednesdayIsMutedAsWell() throws Exception {
+        Calendar reference = getReference(12, 00);
+        SimpleTime time = new SimpleTime(13, 25, SimpleTime.TUESDAY | SimpleTime.WEDNESDAY);
+        time.nextEventAfter = 1507721100000L;
+
+        Calendar next = time.getNextAlarmTime(reference);
+        assertEquals(1508239500000L, next.getTimeInMillis());
+    }
+
     public void testGetNextAlarmTimeRecurring2() throws Exception {
         Calendar reference = getReference(12, 00);
         SimpleTime time = new SimpleTime(13, 25, SimpleTime.TUESDAY | SimpleTime.SATURDAY);
