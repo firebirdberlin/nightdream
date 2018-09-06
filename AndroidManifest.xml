@@ -77,6 +77,11 @@
             android:name=".services.AlarmService"
             android:enabled="true" />
         <service
+            android:name=".services.AlarmNotificationService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
             android:name=".services.AlarmHandlerService"
             android:enabled="true" />
         <service

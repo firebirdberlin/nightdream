@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.receivers;
 
-
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -23,6 +22,7 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,10 +42,12 @@ public class WakeUpReceiver extends BroadcastReceiver {
         if (next != null) {
             setAlarm(context, next);
             next = db.setNextAlarm(next);
+            AlarmNotificationService.scheduleJob(context, next);
         } else {
             PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
             AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
             am.cancel(pI);
+            AlarmNotificationService.cancelJob(context);
         }
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
@@ -53,6 +55,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             intent.putExtras(next.toBundle());
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
     }
 
     public static void broadcastNextAlarm(Context context) {
@@ -136,7 +139,9 @@ public class WakeUpReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         logIntent("onReceive()", intent);
+        AlarmNotificationService.cancelJob(context);
         AlarmHandlerService.start(context, intent);
+
         buildNotification(context);
         NightDreamActivity.start(context);
     }

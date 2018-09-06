@@ -276,6 +276,14 @@ public class Settings {
         return timeFormat12h;
     }
 
+    public String getFullTimeFormat() {
+        String timeFormat = getTimeFormat();
+        if (!is24HourFormat()) {
+            timeFormat += " a";
+        }
+        return timeFormat;
+    }
+
     public BatteryValue loadBatteryReference() {
         long time = settings.getLong("batteryReferenceTime", 0L);
         int level = settings.getInt("batteryReferenceMethod", -1);

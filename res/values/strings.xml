@@ -17,6 +17,7 @@ OR
 
 <resources>
     <string name="about">About</string>
+    <string name="action_skip">Skip</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stop</string>
     <string name="add_new_alarm">add new alarm</string>
@@ -138,6 +139,7 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
+    <string name="pendingAlarm">pending alarm at</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
     <string name="position">Position</string>
