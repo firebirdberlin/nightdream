@@ -135,7 +135,9 @@ public class SimpleTime {
         bundle.putBoolean("isActive", this.isActive);
         bundle.putInt("alarmTimeMinutes", this.toMinutes());
         bundle.putString("soundUri", this.soundUri);
-        bundle.putLong("nextEventAfter", this.nextEventAfter);
+        if (this.nextEventAfter != null) {
+            bundle.putLong("nextEventAfter", this.nextEventAfter);
+        }
         return bundle;
     }
 

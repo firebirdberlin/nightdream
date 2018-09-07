@@ -43,7 +43,7 @@ public class AlarmNotificationService extends JobService {
         long nowInMillis = System.currentTimeMillis();
         long nextAlarmTimeMillis = nextAlarmTime.getMillis();
 
-        long minutes_to_start = 10;
+        long minutes_to_start = 60;
         long minLatency = 1000;
         if (nextAlarmTimeMillis - nowInMillis > minutes_to_start * 60000) {
             minLatency = (nextAlarmTimeMillis - minutes_to_start * 60000) - nowInMillis;
@@ -90,7 +90,6 @@ public class AlarmNotificationService extends JobService {
     }
 
     @Override
-
     public boolean onStopJob(JobParameters params) {
         return false;
     }
@@ -121,7 +120,6 @@ public class AlarmNotificationService extends JobService {
         NotificationCompat.WearableExtender wearableExtender =
                 new NotificationCompat.WearableExtender().setHintHideIcon(true);
 
-        // TODO Replace by a proper intent
         String textActionSkip = context.getString(R.string.action_skip);
         Intent skipIntent = AlarmHandlerService.getSkipIntent(context);
         PendingIntent pSkipIntent = PendingIntent.getService(

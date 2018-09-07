@@ -158,9 +158,15 @@ public class AlarmHandlerService extends IntentService {
         DataSource db = new DataSource(this);
         db.open();
         SimpleTime next = db.getNextAlarmToSchedule();
-        // the next allowed alarm time is after the next alarm.
-        next.nextEventAfter = next.getMillis();
-        db.save(next);
+        if (next != null ) {
+            if (next.isRecurring()) {
+                // the next allowed alarm time is after the next alarm.
+                next.nextEventAfter = next.getMillis();
+                db.save(next);
+            } else {
+                db.cancelPendingAlarms();
+            }
+        }
         db.close();
         WakeUpReceiver.schedule(context);
     }
