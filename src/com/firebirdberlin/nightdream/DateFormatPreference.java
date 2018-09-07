@@ -1,6 +1,14 @@
 package com.firebirdberlin.nightdream;
 
-import java.lang.String;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.database.ContentObserver;
+import android.os.Build;
+import android.os.Handler;
+import android.preference.ListPreference;
+import android.util.AttributeSet;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,14 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.content.SharedPreferences;
-import android.database.ContentObserver;
-import android.os.Build;
-import android.os.Handler;
-import android.preference.ListPreference;
-import android.util.AttributeSet;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
 
@@ -109,11 +109,12 @@ public class DateFormatPreference extends ListPreference {
         Date date3 = setHour(cal, 0);
 
         for (CharSequence value : values) {
-            if ( !is24Hour ) value += " a";
+            String strValue = value.toString();
+            if (!is24Hour) strValue += " a";
             String example = String.format("%s / %s / %s",
-                                           dateAsString(value.toString(), date1),
-                                           dateAsString(value.toString(), date2),
-                                           dateAsString(value.toString(), date3)
+                    dateAsString(strValue, date1),
+                    dateAsString(strValue, date2),
+                    dateAsString(strValue, date3)
                                            );
             entryList.add(example);
 
