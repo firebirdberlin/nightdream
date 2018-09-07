@@ -139,6 +139,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         logIntent("onReceive()", intent);
+        AlarmNotificationService.cancelNotification(context);
         AlarmNotificationService.cancelJob(context);
         AlarmHandlerService.start(context, intent);
 
