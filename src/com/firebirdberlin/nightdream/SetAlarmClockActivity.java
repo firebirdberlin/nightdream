@@ -23,8 +23,8 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     static final String TAG = "SetAlarmClockActivity";
     private LinearLayout scrollView = null;
     private DataSource db = null;
-    private Settings settings = null;
     private String timeFormat = "h:mm";
+    private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
 
@@ -50,11 +50,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        settings = new Settings(this);
-        timeFormat = settings.getTimeFormat();
-        if (!settings.is24HourFormat()) {
-            timeFormat += " a";
-        }
+        Settings settings = new Settings(this);
+        timeFormat = settings.getFullTimeFormat();
+        dateFormat = settings.dateFormat;
         init();
     }
 
@@ -97,7 +95,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
 
             if (layout == null) {
-                layout = new AlarmClockLayout(this, entry, timeFormat);
+                layout = new AlarmClockLayout(this, entry, timeFormat, dateFormat);
                 layoutHashMap.put(entry.id, layout);
             }
 

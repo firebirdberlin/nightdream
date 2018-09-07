@@ -22,7 +22,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -42,6 +41,7 @@ public class AlarmClockLayout extends LinearLayout {
     private static final String TAG = "AlarmClockLayout";
     private Context context;
     private String timeFormat = "h:mm";
+    private String dateFormat;
     private View mainLayout = null;
     private SimpleTime alarmClockEntry = null;
     private TextView timeView = null;
@@ -101,11 +101,12 @@ public class AlarmClockLayout extends LinearLayout {
         init();
     }
 
-    public AlarmClockLayout(Context context, SimpleTime entry, String timeFormat) {
+    public AlarmClockLayout(Context context, SimpleTime entry, String timeFormat, String dateFormat) {
         super(context);
         this.context = context;
         this.alarmClockEntry = entry;
         this.timeFormat = timeFormat;
+        this.dateFormat = dateFormat;
         init();
         buttonDelete.setTag(entry);
         timeView.setTag(entry);
@@ -153,7 +154,7 @@ public class AlarmClockLayout extends LinearLayout {
         checkBoxIsRepeating = findViewById(R.id.checkBoxIsRepeating);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            RelativeLayout middle = findViewById(R.id.middle);
+            LinearLayout middle = findViewById(R.id.middle_top);
             LayoutTransition layoutTransition = middle.getLayoutTransition();
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         }
@@ -247,13 +248,25 @@ public class AlarmClockLayout extends LinearLayout {
 
     public void update() {
         if (alarmClockEntry != null) {
+            long now = System.currentTimeMillis();
             Calendar time = alarmClockEntry.getCalendar();
             String text = Utility.formatTime(timeFormat, time);
             timeView.setText(text);
             switchActive.setChecked(alarmClockEntry.isActive);
 
             if (alarmClockEntry.isRecurring()) {
-                textViewWhen.setText(alarmClockEntry.getWeekDaysAsString());
+                String textWhen = alarmClockEntry.getWeekDaysAsString();
+
+                if (alarmClockEntry.nextEventAfter != null &&
+                        alarmClockEntry.nextEventAfter > now) {
+                    // if the alarm is postponed by the user show the data of the next event
+                    textWhen += String.format(
+                            "\n%s %s",
+                            context.getString(R.string.alarmStartsFrom),
+                            Utility.formatTime(dateFormat, time)
+                    );
+                }
+                textViewWhen.setText(textWhen);
             } else if (isToday(time)) {
                 textViewWhen.setText(R.string.today);
             } else if (isTomorrow(time)) {
