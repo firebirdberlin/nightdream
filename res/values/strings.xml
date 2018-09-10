@@ -25,6 +25,7 @@ OR
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Increasing volume</string>
+    <string name="alarmStartDate">Next alarm on</string>
     <string name="alarmStartsFrom">from</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Turn the screen off during the night.</string>

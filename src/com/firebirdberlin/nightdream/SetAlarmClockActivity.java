@@ -197,7 +197,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
             }
         }, year, month, dayOfMonth);
-        mDatePicker.setTitle("next alarm date");
+        mDatePicker.setTitle(R.string.alarmStartDate);
         mDatePicker.show();
     }
 
