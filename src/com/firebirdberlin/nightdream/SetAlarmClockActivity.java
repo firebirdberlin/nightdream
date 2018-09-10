@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.animation.LayoutTransition;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
@@ -20,6 +22,7 @@ import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -166,6 +169,37 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         mTimePicker.show();
     }
 
+    private void showDatePicker(long timestamp, final Long entry_id) {
+        final Context context = this;
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog mDatePicker = new DatePickerDialog(context, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                // Bug Android 4.1: Dialog is submitted twice
+                // >> ignore second call to this method.
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
+                        && !view.isShown()) return;
+
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, month);
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                db.updateNextEventAfter(entry_id, cal.getTimeInMillis());
+
+            }
+        }, year, month, dayOfMonth);
+        mDatePicker.setTitle("next alarm date");
+        mDatePicker.show();
+    }
+
     public void onButtonDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
         db.delete(entry);
@@ -180,11 +214,24 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         showTimePicker(entry.hour, entry.min, entry.id);
     }
 
+    public void onDateClicked(View view) {
+        SimpleTime entry = (SimpleTime) view.getTag();
+        if (!entry.isRecurring()) {
+            return;
+        }
+        Long nextEventAfter = entry.nextEventAfter;
+        if (nextEventAfter == null || nextEventAfter == 0L) {
+            nextEventAfter = entry.getCalendar().getTimeInMillis();
+        }
+        showDatePicker(nextEventAfter, entry.id);
+    }
+
     public void onEntryStateChanged(SimpleTime entry) {
         db.save(entry);
         WakeUpReceiver.schedule(this);
     }
 
+    //TODO update the UI when a one-time alarm is deleted
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAlarmEntryChanged(OnAlarmEntryChanged event) {
         Log.d(TAG, "onAlarmEntryChanged");
