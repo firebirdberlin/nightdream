@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +34,14 @@ public class DataSource {
     }
 
     public SimpleTime save(SimpleTime time) {
+        return save(time, true);
+    }
+
+    public SimpleTime save(SimpleTime time, boolean raise_event) {
         if (time.id == -1L) {
             return insert(time);
         } else {
-            return update(time);
+            return update(time, raise_event);
         }
     }
 
@@ -46,13 +53,16 @@ public class DataSource {
         return time;
     }
 
-    private SimpleTime update(SimpleTime time) {
+    private SimpleTime update(SimpleTime time, boolean raise_event) {
         ContentValues values = toContentValues(time);
 
         String selection = SQLiteDBHelper.AlarmEntry._ID + " = ?";
         String[] selectionArgs = {String.valueOf(time.id)};
 
         db.update(SQLiteDBHelper.AlarmEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (raise_event) {
+            EventBus.getDefault().post(new OnAlarmEntryChanged(time));
+        }
         return time;
     }
 
@@ -76,6 +86,20 @@ public class DataSource {
         String[] selectionArgs = {String.valueOf(time.id)};
 
         db.delete(SQLiteDBHelper.AlarmEntry.TABLE_NAME, selection, selectionArgs);
+    }
+
+    public void updateNextEventAfter(long alarmTimeId, long nextEventAfter) {
+        ContentValues values = new ContentValues();
+        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_NEXT_EVENT_AFTER, nextEventAfter);
+
+        String selection = SQLiteDBHelper.AlarmEntry._ID + " = ?";
+        String[] selectionArgs = {String.valueOf(alarmTimeId)};
+
+        db.update(SQLiteDBHelper.AlarmEntry.TABLE_NAME, values, selection, selectionArgs);
+        SimpleTime time = getAlarmEntry(alarmTimeId);
+        if (time != null) {
+            EventBus.getDefault().post(new OnAlarmEntryChanged(time));
+        }
     }
 
     public void cancelPendingAlarms() {
@@ -110,6 +134,16 @@ public class DataSource {
         String[] whereArgs = {"1", "1"};
         Cursor cursor = getQueryCursor(where, whereArgs);
         if ( cursor.moveToFirst() ) {
+            return cursorToSimpleTime(cursor);
+        }
+        return null;
+    }
+
+    public SimpleTime getAlarmEntry(long id) {
+        String where = SQLiteDBHelper.AlarmEntry._ID + " = ? ";
+        String[] whereArgs = {String.valueOf(id)};
+        Cursor cursor = getQueryCursor(where, whereArgs);
+        if (cursor.moveToFirst()) {
             return cursorToSimpleTime(cursor);
         }
         return null;
@@ -150,7 +184,7 @@ public class DataSource {
                    " SET " + SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = 0" +
                    " WHERE " + SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = 1;");
         entry.isNextAlarm = true;
-        save(entry);
+        save(entry, false);
         return entry;
     }
 
