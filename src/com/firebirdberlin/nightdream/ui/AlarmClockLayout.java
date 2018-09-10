@@ -108,6 +108,7 @@ public class AlarmClockLayout extends LinearLayout {
         init();
         buttonDelete.setTag(entry);
         timeView.setTag(entry);
+        textViewWhen.setTag(entry);
     }
 
     public AlarmClockLayout(Context context, AttributeSet attrs) {
@@ -209,6 +210,13 @@ public class AlarmClockLayout extends LinearLayout {
                 ((SetAlarmClockActivity) context).onTimeClicked(view);
             }
         });
+        textViewWhen.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((SetAlarmClockActivity) context).onDateClicked(view);
+            }
+        });
+
         textViewSound.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
