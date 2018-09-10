@@ -65,7 +65,6 @@ public class AlarmClockLayout extends LinearLayout {
                             alarmClockEntry.removeRecurringDay(d);
                             dayButtons[d - 1].setChecked(false);
                         }
-                        update();
                         ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                     }
                 }
@@ -83,7 +82,6 @@ public class AlarmClockLayout extends LinearLayout {
                     } else {
                         alarmClockEntry.removeRecurringDay(day);
                     }
-                    update();
                     ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                 }
             };
@@ -230,7 +228,6 @@ public class AlarmClockLayout extends LinearLayout {
                             return;
                         }
                         alarmClockEntry.soundUri = uri.toString();
-                        update();
                         ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                     }
 
@@ -244,6 +241,11 @@ public class AlarmClockLayout extends LinearLayout {
                 dialog.show(fm, "custom sounds");
             }
         });
+    }
+
+    public void updateAlarmClockEntry(SimpleTime entry) {
+        this.alarmClockEntry = entry;
+        update();
     }
 
     public void update() {

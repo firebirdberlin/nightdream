@@ -6,13 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
+import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
+import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,6 +56,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Utility.registerEventBus(this);
         Settings settings = new Settings(this);
         timeFormat = settings.getFullTimeFormat();
         dateFormat = settings.dateFormat;
@@ -66,6 +73,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Utility.unregisterEventBus(this);
         if (db != null) {
             db.close();
             db = null;
@@ -163,6 +171,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         db.delete(entry);
         entries.remove(entry);
         update();
+        AlarmNotificationService.cancelNotification(this);
         WakeUpReceiver.schedule(this, db);
     }
 
@@ -174,5 +183,14 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     public void onEntryStateChanged(SimpleTime entry) {
         db.save(entry);
         WakeUpReceiver.schedule(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAlarmEntryChanged(OnAlarmEntryChanged event) {
+        Log.d(TAG, "onAlarmEntryChanged");
+        AlarmClockLayout layout = layoutHashMap.get(event.entry.id);
+        if (layout != null) {
+            layout.updateAlarmClockEntry(event.entry);
+        }
     }
 }

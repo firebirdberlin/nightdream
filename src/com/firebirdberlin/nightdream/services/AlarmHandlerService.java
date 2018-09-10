@@ -92,8 +92,9 @@ public class AlarmHandlerService extends IntentService {
         return i;
     }
 
-    public static Intent getSkipIntent(Context context) {
+    public static Intent getSkipIntent(Context context, SimpleTime next) {
         Intent i = new Intent(context, AlarmHandlerService.class);
+        i.putExtras(next.toBundle());
         i.setAction(ACTION_SKIP_ALARM);
         return i;
     }
@@ -110,17 +111,21 @@ public class AlarmHandlerService extends IntentService {
         settings = new Settings(this);
         Log.d(TAG, TAG + " started");
         String action = intent.getAction();
+
+
+        Bundle extras = intent.getExtras();
+        SimpleTime time = null;
+        if (extras != null) {
+            time = new SimpleTime(extras);
+        }
+
         if (ACTION_STOP_ALARM.equals(action) ) {
             stopAlarm();
         }
         else if (ACTION_SKIP_ALARM.equals(action)) {
-            skipAlarm();
+            skipAlarm(time);
         } else if (ACTION_SET_ALARM.equals(action) ) {
-            Bundle extras = intent.getExtras();
-            if ( extras != null ) {
-                SimpleTime time = new SimpleTime(extras);
-                setNewAlarm(time);
-            }
+            setNewAlarm(time);
         } else if (ACTION_CANCEL_ALARM.equals(action) ) {
             cancelAlarm();
         } else if (ACTION_SNOOZE_ALARM.equals(action) ) {
@@ -153,16 +158,18 @@ public class AlarmHandlerService extends IntentService {
         WakeUpReceiver.schedule(context);
     }
 
-    private void skipAlarm() {
+    private void skipAlarm(SimpleTime time) {
+        if (time == null) {
+            return;
+        }
         AlarmNotificationService.cancelNotification(this);
         DataSource db = new DataSource(this);
         db.open();
-        SimpleTime next = db.getNextAlarmToSchedule();
-        if (next != null ) {
-            if (next.isRecurring()) {
+
+        if (time != null) {
+            if (time.isRecurring()) {
                 // the next allowed alarm time is after the next alarm.
-                next.nextEventAfter = next.getMillis();
-                db.save(next);
+                db.updateNextEventAfter(time.id, time.getMillis());
             } else {
                 db.cancelPendingAlarms();
             }
@@ -186,6 +193,9 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void setNewAlarm(SimpleTime time) {
+        if (time == null) {
+            return;
+        }
         setAlarm(time);
     }
 
