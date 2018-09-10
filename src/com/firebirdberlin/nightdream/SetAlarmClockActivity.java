@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
 import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
+import com.firebirdberlin.nightdream.events.OnAlarmEntryDeleted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
@@ -203,8 +204,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     public void onButtonDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
         db.delete(entry);
-        entries.remove(entry);
-        update();
         AlarmNotificationService.cancelNotification(this);
         WakeUpReceiver.schedule(this, db);
     }
@@ -231,7 +230,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         WakeUpReceiver.schedule(this);
     }
 
-    //TODO update the UI when a one-time alarm is deleted
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAlarmEntryChanged(OnAlarmEntryChanged event) {
         Log.d(TAG, "onAlarmEntryChanged");
@@ -239,5 +237,20 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         if (layout != null) {
             layout.updateAlarmClockEntry(event.entry);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAlarmEntryDeleted(OnAlarmEntryDeleted event) {
+        Log.d(TAG, "onAlarmEntryDeleted");
+        int id = -1;
+        for (int i = 0; i < entries.size(); i++) {
+            SimpleTime entry = entries.get(i);
+            if (event.entry.id == entry.id) {
+                id = i;
+                break;
+            }
+        }
+        if (id > -1) entries.remove(id);
+        update();
     }
 }
