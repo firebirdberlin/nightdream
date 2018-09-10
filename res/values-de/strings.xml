@@ -24,6 +24,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_alarm_tone">Weckton hinzufügen</string>
     <string name="add_custom_font">Schriftart hinzufügen</string>
     <string name="alarmFadeIn">ansteigende Lautstärke</string>
+    <string name="alarmUpcoming">Anstehende Weckzeit</string>
     <string name="alarmStartDate">Nächster Alarm am</string>
     <string name="alarmStartsFrom">ab</string>
     <string name="alarmVolume">Lautstärke</string>

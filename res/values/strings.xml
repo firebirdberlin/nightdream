@@ -25,6 +25,7 @@ OR
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Increasing volume</string>
+    <string name="alarmUpcoming">Upcoming alarm</string>
     <string name="alarmStartDate">Next alarm on</string>
     <string name="alarmStartsFrom">from</string>
     <string name="alarmVolume">Volume</string>
@@ -143,7 +144,6 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
-    <string name="pendingAlarm">pending alarm at</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
     <string name="position">Position</string>

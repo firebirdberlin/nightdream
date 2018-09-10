@@ -107,12 +107,11 @@ public class AlarmNotificationService extends JobService {
         Settings settings = new Settings(context);
         String timeFormatted = Utility.formatTime(
                 settings.getFullTimeFormat(), nextAlarmTime.getCalendar());
-        String text = String.format(
-                "%s %s", context.getString(R.string.pendingAlarm), timeFormatted);
 
         NotificationCompat.Builder note =
                 Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_ALARMS)
-                        .setContentText(text)
+                        .setContentTitle(context.getString(R.string.alarmUpcoming))
+                        .setContentText(timeFormatted)
                         .setSmallIcon(R.drawable.ic_audio)
                         .setWhen(nextAlarmTime.getMillis())
                         .setPriority(NotificationCompat.PRIORITY_MAX);
@@ -128,7 +127,7 @@ public class AlarmNotificationService extends JobService {
                 new NotificationCompat.Action.Builder(0, textActionSkip, pSkipIntent).build();
 
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
-        bigStyle.bigText(text);
+        bigStyle.bigText(timeFormatted);
         note.setStyle(bigStyle);
         note.addAction(skipAction);
         wearableExtender.addAction(skipAction);
