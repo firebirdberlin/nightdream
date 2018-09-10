@@ -171,7 +171,7 @@ public class AlarmHandlerService extends IntentService {
                 // the next allowed alarm time is after the next alarm.
                 db.updateNextEventAfter(time.id, time.getMillis());
             } else {
-                db.cancelPendingAlarms();
+                db.delete(time);
             }
         }
         db.close();

@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
+import com.firebirdberlin.nightdream.events.OnAlarmEntryDeleted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
 import org.greenrobot.eventbus.EventBus;
@@ -86,6 +87,7 @@ public class DataSource {
         String[] selectionArgs = {String.valueOf(time.id)};
 
         db.delete(SQLiteDBHelper.AlarmEntry.TABLE_NAME, selection, selectionArgs);
+        EventBus.getDefault().post(new OnAlarmEntryDeleted(time));
     }
 
     public void updateNextEventAfter(long alarmTimeId, long nextEventAfter) {
