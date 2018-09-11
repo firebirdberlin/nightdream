@@ -44,6 +44,8 @@ OR
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
     <string name="backgroundServiceNotificationText">Background service is running.</string>
+    <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
     <string name="brightness_offset">Brightness offset</string>
