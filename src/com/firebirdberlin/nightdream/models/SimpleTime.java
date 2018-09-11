@@ -28,6 +28,7 @@ public class SimpleTime {
     public boolean isActive = false;
     public boolean isNextAlarm = false;
     public String soundUri;
+    public Long nextEventAfter = null;
 
     public SimpleTime() {
 
@@ -72,6 +73,7 @@ public class SimpleTime {
         this.isActive = bundle.getBoolean("isActive", false);
         this.isNextAlarm = bundle.getBoolean("isNextAlarm", false);
         this.soundUri = bundle.getString("soundUri");
+        this.nextEventAfter = bundle.getLong("nextEventAfter");
     }
 
     public static SimpleTime getNextFromList(List<SimpleTime> entries) {
@@ -133,6 +135,9 @@ public class SimpleTime {
         bundle.putBoolean("isActive", this.isActive);
         bundle.putInt("alarmTimeMinutes", this.toMinutes());
         bundle.putString("soundUri", this.soundUri);
+        if (this.nextEventAfter != null) {
+            bundle.putLong("nextEventAfter", this.nextEventAfter);
+        }
         return bundle;
     }
 
@@ -160,12 +165,34 @@ public class SimpleTime {
 
     private Calendar getNextRecurringAlarmTime(Calendar reference) {
         List<Long> times = new ArrayList<>();
+        Calendar firstEventTime = null;
+        if (nextEventAfter != null) {
+            firstEventTime = Calendar.getInstance();
+            firstEventTime.setTimeInMillis(nextEventAfter);
+        }
         for (Integer day : SimpleTime.DAYS) {
-            Calendar cal = initCalendar(reference);
             if (hasDay(day)) {
-                cal.set(Calendar.DAY_OF_WEEK, day);
-                if (cal.before(reference)) {
-                    cal.add(Calendar.DATE, 7);
+                Calendar cal = null;
+                if (firstEventTime != null) {
+                    cal = initCalendar(firstEventTime);
+                    cal.set(Calendar.DAY_OF_WEEK, day);
+                    if (!cal.after(firstEventTime)) {
+                        cal.add(Calendar.DATE, 7);
+                    }
+
+                    if (!cal.after(reference)) {
+                        cal = null;
+                    }
+                }
+
+                if (cal == null) {
+                    cal = initCalendar(reference);
+                    cal.set(Calendar.DAY_OF_WEEK, day);
+                    // Usually the reference date refers to 'now'. Events shall not be raised in
+                    // the past
+                    if (cal.before(reference)) {
+                        cal.add(Calendar.DATE, 7);
+                    }
                 }
                 times.add(cal.getTimeInMillis());
             }

@@ -52,23 +52,49 @@
             android:animateLayoutChanges="true"
             android:animationCache="true">
 
-            <TextView
-                android:id="@+id/textViewWhen"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/middle_top"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="false"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="false"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:text="@string/today"
-                android:textAppearance="@android:style/TextAppearance.Small" />
+                android:animateLayoutChanges="true"
+                android:animationCache="false">
+
+                <TextView
+                    android:id="@+id/textViewWhen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="15"
+                    android:gravity="center_vertical"
+                    android:lineSpacingExtra="2dp"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:text="@string/today"
+                    android:textAppearance="@android:style/TextAppearance.Small" />
+
+                <ImageView
+                    android:id="@+id/button_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingBottom="5dp"
+                    android:paddingEnd="0dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="0dp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="0dp"
+                    android:scaleX="0.7"
+                    android:scaleY="0.7"
+                    android:src="@drawable/ic_expand"
+                    android:visibility="visible" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/secondaryLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewWhen"
+                android:layout_below="@+id/middle_top"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -165,20 +191,6 @@
                     android:text="@string/delete"
                     tools:drawableLeft="@drawable/ic_delete" />
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/button_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:padding="5dp"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                android:src="@drawable/ic_expand"
-                android:visibility="visible" />
-
 
         </RelativeLayout>
 

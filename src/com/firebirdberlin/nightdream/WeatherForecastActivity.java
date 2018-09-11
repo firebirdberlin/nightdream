@@ -53,8 +53,7 @@ public class WeatherForecastActivity extends Activity
         scrollView.removeAllViews();
         Settings settings = new Settings(this);
 
-        String timeFormat = settings.getTimeFormat();
-        if ( !is24HourFormat() ) timeFormat += " a";
+        String timeFormat = settings.getFullTimeFormat();
 
         if (entries.size() > 0 ) {
             WeatherEntry firstEntry = entries.get(0);
