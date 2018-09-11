@@ -11,12 +11,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import org.greenrobot.eventbus.Subscribe;
-
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+
+import org.greenrobot.eventbus.Subscribe;
 
 
 public class NightModeListener extends Service {
@@ -78,8 +77,9 @@ public class NightModeListener extends Service {
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
 
-        Notification note = Utility.getForegroundServiceNotification(this);
-        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
+        Notification note = Utility.getForegroundServiceNotification(
+                this, R.string.backgroundServiceNotificationTextNightMode);
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES_NIGHT_MODE, note);
 
         if (reactivate_on_noise ) {
             handler.postDelayed(startRecording, 1000);
@@ -153,7 +153,7 @@ public class NightModeListener extends Service {
     private void stopService() {
         Log.i(TAG, "stopService()");
 
-        stopForeground(false); // bool: true = remove Notification
+        stopForeground(true); // bool: true = remove Notification
         startApp();
         stopSelf();
     }

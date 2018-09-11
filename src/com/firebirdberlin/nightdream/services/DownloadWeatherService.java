@@ -1,56 +1,44 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.annotation.TargetApi;
-import android.app.IntentService;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.JobIntentService;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class DownloadWeatherService extends IntentService {
+public class DownloadWeatherService extends JobIntentService {
     private static String TAG = "DownloadWeatherService";
 
     private Context mContext = null;
 
-    public DownloadWeatherService() {
-        super("DownloadWeatherService");
-    }
-
-    public DownloadWeatherService(String name) {
-        super(name);
-    }
 
     public static void start(Context context, Location location) {
         Intent i = new Intent(context, DownloadWeatherService.class);
         i.putExtra("lat", (float) location.getLatitude());
         i.putExtra("lon", (float) location.getLongitude());
-        Utility.startForegroundService(context, i);
+        enqueueWork(context, DownloadWeatherService.class, Config.JOB_ID_FETCH_WEATHER_DATA, i);
     }
 
     public static void start(Context context, String cityID) {
         Intent i = new Intent(context, DownloadWeatherService.class);
         i.putExtra("cityID", cityID);
-        Utility.startForegroundService(context, i);
+        enqueueWork(context, DownloadWeatherService.class, Config.JOB_ID_FETCH_WEATHER_DATA, i);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleWork(Intent intent) {
         mContext = this;
         Log.d(TAG, TAG + " started");
-
-        Notification note = Utility.getForegroundServiceNotification(this);
-        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
         Bundle bundle = intent.getExtras();
         float lat = bundle.getFloat("lat");
@@ -73,9 +61,7 @@ public class DownloadWeatherService extends IntentService {
             Log.w(TAG, "entry.timestamp is INVALID!");
 
         }
-
         Log.d(TAG, "Download finished.");
-
     }
 
     private void broadcastResult() {
