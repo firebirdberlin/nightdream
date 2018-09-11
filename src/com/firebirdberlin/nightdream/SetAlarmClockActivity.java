@@ -77,11 +77,16 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Utility.unregisterEventBus(this);
         if (db != null) {
             db.close();
             db = null;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Utility.unregisterEventBus(this);
     }
 
     private void init() {
