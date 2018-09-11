@@ -21,8 +21,13 @@ public class Config {
 
     public final static int NOTIFICATION_ID_DISMISS_ALARMS = 1338;
     public final static int NOTIFICATION_ID_FOREGROUND_SERVICES = 1339;
+    public final static int NOTIFICATION_ID_FOREGROUND_SERVICES_LOCATION = 1340;
+    public final static int NOTIFICATION_ID_FOREGROUND_SERVICES_NIGHT_MODE = 1341;
     public final static String NOTIFICATION_CHANNEL_ID_ALARMS = "com.firebirdberlin.nightdream.notification_channel_alarms";
     public final static String NOTIFICATION_CHANNEL_ID_RADIO = "com.firebirdberlin.nightdream.notification_channel_radio";
     public final static String NOTIFICATION_CHANNEL_ID_SERVICES = "com.firebirdberlin.nightdream.notification_channel_services";
     public final static String NOTIFICATION_CHANNEL_ID_DEVMSG = "com.firebirdberlin.nightdream.notification_channel_devmsg";
+
+    public final static int JOB_ID_ALARM_NOTIFICATION = 2000;
+    public final static int JOB_ID_FETCH_WEATHER_DATA = 2001;
 }

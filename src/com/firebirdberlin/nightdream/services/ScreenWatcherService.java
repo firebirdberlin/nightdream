@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
@@ -28,7 +26,8 @@ public class ScreenWatcherService extends Service {
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate()");
-        Notification note = Utility.getForegroundServiceNotification(this);
+        Notification note = Utility.getForegroundServiceNotification(
+                this, R.string.backgroundServiceNotificationText);
         startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
         mReceiver = ScreenReceiver.register(this);

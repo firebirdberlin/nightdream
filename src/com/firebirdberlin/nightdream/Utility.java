@@ -473,12 +473,12 @@ public class Utility {
         }
     }
 
-    public static Notification getForegroundServiceNotification(Context context) {
+    public static Notification getForegroundServiceNotification(Context context, int resIdText) {
         createNotificationChannels(context);
         NotificationCompat.Builder noteBuilder =
                 Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
                         .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(context.getString(R.string.backgroundServiceNotificationText))
+                        .setContentText(context.getString(resIdText))
                         .setSmallIcon(R.drawable.ic_expert)
                         .setPriority(NotificationCompat.PRIORITY_MIN);
 

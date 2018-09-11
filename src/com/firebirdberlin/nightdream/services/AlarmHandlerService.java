@@ -23,6 +23,7 @@ public class AlarmHandlerService extends IntentService {
     private static String ACTION_CANCEL_ALARM = "com.firebirdberlin.nightdream.ACTION_CANCEL_ALARM";
     private static String ACTION_SET_ALARM = "com.firebirdberlin.nightdream.ACTION_SET_ALARM";
     private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
+    private static String ACTION_SKIP_ALARM = "com.firebirdberlin.nightdream.ACTION_SKIP_ALARM";
     private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
     private Context context = null;
     private Settings settings;
@@ -91,6 +92,13 @@ public class AlarmHandlerService extends IntentService {
         return i;
     }
 
+    public static Intent getSkipIntent(Context context, SimpleTime next) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.putExtras(next.toBundle());
+        i.setAction(ACTION_SKIP_ALARM);
+        return i;
+    }
+
     public static Intent getSnoozeIntent(Context context) {
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_SNOOZE_ALARM);
@@ -103,23 +111,24 @@ public class AlarmHandlerService extends IntentService {
         settings = new Settings(this);
         Log.d(TAG, TAG + " started");
         String action = intent.getAction();
+
+
+        Bundle extras = intent.getExtras();
+        SimpleTime time = null;
+        if (extras != null) {
+            time = new SimpleTime(extras);
+        }
+
         if (ACTION_STOP_ALARM.equals(action) ) {
             stopAlarm();
         }
-        else
-        if (ACTION_SET_ALARM.equals(action) ) {
-            Bundle extras = intent.getExtras();
-            if ( extras != null ) {
-                SimpleTime time = new SimpleTime(extras);
-                setNewAlarm(time);
-            }
-        }
-        else
-        if (ACTION_CANCEL_ALARM.equals(action) ) {
+        else if (ACTION_SKIP_ALARM.equals(action)) {
+            skipAlarm(time);
+        } else if (ACTION_SET_ALARM.equals(action) ) {
+            setNewAlarm(time);
+        } else if (ACTION_CANCEL_ALARM.equals(action) ) {
             cancelAlarm();
-        }
-        else
-        if (ACTION_SNOOZE_ALARM.equals(action) ) {
+        } else if (ACTION_SNOOZE_ALARM.equals(action) ) {
             snoozeAlarm();
         }
     }
@@ -149,6 +158,26 @@ public class AlarmHandlerService extends IntentService {
         WakeUpReceiver.schedule(context);
     }
 
+    private void skipAlarm(SimpleTime time) {
+        if (time == null) {
+            return;
+        }
+        AlarmNotificationService.cancelNotification(this);
+        DataSource db = new DataSource(this);
+        db.open();
+
+        if (time != null) {
+            if (time.isRecurring()) {
+                // the next allowed alarm time is after the next alarm.
+                db.updateNextEventAfter(time.id, time.getMillis());
+            } else {
+                db.delete(time);
+            }
+        }
+        db.close();
+        WakeUpReceiver.schedule(context);
+    }
+
     private void cancelAlarm() {
         WakeUpReceiver.cancelAlarm(context);
     }
@@ -164,6 +193,9 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void setNewAlarm(SimpleTime time) {
+        if (time == null) {
+            return;
+        }
         setAlarm(time);
     }
 

@@ -17,6 +17,7 @@ OR
 
 <resources>
     <string name="about">About</string>
+    <string name="action_skip">Skip</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stop</string>
     <string name="add_new_alarm">add new alarm</string>
@@ -24,6 +25,9 @@ OR
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Increasing volume</string>
+    <string name="alarmUpcoming">Upcoming alarm</string>
+    <string name="alarmStartDate">Next alarm on</string>
+    <string name="alarmStartsFrom">from</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Turn the screen off during the night.</string>
     <string name="allow_screen_off">Turn screen off</string>
@@ -41,6 +45,8 @@ OR
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
     <string name="backgroundServiceNotificationText">Background service is running.</string>
+    <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
     <string name="brightness_offset">Brightness offset</string>

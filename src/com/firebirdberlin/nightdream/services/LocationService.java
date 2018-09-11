@@ -16,6 +16,7 @@ import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
@@ -52,8 +53,9 @@ public class LocationService extends Service {
         running = true;
         mContext = this;
 
-        Notification note = Utility.getForegroundServiceNotification(this);
-        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
+        Notification note = Utility.getForegroundServiceNotification(
+                this, R.string.backgroundServiceNotificationTextLocation);
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES_LOCATION, note);
 
         final Settings settings = new Settings(mContext);
         if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
@@ -98,6 +100,7 @@ public class LocationService extends Service {
 
     private void stopWithSuccess(Location location) {
         storeLocation(location);
+        stopForeground(true);
         stopSelf();
     }
 
@@ -105,12 +108,9 @@ public class LocationService extends Service {
         new Handler().postDelayed(gpsTimeout, time);
     }
 
-    public void removeTimeout() {
-        new Handler().removeCallbacks(gpsTimeout);
-    }
-
     private void stopWithFailure() {
         LocationUpdateReceiver.send(this, LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
+        stopForeground(true);
         stopSelf();
     }
 
