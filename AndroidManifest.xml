@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="209"
-    android:versionName="2.7.20">
+    android:versionCode="210"
+    android:versionName="2.7.21">
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -86,6 +86,8 @@
             android:enabled="true" />
         <service
             android:name=".services.DownloadWeatherService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"
             android:enabled="true" />
         <service
             android:name=".services.LocationService"
