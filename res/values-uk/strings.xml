@@ -91,7 +91,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="handle_power_car">автомобільна док-станція</string>
 <string name="handle_power_desk">настільна док-станція</string>
 <string name="handle_power_disconnection">Вимикати автоматично</string>
-<string name="handle_power_disconnection_summary">При від'єднанні зарядного пристрою додаток буде закрито. </string>
+<string name="handle_power_disconnection_summary">При від\'єднанні зарядного пристрою додаток буде закрито. </string>
 <string name="handle_power_usb">USB</string>
 <string name="handle_power_wireless">безпровідний зарядний пристрій</string>
 <string name="hide_background_image_in_night_mode">Приховувати</string>
@@ -104,7 +104,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="maxBrightnessBattery">Максимальна яскравість екрану при роботі від батареї</string>
 <string name="message_mobile_data_connection_confirmation">Ви приєднані до мобільної мережі. Увімкнути потокове радіо?</string>
 <string name="message_mobile_data_connection">Мобільне з\'єднання</string>
-<string name="message_no_data_connection">З'єднання з мережею відсутнє</string>
+<string name="message_no_data_connection">З\'єднання з мережею відсутнє</string>
 <string name="minBrightness">Мін. яскравість екрану</string>
 <string name="minute">хв.</string>
 <string name="mute_ringer">Вимкнути дзвінок</string>
