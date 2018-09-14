@@ -42,12 +42,17 @@ public class WakeUpReceiver extends BroadcastReceiver {
         if (next != null) {
             setAlarm(context, next);
             next = db.setNextAlarm(next);
-            AlarmNotificationService.scheduleJob(context, next);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AlarmNotificationService.scheduleJob(context, next);
+            }
         } else {
             PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
             AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
             am.cancel(pI);
-            AlarmNotificationService.cancelJob(context);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AlarmNotificationService.cancelJob(context);
+            }
         }
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
@@ -139,8 +144,10 @@ public class WakeUpReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         logIntent("onReceive()", intent);
-        AlarmNotificationService.cancelNotification(context);
-        AlarmNotificationService.cancelJob(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmNotificationService.cancelNotification(context);
+            AlarmNotificationService.cancelJob(context);
+        }
         AlarmHandlerService.start(context, intent);
 
         buildNotification(context);
