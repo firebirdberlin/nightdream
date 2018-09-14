@@ -176,6 +176,10 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     private void showDatePicker(long timestamp, final Long entry_id) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+
         final Context context = this;
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);
@@ -209,7 +213,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     public void onButtonDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
         db.delete(entry);
-        AlarmNotificationService.cancelNotification(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmNotificationService.cancelNotification(this);
+        }
         WakeUpReceiver.schedule(this, db);
     }
 
