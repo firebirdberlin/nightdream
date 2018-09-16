@@ -83,8 +83,16 @@ public class AlarmNotificationService extends JobService {
         DataSource db = new DataSource(this);
         db.open();
         SimpleTime next = db.getNextAlarmToSchedule();
-        buildNotification(this, next);
         db.close();
+        if (next == null) {
+            return false;
+        }
+        Notification note = buildNotification(this, next);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.notify(Config.NOTIFICATION_ID_DISMISS_ALARMS, note);
+        }
 
         return false;
     }
@@ -97,13 +105,12 @@ public class AlarmNotificationService extends JobService {
     public static void cancelNotification(Context context) {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
+        if (notificationManager != null) {
+            notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
+        }
     }
 
     private Notification buildNotification(Context context, SimpleTime nextAlarmTime) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            return null;
-        }
         Settings settings = new Settings(context);
         String timeFormatted = Utility.formatTime(
                 settings.getFullTimeFormat(), nextAlarmTime.getCalendar());
@@ -134,12 +141,7 @@ public class AlarmNotificationService extends JobService {
 
         note.extend(wearableExtender);
 
-        Notification notification = note.build();
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Config.NOTIFICATION_ID_DISMISS_ALARMS, notification);
-
-        return notification;
+        return note.build();
     }
 
 }
