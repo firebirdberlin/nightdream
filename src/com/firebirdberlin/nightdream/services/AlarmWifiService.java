@@ -12,6 +12,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
 
@@ -25,12 +26,17 @@ public class AlarmWifiService extends JobService {
             return;
         }
 
+        Settings settings = new Settings(context);
+        if (!(settings.useRadioAlarmClock && settings.radioStreamActivateWiFi)) {
+            return;
+        }
+
         ComponentName serviceComponent = new ComponentName(
                 context.getPackageName(), AlarmWifiService.class.getName());
         JobInfo.Builder builder = new JobInfo.Builder(Config.JOB_ID_ALARM_WIFI, serviceComponent);
         builder.setPersisted(true);
         builder.setRequiresCharging(false);
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE);
 
         long nowInMillis = System.currentTimeMillis();
         long nextAlarmTimeMillis = nextAlarmTime.getMillis();
@@ -38,10 +44,10 @@ public class AlarmWifiService extends JobService {
         long minutes_to_start = 5;
         long minLatency = 1000;
         if (nextAlarmTimeMillis - nowInMillis > minutes_to_start * 60000) {
-            minLatency = (nextAlarmTimeMillis - minutes_to_start * 60000) - nowInMillis;
+            minLatency = (nextAlarmTimeMillis - minutes_to_start * 60000) - nowInMillis - 30000;
         }
         builder.setMinimumLatency(minLatency);
-        builder.setOverrideDeadline(minLatency + 1000);
+        builder.setOverrideDeadline(minLatency + 30000);
 
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -71,9 +77,11 @@ public class AlarmWifiService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob");
-
-        WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-        wifiManager.setWifiEnabled(true);
+        Settings settings = new Settings(this);
+        if (settings.useRadioAlarmClock && settings.radioStreamActivateWiFi) {
+            WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+            wifiManager.setWifiEnabled(true);
+        }
 
         return false;
     }
