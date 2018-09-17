@@ -377,6 +377,13 @@
                     android:key="radioStreamMusicIsAllowedForAlarms"
                     android:title="@string/radio_stream_music_allowed" />
 
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:dependency="useRadioAlarmClock"
+                    android:key="radioStreamActivateWiFi"
+                    android:summary="@string/radio_stream_activate_wifi_desc"
+                    android:title="@string/radio_stream_activate_wifi" />
+
                 <Preference
                     android:dependency="useRadioAlarmClock"
                     android:key="startAudioStream"
