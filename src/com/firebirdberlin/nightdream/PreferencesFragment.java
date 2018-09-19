@@ -129,6 +129,10 @@ public class PreferencesFragment extends PreferenceFragment {
                             int value = sharedPreferences.getInt("minBrightness", 1);
                             settings.setNightModeBrightness(value / 100.f);
                             break;
+                        case "nightModeBrightnessInt":
+                            int value1 = sharedPreferences.getInt("nightModeBrightnessInt", 0);
+                            settings.setNightModeBrightness(value1 / 100.f);
+                            break;
                         case "backgroundMode":
                             setupBackgroundImageControls(sharedPreferences);
                             break;
@@ -619,6 +623,7 @@ public class PreferencesFragment extends PreferenceFragment {
         setupLightSensorPreferences();
         setupDaydreamPreferences();
         setupTranslationRequest();
+        setupAlarmClockPreferences();
     }
 
     private void setupLightSensorPreferences() {
@@ -640,6 +645,12 @@ public class PreferencesFragment extends PreferenceFragment {
     private void setupTranslationRequest() {
         if (Utility.languageIs("de", "en")) {
             removePreference("translations_wanted");
+        }
+    }
+
+    private void setupAlarmClockPreferences() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            removePreference("radioStreamActivateWiFi");
         }
     }
 
@@ -821,15 +832,8 @@ public class PreferencesFragment extends PreferenceFragment {
         PreferenceCategory category = (PreferenceCategory) findPreference("category_brightness");
 
         removePreference("maxBrightnessBattery");
+        removePreference("nightModeBrightnessInt");
         if (on) {
-
-            InlineSeekBarPreference prefMaxBrightness = new InlineSeekBarPreference(mContext);
-            prefMaxBrightness.setKey("maxBrightness");
-            prefMaxBrightness.setTitle(getString(R.string.maxBrightness));
-            prefMaxBrightness.setSummary("");
-            prefMaxBrightness.setRange(1, 100);
-            prefMaxBrightness.setDefaultValue(50);
-
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("minBrightness", (int) (100 * nightModeBrightness));
@@ -842,11 +846,30 @@ public class PreferencesFragment extends PreferenceFragment {
             prefMinBrightness.setRange(-100, 100);
             prefMinBrightness.setDefaultValue(0);
 
-            category.addPreference(prefMaxBrightness);
+            InlineSeekBarPreference prefMaxBrightness = new InlineSeekBarPreference(mContext);
+            prefMaxBrightness.setKey("maxBrightness");
+            prefMaxBrightness.setTitle(getString(R.string.maxBrightness));
+            prefMaxBrightness.setSummary("");
+            prefMaxBrightness.setRange(1, 100);
+            prefMaxBrightness.setDefaultValue(50);
+
             category.addPreference(prefMinBrightness);
+            category.addPreference(prefMaxBrightness);
         } else {
             removePreference("maxBrightness");
             removePreference("minBrightness");
+
+            float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
+            SharedPreferences.Editor prefEditor = prefs.edit();
+            prefEditor.putInt("nightModeBrightnessInt", (int) (100 * nightModeBrightness));
+            prefEditor.commit();
+            InlineSeekBarPreference prefNightModeBrightness = new InlineSeekBarPreference(mContext);
+            prefNightModeBrightness.setKey("nightModeBrightnessInt");
+            prefNightModeBrightness.setTitle(getString(R.string.brightness_night_mode));
+            prefNightModeBrightness.setSummary("");
+            prefNightModeBrightness.setRange(-100, 100);
+            prefNightModeBrightness.setDefaultValue(0);
+            category.addPreference(prefNightModeBrightness);
         }
 
         InlineSeekBarPreference prefMaxBrightnessBattery = new InlineSeekBarPreference(mContext);

@@ -156,6 +156,10 @@ public class AlarmHandlerService extends IntentService {
             Intent intent = new Intent(Config.ACTION_ALARM_DELETED);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmNotificationService.cancelNotification(this);
+        }
         WakeUpReceiver.schedule(context);
     }
 
