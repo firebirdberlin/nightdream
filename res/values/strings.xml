@@ -49,6 +49,7 @@ OR
     <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
+    <string name="brightness_night_mode">Brightness in night mode</string>
     <string name="brightness_offset">Brightness offset</string>
     <string name="buttonAccessibilitySettings">Show notifications</string>
     <string name="buy">Buy</string>
