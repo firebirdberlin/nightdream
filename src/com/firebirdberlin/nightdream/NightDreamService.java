@@ -10,6 +10,7 @@ public class NightDreamService extends DreamService {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
 
+        Utility.turnScreenOn(this);
         NightDreamActivity.start(this);
         finish();
     }
