@@ -21,7 +21,6 @@ public class ScreenWatcherService extends Service {
 
     private ScreenReceiver mReceiver;
     private PowerConnectionReceiver powerConnectionReceiver;
-    private ChargingStateChangeReceiver chargingStateChangeReceiver;
 
     @Override
     public void onCreate() {
@@ -32,7 +31,6 @@ public class ScreenWatcherService extends Service {
 
         mReceiver = ScreenReceiver.register(this);
         powerConnectionReceiver = PowerConnectionReceiver.register(this);
-        chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
     }
 
     @Nullable
@@ -46,7 +44,6 @@ public class ScreenWatcherService extends Service {
         Log.i(TAG, "ScreenWatcherService destroyed.");
         ScreenReceiver.unregister(this, mReceiver);
         PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
-        ChargingStateChangeReceiver.unregister(this, chargingStateChangeReceiver);
     }
 
 

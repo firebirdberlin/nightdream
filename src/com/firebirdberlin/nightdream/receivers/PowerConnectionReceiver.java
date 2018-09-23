@@ -26,8 +26,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     private static String TAG = "NightDream.PowerConnectionReceiver";
     private static int PENDING_INTENT_START_APP = 0;
 
-    private Settings settings = null;
-
     public static PowerConnectionReceiver register(Context ctx) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_POWER_CONNECTED);
@@ -90,18 +88,23 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, intent.getAction());
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
 
-        settings = new Settings(context);
+        conditionallyStartApp(context);
+
+        if (wakelock.isHeld()) {
+           wakelock.release();
+        }
+    }
+
+    public static void conditionallyStartApp(Context context) {
+        Settings settings = new Settings(context);
         if (!settings.standbyEnabledWhileConnected // postpone autostart until screen turns off
                 && shallAutostart(context, settings)) {
             NightDreamActivity.start(context);
-        }
-
-        if (wakelock.isHeld()) {
-            wakelock.release();
         }
     }
 
