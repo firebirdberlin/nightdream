@@ -54,7 +54,7 @@ OR
     <string name="buttonAccessibilitySettings">Show notifications</string>
     <string name="buy">Buy</string>
     <string name="category_handle_power">… and when connected to</string>
-    <string name="category_handle_power_autostart_time">Start within the time range</string>
+    <string name="category_handle_power_autostart_time">Run within the time range</string>
     <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
