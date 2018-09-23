@@ -50,7 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Helligkeits-Richtwert</string>
     <string name="buttonAccessibilitySettings">Benachrichtigungen anzeigen</string>
     <string name="buy">Kaufen</string>
-    <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
+    <string name="category_handle_power_autostart_time">Aktiv im Zeitraum</string>
     <string name="category_handle_power">... und wenn verbunden mit</string>
     <string name="choose_alarm_sound">Weckton</string>
     <string name="choose_primary_color">Akzentfarbe</string>
