@@ -21,11 +21,6 @@ public class BootReceiver extends BroadcastReceiver {
             WakeUpReceiver.schedule(context);
         }
 
-        if (settings.handle_power ||
-                settings.handle_power_disconnection ||
-                settings.standbyEnabledWhileConnected ||
-                settings.standbyEnabledWhileDisconnected) {
-            ScreenWatcherService.start(context);
-        }
+        ScreenWatcherService.conditionallyStart(context, settings);
     }
 }

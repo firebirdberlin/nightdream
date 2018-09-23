@@ -10,8 +10,8 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 
@@ -46,6 +46,14 @@ public class ScreenWatcherService extends Service {
         PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
     }
 
+
+    public static void conditionallyStart(Context context, Settings settings) {
+        if (settings.handle_power ||
+                settings.standbyEnabledWhileConnected ||
+                settings.standbyEnabledWhileDisconnected) {
+            ScreenWatcherService.start(context);
+        }
+    }
 
     public static void start(Context context) {
         Intent i = new Intent(context, ScreenWatcherService.class);

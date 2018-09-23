@@ -172,12 +172,6 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
 
-        if (mySettings.handle_power ||
-                mySettings.handle_power_disconnection ||
-                mySettings.standbyEnabledWhileConnected ||
-                mySettings.standbyEnabledWhileDisconnected) {
-            ScreenWatcherService.start(context);
-        }
     }
 
     @Override
@@ -204,6 +198,8 @@ public class NightDreamActivity extends BillingHelperActivity
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
+
+        ScreenWatcherService.stop(this);
 
         screenWasOn = false;
         setKeepScreenOn(true);
@@ -327,6 +323,14 @@ public class NightDreamActivity extends BillingHelperActivity
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
+        }
+
+        if (Utility.isScreenOn(this)) {
+            ScreenWatcherService.conditionallyStart(context, mySettings);
+        } else {
+            if (ScreenReceiver.shallActivateStandby(this, mySettings)) {
+                Utility.turnScreenOn(this);
+            }
         }
     }
 
