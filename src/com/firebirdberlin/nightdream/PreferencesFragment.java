@@ -911,7 +911,6 @@ public class PreferencesFragment extends PreferenceFragment {
     private void setupStandByService(SharedPreferences sharedPreferences) {
         boolean on = (
                 sharedPreferences.getBoolean("handle_power", false) ||
-                sharedPreferences.getBoolean("handle_power_disconnection", false) ||
                 sharedPreferences.getBoolean("standbyEnabledWhileConnected", false) ||
                 sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false)
         );
@@ -922,6 +921,7 @@ public class PreferencesFragment extends PreferenceFragment {
         if (!on) {
             ScreenWatcherService.stop(mContext);
         }
+
         PackageManager pm = mContext.getPackageManager();
         pm.setComponentEnabledSetting(new ComponentName(mContext, ScreenWatcherService.class),
                 newState, PackageManager.DONT_KILL_APP);

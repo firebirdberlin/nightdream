@@ -36,7 +36,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         }
     }
 
-    private void conditionallyActivateAlwaysOn(Context context) {
+    public static void conditionallyActivateAlwaysOn(Context context) {
         Settings settings = new Settings(context);
         if ( shallActivateStandby(context, settings) ) {
             Bundle bundle = new Bundle();
