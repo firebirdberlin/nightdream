@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 public class ScreenReceiver extends BroadcastReceiver {
@@ -28,24 +29,29 @@ public class ScreenReceiver extends BroadcastReceiver {
         }
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-            Log.i(TAG, "ACTION_SCREEN_OFF");
-            conditionallyActivateAlwaysOn(context);
-        }
-    }
-
-    public static void conditionallyActivateAlwaysOn(Context context) {
+    public static void conditionallyActivateAlwaysOn(Context context, boolean turnScreenOn) {
         Settings settings = new Settings(context);
         if ( shallActivateStandby(context, settings) ) {
+            if (turnScreenOn) {
+                Utility.turnScreenOn(context);
+            }
             Bundle bundle = new Bundle();
             bundle.putString("action", "start standby mode");
             NightDreamActivity.start(context, bundle);
         }
     }
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+            Log.i(TAG, "ACTION_SCREEN_OFF");
+            conditionallyActivateAlwaysOn(context, false);
+        }
+    }
+
     public static boolean shallActivateStandby(Context context, Settings settings) {
+        if (Utility.isConfiguredAsDaydream(context)) return false;
+
         BatteryStats battery = new BatteryStats(context);
         if ( battery.reference.isCharging && settings.standbyEnabledWhileConnected ) {
             return PowerConnectionReceiver.shallAutostart(context, settings);

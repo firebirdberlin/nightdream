@@ -328,9 +328,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (Utility.isScreenOn(this)) {
             ScreenWatcherService.conditionallyStart(context, mySettings);
         } else {
-            if (ScreenReceiver.shallActivateStandby(this, mySettings)) {
-                Utility.turnScreenOn(this);
-            }
+            ScreenReceiver.conditionallyActivateAlwaysOn(this, true);
         }
     }
 
