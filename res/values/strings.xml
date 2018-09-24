@@ -49,11 +49,12 @@ OR
     <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
+    <string name="brightness_night_mode">Brightness in night mode</string>
     <string name="brightness_offset">Brightness offset</string>
     <string name="buttonAccessibilitySettings">Show notifications</string>
     <string name="buy">Buy</string>
     <string name="category_handle_power">… and when connected to</string>
-    <string name="category_handle_power_autostart_time">Start within the time range</string>
+    <string name="category_handle_power_autostart_time">Run within the time range</string>
     <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
@@ -156,6 +157,8 @@ OR
     <string name="purchaseWeatherData">Buy a license</string>
     <string name="purchaseWebRadio">Buy a license</string>
     <string name="radio">Radio</string>
+    <string name="radio_stream_activate_wifi">WiFi</string>
+    <string name="radio_stream_activate_wifi_desc">If on, WiFi will be activated a few minutes before the stream starts to play.</string>
     <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_failure">Radio stream failure</string>

@@ -23,6 +23,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
+import com.firebirdberlin.nightdream.services.AlarmWifiService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,6 +46,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AlarmNotificationService.scheduleJob(context, next);
+                AlarmWifiService.scheduleJob(context, next);
             }
         } else {
             PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
@@ -52,6 +54,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             am.cancel(pI);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AlarmNotificationService.cancelJob(context);
+                AlarmWifiService.cancelJob(context);
             }
         }
 
@@ -147,6 +150,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AlarmNotificationService.cancelNotification(context);
             AlarmNotificationService.cancelJob(context);
+            AlarmWifiService.cancelJob(context);
         }
         AlarmHandlerService.start(context, intent);
 

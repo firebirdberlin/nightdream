@@ -30,4 +30,5 @@ public class Config {
 
     public final static int JOB_ID_ALARM_NOTIFICATION = 2000;
     public final static int JOB_ID_FETCH_WEATHER_DATA = 2001;
+    public final static int JOB_ID_ALARM_WIFI = 2002;
 }

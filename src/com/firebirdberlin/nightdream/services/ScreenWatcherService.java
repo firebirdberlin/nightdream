@@ -10,8 +10,8 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 
@@ -21,7 +21,6 @@ public class ScreenWatcherService extends Service {
 
     private ScreenReceiver mReceiver;
     private PowerConnectionReceiver powerConnectionReceiver;
-    private ChargingStateChangeReceiver chargingStateChangeReceiver;
 
     @Override
     public void onCreate() {
@@ -32,7 +31,6 @@ public class ScreenWatcherService extends Service {
 
         mReceiver = ScreenReceiver.register(this);
         powerConnectionReceiver = PowerConnectionReceiver.register(this);
-        chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
     }
 
     @Nullable
@@ -46,9 +44,16 @@ public class ScreenWatcherService extends Service {
         Log.i(TAG, "ScreenWatcherService destroyed.");
         ScreenReceiver.unregister(this, mReceiver);
         PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
-        ChargingStateChangeReceiver.unregister(this, chargingStateChangeReceiver);
     }
 
+
+    public static void conditionallyStart(Context context, Settings settings) {
+        if (settings.handle_power ||
+                settings.standbyEnabledWhileConnected ||
+                settings.standbyEnabledWhileDisconnected) {
+            ScreenWatcherService.start(context);
+        }
+    }
 
     public static void start(Context context) {
         Intent i = new Intent(context, ScreenWatcherService.class);
