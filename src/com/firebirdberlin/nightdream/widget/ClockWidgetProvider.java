@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.widget;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -205,7 +204,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, "onUpdate");
         setTimeTick(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            scheduleJob(context);
+            ClockWidgetJobService.schedule(context);
         } else {
             scheduleAlarmManagerService(context);
         }
@@ -255,29 +254,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             intentFilter.addAction(Intent.ACTION_SCREEN_ON);
 
             context.getApplicationContext().registerReceiver(screenReceiver, intentFilter);
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void scheduleJob(Context context) {
-        ComponentName serviceComponent = new ComponentName(
-                context.getPackageName(), ClockWidgetJobService.class.getName());
-        JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
-        builder.setPersisted(true);
-        builder.setRequiresCharging(false);
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-        builder.setPeriodic(60000);
-
-
-        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        if (jobScheduler == null) {
-            return;
-        }
-
-        int jobResult = jobScheduler.schedule(builder.build());
-
-        if (jobResult == JobScheduler.RESULT_SUCCESS){
-            Log.d(TAG, "scheduled ClockWidgetJobService job successfully");
         }
     }
 
