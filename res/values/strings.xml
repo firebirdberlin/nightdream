@@ -158,7 +158,7 @@ OR
     <string name="purchaseWebRadio">Buy a license</string>
     <string name="radio">Radio</string>
     <string name="radio_stream_activate_wifi">WiFi</string>
-    <string name="radio_stream_activate_wifi_desc">If on, WiFi will be activated a few minutes before the stream starts to play..</string>
+    <string name="radio_stream_activate_wifi_desc">If on, WiFi will be activated a few minutes before the stream starts to play.</string>
     <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_failure">Radio stream failure</string>

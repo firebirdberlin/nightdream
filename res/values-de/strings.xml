@@ -151,6 +151,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="purchaseWeatherData">Wetter- und Design-Paket kaufen</string>
     <string name="purchaseWebRadio">Webradio-Paket kaufen</string>
     <string name="radio">Radio</string>
+    <string name="radio_stream_activate_wifi">WLAN</string>
+    <string name="radio_stream_activate_wifi_desc">WLAN wird einige Minuten vor dem Wecker aktiviert.</string>
     <string name="radio_stream_enabled">Aktiviert</string>
     <string name="radio_stream">Internetradio</string>
     <string name="radio_stream_failure">Radiostation zur Zeit nicht erreichbar.</string>
