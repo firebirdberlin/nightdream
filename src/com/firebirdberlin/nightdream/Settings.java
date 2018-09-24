@@ -69,6 +69,7 @@ public class Settings {
     public boolean useRadioAlarmClock = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
+    public boolean radioStreamActivateWiFi = false;
     public float dim_offset = 0.8f;
     public float nightModeBrightness = 0.f;
     public float maxBrightness = 1.f;
@@ -236,6 +237,7 @@ public class Settings {
         useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", true);
         useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
+        radioStreamActivateWiFi = settings.getBoolean("radioStreamActivateWiFi", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
