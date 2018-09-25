@@ -199,7 +199,11 @@ public class NightDreamActivity extends BillingHelperActivity
         super.onResume();
         Log.i(TAG, "onResume()");
 
-        ScreenWatcherService.stop(this);
+        // API level 26 throws a RemoteServiceException
+        // It seems as if onCreate is called on context.stopService()
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            ScreenWatcherService.stop(this);
+        }
 
         screenWasOn = false;
         setKeepScreenOn(true);
