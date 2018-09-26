@@ -163,11 +163,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         if (soundUri == null) return false;
         try {
             mMediaPlayer.setDataSource(this, soundUri);
-        } catch (IOException e) {
-            Log.e(TAG, String.format("Setting the Uri %s failed !", soundUri.toString()));
-            return false;
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
+        } catch (IOException | IllegalStateException | SecurityException e) {
+            e.printStackTrace();
             return false;
         }
         return true;
