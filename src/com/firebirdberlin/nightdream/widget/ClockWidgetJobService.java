@@ -23,22 +23,25 @@ public class ClockWidgetJobService extends JobService {
 
         ComponentName serviceComponent = new ComponentName(
                 context.getPackageName(), ClockWidgetJobService.class.getName());
-        JobInfo.Builder builder =
-                new JobInfo.Builder(0, serviceComponent)
-                        .setPersisted(true)
-                        .setRequiresCharging(false)
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setPeriodic(60000);
+        JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
+        builder = builder.setPersisted(true);
+        builder = builder.setRequiresCharging(false);
+        builder = builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE);
+        builder = builder.setPeriodic(60000);
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler == null) {
             return;
         }
 
-        int jobResult = jobScheduler.schedule(builder.build());
+        try {
+            int jobResult = jobScheduler.schedule(builder.build());
 
-        if (jobResult == JobScheduler.RESULT_SUCCESS) {
-            Log.d(TAG, "scheduled ClockWidgetJobService job successfully");
+            if (jobResult == JobScheduler.RESULT_SUCCESS) {
+                Log.d(TAG, "scheduled ClockWidgetJobService job successfully");
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
     }
 

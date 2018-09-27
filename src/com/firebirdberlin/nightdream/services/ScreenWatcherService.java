@@ -19,12 +19,14 @@ import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 public class ScreenWatcherService extends Service {
     private static String TAG = "ScreenWatcherService";
 
+    public static boolean isRunning = false;
     private ScreenReceiver mReceiver;
     private PowerConnectionReceiver powerConnectionReceiver;
 
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate()");
+        isRunning = true;
         Notification note = Utility.getForegroundServiceNotification(
                 this, R.string.backgroundServiceNotificationText);
         startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
@@ -42,6 +44,7 @@ public class ScreenWatcherService extends Service {
 
     public void onDestroy() {
         Log.i(TAG, "ScreenWatcherService destroyed.");
+        isRunning = false;
         ScreenReceiver.unregister(this, mReceiver);
         PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
     }
@@ -61,6 +64,9 @@ public class ScreenWatcherService extends Service {
     }
 
     public static void stop(Context context) {
+        if ( !ScreenWatcherService.isRunning) {
+            return;
+        }
         Intent i = new Intent(context, ScreenWatcherService.class);
         context.stopService(i);
     }
