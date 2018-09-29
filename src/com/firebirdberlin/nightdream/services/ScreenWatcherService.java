@@ -51,8 +51,7 @@ public class ScreenWatcherService extends Service {
 
 
     public static void conditionallyStart(Context context, Settings settings) {
-        if (settings.handle_power ||
-                settings.standbyEnabledWhileConnected ||
+        if ((settings.handle_power && settings.standbyEnabledWhileConnected) ||
                 settings.standbyEnabledWhileDisconnected) {
             ScreenWatcherService.start(context);
         }

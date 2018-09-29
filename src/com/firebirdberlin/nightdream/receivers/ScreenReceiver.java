@@ -53,7 +53,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         BatteryStats battery = new BatteryStats(context);
-        if ( battery.reference.isCharging && settings.standbyEnabledWhileConnected ) {
+        if (battery.reference.isCharging && settings.handle_power && settings.standbyEnabledWhileConnected) {
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
 
