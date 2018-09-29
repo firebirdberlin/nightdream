@@ -88,7 +88,11 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, intent.getAction());
+        if (intent != null) {
+            String action = intent.getAction();
+            action = (action == null) ? "none" : action;
+            Log.d(TAG, action);
+        }
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();

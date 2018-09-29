@@ -910,8 +910,8 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
         boolean on = (
-                sharedPreferences.getBoolean("handle_power", false) ||
-                sharedPreferences.getBoolean("standbyEnabledWhileConnected", false) ||
+                (sharedPreferences.getBoolean("handle_power", false) &&
+                        sharedPreferences.getBoolean("standbyEnabledWhileConnected", false)) ||
                 sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false)
         );
         int newState = on ?

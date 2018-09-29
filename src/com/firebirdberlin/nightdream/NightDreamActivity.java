@@ -180,7 +180,6 @@ public class NightDreamActivity extends BillingHelperActivity
         setKeepScreenOn(true);
         Log.i(TAG, "onStart()");
         Utility.registerEventBus(this);
-
         nightDreamUI.onStart();
 
         lightSensor = Utility.getLightSensor(this);
@@ -199,12 +198,12 @@ public class NightDreamActivity extends BillingHelperActivity
         super.onResume();
         Log.i(TAG, "onResume()");
 
-        ScreenWatcherService.stop(this);
-
         screenWasOn = false;
         setKeepScreenOn(true);
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
+
+        ScreenWatcherService.conditionallyStart(this, mySettings);
 
         scheduleShutdown();
         setupAlarmClockIcon();
@@ -323,12 +322,6 @@ public class NightDreamActivity extends BillingHelperActivity
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
-        }
-
-        if (Utility.isScreenOn(this)) {
-            ScreenWatcherService.conditionallyStart(context, mySettings);
-        } else {
-            ScreenReceiver.conditionallyActivateAlwaysOn(this, true);
         }
     }
 
