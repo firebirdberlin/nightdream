@@ -698,7 +698,8 @@ public class NightDreamActivity extends BillingHelperActivity
             Log.i(TAG, "action -> " + action);
             if (Config.ACTION_SHUT_DOWN.equals(action)) {
                 // this receiver is needed to shutdown the app at the end of the autostart time range
-                if (mySettings.handle_power_disconnection) {
+                if (mySettings.handle_power_disconnection_at_time_range_end &&
+                        ! Utility.isConfiguredAsDaydream(context)) {
                     finish();
                 }
             }

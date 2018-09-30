@@ -50,7 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Helligkeits-Richtwert</string>
     <string name="buttonAccessibilitySettings">Benachrichtigungen anzeigen</string>
     <string name="buy">Kaufen</string>
-    <string name="category_handle_power_autostart_time">Aktiv im Zeitraum</string>
+    <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
     <string name="category_handle_power">... und wenn verbunden mit</string>
     <string name="choose_alarm_sound">Weckton</string>
     <string name="choose_primary_color">Akzentfarbe</string>
@@ -91,12 +91,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="hand_shape_arc">Bogen</string>
     <string name="hand_shape_bar">Balken</string>
     <string name="hand_shape_triangle">Dreieck</string>
+    <string name="handle_auto_stop">Automatisch beenden</string>
     <string name="handle_power_ac">einem Ladegerät</string>
     <string name="handle_power">Autostart</string>
     <string name="handle_power_car">Dock (Auto)</string>
     <string name="handle_power_desk">Dock (Schreibtisch)</string>
-    <string name="handle_power_disconnection">Automatisch beenden</string>
+    <string name="handle_power_disconnection">beim Trennen</string>
     <string name="handle_power_disconnection_summary">Die Anwendung soll sich beim Trennen der Stromzufuhr automatisch beenden.</string>
+    <string name="handle_power_disconnection_at_time_range_end">am Ende des Autostartzeitraumes</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
     <string name="hide_background_image_in_night_mode">Ausblenden</string>
