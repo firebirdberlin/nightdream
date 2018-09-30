@@ -13,9 +13,72 @@
     </Preference>
 
     <PreferenceScreen
-            android:icon="@drawable/ic_power"
-            android:key="autostart"
-            android:title="@string/handle_power">
+        android:icon="@drawable/ic_power"
+        android:key="autostart"
+        android:title="@string/handle_power">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="handle_power"
+            android:title="@string/handle_power" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="handle_power"
+            android:key="standbyEnabledWhileConnected"
+            android:summary="@string/standbyEnabledWhileConnectedSummary"
+            android:title="@string/standbyEnabledWhileConnectedTitle" />
+
+        <PreferenceCategory
+            key="category_handle_power_autostart_time"
+            android:dependency="handle_power"
+            android:title="@string/category_handle_power_autostart_time">
+
+            <de.firebirdberlin.preference.TimeRangePreference
+                xmlns:timerange="timerange"
+                android:defaultValue="0"
+                android:dependency="handle_power"
+                android:key="autostart_time_range"
+                timerange:end_text="@string/autostart_timerange_label_end"
+                timerange:key_suffix_end="_end"
+                timerange:key_suffix_start="_start"
+                timerange:start_text="@string/autostart_timerange_label_start" />
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            key="category_handle_power"
+            android:dependency="handle_power"
+            android:title="@string/category_handle_power">
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="handle_power_ac"
+                android:title="@string/handle_power_ac" />
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="handle_power_usb"
+                android:title="@string/handle_power_usb" />
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="handle_power_wireless"
+                android:title="@string/handle_power_wireless" />
+
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="handle_power_desk"
+                android:title="@string/handle_power_desk" />
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="handle_power_car"
+                android:title="@string/handle_power_car" />
+
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="@string/handle_auto_stop">
 
             <SwitchPreference
                 android:defaultValue="true"
@@ -24,77 +87,23 @@
                 android:title="@string/handle_power_disconnection" />
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:key="handle_power"
-                android:title="@string/handle_power" />
+                android:defaultValue="true"
+                android:key="handle_power_disconnection_at_time_range_end"
+                android:title="@string/handle_power_disconnection_at_time_range_end" />
+
+        </PreferenceCategory>
+        <PreferenceCategory
+            android:icon="@drawable/ic_expert"
+            android:key="expert_screen"
+            android:title="@string/expertPreferences">
 
             <SwitchPreference
                 android:defaultValue="false"
-                android:dependency="handle_power"
-                android:key="standbyEnabledWhileConnected"
-                android:summary="@string/standbyEnabledWhileConnectedSummary"
-                android:title="@string/standbyEnabledWhileConnectedTitle" />
-
-            <PreferenceCategory
-                key="category_handle_power_autostart_time"
-                android:dependency="handle_power"
-                android:title="@string/category_handle_power_autostart_time">
-
-                <de.firebirdberlin.preference.TimeRangePreference
-                    xmlns:timerange="timerange"
-                    android:defaultValue="0"
-                    android:dependency="handle_power"
-                    android:key="autostart_time_range"
-                    timerange:end_text="@string/autostart_timerange_label_end"
-                    timerange:key_suffix_end="_end"
-                    timerange:key_suffix_start="_start"
-                    timerange:start_text="@string/autostart_timerange_label_start" />
-            </PreferenceCategory>
-
-            <PreferenceCategory
-                key="category_handle_power"
-                android:dependency="handle_power"
-                android:title="@string/category_handle_power">
-
-                <SwitchPreference
-                    android:defaultValue="true"
-                    android:key="handle_power_ac"
-                    android:title="@string/handle_power_ac" />
-
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="handle_power_usb"
-                    android:title="@string/handle_power_usb" />
-
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="handle_power_wireless"
-                    android:title="@string/handle_power_wireless" />
-
-                <SwitchPreference
-                    android:defaultValue="true"
-                    android:key="handle_power_desk"
-                    android:title="@string/handle_power_desk" />
-
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="handle_power_car"
-                    android:title="@string/handle_power_car" />
-
-            </PreferenceCategory>
-
-            <PreferenceCategory
-                android:icon="@drawable/ic_expert"
-                android:key="expert_screen"
-                android:title="@string/expertPreferences">
-
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="standbyEnabledWhileDisconnected"
-                    android:summary="@string/standbyEnabledWhileDisconnectedSummary"
-                    android:title="@string/standbyEnabledWhileDisconnectedTitle" />
-            </PreferenceCategory>
-        </PreferenceScreen>
+                android:key="standbyEnabledWhileDisconnected"
+                android:summary="@string/standbyEnabledWhileDisconnectedSummary"
+                android:title="@string/standbyEnabledWhileDisconnectedTitle" />
+        </PreferenceCategory>
+    </PreferenceScreen>
 
         <PreferenceScreen
             android:icon="@drawable/ic_appearance"

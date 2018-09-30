@@ -49,6 +49,7 @@ public class Settings {
     public boolean doubleTapToFinish = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
+    public boolean handle_power_disconnection_at_time_range_end = true;
     public boolean handle_power_desk = false;
     public boolean handle_power_car = false;
     public boolean handle_power_ac = false;
@@ -176,6 +177,8 @@ public class Settings {
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
+        handle_power_disconnection_at_time_range_end =
+                settings.getBoolean("handle_power_disconnection_at_time_range_end", true);
         handle_power_desk = settings.getBoolean("handle_power_desk", false);
         handle_power_car = settings.getBoolean("handle_power_car", false);
         handle_power_ac = settings.getBoolean("handle_power_ac", false);
