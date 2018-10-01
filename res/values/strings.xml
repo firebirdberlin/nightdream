@@ -44,6 +44,8 @@ OR
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
+    <string name="backgroundServiceDialogTitle">Stop background service</string>
+    <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode as well as the battery prediction. Proceed ?</string>
     <string name="backgroundServiceNotificationText">Background service is running.</string>
     <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
@@ -176,7 +178,7 @@ OR
     <string name="radio_stream_unreachable_url">The URL is not reachable.</string>
     <string name="radio_stream_url">Radio stream URL</string>
     <string name="reactivate_on_ambient_light_value">Illuminance threshold</string>
-    <string name="reactivate_on_ambient_light_value_summary">The screen is reactivated if the threshold value of illuminace is exceeded.</string>
+    <string name="reactivate_on_ambient_light_value_summary">The screen is reactivated if the threshold value of illuminance is exceeded.</string>
     <string name="reactivate_screen_on_noise">Wake on ambient noise</string>
     <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>

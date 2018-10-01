@@ -6,12 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.events.OnPowerConnected;
-import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.models.BatteryValue;
-
-import org.greenrobot.eventbus.EventBus;
 
 public class ChargingStateChangeReceiver extends BroadcastReceiver {
 
@@ -32,19 +28,7 @@ public class ChargingStateChangeReceiver extends BroadcastReceiver {
     }
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = "";
-        if ( intent != null ) {
-            action = intent.getAction();
-        }
-        BatteryValue referenceValue = getAndSaveBatteryReference(context.getApplicationContext());
-
-        if ( action.equals(Intent.ACTION_POWER_CONNECTED) ) {
-            EventBus.getDefault().post(new OnPowerConnected(referenceValue));
-        } else
-        if ( action.equals(Intent.ACTION_POWER_DISCONNECTED) ) {
-            EventBus.getDefault().post(new OnPowerDisconnected(referenceValue));
-        }
-
+        getAndSaveBatteryReference(context.getApplicationContext());
     }
 
     public static BatteryValue getAndSaveBatteryReference(Context context) {

@@ -47,8 +47,6 @@ import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.events.OnPowerConnected;
-import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.WeatherService;
@@ -1059,14 +1057,12 @@ public class NightDreamUI {
         dimScreen(0, last_ambient, settings.dim_offset);
     }
 
-    @Subscribe
-    public void onEvent(OnPowerConnected event) {
+    public void onPowerConnected() {
         setupScreenAnimation();
         showAlarmClock();
     }
 
-    @Subscribe
-    public void onEvent(OnPowerDisconnected event) {
+    public void onPowerDisconnected() {
         setupScreenAnimation();
         showAlarmClock();
     }

@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -159,9 +158,7 @@ public class NightModeListener extends Service {
     }
 
     private void startApp(){
-        Bundle bundle = new Bundle();
-        bundle.putString("action", "start night mode");
-        NightDreamActivity.start(this, bundle);
+        NightDreamActivity.start(this, "start night mode");
     }
 
     private void restoreRingerMode() {

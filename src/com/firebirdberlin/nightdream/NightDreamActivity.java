@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
+import android.app.FragmentManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
@@ -29,8 +30,6 @@ import android.widget.ImageView;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.events.OnPowerConnected;
-import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
@@ -48,6 +47,7 @@ import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
+import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
@@ -83,7 +83,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private LocationUpdateReceiver locationReceiver = null;
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
-    private ShutdownReceiver shutdownReceiver = null;
+    private PowerSupplyReceiver powerSupplyReceiver = null;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -125,14 +125,12 @@ public class NightDreamActivity extends BillingHelperActivity
     };
 
     static public void start(Context context) {
-        NightDreamActivity.start(context, null);
+        NightDreamActivity.start(context,  null);
     }
 
-    static public void start(Context context, Bundle extras) {
+    static public void start(Context context, String action) {
         Intent intent = getDefaultIntent(context);
-        if (extras != null) {
-            intent.putExtras(extras);
-        }
+        intent.setAction(action);
         context.startActivity(intent);
     }
 
@@ -210,7 +208,7 @@ public class NightDreamActivity extends BillingHelperActivity
         nReceiver = registerNotificationReceiver();
         nightModeReceiver = NightModeReceiver.register(this, this);
         broadcastReceiver = registerBroadcastReceiver();
-        shutdownReceiver = registerShutdownReceiver();
+        powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
 
         nReceiver.setColor(mySettings.secondaryColor);
@@ -222,26 +220,21 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            Log.i(TAG, "Intent has extras");
-            String action = extras.getString("action");
 
-            if (action != null) {
-                Log.i(TAG, "action: " + action);
-
-                if ("start standby mode".equals(action)) {
-                    nightDreamUI.setLocked(true);
-                }
-
-                if (action.equals("start night mode")) {
-                    last_ambient = mySettings.minIlluminance;
-                    last_ambient_noise = 32000;
-                    setMode(0);
-                    if ( lightSensor == null ) {
-                        handler.postDelayed(setScreenOff, 20000);
-                    }
-                }
+        String action = intent.getAction();
+        if (Config.ACTION_STOP_BACKGROUND_SERVICE.equals(action)) {
+            showStopBackgroundServicesDialog();
+            intent.setAction(null);
+        } else
+        if ("start standby mode".equals(action)) {
+            nightDreamUI.setLocked(true);
+        } else
+        if ("start night mode".equals(action)) {
+            last_ambient = mySettings.minIlluminance;
+            last_ambient_noise = 32000;
+            setMode(0);
+            if ( lightSensor == null ) {
+                handler.postDelayed(setScreenOff, 20000);
             }
         }
 
@@ -261,6 +254,12 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         bottomPanelLayout.setActivePanel(activePanel);
+    }
+
+    private void showStopBackgroundServicesDialog() {
+        FragmentManager fm = getFragmentManager();
+        StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
+        dialog.show(fm, "sleep_timer");
     }
 
     public void onSwitchNightMode() {
@@ -308,7 +307,7 @@ public class NightDreamActivity extends BillingHelperActivity
         cancelShutdown();
         NightModeReceiver.cancel(this);
         unregister(nightModeReceiver);
-        unregister(shutdownReceiver);
+        unregister(powerSupplyReceiver);
         unregisterLocalReceiver(nReceiver);
         unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
@@ -357,7 +356,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         nightModeReceiver = null;
         broadcastReceiver = null;
-        shutdownReceiver = null;
+        powerSupplyReceiver = null;
         nReceiver  = null;
     }
 
@@ -379,11 +378,12 @@ public class NightDreamActivity extends BillingHelperActivity
         return receiver;
     }
 
-    private ShutdownReceiver registerShutdownReceiver() {
+    private PowerSupplyReceiver registerShutdownReceiver() {
         Log.d(TAG, "registerShutdownReceiver()");
-        ShutdownReceiver receiver = new ShutdownReceiver();
+        PowerSupplyReceiver receiver = new PowerSupplyReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_SHUT_DOWN);
+        filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         registerReceiver(receiver, filter);
         return receiver;
     }
@@ -568,26 +568,6 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
-    @Subscribe
-    public void onEvent(OnPowerDisconnected event) {
-        if ( mySettings.handle_power_disconnection ) {
-            handler.removeCallbacks(finishApp);
-            if ( isChargingWireless ) {
-                handler.postDelayed(finishApp, 5000);
-            } else {
-                finish();
-            }
-        }
-    }
-
-    @Subscribe
-    public void onEvent(OnPowerConnected event) {
-        handler.removeCallbacks(finishApp);
-        if ( event != null ) {
-            isChargingWireless = event.referenceValue.isChargingWireless;
-        }
-    }
-
     public void setKeepScreenOn(boolean keepScreenOn) {
         if( keepScreenOn ) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -668,7 +648,7 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI.reconfigure();
     }
 
-    class NightDreamBroadcastReceiver extends BroadcastReceiver {
+    public class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "onReceive() -> ");
@@ -685,7 +665,8 @@ public class NightDreamActivity extends BillingHelperActivity
 
         }
     }
-    class ShutdownReceiver extends BroadcastReceiver {
+
+    class PowerSupplyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "onReceive() -> ");
@@ -698,6 +679,25 @@ public class NightDreamActivity extends BillingHelperActivity
                         ! Utility.isConfiguredAsDaydream(context)) {
                     finish();
                 }
+            }
+            else
+            if (Intent.ACTION_POWER_DISCONNECTED.equals(action)){
+                nightDreamUI.onPowerDisconnected();
+                if ( mySettings.handle_power_disconnection ) {
+                    handler.removeCallbacks(finishApp);
+                    if ( isChargingWireless ) {
+                        handler.postDelayed(finishApp, 5000);
+                    } else {
+                        finish();
+                    }
+                }
+            }
+            else
+            if (Intent.ACTION_POWER_CONNECTED.equals(action)){
+                handler.removeCallbacks(finishApp);
+                nightDreamUI.onPowerConnected();
+                BatteryStats stats = new BatteryStats(context);
+                isChargingWireless = stats.reference.isChargingWireless;
             }
         }
     }

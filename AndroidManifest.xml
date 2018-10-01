@@ -122,6 +122,13 @@
         </activity>
 
         <receiver
+            android:name=".receivers.StopServiceReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="ACTION_STOP_SERVICE" />
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name=".receivers.PowerConnectionReceiver"
             android:enabled="true">
             <intent-filter>
