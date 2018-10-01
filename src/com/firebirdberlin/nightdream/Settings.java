@@ -310,6 +310,16 @@ public class Settings {
         prefEditor.commit();
     }
 
+    public void removeBatteryReference() {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.remove("batteryReferenceTime");
+        prefEditor.remove("batteryReferenceMethod");
+        prefEditor.remove("batteryReferenceScale");
+        prefEditor.remove("batteryReferenceChargingMethod");
+        prefEditor.remove("batteryReferenceStatus");
+        prefEditor.commit();
+    }
+
     private String getDefaultDateFormat() {
         // Return the date format as used in versions previous to the version code 72
         if (Build.VERSION.SDK_INT >= 18){
