@@ -12,6 +12,7 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 
@@ -22,6 +23,7 @@ public class ScreenWatcherService extends Service {
     public static boolean isRunning = false;
     private ScreenReceiver mReceiver;
     private PowerConnectionReceiver powerConnectionReceiver;
+    private ChargingStateChangeReceiver chargingStateChangeReceiver;
 
     @Override
     public void onCreate() {
@@ -31,8 +33,16 @@ public class ScreenWatcherService extends Service {
                 this, R.string.backgroundServiceNotificationText);
         startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
+        ChargingStateChangeReceiver.getAndSaveBatteryReference(this);
+
         mReceiver = ScreenReceiver.register(this);
         powerConnectionReceiver = PowerConnectionReceiver.register(this);
+        chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
+    }
+
+    private void removeBatteryReference() {
+        Settings settings = new Settings(this);
+        settings.removeBatteryReference();
     }
 
     @Nullable
@@ -47,12 +57,13 @@ public class ScreenWatcherService extends Service {
         isRunning = false;
         ScreenReceiver.unregister(this, mReceiver);
         PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
+        ChargingStateChangeReceiver.unregister(this, chargingStateChangeReceiver);
+        removeBatteryReference();
     }
 
 
     public static void conditionallyStart(Context context, Settings settings) {
-        if ((settings.handle_power && settings.standbyEnabledWhileConnected) ||
-                settings.standbyEnabledWhileDisconnected) {
+        if (settings.handle_power || settings.standbyEnabledWhileDisconnected) {
             ScreenWatcherService.start(context);
         }
     }

@@ -34,7 +34,6 @@ import com.firebirdberlin.nightdream.events.OnPowerDisconnected;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
-import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
@@ -85,7 +84,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private ShutdownReceiver shutdownReceiver = null;
-    private ChargingStateChangeReceiver chargingStateChangeReceiver;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -214,7 +212,6 @@ public class NightDreamActivity extends BillingHelperActivity
         broadcastReceiver = registerBroadcastReceiver();
         shutdownReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
-        chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
 
         nReceiver.setColor(mySettings.secondaryColor);
         // ask for active notifications
@@ -315,7 +312,6 @@ public class NightDreamActivity extends BillingHelperActivity
         unregisterLocalReceiver(nReceiver);
         unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
-        ChargingStateChangeReceiver.unregister(this, chargingStateChangeReceiver);
 
         if (mySettings.allow_screen_off && mode == 0
                 && screenWasOn && !Utility.isScreenOn(this) ){ // screen off in night mode

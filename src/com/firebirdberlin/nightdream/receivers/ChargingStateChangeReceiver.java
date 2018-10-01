@@ -36,11 +36,7 @@ public class ChargingStateChangeReceiver extends BroadcastReceiver {
         if ( intent != null ) {
             action = intent.getAction();
         }
-        BatteryStats battery = new BatteryStats(context.getApplicationContext());
-        BatteryValue referenceValue = battery.getBatteryValue();
-
-        Settings settings = new Settings(context.getApplicationContext());
-        settings.saveBatteryReference(referenceValue);
+        BatteryValue referenceValue = getAndSaveBatteryReference(context.getApplicationContext());
 
         if ( action.equals(Intent.ACTION_POWER_CONNECTED) ) {
             EventBus.getDefault().post(new OnPowerConnected(referenceValue));
@@ -50,4 +46,14 @@ public class ChargingStateChangeReceiver extends BroadcastReceiver {
         }
 
     }
+
+    public static BatteryValue getAndSaveBatteryReference(Context context) {
+        BatteryStats battery = new BatteryStats(context.getApplicationContext());
+        BatteryValue referenceValue = battery.getBatteryValue();
+
+        Settings settings = new Settings(context.getApplicationContext());
+        settings.saveBatteryReference(referenceValue);
+        return referenceValue;
+    }
+
 }
