@@ -47,6 +47,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Hintergrundservice beenden</string>
     <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart, Standby-Modus und die Vorhersage der Akkuladezeit ausgeschaltet. Fortfahren ?</string>
     <string name="backgroundServiceNotificationText">Der Hintergrundservice ist aktiv.</string>
+    <string name="backgroundServiceNotificationTextLocation">Der Standort wird bestimmt.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Der Nachtmodus ist aktiv.</string>
     <string name="behaviour">Verhalten</string>
     <string name="brightness">Helligkeit</string>
     <string name="brightness_offset">Helligkeits-Richtwert</string>
