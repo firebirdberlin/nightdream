@@ -320,6 +320,12 @@ public class Settings {
         prefEditor.commit();
     }
 
+    public void disableSettingsNeedingBackgroundService() {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putBoolean("handle_power", false);
+        prefEditor.putBoolean("standbyEnabledWhileDisconnected", false);
+        prefEditor.commit();
+    }
     private String getDefaultDateFormat() {
         // Return the date format as used in versions previous to the version code 72
         if (Build.VERSION.SDK_INT >= 18){

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -35,9 +34,7 @@ public class ScreenReceiver extends BroadcastReceiver {
             if (turnScreenOn) {
                 Utility.turnScreenOn(context);
             }
-            Bundle bundle = new Bundle();
-            bundle.putString("action", "start standby mode");
-            NightDreamActivity.start(context, bundle);
+            NightDreamActivity.start(context, "start standby mode");
         }
     }
 

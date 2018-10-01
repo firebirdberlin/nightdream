@@ -44,6 +44,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background">Hintergrund</string>
     <string name="background_image">Bild</string>
     <string name="background_image_select">Bild auswählen</string>
+    <string name="backgroundServiceDialogTitle">Hintergrundservice beenden</string>
+    <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart, Standby-Modus und die Vorhersage der Akkuladezeit ausgeschaltet. Fortfahren ?</string>
     <string name="backgroundServiceNotificationText">Der Hintergrundservice ist aktiv.</string>
     <string name="behaviour">Verhalten</string>
     <string name="brightness">Helligkeit</string>
