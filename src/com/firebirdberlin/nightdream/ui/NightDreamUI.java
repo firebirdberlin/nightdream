@@ -756,11 +756,11 @@ public class NightDreamUI {
     }
 
     public void onConfigurationChanged(final Configuration newConfig) {
+        clockLayout.animate().cancel();
         removeCallbacks(moveAround);
         Runnable fixConfig = new Runnable() {
                 public void run() {
                     clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
-                    //clockLayout.update(settings.weatherEntry);
                     centerClockLayout();
                     float s = getScaleFactor(newConfig);
                     clockLayout.setScaleFactor(s);
