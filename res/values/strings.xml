@@ -31,6 +31,8 @@ OR
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Turn the screen off during the night.</string>
     <string name="allow_screen_off">Turn screen off</string>
+    <string name="always_on">Always on</string>
+    <string name="alwaysOnBatteryLevel">Battery level is above</string>
     <string name="ambient_noise">Ambient noise detection</string>
     <string name="ambient_noise_summary">Shall ambient noise prevent the night mode to be activated?</string>
     <string name="appearance">Appearance</string>
@@ -210,7 +212,9 @@ OR
     <string name="speedUnit">Wind speed unit</string>
     <string name="standbyEnabledWhileConnectedSummary">Activate when the screen turns off.</string>
     <string name="standbyEnabledWhileConnectedTitle">Standby Mode</string>
+    <string name="standbyEnabledWhileDisconnectedScreepUpTitle">with screen up</string>
     <string name="standbyEnabledWhileDisconnectedSummary">This feature quickly drains your battery!</string>
+    <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">within the time range</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
     <string name="standbyNotificationText">Standby service is running.</string>
     <string name="style">Style</string>

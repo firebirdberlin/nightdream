@@ -22,7 +22,7 @@
             android:key="handle_power"
             android:title="@string/handle_power" />
 
-        <SwitchPreference
+        <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="handle_power"
             android:key="standbyEnabledWhileConnected"
@@ -50,27 +50,27 @@
             android:dependency="handle_power"
             android:title="@string/category_handle_power">
 
-            <SwitchPreference
+            <CheckBoxPreference
                 android:defaultValue="true"
                 android:key="handle_power_ac"
                 android:title="@string/handle_power_ac" />
 
-            <SwitchPreference
+            <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="handle_power_usb"
                 android:title="@string/handle_power_usb" />
 
-            <SwitchPreference
+            <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="handle_power_wireless"
                 android:title="@string/handle_power_wireless" />
 
-            <SwitchPreference
+            <CheckBoxPreference
                 android:defaultValue="true"
                 android:key="handle_power_desk"
                 android:title="@string/handle_power_desk" />
 
-            <SwitchPreference
+            <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="handle_power_car"
                 android:title="@string/handle_power_car" />
@@ -95,13 +95,42 @@
         <PreferenceCategory
             android:icon="@drawable/ic_expert"
             android:key="expert_screen"
-            android:title="@string/expertPreferences">
+            android:title="@string/always_on">
 
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="standbyEnabledWhileDisconnected"
                 android:summary="@string/standbyEnabledWhileDisconnectedSummary"
                 android:title="@string/standbyEnabledWhileDisconnectedTitle" />
+
+            <de.firebirdberlin.preference.TimeRangePreference
+                xmlns:timerange="timerange"
+                android:defaultValue="0"
+                android:dependency="standbyEnabledWhileDisconnected"
+                android:key="always_on_time_range"
+                android:title="@string/standbyEnabledWhileDisconnectedTimeRangeTitle"
+                timerange:end_text="@string/autostart_timerange_label_end"
+                timerange:key_suffix_end="_end"
+                timerange:key_suffix_start="_start"
+                timerange:start_text="@string/autostart_timerange_label_start" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="standbyEnabledWhileDisconnectedScreenUp"
+                android:dependency="standbyEnabledWhileDisconnected"
+                android:title="@string/standbyEnabledWhileDisconnectedScreepUpTitle" />
+
+            <de.firebirdberlin.preference.InlineSeekBarPreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:defaultValue="20"
+                android:key="alwaysOnBatteryLevel"
+                android:dependency="standbyEnabledWhileDisconnected"
+                android:max="90"
+                android:title="@string/alwaysOnBatteryLevel"
+                seekbar:interval="5"
+                seekbar:min="0"
+                seekbar:unitsLeft=""
+                seekbar:unitsRight="%"/>
         </PreferenceCategory>
     </PreferenceScreen>
 

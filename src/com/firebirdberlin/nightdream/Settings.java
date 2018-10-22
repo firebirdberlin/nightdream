@@ -44,6 +44,7 @@ public class Settings {
     public boolean alarmFadeIn = true;
     public boolean standbyEnabledWhileConnected = false;
     public boolean standbyEnabledWhileDisconnected = false;
+    public boolean standbyEnabledWhileDisconnectedScreenUp = false;
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
@@ -95,6 +96,9 @@ public class Settings {
     public int temperatureUnit = WeatherEntry.CELSIUS;
     public int speedUnit = WeatherEntry.METERS_PER_SECOND;
     public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    public int alwaysOnBatteryLevel = 0;
+    public int alwaysOnTimeRangeStartInMinutes = -1;
+    public int alwaysOnTimeRangeEndInMinutes = -1;
     public int autostartTimeRangeStartInMinutes = -1;
     public int autostartTimeRangeEndInMinutes = -1;
     public int nightModeTimeRangeStartInMinutes = -1;
@@ -169,9 +173,14 @@ public class Settings {
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         standbyEnabledWhileConnected = settings.getBoolean("standbyEnabledWhileConnected", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
+        standbyEnabledWhileDisconnectedScreenUp = settings.getBoolean("standbyEnabledWhileDisconnectedScreenUp", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
         clockLayoutMirrorText = settings.getBoolean("clockLayoutMirrorText", false);
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
+        alwaysOnTimeRangeStartInMinutes = settings.getInt("always_on_time_range_start_minutes", -1);
+        alwaysOnTimeRangeEndInMinutes = settings.getInt("always_on_time_range_end_minutes", -1);
+        alwaysOnBatteryLevel = settings.getInt("alwaysOnBatteryLevel", 0);
+
         autostartTimeRangeStartInMinutes = settings.getInt("autostart_time_range_start_minutes", -1);
         autostartTimeRangeEndInMinutes = settings.getInt("autostart_time_range_end_minutes", -1);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
