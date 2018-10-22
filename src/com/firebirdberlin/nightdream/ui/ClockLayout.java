@@ -28,7 +28,7 @@ public class ClockLayout extends LinearLayout {
     private static final String TAG = "NightDream.ClockLayout";
     private int layoutId = LAYOUT_ID_DIGITAL;
 
-    private Context context = null;
+    private Context context;
     private AutoAdjustTextView clock = null;
     private AutoAdjustTextView clock_ampm = null;
     private CustomAnalogClock analog_clock = null;
@@ -311,16 +311,18 @@ public class ClockLayout extends LinearLayout {
         setScaleFactor(factor, false);
     }
 
-    public void setScaleFactor(float factor, boolean animated) {
-        float sign = mirrorText ? -1.f : 1.f;
+    public void setScaleFactor(final float factor, final boolean animated) {
+        final float sign = mirrorText ? -1.f : 1.f;
         if (animated) {
             animate().setDuration(1000).scaleX(sign * factor).scaleY(factor);
+
         } else {
             setScaleX(sign * factor);
             setScaleY(factor);
             invalidate();
         }
     }
+
     private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config,
                                    boolean displayInWidget) {
         if (analog_clock != null) {
