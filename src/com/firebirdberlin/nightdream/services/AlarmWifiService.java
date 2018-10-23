@@ -80,7 +80,15 @@ public class AlarmWifiService extends JobService {
         Settings settings = new Settings(this);
         if (settings.useRadioAlarmClock && settings.radioStreamActivateWiFi) {
             WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-            wifiManager.setWifiEnabled(true);
+            try {
+                boolean success = wifiManager.setWifiEnabled(true);
+                Log.i(TAG, "Wifi is " + (success ? "" : "not ") + "activated.");
+            } catch (SecurityException e) {
+                // enabling WiFi is not allowed right now
+                // Some devices throw a SecurityException if Airplane mode is active. Others just
+                // return false.
+                e.printStackTrace();
+            }
         }
 
         return false;
