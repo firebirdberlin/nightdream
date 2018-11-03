@@ -51,6 +51,14 @@ OR
     <string name="backgroundServiceNotificationText">Background service is running.</string>
     <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
+    <string name="batteryTimeoutDescription">If on battery turn off after</string>
+    <string name="batteryTimeoutNever">never</string>
+    <string name="batteryTimeout1min">1 min</string>
+    <string name="batteryTimeout2min">2 min</string>
+    <string name="batteryTimeout5min">5 min</string>
+    <string name="batteryTimeout10min">10 min</string>
+    <string name="batteryTimeout15min">15 min</string>
+    <string name="batteryTimeout30min">30 min</string>
     <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
     <string name="brightness_night_mode">Brightness in night mode</string>

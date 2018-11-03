@@ -91,6 +91,13 @@
                 android:key="handle_power_disconnection_at_time_range_end"
                 android:title="@string/handle_power_disconnection_at_time_range_end" />
 
+            <ListPreference
+                android:defaultValue="-1"
+                android:entries="@array/batteryTimeout"
+                android:entryValues="@array/batteryTimeoutValues"
+                android:key="batteryTimeout"
+                android:title="@string/batteryTimeoutDescription" />
+
         </PreferenceCategory>
         <PreferenceCategory
             android:icon="@drawable/ic_expert"

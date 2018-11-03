@@ -86,6 +86,7 @@ public class Settings {
     public float scaleClockLandscape = 1.5f;
     public int alarmVolume = 3;
     public int background_mode = 1;
+    public int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
     public int nightModeActivationMode;
@@ -105,6 +106,7 @@ public class Settings {
     public int nightModeTimeRangeEndInMinutes = -1;
     public int nextAlarmTimeMinutes = 0;
     public long lastReviewRequestTime = 0L;
+    public long lastResumeTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
     public int sleepTimeInMinutesDefaultValue = 30;
     public String AlarmToneUri = "";
@@ -215,6 +217,7 @@ public class Settings {
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
+        lastResumeTime = settings.getLong("lastResumeTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         purchasedWebRadio = settings.getBoolean("purchasedWebRadio", false);
         radioStreamURL = settings.getString("radioStreamURL", "");
@@ -256,6 +259,8 @@ public class Settings {
         timeFormat24h = settings.getString("timeFormat_24h", "HH:mm");
         weatherCityID = settings.getString("weatherCityID", "");
         lastWeatherRequestTime = settings.getLong("lastWeatherRequestTime", -1L);
+
+        batteryTimeout = Integer.parseInt(settings.getString("batteryTimeout", "-1"));
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE  *= sensitivity;
@@ -463,6 +468,28 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
         prefEditor.commit();
+    }
+
+    public void updateLastResumeTime() {
+        long now = System.currentTimeMillis();
+        lastResumeTime = now;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("lastResumeTime", now);
+        prefEditor.apply();
+    }
+
+    public boolean isBatteryTimeoutReached() {
+        Calendar now = Calendar.getInstance();
+        boolean batteryTimeoutReached = false;
+        Log.d(TAG, String.format("batteryTimeout : %d", batteryTimeout));
+        if (batteryTimeout > 0) {
+            Calendar timeoutTime = Calendar.getInstance();
+            timeoutTime.setTimeInMillis(lastResumeTime);
+            timeoutTime.add(Calendar.MINUTE, batteryTimeout);
+            batteryTimeoutReached = now.after(timeoutTime);
+            Log.d(TAG, String.format("%d - %d = %d", timeoutTime.getTimeInMillis(), now.getTimeInMillis(), timeoutTime.getTimeInMillis() - now.getTimeInMillis()));
+        }
+        return batteryTimeoutReached;
     }
 
     public void setScaleClock(float factor, int orientation) {

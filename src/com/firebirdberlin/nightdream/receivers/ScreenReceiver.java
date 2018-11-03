@@ -57,15 +57,32 @@ public class ScreenReceiver extends BroadcastReceiver {
         }
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-            Log.i(TAG, "ACTION_SCREEN_OFF");
-            this.context = context;
-            isScreenUp = false;
-            getGravity(context);
-            handler.postDelayed(checkAndActivateApp, 1000);
+    public static boolean shallActivateStandby(Context context, Settings settings) {
+        if (Utility.isConfiguredAsDaydream(context)) return false;
+
+        BatteryStats battery = new BatteryStats(context);
+        if (battery.reference.isCharging && settings.handle_power && settings.standbyEnabledWhileConnected) {
+            return PowerConnectionReceiver.shallAutostart(context, settings);
         }
+
+        if ( !battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
+                settings.alwaysOnBatteryLevel <= battery.reference.level &&
+                !settings.isBatteryTimeoutReached() &&
+                (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)) {
+
+            Calendar now = Calendar.getInstance();
+            Calendar start = new SimpleTime(settings.alwaysOnTimeRangeStartInMinutes).getCalendar();
+            Calendar end = new SimpleTime(settings.alwaysOnTimeRangeEndInMinutes).getCalendar();
+            boolean shall_auto_start = true;
+            if (end.before(start)){
+                shall_auto_start = ( now.after(start) || now.before(end) );
+            } else if (! start.equals(end)) {
+                shall_auto_start = ( now.after(start) && now.before(end) );
+            }
+            return shall_auto_start;
+        }
+
+        return false;
     }
 
     private void getGravity(Context context) {
@@ -94,30 +111,18 @@ public class ScreenReceiver extends BroadcastReceiver {
         }, sensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
-    public static boolean shallActivateStandby(Context context, Settings settings) {
-        if (Utility.isConfiguredAsDaydream(context)) return false;
-
-        BatteryStats battery = new BatteryStats(context);
-        if (battery.reference.isCharging && settings.handle_power && settings.standbyEnabledWhileConnected) {
-            return PowerConnectionReceiver.shallAutostart(context, settings);
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+            Log.i(TAG, "ACTION_SCREEN_OFF");
+            this.context = context;
+            isScreenUp = false;
+            getGravity(context);
+            handler.postDelayed(checkAndActivateApp, 1000);
         }
-
-        if ( !battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
-                settings.alwaysOnBatteryLevel <= battery.reference.level &&
-                (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)) {
-
-            Calendar now = Calendar.getInstance();
-            Calendar start = new SimpleTime(settings.alwaysOnTimeRangeStartInMinutes).getCalendar();
-            Calendar end = new SimpleTime(settings.alwaysOnTimeRangeEndInMinutes).getCalendar();
-            boolean shall_auto_start = true;
-            if (end.before(start)){
-                shall_auto_start = ( now.after(start) || now.before(end) );
-            } else if (! start.equals(end)) {
-                shall_auto_start = ( now.after(start) && now.before(end) );
-            }
-            return shall_auto_start;
+        if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+            Settings settings = new Settings(context);
+            settings.updateLastResumeTime();
         }
-
-        return false;
     }
 }

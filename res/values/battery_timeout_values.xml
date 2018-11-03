@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="batteryTimeoutValues">
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+    </string-array>
+
+
+    <string-array name="batteryTimeout">
+        <item>@string/batteryTimeoutNever</item>
+        <item>@string/batteryTimeout1min</item>
+        <item>@string/batteryTimeout2min</item>
+        <item>@string/batteryTimeout5min</item>
+        <item>@string/batteryTimeout10min</item>
+        <item>@string/batteryTimeout15min</item>
+        <item>@string/batteryTimeout30min</item>
+    </string-array>
+</resources>
