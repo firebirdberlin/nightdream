@@ -254,6 +254,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         bottomPanelLayout.setActivePanel(activePanel);
+        mySettings.updateLastResumeTime();
     }
 
     private void showStopBackgroundServicesDialog() {
@@ -509,22 +510,30 @@ public class NightDreamActivity extends BillingHelperActivity
         screenWasOn = screenWasOn || Utility.isScreenOn(this);
 
         Log.d(TAG, "screenWasOn = " + String.valueOf(screenWasOn));
-        if (mode > 0
-                || ! mySettings.allow_screen_off
-                || ScreenReceiver.shallActivateStandby(context, mySettings)) {
-            Log.d(TAG, "shallKeepScreenOn() true");
-            return true;
-        }
 
         long now = Calendar.getInstance().getTimeInMillis();
         long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
         if ((0 < nextAlarmTime - now
                 && nextAlarmTime - now < 600000)
                 || AlarmService.isRunning
-                || RadioStreamService.isRunning ) {
+                || RadioStreamService.isRunning) {
             Log.d(TAG, "shallKeepScreenOn() true");
             return true;
         }
+
+        boolean isCharging = Utility.isCharging(this);
+        if ((mode > 0
+                || (mode == 0 && !mySettings.allow_screen_off)
+                || ScreenReceiver.shallActivateStandby(context, mySettings)) &&
+
+                (isCharging || !mySettings.isBatteryTimeoutReached())
+
+                ) {
+            Log.d(TAG, "shallKeepScreenOn() true");
+            return true;
+        }
+
+
         Log.d(TAG, "shallKeepScreenOn() false");
         return false;
     }
