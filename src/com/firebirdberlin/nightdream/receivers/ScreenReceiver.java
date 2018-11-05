@@ -67,7 +67,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 
         if ( !battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
                 settings.alwaysOnBatteryLevel <= battery.reference.level &&
-                !settings.isBatteryTimeoutReached() &&
+                settings.isAlwaysOnAllowed() &&
                 (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)) {
 
             Calendar now = Calendar.getInstance();
@@ -122,7 +122,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         }
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             Settings settings = new Settings(context);
-            settings.updateLastResumeTime();
+            settings.deleteNextAlwaysOnTime();
         }
     }
 }

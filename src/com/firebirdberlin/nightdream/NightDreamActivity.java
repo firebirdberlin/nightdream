@@ -114,6 +114,17 @@ public class NightDreamActivity extends BillingHelperActivity
             finish();
         }
     };
+
+    private Runnable alwaysOnTimeout = new Runnable() {
+        @Override
+        public void run() {
+            if ( Utility.isCharging(context) ) return;
+
+            mySettings.updateNextAlwaysOnTime();
+            setKeepScreenOn(shallKeepScreenOn(mode));
+        }
+    };
+
     private Runnable lockDevice = new Runnable() {
         @Override
         public void run() {
@@ -254,7 +265,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         bottomPanelLayout.setActivePanel(activePanel);
-        mySettings.updateLastResumeTime();
+        triggerAlwaysOnTimeout();
     }
 
     private void showStopBackgroundServicesDialog() {
@@ -526,7 +537,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 || (mode == 0 && !mySettings.allow_screen_off)
                 || ScreenReceiver.shallActivateStandby(context, mySettings)) &&
 
-                (isCharging || !mySettings.isBatteryTimeoutReached())
+                (isCharging || mySettings.isAlwaysOnAllowed())
 
                 ) {
             Log.d(TAG, "shallKeepScreenOn() true");
@@ -642,6 +653,13 @@ public class NightDreamActivity extends BillingHelperActivity
         pendingIntent.cancel();
     }
 
+    private void triggerAlwaysOnTimeout() {
+        if (mySettings.batteryTimeout > 0 && !Utility.isCharging(this)) {
+            handler.removeCallbacks(alwaysOnTimeout);
+            handler.postDelayed(alwaysOnTimeout, 60000 * mySettings.batteryTimeout);
+        }
+    }
+
     @Override
     public void onSleepTimeSelected(int minutes) {
         nightDreamUI.reconfigure();
@@ -699,11 +717,14 @@ public class NightDreamActivity extends BillingHelperActivity
                     } else {
                         finish();
                     }
+                } else {
+                    triggerAlwaysOnTimeout();
                 }
             }
             else
             if (Intent.ACTION_POWER_CONNECTED.equals(action)){
                 handler.removeCallbacks(finishApp);
+                handler.removeCallbacks(alwaysOnTimeout);
                 nightDreamUI.onPowerConnected();
                 BatteryStats stats = new BatteryStats(context);
                 isChargingWireless = stats.reference.isChargingWireless;
