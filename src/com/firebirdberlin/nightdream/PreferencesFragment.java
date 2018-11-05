@@ -58,15 +58,18 @@ public class PreferencesFragment extends PreferenceFragment {
     public static final String ITEM_WEATHER_DATA = "weather_data";
     public static final String ITEM_WEB_RADIO = "web_radio";
     public static final String ITEM_PRO = "pro";
+    public static final String ITEM_ACTIONS = "actions";
     public static final int REQUEST_CODE_PURCHASE_DONATION = 1001;
     public static final int REQUEST_CODE_PURCHASE_WEATHER = 1002;
     public static final int REQUEST_CODE_PURCHASE_WEB_RADIO = 1003;
     public static final int REQUEST_CODE_PURCHASE_PRO = 1004;
+    public static final int REQUEST_CODE_PURCHASE_ACTIONS = 1005;
     public static final String PREFS_KEY = "NightDream preferences";
     private static final int PRODUCT_ID_WEATHER_DATA = 0;
     private static final int PRODUCT_ID_WEB_RADIO = 1;
     private static final int PRODUCT_ID_DONATION = 2;
     private static final int PRODUCT_ID_PRO = 3;
+    private static final int PRODUCT_ID_ACTIONS = 4;
     private static int RESULT_LOAD_IMAGE = 1;
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
@@ -76,6 +79,7 @@ public class PreferencesFragment extends PreferenceFragment {
     public boolean purchased_weather_data = false;
     public boolean purchased_web_radio = false;
     public boolean purchased_pro = false;
+    public boolean purchased_actions = false;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
     IInAppBillingService mService;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
@@ -297,17 +301,22 @@ public class PreferencesFragment extends PreferenceFragment {
                     purchased_donation = true;
                     weatherDataIsPurchased = true;
                     radioIsPurchased = true;
+                    purchased_actions = true;
                 }
                 if (ITEM_PRO.equals(sku)) {
                     purchased_pro = true;
                     weatherDataIsPurchased = true;
                     radioIsPurchased = true;
+                    purchased_actions = true;
                 }
                 if (ITEM_WEATHER_DATA.equals(sku)) {
                     weatherDataIsPurchased = true;
                 }
                 if (ITEM_WEB_RADIO.equals(sku)) {
                     radioIsPurchased = true;
+                }
+                if (ITEM_ACTIONS.equals(sku)) {
+                    purchased_actions = true;
                 }
 
                 // do something with this purchase information
@@ -350,6 +359,7 @@ public class PreferencesFragment extends PreferenceFragment {
         enablePreference("showWeather", purchased_weather_data);
         enablePreference("useRadioAlarmClock", purchased_web_radio);
         enablePreference("sleepTimeInMinutesDefaultValue", purchased_web_radio);
+        enablePreference("expert_screen", purchased_actions);
 
         if (purchased_donation) {
             removePreference("donation_play");
@@ -363,6 +373,10 @@ public class PreferencesFragment extends PreferenceFragment {
         if (purchased_web_radio) {
             removePreference("purchaseWebRadio");
             removePreference("purchaseWebRadioUI");
+        }
+
+        if (purchased_actions) {
+            removePreference("purchaseActions");
         }
     }
 
@@ -399,6 +413,11 @@ public class PreferencesFragment extends PreferenceFragment {
             values.add(PRODUCT_ID_WEB_RADIO);
         }
 
+        if (!purchased_actions) {
+            entries.add(getProductWithPrice(prices, R.string.product_name_actions, ITEM_ACTIONS));
+            values.add(PRODUCT_ID_ACTIONS);
+        }
+
         if (!purchased_pro && !purchased_weather_data && !purchased_web_radio) {
             entries.add(getProductWithPrice(prices, R.string.product_name_pro, ITEM_PRO));
             values.add(PRODUCT_ID_PRO);
@@ -432,6 +451,9 @@ public class PreferencesFragment extends PreferenceFragment {
                                     case PRODUCT_ID_PRO:
                                         purchaseIntent(ITEM_PRO, REQUEST_CODE_PURCHASE_PRO);
                                         break;
+                                    case PRODUCT_ID_ACTIONS:
+                                        purchaseIntent(ITEM_ACTIONS, REQUEST_CODE_PURCHASE_ACTIONS);
+                                        break;
                                 }
                             }
                         })
@@ -454,6 +476,7 @@ public class PreferencesFragment extends PreferenceFragment {
         ArrayList<String> skuList = new ArrayList<String>();
         skuList.add(ITEM_WEATHER_DATA);
         skuList.add(ITEM_WEB_RADIO);
+        skuList.add(ITEM_ACTIONS);
         skuList.add(ITEM_DONATION);
         skuList.add(ITEM_PRO);
         Bundle querySkus = new Bundle();
@@ -544,12 +567,14 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference purchaseDesignPackagePreference = findPreference("purchaseDesignPackage");
         Preference purchaseWebRadioPreference = findPreference("purchaseWebRadio");
         Preference purchaseWebRadioUIPreference = findPreference("purchaseWebRadioUI");
+        Preference purchaseActionsPreference = findPreference("purchaseActions");
 
         donationPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseWeatherDataPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseDesignPackagePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseWebRadioPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseWebRadioUIPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        purchaseActionsPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
 
         Preference prefHandlePower = findPreference("handle_power");
         Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
@@ -686,7 +711,8 @@ public class PreferencesFragment extends PreferenceFragment {
                 (requestCode == REQUEST_CODE_PURCHASE_DONATION ||
                         requestCode == REQUEST_CODE_PURCHASE_PRO ||
                     requestCode == REQUEST_CODE_PURCHASE_WEATHER ||
-                    requestCode == REQUEST_CODE_PURCHASE_WEB_RADIO )) {
+                        requestCode == REQUEST_CODE_PURCHASE_WEB_RADIO ||
+                        requestCode == REQUEST_CODE_PURCHASE_ACTIONS)) {
             Log.i(TAG, "Purchase request for " + String.valueOf(requestCode));
             int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
@@ -698,16 +724,20 @@ public class PreferencesFragment extends PreferenceFragment {
                 String sku = jo.getString("productId");
                 if (ITEM_DONATION.equals(sku)) {
                     purchased_donation = true;
+                    purchased_actions = true;
                     storeWeatherDataPurchase(true, true);
                     showThankYouDialog();
                 } else if (ITEM_PRO.equals(sku)) {
                     purchased_pro = true;
+                    purchased_actions = true;
                     storeWeatherDataPurchase(true, true);
                     showThankYouDialog();
                 } else if (ITEM_WEATHER_DATA.equals(sku)) {
                     storeWeatherDataPurchase(true, purchased_web_radio);
                 } else if (ITEM_WEB_RADIO.equals(sku)) {
                     storeWeatherDataPurchase(purchased_weather_data, true);
+                } else if (ITEM_ACTIONS.equals(sku)) {
+                    purchased_actions = true;
                 }
             }
             catch (JSONException e) {
@@ -1070,6 +1100,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private void activatePurchasesIfDebuggable() {
         if (Utility.isDebuggable(mContext)) {
             purchased_donation = true;
+            purchased_actions = true;
             storeWeatherDataPurchase(true, true);
             togglePurchasePreferences();
         }

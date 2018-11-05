@@ -32,10 +32,12 @@ public abstract class BillingHelperActivity extends Activity {
     public static final int REQUEST_CODE_PURCHASE_WEATHER = 1002;
     public static final int REQUEST_CODE_PURCHASE_WEB_RADIO = 1003;
     public static final int REQUEST_CODE_PURCHASE_PRO = 1004;
+    public static final int REQUEST_CODE_PURCHASE_ACTIONS = 1005;
     private static final int PRODUCT_ID_WEATHER_DATA = 0;
     private static final int PRODUCT_ID_WEB_RADIO = 1;
     private static final int PRODUCT_ID_DONATION = 2;
     private static final int PRODUCT_ID_PRO = 3;
+    private static final int PRODUCT_ID_ACTIONS = 4;
 
     IInAppBillingService mService;
     Map<String, Boolean> purchases;
@@ -95,6 +97,7 @@ public abstract class BillingHelperActivity extends Activity {
 
         boolean purchased_weather_data = isPurchased(BillingHelper.ITEM_WEATHER_DATA);
         boolean purchased_web_radio = isPurchased(BillingHelper.ITEM_WEB_RADIO);
+        boolean purchased_actions = isPurchased(BillingHelper.ITEM_ACTIONS);
         boolean purchased_pro = isPurchased(BillingHelper.ITEM_PRO);
         boolean purchased_donation = isPurchased(BillingHelper.ITEM_DONATION);
 
@@ -108,6 +111,12 @@ public abstract class BillingHelperActivity extends Activity {
             entries.add(getProductWithPrice(prices, R.string.product_name_webradio,
                     BillingHelper.ITEM_WEB_RADIO));
             values.add(PRODUCT_ID_WEB_RADIO);
+        }
+
+        if (!purchased_actions) {
+            entries.add(getProductWithPrice(prices, R.string.product_name_actions,
+                    BillingHelper.ITEM_ACTIONS));
+            values.add(PRODUCT_ID_ACTIONS);
         }
 
         if (!purchased_pro && !purchased_weather_data && !purchased_web_radio) {
@@ -138,6 +147,9 @@ public abstract class BillingHelperActivity extends Activity {
                                         break;
                                     case PRODUCT_ID_WEB_RADIO:
                                         purchaseIntent(BillingHelper.ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
+                                        break;
+                                    case PRODUCT_ID_ACTIONS:
+                                        purchaseIntent(BillingHelper.ITEM_ACTIONS, REQUEST_CODE_PURCHASE_ACTIONS);
                                         break;
                                     case PRODUCT_ID_DONATION:
                                         purchaseIntent(BillingHelper.ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
@@ -182,6 +194,7 @@ public abstract class BillingHelperActivity extends Activity {
         ArrayList<String> skuList = new ArrayList<String>();
         skuList.add(BillingHelper.ITEM_WEATHER_DATA);
         skuList.add(BillingHelper.ITEM_WEB_RADIO);
+        skuList.add(BillingHelper.ITEM_ACTIONS);
         skuList.add(BillingHelper.ITEM_DONATION);
         skuList.add(BillingHelper.ITEM_PRO);
         Bundle querySkus = new Bundle();
@@ -222,6 +235,7 @@ public abstract class BillingHelperActivity extends Activity {
                 (requestCode == REQUEST_CODE_PURCHASE_DONATION ||
                         requestCode == REQUEST_CODE_PURCHASE_PRO ||
                         requestCode == REQUEST_CODE_PURCHASE_WEATHER ||
+                        requestCode == REQUEST_CODE_PURCHASE_ACTIONS ||
                         requestCode == REQUEST_CODE_PURCHASE_WEB_RADIO)) {
             Log.i(TAG, "Purchase request for " + String.valueOf(requestCode));
             int responseCode = data.getIntExtra("RESPONSE_CODE", 0);

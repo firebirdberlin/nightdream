@@ -99,9 +99,16 @@
                 android:title="@string/batteryTimeoutDescription" />
 
         </PreferenceCategory>
+
+        <Preference
+            android:icon="@drawable/ic_googleplay"
+            android:key="purchaseActions"
+            android:title="@string/purchaseActions" />
+
         <PreferenceCategory
             android:icon="@drawable/ic_expert"
             android:key="expert_screen"
+            android:enabled="false"
             android:title="@string/always_on">
 
             <SwitchPreference
