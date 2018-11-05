@@ -333,6 +333,7 @@ public class PreferencesFragment extends PreferenceFragment {
             }
 
             storeWeatherDataPurchase(weatherDataIsPurchased, radioIsPurchased);
+            resetAlwaysOnModeIfNotPurchased();
             togglePurchasePreferences();
 
             // if continuationToken != null, call getPurchases again
@@ -341,6 +342,15 @@ public class PreferencesFragment extends PreferenceFragment {
 
     }
 
+    private void resetAlwaysOnModeIfNotPurchased() {
+        if (purchased_actions) {
+            return;
+        }
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("standbyEnabledWhileDisconnected", false);
+        editor.apply();
+    }
 
     private void storeWeatherDataPurchase(boolean weatherIsPurchased, boolean radioIsPurchased) {
         purchased_weather_data = weatherIsPurchased;
