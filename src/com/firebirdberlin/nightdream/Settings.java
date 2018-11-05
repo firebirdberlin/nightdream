@@ -106,7 +106,7 @@ public class Settings {
     public int nightModeTimeRangeEndInMinutes = -1;
     public int nextAlarmTimeMinutes = 0;
     public long lastReviewRequestTime = 0L;
-    public long lastResumeTime = 0L;
+    public long nextAlwaysOnTime = 0L;
     public long snoozeTimeInMillis = 300000; // 5 min
     public int sleepTimeInMinutesDefaultValue = 30;
     public String AlarmToneUri = "";
@@ -129,7 +129,7 @@ public class Settings {
     public boolean purchasedWebRadio = false;
     Context mContext;
     SharedPreferences settings;
-    private int clockLayout;
+    public int clockLayout;
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
@@ -217,7 +217,7 @@ public class Settings {
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
-        lastResumeTime = settings.getLong("lastResumeTime", 0L);
+        nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         purchasedWebRadio = settings.getBoolean("purchasedWebRadio", false);
         radioStreamURL = settings.getString("radioStreamURL", "");
@@ -470,26 +470,35 @@ public class Settings {
         prefEditor.commit();
     }
 
-    public void updateLastResumeTime() {
+    public void updateNextAlwaysOnTime() {
         long now = System.currentTimeMillis();
-        lastResumeTime = now;
+        nextAlwaysOnTime = now;
+        nextAlwaysOnTime += Utility.getScreenOffTimeout(mContext);
+        nextAlwaysOnTime += 60000;
+
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("lastResumeTime", now);
+        prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
         prefEditor.apply();
     }
 
-    public boolean isBatteryTimeoutReached() {
+    public void deleteNextAlwaysOnTime() {
+        nextAlwaysOnTime = 0L;
+
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
+        prefEditor.apply();
+    }
+
+    public boolean isAlwaysOnAllowed() {
         Calendar now = Calendar.getInstance();
-        boolean batteryTimeoutReached = false;
+        boolean isAlllowed = true;
         Log.d(TAG, String.format("batteryTimeout : %d", batteryTimeout));
-        if (batteryTimeout > 0) {
-            Calendar timeoutTime = Calendar.getInstance();
-            timeoutTime.setTimeInMillis(lastResumeTime);
-            timeoutTime.add(Calendar.MINUTE, batteryTimeout);
-            batteryTimeoutReached = now.after(timeoutTime);
-            Log.d(TAG, String.format("%d - %d = %d", timeoutTime.getTimeInMillis(), now.getTimeInMillis(), timeoutTime.getTimeInMillis() - now.getTimeInMillis()));
+        if (batteryTimeout > 0 && nextAlwaysOnTime > 0L) {
+            Calendar alwaysOnTime = Calendar.getInstance();
+            alwaysOnTime.setTimeInMillis(nextAlwaysOnTime);
+            isAlllowed = now.after(alwaysOnTime);
         }
-        return batteryTimeoutReached;
+        return isAlllowed;
     }
 
     public void setScaleClock(float factor, int orientation) {
