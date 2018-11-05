@@ -141,6 +141,8 @@ public class PreferencesFragment extends PreferenceFragment {
                             resetScaleFactor(sharedPreferences);
                             ClockLayoutPreviewPreference preview = (ClockLayoutPreviewPreference) findPreference("clockLayoutPreview");
                             preview.invalidate();
+                            settings.clockLayout = Integer.parseInt(sharedPreferences.getString("clockLayout", "0"));
+                            setupClockLayoutPreference();
                             break;
                         case "nightModeActivationMode":
                             setupNightModePreferences(sharedPreferences);
@@ -158,6 +160,10 @@ public class PreferencesFragment extends PreferenceFragment {
                             break;
                         case "Night.muteRinger":
                             setupNotificationAccessPermission(sharedPreferences);
+                            break;
+                        case "batteryTimeout":
+                            settings.batteryTimeout = Integer.parseInt(sharedPreferences.getString("batteryTimeout", "-1"));
+                            setupBatteryTimeoutPreference();
                             break;
                     }
 
@@ -624,6 +630,8 @@ public class PreferencesFragment extends PreferenceFragment {
         setupDaydreamPreferences();
         setupTranslationRequest();
         setupAlarmClockPreferences();
+        setupBatteryTimeoutPreference();
+        setupClockLayoutPreference();
     }
 
     private void setupLightSensorPreferences() {
@@ -818,6 +826,34 @@ public class PreferencesFragment extends PreferenceFragment {
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
         startActivity(Intent.createChooser(sharingIntent, description));
+    }
+
+    private void setupClockLayoutPreference() {
+        if (!isAdded() ) return;
+        Preference pref = findPreference("clockLayout");
+        String[] valueArray = getResources().getStringArray(R.array.clockLayoutValues);
+        String[] stringArray = getResources().getStringArray(R.array.clockLayout);
+        for (int i=0; i< valueArray.length; i++) {
+            String v = valueArray[i];
+            if (Integer.parseInt(v) == settings.clockLayout) {
+                pref.setSummary(stringArray[i]);
+                return;
+            }
+        }
+    }
+
+    private void setupBatteryTimeoutPreference() {
+        if (!isAdded() ) return;
+        Preference pref = findPreference("batteryTimeout");
+        String[] valueArray = getResources().getStringArray(R.array.batteryTimeoutValues);
+        String[] stringArray = getResources().getStringArray(R.array.batteryTimeout);
+        for (int i=0; i< valueArray.length; i++) {
+            String v = valueArray[i];
+            if (Integer.parseInt(v) == settings.batteryTimeout) {
+                pref.setSummary(stringArray[i]);
+                return;
+            }
+        }
     }
 
     private void setupBrightnessControls(SharedPreferences prefs) {
@@ -1038,7 +1074,6 @@ public class PreferencesFragment extends PreferenceFragment {
             togglePurchasePreferences();
         }
     }
-
 
     private void setupDaydreamPreferences() {
         if (!isAdded() ) return;
