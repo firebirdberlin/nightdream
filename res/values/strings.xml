@@ -164,10 +164,12 @@ OR
     <string name="position">Position</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
+    <string name="product_name_actions">Always On package</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Full version</string>
     <string name="product_name_weather">Weather and design package</string>
     <string name="product_name_webradio">Web radio package</string>
+    <string name="purchaseActions">Buy a license</string>
     <string name="purchaseWeatherData">Buy a license</string>
     <string name="purchaseWebRadio">Buy a license</string>
     <string name="radio">Radio</string>

@@ -16,6 +16,7 @@ public class BillingHelper {
    public static final String ITEM_WEATHER_DATA = "weather_data";
    public static final String ITEM_WEB_RADIO = "web_radio";
    public static final String ITEM_PRO = "pro";
+   public static final String ITEM_ACTIONS = "actions";
 
    private final Map<String, Boolean> purchases = createMap();
    IInAppBillingService mService;
@@ -31,6 +32,7 @@ public class BillingHelper {
       map.put(ITEM_DONATION, false);
       map.put(ITEM_WEATHER_DATA, false);
       map.put(ITEM_WEB_RADIO, false);
+      map.put(ITEM_ACTIONS, false);
       map.put(ITEM_PRO, false);
       return map;
    }
@@ -94,11 +96,13 @@ public class BillingHelper {
          purchases.put(ITEM_PRO, true);
          purchases.put(ITEM_WEATHER_DATA, true);
          purchases.put(ITEM_WEB_RADIO, true);
+         purchases.put(ITEM_ACTIONS, true);
       }
 
       if ( purchases.get(ITEM_PRO) == true ) {
          purchases.put(ITEM_WEATHER_DATA, true);
          purchases.put(ITEM_WEB_RADIO, true);
+         purchases.put(ITEM_ACTIONS, true);
       }
       return purchases;
    }
