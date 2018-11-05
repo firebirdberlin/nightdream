@@ -9,7 +9,7 @@
         android:title="Translations wanted !">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://fhain.zzzz.io/pastt" />
+            android:data="https://nightclock.duckdns.org/pastt" />
     </Preference>
 
     <PreferenceScreen
@@ -573,7 +573,7 @@
             <Preference
                 android:title="@string/titlePrivacyPolicy">
                 <intent android:action="android.intent.action.VIEW"
-                    android:data="http://fhain.zzzz.io/apps/NightDream/privacy.html"/>
+                    android:data="http://nightclock.duckdns.org/apps/NightDream/privacy.html" />
             </Preference>
 
             <PreferenceScreen android:title="@string/credits">
@@ -710,7 +710,7 @@ vi - Phong Nguyen"/>
                     android:title="@string/contribute_translation">
                     <intent
                         android:action="android.intent.action.VIEW"
-                        android:data="https://fhain.zzzz.io/pastt" />
+                        android:data="https://nightclock.duckdns.org/pastt" />
                 </Preference>
             </PreferenceCategory>
 
