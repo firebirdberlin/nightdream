@@ -721,10 +721,6 @@ vi - Phong Nguyen"/>
                     android:icon="@drawable/ic_googleplay"
                     android:key="donation_play"
                     android:title="@string/donate" />
-
-                <de.firebirdberlin.preference.BitcoinDonationPreference
-                    android:icon="@drawable/ic_bitcoin"
-                    android:title="@string/donate_bitcoin" />
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/other_apps">

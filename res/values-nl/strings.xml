@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Over</string>
+    <string name="action_skip">Overslaan</string>
     <string name="action_snooze">Sluimer</string>
     <string name="action_stop">Stop</string>
     <string name="add_new_alarm">Nieuw alarm toevoegen</string>
@@ -24,6 +25,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Aangepast lettertype toevoegen</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Volume omhoog</string>
+    <string name="alarmUpcoming">Aanstaand alarm</string>
+    <string name="alarmStartDate">Volgend alarm</string>
+    <string name="alarmStartsFrom">Van</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Scherm \'s nachts uitzetten.</string>
     <string name="allow_screen_off">Scherm uitzetten</string>
@@ -40,8 +44,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_gradient">Verloop</string>
     <string name="background_image">Afbeelding</string>
     <string name="background_image_select">Selecteer een afbeelding</string>
+    <string name="backgroundServiceNotificationText">Achtergrond service actief</string>
+    <string name="backgroundServiceNotificationTextLocation">Locatie update is bezig</string>
+    <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
     <string name="behaviour">Gedrag</string>
     <string name="brightness">Helderheid</string>
+    <string name="brightness_night_mode">Helderheid nachtmodus</string>
     <string name="brightness_offset">Helderheid standaard</string>
     <string name="buttonAccessibilitySettings">Meldingen tonen</string>
     <string name="buy">Kopen</string>
@@ -119,6 +127,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Begintijd</string>
     <string name="night_mode_timerange_title">Nachttijd</string>
     <string name="noise_sensitivity">Gevoeligheid van microfoon</string>
+    <string name="notification_channel_name_alarms">Alarmen</string>
+    <string name="notification_channel_name_devmsg">Berichten</string>
+    <string name="notification_channel_name_radio">Radio</string>
+    <string name="notification_channel_name_services">Diensten</string>
+    <string name="notification_channel_desc_alarms">Notificatie weergave tijdens alarm</string>
+    <string name="notification_channel_desc_devmsg">Berichten over deze app</string>
+    <string name="notification_channel_desc_radio">Notificatie weergave tijdens afspelen van web radio</string>
+    <string name="notification_channel_desc_services">Notificatie weergave voor lopende diensten</string>
     <string name="notification_alarm">Druk om alarm te stoppen.</string>
     <string name="numbers">Getallen</string>
     <string name="numberStyleArabic">Arabisch</string>
@@ -141,6 +157,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="purchaseWeatherData">Koop een licentie</string>
     <string name="purchaseWebRadio">Koop een licentie</string>
     <string name="radio">Radio</string>
+    <string name="radio_stream_activate_wifi">Wi-Fi</string>
+    <string name="radio_stream_activate_wifi_desc">Wanneer aan: Wi-Fi wordt enkele minuten voor het starten van de radio stream ingeschakeld</string>
     <string name="radio_stream_enabled">Ingeschakeld</string>
     <string name="radio_stream">Radiostreams</string>
     <string name="radio_stream_failure">Probleem met de radiostream</string>

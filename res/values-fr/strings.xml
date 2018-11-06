@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">À propos</string>
+    <string name="action_skip">Passer</string>
     <string name="action_snooze">Reporter l\'alarme</string>
     <string name="action_stop">Stop</string>
     <string name="add_new_alarm">Ajouter une nouvelle alarme</string>
@@ -24,6 +25,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Ajouter une police personnalisée</string>
     <string name="alarm">Alarme</string>
     <string name="alarmFadeIn">Volume progressif</string>
+    <string name="alarmUpcoming">Alarme à venir</string>
+    <string name="alarmStartDate">Prochaine alarme</string>
+    <string name="alarmStartsFrom">Commencement de l\'alarme</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Éteindre l\'affichage durant la nuit</string>
     <string name="allow_screen_off">Écran éteint</string>
@@ -40,8 +44,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_gradient">Dégradé</string>
     <string name="background_image">Image</string>
     <string name="background_image_select">Choisir une image</string>
+    <string name="backgroundServiceNotificationText">Service d\'arrière plan en cours</string>
+    <string name="backgroundServiceNotificationTextLocation">Le service de localisation est en cours</string>
+    <string name="backgroundServiceNotificationTextNightMode">Mode nuit activé</string>
     <string name="behaviour">Comportement</string>
     <string name="brightness">Brillance</string>
+    <string name="brightness_night_mode">Brillance de nuit</string>
     <string name="brightness_offset">Compensation de la luminosité</string>
     <string name="buttonAccessibilitySettings">Démarrer l\'auditeur de notification</string>
     <string name="buy">Acheter</string>
@@ -50,7 +58,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_alarm_sound">Tonalité d\'alarme</string>
     <string name="choose_primary_color">Couleur principale</string>
     <string name="choose_secondary_color">Couleur du texte</string>
-    <string name="clear">Nettoyer</string>
+    <string name="clear">Effacer</string>
     <string name="clock_hands">Trotteuse</string>
     <string name="clock_layout_analog">Analogique</string>
     <string name="clock_layout_digital">Numérique</string>
@@ -83,6 +91,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishTitle">Double cliquer pour fermer</string>
     <string name="expertPreferences">Options avancées</string>
     <string name="forecast">Prévisions météo à 5 jours</string>
+    <string name="hand_shape_arc">Arc</string>
+    <string name="hand_shape_bar">Barre</string>
+    <string name="hand_shape_triangle">Triangle</string>
     <string name="handle_power_ac">Chargeur sur secteur</string>
     <string name="handle_power">Démarrage automatique</string>
     <string name="handle_power_car">Station d\'accueil - Auto</string>
