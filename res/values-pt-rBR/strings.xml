@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Sobre</string>
+    <string name="action_skip">Pular</string>
     <string name="action_snooze">Soneca</string>
     <string name="action_stop">Parar</string>
     <string name="add_new_alarm">Adicionar novo alarme</string>
@@ -24,6 +25,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Adicione um tipo de letra personalizado</string>
     <string name="alarm">Alarme</string>
     <string name="alarmFadeIn">Aumentando o volume</string>
+    <string name="alarmUpcoming">Próximo alarme</string>
+    <string name="alarmStartDate">Próximo alarme ativado</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Desligue a tela durante a noite.</string>
     <string name="allow_screen_off">Desligue a tela</string>
@@ -57,8 +60,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_digit_analog">Relógio analógico com dígitos</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_modern_analog">Relógio analógico moderno</string>
+    <string name="clock_layout_mirror_text">Texto espelhado</string>
     <string name="colors">Cores</string>
     <string name="confirm_reset_question">Você realmente quer redefinir todas as configurações?</string>
+    <string name="confirm_reset_question_layout">Você realmente quer redefinir esse layout para o padrão?</string>
     <string name="confirm_reset">Redefinir</string>
     <string name="contribute">Contribua</string>
     <string name="contribute_source_code">Código fonte</string>

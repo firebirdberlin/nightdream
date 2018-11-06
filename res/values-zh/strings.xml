@@ -16,7 +16,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 
 <resources>
-    <string name="about">關於</string>
+    <string name="about">關关于</string>
     <string name="action_snooze">貪睡</string>
     <string name="action_stop">停止</string>
     <string name="add_new_alarm">新增鬧鐘</string>
@@ -29,7 +29,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">關閉螢幕</string>
     <string name="ambient_noise">環境雜訊偵測</string>
     <string name="ambient_noise_summary">偵測雜訊以防止啟用夜間模式</string>
-    <string name="appearance">樣式</string>
+    <string name="appearance">样式</string>
     <string name="app_name">夜鐘</string>
     <string name="auto_brightness">自動調節螢幕亮度</string>
     <string name="autostart_message_disabled">請停用螢幕保護程式以啟用啟動選項。</string>

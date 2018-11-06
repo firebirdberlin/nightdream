@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">О программе</string>
+    <string name="action_skip">пропустить</string>
     <string name="action_snooze">Дремать</string>
     <string name="action_stop">Остановить</string>
     <string name="add_new_alarm">Добавить новый будильник </string>
@@ -24,6 +25,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Добавить свой шрифт</string>
     <string name="alarm">Будильник </string>
     <string name="alarmFadeIn">Нарастание громкости</string>
+    <string name="alarmStartDate">включить следующий будильник</string>
     <string name="alarmVolume">Громкость</string>
     <string name="allow_screen_off_summary">Выключать экран в ночное время</string>
     <string name="allow_screen_off">Выключить экран</string>
@@ -40,8 +42,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_gradient">Градиент</string>
     <string name="background_image">Изображение</string>
     <string name="background_image_select">Выбор изображения</string>
+    <string name="backgroundServiceNotificationText">запущен фоновый сервис</string>
+    <string name="backgroundServiceNotificationTextLocation">обновление местоположения в процессе</string>
+    <string name="backgroundServiceNotificationTextNightMode">ночного режима сервис запущен</string>
     <string name="behaviour">Поведение</string>
     <string name="brightness">Яркость</string>
+    <string name="brightness_night_mode">яркость в ночном режиме</string>
     <string name="brightness_offset">Предел яркости</string>
     <string name="buttonAccessibilitySettings">Показывать оповещения</string>
     <string name="buy">Купить</string>
@@ -119,6 +125,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Время начала</string>
     <string name="night_mode_timerange_title">Ночные часы</string>
     <string name="noise_sensitivity">Чувствительность микрофона</string>
+    <string name="notification_channel_name_alarms">будильники</string>
+    <string name="notification_channel_name_devmsg">сообщения</string>
+    <string name="notification_channel_name_radio">радио</string>
+    <string name="notification_channel_name_services">службы</string>
+    <string name="notification_channel_desc_alarms">уведомление показывать во время активного будильника</string>
     <string name="notification_alarm">Нажмите для остановки будильника</string>
     <string name="numbers">Цифры</string>
     <string name="numberStyleArabic">Арабские цифры</string>
