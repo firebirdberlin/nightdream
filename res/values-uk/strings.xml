@@ -180,9 +180,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Відображати температуру</string>
 <string name="show_weather">Відображати погоду</string>
 <string name="show_wind_speed">Відображати швидкість вітру</string>
-<string name="sleep_time_default_value">Стандартне значення сну</string>
-<string name="sleep_time_default_value_msg">Будь-ласка, введіть стандартне значення сну в хвилинах.</string>
-<string name="sleep_time_dialog_title">Таймер сну</string>
+    <string name="sleep_time_dialog_title">Таймер сну</string>
 <string name="snoozeTime">Час до повторного сигналу</string>
 <string name="speedUnit">Одиниця швидкості вітру</string>
 <string name="standbyEnabledWhileConnectedSummary">Вмикати, коли вимикається екран.</string>

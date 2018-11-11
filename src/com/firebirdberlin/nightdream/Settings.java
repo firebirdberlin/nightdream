@@ -470,6 +470,13 @@ public class Settings {
         prefEditor.commit();
     }
 
+    public void setSleepTimeInMinutesDefaultValue(int sleepTimeInMinutes) {
+        sleepTimeInMinutesDefaultValue = sleepTimeInMinutes;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString("sleepTimeInMinutesDefaultValue", String.valueOf(sleepTimeInMinutes));
+        prefEditor.apply();
+    }
+
     public void updateNextAlwaysOnTime() {
         long now = System.currentTimeMillis();
         nextAlwaysOnTime = now;

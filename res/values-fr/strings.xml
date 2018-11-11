@@ -183,8 +183,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Température</string>
     <string name="show_weather">Afficher la météo locale</string>
     <string name="show_wind_speed">Vitesse du vent</string>
-    <string name="sleep_time_default_value">Temps de sommeil par défaut</string>
-    <string name="sleep_time_default_value_msg">Insérez le temps de sommeil par défaut en minute</string>
     <string name="sleep_time_dialog_title">Mode veille</string>
     <string name="snoozeTime">Durée du report</string>
     <string name="speedUnit">Unité - vitesse du vent</string>

@@ -66,8 +66,9 @@ public class SleepTimerDialogFragment extends DialogFragment {
 
 
         View view = inflater.inflate(R.layout.sleep_timer_dialog, null);
-        minuteTextEdit = (EditText) view.findViewById(R.id.minuteText);
+        minuteTextEdit = view.findViewById(R.id.minuteText);
 
+        final boolean sleepTimeisAlreadySet = RadioStreamSleepTimeReceiver.isSleepTimeSet();
         builder.setTitle(R.string.sleep_time_dialog_title)
                 .setIcon(R.drawable.ic_nightmode)
                 .setView(view)
@@ -80,6 +81,10 @@ public class SleepTimerDialogFragment extends DialogFragment {
                         String minuteText = minuteTextEdit.getText().toString();
                         if (!minuteText.isEmpty()) {
                             minutes += Integer.parseInt(minuteText);
+                            if (! sleepTimeisAlreadySet) {
+                                Settings settings = new Settings((Context) mListener);
+                                settings.setSleepTimeInMinutesDefaultValue(minutes);
+                            }
                         }
                         Calendar now = Calendar.getInstance();
                         now.add(Calendar.MINUTE, minutes);
@@ -95,7 +100,7 @@ public class SleepTimerDialogFragment extends DialogFragment {
                     }
                 });
 
-        if (RadioStreamSleepTimeReceiver.isSleepTimeSet()) {
+        if (sleepTimeisAlreadySet) {
             long sleepTimeMillis = RadioStreamSleepTimeReceiver.getSleepTime();
             long now = Calendar.getInstance().getTimeInMillis();
 

@@ -158,8 +158,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Εμφάνιση θερμοκρασίας</string>
     <string name="show_weather">Εμφάνιση καιρού στην τοποθεσία σας</string>
     <string name="show_wind_speed">Εμφάνιση ταχύτητας ανέμων</string>
-    <string name="sleep_time_default_value">Προεπιλεγμένη ώρα ύπνου</string>
-    <string name="sleep_time_default_value_msg">Εισάγεται την προεπιλεγμένη ώρα σε λεπτά</string>
     <string name="sleep_time_dialog_title">Ώρα ξυπνητηριού</string>
     <string name="snoozeTime">Ώρα αναβολής</string>
     <string name="speedUnit">Μονάδα μέτρησης ανέμου</string>

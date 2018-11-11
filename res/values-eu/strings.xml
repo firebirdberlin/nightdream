@@ -157,9 +157,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="show_temperature">Temperatura erakutsi</string>
 <string name="show_weather">Lokalizazioaren eguraldia erakutsi</string>
 <string name="show_wind_speed">Haizearen abiadura erakutsi</string>
-<string name="sleep_time_default_value">Lehenetsitako lo denbora</string>
-<string name="sleep_time_default_value_msg">Mesedez, lehenetsitako lo denbora minututan sartu</string>
-<string name="sleep_time_dialog_title">Loaldiko erlojua</string>
+    <string name="sleep_time_dialog_title">Loaldiko erlojua</string>
 <string name="snoozeTime">Snooze denbora</string>
 <string name="speedUnit">Haizearen abiadurako unitatea</string>
 <string name="standbyEnabledWhileConnectedSummary">Pantaila itzaltzen denean aktibatu</string>
