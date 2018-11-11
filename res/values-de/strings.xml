@@ -212,8 +212,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Temperatur anzeigen</string>
     <string name="show_weather">Wetter anzeigen</string>
     <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
-    <string name="sleep_time_default_value_msg">Welcher Wert soll Standardmäßig für den Sleep Timer gesetzt werden (in Minuten)?</string>
-    <string name="sleep_time_default_value">Standard-Einschlafzeit</string>
     <string name="sleep_time_dialog_title">Sleep Timer</string>
     <string name="snoozeTime">Schlummerzeit</string>
     <string name="speedUnit">Einheit der Windgeschwindigkeit</string>

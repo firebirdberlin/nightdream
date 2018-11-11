@@ -157,8 +157,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Zobraziť teplotu</string>
     <string name="show_weather">Zobraziť miestne počasie</string>
     <string name="show_wind_speed">Zobraziť rýchlosť vetra</string>
-    <string name="sleep_time_default_value">Predvolený čas spánku</string>
-    <string name="sleep_time_default_value_msg">Zadaj predvolený čas spánku v minútach.</string>
     <string name="sleep_time_dialog_title">Časovač vypnutia</string>
     <string name="snoozeTime">Odložiť čas</string>
     <string name="speedUnit">Jednotky pre rýchlosť vetra</string>

@@ -31,6 +31,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Scherm \'s nachts uitzetten.</string>
     <string name="allow_screen_off">Scherm uitzetten</string>
+    <string name="always_on">Altijd aan</string>
+    <string name="alwaysOnBatteryLevel">Battery meer dan</string>
     <string name="ambient_noise">Omgevingsgeluidsensor</string>
     <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmodus onderdrukken?</string>
     <string name="appearance">Uiterlijk</string>
@@ -44,6 +46,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_gradient">Verloop</string>
     <string name="background_image">Afbeelding</string>
     <string name="background_image_select">Selecteer een afbeelding</string>
+    <string name="backgroundServiceDialogTitle">Stop achtergrond service</string>
     <string name="backgroundServiceNotificationText">Achtergrond service actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
@@ -199,8 +202,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Temperatuur tonen</string>
     <string name="show_weather">Lokaal weerbericht tonen</string>
     <string name="show_wind_speed">Windsnelheid tonen</string>
-    <string name="sleep_time_default_value">Standaard bedtijd</string>
-    <string name="sleep_time_default_value_msg">Standaard bedtijd in minuten</string>
     <string name="sleep_time_dialog_title">Bedtijd</string>
     <string name="snoozeTime">Sluimertijd</string>
     <string name="speedUnit">Eenheid van windsnelheid</string>

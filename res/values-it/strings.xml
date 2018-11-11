@@ -180,8 +180,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Mostra temperatura</string>
     <string name="show_weather">Mostra meteo locale</string>
     <string name="show_wind_speed">Mostra velocità vento</string>
-    <string name="sleep_time_default_value">Tempo di riposo di default</string>
-    <string name="sleep_time_default_value_msg">Immettere il tempo di riposo in minuti</string>
     <string name="sleep_time_dialog_title">Timer spegnimento automatico</string>
     <string name="snoozeTime">Intervallo rinvio</string>
     <string name="speedUnit">Unità di misura del vento</string>

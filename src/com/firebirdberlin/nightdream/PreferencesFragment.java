@@ -368,7 +368,6 @@ public class PreferencesFragment extends PreferenceFragment {
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
         enablePreference("useRadioAlarmClock", purchased_web_radio);
-        enablePreference("sleepTimeInMinutesDefaultValue", purchased_web_radio);
         enablePreference("expert_screen", purchased_actions);
 
         if (purchased_donation) {
@@ -382,7 +381,6 @@ public class PreferencesFragment extends PreferenceFragment {
 
         if (purchased_web_radio) {
             removePreference("purchaseWebRadio");
-            removePreference("purchaseWebRadioUI");
         }
 
         if (purchased_actions) {
@@ -576,14 +574,12 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference purchaseWeatherDataPreference = findPreference("purchaseWeatherData");
         Preference purchaseDesignPackagePreference = findPreference("purchaseDesignPackage");
         Preference purchaseWebRadioPreference = findPreference("purchaseWebRadio");
-        Preference purchaseWebRadioUIPreference = findPreference("purchaseWebRadioUI");
         Preference purchaseActionsPreference = findPreference("purchaseActions");
 
         donationPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseWeatherDataPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseDesignPackagePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseWebRadioPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
-        purchaseWebRadioUIPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseActionsPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
 
         Preference prefHandlePower = findPreference("handle_power");

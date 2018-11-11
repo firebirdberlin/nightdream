@@ -192,8 +192,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Показывать температуру</string>
     <string name="show_weather">Показывать местную погоду</string>
     <string name="show_wind_speed">Показывать скорость ветра</string>
-    <string name="sleep_time_default_value">Время сна по умолчанию </string>
-    <string name="sleep_time_default_value_msg">Введите время ожидания по умолчанию в минутах.</string>
     <string name="sleep_time_dialog_title">Таймер сна</string>
     <string name="snoozeTime">Время повтора</string>
     <string name="speedUnit">Ед. скорости ветра</string>

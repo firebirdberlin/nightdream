@@ -157,8 +157,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Teperatura</string>
     <string name="show_weather">Pokaż lokalną temperturę</string>
     <string name="show_wind_speed">Szybkość wiatru</string>
-    <string name="sleep_time_default_value">Domyślny czas zaśnięcia</string>
-    <string name="sleep_time_default_value_msg">Proszę podaj domyślny czas zaśnięcia</string>
     <string name="sleep_time_dialog_title">Ustawienie czasu zaśnięcia</string>
     <string name="snoozeTime">Czas trwania drzemki</string>
     <string name="speedUnit">Jednostka szybkości wiatru</string>

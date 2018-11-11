@@ -179,8 +179,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Mostrar Temperatura</string>
     <string name="show_weather">Mostrar clima local</string>
     <string name="show_wind_speed">Velocidad del viento</string>
-    <string name="sleep_time_default_value">Tiempo de dormir ( valor por defecto)</string>
-    <string name="sleep_time_default_value_msg">Por favor ingrese el valor en minutos para entrar en modo Dormir</string>
     <string name="sleep_time_dialog_title">Temporizador para dormir</string>
     <string name="snoozeTime">Tiempo par aplazar</string>
     <string name="speedUnit">Unidad de velocidad del viento</string>

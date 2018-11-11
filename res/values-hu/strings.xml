@@ -158,8 +158,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Mutassa a hőmérsékletet</string>
     <string name="show_weather">Mutassa a helyi időjárást</string>
     <string name="show_wind_speed">Mutassa a szél sebességét</string>
-    <string name="sleep_time_default_value">Alapértelmezett képernyőzár</string>
-    <string name="sleep_time_default_value_msg">Kérjük, adja meg az alapértelmezett alvási időt percben.</string>
     <string name="sleep_time_dialog_title">Ébresztő óra</string>
     <string name="snoozeTime">Szundi idő</string>
     <string name="speedUnit">Szélerősség mértékegysége</string>
