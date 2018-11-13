@@ -122,6 +122,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
             mySettings.updateNextAlwaysOnTime();
             setKeepScreenOn(shallKeepScreenOn(mode));
+            triggerAlwaysOnTimeout();
         }
     };
 
@@ -654,8 +655,8 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void triggerAlwaysOnTimeout() {
+        handler.removeCallbacks(alwaysOnTimeout);
         if (mySettings.batteryTimeout > 0 && !Utility.isCharging(this)) {
-            handler.removeCallbacks(alwaysOnTimeout);
             handler.postDelayed(alwaysOnTimeout, 60000 * mySettings.batteryTimeout);
         }
     }
