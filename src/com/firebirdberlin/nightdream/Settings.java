@@ -14,6 +14,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -21,6 +22,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
 import java.text.DateFormat;
@@ -105,10 +107,11 @@ public class Settings {
     public int nightModeTimeRangeStartInMinutes = -1;
     public int nightModeTimeRangeEndInMinutes = -1;
     public int nextAlarmTimeMinutes = 0;
+    public int sleepTimeInMinutesDefaultValue = 30;
     public long lastReviewRequestTime = 0L;
     public long nextAlwaysOnTime = 0L;
+    public long sleepTimeInMillis = 0L; // 5 min
     public long snoozeTimeInMillis = 300000; // 5 min
-    public int sleepTimeInMinutesDefaultValue = 30;
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
     public String fontUri = "";
@@ -242,6 +245,7 @@ public class Settings {
         Log.w(TAG, "fontUri2: " + fontUri);
         String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
         sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
+        sleepTimeInMillis = settings.getLong("sleepTimeInMillis", 0L);
 
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
@@ -475,6 +479,14 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putString("sleepTimeInMinutesDefaultValue", String.valueOf(sleepTimeInMinutes));
         prefEditor.apply();
+    }
+
+    public void setSleepTimeInMillis(long sleepTimeInMillis) {
+        this.sleepTimeInMillis = sleepTimeInMillis;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("sleepTimeInMillis", sleepTimeInMillis);
+        prefEditor.apply();
+        EventBus.getDefault().post(new OnSleepTimeChanged(sleepTimeInMillis));
     }
 
     public void updateNextAlwaysOnTime() {
