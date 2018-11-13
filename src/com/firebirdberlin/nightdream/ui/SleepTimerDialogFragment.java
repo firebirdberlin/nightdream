@@ -13,7 +13,7 @@ import android.widget.EditText;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 import java.util.Calendar;
 
@@ -68,7 +68,7 @@ public class SleepTimerDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.sleep_timer_dialog, null);
         minuteTextEdit = view.findViewById(R.id.minuteText);
 
-        final boolean sleepTimeisAlreadySet = RadioStreamSleepTimeReceiver.isSleepTimeSet();
+        final boolean sleepTimeisAlreadySet = RadioStreamService.isSleepTimeSet();
         builder.setTitle(R.string.sleep_time_dialog_title)
                 .setIcon(R.drawable.ic_nightmode)
                 .setView(view)
@@ -78,18 +78,18 @@ public class SleepTimerDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         int minutes = 0;
 
+                        Settings settings = new Settings((Context) mListener);
                         String minuteText = minuteTextEdit.getText().toString();
                         if (!minuteText.isEmpty()) {
                             minutes += Integer.parseInt(minuteText);
                             if (! sleepTimeisAlreadySet) {
-                                Settings settings = new Settings((Context) mListener);
                                 settings.setSleepTimeInMinutesDefaultValue(minutes);
                             }
                         }
                         Calendar now = Calendar.getInstance();
                         now.add(Calendar.MINUTE, minutes);
                         long millis = now.getTimeInMillis();
-                        RadioStreamSleepTimeReceiver.schedule((Context) mListener, millis);
+                        settings.setSleepTimeInMillis(millis);
 
                         mListener.onSleepTimeSelected(minutes);
                     }
@@ -100,8 +100,9 @@ public class SleepTimerDialogFragment extends DialogFragment {
                     }
                 });
 
+        Settings settings = new Settings((Context) mListener);
         if (sleepTimeisAlreadySet) {
-            long sleepTimeMillis = RadioStreamSleepTimeReceiver.getSleepTime();
+            long sleepTimeMillis = settings.sleepTimeInMillis;
             long now = Calendar.getInstance().getTimeInMillis();
 
             long diffInMinutes = (sleepTimeMillis - now) / 1000L / 60L;
@@ -112,13 +113,13 @@ public class SleepTimerDialogFragment extends DialogFragment {
             builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    RadioStreamSleepTimeReceiver.cancel((Context) mListener);
+                    Settings settings = new Settings(((Context) mListener).getApplicationContext());
+                    settings.setSleepTimeInMillis(0L);
                     mListener.onSleepTimeDismissed();
                     SleepTimerDialogFragment.this.getDialog().cancel();
                 }
             });
         } else {
-            Settings settings = new Settings((Context) mListener);
             if (settings.sleepTimeInMinutesDefaultValue > -1) {
                 minuteTextEdit.setText(String.valueOf(settings.sleepTimeInMinutesDefaultValue));
             }

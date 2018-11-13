@@ -23,6 +23,7 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
@@ -32,6 +33,8 @@ import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStrea
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
@@ -52,7 +55,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String ACTION_START_STREAM = "start stream";
     private static String ACTION_STOP = "stop";
     private static String ACTION_NEXT_STATION = "next station";
-    private static String ACTION_START_SLEEP_TIME = "start sleep time";
     static private int radioStationIndex;
     static private RadioStation radioStation;
     final private Handler handler = new Handler();
@@ -62,6 +64,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
+    private static long sleepTimeInMillis = 0L;
     private static String streamURL = "";
     private HttpStatusCheckTask statusCheckTask = null;
     private PlaylistRequestTask resolveStreamUrlTask = null;
@@ -92,6 +95,19 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             } else {
                 stop(getApplicationContext());
             }
+        }
+    };
+    private Runnable startSleep = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(startSleep);
+            if ( sleepTimeInMillis <= 0L ) {
+                return;
+            }
+            sleepTimeInMillis = 0L;
+            Settings settings = new Settings(getApplicationContext());
+            settings.setSleepTimeInMillis(0L);
+            handler.post(fadeOut);
         }
     };
 
@@ -156,14 +172,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         context.stopService(i);
     }
 
-    public static void startSleepTime(Context context) {
-        Log.i(TAG, "startSleepTime");
-        Intent i = new Intent(context, RadioStreamService.class);
-        i.setAction(ACTION_START_SLEEP_TIME);
-
-        Utility.startForegroundService(context, i);
-    }
-
     private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, RadioStreamService.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -173,6 +181,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onCreate(){
         Log.d(TAG,"onCreate() called.");
+        Utility.registerEventBus(this);
     }
 
     @Override
@@ -241,13 +250,23 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             RadioStreamMetadataRetriever.getInstance().clearCache();
             readyForPlayback = false;
             stopSelf();
-        } else if (ACTION_START_SLEEP_TIME.equals(action)) {
-            handler.post(fadeOut);
         } else if (ACTION_NEXT_STATION.equals(action)) {
             switchToNextStation();
         }
 
+        sleepTimeInMillis = settings.sleepTimeInMillis;
+        initSleepTime();
+
+
         return Service.START_REDELIVER_INTENT;
+    }
+
+    private void initSleepTime() {
+        handler.removeCallbacks(startSleep);
+        long now = System.currentTimeMillis();
+        if (sleepTimeInMillis > now ) {
+            handler.postDelayed(startSleep, sleepTimeInMillis - now);
+        }
     }
 
     private void checkStreamAndStart(int radioStationIndex) {
@@ -276,6 +295,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onDestroy(){
         Log.d(TAG,"onDestroy() called.");
+        Utility.unregisterEventBus(this);
+        sleepTimeInMillis = 0L;
 
         if (statusCheckTask != null) {
             statusCheckTask.cancel(true);
@@ -525,6 +546,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
 
         RadioStreamMetadataRetriever.getInstance().retrieveMetadata(streamURL, listener, context);
+    }
+
+    @Subscribe
+    public void onEvent(OnSleepTimeChanged event){
+        sleepTimeInMillis = event.sleepTimeInMillis;
+        initSleepTime();
+    }
+
+    public static boolean isSleepTimeSet() {
+        long now = System.currentTimeMillis();
+        return (sleepTimeInMillis > now);
     }
 
     public enum StreamingMode {INACTIVE, ALARM, RADIO}

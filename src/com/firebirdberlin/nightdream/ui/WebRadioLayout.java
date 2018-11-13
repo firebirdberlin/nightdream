@@ -28,7 +28,6 @@ import android.widget.TextView;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.receivers.RadioStreamSleepTimeReceiver;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
@@ -233,7 +232,7 @@ public class WebRadioLayout extends RelativeLayout {
         bg.setColorFilter( accentColor, PorterDuff.Mode.MULTIPLY );
 
         buttonSleepTimer.setColorFilter(
-                RadioStreamSleepTimeReceiver.isSleepTimeSet() ? accentColor : textColor,
+                RadioStreamService.isSleepTimeSet() ? accentColor : textColor,
                 PorterDuff.Mode.SRC_ATOP
         );
         volumeMutedIndicator.setColorFilter(
@@ -291,6 +290,7 @@ public class WebRadioLayout extends RelativeLayout {
         }
         webRadioButtons.invalidate();
         updateVolumeMutedIndicator();
+        buttonSleepTimer.setVisibility(RadioStreamService.isRunning ? VISIBLE : INVISIBLE);
         showMetaInfoOnNextUpdate = false;
     }
 
