@@ -170,17 +170,38 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textViewSound"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layoutSound"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_music_note_24dp"
-                    android:drawableStart="@drawable/ic_music_note_24dp"
-                    android:paddingBottom="6dp"
-                    android:paddingTop="6dp"
-                    android:text="Alarm sound"
-                    android:textAppearance="@android:style/TextAppearance.Small" />
+                    android:animateLayoutChanges="false"
+                    android:padding="6dp"
+                    android:paddingLeft="0dp"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/textViewRadio"
+                        android:drawableLeft="@drawable/ic_radio_blue_24dp"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/ic_radio_blue_24dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="Radio station 1"
+                        android:textAppearance="@android:style/TextAppearance.Small" />
+                    <TextView
+                        android:id="@+id/textViewSound"
+                        android:drawableLeft="@drawable/ic_music_note_24dp"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/ic_music_note_24dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:paddingLeft="6dp"
+                        android:text="Alarm sound"
+                        android:textAppearance="@android:style/TextAppearance.Small" />
+
+                </LinearLayout>
                 <Button
                     android:id="@+id/button_delete"
                     android:layout_width="wrap_content"

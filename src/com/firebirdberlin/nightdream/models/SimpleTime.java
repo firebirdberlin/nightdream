@@ -27,6 +27,7 @@ public class SimpleTime {
     public int recurringDays = 0;
     public boolean isActive = false;
     public boolean isNextAlarm = false;
+    public int radioStationIndex = -1;
     public String soundUri;
     public Long nextEventAfter = null;
 
@@ -74,6 +75,7 @@ public class SimpleTime {
         this.isNextAlarm = bundle.getBoolean("isNextAlarm", false);
         this.soundUri = bundle.getString("soundUri");
         this.nextEventAfter = bundle.getLong("nextEventAfter");
+        this.radioStationIndex = bundle.getInt("radioStationIndex", -1);
     }
 
     public static SimpleTime getNextFromList(List<SimpleTime> entries) {
@@ -135,6 +137,7 @@ public class SimpleTime {
         bundle.putBoolean("isActive", this.isActive);
         bundle.putInt("alarmTimeMinutes", this.toMinutes());
         bundle.putString("soundUri", this.soundUri);
+        bundle.putInt("radioStationIndex", this.radioStationIndex);
         if (this.nextEventAfter != null) {
             bundle.putLong("nextEventAfter", this.nextEventAfter);
         }

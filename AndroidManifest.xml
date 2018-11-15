@@ -147,11 +147,6 @@
                 <action android:name="com.firebirdberlin.nightdream.WAKEUP" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receivers.RadioStreamSleepTimeReceiver">
-            <intent-filter>
-                <action android:name="com.firebirdberlin.nightdream.ACTION_START_SLEEP_TIME" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".receivers.BootReceiver"
             android:enabled="true">
