@@ -85,8 +85,8 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View view = inflater.inflate(R.layout.manage_alarm_sounds_dialog, null);
-        listView = (ListView) view.findViewById(R.id.listView);
-        addCustomAlarmTone = (Button) view.findViewById(R.id.addCustomAlarmTone);
+        listView = view.findViewById(R.id.listView);
+        addCustomAlarmTone = view.findViewById(R.id.addCustomAlarmTone);
         String btnTxt = getActivity().getString(R.string.add_custom_alarm_tone);
         if (!isPurchased) {
             String productName = getActivity().getString(R.string.product_name_webradio);

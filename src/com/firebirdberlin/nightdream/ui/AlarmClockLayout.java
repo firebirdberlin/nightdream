@@ -46,6 +46,7 @@ public class AlarmClockLayout extends LinearLayout {
     private SimpleTime alarmClockEntry = null;
     private TextView timeView = null;
     private TextView textViewSound = null;
+    private TextView textViewRadio = null;
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
     private LinearLayout layoutDays = null;
@@ -144,6 +145,7 @@ public class AlarmClockLayout extends LinearLayout {
         mainLayout = findViewById(R.id.mainLayout);
         timeView = findViewById(R.id.timeView);
         textViewSound = findViewById(R.id.textViewSound);
+        textViewRadio = findViewById(R.id.textViewRadio);
         textViewWhen = findViewById(R.id.textViewWhen);
         layoutDays = findViewById(R.id.layoutDays);
         buttonDown = findViewById(R.id.button_down);
@@ -247,6 +249,29 @@ public class AlarmClockLayout extends LinearLayout {
 
                 });
                 dialog.show(fm, "custom sounds");
+            }
+        });
+
+        textViewRadio.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (alarmClockEntry == null) return;
+
+                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
+                dialog.setOnStationSlotSelectedListener(new SelectRadioStationSlotDialogFragment.SelectRadioStationSlotDialogListener() {
+                    @Override
+                    public void onStationSlotSelected(int index, String name) {
+                        Log.i(TAG, "onStationSlotSelected: " + String.valueOf(index) + ", " + name);
+                        if (alarmClockEntry == null) {
+                            return;
+                        }
+                        //alarmClockEntry.soundUri = uri.toString();
+                        //((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    }
+
+                });
+                dialog.show(fm, "radio station");
             }
         });
     }
