@@ -252,6 +252,13 @@ public class AlarmClockLayout extends LinearLayout {
             }
         });
 
+        String stationName = "No radio station";
+        if (alarmClockEntry.radioStationIndex > -1) {
+            stationName = String.format("Radio station %d", alarmClockEntry.radioStationIndex + 1);
+        }
+        Log.d(TAG, String.format("radio station index: %d", alarmClockEntry.radioStationIndex));
+        Log.d(TAG, stationName);
+        textViewRadio.setText(stationName);
         textViewRadio.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -266,8 +273,9 @@ public class AlarmClockLayout extends LinearLayout {
                         if (alarmClockEntry == null) {
                             return;
                         }
-                        //alarmClockEntry.soundUri = uri.toString();
-                        //((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                        textViewRadio.setText(name);
+                        alarmClockEntry.radioStationIndex = index - 1;
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                     }
 
                 });

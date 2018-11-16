@@ -510,14 +510,14 @@ public class Settings {
 
     public boolean isAlwaysOnAllowed() {
         Calendar now = Calendar.getInstance();
-        boolean isAlllowed = true;
+        boolean isAllowed = true;
         Log.d(TAG, String.format("batteryTimeout : %d", batteryTimeout));
         if (batteryTimeout > 0 && nextAlwaysOnTime > 0L) {
             Calendar alwaysOnTime = Calendar.getInstance();
             alwaysOnTime.setTimeInMillis(nextAlwaysOnTime);
-            isAlllowed = now.after(alwaysOnTime);
+            isAllowed = now.after(alwaysOnTime);
         }
-        return isAlllowed;
+        return isAllowed;
     }
 
     public void setScaleClock(float factor, int orientation) {

@@ -526,7 +526,7 @@ public class NightDreamActivity extends BillingHelperActivity
         long now = Calendar.getInstance().getTimeInMillis();
         long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
         if ((0 < nextAlarmTime - now
-                && nextAlarmTime - now < 600000)
+                && nextAlarmTime - now < 600000) // 1000 * 60 * 10 = 10 minutes
                 || AlarmService.isRunning
                 || RadioStreamService.isRunning) {
             Log.d(TAG, "shallKeepScreenOn() true");
