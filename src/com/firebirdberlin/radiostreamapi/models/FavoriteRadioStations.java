@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class FavoriteRadioStations {
 
-    private static final int MAX_NUM_ENTRIES = 6;
+    public static final int MAX_NUM_ENTRIES = 6;
 
     private final RadioStation[] radioStations = new RadioStation[MAX_NUM_ENTRIES];
 

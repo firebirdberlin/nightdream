@@ -349,7 +349,7 @@ public class WebRadioLayout extends RelativeLayout {
         setShowConnectingHint(false);
         if (metaTitle != null && !metaTitle.isEmpty()) {
 
-            // use hander.post to update text, otherwise updated text doesn't show up sometimes
+            // use handler.post to update text, otherwise updated text doesn't show up sometimes
             // (e.g. on update after panel becomes visible)
             handler.post(new Runnable() {
                 @Override
