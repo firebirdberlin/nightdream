@@ -2,9 +2,15 @@ package com.firebirdberlin.nightdream;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
+
+import org.json.JSONException;
 
 public class SQLiteDBHelper extends SQLiteOpenHelper {
     Context context;
@@ -59,7 +65,59 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
         if (newVersion >= 5 && oldVersion < 5) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1");
+            updateAlarmClockRadioStation(db);
         }
+    }
+
+    private void updateAlarmClockRadioStation(SQLiteDatabase db) {
+        // do the migration for alarms
+        // this function can be reomoved when versions <= 1.9.5 are no longer relevant
+        SharedPreferences prefs = context.getSharedPreferences(Settings.PREFS_KEY, 0);
+        boolean useRadioAlarmClock = prefs.getBoolean("useRadioAlarmClock", false);
+        if (!useRadioAlarmClock) return;
+
+        RadioStation alarmRadioStation = getAlarmRadioStation(prefs);
+
+        if (alarmRadioStation == null) return;
+
+        Settings settings = new Settings(this.context);
+        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+
+        int index = -1;
+        if (alarmRadioStation.stream != null && stations != null) {
+            for(int i = 0; i < stations.numAvailableStations(); i++) {
+                RadioStation station = stations.get(i);
+                if (station != null) {
+                    if (alarmRadioStation.stream.equals(station.stream)) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (index == -1 && stations != null) {
+            index = stations.numAvailableStations();
+            stations.set(index, alarmRadioStation);
+        }
+
+        if (index > -1 && index < FavoriteRadioStations.MAX_NUM_ENTRIES) {
+            // set this index to the db entry
+            db.execSQL("UPDATE " + AlarmEntry.TABLE_NAME + " SET " +
+                    AlarmEntry.COLUMN_RADIO_STATION_INDEX + " = '" + String.valueOf(index) + "';");
+
+        }
+
+    }
+
+    private RadioStation getAlarmRadioStation(SharedPreferences prefs) {
+        String json = prefs.getString("radioStreamURL_json",  null);
+        if (json != null) {
+            try {
+                return RadioStation.fromJson(json);
+            } catch (JSONException e) {}
+        }
+        return null;
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
