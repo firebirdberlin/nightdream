@@ -19,6 +19,7 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -37,6 +38,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
+    private FavoriteRadioStations radioStations = null;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -64,6 +66,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         Settings settings = new Settings(this);
         timeFormat = settings.getFullTimeFormat();
         dateFormat = settings.dateFormat;
+        radioStations = settings.getFavoriteRadioStations();
         init();
     }
 
@@ -112,7 +115,8 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
 
             if (layout == null) {
-                layout = new AlarmClockLayout(this, entry, timeFormat, dateFormat);
+                layout = new AlarmClockLayout(this, entry, timeFormat, dateFormat,
+                        radioStations);
                 layoutHashMap.put(entry.id, layout);
             }
 

@@ -230,8 +230,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             }
             alarmTime = new SimpleTime(intent.getExtras());
             setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
-            streamURL = settings.radioStreamURL;
-            checkStreamAndStart(-1);
+            radioStationIndex = alarmTime.radioStationIndex;
+            checkStreamAndStart(radioStationIndex);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
             alarmTime = new SimpleTime(intent.getExtras());
@@ -273,8 +273,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         Log.i(TAG, "checkStreamAndStart radioStationIndex=" + radioStationIndex);
 
-        if (streamingMode == StreamingMode.RADIO) {
-            streamURL = settings.radioStreamURLUI;
+        streamURL = settings.radioStreamURL;
+        if (radioStationIndex > -1) {
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
             if (stations != null) {
                 radioStation = stations.get(radioStationIndex);

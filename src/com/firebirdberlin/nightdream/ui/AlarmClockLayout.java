@@ -32,6 +32,8 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
+import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.util.Calendar;
 
@@ -56,6 +58,7 @@ public class AlarmClockLayout extends LinearLayout {
     private CheckBox checkBoxIsRepeating = null;
     private ToggleButton[] dayButtons = new ToggleButton[7];
     private int firstdayOfWeek = Utility.getFirstDayOfWeek();
+    private FavoriteRadioStations radioStations;
     private CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
             new CheckBox.OnCheckedChangeListener() {
                 @Override
@@ -100,12 +103,14 @@ public class AlarmClockLayout extends LinearLayout {
         init();
     }
 
-    public AlarmClockLayout(Context context, SimpleTime entry, String timeFormat, String dateFormat) {
+    public AlarmClockLayout(Context context, SimpleTime entry, String timeFormat, String dateFormat,
+                            FavoriteRadioStations radioStations) {
         super(context);
         this.context = context;
         this.alarmClockEntry = entry;
         this.timeFormat = timeFormat;
         this.dateFormat = dateFormat;
+        this.radioStations = radioStations;
         init();
         buttonDelete.setTag(entry);
         timeView.setTag(entry);
@@ -254,7 +259,15 @@ public class AlarmClockLayout extends LinearLayout {
 
         String stationName = "No radio station";
         if (alarmClockEntry.radioStationIndex > -1) {
+
             stationName = String.format("Radio station %d", alarmClockEntry.radioStationIndex + 1);
+            if (radioStations != null) {
+                RadioStation station = radioStations.get(alarmClockEntry.radioStationIndex);
+                if (station != null) {
+                    stationName = station.name;
+                }
+            }
+
         }
         Log.d(TAG, String.format("radio station index: %d", alarmClockEntry.radioStationIndex));
         Log.d(TAG, stationName);
@@ -266,6 +279,7 @@ public class AlarmClockLayout extends LinearLayout {
 
                 FragmentManager fm = ((Activity) getContext()).getFragmentManager();
                 SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
+                dialog.setRadioStations(radioStations);
                 dialog.setOnStationSlotSelectedListener(new SelectRadioStationSlotDialogFragment.SelectRadioStationSlotDialogListener() {
                     @Override
                     public void onStationSlotSelected(int index, String name) {

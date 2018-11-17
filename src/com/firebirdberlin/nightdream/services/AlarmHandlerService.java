@@ -49,7 +49,7 @@ public class AlarmHandlerService extends IntentService {
         Bundle extras = (intent != null) ? intent.getExtras() : null;
         alarmTime = (extras != null) ? new SimpleTime(extras) : null;
 
-        if (settings.useRadioAlarmClock && Utility.hasFastNetworkConnection(context)) {
+        if (alarmTime != null && alarmTime.radioStationIndex > -1 && Utility.hasFastNetworkConnection(context)) {
             RadioStreamService.start(context, alarmTime);
         } else {
             if (RadioStreamService.streamingMode != RadioStreamService.StreamingMode.INACTIVE) {
