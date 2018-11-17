@@ -113,8 +113,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Desligado</string>
     <string name="radio_stream_query_hint">Texto para busca</string>
     <string name="radio_stream_search">Busca</string>
-    <string name="radio_stream_start">Inicie/Pare a rádio</string>
-    <string name="radio_stream_url">URL da rádio</string>
     <string name="reactivate_on_ambient_light_value">Limite da iluminação</string>
     <string name="reactivate_on_ambient_light_value_summary">O ecrã é reativado se o limiar de luminância  for ultrapassado</string>
     <string name="reactivate_screen_on_noise">Desperte caso haja som no ambiente</string>

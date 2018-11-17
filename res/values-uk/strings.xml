@@ -151,10 +151,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_offline">офлайн</string>
 <string name="radio_stream_query_hint">Пошуковий запит</string>
 <string name="radio_stream_search">Пошук</string>
-<string name="radio_stream_start">Увімкнути/вимкнути радіопотік</string>
 <string name="radio_stream_unreachable_url">Посилання не працює.</string>
-<string name="radio_stream_url">Веб-адреса радіопотоку</string>
-<string name="reactivate_on_ambient_light_value">Поріг освітленості</string>
+    <string name="reactivate_on_ambient_light_value">Поріг освітленості</string>
 <string name="reactivate_on_ambient_light_value_summary">Екран буде увімкнено при перевищенні порогу освітленості.</string>
 <string name="reactivate_screen_on_noise">Вмикати при сторонньому шумі</string>
 <string name="recommend_app_desc">Оберіть додаток, через який бажаєте поділитися рекомендацією.</string>

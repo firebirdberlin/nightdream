@@ -129,9 +129,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Offline</string>
     <string name="radio_stream_query_hint">Szukaj</string>
     <string name="radio_stream_search">Szukaj</string>
-    <string name="radio_stream_start">Zatrzymaj Stop</string>
     <string name="radio_stream_unreachable_url">URL niedostępne</string>
-    <string name="radio_stream_url">Adres URL</string>
     <string name="reactivate_on_ambient_light_value">Wartość światla otoczenia</string>
     <string name="reactivate_on_ambient_light_value_summary">Ekran zostanie reaktywowany jezeli wartość podświetlenia zostanie osiagnięta</string>
     <string name="reactivate_screen_on_noise">Obudź przez dźwiek otoczenia</string>

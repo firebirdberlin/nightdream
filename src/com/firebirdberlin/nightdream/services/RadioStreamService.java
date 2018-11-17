@@ -49,7 +49,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
     private static boolean readyForPlayback = false;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
-    public static String EXTRA_DEBUG = "ExtraDebug";
     private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
     private static String ACTION_START_STREAM = "start stream";
@@ -59,7 +58,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static private RadioStation radioStation;
     final private Handler handler = new Handler();
     private MediaPlayer mMediaPlayer = null;
-    private boolean debug = false;
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
@@ -112,10 +110,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     };
 
     public static void start(Context context, SimpleTime alarmTime) {
-        start(context, alarmTime, false);
-    }
-
-    public static void start(Context context, SimpleTime alarmTime, boolean debug) {
         if (!Utility.hasNetworkConnection(context)) {
             Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
             return;
@@ -123,7 +117,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         Intent i = new Intent(context, RadioStreamService.class);
         i.setAction(ACTION_START);
-        i.putExtra(EXTRA_DEBUG, debug);
         if (alarmTime != null) {
             i.putExtras(alarmTime.toBundle());
         }
@@ -223,11 +216,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         alarmTime = null;
         if (ACTION_START.equals(action)) {
-            debug = intent.getBooleanExtra(EXTRA_DEBUG, false);
-            if (!debug) {
-                alarmIsRunning = true;
-                streamingMode = StreamingMode.ALARM;
-            }
+            alarmIsRunning = true;
+            streamingMode = StreamingMode.ALARM;
             alarmTime = new SimpleTime(intent.getExtras());
             setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
             radioStationIndex = alarmTime.radioStationIndex;
@@ -273,7 +263,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         Log.i(TAG, "checkStreamAndStart radioStationIndex=" + radioStationIndex);
 
-        streamURL = settings.radioStreamURL;
+        streamURL = "";
         if (radioStationIndex > -1) {
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
             if (stations != null) {
@@ -319,7 +309,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         radioStationIndex = -1;
         radioStation = null;
         streamingMode = StreamingMode.INACTIVE;
-        debug = false;
 
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -473,9 +462,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                                                        Intent intent) {
 
         String action = intent.getAction();
-        boolean hasExtraDebug = intent.getBooleanExtra(EXTRA_DEBUG, false);
 
-        if ( ACTION_START_STREAM.equals(action) || (ACTION_START.equals(action) && hasExtraDebug) ) {
+        if ( ACTION_START_STREAM.equals(action) || (ACTION_START.equals(action)) ) {
             noteBuilder.addAction(notificationStopAction());
 
             // show radio station name in notification

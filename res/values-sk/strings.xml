@@ -129,9 +129,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Konec. Vyplo sa to</string>
     <string name="radio_stream_query_hint">Vyhľadať text</string>
     <string name="radio_stream_search">Hľadaj</string>
-    <string name="radio_stream_start">Spustiť / zastaviť vysielanie rádia</string>
     <string name="radio_stream_unreachable_url">Adresa URL nie je dostupná.</string>
-    <string name="radio_stream_url">URL rádiového vysielania</string>
     <string name="reactivate_on_ambient_light_value">Prah osvetlenia</string>
     <string name="reactivate_on_ambient_light_value_summary">Obrazovka je obnovená ak osvetlenie presiahne nastavenú hodnotu.</string>
     <string name="reactivate_screen_on_noise">Obnoviť pri detekcii zvukov v okolí</string>

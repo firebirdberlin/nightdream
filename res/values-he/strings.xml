@@ -112,8 +112,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_no_search_results">לא נמצאו תוצאות</string>
     <string name="radio_stream_query_hint">טקסט חיפוש</string>
     <string name="radio_stream_search">חפש</string>
-    <string name="radio_stream_start">הפעל/כבה הזרמת רדיו</string>
-    <string name="radio_stream_url">כתובת הזרמת רדיו</string>
     <string name="reactivate_on_ambient_light_value">סף רמת התאורה</string>
     <string name="reactivate_on_ambient_light_value_summary"> המסך ידלק מחדש אם רמת התאורה תעבור את הסף  </string>
     <string name="reactivate_screen_on_noise">הער כאשר נשמע קול עמום</string>

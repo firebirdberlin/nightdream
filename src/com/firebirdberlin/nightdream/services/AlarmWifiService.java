@@ -27,7 +27,7 @@ public class AlarmWifiService extends JobService {
         }
 
         Settings settings = new Settings(context);
-        if (!(settings.useRadioAlarmClock && settings.radioStreamActivateWiFi)) {
+        if (!settings.radioStreamActivateWiFi) {
             return;
         }
 
@@ -78,7 +78,7 @@ public class AlarmWifiService extends JobService {
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob");
         Settings settings = new Settings(this);
-        if (settings.useRadioAlarmClock && settings.radioStreamActivateWiFi) {
+        if (settings.radioStreamActivateWiFi) {
             WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
             try {
                 boolean success = wifiManager.setWifiEnabled(true);

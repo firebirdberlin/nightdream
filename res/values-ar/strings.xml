@@ -87,8 +87,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream">موجات الراديو</string>
     <string name="radio_stream_no_search_results">لا يوجد نتائج للبحث</string>
     <string name="radio_stream_query_hint">البحث بـ</string>
-    <string name="radio_stream_start">بدء/وقف موجة الراديو</string>
-    <string name="radio_stream_url">رابط موجة الراديو</string>
     <string name="reactivate_on_ambient_light_value">درجة الإحساس بالضوء</string>
     <string name="reactivate_on_ambient_light_value_summary">إعادة تفعيل الشاشة عند تعدي درجة الإحساس بالضوء</string>
     <string name="reactivate_screen_on_noise">الاستيقاظ مع الضوضاء المحيطة</string>

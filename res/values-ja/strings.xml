@@ -102,8 +102,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_no_search_results">検索結果はありませんでした。</string>
     <string name="radio_stream_query_hint">検索文字列</string>
     <string name="radio_stream_search">サーチ</string>
-    <string name="radio_stream_start">ラジオストリームの開始/停止</string>
-    <string name="radio_stream_url">ラジオストリームURL</string>
     <string name="reactivate_on_ambient_light_value">照度しきい値</string>
     <string name="reactivate_on_ambient_light_value_summary">照度しきい値を超えると画面が再起動されます</string>
     <string name="reactivate_screen_on_noise">周囲音で起きる</string>
