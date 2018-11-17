@@ -416,11 +416,10 @@ public class NightDreamActivity extends BillingHelperActivity
         if ( AlarmHandlerService.alarmIsRunning() ) {
             AlarmHandlerService.stop(this);
         }
-        if (!isPurchased(BillingHelper.ITEM_WEB_RADIO) && !mySettings.hasLegacyRadioStation()) {
+        if (!isPurchased(BillingHelper.ITEM_WEB_RADIO)) {
             showPurchaseDialog();
             return;
         }
-        mySettings.upgradeLegacyRadioStationToFirstFavoriteRadioStation();
 
         BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
         if (panel == BottomPanelLayout.Panel.WEB_RADIO) {

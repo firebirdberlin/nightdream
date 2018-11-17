@@ -115,7 +115,6 @@ public class Settings {
     public String AlarmToneName = "";
     public String fontUri = "";
     public String fontName = "";
-    public String radioStreamURLUI = "";
     public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
@@ -221,7 +220,6 @@ public class Settings {
         nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         purchasedWebRadio = settings.getBoolean("purchasedWebRadio", false);
-        radioStreamURLUI = settings.getString("radioStreamURLUI", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
@@ -673,27 +671,7 @@ public class Settings {
         if (stations != null) {
              station = stations.get(radioStationIndex);
         }
-        if (station == null && radioStationIndex == 0) {
-            station = getLegacyRadioStation();
-        }
         return station;
-    }
-
-    public boolean hasLegacyRadioStation() {
-        String json = settings.getString("radioStreamURLUI_json", null);
-        return json != null;
-    }
-
-    private RadioStation getLegacyRadioStation() {
-        String json = settings.getString("radioStreamURLUI_json", null);
-        if (json != null) {
-            try {
-                return RadioStation.fromJson(json);
-            } catch (JSONException e) {
-                Log.e(TAG, "error converting json to station", e);
-            }
-        }
-        return null;
     }
 
     public FavoriteRadioStations getFavoriteRadioStations() {
@@ -721,19 +699,5 @@ public class Settings {
 
     public void deleteFavoriteRadioStation(int stationIndex) {
         persistFavoriteRadioStation(null, stationIndex);
-    }
-
-    public void upgradeLegacyRadioStationToFirstFavoriteRadioStation() {
-        FavoriteRadioStations stations = getFavoriteRadioStations();
-        RadioStation firstRadioStation = null;
-        if (stations != null) {
-            firstRadioStation = stations.get(0);
-        }
-        if (firstRadioStation == null) {
-            RadioStation legacyStation = getLegacyRadioStation();
-            if (legacyStation != null) {
-                persistFavoriteRadioStation(legacyStation, 0);
-            }
-        }
     }
 }
