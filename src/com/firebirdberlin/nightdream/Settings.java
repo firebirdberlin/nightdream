@@ -70,7 +70,6 @@ public class Settings {
     public boolean useDeviceLock = false;
     public boolean useInternalAlarm = true;
     public boolean useAlarmSwipeGesture = true;
-    public boolean useRadioAlarmClock = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
     public boolean radioStreamActivateWiFi = false;
@@ -116,7 +115,6 @@ public class Settings {
     public String AlarmToneName = "";
     public String fontUri = "";
     public String fontName = "";
-    public String radioStreamURL = "";
     public String radioStreamURLUI = "";
     public String backgroundImageURI = "";
     public Typeface typeface;
@@ -223,7 +221,6 @@ public class Settings {
         nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         purchasedWebRadio = settings.getBoolean("purchasedWebRadio", false);
-        radioStreamURL = settings.getString("radioStreamURL", "");
         radioStreamURLUI = settings.getString("radioStreamURLUI", "");
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
@@ -254,7 +251,6 @@ public class Settings {
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", true);
         useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", true);
-        useRadioAlarmClock = settings.getBoolean("useRadioAlarmClock", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
         radioStreamActivateWiFi = settings.getBoolean("radioStreamActivateWiFi", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);

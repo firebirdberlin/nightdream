@@ -128,10 +128,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_offline">Brez povezave</string>
 <string name="radio_stream_query_hint">Iskalni niz</string>
 <string name="radio_stream_search">Isci</string>
-<string name="radio_stream_start">Vklop/Izklop radijskega odajanja</string>
 <string name="radio_stream_unreachable_url">Internetni naslov ni dosegljiv</string>
-<string name="radio_stream_url">Radijsko oddajanje URL</string>
-<string name="reactivate_on_ambient_light_value">Osvetljenost</string>
+    <string name="reactivate_on_ambient_light_value">Osvetljenost</string>
 <string name="reactivate_on_ambient_light_value_summary">Ponovni vklop ekrana ce je presezena stopnja osvetlitve</string>
 <string name="reactivate_screen_on_noise">Prebudi se ob zvoku iz ozadja</string>
 <string name="recommend_app_desc">Izberi aplikacijo za delitev priporocila</string>

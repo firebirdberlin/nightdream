@@ -173,9 +173,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Offline</string>
     <string name="radio_stream_query_hint">Zoekterm</string>
     <string name="radio_stream_search">Zoeken</string>
-    <string name="radio_stream_start">Radio starten/stoppen</string>
     <string name="radio_stream_unreachable_url">De URL is niet bereikbaar.</string>
-    <string name="radio_stream_url">Radio stream-URL</string>
     <string name="reactivate_on_ambient_light_value">Lichtgrens</string>
     <string name="reactivate_on_ambient_light_value_summary">Het scherm wordt ingeschakeld als de ingestelde helderheid wordt bereikt.</string>
     <string name="reactivate_screen_on_noise">Ontwaken bij omgevingsgeluid</string>

@@ -129,9 +129,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">已離線</string>
     <string name="radio_stream_query_hint">搜尋字組</string>
     <string name="radio_stream_search">搜尋</string>
-    <string name="radio_stream_start">開始/停止串流廣播</string>
     <string name="radio_stream_unreachable_url">URL不可用。</string>
-    <string name="radio_stream_url">串流廣播URL</string>
     <string name="reactivate_on_ambient_light_value">照明度臨界值</string>
     <string name="reactivate_on_ambient_light_value_summary">當超過臨界值時，螢幕將會重新啟動。</string>
     <string name="reactivate_screen_on_noise">以環境雜訊喚醒</string>

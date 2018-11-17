@@ -151,9 +151,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Offline</string>
     <string name="radio_stream_query_hint">Stringa di ricerca</string>
     <string name="radio_stream_search">Cerca</string>
-    <string name="radio_stream_start">avvia/interrompi flusso radio</string>
     <string name="radio_stream_unreachable_url">l\'URL non è raggiungibile</string>
-    <string name="radio_stream_url">URL web radio</string>
     <string name="reactivate_on_ambient_light_value">Soglia luminosità</string>
     <string name="reactivate_on_ambient_light_value_summary">lo schermo viene riattivato se la soglia di luminosità  viene superata</string>
     <string name="reactivate_screen_on_noise">Attiva al rumore ambientale</string>

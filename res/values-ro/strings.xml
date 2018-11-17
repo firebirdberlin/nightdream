@@ -104,8 +104,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_no_search_results">Nu s-au găsit înregistrări</string>
     <string name="radio_stream_query_hint">Cauta cuvant</string>
     <string name="radio_stream_search">Cautare</string>
-    <string name="radio_stream_start">Start/Stop canal radio</string>
-    <string name="radio_stream_url">URL canal radio</string>
     <string name="reactivate_on_ambient_light_value">Limita iluminării</string>
     <string name="reactivate_on_ambient_light_value_summary">Ecranul este reactivat dacă valoarea limita a iluminării este depasita</string>
     <string name="reactivate_screen_on_noise">Trezește în caz de zgomot de fond</string>

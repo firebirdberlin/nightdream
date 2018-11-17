@@ -405,42 +405,16 @@
                 android:key="category_radio_stream"
                 android:title="@string/radio_stream">
 
-                <Preference
-                    android:icon="@drawable/ic_googleplay"
-                    android:key="purchaseWebRadio"
-                    android:title="@string/purchaseWebRadio"/>
-
                 <SwitchPreference
                     android:defaultValue="false"
-                    android:dependency="useInternalAlarm"
-                    android:enabled="false"
-                    android:key="useRadioAlarmClock"
-                    android:title="@string/radio_stream_enabled" />
-
-                <com.firebirdberlin.radiostreamapi.RadioStreamPreference
-                    android:dependency="useRadioAlarmClock"
-                    android:icon="@drawable/ic_search"
-                    android:key="radioStreamURL"
-                    android:title="@string/radio_stream_url"/>
-
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:dependency="useRadioAlarmClock"
                     android:key="radioStreamMusicIsAllowedForAlarms"
                     android:title="@string/radio_stream_music_allowed" />
 
                 <SwitchPreference
                     android:defaultValue="false"
-                    android:dependency="useRadioAlarmClock"
                     android:key="radioStreamActivateWiFi"
                     android:summary="@string/radio_stream_activate_wifi_desc"
                     android:title="@string/radio_stream_activate_wifi" />
-
-                <Preference
-                    android:dependency="useRadioAlarmClock"
-                    android:key="startAudioStream"
-                    android:title="@string/radio_stream_start"/>
-
             </PreferenceCategory>
         </PreferenceScreen>
 

@@ -163,9 +163,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Отключено</string>
     <string name="radio_stream_query_hint">Строка поиска</string>
     <string name="radio_stream_search">Поиск</string>
-    <string name="radio_stream_start">Запустить/отключить радио</string>
     <string name="radio_stream_unreachable_url">URL недоступен</string>
-    <string name="radio_stream_url">URL потокового радио</string>
     <string name="reactivate_on_ambient_light_value">Предел освещения</string>
     <string name="reactivate_on_ambient_light_value_summary">Включить экран, если превышен предел освещения</string>
     <string name="reactivate_screen_on_noise">Включать при шуме</string>

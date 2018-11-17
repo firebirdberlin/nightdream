@@ -154,9 +154,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Hors ligne</string>
     <string name="radio_stream_query_hint">Chaîne de recherche</string>
     <string name="radio_stream_search">Rechercher</string>
-    <string name="radio_stream_start">Démarrer / arrêter le flux radio</string>
     <string name="radio_stream_unreachable_url">L\'adresse URL ne peut être atteinte</string>
-    <string name="radio_stream_url">URL du flux radio</string>
     <string name="reactivate_on_ambient_light_value">Seuil d\'éclairement</string>
     <string name="reactivate_on_ambient_light_value_summary">L\'écran est réactivé si la valeur du seuil d\'éclairement est dépassée.</string>
     <string name="reactivate_screen_on_noise">Réveil au bruit ambiant</string>

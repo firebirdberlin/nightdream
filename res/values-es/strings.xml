@@ -150,9 +150,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Emisora fuera de línea</string>
     <string name="radio_stream_query_hint">Cadena de búsqueda</string>
     <string name="radio_stream_search">Buscar</string>
-    <string name="radio_stream_start">Iniciar/detener radio</string>
     <string name="radio_stream_unreachable_url">La URL no está disponible.</string>
-    <string name="radio_stream_url">Emisora de radio</string>
     <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
     <string name="reactivate_on_ambient_light_value_summary">La pantalla se reactivará si el límite de la iluminación es excedido.</string>
     <string name="reactivate_screen_on_noise">Despertar en ambiente ruidoso</string>

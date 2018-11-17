@@ -85,8 +85,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream">Radio streamovi</string>
     <string name="radio_stream_no_search_results">Nema rezultata pretraživanja.</string>
     <string name="radio_stream_query_hint">Niz za pretraživanje</string>
-    <string name="radio_stream_start">Pokreni/zaustavi radio stream</string>
-    <string name="radio_stream_url">Radio stream URL</string>
     <string name="reactivate_on_ambient_light_value">Prag osvjetljenja</string>
     <string name="reactivate_on_ambient_light_value_summary">Zaslon će se aktivirati ako se prijeđe zadani prag osvjetljenja.</string>
     <string name="reactivate_screen_on_noise">probudi se na pozadinsku buku</string>

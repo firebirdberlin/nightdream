@@ -129,9 +129,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_offline">offline</string>
 <string name="radio_stream_query_hint">Search string</string>
 <string name="radio_stream_search">Bilatu</string>
-<string name="radio_stream_start">Star/stop irrati streaming-a</string>
 <string name="radio_stream_unreachable_url">URLa ezin da kargatu</string>
-<string name="radio_stream_url">Irrati stream-aren URLa</string>
 <string name="reactivate_on_ambient_light_value">Argitasunaren atalase-maila</string>
 <string name="reactivate_on_ambient_light_value_summary">Pantaila piztu egingo da argitasunaren atalase-maila gainditzen denean</string>
 <string name="reactivate_screen_on_noise">Inguruan zarata dagoenean pantaila piztu</string>

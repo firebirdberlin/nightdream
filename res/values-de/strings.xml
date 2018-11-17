@@ -183,9 +183,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">offline</string>
     <string name="radio_stream_query_hint">Suchbegriff</string>
     <string name="radio_stream_search">Suchen</string>
-    <string name="radio_stream_start">Stream starten/stoppen</string>
     <string name="radio_stream_unreachable_url">Der Sender ist nicht erreichbar.</string>
-    <string name="radio_stream_url">Sendersuche</string>
     <string name="reactivate_on_ambient_light_value">Beleuchtungsschwellwert</string>
     <string name="reactivate_on_ambient_light_value_summary">Der Bildschirm wird eingeschaltet, wenn dieser Wert der Beleuchtungstärke überschritten wird.</string>
     <string name="reactivate_screen_on_noise">Einschalten bei Geräuschen</string>

@@ -37,7 +37,6 @@ import android.widget.Toast;
 import com.android.vending.billing.IInAppBillingService;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
-import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
@@ -367,7 +366,6 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
-        enablePreference("useRadioAlarmClock", purchased_web_radio);
         enablePreference("expert_screen", purchased_actions);
 
         if (purchased_donation) {
@@ -377,10 +375,6 @@ public class PreferencesFragment extends PreferenceFragment {
         if (purchased_weather_data) {
             removePreference("purchaseWeatherData");
             removePreference("purchaseDesignPackage");
-        }
-
-        if (purchased_web_radio) {
-            removePreference("purchaseWebRadio");
         }
 
         if (purchased_actions) {
@@ -573,13 +567,11 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference donationPreference = findPreference("donation_play");
         Preference purchaseWeatherDataPreference = findPreference("purchaseWeatherData");
         Preference purchaseDesignPackagePreference = findPreference("purchaseDesignPackage");
-        Preference purchaseWebRadioPreference = findPreference("purchaseWebRadio");
         Preference purchaseActionsPreference = findPreference("purchaseActions");
 
         donationPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseWeatherDataPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseDesignPackagePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
-        purchaseWebRadioPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseActionsPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
 
         Preference prefHandlePower = findPreference("handle_power");
@@ -643,19 +635,6 @@ public class PreferencesFragment extends PreferenceFragment {
                 return true;
             }
         });
-
-        Preference startAudioStream = findPreference("startAudioStream");
-        startAudioStream.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                if (!RadioStreamService.isRunning) {
-                    RadioStreamService.start(context, null, true);
-                } else {
-                    RadioStreamService.stop(context);
-                }
-                return true;
-            }
-        });
-
 
         setupLightSensorPreferences();
         setupDaydreamPreferences();

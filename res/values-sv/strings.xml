@@ -113,8 +113,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">offline</string>
     <string name="radio_stream_query_hint">Söksträng</string>
     <string name="radio_stream_search">Sök</string>
-    <string name="radio_stream_start">Starta/stoppa radiostream</string>
-    <string name="radio_stream_url">URL till radiostream</string>
     <string name="reactivate_on_ambient_light_value">Belysningsgräns</string>
     <string name="reactivate_on_ambient_light_value_summary">Skärmen återaktiveras om belysningsgränsen överskrids.</string>
     <string name="reactivate_screen_on_noise">Väck vid bakgrundsljud.</string>

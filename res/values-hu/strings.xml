@@ -130,9 +130,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">nem elérhető</string>
     <string name="radio_stream_query_hint">Sor keresése</string>
     <string name="radio_stream_search">Keresés</string>
-    <string name="radio_stream_start">Rádióadás Indítása/Leállítása</string>
     <string name="radio_stream_unreachable_url">A weboldal nem érhető el.</string>
-    <string name="radio_stream_url">Rádióadás URL</string>
     <string name="reactivate_on_ambient_light_value">Megvilágítás határértéke</string>
     <string name="reactivate_on_ambient_light_value_summary">A kijelző aktiválódik, ha a fényerő értéke eléri a határértéket.</string>
     <string name="reactivate_screen_on_noise">Ébredés a környező hangokra</string>

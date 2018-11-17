@@ -119,8 +119,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">offline</string>
     <string name="radio_stream_query_hint">Vyhledat text</string>
     <string name="radio_stream_search">Hledání</string>
-    <string name="radio_stream_start">Spustit/zastavit vysílání rádia</string>
-    <string name="radio_stream_url">URL rádiového vysílání</string>
     <string name="reactivate_on_ambient_light_value">Práh osvětlení</string>
     <string name="reactivate_on_ambient_light_value_summary">Obrazovka je obnovena pokud osvětlení přesáhne nastavenou hodnotu.</string>
     <string name="reactivate_screen_on_noise">Obnovit při detekci zvuků v okolí</string>

@@ -143,9 +143,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">Çevrimdışı</string>
     <string name="radio_stream_query_hint">Arama kriteri</string>
     <string name="radio_stream_search">Ara</string>
-    <string name="radio_stream_start">Radyo akışını başlat/durdur</string>
     <string name="radio_stream_unreachable_url">Adrese ulaşılamıyor</string>
-    <string name="radio_stream_url">Radyo akış adresi</string>
     <string name="reactivate_on_ambient_light_value">Ortam aydınlık eşiği</string>
     <string name="reactivate_on_ambient_light_value_summary">Ortam aydınlığı belirtilen eşiği geçince ekran tekrar devreye girer</string>
     <string name="reactivate_screen_on_noise">Ortam sesiyle devreye gir</string>
