@@ -276,23 +276,28 @@ public class AlarmClockLayout extends LinearLayout {
             public void onClick(View view) {
                 if (alarmClockEntry == null) return;
 
-                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
-                SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
-                dialog.setRadioStations(radioStations);
-                dialog.setOnStationSlotSelectedListener(new SelectRadioStationSlotDialogFragment.SelectRadioStationSlotDialogListener() {
-                    @Override
-                    public void onStationSlotSelected(int index, String name) {
-                        Log.i(TAG, "onStationSlotSelected: " + String.valueOf(index) + ", " + name);
-                        if (alarmClockEntry == null) {
-                            return;
+                BillingHelperActivity billingHelperActivity = (BillingHelperActivity) context;
+                if (! billingHelperActivity.isPurchased(BillingHelper.ITEM_WEB_RADIO) ) {
+                    billingHelperActivity.showPurchaseDialog();
+                } else {
+                    FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                    SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
+                    dialog.setRadioStations(radioStations);
+                    dialog.setOnStationSlotSelectedListener(new SelectRadioStationSlotDialogFragment.SelectRadioStationSlotDialogListener() {
+                        @Override
+                        public void onStationSlotSelected(int index, String name) {
+                            Log.i(TAG, "onStationSlotSelected: " + String.valueOf(index) + ", " + name);
+                            if (alarmClockEntry == null) {
+                                return;
+                            }
+                            textViewRadio.setText(name);
+                            alarmClockEntry.radioStationIndex = index - 1;
+                            ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                         }
-                        textViewRadio.setText(name);
-                        alarmClockEntry.radioStationIndex = index - 1;
-                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
-                    }
 
-                });
-                dialog.show(fm, "radio station");
+                    });
+                    dialog.show(fm, "radio station");
+                }
             }
         });
     }
