@@ -257,10 +257,10 @@ public class AlarmClockLayout extends LinearLayout {
             }
         });
 
-        String stationName = "No radio station";
+        String stationName = getResources().getString(R.string.radio_station_none);
         if (alarmClockEntry.radioStationIndex > -1) {
 
-            stationName = String.format("Radio station %d", alarmClockEntry.radioStationIndex + 1);
+            stationName = getResources().getString(R.string.radio_station) + " #" + String.valueOf(alarmClockEntry.radioStationIndex + 1);
             if (radioStations != null) {
                 RadioStation station = radioStations.get(alarmClockEntry.radioStationIndex);
                 if (station != null) {
@@ -269,8 +269,7 @@ public class AlarmClockLayout extends LinearLayout {
             }
 
         }
-        Log.d(TAG, String.format("radio station index: %d", alarmClockEntry.radioStationIndex));
-        Log.d(TAG, stationName);
+
         textViewRadio.setText(stationName);
         textViewRadio.setOnClickListener(new OnClickListener() {
             @Override
