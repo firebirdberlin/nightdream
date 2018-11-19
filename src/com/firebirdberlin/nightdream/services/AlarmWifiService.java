@@ -27,7 +27,7 @@ public class AlarmWifiService extends JobService {
         }
 
         Settings settings = new Settings(context);
-        if (!settings.radioStreamActivateWiFi) {
+        if (!settings.radioStreamActivateWiFi || nextAlarmTime.radioStationIndex < 0) {
             return;
         }
 
