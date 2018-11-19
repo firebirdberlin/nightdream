@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
@@ -30,9 +31,10 @@ public class SelectRadioStationSlotDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         stationNames.clear();
-        stationNames.add("No radio station");
+        stationNames.add(getResources().getString(R.string.radio_station_none));
+        String radioStation = getResources().getString(R.string.radio_station);
         for (int i=1; i<7;i++) {
-            stationNames.add(String.format("Radio station %d", i));
+            stationNames.add(String.format("%s #%d", radioStation, i));
         }
 
         final CharSequence[] stationsSeq = stationNames.toArray(new CharSequence[stationNames.size()]);
@@ -43,7 +45,7 @@ public class SelectRadioStationSlotDialogFragment extends DialogFragment {
             stationsSeq[i + 1] = station.name;
         }
 
-        builder.setTitle("Select a radio station")
+        builder.setTitle(getResources().getString(R.string.radio_station_dialog_title))
                .setItems(stationsSeq, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position

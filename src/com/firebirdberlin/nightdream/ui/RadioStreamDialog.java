@@ -76,13 +76,13 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
                 getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.radio_stream_dialog, null);
 
-        queryText = ((EditText) v.findViewById(R.id.query_string));
-        spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
-        stationListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
-        countrySpinner = (Spinner) v.findViewById(R.id.countrySpinner);
-        noResultsText = (TextView) v.findViewById(R.id.no_results);
+        queryText = (v.findViewById(R.id.query_string));
+        spinner = v.findViewById(R.id.progress_bar);
+        stationListView = v.findViewById(R.id.radio_stream_list_view);
+        countrySpinner = v.findViewById(R.id.countrySpinner);
+        noResultsText = v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
-        Button directInputHintText = (Button) v.findViewById(R.id.direct_input_hint);
+        Button directInputHintText = v.findViewById(R.id.direct_input_hint);
         directInputHintText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +90,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             }
         });
 
-        noDataConnectionText = (TextView) v.findViewById(R.id.no_data_connection);
+        noDataConnectionText = v.findViewById(R.id.no_data_connection);
         noDataConnectionText.setVisibility(View.GONE);
         if (Utility.languageIs("de", "en")) {
             // For German and English display this text in parentheses, otherwise the default
@@ -117,21 +117,11 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
         });
 
         ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, stationTexts);
-        //ArrayAdapter<String> stationListViewAdapter = new ArrayAdapter<>(context, R.layout.radio_stream_dialog_list_view_item, stationTexts);
         stationListView.setAdapter(stationListViewAdapter);
         stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RadioStation station = stations.get(position);
-                /*
-                persistRadioStation(station);
-                //TODO setSummary still needed?
-                //setSummary(station.stream);
-                notifyChanged();
-                getDialog().dismiss();
-                */
-
-                //TODO setSummary still needed?
                 radioStreamDialogListener.onRadioStreamSelected(station);
             }
         });
@@ -148,7 +138,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             }
 
         });
-        searchButton = ((Button) v.findViewById(R.id.start_search));
+        searchButton = (v.findViewById(R.id.start_search));
         searchButton.setEnabled(false);
         searchButton.setOnClickListener(new View.OnClickListener() {
 

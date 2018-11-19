@@ -99,7 +99,7 @@ public class RadioStreamDialogFragment extends DialogFragment {
             }
         };
 
-        String title = getResources().getString(R.string.radio_stream) + " #" + String.valueOf(stationIndex + 1);
+        String title = getResources().getString(R.string.radio_station) + " #" + String.valueOf(stationIndex + 1);
         builder.setTitle(title)
                 .setView(view)
                 .setPositiveButton(null, null)
