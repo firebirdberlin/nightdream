@@ -489,7 +489,7 @@ public class Settings {
 
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.apply();
+        prefEditor.commit();
     }
 
     public void deleteNextAlwaysOnTime() {
@@ -497,7 +497,7 @@ public class Settings {
 
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.apply();
+        prefEditor.commit();
     }
 
     public boolean isAlwaysOnAllowed() {

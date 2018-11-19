@@ -55,6 +55,7 @@ public class ScreenReceiver extends BroadcastReceiver {
             }
             NightDreamActivity.start(context, "start standby mode");
         }
+        settings.deleteNextAlwaysOnTime();
     }
 
     public static boolean shallActivateStandby(Context context, Settings settings) {
@@ -119,10 +120,6 @@ public class ScreenReceiver extends BroadcastReceiver {
             isScreenUp = false;
             getGravity(context);
             handler.postDelayed(checkAndActivateApp, 1000);
-        }
-        if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-            Settings settings = new Settings(context);
-            settings.deleteNextAlwaysOnTime();
         }
     }
 }
