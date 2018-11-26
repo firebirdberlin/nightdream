@@ -50,6 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceNotificationText">Achtergrond service actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
+    <string name="batteryTimeoutNever">Nooit</string>
     <string name="behaviour">Gedrag</string>
     <string name="brightness">Helderheid</string>
     <string name="brightness_night_mode">Helderheid nachtmodus</string>

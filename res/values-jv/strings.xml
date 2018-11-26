@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+    <string name="about">Babagan</string>
+    <string name="action_skip">Babah</string>
+    <string name="action_stop">Mandeg</string>
+    <string name="add_new_alarm">Tambah alarm anyar</string>
+    <string name="add_custom_alarm_tone">Tambah dering alarm racikan</string>
+    <string name="alarm">Alarm</string>
+    <string name="alarmFadeIn">Gedhekake volume</string>
+    <string name="alarmUpcoming">Alarm sabanjure</string>
+    <string name="alarmStartDate">Alarm sabanjure nalika</string>
+</resources>
