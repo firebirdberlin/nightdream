@@ -209,6 +209,9 @@ OR
     <string name="screenOrientation">Screen orientation</string>
     <string name="select_alarm_sound">Select alarm sound</string>
     <string name="set_alarm">set alarm</string>
+    <string name="showBatteryWarningSummary">Show a warning at startup when on battery.</string>
+    <string name="showBatteryWarningTitle">Battery warning</string>
+    <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
     <string name="showcase_text_screen_lock">The screen is currently locked. Long press the icon to unlock !</string>
     <string name="showcase_title_screen_lock">Screen lock</string>
     <string name="show_date">Show date</string>

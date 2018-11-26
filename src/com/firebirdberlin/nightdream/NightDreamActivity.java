@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -267,6 +268,14 @@ public class NightDreamActivity extends BillingHelperActivity
 
         bottomPanelLayout.setActivePanel(activePanel);
         triggerAlwaysOnTimeout();
+        showToastIfNotCharging();
+    }
+
+    private void showToastIfNotCharging() {
+        if (mySettings.showBatteryWarning && ! Utility.isCharging(this) ) {
+            Toast.makeText(this,
+                    R.string.showBatteryWarningMessage, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showStopBackgroundServicesDialog() {

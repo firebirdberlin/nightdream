@@ -148,77 +148,77 @@
         </PreferenceCategory>
     </PreferenceScreen>
 
-        <PreferenceScreen
-            android:icon="@drawable/ic_appearance"
-            android:key="colors_screen"
+    <PreferenceScreen
+        android:icon="@drawable/ic_appearance"
+        android:key="colors_screen"
+        android:title="@string/appearance">
+
+        <PreferenceCategory
             android:title="@string/appearance">
 
-            <PreferenceCategory
-                android:title="@string/appearance">
+            <Preference
+                android:icon="@drawable/ic_googleplay"
+                android:key="purchaseDesignPackage"
+                android:title="@string/purchaseWeatherData" />
 
-                <Preference
-                    android:icon="@drawable/ic_googleplay"
-                    android:key="purchaseDesignPackage"
-                    android:title="@string/purchaseWeatherData" />
+            <ListPreference
+                android:defaultValue="0"
+                android:entries="@array/clockLayout"
+                android:entryValues="@array/clockLayoutValues"
+                android:key="clockLayout"
+                android:title="@string/clock_layout" />
 
-                <ListPreference
-                    android:defaultValue="0"
-                    android:entries="@array/clockLayout"
-                    android:entryValues="@array/clockLayoutValues"
-                    android:key="clockLayout"
-                    android:title="@string/clock_layout" />
+            <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:key="clockLayoutPreview"
+                android:selectable="false"
+                android:title="@string/preview" />
 
-                <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:key="clockLayoutPreview"
-                    android:selectable="false"
-                    android:title="@string/preview" />
+            <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
+                android:descendantFocusability="afterDescendants"
+                android:key="colorSelection"
+                android:selectable="true"
+                android:title="@string/colors"
+                />
 
-                <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
-                    android:descendantFocusability="afterDescendants"
-                    android:key="colorSelection"
-                    android:selectable="true"
-                    android:title="@string/colors"
-                    />
+            <SwitchPreference
+                android:defaultValue="true"
+                android:key="showDate"
+                android:title="@string/show_date" />
 
-                <SwitchPreference
-                    android:defaultValue="true"
-                    android:key="showDate"
-                    android:title="@string/show_date" />
+            <com.firebirdberlin.nightdream.DateFormatPreference
+                android:dependency="showDate"
+                android:key="dateFormat"
+                android:title="@string/date_format" />
 
-                <com.firebirdberlin.nightdream.DateFormatPreference
-                    android:dependency="showDate"
-                    android:key="dateFormat"
-                    android:title="@string/date_format" />
+            <com.firebirdberlin.nightdream.DateFormatPreference
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
+                android:key="timeFormat"
+                android:title="@string/timeFormat"
+                custom:formatType="time" />
 
-                <com.firebirdberlin.nightdream.DateFormatPreference
-                    xmlns:custom="http://schemas.android.com/apk/res-auto"
-                    android:key="timeFormat"
-                    android:title="@string/timeFormat"
-                    custom:formatType="time" />
+        </PreferenceCategory>
 
-            </PreferenceCategory>
+        <PreferenceCategory android:title="@string/background">
+            <ListPreference
+                android:defaultValue="1"
+                android:entries="@array/backgroundModes"
+                android:entryValues="@array/backgroundModeValues"
+                android:key="backgroundMode"
+                android:title="@string/background" />
 
-            <PreferenceCategory android:title="@string/background">
-                <ListPreference
-                    android:defaultValue="1"
-                    android:entries="@array/backgroundModes"
-                    android:entryValues="@array/backgroundModeValues"
-                    android:key="backgroundMode"
-                    android:title="@string/background" />
+            <Preference
+                android:key="chooseBackgroundImage"
+                android:title="@string/background_image"/>
 
-                <Preference
-                    android:key="chooseBackgroundImage"
-                    android:title="@string/background_image"/>
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="hideBackgroundImage"
+                android:summary="@string/hide_background_image_in_night_mode_summary"
+                android:title="@string/hide_background_image_in_night_mode" />
 
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="hideBackgroundImage"
-                    android:summary="@string/hide_background_image_in_night_mode_summary"
-                    android:title="@string/hide_background_image_in_night_mode" />
-
-            </PreferenceCategory>
+        </PreferenceCategory>
 
         <PreferenceCategory
             android:key="category_brightness"
@@ -241,126 +241,132 @@
                 seekbar:unitsRight=""/>
         </PreferenceCategory>
 
-        <PreferenceCategory
-            android:key="category_behaviour"
-            android:title="@string/behaviour">
-
-            <SwitchPreference
-                android:defaultValue="false"
-                android:key="useDeviceLock"
-                android:summary="@string/useDeviceLockDescription"
-                android:title="@string/useDeviceLock" />
-
-            <SwitchPreference
-                android:defaultValue="true"
-                android:key="restlessMode"
-                android:title="@string/restless_mode" />
-
-            <SwitchPreference
-                android:defaultValue="true"
-                android:key="persistentBatteryValueWhileCharging"
-                android:summary="@string/persistent_battery_value_while_charging_summary"
-                android:title="@string/persistent_battery_value_while_charging" />
-
-            <ListPreference
-                android:defaultValue="-1"
-                android:entries="@array/screenOrientation"
-                android:entryValues="@array/screenOrientationValues"
-                android:key="screenOrientation"
-                android:title="@string/screenOrientation" />
-
-            <SwitchPreference
-                android:defaultValue="false"
-                android:key="clockLayoutMirrorText"
-                android:title="@string/clock_layout_mirror_text" />
-
-            <SwitchPreference
-                android:defaultValue="false"
-                android:key="doubleTapToFinish"
-                android:summary="@string/doubleTapToFinishSummary"
-                android:title="@string/doubleTapToFinishTitle" />
-        </PreferenceCategory>
-
     </PreferenceScreen>
 
-        <PreferenceScreen
-            android:icon="@drawable/ic_nightmode"
-            android:key="night_mode_screen"
+    <PreferenceScreen
+        android:icon="@drawable/ic_expert"
+        android:title="@string/behaviour">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="doubleTapToFinish"
+            android:summary="@string/doubleTapToFinishSummary"
+            android:title="@string/doubleTapToFinishTitle" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="restlessMode"
+            android:title="@string/restless_mode" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="persistentBatteryValueWhileCharging"
+            android:summary="@string/persistent_battery_value_while_charging_summary"
+            android:title="@string/persistent_battery_value_while_charging" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="showBatteryWarning"
+            android:summary="@string/showBatteryWarningSummary"
+            android:title="@string/showBatteryWarningTitle" />
+
+        <ListPreference
+            android:defaultValue="-1"
+            android:entries="@array/screenOrientation"
+            android:entryValues="@array/screenOrientationValues"
+            android:key="screenOrientation"
+            android:title="@string/screenOrientation" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="clockLayoutMirrorText"
+            android:title="@string/clock_layout_mirror_text" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="useDeviceLock"
+            android:summary="@string/useDeviceLockDescription"
+            android:title="@string/useDeviceLock" />
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:icon="@drawable/ic_nightmode"
+        android:key="night_mode_screen"
+        android:title="@string/night_mode">
+
+        <PreferenceCategory
+            android:key="category_night_mode"
             android:title="@string/night_mode">
 
-            <PreferenceCategory
-                android:key="category_night_mode"
-                android:title="@string/night_mode">
+            <ListPreference
+                android:defaultValue="1"
+                android:entries="@array/nightModeActivationValues"
+                android:entryValues="@array/nightModeActivationModes"
+                android:key="nightModeActivationMode"
+                android:summary="%s"
+                android:title="@string/night_mode_activation_mode" />
 
-                <ListPreference
-                    android:defaultValue="1"
-                    android:entries="@array/nightModeActivationValues"
-                    android:entryValues="@array/nightModeActivationModes"
-                    android:key="nightModeActivationMode"
-                    android:summary="%s"
-                    android:title="@string/night_mode_activation_mode" />
+            <de.firebirdberlin.preference.TimeRangePreference
+                xmlns:timerange="timerange"
+                android:defaultValue="0"
+                android:enabled="false"
+                android:key="nightmode_timerange"
+                android:title="@string/night_mode_timerange_title"
+                timerange:end_text="@string/night_mode_timerange_label_end"
+                timerange:key_suffix_end="_end"
+                timerange:key_suffix_start="_start"
+                timerange:start_text="@string/night_mode_timerange_label_start" />
 
-                <de.firebirdberlin.preference.TimeRangePreference
-                    xmlns:timerange="timerange"
-                    android:defaultValue="0"
-                    android:enabled="false"
-                    android:key="nightmode_timerange"
-                    android:title="@string/night_mode_timerange_title"
-                    timerange:end_text="@string/night_mode_timerange_label_end"
-                    timerange:key_suffix_end="_end"
-                    timerange:key_suffix_start="_start"
-                    timerange:start_text="@string/night_mode_timerange_label_start" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="Night.muteRinger"
+                android:title="@string/mute_ringer" />
 
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="Night.muteRinger"
-                    android:title="@string/mute_ringer" />
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="ambientNoiseDetection"
+                android:summary="@string/ambient_noise_summary"
+                android:title="@string/ambient_noise" />
 
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="ambientNoiseDetection"
-                    android:summary="@string/ambient_noise_summary"
-                    android:title="@string/ambient_noise" />
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="allow_screen_off"
+                android:summary="@string/allow_screen_off_summary"
+                android:title="@string/allow_screen_off" />
 
-                <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="allow_screen_off"
-                    android:summary="@string/allow_screen_off_summary"
-                    android:title="@string/allow_screen_off" />
+            <de.firebirdberlin.preference.InlineSeekBarPreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:defaultValue="20"
+                android:dependency="allow_screen_off"
+                android:key="reactivate_on_ambient_light_value"
+                android:max="30"
+                android:summary="@string/reactivate_on_ambient_light_value_summary"
+                android:title="@string/reactivate_on_ambient_light_value"
+                seekbar:interval="1"
+                seekbar:min="5"
+                seekbar:unitsLeft=""
+                seekbar:unitsRight="lux"/>
 
-                <de.firebirdberlin.preference.InlineSeekBarPreference
-                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                    android:defaultValue="20"
-                    android:dependency="allow_screen_off"
-                    android:key="reactivate_on_ambient_light_value"
-                    android:max="30"
-                    android:summary="@string/reactivate_on_ambient_light_value_summary"
-                    android:title="@string/reactivate_on_ambient_light_value"
-                    seekbar:interval="1"
-                    seekbar:min="5"
-                    seekbar:unitsLeft=""
-                    seekbar:unitsRight="lux"/>
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="allow_screen_off"
+                android:key="reactivate_screen_on_noise"
+                android:title="@string/reactivate_screen_on_noise" />
 
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:dependency="allow_screen_off"
-                    android:key="reactivate_screen_on_noise"
-                    android:title="@string/reactivate_screen_on_noise" />
+            <de.firebirdberlin.preference.InlineSeekBarPreference
+                xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+                android:defaultValue="5"
+                android:key="NoiseSensitivity"
+                android:max="10"
+                android:title="@string/noise_sensitivity"
+                seekbar:interval="1"
+                seekbar:min="0"
+                seekbar:unitsLeft=""
+                seekbar:unitsRight=""/>
+        </PreferenceCategory>
+    </PreferenceScreen>
 
-                <de.firebirdberlin.preference.InlineSeekBarPreference
-                    xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                    android:defaultValue="5"
-                    android:key="NoiseSensitivity"
-                    android:max="10"
-                    android:title="@string/noise_sensitivity"
-                    seekbar:interval="1"
-                    seekbar:min="0"
-                    seekbar:unitsLeft=""
-                    seekbar:unitsRight=""/>
-            </PreferenceCategory>
-        </PreferenceScreen>
-
-        <PreferenceScreen
+    <PreferenceScreen
             android:icon="@drawable/ic_alarm_clock"
             android:key="alarm_screen"
             android:title="@string/alarm">

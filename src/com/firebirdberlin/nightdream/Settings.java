@@ -62,6 +62,7 @@ public class Settings {
     public boolean muteRinger = false;
     public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
+    public boolean showBatteryWarning = true;
     public boolean showDate = true;
     public boolean showDivider = true;
     public boolean showWeather = false;
@@ -228,6 +229,7 @@ public class Settings {
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
+        showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
         showDivider = settings.getBoolean("showDivider", true);
         showWeather = settings.getBoolean("showWeather", false);

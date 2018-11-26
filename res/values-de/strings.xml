@@ -61,7 +61,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="batteryTimeout30min">30 min</string>
     <string name="behaviour">Verhalten</string>
     <string name="brightness">Helligkeit</string>
-    <string name="brightness_night_mode">Helligkeit im Nachmodus</string>
+    <string name="brightness_night_mode">Helligkeit im Nachtmodus</string>
     <string name="brightness_offset">Helligkeits-Richtwert</string>
     <string name="buttonAccessibilitySettings">Benachrichtigungen anzeigen</string>
     <string name="buy">Kaufen</string>
@@ -206,6 +206,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screenOrientation">Bildschirmausrichtung</string>
     <string name="select_alarm_sound">Weckton auswählen</string>
     <string name="set_alarm">Alarm einstellen</string>
+    <string name="showBatteryWarningSummary">Beim Start eine Warnung anzeigen, falls keine Stromquelle angeschlossen ist.</string>
+    <string name="showBatteryWarningTitle">Akkuwarnung</string>
+    <string name="showBatteryWarningMessage">Achtung: Es ist keine Stromquelle verbunden !</string>
     <string name="showcase_text_screen_lock">Der Bildschirm ist gesperrt. Drücken Sie das Symbol lange, um den Bildschirm zu entsperren.</string>
     <string name="showcase_title_screen_lock">Bildschirmsperre</string>
     <string name="show_date">Datum anzeigen</string>
