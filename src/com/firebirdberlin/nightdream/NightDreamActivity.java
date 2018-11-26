@@ -120,8 +120,8 @@ public class NightDreamActivity extends BillingHelperActivity
         public void run() {
             if ( Utility.isCharging(context) ) return;
 
-            mySettings.updateNextAlwaysOnTime();
             setKeepScreenOn(shallKeepScreenOn(mode));
+            mySettings.updateNextAlwaysOnTime();
             triggerAlwaysOnTimeout();
         }
     };

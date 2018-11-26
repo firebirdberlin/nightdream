@@ -9,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -24,6 +25,7 @@ public class ScreenReceiver extends BroadcastReceiver {
     private static boolean isScreenUp = false;
     private static Handler handler = new Handler();
     private Context context = null;
+    private PowerManager.WakeLock wakeLock;
 
     private Runnable checkAndActivateApp = new Runnable() {
         @Override
@@ -50,10 +52,10 @@ public class ScreenReceiver extends BroadcastReceiver {
     private static void conditionallyActivateAlwaysOn(Context context, boolean turnScreenOn) {
         Settings settings = new Settings(context);
         if ( shallActivateStandby(context, settings) ) {
+            NightDreamActivity.start(context, "start standby mode");
             if (turnScreenOn) {
                 Utility.turnScreenOn(context);
             }
-            NightDreamActivity.start(context, "start standby mode");
         }
         settings.deleteNextAlwaysOnTime();
     }
@@ -118,6 +120,14 @@ public class ScreenReceiver extends BroadcastReceiver {
             Log.i(TAG, "ACTION_SCREEN_OFF");
             this.context = context;
             isScreenUp = false;
+            if ( wakeLock != null ) {
+                if (wakeLock.isHeld()) wakeLock.release();
+                wakeLock = null;
+            }
+            wakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE))
+                    .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP ,
+                            "SCREEN_OFF_WAKE_LOCK");
+            wakeLock.acquire(20000);
             getGravity(context);
             handler.postDelayed(checkAndActivateApp, 1000);
         }

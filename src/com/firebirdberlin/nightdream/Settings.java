@@ -485,7 +485,7 @@ public class Settings {
         long now = System.currentTimeMillis();
         nextAlwaysOnTime = now;
         nextAlwaysOnTime += Utility.getScreenOffTimeout(mContext);
-        nextAlwaysOnTime += 60000;
+        nextAlwaysOnTime += 20000;
 
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
