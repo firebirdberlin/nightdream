@@ -545,14 +545,14 @@ public class PreferencesFragment extends PreferenceFragment {
             goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
 
-                    Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-                    startActivityForResult(intent, 0);
+                    startNotificationListenerSettings();
 
                     return true;
                 }
             });
         } else {
             removePreference("startNotificationService");
+            removePreference("autostartForNotifications");
         }
 
         Preference chooseImage = findPreference("chooseBackgroundImage");
@@ -641,6 +641,11 @@ public class PreferencesFragment extends PreferenceFragment {
         setupAlarmClockPreferences();
         setupBatteryTimeoutPreference();
         setupClockLayoutPreference();
+    }
+
+    private void startNotificationListenerSettings() {
+        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+        startActivityForResult(intent, 0);
     }
 
     private void setupLightSensorPreferences() {

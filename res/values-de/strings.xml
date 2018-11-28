@@ -38,6 +38,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="appearance">Aussehen</string>
     <string name="app_name">Nachtuhr</string>
     <string name="auto_brightness">Automatische Helligkeit</string>
+    <string name="autostartForNotificationsSummary">Die App bei neuen Benachrichtigungen starten.</string>
+    <string name="autostartForNotificationsTitle">Benachrichtigungen</string>
     <string name="autostart_message_disabled">Bitte deaktivieren Sie Bildschirmschoner (Daydream), um die Autostart-Option zu aktivieren.</string>
     <string name="autostart_timerange_label_end">Endzeit</string>
     <string name="autostart_timerange_label_start">Startzeit</string>

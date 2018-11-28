@@ -44,6 +44,7 @@ public class Settings {
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
+    public boolean autostartForNotifications = true;
     public boolean standbyEnabledWhileConnected = false;
     public boolean standbyEnabledWhileDisconnected = false;
     public boolean standbyEnabledWhileDisconnectedScreenUp = false;
@@ -173,6 +174,7 @@ public class Settings {
         alarmVolume = settings.getInt("alarmVolume", 3);
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
+        autostartForNotifications = settings.getBoolean("autostartForNotifications", false);
         standbyEnabledWhileConnected = settings.getBoolean("standbyEnabledWhileConnected", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
         standbyEnabledWhileDisconnectedScreenUp = settings.getBoolean("standbyEnabledWhileDisconnectedScreenUp", false);

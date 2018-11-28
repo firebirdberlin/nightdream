@@ -38,6 +38,8 @@ OR
     <string name="appearance">Appearance</string>
     <string name="app_name">Night Clock</string>
     <string name="auto_brightness">Auto brightness</string>
+    <string name="autostartForNotificationsSummary">Activate the app when new notifications are shown.</string>
+    <string name="autostartForNotificationsTitle">Notifications</string>
     <string name="autostart_message_disabled">Please disable screensavers (Daydream) to activate the autostart options.</string>
     <string name="autostart_timerange_label_end">End time</string>
     <string name="autostart_timerange_label_start">Start time</string>
