@@ -5,14 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.HashSet;
 
+@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class mNotificationListener extends NotificationListenerService {
 
     private String TAG = this.getClass().getSimpleName();
@@ -41,8 +47,45 @@ public class mNotificationListener extends NotificationListenerService {
         Log.i(TAG,"++++ notification posted ++++");
         logNotification(sbn);
 
-        if ( ! isClearable(sbn)) return;
+        if ( shallIgnoreNotification(sbn) ) return;
         listNotifications();
+
+        if (!Utility.isScreenOn(this)) {
+            conditionallyStartActivity();
+        }
+    }
+    private boolean shallIgnoreNotification(StatusBarNotification sbn) {
+
+        if ( ! isClearable(sbn) ) return true;
+        Notification notification = sbn.getNotification();
+        if ( notification == null ) return true;
+        return ( notification.priority < Notification.PRIORITY_LOW);
+    }
+
+    private void conditionallyStartActivity() {
+        final Context context = this;
+        Settings settings = new Settings(this);
+        if ( ! settings.autostartForNotifications ) return;
+        final SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (mSensorManager == null) return;
+
+        Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        if (mProximity == null) return;
+
+        mSensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                if (sensorEvent.values[0] > 0 && !Utility.isScreenOn(context)) {
+                    NightDreamActivity.start(context, "start standby mode");
+                }
+                mSensorManager.unregisterListener(this);
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+
+            }
+        }, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -50,7 +93,7 @@ public class mNotificationListener extends NotificationListenerService {
         Log.i(TAG,"++++ notification removed ++++");
         logNotification(sbn);
 
-        if ( ! isClearable(sbn)) return;
+        if ( shallIgnoreNotification(sbn) ) return;
 
         listNotifications();
     }
@@ -82,11 +125,8 @@ public class mNotificationListener extends NotificationListenerService {
                     groupKeys.add(key);
                 }
             }
-
-            if (Build.VERSION.SDK_INT >= 18) {
-                if ( ! sbn.isClearable() ) {
-                    continue;
-                }
+            if ( shallIgnoreNotification(sbn)) {
+                continue;
             }
 
             Intent i = getIntentForBroadCast(sbn);
@@ -122,6 +162,8 @@ public class mNotificationListener extends NotificationListenerService {
         }
     }
 
+
+
     private int getIconId(Notification notification) {
         if (notification == null) return -1;
         if (Build.VERSION.SDK_INT >= 19) {
@@ -144,7 +186,8 @@ public class mNotificationListener extends NotificationListenerService {
                 + "\t" + text
                 + "\t" + notification.tickerText
                 + "\t" + String.valueOf(notification.number)
-                + "\t" + sbn.getPackageName());
+                + "\t" + sbn.getPackageName()
+                + "\t" + notification.priority);
         Log.d(TAG, notification.toString());
     }
 
