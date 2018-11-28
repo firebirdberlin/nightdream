@@ -89,11 +89,11 @@ public class ScreenReceiver extends BroadcastReceiver {
     }
 
     private void getGravity(Context context) {
-        final SensorManager sensorMan = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
+        final SensorManager sensorMan = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        if (sensorMan == null) return;
+
         Sensor sensor = sensorMan.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        if (sensor == null) {
-            return;
-        }
+        if (sensor == null) return;
         sensorMan.registerListener(new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -119,6 +119,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             Log.i(TAG, "ACTION_SCREEN_OFF");
             this.context = context;
+
             isScreenUp = false;
             if ( wakeLock != null ) {
                 if (wakeLock.isHeld()) wakeLock.release();
@@ -131,5 +132,11 @@ public class ScreenReceiver extends BroadcastReceiver {
             getGravity(context);
             handler.postDelayed(checkAndActivateApp, 1000);
         }
+
+        if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+            Settings settings = new Settings(context);
+            settings.deleteNextAlwaysOnTime();
+        }
     }
+
 }

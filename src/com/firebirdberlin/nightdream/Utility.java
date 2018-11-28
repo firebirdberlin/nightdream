@@ -546,4 +546,14 @@ public class Utility {
         mChannel.setShowBadge(false);
         return mChannel;
     }
+
+    private static void playSound(Context context) {
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(context, notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

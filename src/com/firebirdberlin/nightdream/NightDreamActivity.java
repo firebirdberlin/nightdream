@@ -121,8 +121,8 @@ public class NightDreamActivity extends BillingHelperActivity
         public void run() {
             if ( Utility.isCharging(context) ) return;
 
-            setKeepScreenOn(shallKeepScreenOn(mode));
             mySettings.updateNextAlwaysOnTime();
+            setKeepScreenOn(shallKeepScreenOn(mode));
             triggerAlwaysOnTimeout();
         }
     };
@@ -325,6 +325,8 @@ public class NightDreamActivity extends BillingHelperActivity
 
         handler.removeCallbacks(finishApp);
         handler.removeCallbacks(lockDevice);
+        handler.removeCallbacks(alwaysOnTimeout);
+
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
         NightModeReceiver.cancel(this);
