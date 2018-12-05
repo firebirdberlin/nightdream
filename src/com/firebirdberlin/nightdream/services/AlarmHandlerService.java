@@ -195,6 +195,7 @@ public class AlarmHandlerService extends IntentService {
         SimpleTime time = new SimpleTime(now.getTimeInMillis() + settings.snoozeTimeInMillis);
         time.isActive = true;
         time.soundUri = (alarmTime != null) ? alarmTime.soundUri : null;
+        time.radioStationIndex = (alarmTime != null) ? alarmTime.radioStationIndex : null;
         setAlarm(time);
     }
 
