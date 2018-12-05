@@ -65,10 +65,11 @@ public class NightDreamActivity extends BillingHelperActivity
 {
     public static String TAG ="NightDreamActivity";
     private static int PENDING_INTENT_STOP_APP = 1;
+    private static int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
     final private Handler handler = new Handler();
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
-    int mode = 2;
+    private static int mode = 2;
     mAudioManager AudioManage = null;
     private ImageView background_image;
     private ImageView weatherIcon;
@@ -85,6 +86,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
+    private long resumeTime = -1L;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -116,6 +118,13 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     };
 
+    private Runnable checkKeepScreenOn = new Runnable() {
+        @Override
+        public void run() {
+            setKeepScreenOn(shallKeepScreenOn(mode));
+        }
+    };
+
     private Runnable alwaysOnTimeout = new Runnable() {
         @Override
         public void run() {
@@ -142,6 +151,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     static public void start(Context context, String action) {
+        // todo do not start with an active call
         Intent intent = getDefaultIntent(context);
         intent.setAction(action);
         context.startActivity(intent);
@@ -206,7 +216,7 @@ public class NightDreamActivity extends BillingHelperActivity
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
-
+        resumeTime = System.currentTimeMillis();
         screenWasOn = false;
         setKeepScreenOn(true);
         mySettings = new Settings(this);
@@ -241,6 +251,7 @@ public class NightDreamActivity extends BillingHelperActivity
         } else
         if ("start standby mode".equals(action)) {
             nightDreamUI.setLocked(true);
+            setMode(mode);
         } else
         if ("start night mode".equals(action)) {
             last_ambient = mySettings.minIlluminance;
@@ -249,6 +260,8 @@ public class NightDreamActivity extends BillingHelperActivity
             if ( lightSensor == null ) {
                 handler.postDelayed(setScreenOff, 20000);
             }
+        } else {
+            setMode(mode);
         }
 
         if ( AlarmHandlerService.alarmIsRunning() ) {
@@ -326,6 +339,7 @@ public class NightDreamActivity extends BillingHelperActivity
         handler.removeCallbacks(finishApp);
         handler.removeCallbacks(lockDevice);
         handler.removeCallbacks(alwaysOnTimeout);
+        handler.removeCallbacks(checkKeepScreenOn);
 
         PowerConnectionReceiver.schedule(this);
         cancelShutdown();
@@ -535,8 +549,9 @@ public class NightDreamActivity extends BillingHelperActivity
 
         long now = Calendar.getInstance().getTimeInMillis();
         long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
-        if ((0 < nextAlarmTime - now
-                && nextAlarmTime - now < 600000) // 1000 * 60 * 10 = 10 minutes
+        if ( // keep screen on
+                now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS // 45 seconds after resume
+                || (0 < nextAlarmTime - now && nextAlarmTime - now < 600000) // 1000 * 60 * 10 = 10 minutes
                 || AlarmService.isRunning
                 || RadioStreamService.isRunning) {
             Log.d(TAG, "shallKeepScreenOn() true");
@@ -544,12 +559,11 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         boolean isCharging = Utility.isCharging(this);
-        if ((mode > 0
-                || (mode == 0 && !mySettings.allow_screen_off)
-                || ScreenReceiver.shallActivateStandby(context, mySettings)) &&
-
-                (isCharging || mySettings.isAlwaysOnAllowed())
-
+        if (
+                (isCharging || mySettings.isAlwaysOnAllowed()) &&
+                (mode > 0
+                        || (mode == 0 && !mySettings.allow_screen_off)
+                        || ScreenReceiver.shallActivateStandby(context, mySettings))
                 ) {
             Log.d(TAG, "shallKeepScreenOn() true");
             return true;
@@ -569,7 +583,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Intent i = new Intent(this, NightModeListener.class);
         startService(i);
 
-        finish();
+        //finish();
     }
 
     @Subscribe
@@ -584,6 +598,7 @@ public class NightDreamActivity extends BillingHelperActivity
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
         handleBrightnessChange();
+        handler.postDelayed(checkKeepScreenOn, MINIMUM_APP_RUN_TIME_MILLIS);
     }
 
     @Subscribe
