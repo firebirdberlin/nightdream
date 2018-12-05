@@ -23,6 +23,9 @@ import java.util.Calendar;
 public class ScreenReceiver extends BroadcastReceiver {
     private static final String TAG = "ScreenReceiver";
     private static boolean isScreenUp = false;
+    private static boolean deviceIsCovered = false;
+    private boolean proximitySensorChecked = false;
+    private boolean gravitySensorChecked = false;
     private static Handler handler = new Handler();
     private Context context = null;
     private PowerManager.WakeLock wakeLock;
@@ -60,7 +63,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         settings.deleteNextAlwaysOnTime();
     }
 
-    public static boolean shallActivateStandby(Context context, Settings settings) {
+    public static boolean shallActivateStandby(final Context context, Settings settings) {
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         BatteryStats battery = new BatteryStats(context);
@@ -71,6 +74,8 @@ public class ScreenReceiver extends BroadcastReceiver {
         if ( !battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
                 settings.alwaysOnBatteryLevel <= battery.reference.level &&
                 settings.isAlwaysOnAllowed() &&
+                !deviceIsCovered &&
+                !Utility.isInCall(context) &&
                 (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)) {
 
             Calendar now = Calendar.getInstance();
@@ -89,29 +94,44 @@ public class ScreenReceiver extends BroadcastReceiver {
     }
 
     private void getGravity(Context context) {
+        gravitySensorChecked = false;
+        proximitySensorChecked = false;
         final SensorManager sensorMan = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         if (sensorMan == null) return;
 
         Sensor sensor = sensorMan.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        if (sensor == null) return;
-        sensorMan.registerListener(new SensorEventListener() {
+        Sensor proximitySensor = sensorMan.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        if (sensor == null || proximitySensor == null) return;
+        SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                Log.d(TAG, String.format("%3.2f %3.2f %3.2f",
-                        sensorEvent.values[0],
-                        sensorEvent.values[1],
-                        sensorEvent.values[2]));
-                float z = sensorEvent.values[2];
-                isScreenUp = Math.abs(z) > 9.f;
-                handler.post(checkAndActivateApp);
-                sensorMan.unregisterListener(this);
+               if( sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+                   deviceIsCovered = (sensorEvent.values[0] == 0);
+                   Log.d(TAG, String.format("proximity: %3.2f", sensorEvent.values[0]));
+                   proximitySensorChecked = true;
+               } else
+               if( sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
+                   Log.d(TAG, String.format("%3.2f %3.2f %3.2f",
+                           sensorEvent.values[0],
+                           sensorEvent.values[1],
+                           sensorEvent.values[2]));
+                   float z = sensorEvent.values[2];
+                   isScreenUp = Math.abs(z) > 9.f;
+                   gravitySensorChecked = true;
+               }
+               if (gravitySensorChecked && proximitySensorChecked ) {
+                   handler.post(checkAndActivateApp);
+                   sensorMan.unregisterListener(this);
+               }
             }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
 
             }
-        }, sensor, SensorManager.SENSOR_DELAY_GAME);
+        };
+        sensorMan.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorMan.registerListener(eventListener, proximitySensor , SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -121,6 +141,7 @@ public class ScreenReceiver extends BroadcastReceiver {
             this.context = context;
 
             isScreenUp = false;
+            deviceIsCovered = false;
             if ( wakeLock != null ) {
                 if (wakeLock.isHeld()) wakeLock.release();
                 wakeLock = null;
@@ -134,6 +155,8 @@ public class ScreenReceiver extends BroadcastReceiver {
         }
 
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+            deviceIsCovered = false;
+            isScreenUp = false;
             Settings settings = new Settings(context);
             settings.deleteNextAlwaysOnTime();
         }

@@ -25,8 +25,10 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings.System;
+import android.provider.Telephony;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -555,5 +557,12 @@ public class Utility {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isInCall(Context context) {
+        TelephonyManager telephone = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        int callState = telephone.getCallState();
+        return (callState == TelephonyManager.CALL_STATE_RINGING ||
+                callState == TelephonyManager.CALL_STATE_OFFHOOK);
     }
 }

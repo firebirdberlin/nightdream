@@ -59,6 +59,7 @@ public class mNotificationListener extends NotificationListenerService {
         if ( ! isClearable(sbn) ) return true;
         Notification notification = sbn.getNotification();
         if ( notification == null ) return true;
+        //if ( getTitle(sbn) == null ) return true;
         return ( notification.priority < Notification.PRIORITY_LOW);
     }
 
@@ -181,14 +182,30 @@ public class mNotificationListener extends NotificationListenerService {
             title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
             text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
         }
+        String group_key = "";
+        if (Build.VERSION.SDK_INT >= 19) {
+            group_key = notification.getGroup();
+        }
         Log.i(TAG,"ID :" + sbn.getId()
                 + "\t" + title
                 + "\t" + text
                 + "\t" + notification.tickerText
                 + "\t" + String.valueOf(notification.number)
                 + "\t" + sbn.getPackageName()
-                + "\t" + notification.priority);
+                + "\t" + notification.priority
+                + "\t" + group_key
+        );
         Log.d(TAG, notification.toString());
+    }
+
+    private CharSequence getTitle(StatusBarNotification sbn) {
+        Notification notification = sbn.getNotification();
+        CharSequence title = "";
+        CharSequence text = "";
+        if (Build.VERSION.SDK_INT >= 19) {
+            return notification.extras.getCharSequence(Notification.EXTRA_TITLE);
+        }
+        return null;
     }
 
     private void clearNotificationUI() {
