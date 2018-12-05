@@ -62,6 +62,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
     private int currentStreamType = AudioManager.STREAM_ALARM;
+    private int currentStreamVolume = -1;
     private static long sleepTimeInMillis = 0L;
     private static String streamURL = "";
     private HttpStatusCheckTask statusCheckTask = null;
@@ -299,6 +300,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         if (streamingMode == StreamingMode.ALARM) {
             Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+            restoreAlarmVolume();
         }
 
         handler.removeCallbacks(fadeIn);
@@ -327,7 +330,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         Log.i(TAG, "max volume: " + String.valueOf(maxVolume));
         Log.i(TAG, "volume: " + String.valueOf(volume));
+        currentStreamVolume = audioManager.getStreamVolume(currentStreamType);
         audioManager.setStreamVolume(currentStreamType, volume, 0);
+    }
+
+    private void restoreAlarmVolume() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager == null) {
+            return;
+        }
+
+        audioManager.setStreamVolume(currentStreamType, currentStreamVolume, 0);
     }
 
     @Override
