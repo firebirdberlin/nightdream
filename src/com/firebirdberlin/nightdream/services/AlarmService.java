@@ -38,6 +38,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private float currentVolume = 0.f;
+    private int currentAlarmVolume = -1;
     private Context context;
     private SimpleTime alarmTime = null;
 
@@ -85,6 +86,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         handler.removeCallbacks(timeout);
         handler.removeCallbacks(fadeIn);
         AlarmStop();
+        restoreVolume();
         Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         stopForeground(false); // bool: true = remove Notification
@@ -123,7 +125,13 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     public void setVolume(int volume) {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        currentAlarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
+    }
+
+    private void restoreVolume() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, currentAlarmVolume, 0);
     }
 
     @Override
