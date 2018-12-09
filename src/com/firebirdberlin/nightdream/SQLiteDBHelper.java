@@ -27,7 +27,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                     AlarmEntry.COLUMN_IS_NEXT_ALARM + " INTEGER DEFAULT 0," +
                     AlarmEntry.COLUMN_ALARM_SOUND_URI + " text," +
                     AlarmEntry.COLUMN_NEXT_EVENT_AFTER + " INTEGER DEFAULT NULL," +
-                    AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1," +
+                    AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1" +
                     ")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + AlarmEntry.TABLE_NAME;
