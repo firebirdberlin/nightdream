@@ -128,7 +128,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private Runnable alwaysOnTimeout = new Runnable() {
         @Override
         public void run() {
-            if ( Utility.isCharging(context) ) return;
+            if ( Utility.isCharging(context) && mode > 0) return;
 
             mySettings.updateNextAlwaysOnTime();
             setKeepScreenOn(shallKeepScreenOn(mode));
@@ -539,15 +539,23 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI.setMode(new_mode, last_ambient);
 
         setKeepScreenOn(shallKeepScreenOn(new_mode)); // allow the screen to go off
+        if (mode != 0 && new_mode == 0) {
+            triggerAlwaysOnTimeout();
+        }
         mode = new_mode;
     }
 
     private boolean shallKeepScreenOn(int mode) {
         screenWasOn = screenWasOn || Utility.isScreenOn(this);
+        boolean isCharging = Utility.isCharging(this);
+        long now = Calendar.getInstance().getTimeInMillis();
 
         Log.d(TAG, "screenWasOn = " + String.valueOf(screenWasOn));
+        Log.d(TAG, "mode = " + String.valueOf(mode));
+        Log.d(TAG, "isCharging = " + String.valueOf(isCharging));
+        Log.d(TAG, "now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS = " +
+                String.valueOf(now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS ));
 
-        long now = Calendar.getInstance().getTimeInMillis();
         long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
         if ( // keep screen on
                 now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS // 45 seconds after resume
@@ -558,7 +566,6 @@ public class NightDreamActivity extends BillingHelperActivity
             return true;
         }
 
-        boolean isCharging = Utility.isCharging(this);
         if (
                 (isCharging || mySettings.isAlwaysOnAllowed()) &&
                 (mode > 0
@@ -681,7 +688,17 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void triggerAlwaysOnTimeout() {
         handler.removeCallbacks(alwaysOnTimeout);
-        if (mySettings.batteryTimeout > 0 && !Utility.isCharging(this)) {
+        boolean isCharging = Utility.isCharging(this);
+        Log.d(TAG, "triggerAlwaysOnTimeout");
+        if ((! isCharging && mySettings.batteryTimeout > 0) ||
+                (isCharging && mode == 0)) {
+            long timeout = 60000 * mySettings.batteryTimeout;
+
+            if ( isCharging ) {
+                timeout = MINIMUM_APP_RUN_TIME_MILLIS;
+            }
+
+            Log.d(TAG, "triggerAlwaysOnTimeout " + String.valueOf((timeout / 1000) + " seconds"));
             handler.postDelayed(alwaysOnTimeout, 60000 * mySettings.batteryTimeout);
         }
     }

@@ -48,7 +48,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         Calendar now = new GregorianCalendar();
         Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
         Calendar end = new SimpleTime(settings.autostartTimeRangeEndInMinutes).getCalendar();
-        Log.i(TAG, String.valueOf(start.getTimeInMillis()) + " != " + String.valueOf(end.getTimeInMillis()));
         boolean shall_auto_start = true;
         if (end.before(start)){
             shall_auto_start = ( now.after(start) || now.before(end) );
