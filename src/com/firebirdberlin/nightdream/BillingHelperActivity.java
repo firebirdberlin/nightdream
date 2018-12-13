@@ -56,7 +56,7 @@ public abstract class BillingHelperActivity extends Activity {
             Log.i(TAG, "IIAB service connected");
             mService = IInAppBillingService.Stub.asInterface(service);
             billingHelper = new BillingHelper(getApplicationContext(), mService);
-            purchases = billingHelper.getPurchases();
+            updateAllPurchases();
         }
     };
 
@@ -80,6 +80,12 @@ public abstract class BillingHelperActivity extends Activity {
                 new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
         bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateAllPurchases();
     }
 
     @Override
@@ -243,10 +249,7 @@ public abstract class BillingHelperActivity extends Activity {
             String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
             Log.i(TAG, purchaseData);
 
-            // update all purchases
-            if (billingHelper != null) {
-                purchases = billingHelper.getPurchases();
-            }
+            updateAllPurchases();
             try {
                 JSONObject jo = new JSONObject(purchaseData);
                 String sku = jo.getString("productId");
@@ -256,6 +259,12 @@ public abstract class BillingHelperActivity extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void updateAllPurchases() {
+        if (billingHelper != null) {
+            purchases = billingHelper.getPurchases();
         }
     }
 
