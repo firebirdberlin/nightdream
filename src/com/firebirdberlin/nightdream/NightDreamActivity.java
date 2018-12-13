@@ -213,7 +213,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
         resumeTime = System.currentTimeMillis();

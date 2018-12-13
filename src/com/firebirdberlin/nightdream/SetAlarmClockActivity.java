@@ -60,7 +60,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         Utility.registerEventBus(this);
         Settings settings = new Settings(this);
