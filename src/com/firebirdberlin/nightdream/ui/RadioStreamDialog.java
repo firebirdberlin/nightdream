@@ -184,7 +184,8 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
         noDataConnectionText.setVisibility(View.GONE);
 
         String country = getSelectedCountry();
-        new StationRequestTask(this).execute(query, country);
+        String countryCode = getCountryCodeForCountry(country);
+        new StationRequestTask(this).execute(query, countryCode, country);
 
         InputMethodManager imm =
                 (InputMethodManager) queryText.getContext()
@@ -239,11 +240,17 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
         String item = (String) countrySpinner.getSelectedItem();
         if (item != null && !item.isEmpty()) {
-            return countryNameToCodeMap.get(item);
+            return item;
         } else {
             return null;
         }
+    }
 
+    private String getCountryCodeForCountry(String country) {
+        if (country == null || country.isEmpty()) {
+            return null;
+        }
+        return countryNameToCodeMap.get(country);
     }
 
     private void initCountrySpinner() {

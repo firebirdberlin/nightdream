@@ -23,7 +23,8 @@ public class CountryRequestTask extends AsyncTask<Void, Void, List<Country> > {
 
     @Override
     protected List<Country> doInBackground(Void... params) {
-        return DirbleApi.fetchCountries(context.getCacheDir());
+        //return DirbleApi.fetchCountries(context.getCacheDir());
+        return RadioBrowserApi.fetchCountries(context.getCacheDir());
     }
 
     @Override
