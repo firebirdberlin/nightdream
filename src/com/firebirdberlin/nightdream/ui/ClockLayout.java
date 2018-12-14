@@ -437,11 +437,15 @@ public class ClockLayout extends LinearLayout {
         tdate.setFormat24Hour(formatString);
     }
 
-    public void setTimeFormat(String formatString12h, String formatString24h) {
-        if (clock == null) return;
-        CustomDigitalClock tclock = (CustomDigitalClock) clock;
-        tclock.setFormat24Hour(formatString24h);
-        tclock.setFormat12Hour(formatString12h);
+    public void setTimeFormat(String formatString, boolean is24HourFormat) {
+        if (clock != null) {
+            CustomDigitalClock tclock = (CustomDigitalClock) clock;
+            tclock.setCustomFormat(formatString);
+        }
+        if (clock_ampm != null) {
+            CustomDigitalClock tclock = (CustomDigitalClock) clock_ampm;
+            tclock.setCustomFormat(is24HourFormat ? null : "a");
+        }
     }
 
     public void clearWeather() {

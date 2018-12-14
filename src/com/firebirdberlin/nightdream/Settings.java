@@ -120,8 +120,7 @@ public class Settings {
     public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
-    public String timeFormat12h;
-    public String timeFormat24h;
+    public String timeFormat;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
     public long lastWeatherRequestTime = -1L;
@@ -255,8 +254,7 @@ public class Settings {
         radioStreamActivateWiFi = settings.getBoolean("radioStreamActivateWiFi", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
-        timeFormat12h = settings.getString("timeFormat_12h", "h:mm");
-        timeFormat24h = settings.getString("timeFormat_24h", "HH:mm");
+        timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
         weatherCityID = settings.getString("weatherCityID", "");
         lastWeatherRequestTime = settings.getLong("lastWeatherRequestTime", -1L);
 
@@ -276,10 +274,6 @@ public class Settings {
         prefEditor.apply();
     }
 
-    private boolean is24HourMode() {
-        return android.text.format.DateFormat.is24HourFormat(mContext);
-    }
-
     public int getClockLayoutID(boolean preview) {
         if (clockLayout >= 2 && !preview && !purchasedWeatherData) {
             return 1;
@@ -289,10 +283,13 @@ public class Settings {
     }
 
     public String getTimeFormat() {
-        if (is24HourMode() ) {
-            return timeFormat24h;
-        }
-        return timeFormat12h;
+        return timeFormat;
+    }
+
+    private String getDefaultTimeFormat() {
+        boolean is24hr = android.text.format.DateFormat.is24HourFormat(mContext);
+        return is24hr ? "HH:mm" : "h:mm";
+
     }
 
     public String getFullTimeFormat() {
@@ -301,6 +298,13 @@ public class Settings {
             timeFormat += " a";
         }
         return timeFormat;
+    }
+
+    public boolean is24HourFormat() {
+        if (timeFormat.startsWith("H")) {
+            return true;
+        }
+        return false;
     }
 
     public BatteryValue loadBatteryReference() {
@@ -348,10 +352,6 @@ public class Settings {
         }
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return ((SimpleDateFormat)formatter).toLocalizedPattern();
-    }
-
-    public boolean is24HourFormat() {
-        return android.text.format.DateFormat.is24HourFormat(mContext);
     }
 
     private Typeface loadTypeface() {

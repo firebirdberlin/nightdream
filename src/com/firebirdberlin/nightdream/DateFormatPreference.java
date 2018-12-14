@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Build;
@@ -87,18 +86,10 @@ public class DateFormatPreference extends ListPreference {
     private void initHourFormatType() {
         ArrayList<CharSequence> entryList = new ArrayList<CharSequence>();
         HashSet<CharSequence> valueList = new HashSet<CharSequence>();
-        boolean is24Hour = is24HourFormat();
-        if ( is24Hour ) {
-            //valueList.add("k:mm");
-            //valueList.add("kk:mm");
-            valueList.add("H:mm");
-            valueList.add("HH:mm");
-        } else {
-            valueList.add("h:mm");
-            valueList.add("hh:mm");
-            //valueList.add("K:mm");
-            //valueList.add("KK:mm");
-        }
+        valueList.add("H:mm");
+        valueList.add("HH:mm");
+        valueList.add("h:mm");
+        valueList.add("hh:mm");
 
         CharSequence[] values = valueList.toArray(new CharSequence[valueList.size()]);
         Arrays.sort(values);
@@ -110,7 +101,7 @@ public class DateFormatPreference extends ListPreference {
 
         for (CharSequence value : values) {
             String strValue = value.toString();
-            if (!is24Hour) strValue += " a";
+            if (strValue.startsWith("h")) strValue += " a";
             String example = String.format("%s / %s / %s",
                     dateAsString(strValue, date1),
                     dateAsString(strValue, date2),
@@ -128,10 +119,6 @@ public class DateFormatPreference extends ListPreference {
     private Date setHour(Calendar cal, int hour) {
         cal.set(Calendar.HOUR_OF_DAY, hour);
         return cal.getTime();
-    }
-
-    private boolean is24HourFormat() {
-        return android.text.format.DateFormat.is24HourFormat(getContext());
     }
 
     private void initDateFormatType() {
@@ -203,20 +190,5 @@ public class DateFormatPreference extends ListPreference {
     @Override
     public void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
-        if (positiveResult && FORMAT_TYPE_HOUR.equals(formatType)) {
-            SharedPreferences.Editor editor = getSharedPreferences().edit();
-            editor.putString(getTimeKey(), getValue());
-            editor.commit();
-        }
-    }
-
-    public String getTimeKey() {
-        if (FORMAT_TYPE_HOUR.equals(formatType)) {
-            return String.format("%s_%s",
-                                 super.getKey(),
-                                 (is24HourFormat()) ? "24h" : "12h");
-        }
-
-        return super.getKey();
     }
 }
