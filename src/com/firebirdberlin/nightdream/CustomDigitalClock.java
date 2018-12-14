@@ -20,12 +20,13 @@ import java.util.Calendar;
 
 public class CustomDigitalClock extends AutoAdjustTextView {
 
-    Context context = null;
+    Context context;
     TimeReceiver timeReceiver;
     Calendar mCalendar;
     String mFormat;
     private String m12 = "h:mm aa";
     private String m24 = "HH:mm";
+    private String mCustom = null;
     private boolean capitalize = false;
     private SimpleDateFormat simpleDateFormat;
     private FormatChangeObserver mFormatChangeObserver;
@@ -118,12 +119,21 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     }
 
     private void setFormat() {
+        if (mCustom != null ) {
+           mFormat = mCustom;
+        } else
         if (get24HourMode()) {
             mFormat = m24;
         } else {
             mFormat = m12;
         }
         simpleDateFormat = new SimpleDateFormat(mFormat);
+    }
+
+    public void setCustomFormat(String format) {
+        this.mCustom = format;
+        setFormat();
+        updateTextView();
     }
 
     public void setFormat12Hour(String format) {
