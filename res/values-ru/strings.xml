@@ -38,6 +38,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="appearance">Внешний вид</string>
     <string name="app_name">Ночные часы</string>
     <string name="auto_brightness">Авторегулировка яркости</string>
+    <string name="autostartForNotificationsSummary">Активировать приложение при новом уведомлении</string>
+    <string name="autostartForNotificationsTitle">Уведомления</string>
     <string name="autostart_message_disabled">Пожалуйста, отключите заставку (Daydream) для включения автозапуска</string>
     <string name="autostart_timerange_label_end">Время окончания</string>
     <string name="autostart_timerange_label_start">Время начала</string>
