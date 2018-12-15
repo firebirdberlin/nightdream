@@ -609,13 +609,23 @@ vi - Phong Nguyen"/>
 
                 <Preference
                     android:icon="@drawable/ic_radio"
-                    android:key="about_dirble"
-                    android:summary="Dirble.com"
+                    android:key="about_radio_browser"
+                    android:summary="radio-browser.info"
                     android:title="@string/radio_stream">
                     <intent
                         android:action="android.intent.action.VIEW"
-                        android:data="http://www.dirble.com" />
+                        android:data="http://www.radio-browser.info" />
                 </Preference>
+
+                <!--<Preference-->
+                    <!--android:icon="@drawable/ic_radio"-->
+                    <!--android:key="about_dirble"-->
+                    <!--android:summary="Dirble.com"-->
+                    <!--android:title="@string/radio_stream">-->
+                    <!--<intent-->
+                        <!--android:action="android.intent.action.VIEW"-->
+                        <!--android:data="http://www.dirble.com" />-->
+                <!--</Preference>-->
 
                 <Preference
                     android:key="about_showcaseview"

@@ -444,7 +444,7 @@ public class ClockLayout extends LinearLayout {
         }
         if (clock_ampm != null) {
             CustomDigitalClock tclock = (CustomDigitalClock) clock_ampm;
-            tclock.setCustomFormat(is24HourFormat ? null : "a");
+            tclock.setCustomFormat(is24HourFormat ? "" : "a");
         }
     }
 
