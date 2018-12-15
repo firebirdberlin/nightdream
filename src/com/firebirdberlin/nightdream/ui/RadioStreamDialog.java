@@ -227,7 +227,6 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
         });
 
         updateCountryNameToCodeMap(countries);
-        //RadioStation persistedRadioStation = getPersistedRadioStation();
         updateCountrySpinner(countries, persistedRadioStation);
     }
 
@@ -324,7 +323,9 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
                         numFound++;
 
                         // if radio station is already configured selects its country as default
-                        if (persistedCountryCode != null && c.countryCode.equals(persistedRadioStation.countryCode)) {
+                        if (persistedCountryCode != null &&
+                                c.countryCode != null &&
+                                c.countryCode.equals(persistedRadioStation.countryCode)) {
                             selectedItemIndex = countryList.size() - 1;
                         }
                     }
@@ -336,13 +337,14 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             }
         }
 
-
         // now add all countries (including preferred country, so they are duplicates, but no problem)
         for (Country c : countries) {
             countryList.add(c.name);
 
             // if radio station is already configured selects its country as default
-            if (persistedCountryCode != null && c.countryCode.equals(persistedRadioStation.countryCode)) {
+            if (persistedCountryCode != null &&
+                    c.countryCode != null &&
+                    c.countryCode.equals(persistedRadioStation.countryCode)) {
                 selectedItemIndex = countryList.size() - 1;
             }
         }
@@ -352,7 +354,8 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
         // select as default: first preferred country, and "any country"
         if (selectedItemIndex == -1 && !countryList.isEmpty()) {
-            selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
+            selectedItemIndex = 0;
+            //selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
         }
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
