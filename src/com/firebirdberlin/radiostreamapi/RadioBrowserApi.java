@@ -69,7 +69,7 @@ public class RadioBrowserApi {
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("charset", "utf-8");
-            urlConnection.setRequestProperty("User-Agent", "NightDream/2.5 - com.firebirdberlin.nightdream");
+            urlConnection.setRequestProperty("User-Agent", "NightDream/2.8 - com.firebirdberlin.nightdream");
             urlConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
             urlConnection.getOutputStream().write(postDataBytes);
 
