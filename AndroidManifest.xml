@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebirdberlin.nightdream"
-    android:versionCode="222"
-    android:versionName="2.8.8">
+    android:versionCode="223"
+    android:versionName="2.8.9">
 
     <uses-sdk android:targetSdkVersion="27" />
 
