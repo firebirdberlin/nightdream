@@ -379,6 +379,12 @@ public class PreferencesFragment extends PreferenceFragment {
         if (purchased_actions) {
             removePreference("purchaseActions");
         }
+
+        if (! Utility.languageIs("de", "en") ||
+                purchased_donation || purchased_pro ||
+                (purchased_web_radio && purchased_weather_data)) {
+            removePreference("upgrade_wanted");
+        }
     }
 
     public void purchaseIntent(String sku, int REQUEST_CODE) {
@@ -567,11 +573,13 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference purchaseWeatherDataPreference = findPreference("purchaseWeatherData");
         Preference purchaseDesignPackagePreference = findPreference("purchaseDesignPackage");
         Preference purchaseActionsPreference = findPreference("purchaseActions");
+        Preference purchaseWantedPreference = findPreference("upgrade_wanted");
 
         donationPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseWeatherDataPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseDesignPackagePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
         purchaseActionsPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        purchaseWantedPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
 
         Preference prefHandlePower = findPreference("handle_power");
         Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
