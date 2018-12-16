@@ -12,6 +12,13 @@
             android:data="https://nightclock.duckdns.org/pastt" />
     </Preference>
 
+    <Preference
+        android:icon="@drawable/ic_attention"
+        android:key="upgrade_wanted"
+        android:summary="@string/buy_upgrade_summary"
+        android:title="@string/buy_upgrade_title">
+    </Preference>
+
     <PreferenceScreen
         android:icon="@drawable/ic_power"
         android:key="autostart"
