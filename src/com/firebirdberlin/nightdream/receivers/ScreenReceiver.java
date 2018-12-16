@@ -66,17 +66,16 @@ public class ScreenReceiver extends BroadcastReceiver {
     public static boolean shallActivateStandby(final Context context, Settings settings) {
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
-        if (!settings.isAlwaysOnAllowed()) {
-            return false;
-        }
-
         BatteryStats battery = new BatteryStats(context);
-        if (battery.reference.isCharging && settings.handle_power && settings.standbyEnabledWhileConnected) {
+        if (battery.reference.isCharging && settings.handle_power &&
+                settings.standbyEnabledWhileConnected &&
+                settings.isAlwaysOnAllowed()) {
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
 
         if ( !battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
                 settings.alwaysOnBatteryLevel <= battery.reference.level &&
+                settings.isAlwaysOnAllowed() &&
                 !deviceIsCovered &&
                 !Utility.isInCall(context) &&
                 (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)) {
