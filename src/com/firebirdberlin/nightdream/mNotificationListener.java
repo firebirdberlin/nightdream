@@ -174,18 +174,11 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void logNotification(StatusBarNotification sbn) {
-        if (sbn == null) return;
+        if (sbn == null || Build.VERSION.SDK_INT < 26) return;
         Notification notification = sbn.getNotification();
-        CharSequence title = "";
-        CharSequence text = "";
-        if (Build.VERSION.SDK_INT >= 19) {
-            title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
-            text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
-        }
-        String group_key = "";
-        if (Build.VERSION.SDK_INT >= 19) {
-            group_key = notification.getGroup();
-        }
+        CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
+        CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+        String group_key =  notification.getGroup();
         Log.i(TAG,"ID :" + sbn.getId()
                 + "\t" + title
                 + "\t" + text

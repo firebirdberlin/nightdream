@@ -216,6 +216,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
+        //AudioManage.activateDnDMode(true);
         resumeTime = System.currentTimeMillis();
         screenWasOn = false;
         setKeepScreenOn(true);
@@ -355,6 +356,7 @@ public class NightDreamActivity extends BillingHelperActivity
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
+            //AudioManage.activateDnDMode(false);
         }
     }
 
