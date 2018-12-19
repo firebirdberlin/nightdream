@@ -9,11 +9,11 @@ import android.util.Log;
 import org.greenrobot.eventbus.EventBus;
 
 public class mAudioManager{
-    final static String TAG = "NightDream.mAudioManager";
-    Context mContext;
-    AudioManager audiomanage = null;
-    int currentRingerMode;
-    EventBus bus = EventBus.getDefault();
+    final static String TAG = "mAudioManager";
+    private Context mContext;
+    private AudioManager audiomanage;
+    private int currentRingerMode;
+    private EventBus bus = EventBus.getDefault();
 
     private class OnSetRingerModeSilent {
          private int currentRingerMode;
@@ -21,13 +21,15 @@ public class mAudioManager{
          public OnSetRingerModeSilent(int currentRingerMode) {
              this.currentRingerMode = currentRingerMode;
          }
-    };
+    }
 
     public mAudioManager(Context context){
         this.mContext = context;
         audiomanage = null;
         audiomanage = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-        currentRingerMode = audiomanage.getRingerMode();
+        if (audiomanage != null) {
+            currentRingerMode = audiomanage.getRingerMode();
+        }
     }
 
     public void setRingerModeSilent(){
@@ -35,7 +37,8 @@ public class mAudioManager{
             NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            if ( !notificationManager.isNotificationPolicyAccessGranted() ) {
+            if ( notificationManager == null ||
+                    !notificationManager.isNotificationPolicyAccessGranted() ) {
                 return;
             }
         }
@@ -66,5 +69,22 @@ public class mAudioManager{
 
         // otherwise we will reset the ringer mode
         audiomanage.setRingerMode(currentRingerMode);
+    }
+
+    public void activateDnDMode(boolean enabled) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return;
+        }
+        NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager != null &&
+                notificationManager.isNotificationPolicyAccessGranted()) {
+            notificationManager.setInterruptionFilter(
+                    enabled ?
+                            NotificationManager.INTERRUPTION_FILTER_ALARMS :
+                            NotificationManager.INTERRUPTION_FILTER_ALL
+            );
+        }
     }
 }
