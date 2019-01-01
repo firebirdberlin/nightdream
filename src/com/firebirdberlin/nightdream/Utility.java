@@ -224,7 +224,7 @@ public class Utility {
                     ((PowerManager) c.getSystemService(POWER_SERVICE))
                             .newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
                                             PowerManager.ACQUIRE_CAUSES_WAKEUP,
-                                    "WAKE_LOCK_TAG");
+                                    "nightdream:WAKE_LOCK_TAG");
             wl.acquire();
             wl.release();
         } catch (Exception e) {

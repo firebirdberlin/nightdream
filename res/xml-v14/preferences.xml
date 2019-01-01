@@ -390,7 +390,7 @@
                 android:title="@string/use_internal_alarm" />
 
             <SwitchPreference
-                android:defaultValue="true"
+                android:defaultValue="false"
                 android:dependency="useInternalAlarm"
                 android:key="useAlarmSwipeGesture"
                 android:title="@string/useAlarmSwipeGesture" />
