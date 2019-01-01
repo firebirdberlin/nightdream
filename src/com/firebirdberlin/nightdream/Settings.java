@@ -71,7 +71,7 @@ public class Settings {
     public boolean showWindSpeed = false;
     public boolean useDeviceLock = false;
     public boolean useInternalAlarm = true;
-    public boolean useAlarmSwipeGesture = true;
+    public boolean useAlarmSwipeGesture = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
     public boolean radioStreamActivateWiFi = false;
@@ -249,7 +249,7 @@ public class Settings {
         useDeviceLock = settings.getBoolean("useDeviceLock", false);
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", true);
-        useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", true);
+        useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
         radioStreamActivateWiFi = settings.getBoolean("radioStreamActivateWiFi", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);
