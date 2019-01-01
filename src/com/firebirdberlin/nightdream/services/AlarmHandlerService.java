@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
@@ -68,6 +69,7 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void snooze(Context context) {
+        Toast.makeText(context, "S N O O Z E", Toast.LENGTH_LONG).show();
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_SNOOZE_ALARM);
         context.startService(i);
