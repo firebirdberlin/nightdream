@@ -263,10 +263,15 @@ public class Utility {
 
     public static boolean isCharging(Context context) {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, ifilter);
-        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        return (status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL);
+        try {
+            Intent batteryStatus = context.registerReceiver(null, ifilter);
+            int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            return (status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                    status == BatteryManager.BATTERY_STATUS_FULL);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean languageIs(String... languages) {
