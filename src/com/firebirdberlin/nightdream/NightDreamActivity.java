@@ -71,7 +71,6 @@ public class NightDreamActivity extends BillingHelperActivity
     Sensor lightSensor = null;
     private static int mode = 2;
     mAudioManager AudioManage = null;
-    private ImageView background_image;
     private ImageView weatherIcon;
     private ImageView alarmClockIcon;
     private WebRadioImageView radioIcon;
@@ -185,7 +184,7 @@ public class NightDreamActivity extends BillingHelperActivity
         weatherIcon = findViewById(R.id.icon_weather_forecast);
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         radioIcon = findViewById(R.id.radio_icon);
-        background_image = findViewById(R.id.background_view);
+        ImageView background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         cn = new ComponentName(this, AdminReceiver.class);
@@ -216,13 +215,14 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
-        //AudioManage.activateDnDMode(true);
         resumeTime = System.currentTimeMillis();
         screenWasOn = false;
         setKeepScreenOn(true);
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
-
+        if ( mySettings.activateDoNotDisturb ) {
+            AudioManage.activateDnDMode(true);
+        }
         ScreenWatcherService.conditionallyStart(this, mySettings);
 
         scheduleShutdown();
@@ -351,12 +351,14 @@ public class NightDreamActivity extends BillingHelperActivity
         unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
+        if ( mySettings.activateDoNotDisturb ) {
+            AudioManage.activateDnDMode(false);
+        }
         if (mySettings.allow_screen_off && mode == 0
                 && screenWasOn && !Utility.isScreenOn(this) ){ // screen off in night mode
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
-            //AudioManage.activateDnDMode(false);
         }
     }
 
@@ -591,8 +593,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
         startService(i);
-
-        //finish();
     }
 
     @Subscribe

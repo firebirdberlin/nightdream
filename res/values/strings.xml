@@ -20,6 +20,8 @@ OR
     <string name="action_skip">Skip</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stop</string>
+    <string name="activateDoNotDisturb">activate DnD</string>
+    <string name="activateDoNotDisturbSummary">Enable do-not-disturb mode while the app is active.</string>
     <string name="add_new_alarm">add new alarm</string>
     <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="add_custom_font">Add a custom typeface</string>
