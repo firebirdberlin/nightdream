@@ -295,11 +295,25 @@
             android:key="clockLayoutMirrorText"
             android:title="@string/clock_layout_mirror_text" />
 
+        <Preference
+            android:icon="@drawable/ic_googleplay"
+            android:key="purchaseActions2"
+            android:title="@string/purchaseActions" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="activateDoNotDisturb"
+            android:summary="@string/activateDoNotDisturbSummary"
+            android:title="@string/activateDoNotDisturb" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="useDeviceLock"
+            android:enabled="false"
             android:summary="@string/useDeviceLockDescription"
             android:title="@string/useDeviceLock" />
+
     </PreferenceScreen>
 
     <PreferenceScreen

@@ -24,6 +24,7 @@ public class NightModeListener extends Service {
     private SoundMeter soundmeter;
     private ReceiverPowerDisconnected pwrReceiver = null;
     private LightSensorEventListener lightSensorEventListener = null;
+    private boolean activateDnD = false;
     private boolean reactivate_on_noise = false;
     private int reactivate_on_ambient_light_value = 30;
 
@@ -56,10 +57,19 @@ public class NightModeListener extends Service {
         reactivate_on_noise = settings.reactivateScreenOnNoise();
         maxAmplitude *= settings.sensitivity;
         reactivate_on_ambient_light_value = settings.reactivate_on_ambient_light_value;
+        activateDnD = settings.activateDoNotDisturb;
+
+        conditionallyActivateDoNotDisturb(true);
 
         if (debug){
             Log.d(TAG,"onCreate() called.");
         }
+    }
+
+    private void conditionallyActivateDoNotDisturb(boolean on) {
+        if ( ! activateDnD ) return;
+        mAudioManager audioManage = new mAudioManager(this);
+        audioManage.activateDnDMode(on);
     }
 
     @Override
@@ -151,13 +161,13 @@ public class NightModeListener extends Service {
 
     private void stopService() {
         Log.i(TAG, "stopService()");
-
         stopForeground(true); // bool: true = remove Notification
         startApp();
         stopSelf();
     }
 
     private void startApp(){
+        conditionallyActivateDoNotDisturb(false);
         NightDreamActivity.start(this, "start night mode");
     }
 

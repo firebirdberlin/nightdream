@@ -42,6 +42,7 @@ public class Settings {
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
     private final static String TAG = "NightDream.Settings";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
+    public boolean activateDoNotDisturb = false;
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
     public boolean autostartForNotifications = true;
@@ -168,6 +169,7 @@ public class Settings {
         AlarmToneName = settings.getString("AlarmToneName", "");
         fontUri = getFontUri();
         fontName = settings.getString("fontName", "7-Segment Digital Font");
+        activateDoNotDisturb = settings.getBoolean("activateDoNotDisturb", false);
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         alarmVolume = settings.getInt("alarmVolume", 3);

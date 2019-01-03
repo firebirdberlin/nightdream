@@ -162,7 +162,10 @@ public class PreferencesFragment extends PreferenceFragment {
                             setupAlarmClock(sharedPreferences);
                             break;
                         case "Night.muteRinger":
-                            setupNotificationAccessPermission(sharedPreferences);
+                            setupNotificationAccessPermission(sharedPreferences, "Night.muteRinger");
+                            break;
+                        case "activateDoNotDisturb":
+                            setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");
                             break;
                         case "batteryTimeout":
                             settings.batteryTimeout = Integer.parseInt(sharedPreferences.getString("batteryTimeout", "-1"));
@@ -335,6 +338,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
             storeWeatherDataPurchase(weatherDataIsPurchased);
             resetAlwaysOnModeIfNotPurchased();
+            resetUseDeviceLockIfNotPurchased();
             togglePurchasePreferences();
 
             // if continuationToken != null, call getPurchases again
@@ -353,6 +357,17 @@ public class PreferencesFragment extends PreferenceFragment {
         editor.apply();
     }
 
+    private void resetUseDeviceLockIfNotPurchased() {
+        if (purchased_actions) {
+            return;
+        }
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("useDeviceLock", false);
+        editor.apply();
+        setupDeviceAdministratorPermissions(prefs);
+    }
+
     private void storeWeatherDataPurchase(boolean weatherIsPurchased) {
         purchased_weather_data = weatherIsPurchased;
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -366,6 +381,8 @@ public class PreferencesFragment extends PreferenceFragment {
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
         enablePreference("expert_screen", purchased_actions);
+        enablePreference("activateDoNotDisturb", purchased_actions);
+        enablePreference("useDeviceLock", purchased_actions);
 
         if (purchased_donation) {
             removePreference("donation_play");
@@ -378,6 +395,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
         if (purchased_actions) {
             removePreference("purchaseActions");
+            removePreference("purchaseActions2");
         }
 
         if (! Utility.languageIs("de", "en") ||
@@ -1002,12 +1020,12 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
 
-    private void setupNotificationAccessPermission(SharedPreferences sharedPreferences) {
+    private void setupNotificationAccessPermission(SharedPreferences sharedPreferences, String preferenceKey) {
         if (!isAdded() ) return;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return;
         }
-        boolean on = sharedPreferences.getBoolean("Night.muteRinger", false);
+        boolean on = sharedPreferences.getBoolean(preferenceKey, false);
         NotificationManager notificationManager =
             (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (on && !notificationManager.isNotificationPolicyAccessGranted() ) {
