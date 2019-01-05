@@ -79,6 +79,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             }
         }
     };
+    private Runnable timeout = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeIn);
+            handler.removeCallbacks(fadeOut);
+            handler.removeCallbacks(startSleep);
+            handler.post(fadeOut);
+        }
+    };
+
     private Runnable fadeOut = new Runnable() {
         @Override
         public void run() {
@@ -223,6 +234,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
             radioStationIndex = alarmTime.radioStationIndex;
             checkStreamAndStart(radioStationIndex);
+            // stop the alarm automatically after playing for two hours
+            handler.postDelayed(timeout, 60000 * 120);
         } else
         if ( ACTION_START_STREAM.equals(action) ) {
             alarmTime = new SimpleTime(intent.getExtras());
@@ -305,8 +318,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
 
         handler.removeCallbacks(fadeIn);
+        handler.removeCallbacks(fadeOut);
+        handler.removeCallbacks(timeout);
+        handler.removeCallbacks(startSleep);
         stopPlaying();
-        stopForeground(false); // bool: true = remove Notification
+        if (alarmIsRunning) {
+            AlarmHandlerService.stop(getApplicationContext());
+        }
         isRunning = false;
         alarmIsRunning = false;
         radioStationIndex = -1;
@@ -315,6 +333,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        stopForeground(false); // bool: true = remove Notification
     }
 
     public void setAlarmVolume(int volume, boolean useMusicStream) {
