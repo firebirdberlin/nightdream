@@ -87,6 +87,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
     <string name="confirm_reset_question_layout">Möchten Sie dieses Layout wirklich zurücksetzen ?</string>
     <string name="contribute">Beitragen</string>
+    <string name="contribute_beta_channel">Beta-Versionen erhalten</string>
     <string name="contribute_source_code">Quellcode</string>
     <string name="contribute_translation">Übersetzungen</string>
     <string name="country">Land</string>
