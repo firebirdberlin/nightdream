@@ -667,6 +667,7 @@ public class PreferencesFragment extends PreferenceFragment {
         setupAlarmClockPreferences();
         setupBatteryTimeoutPreference();
         setupClockLayoutPreference();
+        setupDoNotDisturbPreference();
     }
 
     private void startNotificationListenerSettings() {
@@ -875,6 +876,11 @@ public class PreferencesFragment extends PreferenceFragment {
         startActivity(Intent.createChooser(sharingIntent, description));
     }
 
+    private void setupDoNotDisturbPreference() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            removePreference("activateDoNotDisturb");
+        }
+    }
     private void setupClockLayoutPreference() {
         if (!isAdded() ) return;
         Preference pref = findPreference("clockLayout");
@@ -1083,7 +1089,9 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void enablePreference(String key, boolean on) {
         Preference preference = findPreference(key);
-        preference.setEnabled(on);
+        if (preference != null) {
+            preference.setEnabled(on);
+        }
     }
 
     private void removePreference(String key) {
