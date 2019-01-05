@@ -8,6 +8,7 @@ public class WeatherEntry {
     public static final int MILES_PER_HOUR = 2;
     public static final int KM_PER_HOUR = 3;
     public static final int BEAUFORT = 4;
+    public static final int KNOT = 5;
     public static final long INVALID = -1L;
 
     public long timestamp = INVALID;
