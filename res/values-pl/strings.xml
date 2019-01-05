@@ -38,6 +38,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="appearance">Wygląd</string>
     <string name="app_name">Nocny zegar</string>
     <string name="auto_brightness">Auto jasność</string>
+    <string name="autostartForNotificationsSummary">Aktywuj aplikację, gdy wyświetlone zostanie nowe powiadomienie</string>
+    <string name="autostartForNotificationsTitle">Powiadomienia</string>
     <string name="autostart_message_disabled">Proszę wyłącz wygaszacz ekranu (Daydream)  żeby aktywowac opcje autostartu</string>
     <string name="autostart_timerange_label_end">Koniec</string>
     <string name="autostart_timerange_label_start">Początek</string>
@@ -65,6 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Intensywność świecenia</string>
     <string name="buttonAccessibilitySettings">Dostęp do powiadomień</string>
     <string name="buy">Kup</string>
+    <string name="buy_upgrade_summary">Ulepsz do wersji pro</string>
+    <string name="buy_upgrade_title">Ulepsz</string>
     <string name="category_handle_power">.... i kiedy podłączony do</string>
     <string name="category_handle_power_autostart_time">Rozpocznij w przedziale czasowym</string>
     <string name="choose_alarm_sound">Dzwięk alarmu</string>
@@ -242,6 +246,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tomorrow">Jutro</string>
     <string name="translations">Tłumaczenia</string>
     <string name="typeface_7_segment">7 segment LED</string>
+    <string name="typeface_dancing_script">Dancing Script Regular</string>
     <string name="typeface_roboto_condensed">Robot</string>
     <string name="typeface_roboto_light">Robot light</string>
     <string name="typeface_roboto_medium">Robot medium</string>

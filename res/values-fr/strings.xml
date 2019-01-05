@@ -65,8 +65,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Brillance</string>
     <string name="brightness_night_mode">Brillance de nuit</string>
     <string name="brightness_offset">Compensation de la luminosité</string>
-    <string name="buttonAccessibilitySettings">Démarrer l\'auditeur de notification</string>
+    <string name="buttonAccessibilitySettings">Afficher les notifications</string>
     <string name="buy">Acheter</string>
+    <string name="buy_upgrade_summary">Passez à la version pro maintenant</string>
+    <string name="buy_upgrade_title">Mise à niveau</string>
     <string name="category_handle_power">...et lorsque connecté à</string>
     <string name="category_handle_power_autostart_time">Démarrer dans la plage de temps</string>
     <string name="choose_alarm_sound">Tonalité d\'alarme</string>
@@ -245,10 +247,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tomorrow">Demain</string>
     <string name="translations">Traductions</string>
     <string name="typeface_7_segment">LED à 7 segments</string>
+    <string name="typeface_dancing_script">Dancing Script normal</string>
     <string name="typeface_roboto_condensed">Roboto condensé</string>
     <string name="typeface_roboto_light">Roboto léger</string>
     <string name="typeface_roboto_medium">Roboto moyen</string>
-    <string name="typeface_roboto_regular">Roboto régulier</string>
+    <string name="typeface_roboto_regular">Roboto normal</string>
     <string name="typeface_roboto_thin">Roboto mince</string>
     <string name="typeface">Type de caractère</string>
     <string name="uninstall">Désintaller l\'application</string>
