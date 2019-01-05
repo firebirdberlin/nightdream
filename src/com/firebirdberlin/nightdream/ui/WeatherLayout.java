@@ -222,6 +222,9 @@ public class WeatherLayout extends LinearLayout {
             case WeatherEntry.KM_PER_HOUR:
                 double kmph = WindSpeedConversion.metersPerSecondToKilometersPerHour(entry.windSpeed);
                 return String.format("%.1fkm/h", kmph);
+            case WeatherEntry.KNOT:
+                double kn = WindSpeedConversion.metersPerSecondToKnot(entry.windSpeed);
+                return String.format("%.1fkn", kn);
             case WeatherEntry.METERS_PER_SECOND:
             default:
                 return String.format("%.1fm/s", entry.windSpeed);

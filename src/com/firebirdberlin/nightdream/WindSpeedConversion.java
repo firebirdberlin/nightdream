@@ -42,4 +42,8 @@ public class WindSpeedConversion {
     public static double metersPerSecondToKilometersPerHour(double mps) {
         return mps  * 3.6;
     }
+
+    public static double metersPerSecondToKnot(double mps) {
+        return mps * 1.9438446;
+    }
 }
