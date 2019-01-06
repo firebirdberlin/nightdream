@@ -88,6 +88,7 @@
         <service
             android:name=".services.AlarmHandlerService"
             android:enabled="true" />
+
         <service
             android:name=".services.DownloadWeatherService"
             android:permission="android.permission.BIND_JOB_SERVICE"
@@ -195,7 +196,14 @@
             android:label="@string/alarm"
             android:theme="@style/SecondaryActivityTheme"
             android:parentActivityName=".NightDreamActivity">
-
+            <intent-filter>
+                <action android:name="android.intent.action.SET_ALARM" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SHOW_ALARMS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

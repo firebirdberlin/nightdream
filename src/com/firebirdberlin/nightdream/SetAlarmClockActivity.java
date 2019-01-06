@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.AlarmClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -24,6 +26,7 @@ import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -68,6 +71,14 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         dateFormat = settings.dateFormat;
         radioStations = settings.getFavoriteRadioStations();
         init();
+
+        Intent intent = getIntent();
+        Utility.logIntent(TAG, "onResume()", intent);
+        if (intent != null && AlarmClock.ACTION_SET_ALARM.equals(intent.getAction())) {
+            intent.setAction(""); // clear that intent
+
+            saveAlarmEntryFromIntent(intent);
+        }
     }
 
     private void openDB() {
@@ -267,5 +278,32 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         }
         if (id > -1) entries.remove(id);
         update();
+    }
+
+    private void saveAlarmEntryFromIntent(Intent intent) {
+        if (intent == null) return;
+        SimpleTime entry = new SimpleTime();
+
+        entry.hour = intent.getIntExtra(AlarmClock.EXTRA_HOUR, 0);
+        entry.min = intent.getIntExtra(AlarmClock.EXTRA_MINUTES, 0);
+
+        ArrayList<Integer> days = intent.getIntegerArrayListExtra(AlarmClock.EXTRA_DAYS);
+        if (days != null) {
+            for (int day: days) {
+                entry.addRecurringDay(day);
+            }
+        }
+        entry.isActive = true;
+        entry = db.save(entry);
+        entries.add(entry);
+        update(entry.id);
+        if (intent.getBooleanExtra(AlarmClock.EXTRA_SKIP_UI, false)) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 3000);
+        }
     }
 }
