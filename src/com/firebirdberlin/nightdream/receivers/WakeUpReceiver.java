@@ -100,7 +100,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         if (alarmTime != null) {
             intent.putExtras(alarmTime.toBundle());
         }
-        logIntent("getPendingIntent", intent);
+        Utility.logIntent(TAG, "getPendingIntent", intent);
         //return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
         // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
@@ -131,22 +131,10 @@ public class WakeUpReceiver extends BroadcastReceiver {
         }
     }
 
-    private static void logIntent(String msg, Intent data) {
-        Log.d(TAG, msg);
-        Bundle bundle = data.getExtras();
-        if (bundle != null) {
-            for (String key : bundle.keySet()) {
-                Object value = bundle.get(key);
-                String strValue = (value != null) ? value.toString() : "";
-                Log.d(TAG, String.format("%s = '%s'", key, strValue));
-            }
-        }
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        logIntent("onReceive()", intent);
+        Utility.logIntent(TAG, "onReceive()", intent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AlarmNotificationService.cancelNotification(context);
             AlarmNotificationService.cancelJob(context);

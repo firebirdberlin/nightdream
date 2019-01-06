@@ -23,6 +23,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings.System;
 import android.provider.Telephony;
@@ -569,5 +570,20 @@ public class Utility {
         int callState = telephone.getCallState();
         return (callState == TelephonyManager.CALL_STATE_RINGING ||
                 callState == TelephonyManager.CALL_STATE_OFFHOOK);
+    }
+
+    public static void logIntent(String TAG, String msg, Intent data) {
+        Log.d(TAG, msg);
+        if (data.getAction() != null) {
+            Log.d(TAG, String.format("%s = '%s'", "action", data.getAction()));
+        }
+        Bundle bundle = data.getExtras();
+        if (bundle != null) {
+            for (String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                String strValue = (value != null) ? value.toString() : "";
+                Log.d(TAG, String.format("%s = '%s'", key, strValue));
+            }
+        }
     }
 }
