@@ -89,7 +89,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(settings.getClockLayoutID(false));
         clockLayout.setTypeface(settings.typeface);
-        clockLayout.setPrimaryColor(settings.clockColor);
+        clockLayout.setPrimaryColor(settings.clockColor, settings.glowRadius, settings.clockColor);
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());

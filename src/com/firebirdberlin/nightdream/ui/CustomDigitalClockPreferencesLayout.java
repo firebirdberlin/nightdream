@@ -6,15 +6,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+
 
 public class CustomDigitalClockPreferencesLayout extends LinearLayout {
 
@@ -41,7 +44,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
 //        child.setBackgroundResource(R.drawable.border);
         addView(child, lp);
 
-        Switch switchShowDivider = (Switch) child.findViewById(R.id.switch_show_divider);
+        Switch switchShowDivider = child.findViewById(R.id.switch_show_divider);
         switchShowDivider.setChecked(settings.showDivider);
         switchShowDivider.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -53,6 +56,26 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
             }
         });
 
+        SeekBar glowRadius = child.findViewById(R.id.glowRadius);
+        glowRadius.setProgress(settings.glowRadius);
+        glowRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                settings.glowRadius = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                settings.setGlowRadius(progress);
+                if (mListener != null) {
+                    mListener.onConfigChanged();
+                }
+            }
+        });
         TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
         String fontButtonText = fontButton.getText().toString();
         fontButtonText = String.format("%s: %s", fontButtonText, settings.fontName);

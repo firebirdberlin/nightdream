@@ -93,6 +93,7 @@ public class Settings {
     public int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
+    public int glowRadius = 0;
     public int nightModeActivationMode;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
@@ -204,6 +205,7 @@ public class Settings {
         final String defaultColorString = "#33B5E5";
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
+        glowRadius = settings.getInt("glowRadius", 0);
         clockLayout = Integer.parseInt(settings.getString("clockLayout", "0"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
         location_lat = settings.getFloat("location_lat", 0.f);
@@ -273,6 +275,13 @@ public class Settings {
         showDivider = on;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("showDivider", on);
+        prefEditor.apply();
+    }
+
+    public void setGlowRadius(int radius) {
+        glowRadius = radius;
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putInt("glowRadius", radius);
         prefEditor.apply();
     }
 

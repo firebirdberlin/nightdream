@@ -555,7 +555,7 @@ public class NightDreamUI {
 
         bottomPanelLayout.setCustomColor(accentColor, textColor);
 
-        clockLayout.setPrimaryColor(accentColor);
+        clockLayout.setPrimaryColor(accentColor, settings.glowRadius, accentColor);
         clockLayout.setSecondaryColor(textColor);
 
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
