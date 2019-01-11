@@ -69,7 +69,7 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void snooze(Context context) {
-        Toast.makeText(context, "S N O O Z E", Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, "S N O O Z E", Toast.LENGTH_LONG).show();
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_SNOOZE_ALARM);
         context.startService(i);
@@ -209,6 +209,7 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void setAlarm(SimpleTime time) {
+        Log.i(TAG, "setAlarm() -> " + time.toString());
         DataSource db = new DataSource(context);
         db.open();
         db.save(time);
