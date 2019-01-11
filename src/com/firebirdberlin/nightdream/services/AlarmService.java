@@ -117,6 +117,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             if ( mMediaPlayer == null ) return;
             currentVolume += 0.01;
             if ( currentVolume < 1. ) {
+                Log.i(TAG, String.format("fadeIn: currentVolume = %3.2f", currentVolume));
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
                 handler.postDelayed(fadeIn, 150);
             }
@@ -124,8 +125,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     };
 
     public void setVolume(int volume) {
+        Log.i(TAG, String.format("setVolume(%d)", volume));
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         currentAlarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+        Log.i(TAG, String.format("volume = %d/%d", currentAlarmVolume, audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)));
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
     }
 
