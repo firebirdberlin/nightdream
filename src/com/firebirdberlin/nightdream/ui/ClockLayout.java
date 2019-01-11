@@ -96,17 +96,20 @@ public class ClockLayout extends LinearLayout {
     public void setTypeface(Typeface typeface) {
         if (clock != null) {
             clock.setTypeface(typeface);
+
         }
         if ( clock_ampm != null ) {
             clock_ampm.setTypeface(typeface);
         }
     }
 
-    public void setPrimaryColor(int color) {
+    public void setPrimaryColor(int color, int glowRadius, int glowColor) {
         if (clock != null) {
+            clock.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock.setTextColor(color);
         }
         if ( clock_ampm != null ) {
+            clock.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock_ampm.setTextColor(color);
         }
         if (analog_clock != null) {

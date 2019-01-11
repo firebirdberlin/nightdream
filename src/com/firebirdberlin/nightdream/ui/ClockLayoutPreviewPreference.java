@@ -107,7 +107,8 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setLayout(clockLayoutId);
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setTypeface(settings.typeface);
-        clockLayout.setPrimaryColor(previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight);
+        int color = previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight;
+        clockLayout.setPrimaryColor(color, settings.glowRadius, color);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);

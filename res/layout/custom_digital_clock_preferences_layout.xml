@@ -24,6 +24,25 @@
         android:textSize="16sp"
         tools:targetApi="ice_cream_sandwich" />
 
+    <TextView
+        android:id="@+id/textViewHandLength"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/decoration_glow_effect"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="16sp" />
+
+    <SeekBar
+        android:id="@+id/glowRadius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:paddingBottom="28dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="28dp" />
+
     <Switch
         android:id="@+id/switch_show_divider"
         android:layout_width="match_parent"
@@ -36,5 +55,6 @@
         android:text="@string/show_divider"
         android:textSize="18sp"
         tools:checked="false" />
+
 
 </LinearLayout>

@@ -166,9 +166,15 @@ public class mNotificationListener extends NotificationListenerService {
 
 
     private int getIconId(Notification notification) {
+        Log.d(TAG, "getIconId()");
         if (notification == null) return -1;
         if (Build.VERSION.SDK_INT >= 19) {
-            return notification.extras.getInt(Notification.EXTRA_SMALL_ICON);
+            try {
+                return notification.extras.getInt(Notification.EXTRA_SMALL_ICON);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
         }
         return notification.icon;
     }
@@ -188,7 +194,7 @@ public class mNotificationListener extends NotificationListenerService {
                 + "\t" + notification.priority
                 + "\t" + group_key
         );
-        Log.d(TAG, notification.toString());
+        //Log.d(TAG, notification.toString());
     }
 
     private CharSequence getTitle(StatusBarNotification sbn) {

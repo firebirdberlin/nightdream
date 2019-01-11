@@ -101,6 +101,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private Drawable getNotificationIcon(Context context, String packageName, int id) {
+        Log.d(TAG, "getNotificationIcon for id = " + String.valueOf(id));
         if (packageName == null || id == -1) return null;
         try {
             Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);

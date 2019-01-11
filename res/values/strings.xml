@@ -102,6 +102,7 @@ OR
     <string name="dialog_title_thank_you">Thanks</string>
     <string name="digit_emphasize_quarters">Emphasize quarters</string>
     <string name="decoration">Decoration</string>
+    <string name="decoration_glow_effect">Glow effect</string>
     <string name="decoration_style_none">None</string>
     <string name="decoration_style_minute_hand">Minute hand</string>
     <string name="decoration_style_labels">Numbers</string>
