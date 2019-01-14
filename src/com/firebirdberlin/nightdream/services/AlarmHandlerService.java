@@ -69,7 +69,7 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void snooze(Context context) {
-        //Toast.makeText(context, "S N O O Z E", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "S N O O Z E", Toast.LENGTH_LONG).show();
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_SNOOZE_ALARM);
         context.startService(i);
@@ -136,7 +136,11 @@ public class AlarmHandlerService extends IntentService {
         }
     }
 
-    private void stopAlarm(){
+    private void stopAlarm() {
+       stopAlarm(true);
+    }
+
+    private void stopAlarm(boolean reschedule){
         boolean isRunning = alarmIsRunning();
         if (AlarmService.isRunning) {
             AlarmService.stop(context);
@@ -162,7 +166,10 @@ public class AlarmHandlerService extends IntentService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AlarmNotificationService.cancelNotification(this);
         }
-        WakeUpReceiver.schedule(context);
+
+        if (reschedule) {
+            WakeUpReceiver.schedule(context);
+        }
     }
 
     private void skipAlarm(SimpleTime time) {
@@ -191,9 +198,9 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void snoozeAlarm() {
-        stopAlarm();
-        Calendar now = Calendar.getInstance();
+        stopAlarm(false);
 
+        Calendar now = Calendar.getInstance();
         SimpleTime time = new SimpleTime(now.getTimeInMillis() + settings.snoozeTimeInMillis);
         time.isActive = true;
         time.soundUri = (alarmTime != null) ? alarmTime.soundUri : null;
