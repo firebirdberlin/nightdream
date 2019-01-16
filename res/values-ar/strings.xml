@@ -17,11 +17,15 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">حول التطبيق</string>
+    <string name="action_skip">تخطي</string>
+    <string name="action_stop">توقيف</string>
+    <string name="add_new_alarm">إضافة منبه جديد</string>
     <string name="alarm">منبه</string>
     <string name="alarmFadeIn">صوت تصاعدي</string>
     <string name="alarmVolume">مستوى الصوت</string>
     <string name="allow_screen_off_summary">قفل الشاشة أثناء الليل</string>
     <string name="allow_screen_off">قفل الشاشة</string>
+    <string name="always_on">مفعل دائما</string>
     <string name="ambient_noise">الكشف عن الضوضاء المحيطة</string>
     <string name="ambient_noise_summary">هل تريد منع تفعيل الوضع الليلي بواسطة الضوضاء المحيطة ؟</string>
     <string name="appearance">المظهر</string>
@@ -34,6 +38,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_gradient">متدرجة</string>
     <string name="background_image">صورة</string>
     <string name="background_image_select">إختر صورة</string>
+    <string name="batteryTimeoutNever">أبدا</string>
+    <string name="batteryTimeout1min">1 د</string>
+    <string name="batteryTimeout2min">2 د</string>
+    <string name="batteryTimeout5min">5 د</string>
     <string name="behaviour">السلوك</string>
     <string name="brightness">السطوع</string>
     <string name="brightness_offset">تعويض السطوع</string>
