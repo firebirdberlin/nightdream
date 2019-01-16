@@ -17,9 +17,11 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">À propos</string>
-    <string name="action_skip">Passer</string>
-    <string name="action_snooze">Reporter l\'alarme</string>
-    <string name="action_stop">Stop</string>
+    <string name="action_skip">Passeur</string>
+    <string name="action_snooze">Journaliste l\'alarme</string>
+    <string name="action_stop">Arrêter</string>
+    <string name="activateDoNotDisturb">activer DnD</string>
+    <string name="activateDoNotDisturbSummary">Activer le mode ne pas distribuer quand l\'application est allumet</string>
     <string name="add_new_alarm">Ajouter une nouvelle alarme</string>
     <string name="add_custom_alarm_tone">Ajouter une sonnerie d\'alarme personnalisée</string>
     <string name="add_custom_font">Ajouter une police personnalisée</string>
@@ -27,14 +29,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmFadeIn">Volume progressif</string>
     <string name="alarmUpcoming">Alarme à venir</string>
     <string name="alarmStartDate">Prochaine alarme</string>
-    <string name="alarmStartsFrom">À partir du:</string>
+    <string name="alarmStartsFrom">Du À partir:</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Éteindre l\'affichage durant la nuit</string>
-    <string name="allow_screen_off">Écran éteint</string>
+    <string name="allow_screen_off">Écran s\'</string>
     <string name="always_on">Toujours allumé</string>
     <string name="alwaysOnBatteryLevel">Niveau batterie supérieur à</string>
     <string name="ambient_noise">Détection du bruit ambiant</string>
-    <string name="ambient_noise_summary">Le bruit ambiant devrait-il prévenir l\'activation du mode nuit?</string>
+    <string name="ambient_noise_summary">Le bruit ambiant devrait-il prévenir l\'activation du mode nuit ?</string>
     <string name="appearance">Apparence</string>
     <string name="app_name">Horloge nocturne</string>
     <string name="auto_brightness">Luminosité automatique</string>
@@ -88,6 +90,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question_layout">Voulez-vous vraiment réinitialiser l\'apparence</string>
     <string name="confirm_reset">Réinitialiser</string>
     <string name="contribute">Contribuer</string>
+    <string name="contribute_beta_channel">Obtenir les versions beta</string>
     <string name="contribute_source_code">Code source</string>
     <string name="contribute_translation">Traduction</string>
     <string name="country">Pays</string>
