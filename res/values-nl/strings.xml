@@ -222,8 +222,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Bedtijd</string>
     <string name="snoozeTime">Sluimertijd</string>
     <string name="speedUnit">Eenheid van windsnelheid</string>
-    <string name="standbyEnabledWhileConnectedSummary">Activeren als het scherm uit gaat.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Standby-modus</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">met scherm aan</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Deze optie zorgt ervoor dat je batterij snel leegloopt!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">binnen tijdsbereik</string>

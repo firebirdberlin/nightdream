@@ -158,8 +158,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">睡眠計時器</string>
     <string name="snoozeTime">貪睡時間</string>
     <string name="speedUnit">風速單位</string>
-    <string name="standbyEnabledWhileConnectedSummary">螢幕關閉時執行</string>
-    <string name="standbyEnabledWhileConnectedTitle">待命模式</string>
     <string name="standbyEnabledWhileDisconnectedSummary">此功能將會加快電力消耗！</string>
     <string name="standbyEnabledWhileDisconnectedTitle">使用電池期間執行待命模式</string>
     <string name="standbyNotificationText">待命模式執行中。</string>

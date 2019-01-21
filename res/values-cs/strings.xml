@@ -146,8 +146,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Časovač spánku</string>
     <string name="snoozeTime">Doba odložení budíku</string>
     <string name="speedUnit">Jednotky pro rychlost větru</string>
-    <string name="standbyEnabledWhileConnectedSummary">Aktivovat, když se obrazovka vypne.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Pohotovostní režim</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Tato funkce má velkou spostřebu!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Pohotovostní režim při vybíjení.</string>
     <string name="standbyNotificationText">Pohotovostní služba je spuštěna.</string>

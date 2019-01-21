@@ -224,8 +224,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Таймер сна</string>
     <string name="snoozeTime">Время повтора</string>
     <string name="speedUnit">Ед. скорости ветра</string>
-    <string name="standbyEnabledWhileConnectedSummary">Активировать при выключении экрана.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Режим ожидания</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">По включению экрана</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Это ускорит разряд АКБ!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">В промежутке времени</string>

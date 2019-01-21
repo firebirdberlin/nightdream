@@ -229,8 +229,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Mode veille</string>
     <string name="snoozeTime">Durée du report</string>
     <string name="speedUnit">Unité - vitesse du vent</string>
-    <string name="standbyEnabledWhileConnectedSummary">Activer lorsque l\'écran s\'éteint</string>
-    <string name="standbyEnabledWhileConnectedTitle">Pause</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">avec écran allumé</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Cette fonctionnalité consomme beaucoup de batterie !</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">Dans cette plage horaire</string>

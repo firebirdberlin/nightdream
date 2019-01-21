@@ -29,13 +29,6 @@
             android:key="handle_power"
             android:title="@string/handle_power" />
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="handle_power"
-            android:key="standbyEnabledWhileConnected"
-            android:summary="@string/standbyEnabledWhileConnectedSummary"
-            android:title="@string/standbyEnabledWhileConnectedTitle" />
-
         <PreferenceCategory
             key="category_handle_power_autostart_time"
             android:dependency="handle_power"

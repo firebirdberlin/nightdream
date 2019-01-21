@@ -46,7 +46,6 @@ public class Settings {
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
     public boolean autostartForNotifications = true;
-    public boolean standbyEnabledWhileConnected = false;
     public boolean standbyEnabledWhileDisconnected = false;
     public boolean standbyEnabledWhileDisconnectedScreenUp = false;
     public boolean autoBrightness = false;
@@ -177,7 +176,6 @@ public class Settings {
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autostartForNotifications = settings.getBoolean("autostartForNotifications", false);
-        standbyEnabledWhileConnected = settings.getBoolean("standbyEnabledWhileConnected", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
         standbyEnabledWhileDisconnectedScreenUp = settings.getBoolean("standbyEnabledWhileDisconnectedScreenUp", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);

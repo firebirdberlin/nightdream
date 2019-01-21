@@ -138,8 +138,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">הצג מהירות הרוח</string>
     <string name="snoozeTime">זמן נדנוד</string>
     <string name="speedUnit">יחידת מידה לרוח</string>
-    <string name="standbyEnabledWhileConnectedSummary">הפעל כאשר המסך נכבה</string>
-    <string name="standbyEnabledWhileConnectedTitle">מצב המתנה</string>
     <string name="standbyEnabledWhileDisconnectedSummary">האפשרות הזו תנצל את הסוללה במהירות</string>
     <string name="standbyEnabledWhileDisconnectedTitle">מצב המתנה בזמן ניצול הסוללה</string>
     <string name="standbyNotificationText">שרות ההמתנה מופעל</string>

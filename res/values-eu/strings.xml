@@ -158,9 +158,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Loaldiko erlojua</string>
 <string name="snoozeTime">Snooze denbora</string>
 <string name="speedUnit">Haizearen abiadurako unitatea</string>
-<string name="standbyEnabledWhileConnectedSummary">Pantaila itzaltzen denean aktibatu</string>
-<string name="standbyEnabledWhileConnectedTitle">Standby modua</string>
-<string name="standbyEnabledWhileDisconnectedSummary">Aukera honek bateria azkar hustuko du!!!</string>
+    <string name="standbyEnabledWhileDisconnectedSummary">Aukera honek bateria azkar hustuko du!!!</string>
 <string name="standbyEnabledWhileDisconnectedTitle">Stanby modua deskargatzen ari denean </string>
 <string name="standbyNotificationText">Stanby modua aktibatuta dago</string>
 <string name="temperatureUnit">Tenperatura unitatea</string>

@@ -159,8 +159,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Ébresztő óra</string>
     <string name="snoozeTime">Szundi idő</string>
     <string name="speedUnit">Szélerősség mértékegysége</string>
-    <string name="standbyEnabledWhileConnectedSummary">Aktiválódik, amikor a képernyő kikapcsol.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Készenléti mód</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Ez a funkció gyorsan lemeríti az akkumulátort!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Készenléti üzemmód kisütés közben</string>
     <string name="standbyNotificationText">A készenléti szolgáltatás fut.</string>
