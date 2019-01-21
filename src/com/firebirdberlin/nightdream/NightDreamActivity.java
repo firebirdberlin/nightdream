@@ -657,8 +657,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
 
-        if ( ! mySettings.standbyEnabledWhileConnected
-                && PowerConnectionReceiver.shallAutostart(this, mySettings)) {
+        if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
             PendingIntent pendingIntent = getShutdownIntent();
             SimpleTime simpleEndTime = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes);
             Calendar calendar = simpleEndTime.getCalendar();

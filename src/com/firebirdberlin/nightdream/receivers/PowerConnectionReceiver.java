@@ -105,8 +105,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     public static void conditionallyStartApp(Context context) {
         Settings settings = new Settings(context);
-        if (!settings.standbyEnabledWhileConnected // postpone autostart until screen turns off
-                && shallAutostart(context, settings)) {
+        if (shallAutostart(context, settings)) {
             NightDreamActivity.start(context);
         }
     }

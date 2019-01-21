@@ -68,7 +68,6 @@ public class ScreenReceiver extends BroadcastReceiver {
 
         BatteryStats battery = new BatteryStats(context);
         if (battery.reference.isCharging && settings.handle_power &&
-                settings.standbyEnabledWhileConnected &&
                 settings.isAlwaysOnAllowed()) {
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }

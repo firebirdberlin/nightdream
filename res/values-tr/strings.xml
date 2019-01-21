@@ -173,8 +173,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Uyku zamanlayıcı</string>
     <string name="snoozeTime">Erteleme süresi</string>
     <string name="speedUnit">Rüzgar hızı birimi</string>
-    <string name="standbyEnabledWhileConnectedSummary">Ekran kapalıyken devreye gir</string>
-    <string name="standbyEnabledWhileConnectedTitle">Bekleme modu</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Bu özellik pilinizin hızlı bir şekilde boşalmasına sebep olur!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Pil boşalırken bekleme modu.</string>
     <string name="standbyNotificationText">Bekleme servisi çalışıyor</string>

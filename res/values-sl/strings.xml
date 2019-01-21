@@ -157,9 +157,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="sleep_time_dialog_title">Čas Dremeža</string>
 <string name="snoozeTime">Cas dremeza</string>
 <string name="speedUnit">Enota za hitrost vetra</string>
-<string name="standbyEnabledWhileConnectedSummary">Aktiviraj ko se zaslon ugasne</string>
-<string name="standbyEnabledWhileConnectedTitle">V pripravljenosti</string>
-<string name="standbyEnabledWhileDisconnectedSummary">Ta funkcija hitro izprazni baterijo!</string>
+    <string name="standbyEnabledWhileDisconnectedSummary">Ta funkcija hitro izprazni baterijo!</string>
 <string name="standbyEnabledWhileDisconnectedTitle">V pripravljenosti pri praznjenju</string>
 <string name="standbyNotificationText">Servis za pripravo je v teku</string>
 <string name="temperatureUnit">Enota za temperaturo</string>

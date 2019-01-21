@@ -162,8 +162,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Mostre a velocidade do vento</string>
     <string name="snoozeTime">Tempo de soneca.</string>
     <string name="speedUnit">Unidade de velocidade do vento</string>
-    <string name="standbyEnabledWhileConnectedSummary">Ativar quando a tela é desligada.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Modo de espera</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Este recurso rapidamente drena sua bateria!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Modo de Espera durante a descarga.</string>
     <string name="standbyNotificationText">O serviço de espera está em execução.</string>

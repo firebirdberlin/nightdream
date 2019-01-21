@@ -159,8 +159,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Ώρα ξυπνητηριού</string>
     <string name="snoozeTime">Ώρα αναβολής</string>
     <string name="speedUnit">Μονάδα μέτρησης ανέμου</string>
-    <string name="standbyEnabledWhileConnectedSummary">Ενεργοποίηση όταν η οθόνη είναι απενεργοποιημένη</string>
-    <string name="standbyEnabledWhileConnectedTitle">Αναμονή</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Προσοχή Αυτό θα αδειάσει γρήγορα την μπαταρία σας</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Αναμονή όταν αποφορτίζει</string>
     <string name="standbyNotificationText">Η αναμονή είναι ενεργή</string>

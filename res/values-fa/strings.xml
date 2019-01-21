@@ -123,7 +123,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_weather">نمایش آب و هوای محلی</string>
     <string name="show_wind_speed">نمایش سرعت باد</string>
     <string name="snoozeTime">زمان تعویق</string>
-    <string name="standbyEnabledWhileConnectedTitle">حالت انتظار</string>
     <string name="standbyEnabledWhileDisconnectedSummary">این ویژگی به سرعت باطری را تخلیه میکند</string>
     <string name="standbyNotificationText">حالت انتظار فعال است</string>
     <string name="timeFormat">نحوه نمایش ساعت</string>

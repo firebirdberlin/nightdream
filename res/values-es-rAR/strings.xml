@@ -157,8 +157,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Tiempo de Dormir</string>
     <string name="snoozeTime">Tiempo par aplazar</string>
     <string name="speedUnit">Unidad de velocidad del viento</string>
-    <string name="standbyEnabledWhileConnectedSummary">Activar cuando la pantalla se apague</string>
-    <string name="standbyEnabledWhileConnectedTitle">Modo de espera</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Esta característica puede bajar tu batería rápidamente!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Entrar en modo de espera mientras se descarga</string>
     <string name="standbyNotificationText">Servicio Modo de Espera esta activo</string>

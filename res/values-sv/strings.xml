@@ -160,8 +160,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Visa vindhastighet</string>
     <string name="snoozeTime">Snoozetid</string>
     <string name="speedUnit">Enhet för vindhastighet</string>
-    <string name="standbyEnabledWhileConnectedSummary">Aktivera når skärmen stängs av.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Vänteläge</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Denna funktion förbrukar mycket batteritid!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Vänteläge vid urladdning.</string>
     <string name="standbyNotificationText">Våntelägestjänsten körs.</string>

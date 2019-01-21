@@ -224,8 +224,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Sleep Timer</string>
     <string name="snoozeTime">Schlummerzeit</string>
     <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
-    <string name="standbyEnabledWhileConnectedSummary">Aktiviere erst, wenn der Bildschirm abgeschaltet wird.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Standby</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">mit Bildschirm nach oben</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Diese Funktion entlädt den Akku sehr schnell!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">im Zeitraum</string>

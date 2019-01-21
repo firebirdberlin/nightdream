@@ -154,7 +154,6 @@ public class PreferencesFragment extends PreferenceFragment {
                             setupDeviceAdministratorPermissions(sharedPreferences);
                             break;
                         case "handle_power":
-                        case "standbyEnabledWhileConnected":
                         case "standbyEnabledWhileDisconnected":
                             setupStandByService(sharedPreferences);
                             break;

@@ -187,8 +187,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Timer spegnimento automatico</string>
     <string name="snoozeTime">Intervallo rinvio</string>
     <string name="speedUnit">Unità di misura del vento</string>
-    <string name="standbyEnabledWhileConnectedSummary">Attiva quando si spegni lo schermo</string>
-    <string name="standbyEnabledWhileConnectedTitle">Modalità standby</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Questa funzione scarica la batteria velocemente</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Modalità standby durante la scarica</string>
     <string name="standbyNotificationText">Servizio standby attivo</string>

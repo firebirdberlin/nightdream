@@ -230,8 +230,6 @@ OR
     <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="speedUnit">Wind speed unit</string>
-    <string name="standbyEnabledWhileConnectedSummary">Activate when the screen turns off.</string>
-    <string name="standbyEnabledWhileConnectedTitle">Standby Mode</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">with screen up</string>
     <string name="standbyEnabledWhileDisconnectedSummary">This feature quickly drains your battery!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">within the time range</string>
