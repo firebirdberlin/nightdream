@@ -19,6 +19,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="about">Tietoja</string>
     <string name="action_snooze">Torkku</string>
     <string name="action_stop">Pois</string>
+    <string name="activateDoNotDisturb">Aktivoi Älä häiritse -tila</string>
     <string name="add_new_alarm">Lisää uusi herätys</string>
     <string name="add_custom_alarm_tone">Lisää oma herätysääni</string>
     <string name="add_custom_font">Lisää oma fontti</string>
