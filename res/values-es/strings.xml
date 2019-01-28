@@ -19,7 +19,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="about">Acerca de</string>
     <string name="action_skip">Omitir</string>
     <string name="action_snooze">Aplazar</string>
-    <string name="action_stop">Aparece</string>
+    <string name="action_stop">Parar</string>
     <string name="activateDoNotDisturb">activar modo no molestar</string>
     <string name="activateDoNotDisturbSummary">Activar el modo de hacer no molestar mientras la aplicación esté activa.</string>
     <string name="add_new_alarm">Añadir alarma</string>
@@ -102,6 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Gracias</string>
     <string name="digit_emphasize_quarters">Cuartos de enfatizar</string>
     <string name="decoration">Decoración</string>
+    <string name="decoration_glow_effect">Efecto de brillo</string>
     <string name="decoration_style_none">Ninguno</string>
     <string name="decoration_style_minute_hand">Minutero</string>
     <string name="decoration_style_labels">Números</string>

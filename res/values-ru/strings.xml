@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">пропустить</string>
     <string name="action_snooze">Дремать</string>
     <string name="action_stop">Остановить</string>
+    <string name="activateDoNotDisturb">Активировать DnD</string>
+    <string name="activateDoNotDisturbSummary">Включите режим «не беспокоить», пока приложение активно.</string>
     <string name="add_new_alarm">Добавить новый будильник </string>
     <string name="add_custom_alarm_tone">Добавить свою мелодию</string>
     <string name="add_custom_font">Добавить свой шрифт</string>
@@ -67,6 +69,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Предел яркости</string>
     <string name="buttonAccessibilitySettings">Показывать оповещения</string>
     <string name="buy">Купить</string>
+    <string name="buy_upgrade_summary">Обновите до профессиональной версии сейчас.</string>
+    <string name="buy_upgrade_title">Обновить</string>
     <string name="category_handle_power">... и когда подключен к</string>
     <string name="category_handle_power_autostart_time">Запуск в промежуток времени</string>
     <string name="choose_alarm_sound">Мелодия будильника</string>
@@ -86,6 +90,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question_layout">Вы действительно хотите сбросить этот шаблон до значений по умолчанию?</string>
     <string name="confirm_reset">Сброс</string>
     <string name="contribute">Внести свой вклад в проект</string>
+    <string name="contribute_beta_channel">Получть beta версию</string>
     <string name="contribute_source_code">Исходный код проекта</string>
     <string name="contribute_translation">Перевод</string>
     <string name="country">Страна</string>
@@ -97,6 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Спасибо</string>
     <string name="digit_emphasize_quarters">Подчеркнуть четверть</string>
     <string name="decoration">Внешнее оформление</string>
+    <string name="decoration_glow_effect">Эффект свечения</string>
     <string name="decoration_style_none">Без оформления</string>
     <string name="decoration_style_minute_hand">Минутная стрелка</string>
     <string name="decoration_style_labels">Цифры</string>
