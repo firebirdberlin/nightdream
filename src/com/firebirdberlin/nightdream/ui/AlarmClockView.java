@@ -368,6 +368,11 @@ public class AlarmClockView extends View {
     }
 
     private String getTimeFormatted(Calendar calendar) {
+        Calendar now_in_one_week = Calendar.getInstance();
+        now_in_one_week.add(Calendar.DAY_OF_MONTH, 7);
+        if (calendar.after(now_in_one_week)) {
+            return "";
+        }
         String localPattern;
         if (Build.VERSION.SDK_INT >= 18){
             if (is24HourFormat(ctx)) {
