@@ -13,6 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -20,6 +22,7 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
@@ -42,7 +45,6 @@ public class WakeUpReceiver extends BroadcastReceiver {
         SimpleTime next = db.getNextAlarmToSchedule();
         if (next != null) {
             setAlarm(context, next);
-            next = db.setNextAlarm(next);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 AlarmNotificationService.scheduleJob(context, next);
@@ -67,31 +69,36 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     public static void broadcastNextAlarm(Context context) {
-        DataSource db = new DataSource(context);
-        db.open();
-        SimpleTime next = db.getNextAlarmEntry();
-        db.close();
-
+        SimpleTime next = getLastActivatedAlarmTime();
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
         if (next != null) {
             Log.w(TAG, next.toString());
             intent.putExtras(next.toBundle());
         } else {
-            Log.w(TAG, "no next alarm");
+            DataSource db = new DataSource(context);
+            db.open();
+            SimpleTime nextAlarm = db.getNextAlarmToSchedule();
+            if (nextAlarm != null) {
+                intent.putExtras(nextAlarm.toBundle());
+            }
+            db.close();
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
+    private static SimpleTime getLastActivatedAlarmTime() {
+        EventBus bus = EventBus.getDefault();
+        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
+        return (event != null) ? event.entry : null;
+    }
+
     public static void cancelAlarm(Context context) {
+        EventBus bus = EventBus.getDefault();
+        bus.removeStickyEvent(OnAlarmStarted.class);
+
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
         am.cancel(pI);
-
-
-        DataSource db = new DataSource(context);
-        db.open();
-        db.cancelPendingAlarms();
-        db.close();
     }
 
     public static PendingIntent getPendingIntent(Context context, SimpleTime alarmTime, int flags) {
@@ -133,17 +140,31 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         Utility.logIntent(TAG, "onReceive()", intent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AlarmNotificationService.cancelNotification(context);
             AlarmNotificationService.cancelJob(context);
             AlarmWifiService.cancelJob(context);
         }
+        deleteCurrentlyActiveAlarm(context, intent);
         AlarmHandlerService.start(context, intent);
 
         buildNotification(context);
         NightDreamActivity.start(context);
+    }
+
+    private void deleteCurrentlyActiveAlarm(Context context, Intent intent) {
+        Bundle extras = (intent != null) ? intent.getExtras() : null;
+        SimpleTime next = (extras != null) ? new SimpleTime(extras) : null;
+        EventBus bus = EventBus.getDefault();
+
+        bus.postSticky(new OnAlarmStarted(next));
+        if (next != null && !next.isRecurring()) {
+            DataSource db = new DataSource(context);
+            db.open();
+            db.deleteOneTimeAlarm(next.id);
+            db.close();
+        }
     }
 
     private Notification buildNotification(Context context) {
