@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
@@ -394,8 +395,19 @@ public class AlarmClockView extends View {
     }
 
     public void stopAlarm(){
+        Log.d(TAG, "stopAlarm()");
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
+        if (!alarmIsRunning()) {
+            if (time != null && !time.isRecurring()) {
+                // no alarm is currently active
+                DataSource db = new DataSource(ctx);
+                db.open();
+                db.deleteOneTimeAlarm(time.id);
+                db.close();
+            }
+        }
+        time = null;
         AlarmHandlerService.stop(ctx);
     }
 
@@ -413,10 +425,12 @@ public class AlarmClockView extends View {
     }
 
     public void cancelAlarm(){
-        if ( isAlarmSet() ) {
+        Log.d(TAG, "cancelAlarm()");
+        if (isAlarmSet() ) {
             AlarmHandlerService.cancel(ctx);
-            this.time = null;
         }
+
+        this.time = null;
     }
 
     private void updateTime(SimpleTime time) {

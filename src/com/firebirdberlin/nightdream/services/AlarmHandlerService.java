@@ -218,7 +218,7 @@ public class AlarmHandlerService extends IntentService {
         DataSource db = new DataSource(context);
         db.open();
         db.save(time);
+        WakeUpReceiver.schedule(context, db);
         db.close();
-        WakeUpReceiver.schedule(context);
     }
 }

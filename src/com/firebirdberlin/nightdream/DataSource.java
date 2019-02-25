@@ -105,15 +105,14 @@ public class DataSource {
         }
     }
 
-    public void cancelPendingAlarms() {
-        String selection = SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = ? AND " +
+    public void deleteOneTimeAlarm(long id) {
+        String selection = SQLiteDBHelper.AlarmEntry._ID + " = ? AND " +
                 SQLiteDBHelper.AlarmEntry.COLUMN_DAYS + " = ? AND " +
                 SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE + " = ?";
-        String[] selectionArgs = {"1", "0", "1"};
+        String[] selectionArgs = {String.valueOf(id), "0", "1"};
 
         db.delete(SQLiteDBHelper.AlarmEntry.TABLE_NAME, selection, selectionArgs);
     }
-
 
     public SimpleTime getNextAlarmToSchedule() {
         List<SimpleTime> entries = getAlarms();
@@ -129,17 +128,6 @@ public class DataSource {
         }
         cursor.close();
         return items;
-    }
-
-    public SimpleTime getNextAlarmEntry() {
-        String where = SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = ? AND "
-                + SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE  + " = ?";
-        String[] whereArgs = {"1", "1"};
-        Cursor cursor = getQueryCursor(where, whereArgs);
-        if ( cursor.moveToFirst() ) {
-            return cursorToSimpleTime(cursor);
-        }
-        return null;
     }
 
     public SimpleTime getAlarmEntry(long id) {
@@ -182,15 +170,6 @@ public class DataSource {
         time.nextEventAfter = cursor.getLong(7);
         time.radioStationIndex = cursor.getInt(8);
         return time;
-    }
-
-    public SimpleTime setNextAlarm(SimpleTime entry) {
-        db.execSQL("UPDATE " + SQLiteDBHelper.AlarmEntry.TABLE_NAME +
-                   " SET " + SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = 0" +
-                   " WHERE " + SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM + " = 1;");
-        entry.isNextAlarm = true;
-        save(entry, false);
-        return entry;
     }
 
     public void dropData() {
