@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -22,7 +23,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public abstract class BillingHelperActivity extends Activity {
     static final String TAG = "BillingActivity";
@@ -40,8 +40,8 @@ public abstract class BillingHelperActivity extends Activity {
     private static final int PRODUCT_ID_ACTIONS = 4;
 
     IInAppBillingService mService;
-    Map<String, Boolean> purchases;
     BillingHelper billingHelper;
+    UpdatePurchasesTask updatePurchasesTask;
 
     ServiceConnection mServiceConn = new ServiceConnection() {
         @Override
@@ -62,7 +62,7 @@ public abstract class BillingHelperActivity extends Activity {
 
     public boolean isPurchased(String sku) {
         Log.i(TAG, "Checking purchase " + sku);
-        if (Utility.isDebuggable(this)) {
+        if (Utility.isEmulator()) {
             return true;
         }
         if (billingHelper == null) {
@@ -91,6 +91,9 @@ public abstract class BillingHelperActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (updatePurchasesTask != null) {
+            updatePurchasesTask.cancel(true);
+        }
         unbindService(mServiceConn);
     }
 
@@ -237,6 +240,7 @@ public abstract class BillingHelperActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        final int BILLING_RESPONSE_RESULT_OK = 0;
         if (resultCode == Activity.RESULT_OK &&
                 (requestCode == REQUEST_CODE_PURCHASE_DONATION ||
                         requestCode == REQUEST_CODE_PURCHASE_PRO ||
@@ -248,12 +252,12 @@ public abstract class BillingHelperActivity extends Activity {
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
             String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
             Log.i(TAG, purchaseData);
-
             updateAllPurchases();
+
             try {
                 JSONObject jo = new JSONObject(purchaseData);
                 String sku = jo.getString("productId");
-                if (purchases.containsKey(sku)) {
+                if (responseCode == BILLING_RESPONSE_RESULT_OK ) {
                     showThankYouDialog();
                 }
             } catch (JSONException e) {
@@ -263,8 +267,13 @@ public abstract class BillingHelperActivity extends Activity {
     }
 
     private void updateAllPurchases() {
+        if (updatePurchasesTask != null) {
+            updatePurchasesTask.cancel(true);
+        }
+
         if (billingHelper != null) {
-            purchases = billingHelper.getPurchases();
+            updatePurchasesTask = new UpdatePurchasesTask();
+            updatePurchasesTask.execute(billingHelper);
         }
     }
 
@@ -274,5 +283,18 @@ public abstract class BillingHelperActivity extends Activity {
                 .setMessage(R.string.dialog_message_thank_you)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    private static class UpdatePurchasesTask extends AsyncTask<BillingHelper, Void, Void> {
+        protected Void doInBackground(BillingHelper... billingHelpers) {
+            BillingHelper billingHelper = billingHelpers[0];
+            if (billingHelper != null) {
+                billingHelper.getPurchases();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+        }
     }
 }

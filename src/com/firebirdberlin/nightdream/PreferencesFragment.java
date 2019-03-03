@@ -261,7 +261,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void getPurchases() {
-        if (Utility.isDebuggable(mContext)) {
+        if (Utility.isEmulator()) {
             activatePurchasesIfDebuggable();
             return;
         }
@@ -1122,7 +1122,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void activatePurchasesIfDebuggable() {
-        if (Utility.isDebuggable(mContext)) {
+        if (Utility.isEmulator()) {
             purchased_donation = true;
             purchased_actions = true;
             purchased_web_radio = true;
