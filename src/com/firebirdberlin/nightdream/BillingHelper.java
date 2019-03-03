@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.android.vending.billing.IInAppBillingService;
 
@@ -38,6 +39,7 @@ public class BillingHelper {
    }
 
    public Map<String, Boolean> getPurchases() {
+       // initialize with false = no purchase
       for (String key : purchases.keySet()) {
          purchases.put(key, false);
       }
@@ -72,43 +74,50 @@ public class BillingHelper {
             String signature = signatureList.get(i);
             String sku = ownedSkus.get(i);
             if ( purchases.containsKey(sku) ) {
+               Log.i(TAG, sku + " is owned");
                purchases.put(sku, true);
             }
 
             // do something with this purchase information
             // e.g. display the updated list of products owned by user
             // or consume the purchase
-//                try {
-//                    JSONObject o = new JSONObject(purchaseData);
-//                    String purchaseToken = o.getString("purchaseToken");
-//                    mService.consumePurchase(3, context.getPackageName(), purchaseToken);
-//                }
-//                catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+            /*
+                try {
+                    JSONObject o = new JSONObject(purchaseData);
+                    String purchaseToken = o.getString("purchaseToken");
+                    mService.consumePurchase(3, context.getPackageName(), purchaseToken);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+             */
          }
 
          // if continuationToken != null, call getPurchases again
          // and pass in the token to retrieve more items
       }
 
-      if ( purchases.get(ITEM_DONATION) == true ) {
+      if (purchases.get(ITEM_DONATION)) {
          purchases.put(ITEM_PRO, true);
          purchases.put(ITEM_WEATHER_DATA, true);
          purchases.put(ITEM_WEB_RADIO, true);
          purchases.put(ITEM_ACTIONS, true);
       }
 
-      if ( purchases.get(ITEM_PRO) == true ) {
+      if (purchases.get(ITEM_PRO)) {
          purchases.put(ITEM_WEATHER_DATA, true);
          purchases.put(ITEM_WEB_RADIO, true);
          purchases.put(ITEM_ACTIONS, true);
       }
+
+      for (Map.Entry<String, Boolean> entry : purchases.entrySet()) {
+           Log.i(TAG, "owned " + entry.getKey() + " = " + String.valueOf(entry.getValue()));
+       }
       return purchases;
    }
 
    public boolean isPurchased(String sku) {
-       if (Utility.isDebuggable(context)) {
+       if (Utility.isEmulator()) {
            return true;
        }
        if (purchases.containsKey(sku)){
