@@ -219,8 +219,7 @@ public abstract class BillingHelperActivity extends Activity {
         final int BILLING_RESPONSE_RESULT_OK = 0;
         int response = skuDetails.getInt("RESPONSE_CODE");
         if (response == BILLING_RESPONSE_RESULT_OK) {
-            ArrayList<String> responseList
-                    = skuDetails.getStringArrayList("DETAILS_LIST");
+            ArrayList<String> responseList = skuDetails.getStringArrayList("DETAILS_LIST");
 
             for (String thisResponse : responseList) {
                 try {
