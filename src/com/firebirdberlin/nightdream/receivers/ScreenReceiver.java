@@ -34,6 +34,9 @@ public class ScreenReceiver extends BroadcastReceiver {
         @Override
         public void run() {
             handler.removeCallbacks(checkAndActivateApp);
+            if (Utility.isScreenOn(context)) {
+                return;
+            }
             conditionallyActivateAlwaysOn(context, false);
         }
     };
@@ -121,7 +124,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                    gravitySensorChecked = true;
                }
                if (gravitySensorChecked && proximitySensorChecked ) {
-                   handler.post(checkAndActivateApp);
+                   handler.postDelayed(checkAndActivateApp, 5000);
                    sensorMan.unregisterListener(this);
                }
             }
@@ -137,6 +140,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        handler.removeCallbacks(checkAndActivateApp);
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             Log.i(TAG, "ACTION_SCREEN_OFF");
             this.context = context;
@@ -148,11 +152,11 @@ public class ScreenReceiver extends BroadcastReceiver {
                 wakeLock = null;
             }
             wakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE))
-                    .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP ,
-                            "SCREEN_OFF_WAKE_LOCK");
+                .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                            "nightdream:SCREEN_OFF_WAKE_LOCK");
             wakeLock.acquire(20000);
             getGravity(context);
-            handler.postDelayed(checkAndActivateApp, 1000);
+            handler.postDelayed(checkAndActivateApp, 5000);
         }
 
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
