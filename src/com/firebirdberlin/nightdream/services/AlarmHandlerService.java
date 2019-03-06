@@ -8,10 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -23,9 +21,7 @@ import java.util.Calendar;
 public class AlarmHandlerService extends IntentService {
     private static String TAG = "AlarmHandlerService";
     private static String ACTION_CANCEL_ALARM = "com.firebirdberlin.nightdream.ACTION_CANCEL_ALARM";
-    private static String ACTION_SET_ALARM = "com.firebirdberlin.nightdream.ACTION_SET_ALARM";
     private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
-    private static String ACTION_SKIP_ALARM = "com.firebirdberlin.nightdream.ACTION_SKIP_ALARM";
     private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
     private Context context = null;
     private Settings settings;
@@ -69,7 +65,6 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void snooze(final Context context) {
-        Toast.makeText(context, "S N O O Z E", Toast.LENGTH_LONG).show();
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_SNOOZE_ALARM);
         context.startService(i);
@@ -83,22 +78,12 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void set(Context context, SimpleTime time) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_SET_ALARM);
-        i.putExtras(time.toBundle());
-        context.startService(i);
+        SqliteIntentService.saveTime(context, time);
     }
 
     public static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_STOP_ALARM);
-        return i;
-    }
-
-    public static Intent getSkipIntent(Context context, SimpleTime next) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.putExtras(next.toBundle());
-        i.setAction(ACTION_SKIP_ALARM);
         return i;
     }
 
@@ -124,11 +109,6 @@ public class AlarmHandlerService extends IntentService {
 
         if (ACTION_STOP_ALARM.equals(action) ) {
             stopAlarm();
-        }
-        else if (ACTION_SKIP_ALARM.equals(action)) {
-            skipAlarm(time);
-        } else if (ACTION_SET_ALARM.equals(action) ) {
-            setNewAlarm(time);
         } else if (ACTION_CANCEL_ALARM.equals(action) ) {
             cancelAlarm();
         } else if (ACTION_SNOOZE_ALARM.equals(action) ) {
@@ -172,27 +152,6 @@ public class AlarmHandlerService extends IntentService {
         }
     }
 
-    private void skipAlarm(SimpleTime time) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
-                || time == null) {
-            return;
-        }
-        AlarmNotificationService.cancelNotification(this);
-        DataSource db = new DataSource(this);
-        db.open();
-
-        if (time != null) {
-            if (time.isRecurring()) {
-                // the next allowed alarm time is after the next alarm.
-                db.updateNextEventAfter(time.id, time.getMillis());
-            } else {
-                db.delete(time);
-            }
-        }
-        db.close();
-        WakeUpReceiver.schedule(context);
-    }
-
     private void cancelAlarm() {
         WakeUpReceiver.cancelAlarm(context);
     }
@@ -205,22 +164,6 @@ public class AlarmHandlerService extends IntentService {
         time.isActive = true;
         time.soundUri = (alarmTime != null) ? alarmTime.soundUri : null;
         time.radioStationIndex = (alarmTime != null) ? alarmTime.radioStationIndex : -1;
-        setAlarm(time);
-    }
-
-    private void setNewAlarm(SimpleTime time) {
-        if (time == null) {
-            return;
-        }
-        setAlarm(time);
-    }
-
-    private void setAlarm(SimpleTime time) {
-        Log.i(TAG, "setAlarm() -> " + time.toString());
-        DataSource db = new DataSource(context);
-        db.open();
-        db.save(time);
-        WakeUpReceiver.schedule(context, db);
-        db.close();
+        SqliteIntentService.snooze(context, time);
     }
 }

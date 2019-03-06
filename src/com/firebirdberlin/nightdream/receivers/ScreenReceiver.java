@@ -44,6 +44,7 @@ public class ScreenReceiver extends BroadcastReceiver {
     public static ScreenReceiver register(Context ctx) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
         ScreenReceiver receiver = new ScreenReceiver();
         ctx.registerReceiver(receiver, filter);
         return receiver;
@@ -97,7 +98,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private void getGravity(Context context) {
+    private void getGravity(final Context context) {
         gravitySensorChecked = false;
         proximitySensorChecked = false;
         final SensorManager sensorMan = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -124,7 +125,9 @@ public class ScreenReceiver extends BroadcastReceiver {
                    gravitySensorChecked = true;
                }
                if (gravitySensorChecked && proximitySensorChecked ) {
-                   handler.postDelayed(checkAndActivateApp, 5000);
+                   handler.removeCallbacks(checkAndActivateApp);
+                   long delay = (Utility.isScreenLocked(context) ? 1000 : 5000);
+                   handler.postDelayed(checkAndActivateApp, delay);
                    sensorMan.unregisterListener(this);
                }
             }
@@ -156,10 +159,12 @@ public class ScreenReceiver extends BroadcastReceiver {
                             "nightdream:SCREEN_OFF_WAKE_LOCK");
             wakeLock.acquire(20000);
             getGravity(context);
-            handler.postDelayed(checkAndActivateApp, 5000);
+            long delay = (Utility.isScreenLocked(context) ? 6000 : 6000);
+            handler.postDelayed(checkAndActivateApp, delay);
         }
 
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+            Log.i(TAG, "ACTION_SCREEN_ON");
             deviceIsCovered = false;
             isScreenUp = false;
             Settings settings = new Settings(context);

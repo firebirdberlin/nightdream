@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -231,6 +232,10 @@ public class Utility {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public static boolean isScreenLocked(Context context) {
+        KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        return myKM.inKeyguardRestrictedInputMode();
     }
 
     public static int pixelsToDp(Context context, float px) {
