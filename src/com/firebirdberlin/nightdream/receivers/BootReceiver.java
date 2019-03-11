@@ -8,6 +8,7 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = "BootReceiver";
@@ -18,7 +19,7 @@ public class BootReceiver extends BroadcastReceiver {
         PowerConnectionReceiver.schedule(context);
         Settings settings = new Settings(context);
         if (settings.useInternalAlarm) {
-            WakeUpReceiver.schedule(context);
+            SqliteIntentService.scheduleAlarm(context);
         }
 
         ScreenWatcherService.conditionallyStart(context, settings);

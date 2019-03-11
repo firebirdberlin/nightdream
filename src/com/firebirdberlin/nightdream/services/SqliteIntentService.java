@@ -18,6 +18,7 @@ public class SqliteIntentService extends JobIntentService {
     public static String ACTION_SAVE = "action_save";
     public static String ACTION_SNOOZE = "action_snooze";
     public static String ACTION_SKIP_ALARM = "action_skip_alarm";
+    public static String ACTION_SCHEDULE_ALARM = "action_schedule_alarm";
 
     static void saveTime(Context context, SimpleTime time) {
         enqueueWork(context, time, ACTION_SAVE);
@@ -25,6 +26,14 @@ public class SqliteIntentService extends JobIntentService {
     static void snooze(Context context, SimpleTime time) {
         enqueueWork(context, time, ACTION_SNOOZE);
     }
+    static void skipAlarm(Context context, SimpleTime time) {
+        enqueueWork(context, time, ACTION_SKIP_ALARM);
+    }
+
+    public static void scheduleAlarm(Context context) {
+        enqueueWork(context, ACTION_SCHEDULE_ALARM);
+    }
+
     static void enqueueWork(Context context, SimpleTime time, String action) {
         if (time == null) {
             return;
@@ -32,6 +41,12 @@ public class SqliteIntentService extends JobIntentService {
         Intent i = new Intent(context, SqliteIntentService.class);
         i.setAction(action);
         i.putExtras(time.toBundle());
+        enqueueWork(context, SqliteIntentService.class, Config.JOB_ID_SQLITE_SERVICE, i);
+    }
+
+    static void enqueueWork(Context context, String action) {
+        Intent i = new Intent(context, SqliteIntentService.class);
+        i.setAction(action);
         enqueueWork(context, SqliteIntentService.class, Config.JOB_ID_SQLITE_SERVICE, i);
     }
 
@@ -60,6 +75,8 @@ public class SqliteIntentService extends JobIntentService {
             toast("S N O O Z E");
         } else if (ACTION_SKIP_ALARM.equals(action)) {
             skipAlarm(time);
+        } else if (ACTION_SCHEDULE_ALARM.equals(action)) {
+            schedule();
         }
     }
 
@@ -88,6 +105,13 @@ public class SqliteIntentService extends JobIntentService {
                 db.delete(time);
             }
         }
+        WakeUpReceiver.schedule(this, db);
+        db.close();
+    }
+
+    private void schedule() {
+        DataSource db = new DataSource(this);
+        db.open();
         WakeUpReceiver.schedule(this, db);
         db.close();
     }

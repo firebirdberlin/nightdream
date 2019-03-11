@@ -20,6 +20,7 @@ import com.firebirdberlin.nightdream.events.OnAlarmEntryDeleted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
+import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 
@@ -253,7 +254,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     public void onEntryStateChanged(SimpleTime entry) {
         db.save(entry);
-        WakeUpReceiver.schedule(this);
+        SqliteIntentService.scheduleAlarm(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

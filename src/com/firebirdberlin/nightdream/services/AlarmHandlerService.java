@@ -12,20 +12,22 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
 
 public class AlarmHandlerService extends IntentService {
     private static String TAG = "AlarmHandlerService";
-    private static String ACTION_CANCEL_ALARM = "com.firebirdberlin.nightdream.ACTION_CANCEL_ALARM";
+    private static String ACTION_SKIP_ALARM = "com.firebirdberlin.nightdream.ACTION_SKIP_ALARM";
     private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
     private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
     private Context context = null;
     private Settings settings;
-    private static SimpleTime alarmTime;
 
     public AlarmHandlerService() {
         super("AlarmHandlerService");
@@ -43,9 +45,8 @@ public class AlarmHandlerService extends IntentService {
     public static void start(Context context, Intent intent) {
         Settings settings = new Settings(context);
         if (!settings.useInternalAlarm) return;
-        Bundle extras = (intent != null) ? intent.getExtras() : null;
-        alarmTime = (extras != null) ? new SimpleTime(extras) : null;
 
+        SimpleTime alarmTime = getCurrentlyActiveAlarm();
         if (alarmTime != null && alarmTime.radioStationIndex > -1 && Utility.hasFastNetworkConnection(context)) {
             RadioStreamService.start(context, alarmTime);
         } else {
@@ -58,7 +59,6 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void stop(Context context) {
-        alarmTime = null;
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_STOP_ALARM);
         context.startService(i);
@@ -71,10 +71,7 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void cancel(Context context) {
-        alarmTime = null;
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_CANCEL_ALARM);
-        context.startService(i);
+        WakeUpReceiver.cancelAlarm(context);
     }
 
     public static void set(Context context, SimpleTime time) {
@@ -93,6 +90,13 @@ public class AlarmHandlerService extends IntentService {
         return i;
     }
 
+    public static Intent getSkipIntent(Context context, SimpleTime next) {
+        Intent i = new Intent(context, AlarmHandlerService.class);
+        i.putExtras(next.toBundle());
+        i.setAction(AlarmHandlerService.ACTION_SKIP_ALARM);
+        return i;
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         context = this;
@@ -100,17 +104,14 @@ public class AlarmHandlerService extends IntentService {
         Log.d(TAG, TAG + " started");
         String action = intent.getAction();
 
-
-        Bundle extras = intent.getExtras();
-        SimpleTime time = null;
-        if (extras != null) {
-            time = new SimpleTime(extras);
-        }
-
         if (ACTION_STOP_ALARM.equals(action) ) {
             stopAlarm();
-        } else if (ACTION_CANCEL_ALARM.equals(action) ) {
-            cancelAlarm();
+        } else if (ACTION_SKIP_ALARM.equals(action)) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                SimpleTime time = new SimpleTime(bundle);
+                SqliteIntentService.skipAlarm(context, time);
+            }
         } else if (ACTION_SNOOZE_ALARM.equals(action) ) {
             snoozeAlarm();
         }
@@ -130,7 +131,7 @@ public class AlarmHandlerService extends IntentService {
             RadioStreamService.stop(context);
         }
 
-        cancelAlarm();
+        AlarmHandlerService.cancel(this);
 
         if (isRunning) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -148,22 +149,26 @@ public class AlarmHandlerService extends IntentService {
         }
 
         if (reschedule) {
-            WakeUpReceiver.schedule(context);
+            SqliteIntentService.scheduleAlarm(this);
         }
     }
 
-    private void cancelAlarm() {
-        WakeUpReceiver.cancelAlarm(context);
-    }
-
     private void snoozeAlarm() {
+
+        SimpleTime currentAlarm = getCurrentlyActiveAlarm();
         stopAlarm(false);
 
         Calendar now = Calendar.getInstance();
         SimpleTime time = new SimpleTime(now.getTimeInMillis() + settings.snoozeTimeInMillis);
         time.isActive = true;
-        time.soundUri = (alarmTime != null) ? alarmTime.soundUri : null;
-        time.radioStationIndex = (alarmTime != null) ? alarmTime.radioStationIndex : -1;
+        time.soundUri = (currentAlarm != null) ? currentAlarm.soundUri : null;
+        time.radioStationIndex = (currentAlarm != null) ? currentAlarm.radioStationIndex : -1;
         SqliteIntentService.snooze(context, time);
+    }
+
+    private static SimpleTime getCurrentlyActiveAlarm() {
+        EventBus bus = EventBus.getDefault();
+        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
+        return (event != null) ? event.entry : null;
     }
 }
