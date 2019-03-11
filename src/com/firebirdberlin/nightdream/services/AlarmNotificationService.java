@@ -127,7 +127,7 @@ public class AlarmNotificationService extends JobService {
                 new NotificationCompat.WearableExtender().setHintHideIcon(true);
 
         String textActionSkip = context.getString(R.string.action_skip);
-        Intent skipIntent = SqliteIntentService.getSkipIntent(context, nextAlarmTime);
+        Intent skipIntent = AlarmHandlerService.getSkipIntent(context, nextAlarmTime);
         PendingIntent pSkipIntent = PendingIntent.getService(
                 context, 0, skipIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action skipAction =

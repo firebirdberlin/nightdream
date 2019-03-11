@@ -34,13 +34,6 @@ import java.util.Date;
 public class WakeUpReceiver extends BroadcastReceiver {
     private final static String TAG = "WakeUpReceiver";
 
-    public static void schedule(Context context) {
-        DataSource db = new DataSource(context);
-        db.open();
-        schedule(context, db);
-        db.close();
-    }
-
     public static void schedule(Context context, DataSource db) {
         SimpleTime next = db.getNextAlarmToSchedule();
         if (next != null) {
