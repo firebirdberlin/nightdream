@@ -6,12 +6,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.JobIntentService;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class SqliteIntentService extends JobIntentService {
 
@@ -19,6 +24,8 @@ public class SqliteIntentService extends JobIntentService {
     public static String ACTION_SNOOZE = "action_snooze";
     public static String ACTION_SKIP_ALARM = "action_skip_alarm";
     public static String ACTION_SCHEDULE_ALARM = "action_schedule_alarm";
+    public static String ACTION_DELETE_ALARM = "action_delete_alarm";
+    public static String ACTION_BROADCAST_ALARM = "action_broadcast_alarm";
 
     static void saveTime(Context context, SimpleTime time) {
         enqueueWork(context, time, ACTION_SAVE);
@@ -30,8 +37,16 @@ public class SqliteIntentService extends JobIntentService {
         enqueueWork(context, time, ACTION_SKIP_ALARM);
     }
 
+    public static void deleteAlarm(Context context, SimpleTime time) {
+        enqueueWork(context, time, ACTION_DELETE_ALARM);
+    }
+
     public static void scheduleAlarm(Context context) {
         enqueueWork(context, ACTION_SCHEDULE_ALARM);
+    }
+
+    public static void broadcastAlarm(Context context) {
+        enqueueWork(context, ACTION_BROADCAST_ALARM);
     }
 
     static void enqueueWork(Context context, SimpleTime time, String action) {
@@ -62,21 +77,28 @@ public class SqliteIntentService extends JobIntentService {
     protected void onHandleWork(Intent intent) {
         String action = intent.getAction();
         Bundle bundle = intent.getExtras();
-        if (action == null || bundle == null) {
+        if (action == null) {
             return;
         }
 
-        SimpleTime time = new SimpleTime(bundle);
+        Log.i("SqliteIntentService", "onHandleWork action = " + action);
+        SimpleTime time = null;
+        if (bundle != null) {
+            time = new SimpleTime(bundle);
+        }
 
         if (ACTION_SAVE.equals(action)) {
             save(time);
         } else if (ACTION_SNOOZE.equals(action)) {
             save(time);
-            toast("S N O O Z E");
         } else if (ACTION_SKIP_ALARM.equals(action)) {
             skipAlarm(time);
+        } else if (ACTION_DELETE_ALARM.equals(action)) {
+            delete(time);
         } else if (ACTION_SCHEDULE_ALARM.equals(action)) {
             schedule();
+        } else if (ACTION_BROADCAST_ALARM.equals(action)) {
+            broadcastNextAlarm();
         }
     }
 
@@ -116,19 +138,42 @@ public class SqliteIntentService extends JobIntentService {
         db.close();
     }
 
+    private void delete(SimpleTime time) {
+        if (time != null && !time.isRecurring()) {
+            // no alarm is currently active
+            DataSource db = new DataSource(this);
+            db.open();
+            db.deleteOneTimeAlarm(time.id);
+            db.close();
+        }
+    }
+
+    void broadcastNextAlarm() {
+        SimpleTime next = getLastActivatedAlarmTime();
+        Intent intent = new Intent(Config.ACTION_ALARM_SET);
+        if (next != null) {
+            intent.putExtras(next.toBundle());
+        } else {
+            DataSource db = new DataSource(this);
+            db.open();
+            SimpleTime nextAlarm = db.getNextAlarmToSchedule();
+            if (nextAlarm != null) {
+                intent.putExtras(nextAlarm.toBundle());
+            }
+            db.close();
+        }
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    SimpleTime getLastActivatedAlarmTime() {
+        EventBus bus = EventBus.getDefault();
+        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
+        return (event != null) ? event.entry : null;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
-    final Handler mHandler = new Handler();
-
-    // Helper for showing tests
-    void toast(final CharSequence text) {
-        mHandler.post(new Runnable() {
-            @Override public void run() {
-                Toast.makeText(SqliteIntentService.this, text, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 }
