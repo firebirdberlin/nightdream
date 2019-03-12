@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
@@ -34,6 +35,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -115,7 +117,7 @@ public class AlarmClockView extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         broadcastReceiver = registerBroadcastReceiver();
-        WakeUpReceiver.broadcastNextAlarm(this.ctx);
+        SqliteIntentService.broadcastAlarm(this.ctx);
     }
 
     private NightDreamBroadcastReceiver registerBroadcastReceiver() {
@@ -399,13 +401,7 @@ public class AlarmClockView extends View {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         if (!alarmIsRunning()) {
-            if (time != null && !time.isRecurring()) {
-                // no alarm is currently active
-                DataSource db = new DataSource(ctx);
-                db.open();
-                db.deleteOneTimeAlarm(time.id);
-                db.close();
-            }
+            SqliteIntentService.deleteAlarm(ctx, time);
         }
         time = null;
         AlarmHandlerService.stop(ctx);
@@ -415,6 +411,7 @@ public class AlarmClockView extends View {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         AlarmHandlerService.snooze(ctx);
+        toast("S N O O Z E");
     }
 
     private void setAlarm() {
@@ -559,5 +556,15 @@ public class AlarmClockView extends View {
                 updateTime(time);
             }
         }
+    }
+    final Handler mHandler = new Handler();
+
+    // Helper for showing tests
+    void toast(final CharSequence text) {
+        mHandler.post(new Runnable() {
+            @Override public void run() {
+                Toast.makeText(ctx, text, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

@@ -27,6 +27,7 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.services.AlarmWifiService;
+import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -59,30 +60,6 @@ public class WakeUpReceiver extends BroadcastReceiver {
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
-    }
-
-    public static void broadcastNextAlarm(Context context) {
-        SimpleTime next = getLastActivatedAlarmTime();
-        Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        if (next != null) {
-            Log.w(TAG, next.toString());
-            intent.putExtras(next.toBundle());
-        } else {
-            DataSource db = new DataSource(context);
-            db.open();
-            SimpleTime nextAlarm = db.getNextAlarmToSchedule();
-            if (nextAlarm != null) {
-                intent.putExtras(nextAlarm.toBundle());
-            }
-            db.close();
-        }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    private static SimpleTime getLastActivatedAlarmTime() {
-        EventBus bus = EventBus.getDefault();
-        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
-        return (event != null) ? event.entry : null;
     }
 
     public static void cancelAlarm(Context context) {
@@ -152,12 +129,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         EventBus bus = EventBus.getDefault();
 
         bus.postSticky(new OnAlarmStarted(next));
-        if (next != null && !next.isRecurring()) {
-            DataSource db = new DataSource(context);
-            db.open();
-            db.deleteOneTimeAlarm(next.id);
-            db.close();
-        }
+        SqliteIntentService.deleteAlarm(context, next);
     }
 
     private Notification buildNotification(Context context) {
