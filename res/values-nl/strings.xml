@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">Overslaan</string>
     <string name="action_snooze">Sluimer</string>
     <string name="action_stop">Stop</string>
+    <string name="activateDoNotDisturb">Niet storen inschakelen</string>
+    <string name="activateDoNotDisturbSummary">Niet storen inschakelen wanneer de app actief is.</string>
     <string name="add_new_alarm">Nieuw alarm toevoegen</string>
     <string name="add_custom_alarm_tone">Aangepaste alarmtoon toevoegen</string>
     <string name="add_custom_font">Aangepast lettertype toevoegen</string>
@@ -53,6 +55,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceNotificationText">Achtergrond service actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
+    <string name="batteryTimeoutDescription">Tijdslimiet batterij</string>
     <string name="batteryTimeoutNever">Nooit</string>
     <string name="batteryTimeout1min">1 min</string>
     <string name="batteryTimeout2min">2 min</string>
@@ -66,6 +69,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Helderheid standaard</string>
     <string name="buttonAccessibilitySettings">Meldingen tonen</string>
     <string name="buy">Kopen</string>
+    <string name="buy_upgrade_summary">Verkrijg versie met alle opties</string>
+    <string name="buy_upgrade_title">Nieuwe versie</string>
     <string name="category_handle_power">... en als je verbonden bent met</string>
     <string name="category_handle_power_autostart_time">Starten binnen tijdsbereik</string>
     <string name="choose_alarm_sound">Alarmtoon</string>
@@ -85,6 +90,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question_layout">Weet je zeker dat je de standaardwaarden van de indeling wilt herstellen?</string>
     <string name="confirm_reset">Standaardwaarden</string>
     <string name="contribute">Bijdragen</string>
+    <string name="contribute_beta_channel">Verkrijg Beta versie</string>
     <string name="contribute_source_code">Broncode</string>
     <string name="contribute_translation">Vertaling</string>
     <string name="country">Land</string>
@@ -96,6 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Bedankt</string>
     <string name="digit_emphasize_quarters">Kwartieren benadrukken</string>
     <string name="decoration">Decoratie</string>
+    <string name="decoration_glow_effect">Schijnsel effect</string>
     <string name="decoration_style_none">Geen</string>
     <string name="decoration_style_minute_hand">Minuutwijzer</string>
     <string name="decoration_style_labels">Getallen</string>

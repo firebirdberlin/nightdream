@@ -102,6 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Merci</string>
     <string name="digit_emphasize_quarters">Mettre l\'accent sur les quarts</string>
     <string name="decoration">Décoration</string>
+    <string name="decoration_glow_effect">Effet néon</string>
     <string name="decoration_style_none">Pas de décoration</string>
     <string name="decoration_style_minute_hand">Décoration de la trotteuse</string>
     <string name="decoration_style_labels">Décoration des nombres</string>

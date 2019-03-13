@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">Pomiń</string>
     <string name="action_snooze">Drzemka</string>
     <string name="action_stop">Stop</string>
+    <string name="activateDoNotDisturb">Aktywuj tryb \'Nie przeszkadzać\'</string>
+    <string name="activateDoNotDisturbSummary">Aktywuj tryb \'nie przeszkadzać\' kiedy aplikacja jest aktywna</string>
     <string name="add_new_alarm">dodaj nowy alarm</string>
     <string name="add_custom_alarm_tone">dodaj własny dźwięk alarmu</string>
     <string name="add_custom_font">dodaj własną czcionkę</string>
@@ -88,6 +90,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question_layout">Czy na pewno chcesz zresetować ten układ do ustawień domyślnych?</string>
     <string name="confirm_reset">Reset</string>
     <string name="contribute">Przyczyń się</string>
+    <string name="contribute_beta_channel">Zostań beta testerem</string>
     <string name="contribute_source_code">Kod źródłowy</string>
     <string name="contribute_translation">Tłumaczenie</string>
     <string name="country">Kraj</string>
@@ -99,6 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Dziękuje</string>
     <string name="digit_emphasize_quarters">Wyróżnij ćwiartki</string>
     <string name="decoration">Dekoracje</string>
+    <string name="decoration_glow_effect">Efekt poświaty</string>
     <string name="decoration_style_none">Nic</string>
     <string name="decoration_style_minute_hand">Wskazówka minut</string>
     <string name="decoration_style_labels">Liczby</string>
@@ -236,6 +240,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_hours">Styl wskazówki godzin</string>
     <string name="tick_style_minutes">Styl wskazówki minut</string>
     <string name="tick_style_circle">Kółko</string>
+    <string name="tick_style_dash">Kreska</string>
     <string name="tick_style_none">Żadne</string>
     <string name="ticks">Tykanie</string>
     <string name="timeFormat">Format czasu</string>

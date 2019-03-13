@@ -37,6 +37,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="appearance">Aspetto</string>
     <string name="app_name">Orologio notturno</string>
     <string name="auto_brightness">Luminosità automatica</string>
+    <string name="autostartForNotificationsTitle">Notifiche</string>
     <string name="autostart_message_disabled">Disabilitare lo screensaver (daydream) per attivare le opzioni di avvio automatico</string>
     <string name="autostart_timerange_label_end">Ora di arresto</string>
     <string name="autostart_timerange_label_start">Ora di avvio</string>
@@ -44,15 +45,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_black">Nero</string>
     <string name="background_gradient">Sfumatura</string>
     <string name="background_image">Immagine</string>
-    <string name="background_image_select">Seleziona un\'immagine</string>
+    <string name="background_image_select">Seleziona una immagine</string>
     <string name="backgroundServiceDialogTitle">Ferma servizio in background</string>
+    <string name="batteryTimeoutNever">Mai</string>
     <string name="behaviour">Comportamento</string>
     <string name="brightness">Luminosità</string>
+    <string name="brightness_night_mode">Luminosità in modalità notturna</string>
     <string name="brightness_offset">Scostamento luminosità</string>
     <string name="buttonAccessibilitySettings">Mostra le notifiche</string>
     <string name="buy">Acquista</string>
     <string name="category_handle_power">... e se connesso a</string>
-    <string name="category_handle_power_autostart_time">Avvia nell\'intervallo</string>
+    <string name="category_handle_power_autostart_time">Avvia nella\'intervallo</string>
     <string name="choose_alarm_sound">Suono della sveglia</string>
     <string name="choose_primary_color">Colore principale</string>
     <string name="choose_secondary_color">Colore del testo</string>
@@ -124,6 +127,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Inizio</string>
     <string name="night_mode_timerange_title">Orario notturno</string>
     <string name="noise_sensitivity">Sensibilità del microfono</string>
+    <string name="notification_channel_name_alarms">Sveglie</string>
     <string name="notification_alarm">Fai click per fermare la sveglia</string>
     <string name="numbers">Numeri</string>
     <string name="numberStyleArabic">Arabico</string>
@@ -143,6 +147,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_pro">Versione completa</string>
     <string name="product_name_weather">Meteo e pacchetto di design</string>
     <string name="product_name_webradio">Pacchetto web radio</string>
+    <string name="purchaseActions">Acquista una licenza</string>
     <string name="purchaseWeatherData">Acquista una licenza</string>
     <string name="purchaseWebRadio">Acquista una licenza</string>
     <string name="radio">Radio</string>
@@ -177,6 +182,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screenOrientation">orientamento schermo</string>
     <string name="select_alarm_sound">Seleziona suoneria sveglia</string>
     <string name="set_alarm">imposta allarme</string>
+    <string name="showBatteryWarningSummary">Mostra un avviso all\'avvio quando non sei collegato alla rete elettrica</string>
     <string name="showcase_text_screen_lock">Lo schermo è attualmente bloccato. Premi a lungo sull\'icona per sbloccare.</string>
     <string name="showcase_title_screen_lock">Blocco schermo</string>
     <string name="show_date">Mostra data</string>
