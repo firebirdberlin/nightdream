@@ -19,6 +19,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -563,6 +564,10 @@ public class AlarmClockView extends View {
     void toast(final CharSequence text) {
         mHandler.post(new Runnable() {
             @Override public void run() {
+                PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
+                        | PowerManager.ACQUIRE_CAUSES_WAKEUP, "nightdream:toastTag");
+                wl.acquire(15000);
                 Toast.makeText(ctx, text, Toast.LENGTH_LONG).show();
             }
         });

@@ -266,7 +266,16 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         };
 
         RadioStation station = stations.get(stationIndex);
-        RadioStreamDialogFragment.showDialog((Activity)getContext(), stationIndex, station, listener);
+        String preferredCountry = null;
+        if (station != null) {
+            preferredCountry = station.countryCode;
+        } else {
+            for (int i = 0; i < stations.numAvailableStations(); i++) {
+                RadioStation s = stations.get(i);
+                preferredCountry = s.countryCode;
+           }
+        }
+        RadioStreamDialogFragment.showDialog((Activity)getContext(), stationIndex, station, preferredCountry, listener);
     }
 
     private void hideSystemUI() {

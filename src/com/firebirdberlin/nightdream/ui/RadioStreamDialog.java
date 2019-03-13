@@ -46,6 +46,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
     // this dialog instance must not be used repeatedly, otherwise it wont reflect a changed station
     private final RadioStation persistedRadioStation;
+    private final String preferredCountry;
 
     private EditText queryText = null;
     private ArrayList<RadioStation> stations = new ArrayList<>();
@@ -60,9 +61,10 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
     private final RadioStreamManualInputDialog manualInputDialog = new RadioStreamManualInputDialog();
 
-    public RadioStreamDialog(Context context, RadioStation persistedRadioStation) {
+    public RadioStreamDialog(Context context, RadioStation persistedRadioStation, String preferredCountry) {
         this.context = context;
         this.persistedRadioStation = persistedRadioStation;
+        this.preferredCountry = preferredCountry;
     }
 
     private Context getContext() {
@@ -227,7 +229,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
         });
 
         updateCountryNameToCodeMap(countries);
-        updateCountrySpinner(countries, persistedRadioStation);
+        updateCountrySpinner(countries, preferredCountry);
     }
 
     private String getSelectedCountry() {
@@ -293,73 +295,31 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
                 countryCode, station.name, station.bitrate, streamOffline);
     }
 
-    private void updateCountrySpinner(List<Country> countries, RadioStation persistedRadioStation) {
-
-
-        //RadioStation persistedRadioStation = getPersistedRadioStation();
-        String persistedCountryCode = persistedRadioStation != null ? persistedRadioStation.countryCode : null;
-        Log.i(TAG, "found persisted station: " + (persistedRadioStation !=  null ? persistedRadioStation.toString() : "null"));
-
-
-        List<String> preferredCountryCodes = getPreferredCountryCodes();
+    private void updateCountrySpinner(List<Country> countries, String preferredCountry) {
 
         List<String> countryList = new ArrayList<>();
 
         // first add empty entry meaning "any country"
-        //countryList.add("All countries");
-        //empty string until localized
         countryList.add("");
 
         int selectedItemIndex = -1;
-
-        // add preferred countries first
-        if (preferredCountryCodes != null && !preferredCountryCodes.isEmpty()) {
-
-            for (Country c : countries) {
-                int numFound = 0;
-                for (String preferredCountry : preferredCountryCodes) {
-                    if (c.countryCode != null && c.countryCode.equals(preferredCountry)) {
-                        countryList.add(c.name);
-                        numFound++;
-
-                        // if radio station is already configured selects its country as default
-                        if (persistedCountryCode != null &&
-                                c.countryCode != null &&
-                                c.countryCode.equals(persistedRadioStation.countryCode)) {
-                            selectedItemIndex = countryList.size() - 1;
-                        }
-                    }
-                }
-
-                if (numFound == preferredCountryCodes.size()) {
-                    break;
-                }
-            }
-        }
 
         // now add all countries (including preferred country, so they are duplicates, but no problem)
         for (Country c : countries) {
             countryList.add(c.name);
 
             // if radio station is already configured selects its country as default
-            if (persistedCountryCode != null &&
-                    c.countryCode != null &&
-                    c.countryCode.equals(persistedRadioStation.countryCode)) {
+            if (preferredCountry != null &&
+                    c.name != null &&
+                    c.name.equals(preferredCountry)) {
+                //  c.name.equals(persistedRadioStation.countryCode)) {
                 selectedItemIndex = countryList.size() - 1;
             }
         }
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryList);
-        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, R.layout.spinner_item, countryList);
-
-        // select as default: first preferred country, and "any country"
-        if (selectedItemIndex == -1 && !countryList.isEmpty()) {
-            selectedItemIndex = 0;
-            //selectedItemIndex = (preferredCountryCodes != null && !preferredCountryCodes.isEmpty() && countryList.size() > 1) ? 1 : 0;
-        }
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //dataAdapter.setDropDownViewResource(R.layout.spinner_item);
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
