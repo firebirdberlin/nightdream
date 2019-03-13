@@ -17,7 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">О программе</string>
-    <string name="action_skip">пропустить</string>
+    <string name="action_skip">Пропустить</string>
     <string name="action_snooze">Дремать</string>
     <string name="action_stop">Остановить</string>
     <string name="activateDoNotDisturb">Активировать DnD</string>
@@ -28,7 +28,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarm">Будильник </string>
     <string name="alarmFadeIn">Нарастание громкости</string>
     <string name="alarmUpcoming">Время будильника</string>
-    <string name="alarmStartDate">включить следующий будильник</string>
+    <string name="alarmStartDate">Включить следующий будильник</string>
     <string name="alarmStartsFrom">От</string>
     <string name="alarmVolume">Громкость</string>
     <string name="allow_screen_off_summary">Выключать экран в ночное время</string>
@@ -52,9 +52,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Выбор изображения</string>
     <string name="backgroundServiceDialogTitle">Прекращение работы в фоне</string>
     <string name="backgroundServiceDialogMessage">Прекращение работу в фоне  приведет к отключению автозапуска и режима ожидания. Продолжить?</string>
-    <string name="backgroundServiceNotificationText">запущен фоновый сервис</string>
-    <string name="backgroundServiceNotificationTextLocation">обновление местоположения в процессе</string>
-    <string name="backgroundServiceNotificationTextNightMode">ночного режима сервис запущен</string>
+    <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
+    <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
+    <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
     <string name="batteryTimeoutDescription">Время ожидания батареи</string>
     <string name="batteryTimeoutNever">Никогда</string>
     <string name="batteryTimeout1min">1 мин</string>
@@ -65,7 +65,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="batteryTimeout30min">30 мин</string>
     <string name="behaviour">Поведение</string>
     <string name="brightness">Яркость</string>
-    <string name="brightness_night_mode">яркость в ночном режиме</string>
+    <string name="brightness_night_mode">Яркость в ночном режиме</string>
     <string name="brightness_offset">Предел яркости</string>
     <string name="buttonAccessibilitySettings">Показывать оповещения</string>
     <string name="buy">Купить</string>
@@ -90,7 +90,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question_layout">Вы действительно хотите сбросить этот шаблон до значений по умолчанию?</string>
     <string name="confirm_reset">Сброс</string>
     <string name="contribute">Внести свой вклад в проект</string>
-    <string name="contribute_beta_channel">Получть beta версию</string>
+    <string name="contribute_beta_channel">Получить beta версию</string>
     <string name="contribute_source_code">Исходный код проекта</string>
     <string name="contribute_translation">Перевод</string>
     <string name="country">Страна</string>
@@ -108,7 +108,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_labels">Цифры</string>
     <string name="donate_bitcoin">Пожертвовать биткоины</string>
     <string name="donate">Поддержать</string>
-    <string name="doubleTapToFinishSummary">Завершение приложения при двойном касании по экрану</string>
+    <string name="doubleTapToFinishSummary">Завершить работу приложения двойным касанием по экрану</string>
     <string name="doubleTapToFinishTitle">Для завершения, дважды коснитесь экрана</string>
     <string name="expertPreferences">Расширенные настройки</string>
     <string name="forecast">Прогноз погоды на 5 дней</string>
@@ -122,7 +122,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_desk">Настольная док-станция</string>
     <string name="handle_power_disconnection">Автоматическое завершение</string>
     <string name="handle_power_disconnection_summary">Закрыть приложение при завершении зарядки</string>
-    <string name="handle_power_disconnection_at_time_range_end">Время отключения после автозапуска</string>
+    <string name="handle_power_disconnection_at_time_range_end">Время откл.  после автозапуска</string>
     <string name="handle_power_usb">Зарядка от USB</string>
     <string name="handle_power_wireless">Беспроводная зарядка</string>
     <string name="hide_background_image_in_night_mode">Скрыть</string>
@@ -149,11 +149,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Время начала</string>
     <string name="night_mode_timerange_title">Ночные часы</string>
     <string name="noise_sensitivity">Чувствительность микрофона</string>
-    <string name="notification_channel_name_alarms">будильники</string>
-    <string name="notification_channel_name_devmsg">сообщения</string>
-    <string name="notification_channel_name_radio">радио</string>
-    <string name="notification_channel_name_services">службы</string>
-    <string name="notification_channel_desc_alarms">уведомление показывать во время активного будильника</string>
+    <string name="notification_channel_name_alarms">Будильники</string>
+    <string name="notification_channel_name_devmsg">Сообщения</string>
+    <string name="notification_channel_name_radio">Радио</string>
+    <string name="notification_channel_name_services">Службы</string>
+    <string name="notification_channel_desc_alarms">Уведомление показывать во время активного будильника</string>
     <string name="notification_channel_desc_devmsg">Сообщения, касающиеся приложения</string>
     <string name="notification_channel_desc_radio">Уведомление о работающем интернет радио</string>
     <string name="notification_channel_desc_services">Уведомление запущенных сервисов</string>
@@ -184,7 +184,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_station">Радио станция</string>
     <string name="radio_station_dialog_title">Выберите радио станцию</string>
     <string name="radio_station_none">Нет радиостанций</string>
-    <string name="radio_stream_activate_wifi">Вай-фай</string>
+    <string name="radio_stream_activate_wifi">WiFi</string>
     <string name="radio_stream_activate_wifi_desc">Когда Включено, будет активирован Вай-фай за несколько минут до начала проигрывания интернет радио</string>
     <string name="radio_stream_enabled">Включено</string>
     <string name="radio_stream">Потоковое радио</string>
