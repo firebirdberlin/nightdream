@@ -47,6 +47,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
+    public static int currentStreamType = AudioManager.USE_DEFAULT_STREAM_TYPE;
     private static boolean readyForPlayback = false;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     private static String TAG = "RadioStreamService";
@@ -61,7 +62,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
-    private int currentStreamType = AudioManager.STREAM_ALARM;
     private int currentStreamVolume = -1;
     private static long sleepTimeInMillis = 0L;
     private static String streamURL = "";
@@ -111,7 +111,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         @Override
         public void run() {
             handler.removeCallbacks(startSleep);
-            if ( sleepTimeInMillis <= 0L ) {
+            if ( sleepTimeInMillis <= 0L || alarmIsRunning) {
                 return;
             }
             sleepTimeInMillis = 0L;
@@ -258,8 +258,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             switchToNextStation();
         }
 
-        sleepTimeInMillis = settings.sleepTimeInMillis;
-        initSleepTime();
+        if (!alarmIsRunning) {
+            // re-init the sleep timer
+            sleepTimeInMillis = settings.sleepTimeInMillis;
+            initSleepTime();
+        } else {
+            sleepTimeInMillis = 0L;
+        }
 
 
         return Service.START_REDELIVER_INTENT;
@@ -368,7 +373,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             statusCheckTask = new HttpStatusCheckTask(this);
             statusCheckTask.execute(result.streamUrl);
             return;
-        } else if ( alarmIsRunning ) {
+        }
+
+        if ( alarmIsRunning ) {
             AlarmService.startAlarm(this, alarmTime);
         }
 
@@ -382,7 +389,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             streamURL = checkResult.url;
             playStream();
             return;
-        } else if ( alarmIsRunning ) {
+        }
+
+        if ( alarmIsRunning ) {
             AlarmService.startAlarm(this, alarmTime);
         }
 
@@ -435,7 +444,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
-        if ( alarmIsRunning ) {
+        if ( alarmIsRunning && !readyForPlayback ) {
             AlarmService.startAlarm(this, alarmTime);
             stopSelf();
             return true;
