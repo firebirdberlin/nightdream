@@ -318,7 +318,7 @@ public class NightDreamActivity extends BillingHelperActivity
     void setupRadioStreamUI() {
         switch (RadioStreamService.streamingMode) {
             case ALARM:
-                setVolumeControlStream(AudioManager.STREAM_ALARM);
+                setVolumeControlStream(RadioStreamService.currentStreamType);
                 nightDreamUI.showAlarmClock();
                 break;
             case RADIO:
