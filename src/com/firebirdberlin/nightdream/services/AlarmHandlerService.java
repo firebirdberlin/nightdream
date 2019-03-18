@@ -166,7 +166,7 @@ public class AlarmHandlerService extends IntentService {
         SqliteIntentService.snooze(context, time);
     }
 
-    private static SimpleTime getCurrentlyActiveAlarm() {
+    public static SimpleTime getCurrentlyActiveAlarm() {
         EventBus bus = EventBus.getDefault();
         OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
         return (event != null) ? event.entry : null;

@@ -68,7 +68,9 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
-        am.cancel(pI);
+        if (am != null) {
+            am.cancel(pI);
+        }
     }
 
     public static PendingIntent getPendingIntent(Context context, SimpleTime alarmTime, int flags) {

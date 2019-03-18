@@ -18,8 +18,10 @@ public class SimpleTime {
     public static int THURSDAY = 1 << 4;
     public static int FRIDAY = 1 << 5;
     public static int SATURDAY = 1 << 6;
-    public static List<Integer> DAYS = Arrays.asList(Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY,
-            Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY);
+    public static List<Integer> DAYS = Arrays.asList(
+            Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY,
+            Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY
+    );
 
     public long id = -1L;
     public int hour = 0;
@@ -109,6 +111,20 @@ public class SimpleTime {
     public Calendar getCalendar() {
         Calendar now = Calendar.getInstance();
         return getCalendar(now);
+    }
+
+    public Calendar getTodaysAlarmTIme() {
+        Calendar now = Calendar.getInstance();
+        Calendar todaysAlarmTime = initCalendar(now);
+        if (!isRecurring()) {
+            return todaysAlarmTime;
+        } else {
+            int dayOfWeek = now.get(Calendar.DAY_OF_WEEK);
+            if ( hasDay(dayOfWeek) ) {
+                return todaysAlarmTime;
+            }
+        }
+        return null;
     }
 
     public Calendar getNextAlarmTime(Calendar reference) {
