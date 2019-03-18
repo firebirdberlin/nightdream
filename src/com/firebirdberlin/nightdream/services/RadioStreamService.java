@@ -49,6 +49,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
     public static int currentStreamType = AudioManager.USE_DEFAULT_STREAM_TYPE;
     private static boolean readyForPlayback = false;
+    private long readyForPlaybackSince = 0L;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     private static String TAG = "RadioStreamService";
     private static String ACTION_START = "start";
@@ -444,9 +445,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
-        if ( alarmIsRunning && !readyForPlayback ) {
-            AlarmService.startAlarm(this, alarmTime);
+        long now = System.currentTimeMillis();
+        if ( alarmIsRunning && now - readyForPlaybackSince < 120000 ) {
+            // if the stream stops during the first two minutes there are probably issues connecting
+            // to the stream
             stopSelf();
+            AlarmService.startAlarm(this, alarmTime);
             return true;
         }
         return false;
@@ -470,6 +474,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         try {
             mp.start();
             readyForPlayback = true;
+            readyForPlaybackSince = System.currentTimeMillis();
             Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
             intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);

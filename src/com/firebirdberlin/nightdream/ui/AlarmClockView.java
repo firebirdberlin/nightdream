@@ -353,6 +353,15 @@ public class AlarmClockView extends View {
     }
 
     private String getAlarmTimeFormatted() {
+        if (alarmIsRunning()) {
+            SimpleTime current = AlarmHandlerService.getCurrentlyActiveAlarm();
+            if (current != null) {
+                Calendar cal = current.getTodaysAlarmTIme();
+                if (cal != null) {
+                    return getTimeFormatted(cal);
+                }
+            }
+        }
         if ((userChangesAlarmTime || isAlarmSet()) && time != null) {
             return getTimeFormatted(time.getCalendar());
         }
