@@ -497,7 +497,6 @@
                 owmapi:textClear="@string/clear"
                 owmapi:textSummary=""
                 />
-            <!--owmapi:textSummary="@string/weather_city_id_summary" -->
 
             <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
                 android:dependency="showWeather"

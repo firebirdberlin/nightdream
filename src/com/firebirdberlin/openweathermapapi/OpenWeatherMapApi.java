@@ -21,6 +21,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class OpenWeatherMapApi {
 
@@ -136,6 +137,7 @@ public class OpenWeatherMapApi {
         if (jsonWeather != null && jsonWeather.length() > 0) {
             JSONObject weatherObj = getJSONObject(jsonWeather, 0);
             entry.weatherIcon = getValue(weatherObj, "icon", "");
+            entry.description = getValue(weatherObj, "description", "");
         }
 
         return entry;
@@ -296,6 +298,11 @@ public class OpenWeatherMapApi {
                     .appendQueryParameter("lon", String.valueOf(lon));
         }
 
+        String lang = getDefaultLanguage();
+        if (lang != null && !lang.isEmpty()) {
+            builder = builder.appendQueryParameter("lang", lang);
+        }
+
         String url = builder.build().toString();
         return new URL(url);
     }
@@ -309,6 +316,10 @@ public class OpenWeatherMapApi {
             builder = builder
                     .appendQueryParameter("lat", String.valueOf(lat))
                     .appendQueryParameter("lon", String.valueOf(lon));
+        }
+        String lang = getDefaultLanguage();
+        if (lang != null && !lang.isEmpty()) {
+            builder = builder.appendQueryParameter("lang", lang);
         }
 
         String url = builder.build().toString();
@@ -354,5 +365,9 @@ public class OpenWeatherMapApi {
         }
         br.close();
         return sb.toString();
+    }
+
+    private static String getDefaultLanguage() {
+        return Locale.getDefault().getLanguage();
     }
 }

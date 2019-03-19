@@ -18,19 +18,16 @@ import java.util.Date;
 
 public class WeatherPreviewPreference extends Preference {
     private View preferenceView = null;
-    private Context context = null;
     private TextView lastWeatherCalculationTime = null;
     private TextView lastLocationUpdateTime = null;
     private TextView cityName = null;
 
     public WeatherPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
     }
 
     public WeatherPreviewPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        this.context = context;
     }
 
     @Override

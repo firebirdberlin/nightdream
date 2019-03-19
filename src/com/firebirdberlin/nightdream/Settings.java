@@ -630,6 +630,7 @@ public class Settings {
             this.weatherEntry.sunriseTime = settings.getLong("weather_sunrise_time", this.weatherEntry.sunriseTime);
             this.weatherEntry.sunsetTime = settings.getLong("weather_sunset_time", this.weatherEntry.sunsetTime);
             this.weatherEntry.weatherIcon = settings.getString("weather_icon", this.weatherEntry.weatherIcon);
+            this.weatherEntry.description = settings.getString("weather_description", this.weatherEntry.description);
             this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
             this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
             this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
@@ -649,6 +650,7 @@ public class Settings {
         prefEditor.putLong("weather_sunset_time", entry.sunsetTime);
         prefEditor.putString("weather_icon", entry.weatherIcon);
         prefEditor.putString("weather_city_name", entry.cityName);
+        prefEditor.putString("weather_description", entry.description);
         prefEditor.putInt("weather_city_id", entry.cityID);
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);

@@ -56,7 +56,7 @@ public class DownloadWeatherService extends JobIntentService {
         if ( entry.timestamp > WeatherEntry.INVALID ) {
             Settings settings = new Settings(mContext);
             settings.setWeatherEntry(entry);
-            broadcastResult();
+            broadcastResult(settings, entry);
         } else {
             Log.w(TAG, "entry.timestamp is INVALID!");
 
@@ -64,8 +64,10 @@ public class DownloadWeatherService extends JobIntentService {
         Log.d(TAG, "Download finished.");
     }
 
-    private void broadcastResult() {
+    private void broadcastResult(Settings settings, WeatherEntry entry) {
         Intent intent = new Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        ScreenWatcherService.updateNotification(mContext, entry, settings.temperatureUnit);
     }
 }
