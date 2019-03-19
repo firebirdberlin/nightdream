@@ -139,15 +139,15 @@ public class WeatherLayout extends LinearLayout {
         if (iconText == null || temperatureText == null) return;
         long age = entry.ageMillis();
         Log.d("WeatherLayout", entry.toString());
-        Log.d("WeatherLayout", formatTemperatureText(entry));
+        Log.d("WeatherLayout", entry.formatTemperatureText(temperatureUnit));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
 
             iconText.setText(iconToText(entry.weatherIcon));
 
-            temperatureText.setText(formatTemperatureText(entry));
+            temperatureText.setText(entry.formatTemperatureText(temperatureUnit));
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
-            windText.setText(formatWindText(entry));
+            windText.setText(entry.formatWindText(speedUnit));
 
             update();
         } else {
@@ -192,43 +192,6 @@ public class WeatherLayout extends LinearLayout {
         if (code.equals("50d") ) return "M";
         if (code.equals("50n") ) return "M";
         return "";
-    }
-
-    private String formatTemperatureText(WeatherEntry entry) {
-        switch (temperatureUnit) {
-            case WeatherEntry.CELSIUS:
-                return String.format("%d°C", Math.round(toDegreesCelcius(entry.temperature)));
-            case WeatherEntry.FAHRENHEIT:
-                return String.format("%d°F", Math.round(toDegreesFahrenheit(entry.temperature)));
-            default:
-                return String.format("%d K", Math.round(entry.temperature));
-        }
-    }
-    private double toDegreesCelcius(double kelvin) {
-        return kelvin - 273.15;
-    }
-
-    private double toDegreesFahrenheit(double kelvin) {
-        return kelvin * 1.8 - 459.67;
-    }
-
-    private String formatWindText(WeatherEntry entry) {
-        switch (speedUnit) {
-            case WeatherEntry.BEAUFORT:
-                return String.format("%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(entry.windSpeed));
-            case WeatherEntry.MILES_PER_HOUR:
-                double mph = WindSpeedConversion.metersPerSecondToMilesPerHour(entry.windSpeed);
-                return String.format("%.1fmi/h", mph);
-            case WeatherEntry.KM_PER_HOUR:
-                double kmph = WindSpeedConversion.metersPerSecondToKilometersPerHour(entry.windSpeed);
-                return String.format("%.1fkm/h", kmph);
-            case WeatherEntry.KNOT:
-                double kn = WindSpeedConversion.metersPerSecondToKnot(entry.windSpeed);
-                return String.format("%.1fkn", kn);
-            case WeatherEntry.METERS_PER_SECOND:
-            default:
-                return String.format("%.1fm/s", entry.windSpeed);
-        }
     }
 
     private void adjustTextSize() {

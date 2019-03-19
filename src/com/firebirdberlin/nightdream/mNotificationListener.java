@@ -60,6 +60,8 @@ public class mNotificationListener extends NotificationListenerService {
         Notification notification = sbn.getNotification();
         if ( notification == null ) return true;
         //if ( getTitle(sbn) == null ) return true;
+        int importance = getImportance(sbn);
+        if (importance < 2) return true;
         return ( notification.priority < Notification.PRIORITY_LOW);
     }
 
@@ -177,6 +179,27 @@ public class mNotificationListener extends NotificationListenerService {
             }
         }
         return notification.icon;
+    }
+
+    int getImportance(StatusBarNotification sbn) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Ranking ranking = getRanking(sbn);
+            if (ranking != null) {
+                return ranking.getImportance();
+            }
+        }
+        return 2;
+    }
+
+    Ranking getRanking(StatusBarNotification sbn) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            String notificationKey = sbn.getKey();
+            RankingMap rankingMap = getCurrentRanking();
+            Ranking ranking = new Ranking();
+            rankingMap.getRanking(notificationKey, ranking);
+            return ranking;
+        }
+        return null;
     }
 
     private void logNotification(StatusBarNotification sbn) {

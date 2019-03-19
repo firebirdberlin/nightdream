@@ -49,6 +49,7 @@ import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
@@ -494,6 +495,9 @@ public class NightDreamUI {
         if (! settings.showWeather ) return;
 
         WeatherEntry entry = settings.weatherEntry;
+
+        ScreenWatcherService.updateNotification(mContext, entry, settings.temperatureUnit);
+
         long diff = entry.ageMillis();
 
         if (WeatherService.shallUpdateWeatherData(settings)) {
