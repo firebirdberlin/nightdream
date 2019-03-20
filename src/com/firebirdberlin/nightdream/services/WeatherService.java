@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherService {
@@ -19,7 +20,7 @@ public class WeatherService {
         LocationService.start(context);
     }
 
-    public static boolean shallUpdateWeatherData(Settings settings) {
+    public static boolean shallUpdateWeatherData(Context context, Settings settings) {
         if (!settings.showWeather) return false;
 
         WeatherEntry entry = settings.weatherEntry;
@@ -34,9 +35,12 @@ public class WeatherService {
                 (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID)),
                 settings.weatherCityID, cityID));
         boolean result = (
-                diff < 0L
-                        || (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID))
-                        || (diff > maxDiff && requestAge > maxRequestAge)
+                Utility.hasNetworkConnection(context) &&
+                        (
+                                diff < 0L
+                                        || (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID))
+                                        || (diff > maxDiff && requestAge > maxRequestAge)
+                        )
         );
         if (result) {
             lastLocationRequest = System.currentTimeMillis();

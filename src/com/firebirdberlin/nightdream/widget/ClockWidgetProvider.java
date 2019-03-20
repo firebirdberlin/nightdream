@@ -97,7 +97,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.showDate(showAdditionalLines && settings.showDate);
 
         // update weather data via api if outdated
-        if (WeatherService.shallUpdateWeatherData(settings)) {
+        if (WeatherService.shallUpdateWeatherData(context, settings)) {
             settings.setLastWeatherRequestTime(System.currentTimeMillis());
             WeatherService.start(context, settings.weatherCityID);
             //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated weather");
