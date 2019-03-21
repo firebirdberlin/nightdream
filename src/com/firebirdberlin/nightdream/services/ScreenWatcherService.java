@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -48,11 +47,6 @@ public class ScreenWatcherService extends Service {
         mReceiver = ScreenReceiver.register(this);
         powerConnectionReceiver = PowerConnectionReceiver.register(this);
         chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
-
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            WeatherUpdateJobService.schedule(this);
-        }
     }
 
     public static void updateNotification(Context context, WeatherEntry weatherEntry, int temperatureUnit) {
