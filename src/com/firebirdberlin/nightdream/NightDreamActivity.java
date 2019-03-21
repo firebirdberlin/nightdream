@@ -44,6 +44,7 @@ import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.services.WeatherUpdateJobService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
@@ -224,6 +225,9 @@ public class NightDreamActivity extends BillingHelperActivity
             AudioManage.activateDnDMode(true);
         }
         ScreenWatcherService.conditionallyStart(this, mySettings);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            WeatherUpdateJobService.schedule(context);
+        }
 
         scheduleShutdown();
         setupAlarmClockIcon();
