@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
 dependencies {
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:support-annotations:28.0.0'
     implementation project(':externals:android-preferences')
     implementation project(':externals:ShowcaseView:library')
     implementation fileTree(include: '*.jar', dir: 'libs')
