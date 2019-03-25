@@ -368,7 +368,7 @@ public class Utility {
         }
 
         String filePath = context.getFilesDir().getPath().toString() + "/" + logFileName;
-        Log.d(TAG, "log file locatin: " + filePath);
+        Log.d(TAG, "log file location: " + filePath);
         File logFile = new File(filePath);
         if (!logFile.exists()) {
             try {
@@ -385,7 +385,7 @@ public class Utility {
 
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
-                writer.append(formattedTime + " " + text);
+                writer.append(String.format("%s %s", formattedTime, text));
                 writer.newLine();
                 writer.flush();
                 writer.close();

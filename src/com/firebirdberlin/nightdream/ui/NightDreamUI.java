@@ -509,6 +509,7 @@ public class NightDreamUI {
         // handle outdated weather data
         if (entry.timestamp == -1L || diff > 8 * 60 * 60 * 1000) {
             clockLayout.clearWeather();
+            ScreenWatcherService.updateNotification(mContext, null, settings.temperatureUnit);
         }
     }
 

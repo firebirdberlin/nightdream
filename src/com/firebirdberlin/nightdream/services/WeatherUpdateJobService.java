@@ -15,6 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
@@ -23,7 +24,6 @@ public class WeatherUpdateJobService extends JobService {
 
     private final static String TAG = "WeatherUpdateJobService";
     private NightDreamBroadcastReceiver broadcastReceiver = null;
-    private Settings settings;
     private JobParameters params;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -62,8 +62,12 @@ public class WeatherUpdateJobService extends JobService {
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob");
 
-        settings = new Settings(this);
+        Settings settings = new Settings(this);
         this.params = params;
+        Utility.logToFile(
+                getApplicationContext(), "weatherUpdates.txt",
+               "checking for weather update " + String.valueOf(settings.weatherCityID)
+        );
         if (WeatherService.shallUpdateWeatherData(this, settings)) {
             broadcastReceiver = registerBroadcastReceiver();
             settings.setLastWeatherRequestTime(System.currentTimeMillis());
@@ -110,6 +114,7 @@ public class WeatherUpdateJobService extends JobService {
             Log.i(TAG, "action -> " + action);
             if (LocationUpdateReceiver.ACTION_LOCATION_UPDATED.equals(action)) {
                 // we need to reload the location
+                Settings settings = new Settings(context);
                 DownloadWeatherService.start(context, settings.getLocation());
             } else if (LocationUpdateReceiver.ACTION_LOCATION_FAILURE.equals(action)) {
                 unregisterLocalReceiver(broadcastReceiver);
