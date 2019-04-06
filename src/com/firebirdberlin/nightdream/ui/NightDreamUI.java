@@ -1097,6 +1097,39 @@ public class NightDreamUI {
         int new_height = (int) (clockLayout.getHeight() * factor);
         if (factor > 0.5f && new_width < width  && new_height < height) {
             clockLayout.setScaleFactor(factor);
+            keepClockWithinContainer(new_width, new_height, width, height);
+        }
+    }
+
+    /**
+     * make sure the clock does not run over clockLayoutContainer edges after scaling
+     */
+    private void keepClockWithinContainer(int newClockWidth, int newClockHeight, int containerWidth, int containerHeight) {
+
+        final float distanceX = containerWidth - newClockWidth - Math.abs(clockLayout.getTranslationX()) * 2f;
+        final float distanceY = containerHeight - newClockHeight - Math.abs(clockLayout.getTranslationY()) * 2f;
+
+        /*
+        Log.d(TAG, String.format("translx=%f  distanceX= %f", clockLayout.getTranslationX(), distanceX));
+        Log.d(TAG, String.format("transly=%f  distanceY= %f", clockLayout.getTranslationY(), distanceY));
+        */
+
+        if (distanceX < 0 || distanceY < 0) {
+
+            // stop animation, otherwise it gets out of screen while animation is in progress
+            clockLayout.animate().cancel();
+
+            if (distanceX < 0) {
+                // move clock to left or right screen edge
+                final float correctionX = (newClockWidth - containerWidth) * 0.5f * (clockLayout.getTranslationX() < 0 ? 1f : -1f);
+                clockLayout.setTranslationX(correctionX);
+            }
+
+            if (distanceY < 0) {
+                // move clock to top or bottom screen edge
+                final float correctionY = (newClockHeight - containerHeight) * 0.5f * (clockLayout.getTranslationY() < 0 ? 1f : -1f);
+                clockLayout.setTranslationY(correctionY);
+            }
         }
     }
 
