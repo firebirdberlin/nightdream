@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:3.3.2'
     }
 }
 
@@ -20,15 +20,16 @@ apply plugin: 'com.android.application'
 
 dependencies {
     implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.xenione.libs:tab-digit:1.0.2'
     implementation project(':externals:android-preferences')
     implementation project(':externals:ShowcaseView:library')
     implementation fileTree(include: '*.jar', dir: 'libs')
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     sourceSets {
@@ -71,6 +72,6 @@ android {
         unitTests.returnDefaultValues = true
     }
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
     }
 }

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:padding="0px">
+    <com.xenione.digit.TabDigit
+        xmlns:digit="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/charHighHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        digit:backgroundColor="#2C2C2C"
+        digit:padding="10dp"
+        digit:textColor="#ffffff"
+        digit:textSize="60sp" />
+    <com.xenione.digit.TabDigit
+        xmlns:digit="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/charLowHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        digit:backgroundColor="#2C2C2C"
+        digit:padding="10dp"
+        digit:textColor="#ffffff"
+        digit:textSize="60sp" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <TextView
+            android:id="@+id/colon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text=":"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"/>
+    </FrameLayout>
+
+    <com.xenione.digit.TabDigit
+        xmlns:digit="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/charHighMinute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        digit:backgroundColor="#2C2C2C"
+        digit:padding="10dp"
+        digit:textColor="#ffffff"
+        digit:textSize="60sp" />
+
+    <com.xenione.digit.TabDigit
+        xmlns:digit="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/charLowMinute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        digit:backgroundColor="#2C2C2C"
+        digit:padding="10dp"
+        digit:textColor="#ffffff"
+        digit:textSize="60sp" />
+
+</LinearLayout>
