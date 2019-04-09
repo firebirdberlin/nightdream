@@ -25,6 +25,7 @@ public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_ANALOG2 = 2;
     public static final int LAYOUT_ID_ANALOG3 = 3;
     public static final int LAYOUT_ID_ANALOG4 = 4;
+    public static final int LAYOUT_ID_DIGITAL_FLIP = 5;
     private static final String TAG = "NightDream.ClockLayout";
     private int layoutId = LAYOUT_ID_DIGITAL;
 
@@ -58,6 +59,9 @@ public class ClockLayout extends LinearLayout {
         View child;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
+        } else
+        if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
+            child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
         } else
         if (layoutId == LAYOUT_ID_ANALOG ){
             child = inflater.inflate(R.layout.analog_clock_layout, null);
@@ -115,6 +119,11 @@ public class ClockLayout extends LinearLayout {
         if (analog_clock != null) {
             analog_clock.setPrimaryColor(color);
         }
+
+        if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
+            CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
+            layout.setPrimaryColor(color);
+        }
     }
 
     public void setSecondaryColor(int color) {
@@ -129,6 +138,11 @@ public class ClockLayout extends LinearLayout {
         }
         if (analog_clock != null) {
             analog_clock.setSecondaryColor(color);
+        }
+
+        if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
+            CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
+            layout.setSecondaryColor(color);
         }
     }
 
@@ -213,7 +227,7 @@ public class ClockLayout extends LinearLayout {
                     clock.setMaxFontSizesInSp(6.f, 300.f);
                     clock.invalidate(); // must invalidate to get correct getHeightOfView below
                 }
-                if (date != null  && date.getVisibility() == VISIBLE) {
+                if (date != null && date.getVisibility() == VISIBLE) {
                     date.setMaxWidth((int) (0.9 * parentWidth));
                     date.setMaxHeight(parentHeight / 5);
                     date.setMaxFontSizesInSp(6.f, 20.f);
@@ -286,6 +300,8 @@ public class ClockLayout extends LinearLayout {
                         break;
                 }
             }
+        } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
+            // Todo
         } else if (layoutId == LAYOUT_ID_ANALOG) {
             setupLayoutAnalog(parentWidth, parentHeight, config, displayInWidget);
         } else {
