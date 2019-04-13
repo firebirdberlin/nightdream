@@ -18,6 +18,7 @@ import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -128,6 +129,7 @@ public class Settings {
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
+    public boolean purchasedDonation = false;
     Context mContext;
     SharedPreferences settings;
     public int clockLayout;
@@ -222,6 +224,7 @@ public class Settings {
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
+        purchasedDonation = settings.getBoolean("purchasedDonation", false);
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
@@ -284,8 +287,12 @@ public class Settings {
     }
 
     public int getClockLayoutID(boolean preview) {
-        if (clockLayout >= 2 && !preview && !purchasedWeatherData) {
-            return 1;
+        if (preview) {
+            return clockLayout;
+        } else if (clockLayout == ClockLayout.LAYOUT_ID_DIGITAL_FLIP && !purchasedDonation) {
+            return ClockLayout.LAYOUT_ID_DIGITAL;
+        } else if (clockLayout >= 2 && !purchasedWeatherData) {
+            return ClockLayout.LAYOUT_ID_DIGITAL;
         }
 
         return clockLayout;
