@@ -110,6 +110,12 @@ public abstract class BillingHelperActivity extends Activity {
         boolean purchased_pro = isPurchased(BillingHelper.ITEM_PRO);
         boolean purchased_donation = isPurchased(BillingHelper.ITEM_DONATION);
 
+        if (!purchased_pro && !purchased_weather_data && !purchased_web_radio) {
+            entries.add(getProductWithPrice(prices, R.string.product_name_pro,
+                    BillingHelper.ITEM_PRO));
+            values.add(PRODUCT_ID_PRO);
+        }
+
         if (!purchased_weather_data) {
             entries.add(getProductWithPrice(prices, R.string.product_name_weather,
                     BillingHelper.ITEM_WEATHER_DATA));
@@ -126,12 +132,6 @@ public abstract class BillingHelperActivity extends Activity {
             entries.add(getProductWithPrice(prices, R.string.product_name_actions,
                     BillingHelper.ITEM_ACTIONS));
             values.add(PRODUCT_ID_ACTIONS);
-        }
-
-        if (!purchased_pro && !purchased_weather_data && !purchased_web_radio) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_pro,
-                    BillingHelper.ITEM_PRO));
-            values.add(PRODUCT_ID_PRO);
         }
 
         if (!purchased_donation) {

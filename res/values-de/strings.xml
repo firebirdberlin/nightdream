@@ -76,8 +76,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_secondary_color">Textfarbe</string>
     <string name="clear">löschen</string>
     <string name="clock_hands">Zeiger</string>
+    <string name="clock_layout">Layout</string>
     <string name="clock_layout_analog">Analoguhr</string>
     <string name="clock_layout_digital">Digitaluhr</string>
+    <string name="clock_layout_digital_flip">Retro Flip-Clock</string>
     <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
     <string name="clock_layout_modern_analog">moderne Analoguhr</string>
     <string name="clock_layout_mirror_text">Text spiegeln</string>
@@ -108,6 +110,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
     <string name="expertPreferences">Experteneinstellungen</string>
     <string name="forecast">5-Tage-Vorhersage</string>
+    <string name="gift_for_donors">Geschenk für Ihre Spende</string>
     <string name="hand_shape_arc">Bogen</string>
     <string name="hand_shape_bar">Balken</string>
     <string name="hand_shape_triangle">Dreieck</string>
@@ -269,7 +272,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="welcome_screen_title3">Bildschirmhelligkeit</string>
     <string name="welcome_screen_title4">Größe</string>
     <string name="width">Breite</string>
-    <string name="clock_layout">Layout</string>
     <string name="prev">vorheriges</string>
     <string name="position">Position</string>
     <string name="typeface_dancing_script">Dancing Script Regular</string>

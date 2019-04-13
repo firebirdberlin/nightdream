@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         digit:backgroundColor="#2C2C2C"
-        digit:padding="10dp"
+        digit:padding="12dp"
         digit:textColor="#ffffff"
         digit:textSize="60sp" />
     <com.xenione.digit.TabDigit
@@ -25,7 +25,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         digit:backgroundColor="#2C2C2C"
-        digit:padding="10dp"
+        digit:padding="12dp"
         digit:textColor="#ffffff"
         digit:textSize="60sp" />
 
@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         digit:backgroundColor="#2C2C2C"
-        digit:padding="10dp"
+        digit:padding="12dp"
         digit:textColor="#ffffff"
         digit:textSize="60sp" />
 
@@ -63,8 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         digit:backgroundColor="#2C2C2C"
-        digit:padding="10dp"
+        digit:padding="12dp"
         digit:textColor="#ffffff"
         digit:textSize="60sp" />
-
 </LinearLayout>

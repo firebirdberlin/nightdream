@@ -465,6 +465,10 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalClock tclock = (CustomDigitalClock) clock_ampm;
             tclock.setCustomFormat(is24HourFormat ? "" : "a");
         }
+        if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
+            CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
+            layout.setCustomIs24Hour(is24HourFormat);
+        }
     }
 
     public void clearWeather() {

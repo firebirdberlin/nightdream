@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -32,7 +33,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
     TimeReceiver timeReceiver;
     private Context context;
     private FormatChangeObserver mFormatChangeObserver;
-    private boolean is24Hour = false;
+    private Boolean customIs24Hour = null;
     private TabDigit mCharHighMinute;
     private TabDigit mCharLowMinute;
     private TabDigit mCharHighHour;
@@ -72,15 +73,14 @@ public class CustomDigitalFlipClock extends LinearLayout {
     }
 
     private void init() {
-        is24Hour = get24HourMode();
         mCharHighMinute.setChars(SEXAGISIMAL);
-        mCharHighHour.setChars(is24Hour ? HOURS : HOURS12);
+        mCharHighHour.setChars(get24HourMode() ? HOURS : HOURS12);
         resume();
     }
 
     private void resume() {
         Calendar time = Calendar.getInstance();
-        int hour = time.get(is24Hour ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
+        int hour = time.get(get24HourMode() ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
         int highHour = hour / 10;
         int lowHour = (hour - highHour * 10);
         int minutes = time.get(Calendar.MINUTE);
@@ -133,7 +133,17 @@ public class CustomDigitalFlipClock extends LinearLayout {
      * Pulls 12/24 mode from system settings
      */
     private boolean get24HourMode() {
+        if (customIs24Hour != null) {
+            return customIs24Hour;
+        }
         return android.text.format.DateFormat.is24HourFormat(getContext());
+    }
+
+    public void setCustomIs24Hour(boolean is24Hour) {
+        Log.i(TAG, "Settings custom 24 hour format: " + String.valueOf(is24Hour));
+        this.customIs24Hour = is24Hour;
+        init();
+        invalidate();
     }
 
     public void setPrimaryColor(int color) {
@@ -156,7 +166,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
         @Override
         public void onReceive(Context context, Intent arg1) {
             Calendar time = Calendar.getInstance();
-            int hour = time.get(is24Hour ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
+            int hour = time.get(get24HourMode() ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
             int highHour = hour / 10;
             int lowHour = (hour - highHour * 10);
             int minutes = time.get(Calendar.MINUTE);
@@ -179,6 +189,15 @@ public class CustomDigitalFlipClock extends LinearLayout {
             currentMinuteHigh = highMinute;
             currentMinuteLow = lowMinute;
         }
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        mCharLowMinute.sync();
+        mCharHighMinute.sync();
+        mCharLowHour.sync();
+        mCharHighHour.sync();
     }
 
     private class FormatChangeObserver extends ContentObserver {

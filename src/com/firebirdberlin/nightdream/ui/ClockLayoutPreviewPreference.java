@@ -2,8 +2,10 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -12,6 +14,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.preference.Preference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.PreferencesActivity;
+import com.firebirdberlin.nightdream.PreferencesFragment;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -30,6 +34,7 @@ import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayoutPreviewPreference extends Preference {
+    private static String TAG = "ClockLayoutPreviewPreference";
     private static PreviewMode previewMode = PreviewMode.DAY;
     private ClockLayout clockLayout = null;
     private TextView textViewPurchaseHint = null;
@@ -37,7 +42,7 @@ public class ClockLayoutPreviewPreference extends Preference {
     private LinearLayout preferencesContainer = null;
     private ImageButton resetButton = null;
 
-    private Context context = null;
+    private Context context;
 
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,11 +75,11 @@ public class ClockLayoutPreviewPreference extends Preference {
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 layoutInflater.inflate(R.layout.clock_layout_preference, summaryParent2, true);
 
-                RelativeLayout previewContainer = (RelativeLayout) summaryParent2.findViewById(R.id.previewContainer);
-                clockLayout = (ClockLayout) summaryParent2.findViewById(R.id.clockLayout);
-                resetButton = (ImageButton) summaryParent2.findViewById(R.id.resetButton);
-                textViewPurchaseHint = (TextView) summaryParent2.findViewById(R.id.textViewPurchaseHint);
-                preferencesContainer = (LinearLayout) summaryParent2.findViewById(R.id.preferencesContainer);
+                RelativeLayout previewContainer = summaryParent2.findViewById(R.id.previewContainer);
+                clockLayout = summaryParent2.findViewById(R.id.clockLayout);
+                resetButton = summaryParent2.findViewById(R.id.resetButton);
+                textViewPurchaseHint = summaryParent2.findViewById(R.id.textViewPurchaseHint);
+                preferencesContainer = summaryParent2.findViewById(R.id.preferencesContainer);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     LayoutTransition lt = new LayoutTransition();
@@ -96,7 +101,7 @@ public class ClockLayoutPreviewPreference extends Preference {
     protected void updateView() {
         Settings settings = new Settings(getContext());
         int clockLayoutId = settings.getClockLayoutID(true);
-        textViewPurchaseHint.setVisibility(showPurchaseHint(settings) ? View.VISIBLE : View.GONE);
+        setupPurchaseHint(settings);
         resetButton.setVisibility(showResetButton(settings) ? View.VISIBLE : View.GONE);
         updateClockLayout(clockLayoutId, settings);
         setupPreferencesFragment(clockLayoutId, settings);
@@ -143,7 +148,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
             CustomDigitalClockPreferencesLayout prefs =
                     new CustomDigitalClockPreferencesLayout(context, settings);
-            prefs.setIsPurchased(settings.purchasedWeatherData);
+            prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
                     new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
                         @Override
@@ -170,7 +175,7 @@ public class ClockLayoutPreviewPreference extends Preference {
             CustomAnalogClockPreferencesLayout prefs =
                     new CustomAnalogClockPreferencesLayout(context, preset);
 
-            prefs.setIsPurchased(settings.purchasedWeatherData);
+            prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
                     new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
                         @Override
@@ -220,8 +225,39 @@ public class ClockLayoutPreviewPreference extends Preference {
         return entry;
     }
 
-    private boolean showPurchaseHint(Settings settings) {
-        return (!settings.purchasedWeatherData && settings.getClockLayoutID(true) > 1);
+    private void setupPurchaseHint(Settings settings) {
+        boolean purchasedWeatherData = purchased(PreferencesFragment.ITEM_WEATHER_DATA);
+        Log.i(TAG, "purchasedWeather:" + String.valueOf(purchasedWeatherData));
+        int layoutID = settings.getClockLayoutID(true);
+        if (layoutID == ClockLayout.LAYOUT_ID_DIGITAL_FLIP
+                && ! purchased(PreferencesFragment.ITEM_DONATION)) {
+            textViewPurchaseHint.setText(getContext().getString(R.string.gift_for_donors));
+            textViewPurchaseHint.setVisibility(View.VISIBLE);
+        }
+        else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
+                && ! purchased(PreferencesFragment.ITEM_WEATHER_DATA)) {
+            textViewPurchaseHint.setText(getContext().getString(R.string.product_name_weather));
+            textViewPurchaseHint.setVisibility(View.VISIBLE);
+        } else {
+            textViewPurchaseHint.setVisibility(View.GONE);
+        }
+        textViewPurchaseHint.invalidate();
+    }
+
+    private boolean purchased(String sku) {
+        PreferencesActivity preferencesActivity = (PreferencesActivity) getActivity();
+        return preferencesActivity.isPurchased(sku);
+    }
+
+    private Activity getActivity() {
+        Context context = getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
     }
 
     private boolean showResetButton(Settings settings) {
@@ -229,7 +265,12 @@ public class ClockLayoutPreviewPreference extends Preference {
             return false;
         }
 
-        return settings.getClockLayoutID(true) > 1;
+        int layoutID = settings.getClockLayoutID(true);
+        return (
+                layoutID != ClockLayout.LAYOUT_ID_ANALOG
+                        && layoutID != ClockLayout.LAYOUT_ID_DIGITAL
+                        && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_FLIP
+        );
     }
 
     public enum PreviewMode {DAY, NIGHT}
