@@ -172,6 +172,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="position">Positie</string>
     <string name="prev">Vorige</string>
     <string name="preview">Voorbeeld</string>
+    <string name="product_name_actions">Altijd aanwezig</string>
     <string name="product_name_donation">Donatie</string>
     <string name="product_name_pro">Volledige versie</string>
     <string name="product_name_weather">Weer- en ontwerppakket</string>

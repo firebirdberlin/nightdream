@@ -301,7 +301,7 @@ public class ClockLayout extends LinearLayout {
                 }
             }
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
-            // Todo
+            setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         } else if (layoutId == LAYOUT_ID_ANALOG) {
             setupLayoutAnalog(parentWidth, parentHeight, config, displayInWidget);
         } else {

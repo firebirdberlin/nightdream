@@ -14,7 +14,7 @@ public class NightDreamService extends DreamService {
     Runnable startDelayed = new Runnable() {
         @Override
         public void run() {
-            //Utility.turnScreenOn(context);
+            Utility.turnScreenOn(context);
             handler.removeCallbacks(startDelayed);
             NightDreamActivity.start(context);
             finish();
