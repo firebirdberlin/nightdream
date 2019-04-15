@@ -51,4 +51,22 @@ public class PreferencesActivity extends PreferenceActivity {
             fragment.showPurchaseDialog();
         }
     }
+    public boolean isPurchased(String sku) {
+        if (fragment == null) {
+            return false;
+        }
+        switch (sku) {
+            case PreferencesFragment.ITEM_ACTIONS:
+                return fragment.purchased_actions;
+            case PreferencesFragment.ITEM_DONATION:
+                return fragment.purchased_donation;
+            case PreferencesFragment.ITEM_PRO:
+                return fragment.purchased_pro;
+            case PreferencesFragment.ITEM_WEATHER_DATA:
+                return fragment.purchased_weather_data;
+            case PreferencesFragment.ITEM_WEB_RADIO:
+                return fragment.purchased_web_radio;
+        }
+        return false;
+    }
 }

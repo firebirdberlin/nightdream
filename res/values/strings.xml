@@ -82,6 +82,7 @@ OR
     <string name="clock_layout_digital">digital clock</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_digit_analog">analog clock with digits</string>
+    <string name="clock_layout_digital_flip">flip digit clock</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_modern_analog">modern analog clock</string>
     <string name="clock_layout_mirror_text">Mirror text</string>
@@ -111,6 +112,7 @@ OR
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
     <string name="expertPreferences">Expert preferences</string>
+    <string name="gift_for_donors">Gift for your donation</string>
     <string name="forecast">5-day Weather Forecast</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Bar</string>
