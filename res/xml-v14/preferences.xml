@@ -681,6 +681,15 @@ vi - Phong Nguyen"/>
                         android:action="android.intent.action.VIEW"
                         android:data="https://fonts.google.com/specimen/Dancing+Script?selection.family=Dancing+Script" />
                 </Preference>
+
+                <Preference
+                    android:key="about_tab_digit"
+                    android:summary="by Eugeni Senent (xenione)"
+                    android:title="Tab-Digit">
+                    <intent
+                        android:action="android.intent.action.VIEW"
+                        android:data="https://github.com/xenione/tab-digit" />
+                </Preference>
             </PreferenceScreen>
 
             <PreferenceCategory android:title="@string/contribute">
