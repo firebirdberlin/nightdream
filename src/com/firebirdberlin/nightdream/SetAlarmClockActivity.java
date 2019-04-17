@@ -219,7 +219,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 cal.set(Calendar.SECOND, 0);
                 cal.set(Calendar.MILLISECOND, 0);
                 db.updateNextEventAfter(entry_id, cal.getTimeInMillis());
-
+                SqliteIntentService.scheduleAlarm(context);
             }
         }, year, month, dayOfMonth);
         mDatePicker.setTitle(R.string.alarmStartDate);

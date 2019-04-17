@@ -239,8 +239,10 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             @Override
             public void onRadioStreamSelected(RadioStation station) {
                 // update station in settings
-                settings.persistFavoriteRadioStation(station, stationIndex);
-                stations = settings.getFavoriteRadioStations();
+                if (settings != null) {
+                    settings.persistFavoriteRadioStation(station, stationIndex);
+                    stations = settings.getFavoriteRadioStations();
+                }
                 toggleRadioStreamState(stationIndex);
                 hideSystemUI();
             }

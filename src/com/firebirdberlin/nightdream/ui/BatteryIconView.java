@@ -10,6 +10,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -58,8 +59,11 @@ public class BatteryIconView extends View {
         batteryTextView.setPadding(0, 0, 0, 0); // no padding for sub view
         batteryTextView.setTextColor(customcolor);
         batteryTextView.setLayoutParams(
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+        );
         batteryTextLayout.addView(batteryTextView);
     }
 
@@ -99,15 +103,14 @@ public class BatteryIconView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        batteryTextLayout.measure(widthMeasureSpec, heightMeasureSpec);
-
         final float aspectRatio = 0.35f;
         final Paint.FontMetrics fm = batteryTextView.getPaint().getFontMetrics();
 
         batteryIconHeight = (fm.bottom - fm.ascent); // (fm.top decreases upwards and is negative)
         batteryIconWidth = Utility.getNearestEvenIntValue((aspectRatio * batteryIconHeight));
 
-        batteryTextOffsetX = batteryIconWidth + getPaddingLeft() + getPaddingRight();
+        batteryTextOffsetX =  batteryIconWidth + getPaddingLeft() + getPaddingRight();
+        batteryTextLayout.measure(widthMeasureSpec - (int) batteryIconWidth, heightMeasureSpec);
         final int measuredWidth = (int) (batteryTextLayout.getMeasuredWidth() + batteryTextOffsetX);
         setMeasuredDimension(measuredWidth, batteryTextLayout.getMeasuredHeight()) ;
     }
@@ -217,14 +220,16 @@ public class BatteryIconView extends View {
                 long est = batteryValue.getEstimateMillis(reference) / 1000; // estimated seconds
                 estimate_string = formatEstimate(est);
             }
+
         } else { // not charging
             long est = batteryValue.getDischargingEstimateMillis(reference)/1000; // estimated seconds
             estimate_string = formatEstimate(est);
         }
 
         batteryTextView.setText(String.format("%s%s", percentage_string, estimate_string));
-        requestLayout();
+        batteryTextView.setEllipsize(TextUtils.TruncateAt.END);
         batteryTextView.invalidate();
+        requestLayout();
         invalidate();
     }
 
