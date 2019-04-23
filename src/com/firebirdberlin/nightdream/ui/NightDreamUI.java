@@ -119,14 +119,14 @@ public class NightDreamUI {
         }
     };
     private SoundMeter soundmeter;
-    private ProgressBar brightnessProgress = null;
-    private BatteryIconView batteryIconView = null;
+    private ProgressBar brightnessProgress;
+    private BatteryIconView batteryIconView;
 
-    private Utility utility = null;
-    private Window window = null;
-    private mAudioManager AudioManage = null;
-    private ScaleGestureDetector mScaleDetector = null;
-    private GestureDetector mGestureDetector = null;
+    private Utility utility;
+    private Window window;
+    private mAudioManager AudioManage;
+    private ScaleGestureDetector mScaleDetector;
+    private GestureDetector mGestureDetector;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private ShowcaseView showcaseView = null;
     private View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
@@ -805,12 +805,11 @@ public class NightDreamUI {
         Random random = new Random();
         int w = clockLayoutContainer.getWidth();
         int h = clockLayoutContainer.getHeight();
-        Log.i(TAG, String.valueOf(w) + "x" + String.valueOf(h));
+        Log.i(TAG, w + "x" + h);
         // determine a random position
-        // api level 12
         int scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
         int scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
-        Log.i(TAG, String.valueOf(scaled_width) + "x" + String.valueOf(scaled_height));
+        Log.i(TAG, scaled_width + "x" + scaled_height);
         int rxpos = w - scaled_width;
         int rypos = h - scaled_height;
 
@@ -819,7 +818,7 @@ public class NightDreamUI {
 
         i1 -= (clockLayout.getWidth() - scaled_width) / 2;
         i2 -= (clockLayout.getHeight() - scaled_height) / 2;
-        Log.i(TAG, String.valueOf(i1) + "x" + String.valueOf(i2));
+        Log.i(TAG, i1 + "x" + i2);
         clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
     }
 
@@ -1132,10 +1131,13 @@ public class NightDreamUI {
             }
         }
     }
-
     private float getScaleFactor(Configuration config) {
         float s = settings.getScaleClock(config.orientation);
         float max = getMaxScaleFactor();
+        if (s < 0.f) {
+            s = getProposedScaleFactor(max);
+            settings.setScaleClock(0.8f * max, config.orientation);
+        }
         Log.d(TAG, String.format("getScaleFactor > %f %f", s, max));
 
         s = Math.min(s, max);
@@ -1152,6 +1154,10 @@ public class NightDreamUI {
         float factor_x = (float) clockLayoutContainer.getWidth() / clockLayout.getWidth();
         float factor_y = (float) clockLayoutContainer.getHeight() / clockLayout.getHeight();
         return Math.min(factor_x, factor_y);
+    }
+
+    private float getProposedScaleFactor(float maxScaleFactor) {
+        return 0.8f * maxScaleFactor;
     }
 
     public void setLocked(boolean on) {
