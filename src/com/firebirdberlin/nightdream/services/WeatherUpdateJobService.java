@@ -14,6 +14,7 @@ import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
@@ -35,11 +36,12 @@ public class WeatherUpdateJobService extends JobService {
         ComponentName serviceComponent = new ComponentName(
                 context.getPackageName(), WeatherUpdateJobService.class.getName()
         );
-        JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
-        builder = builder.setPersisted(true);
-        builder = builder.setRequiresCharging(false);
-        builder = builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-        builder = builder.setPeriodic(30 * 60000);
+        JobInfo.Builder builder = new JobInfo.Builder(Config.JOB_ID_UPDATE_WEATHER, serviceComponent);
+        builder = builder
+                .setPersisted(true)
+                .setRequiresCharging(false)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPeriodic(30 * 60000);
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler == null) {
@@ -66,11 +68,10 @@ public class WeatherUpdateJobService extends JobService {
         this.params = params;
         Utility.logToFile(
                 getApplicationContext(), "weatherUpdates.txt",
-               "checking for weather update " + String.valueOf(settings.weatherCityID)
+               "checking for weather update " + settings.weatherCityID
         );
         if (WeatherService.shallUpdateWeatherData(this, settings)) {
             broadcastReceiver = registerBroadcastReceiver();
-            settings.setLastWeatherRequestTime(System.currentTimeMillis());
             WeatherService.start(this, settings.weatherCityID);
             return true;
         }
@@ -112,13 +113,13 @@ public class WeatherUpdateJobService extends JobService {
             if (intent == null) return;
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
-            if (LocationUpdateReceiver.ACTION_LOCATION_UPDATED.equals(action)) {
+            if (LocationUpdateReceiver.ACTION_LOCATION_UPDATED.equals(action)
+                    || LocationUpdateReceiver.ACTION_LOCATION_FAILURE.equals(action)) {
                 // we need to reload the location
                 Settings settings = new Settings(context);
-                DownloadWeatherService.start(context, settings.getLocation());
-            } else if (LocationUpdateReceiver.ACTION_LOCATION_FAILURE.equals(action)) {
-                unregisterLocalReceiver(broadcastReceiver);
-                jobFinished(params, false);
+                if (WeatherService.shallUpdateWeatherData(context, settings)) {
+                    DownloadWeatherService.start(context, settings.getLocation());
+                }
             } else if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 unregisterLocalReceiver(broadcastReceiver);
                 jobFinished(params, false);

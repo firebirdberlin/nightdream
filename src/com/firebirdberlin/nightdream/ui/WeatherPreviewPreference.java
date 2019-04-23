@@ -62,7 +62,7 @@ public class WeatherPreviewPreference extends Preference {
         Settings settings = new Settings(getContext());
         WeatherEntry entry = settings.weatherEntry;
         lastLocationUpdateTime.setText(toDateTimeString(settings.location_time));
-        lastWeatherCalculationTime.setText(toDateTimeString(entry.timestamp * 1000));
+        lastWeatherCalculationTime.setText(toDateTimeString(entry.request_timestamp));
         if (entry.cityID != 0) {
             cityName.setText(entry.cityName + " (" + entry.cityID + ")");
         }

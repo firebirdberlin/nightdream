@@ -9,7 +9,6 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherService {
     private static String TAG = "NightDream.WeatherService";
-    private static long lastLocationRequest = 0L;
 
     public static void start(Context context, String cityID) {
         if (!cityID.isEmpty()) {
@@ -24,27 +23,21 @@ public class WeatherService {
         if (!settings.showWeather) return false;
 
         WeatherEntry entry = settings.weatherEntry;
-        long requestAge = System.currentTimeMillis() - lastLocationRequest;
-        long diff = entry.ageMillis();
-        final int maxDiff = 90 * 60 * 1000;
-        final int maxRequestAge = 15 * 60 * 1000;
+        long age = entry.ageMillis();
+        final int maxAge = 60 * 60 * 1000;
         final String cityID = String.valueOf(entry.cityID);
-        Log.d(TAG, String.format("Weather: data age %d => %b", diff, diff > maxDiff));
-        Log.d(TAG, String.format("Time since last request %d => %b", requestAge, requestAge > maxRequestAge));
+        Log.d(TAG, String.format("Weather: data age %d => %b", age, age > maxAge));
         Log.d(TAG, String.format("City ID changed => %b (%s =?= %s)",
                 (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID)),
                 settings.weatherCityID, cityID));
         boolean result = (
                 Utility.hasNetworkConnection(context) &&
                         (
-                                diff < 0L
+                                age < 0L
                                         || (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID))
-                                        || (diff > maxDiff && requestAge > maxRequestAge)
+                                        || (age > maxAge)
                         )
         );
-        if (result) {
-            lastLocationRequest = System.currentTimeMillis();
-        }
         return result;
     }
 }

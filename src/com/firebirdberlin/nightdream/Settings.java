@@ -125,7 +125,6 @@ public class Settings {
     public String timeFormat;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
-    public long lastWeatherRequestTime = -1L;
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
@@ -261,8 +260,6 @@ public class Settings {
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
         weatherCityID = settings.getString("weatherCityID", "");
-        lastWeatherRequestTime = settings.getLong("lastWeatherRequestTime", -1L);
-
         batteryTimeout = Integer.parseInt(settings.getString("batteryTimeout", "-1"));
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
@@ -631,6 +628,7 @@ public class Settings {
     public WeatherEntry getWeatherEntry() {
         this.weatherEntry = new WeatherEntry();
         this.weatherEntry.timestamp = settings.getLong("weather_time", -1L);
+        this.weatherEntry.request_timestamp = settings.getLong("weather_request_time", -1L);
         if (this.weatherEntry.timestamp > -1L) {
             this.weatherEntry.lon = settings.getFloat("weather_lon", this.weatherEntry.lon);
             this.weatherEntry.lat = settings.getFloat("weather_lat", this.weatherEntry.lat);
@@ -653,6 +651,7 @@ public class Settings {
         prefEditor.putFloat("weather_lon", entry.lon);
         prefEditor.putFloat("weather_lat", entry.lat);
         prefEditor.putLong("weather_time", entry.timestamp);
+        prefEditor.putLong("weather_request_time", entry.request_timestamp);
         prefEditor.putLong("weather_sunrise_time", entry.sunriseTime);
         prefEditor.putLong("weather_sunset_time", entry.sunsetTime);
         prefEditor.putString("weather_icon", entry.weatherIcon);
@@ -662,13 +661,6 @@ public class Settings {
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
         prefEditor.putInt("weather_wind_direction", entry.windDirection);
-        prefEditor.commit();
-    }
-
-    public void setLastWeatherRequestTime(long time) {
-        this.lastWeatherRequestTime = time;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("lastWeatherRequestTime", time);
         prefEditor.commit();
     }
 

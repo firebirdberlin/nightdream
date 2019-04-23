@@ -132,7 +132,6 @@ public class WeatherForecastLayout extends LinearLayout {
         SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
         String text = sdf.format(mCalendar.getTime());
         timeView.setText(text);
-        long age = entry.ageMillis();
 
         iconText.setText(iconToText(entry.weatherIcon));
         temperatureText.setText(entry.formatTemperatureText(temperatureUnit));

@@ -42,8 +42,10 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
+import com.firebirdberlin.nightdream.services.LocationUpdateJobService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.services.WeatherUpdateJobService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -226,6 +228,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
         ScreenWatcherService.conditionallyStart(this, mySettings);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            LocationUpdateJobService.schedule(context);
             WeatherUpdateJobService.schedule(context);
         }
 
@@ -479,7 +482,9 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onLocationUpdated() {
         // we need to reload the location
         mySettings = new Settings(this);
-        DownloadWeatherService.start(this, mySettings.getLocation());
+        if (WeatherService.shallUpdateWeatherData(this, mySettings)) {
+            DownloadWeatherService.start(this, mySettings.getLocation());
+        }
     }
 
     private void setupWeatherForecastIcon() {

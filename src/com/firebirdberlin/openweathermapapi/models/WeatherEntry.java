@@ -14,6 +14,7 @@ public class WeatherEntry {
     public static final long INVALID = -1L;
 
     public long timestamp = INVALID;
+    public long request_timestamp = INVALID;
     public int cityID = 0;
     public String cityName = "";
     public int clouds = -1;
@@ -33,17 +34,18 @@ public class WeatherEntry {
     }
 
     public void setFakeData() {
+        request_timestamp = System.currentTimeMillis();
         timestamp = System.currentTimeMillis() / 1000;
         temperature = 273.15 + randomFromRange(0, 40); // in K
         weatherIcon = "03d";
     }
 
     public long ageMillis() {
-        if (timestamp == INVALID) {
+        if (request_timestamp == INVALID) {
             return INVALID;
         }
 
-        return System.currentTimeMillis() - 1000 * timestamp;
+        return System.currentTimeMillis() - request_timestamp;
     }
 
     public String toString() {
