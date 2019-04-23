@@ -16,14 +16,12 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
-import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class WeatherUpdateJobService extends JobService {
+public class LocationUpdateJobService extends JobService {
 
-    private final static String TAG = "WeatherUpdateJobService";
+    private final static String TAG = "LocationUpdateJob";
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private JobParameters params;
 
@@ -34,14 +32,14 @@ public class WeatherUpdateJobService extends JobService {
         if (! settings.showWeather ) return;
 
         ComponentName serviceComponent = new ComponentName(
-                context.getPackageName(), WeatherUpdateJobService.class.getName()
+                context.getPackageName(), LocationUpdateJobService.class.getName()
         );
-        JobInfo.Builder builder = new JobInfo.Builder(Config.JOB_ID_UPDATE_WEATHER, serviceComponent);
+        JobInfo.Builder builder = new JobInfo.Builder(Config.JOB_ID_UPDATE_LOCATION, serviceComponent);
         builder = builder
                 .setPersisted(true)
                 .setRequiresCharging(false)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(30 * 60000);
+                .setPeriodic(15 * 60000);
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler == null) {
@@ -52,7 +50,7 @@ public class WeatherUpdateJobService extends JobService {
             int jobResult = jobScheduler.schedule(builder.build());
 
             if (jobResult == JobScheduler.RESULT_SUCCESS) {
-                Log.d(TAG, "scheduled WeatherUpdateJobService job successfully");
+                Log.d(TAG, "scheduled LocationUpdateJob successfully");
             }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -64,20 +62,11 @@ public class WeatherUpdateJobService extends JobService {
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob");
 
-        Settings settings = new Settings(this);
         this.params = params;
-        Utility.logToFile(
-                getApplicationContext(), "weatherUpdates.txt",
-               "checking for weather update " + settings.weatherCityID
-        );
-        if (WeatherService.shallUpdateWeatherData(this, settings)) {
-            broadcastReceiver = registerBroadcastReceiver();
-            WeatherService.start(this, settings.weatherCityID);
-            return true;
-        }
-
-        Log.d(TAG, "nothing to do ...");
-        return false;
+        broadcastReceiver = registerBroadcastReceiver();
+        LocationService.start(this);
+        // continue running until jobFinished is called
+        return true;
     }
 
     @Override
@@ -91,7 +80,6 @@ public class WeatherUpdateJobService extends JobService {
         Log.d(TAG, "registerReceiver()");
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         filter.addAction(LocationUpdateReceiver.ACTION_LOCATION_UPDATED);
         filter.addAction(LocationUpdateReceiver.ACTION_LOCATION_FAILURE);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
@@ -115,17 +103,9 @@ public class WeatherUpdateJobService extends JobService {
             Log.i(TAG, "action -> " + action);
             if (LocationUpdateReceiver.ACTION_LOCATION_UPDATED.equals(action)
                     || LocationUpdateReceiver.ACTION_LOCATION_FAILURE.equals(action)) {
-                // we need to reload the location
-                Settings settings = new Settings(context);
-                if (WeatherService.shallUpdateWeatherData(context, settings)) {
-                    DownloadWeatherService.start(context, settings.getLocation());
-                }
-            } else if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 unregisterLocalReceiver(broadcastReceiver);
                 jobFinished(params, false);
-                Log.d(TAG, "weather data updated");
             }
         }
     }
-
 }

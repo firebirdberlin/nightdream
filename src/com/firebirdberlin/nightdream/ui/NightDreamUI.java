@@ -502,7 +502,6 @@ public class NightDreamUI {
 
         if (WeatherService.shallUpdateWeatherData(mContext, settings)) {
             Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
-            settings.setLastWeatherRequestTime(System.currentTimeMillis());
             WeatherService.start(mContext, settings.weatherCityID);
         }
 

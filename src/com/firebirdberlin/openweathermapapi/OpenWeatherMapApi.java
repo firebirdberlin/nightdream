@@ -115,6 +115,7 @@ public class OpenWeatherMapApi {
         }
 
         JSONObject jsonMain = getJSONObject(json, "main");
+        JSONObject jsonCoord = getJSONObject(json, "coord");
         JSONObject jsonClouds = getJSONObject(json, "clouds");
         JSONObject jsonRain = getJSONObject(json, "rain");
         JSONObject jsonWind = getJSONObject(json, "wind");
@@ -122,9 +123,12 @@ public class OpenWeatherMapApi {
         JSONArray jsonWeather = getJSONArray(json, "weather");
 
         entry.cityID = getValue(json, "id", 0);
+        entry.lat = getValue(jsonCoord, "lat", -1.f);
+        entry.lon = getValue(jsonCoord, "lon", -1.f);
         entry.cityName = getValue(json, "name", "");
         entry.clouds = getValue(jsonClouds, "all", 0);
         entry.timestamp = getValue(json, "dt", 0L);
+        entry.request_timestamp = System.currentTimeMillis();
         entry.temperature = getValue(jsonMain, "temp", 0.);
         entry.rain3h = getValue(jsonRain, "3h", -1.);
         entry.sunriseTime = getValue(jsonSys, "sunrise", 0L);
@@ -182,6 +186,10 @@ public class OpenWeatherMapApi {
         } catch (JSONException e) {
             return defaultvalue;
         }
+    }
+
+    private static float getValue(JSONObject json, String name, float defaultvalue) {
+        return (float) getValue(json, name, (double) defaultvalue);
     }
 
     private static int getValue(JSONObject json, String name, int defaultvalue) {

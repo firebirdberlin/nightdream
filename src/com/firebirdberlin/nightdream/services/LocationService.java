@@ -127,7 +127,7 @@ public class LocationService extends Service {
         float lat = (float) location.getLatitude();
         long time = location.getTime();
 
-        Log.i(TAG, "storing location: " + String.valueOf(lon) + ", " + String.valueOf(lat));
+        Log.i(TAG, "storing location: " + lon + ", " + lat);
         settings.setLocation(location);
         LocationUpdateReceiver.send(this);
     }
