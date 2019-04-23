@@ -86,8 +86,8 @@ public class Settings {
     public String location_provider = LocationManager.NETWORK_PROVIDER;
     public float minIlluminance = 15.f; // lux
     public float scaleClock = 1.f;
-    public float scaleClockPortrait = 1.f;
-    public float scaleClockLandscape = 1.5f;
+    public float scaleClockPortrait = -1.f;
+    public float scaleClockLandscape = -1.f;
     public int alarmVolume = 3;
     public int background_mode = 1;
     public int batteryTimeout = -1;
@@ -232,8 +232,8 @@ public class Settings {
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor(defaultSecondaryColorString));
         secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor(defaultSecondaryColorString));
         scaleClock = settings.getFloat("scaleClock", 1.f);
-        scaleClockPortrait = settings.getFloat("scaleClockPortrait", 1.f);
-        scaleClockLandscape = settings.getFloat("scaleClockLandscape", 1.5f);
+        scaleClockPortrait = settings.getFloat("scaleClockPortrait", -1.f);
+        scaleClockLandscape = settings.getFloat("scaleClockLandscape", -1.f);
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);

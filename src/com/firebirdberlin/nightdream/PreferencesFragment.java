@@ -1081,10 +1081,10 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void resetScaleFactor(SharedPreferences sharedPreferences) {
         SharedPreferences.Editor prefEditor = sharedPreferences.edit();
-        prefEditor.putFloat("scaleClockLandscape", 1.5f);
-        prefEditor.putFloat("scaleClockPortrait", 1.f);
-        prefEditor.putFloat("scaleClock", 1.f);
-        prefEditor.commit();
+        prefEditor.putFloat("scaleClockLandscape", -1.f);
+        prefEditor.putFloat("scaleClockPortrait", -1.f);
+        prefEditor.putFloat("scaleClock", -1.f);
+        prefEditor.apply();
     }
 
     private void enablePreference(String key, boolean on) {
