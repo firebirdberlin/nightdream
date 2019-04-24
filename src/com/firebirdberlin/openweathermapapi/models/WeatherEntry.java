@@ -1,5 +1,8 @@
 package com.firebirdberlin.openweathermapapi.models;
 
+import android.location.Location;
+import android.location.LocationManager;
+
 import com.firebirdberlin.nightdream.WindSpeedConversion;
 
 public class WeatherEntry {
@@ -46,6 +49,14 @@ public class WeatherEntry {
         }
 
         return System.currentTimeMillis() - request_timestamp;
+    }
+
+    public Location getLocation() {
+        Location l = new Location(LocationManager.NETWORK_PROVIDER);
+        l.setLongitude(lon);
+        l.setLatitude(lat);
+        l.setTime(timestamp);
+        return l;
     }
 
     public String toString() {
