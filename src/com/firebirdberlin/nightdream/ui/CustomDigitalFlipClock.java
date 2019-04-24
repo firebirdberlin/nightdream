@@ -29,6 +29,8 @@ public class CustomDigitalFlipClock extends LinearLayout {
     private static final String TAG = "CustomDigitalFlipClock";
     private static final char[] HOURS = new char[]{'0', '1', '2'};
     private static final char[] HOURS12 = new char[]{'0', '1'};
+    private static final char[] LOWHOURS24 = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private static final char[] LOWHOURS12 = new char[]{'2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1'};
     private static final char[] SEXAGISIMAL = new char[]{'0', '1', '2', '3', '4', '5'};
     TimeReceiver timeReceiver;
     private Context context;
@@ -75,6 +77,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
     private void init() {
         mCharHighMinute.setChars(SEXAGISIMAL);
         mCharHighHour.setChars(get24HourMode() ? HOURS : HOURS12);
+        mCharLowHour.setChars(get24HourMode() ? LOWHOURS24 : LOWHOURS12);
         resume();
     }
 
@@ -83,6 +86,10 @@ public class CustomDigitalFlipClock extends LinearLayout {
         int hour = time.get(get24HourMode() ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
         int highHour = hour / 10;
         int lowHour = (hour - highHour * 10);
+        if (!get24HourMode()) {
+            highHour = (hour == 0) ? 1 : highHour;
+            lowHour = hour;
+        }
         int minutes = time.get(Calendar.MINUTE);
         int highMinute = minutes / 10;
         int lowMinute = (minutes - highMinute * 10);
@@ -140,7 +147,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
     }
 
     public void setCustomIs24Hour(boolean is24Hour) {
-        Log.i(TAG, "Settings custom 24 hour format: " + String.valueOf(is24Hour));
+        Log.i(TAG, "Settings custom 24 hour format: " + is24Hour);
         this.customIs24Hour = is24Hour;
         init();
         invalidate();
@@ -169,6 +176,10 @@ public class CustomDigitalFlipClock extends LinearLayout {
             int hour = time.get(get24HourMode() ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
             int highHour = hour / 10;
             int lowHour = (hour - highHour * 10);
+            if (!get24HourMode()) {
+                highHour = (hour == 0) ? 12 : highHour;
+                lowHour = hour;
+            }
             int minutes = time.get(Calendar.MINUTE);
             int highMinute = minutes / 10;
             int lowMinute = (minutes - highMinute * 10);
