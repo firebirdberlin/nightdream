@@ -4,3 +4,7 @@
 [submodule "externals/ShowcaseView"]
 	path = externals/ShowcaseView
 	url = https://github.com/firebirdberlin/ShowcaseView.git
+[submodule "externals/tab-digit"]
+	path = externals/tab-digit
+	url = https://github.com/martinposchmann/tab-digit.git
+	branch = development

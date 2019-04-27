@@ -16,7 +16,8 @@
         digit:backgroundColor="#2C2C2C"
         digit:padding="12dp"
         digit:textColor="#ffffff"
-        digit:textSize="60sp" />
+        digit:textSize="60sp"
+        digit:reverseRotation="true" />
     <com.xenione.digit.TabDigit
         xmlns:digit="http://schemas.android.com/apk/res-auto"
         android:id="@+id/charLowHour"
@@ -27,7 +28,8 @@
         digit:backgroundColor="#2C2C2C"
         digit:padding="12dp"
         digit:textColor="#ffffff"
-        digit:textSize="60sp" />
+        digit:textSize="60sp"
+        digit:reverseRotation="true" />
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -55,7 +57,8 @@
         digit:backgroundColor="#2C2C2C"
         digit:padding="12dp"
         digit:textColor="#ffffff"
-        digit:textSize="60sp" />
+        digit:textSize="60sp"
+        digit:reverseRotation="true" />
 
     <com.xenione.digit.TabDigit
         xmlns:digit="http://schemas.android.com/apk/res-auto"
@@ -65,5 +68,6 @@
         digit:backgroundColor="#2C2C2C"
         digit:padding="12dp"
         digit:textColor="#ffffff"
-        digit:textSize="60sp" />
+        digit:textSize="60sp"
+        digit:reverseRotation="true" />
 </LinearLayout>
