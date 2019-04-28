@@ -177,12 +177,13 @@ public class CustomDigitalFlipClock extends LinearLayout {
             int highHour = hour / 10;
             int lowHour = (hour - highHour * 10);
             if (!get24HourMode()) {
-                highHour = (hour == 0) ? 12 : highHour;
+                highHour = (hour == 0) ? 1 : highHour;
                 lowHour = hour;
             }
             int minutes = time.get(Calendar.MINUTE);
             int highMinute = minutes / 10;
             int lowMinute = (minutes - highMinute * 10);
+
             if (currentHourHigh != highHour) {
                 mCharHighHour.start();
             }
