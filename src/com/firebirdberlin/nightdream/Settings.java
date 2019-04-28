@@ -46,7 +46,7 @@ public class Settings {
     public boolean activateDoNotDisturb = false;
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
-    public boolean autostartForNotifications = true;
+    boolean autostartForNotifications = true;
     public boolean standbyEnabledWhileDisconnected = false;
     public boolean standbyEnabledWhileDisconnectedScreenUp = false;
     public boolean autoBrightness = false;
@@ -64,7 +64,7 @@ public class Settings {
     public boolean muteRinger = false;
     public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
-    public boolean showBatteryWarning = true;
+    boolean showBatteryWarning = true;
     public boolean showDate = true;
     public boolean showDivider = true;
     public boolean showWeather = false;
@@ -90,7 +90,7 @@ public class Settings {
     public float scaleClockLandscape = -1.f;
     public int alarmVolume = 3;
     public int background_mode = 1;
-    public int batteryTimeout = -1;
+    int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
     public int glowRadius = 0;
@@ -112,7 +112,7 @@ public class Settings {
     public int nextAlarmTimeMinutes = 0;
     public int sleepTimeInMinutesDefaultValue = 30;
     public long lastReviewRequestTime = 0L;
-    public long nextAlwaysOnTime = 0L;
+    private long nextAlwaysOnTime = 0L;
     public long sleepTimeInMillis = 0L; // 5 min
     public long snoozeTimeInMillis = 300000; // 5 min
     public String AlarmToneUri = "";
@@ -128,8 +128,8 @@ public class Settings {
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
-    public boolean purchasedDonation = false;
-    Context mContext;
+    private boolean purchasedDonation = false;
+    private Context mContext;
     SharedPreferences settings;
     public int clockLayout;
     private boolean reactivate_screen_on_noise = false;
@@ -428,10 +428,16 @@ public class Settings {
 
     public void setBrightnessOffset(float value){
         dim_offset = value;
+
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("dimOffset", value);
         prefEditor.putInt("brightness_offset", (int) (value * 100));
-        prefEditor.commit();
+        // TODO This decreases the night mode brightness ... do we want to keep it ?
+        if (!autoBrightness && value < nightModeBrightness) {
+            nightModeBrightness = value;
+            prefEditor.putFloat("nightModeBrightness", value);
+        }
+        prefEditor.apply();
     }
 
     public void setNightModeBrightness(float value){
