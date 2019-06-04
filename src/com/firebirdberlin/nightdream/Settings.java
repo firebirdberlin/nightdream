@@ -76,6 +76,9 @@ public class Settings {
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
     public boolean radioStreamActivateWiFi = false;
+    public boolean radioStreamRequireWiFi = true;
+    public boolean scheduledAutoStartEnabled = false;
+    public boolean scheduledAutoStartChargerRequired = true;
     public float dim_offset = 0.8f;
     public float nightModeBrightness = 0.f;
     public float maxBrightness = 1.f;
@@ -107,6 +110,8 @@ public class Settings {
     public int alwaysOnTimeRangeEndInMinutes = -1;
     public int autostartTimeRangeStartInMinutes = -1;
     public int autostartTimeRangeEndInMinutes = -1;
+    public int scheduledAutoStartTimeRangeStartInMinutes = -1;
+    public int scheduledAutoStartTimeRangeEndInMinutes = -1;
     public int nightModeTimeRangeStartInMinutes = -1;
     public int nightModeTimeRangeEndInMinutes = -1;
     public int nextAlarmTimeMinutes = 0;
@@ -188,6 +193,8 @@ public class Settings {
 
         autostartTimeRangeStartInMinutes = settings.getInt("autostart_time_range_start_minutes", -1);
         autostartTimeRangeEndInMinutes = settings.getInt("autostart_time_range_end_minutes", -1);
+        scheduledAutoStartTimeRangeEndInMinutes = settings.getInt("scheduledAutoStartTimeRange_end_minutes", -1);
+        scheduledAutoStartTimeRangeStartInMinutes = settings.getInt("scheduledAutoStartTimeRange_start_minutes", -1);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
@@ -199,6 +206,8 @@ public class Settings {
         handle_power_usb = settings.getBoolean("handle_power_usb", false);
         handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
         hideBackgroundImage = settings.getBoolean("hideBackgroundImage", true);
+        scheduledAutoStartEnabled = settings.getBoolean("scheduledAutoStartEnabled", false);
+        scheduledAutoStartChargerRequired = settings.getBoolean("scheduledAutoStartChargerRequired", true);
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
         final String defaultColorString = "#33B5E5";
@@ -256,6 +265,7 @@ public class Settings {
         useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
         radioStreamActivateWiFi = settings.getBoolean("radioStreamActivateWiFi", false);
+        radioStreamRequireWiFi = settings.getBoolean("radioStreamRequireWiFi", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
@@ -444,7 +454,12 @@ public class Settings {
         nightModeBrightness = value;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("nightModeBrightness", value);
-        prefEditor.commit();
+        if (!autoBrightness && value > dim_offset) {
+            dim_offset = value;
+            prefEditor.putFloat("dimOffset", value);
+            prefEditor.putInt("brightness_offset", (int) (value * 100));
+        }
+        prefEditor.apply();
     }
 
     public void setMinIlluminance(float value) {

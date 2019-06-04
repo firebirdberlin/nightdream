@@ -19,22 +19,22 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.BatteryValue;
-import com.firebirdberlin.nightdream.models.DockState;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class PowerConnectionReceiver extends BroadcastReceiver {
-    private static String TAG = "NightDream.PowerConnectionReceiver";
+public class ScheduledAutoStartReceiver extends BroadcastReceiver {
+    private static String TAG = "ScheduledAutoStartReceiver";
     private static int PENDING_INTENT_START_APP = 0;
+    private static String ACTION_START_SCHEDULED =
+            "com.firebirdberlin.nightdream.ACTION_START_SCHEDULED";
 
-    public static PowerConnectionReceiver register(Context ctx) {
+    public static ScheduledAutoStartReceiver register(Context ctx) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_POWER_CONNECTED);
         filter.addAction(Intent.ACTION_MY_PACKAGE_REPLACED);
-        PowerConnectionReceiver receiver = new PowerConnectionReceiver();
+        ScheduledAutoStartReceiver receiver = new ScheduledAutoStartReceiver();
         ctx.registerReceiver(receiver, filter);
         return receiver;
     }
@@ -46,12 +46,12 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     }
 
     public static boolean shallAutostart(Context context, Settings settings) {
-        if (!settings.handle_power) return false;
+        if (!settings.scheduledAutoStartEnabled) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         Calendar now = new GregorianCalendar();
-        Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
-        Calendar end = new SimpleTime(settings.autostartTimeRangeEndInMinutes).getCalendar();
+        Calendar start = new SimpleTime(settings.scheduledAutoStartTimeRangeStartInMinutes).getCalendar();
+        Calendar end = new SimpleTime(settings.scheduledAutoStartTimeRangeEndInMinutes).getCalendar();
         boolean shall_auto_start = true;
         if (end.before(start)){
             shall_auto_start = ( now.after(start) || now.before(end) );
@@ -60,32 +60,33 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         }
         if (! shall_auto_start) return false;
 
-        BatteryStats battery = new BatteryStats(context.getApplicationContext());
-        BatteryValue batteryValue = battery.reference;
-        DockState dockState = battery.getDockState();
-
-        return (settings.handle_power_ac && batteryValue.isChargingAC) ||
-                (settings.handle_power_usb && batteryValue.isChargingUSB) ||
-                (settings.handle_power_wireless && batteryValue.isChargingWireless) ||
-                (settings.handle_power_desk && dockState.isDockedDesk) ||
-                (settings.handle_power_car && dockState.isDockedCar);
+        if (settings.scheduledAutoStartChargerRequired) {
+            BatteryStats battery = new BatteryStats(context.getApplicationContext());
+            BatteryValue batteryValue = battery.reference;
+            if (! batteryValue.isCharging) {
+                return false;
+            }
+        }
+        return true;
 
     }
 
     static public void schedule(Context context) {
-        Intent alarmIntent = new Intent(context, PowerConnectionReceiver.class);
+        Log.d(TAG, "schedule()");
+        Intent intent = new Intent(ACTION_START_SCHEDULED);
+        intent.setClass(context, ScheduledAutoStartReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, PENDING_INTENT_START_APP, alarmIntent, 0);
+            context, PENDING_INTENT_START_APP, intent, 0
+        );
 
         Settings settings = new Settings(context);
-        if (settings.scheduledAutoStartEnabled) {
-            // The autostart feature is replaced by a new version which has a seperate setting
-            // in the preferences. Thus, the old autostart is deactivated when the new one is
-            // active.
-            return;
-        }
-        Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
+        SimpleTime startTime = new SimpleTime(settings.scheduledAutoStartTimeRangeStartInMinutes);
+        Calendar start = startTime.getCalendar();
 
+        //Calendar start = Calendar.getInstance();
+        //start.add(Calendar.SECOND, 10);
+        Log.d(TAG, startTime.toString());
+        Log.d(TAG, start.toString());
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
         if (Build.VERSION.SDK_INT >= 19) {
@@ -95,20 +96,19 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         }
     }
 
-    public static void conditionallyStartApp(final Context context, final String action) {
+    public static void conditionallyStartApp(final Context context) {
         Settings settings = new Settings(context);
-
-        if (settings.scheduledAutoStartEnabled && Intent.ACTION_BOOT_COMPLETED.equals(action)) {
-            return;
-        }
-
         if (shallAutostart(context, settings)) {
             final SensorManager mSensorManager = (SensorManager)
                     context.getSystemService(Context.SENSOR_SERVICE);
-            if (mSensorManager == null) return;
+            if (mSensorManager == null) {
+                NightDreamActivity.start(context);
+            }
 
             Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-            if (mProximity == null) return;
+            if (mProximity == null) {
+                NightDreamActivity.start(context);
+            }
 
             mSensorManager.registerListener(new SensorEventListener() {
                 @Override
@@ -135,15 +135,17 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         action = (action == null) ? "none" : action;
         Log.d(TAG, action);
+        if (ACTION_START_SCHEDULED.equals(action)
+                || Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+            wakelock.acquire(10000);
 
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        wakelock.acquire();
+            conditionallyStartApp(context);
 
-        conditionallyStartApp(context, action);
-
-        if (wakelock.isHeld()) {
-           wakelock.release();
+            if (wakelock.isHeld()) {
+                wakelock.release();
+            }
         }
     }
 

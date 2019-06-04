@@ -11,9 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-
-import org.greenrobot.eventbus.EventBus;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
@@ -28,6 +25,8 @@ import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.services.AlarmWifiService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -119,7 +118,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             AlarmWifiService.cancelJob(context);
         }
         deleteCurrentlyActiveAlarm(context, intent);
-        AlarmHandlerService.start(context, intent);
+        AlarmHandlerService.start(context);
 
         buildNotification(context);
         NightDreamActivity.start(context);
@@ -135,9 +134,6 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     private Notification buildNotification(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH ) {
-            return null;
-        }
         Settings settings = new Settings(context);
         String text = dateAsString(settings.getTimeFormat());
         String textActionSnooze = context.getString(R.string.action_snooze);

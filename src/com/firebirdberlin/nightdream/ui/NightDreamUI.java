@@ -898,6 +898,9 @@ public class NightDreamUI {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore a minimum value must be set to preserve the visibility of the clock.
         float minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
+        if (settings.autoBrightness) {
+            minBrightness = Math.min(minBrightness, 0.1f);
+        }
         if (AlarmHandlerService.alarmIsRunning()) return 0.5f;
         return minBrightness;
     }
