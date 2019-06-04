@@ -82,6 +82,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_digital">Digitaal</string>
     <string name="clock_layout_elegant_analog">Elegante analoge klok</string>
     <string name="clock_layout_digit_analog">Analoge klok met getallen</string>
+    <string name="clock_layout_digital_flip">Flip klok</string>
     <string name="clock_layout">Indeling</string>
     <string name="clock_layout_modern_analog">Moderne analoge klok</string>
     <string name="clock_layout_mirror_text">Tekst spiegelen</string>
@@ -111,6 +112,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishSummary">Dubbeltik op het scherm om de app te sluiten.</string>
     <string name="doubleTapToFinishTitle">Dubbeltikken om te sluiten</string>
     <string name="expertPreferences">Geavanceerde instellingen</string>
+    <string name="gift_for_donors">Donatie</string>
     <string name="forecast">Weersvoorspelling voor 5 dagen</string>
     <string name="hand_shape_arc">Boog</string>
     <string name="hand_shape_bar">Balk</string>

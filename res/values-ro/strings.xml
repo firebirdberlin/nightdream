@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Despre</string>
+    <string name="action_skip">Treci peste</string>
     <string name="action_snooze">Amânare</string>
     <string name="action_stop">Stop</string>
     <string name="add_new_alarm">Adaugă alarmă nouă</string>
