@@ -42,12 +42,20 @@ public class AlarmHandlerService extends IntentService {
                 || RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM);
     }
 
-    public static void start(Context context, Intent intent) {
+    public static void start(Context context) {
         Settings settings = new Settings(context);
         if (!settings.useInternalAlarm) return;
 
+        boolean hasNetworkConnection = settings.radioStreamRequireWiFi ?
+                Utility.hasFastNetworkConnection(context) : Utility.hasNetworkConnection(context);
+
         SimpleTime alarmTime = getCurrentlyActiveAlarm();
-        if (alarmTime != null && alarmTime.radioStationIndex > -1 && Utility.hasFastNetworkConnection(context)) {
+        int radioStationIndex = (alarmTime != null) ? alarmTime.radioStationIndex : -1;
+        Log.d(TAG, "settings.radioStreamRequireWiFi: " + settings.radioStreamRequireWiFi);
+        Log.d(TAG, "hasNetworkConnection: " + hasNetworkConnection);
+        Log.d(TAG, "radioStationIndex: " + alarmTime.radioStationIndex);
+        if (radioStationIndex > -1 && hasNetworkConnection) {
+
             RadioStreamService.start(context, alarmTime);
         } else {
             if (RadioStreamService.streamingMode != RadioStreamService.StreamingMode.INACTIVE) {
