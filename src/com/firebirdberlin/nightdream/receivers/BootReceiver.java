@@ -20,6 +20,7 @@ public class BootReceiver extends BroadcastReceiver {
         Log.i(TAG, "BootReceiver: " + intent.getAction());
         Utility.createNotificationChannels(context);
         PowerConnectionReceiver.schedule(context);
+        ScheduledAutoStartReceiver.schedule(context);
         Settings settings = new Settings(context);
         if (settings.useInternalAlarm) {
             SqliteIntentService.scheduleAlarm(context);

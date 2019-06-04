@@ -123,6 +123,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     };
 
     public static void start(Context context, SimpleTime alarmTime) {
+        Log.d(TAG, "start()");
         if (!Utility.hasNetworkConnection(context)) {
             Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
             return;

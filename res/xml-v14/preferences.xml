@@ -152,6 +152,37 @@
                 android:summary="@string/autostartForNotificationsSummary"
                 android:title="@string/autostartForNotificationsTitle" />
         </PreferenceCategory>
+
+        <PreferenceCategory
+            android:enabled="false"
+            android:icon="@drawable/ic_expert"
+            android:key="scheduled_autostart_screen"
+            android:title="@string/scheduledAutoStart">
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="scheduledAutoStartEnabled"
+                android:summary="@string/scheduledAutoStartEnabledDesc"
+                android:title="@string/scheduledAutoStartEnabledTitle" />
+
+            <de.firebirdberlin.preference.TimeRangePreference
+                xmlns:timerange="timerange"
+                android:defaultValue="0"
+                android:dependency="scheduledAutoStartEnabled"
+                android:key="scheduledAutoStartTimeRange"
+                android:title="@string/scheduledAutoStartTimeRange"
+                timerange:end_text="@string/autostart_timerange_label_end"
+                timerange:key_suffix_end="_end"
+                timerange:key_suffix_start="_start"
+                timerange:start_text="@string/autostart_timerange_label_start" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:dependency="scheduledAutoStartEnabled"
+                android:key="scheduledAutoStartChargerRequired"
+                android:title="@string/scheduledAutoStartChargerRequired" />
+
+        </PreferenceCategory>
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -435,6 +466,12 @@
                     android:defaultValue="false"
                     android:key="radioStreamMusicIsAllowedForAlarms"
                     android:title="@string/radio_stream_music_allowed" />
+
+                <SwitchPreference
+                    android:defaultValue="true"
+                    android:key="radioStreamRequireWiFi"
+                    android:summary="@string/radio_stream_require_wifi_desc"
+                    android:title="@string/radio_stream_require_wifi" />
 
                 <SwitchPreference
                     android:defaultValue="false"

@@ -139,6 +139,15 @@
             </intent-filter>
         </receiver>
         <receiver
+            android:name=".receivers.ScheduledAutoStartReceiver">
+            <intent-filter>
+                <action android:name="com.firebirdberlin.nightdream.ACTION_START_SCHEDULED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name=".receivers.ChargingStateChangeReceiver"
             android:enabled="true">
             <intent-filter>

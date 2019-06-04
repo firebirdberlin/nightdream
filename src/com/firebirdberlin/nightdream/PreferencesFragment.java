@@ -353,6 +353,7 @@ public class PreferencesFragment extends PreferenceFragment {
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("standbyEnabledWhileDisconnected", false);
+        editor.putBoolean("scheduledAutoStartEnabled", false);
         editor.apply();
     }
 
@@ -381,6 +382,7 @@ public class PreferencesFragment extends PreferenceFragment {
     private void togglePurchasePreferences() {
         enablePreference("showWeather", purchased_weather_data);
         enablePreference("expert_screen", purchased_actions);
+        enablePreference("scheduled_autostart_screen", purchased_actions);
         enablePreference("activateDoNotDisturb", purchased_actions);
         enablePreference("useDeviceLock", purchased_actions);
 
@@ -983,6 +985,7 @@ public class PreferencesFragment extends PreferenceFragment {
         Log.i(TAG, "setupNightModePreferences " + String.valueOf(nightModeActivationMode));
         enablePreference("nightmode_timerange",
                          nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED);
+        // TODO WHY ?
         enablePreference("ambientNoiseDetection",
                          nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC);
     }
