@@ -22,10 +22,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_stop">Остановить</string>
     <string name="activateDoNotDisturb">Активировать DnD</string>
     <string name="activateDoNotDisturbSummary">Включите режим «не беспокоить», пока приложение активно.</string>
-    <string name="add_new_alarm">Добавить новый будильник </string>
+    <string name="add_new_alarm">Добавить новый будильник</string>
     <string name="add_custom_alarm_tone">Добавить свою мелодию</string>
     <string name="add_custom_font">Добавить свой шрифт</string>
-    <string name="alarm">Будильник </string>
+    <string name="alarm">Будильник</string>
     <string name="alarmFadeIn">Нарастание громкости</string>
     <string name="alarmUpcoming">Время будильника</string>
     <string name="alarmStartDate">Включить следующий будильник</string>
@@ -67,7 +67,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Яркость</string>
     <string name="brightness_night_mode">Яркость в ночном режиме</string>
     <string name="brightness_offset">Предел яркости</string>
-    <string name="buttonAccessibilitySettings">Показывать оповещения</string>
+    <string name="buttonAccessibilitySettings">Показывать уведомления</string>
     <string name="buy">Купить</string>
     <string name="buy_upgrade_summary">Обновите до профессиональной версии сейчас.</string>
     <string name="buy_upgrade_title">Обновить</string>
@@ -82,9 +82,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_digital">Цифровые часы</string>
     <string name="clock_layout_elegant_analog">Элегантные аналоговые часы</string>
     <string name="clock_layout_digit_analog">Аналоговые часы с цифрами</string>
+    <string name="clock_layout_digital_flip">Перекидные цифровые часы</string>
     <string name="clock_layout">Тип часов</string>
     <string name="clock_layout_modern_analog">Модерновые аналоговые часы</string>
-    <string name="clock_layout_mirror_text">Зеркально отраженный текст</string>
+    <string name="clock_layout_mirror_text">Зеркальный текст</string>
     <string name="colors">Цвета</string>
     <string name="confirm_reset_question">Вы уверены в сбросе всех настроек?</string>
     <string name="confirm_reset_question_layout">Вы действительно хотите сбросить этот шаблон до значений по умолчанию?</string>
@@ -111,6 +112,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishSummary">Завершить работу приложения двойным касанием по экрану</string>
     <string name="doubleTapToFinishTitle">Для завершения, дважды коснитесь экрана</string>
     <string name="expertPreferences">Расширенные настройки</string>
+    <string name="gift_for_donors">Подарок за ваше пожертвование</string>
     <string name="forecast">Прогноз погоды на 5 дней</string>
     <string name="hand_shape_arc">Обводка</string>
     <string name="hand_shape_bar">Прямоугольник</string>
@@ -216,7 +218,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">перевёрнутый портрет</string>
     <string name="screenOrientation">Ориентация экрана</string>
     <string name="select_alarm_sound">Выбрать мелодию будильника</string>
-    <string name="set_alarm">Установить будильник</string>
+    <string name="set_alarm">Уст. будильник</string>
     <string name="showBatteryWarningSummary">Предупреждать о работе от батареи</string>
     <string name="showBatteryWarningTitle">Предупреждение о батарее</string>
     <string name="showBatteryWarningMessage">Внимание: Источник внешнего питания отключен!</string>

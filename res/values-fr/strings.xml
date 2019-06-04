@@ -17,11 +17,11 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">À propos</string>
-    <string name="action_skip">Passeur</string>
-    <string name="action_snooze">Journaliste l\'alarme</string>
+    <string name="action_skip">Passer</string>
+    <string name="action_snooze">Journaliste l\'alarme (Snooze)</string>
     <string name="action_stop">Arrêter</string>
     <string name="activateDoNotDisturb">activer DnD</string>
-    <string name="activateDoNotDisturbSummary">Activer le mode ne pas distribuer quand l\'application est allumet</string>
+    <string name="activateDoNotDisturbSummary">Activer le mode ne pas déranger quand l\'application est active.</string>
     <string name="add_new_alarm">Ajouter une nouvelle alarme</string>
     <string name="add_custom_alarm_tone">Ajouter une sonnerie d\'alarme personnalisée</string>
     <string name="add_custom_font">Ajouter une police personnalisée</string>
@@ -29,10 +29,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmFadeIn">Volume progressif</string>
     <string name="alarmUpcoming">Alarme à venir</string>
     <string name="alarmStartDate">Prochaine alarme</string>
-    <string name="alarmStartsFrom">Du À partir:</string>
+    <string name="alarmStartsFrom">À partir de:</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Éteindre l\'affichage durant la nuit</string>
-    <string name="allow_screen_off">Écran s\'</string>
+    <string name="allow_screen_off">Écran s\'éteint</string>
     <string name="always_on">Toujours allumé</string>
     <string name="alwaysOnBatteryLevel">Niveau batterie supérieur à</string>
     <string name="ambient_noise">Détection du bruit ambiant</string>
@@ -65,7 +65,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="batteryTimeout30min">30 min</string>
     <string name="behaviour">Comportement</string>
     <string name="brightness">Brillance</string>
-    <string name="brightness_night_mode">Brillance de nuit</string>
+    <string name="brightness_night_mode">Brillance en mode nuit</string>
     <string name="brightness_offset">Compensation de la luminosité</string>
     <string name="buttonAccessibilitySettings">Afficher les notifications</string>
     <string name="buy">Acheter</string>
@@ -77,11 +77,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Couleur principale</string>
     <string name="choose_secondary_color">Couleur du texte</string>
     <string name="clear">Effacer</string>
-    <string name="clock_hands">Trotteuse</string>
+    <string name="clock_hands">Aiguilles</string>
     <string name="clock_layout_analog">Analogique</string>
     <string name="clock_layout_digital">Numérique</string>
     <string name="clock_layout_elegant_analog">Visuel horloge analogique élégante</string>
     <string name="clock_layout_digit_analog">Horloge analogique digitale</string>
+    <string name="clock_layout_digital_flip">Horloge digitale basculante</string>
     <string name="clock_layout">Type d\'horloge</string>
     <string name="clock_layout_modern_analog">Visuel horloge analogique modern</string>
     <string name="clock_layout_mirror_text">Texte en miroir</string>
@@ -111,6 +112,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishSummary">Fermer l\'application en double cliquant</string>
     <string name="doubleTapToFinishTitle">Double taper pour fermer</string>
     <string name="expertPreferences">Options avancées</string>
+    <string name="gift_for_donors">Cadeau pour votre don</string>
     <string name="forecast">Prévisions météo sur 5 jours</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Barre</string>
@@ -237,12 +239,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyNotificationText">Mode veille activé</string>
     <string name="style">Style</string>
     <string name="temperatureUnit">Unité - Température</string>
-    <string name="tick_style_hours">Style aiguille heure</string>
-    <string name="tick_style_minutes">Style aiguille minute</string>
+    <string name="tick_style_hours">Style marqueur heure</string>
+    <string name="tick_style_minutes">Style marqueur minute</string>
     <string name="tick_style_circle">Cercle</string>
     <string name="tick_style_dash">Barre</string>
     <string name="tick_style_none">Aucun</string>
-    <string name="ticks">Aiguille</string>
+    <string name="ticks">Marqueurs</string>
     <string name="timeFormat">Format d\'affichage de l\'heure</string>
     <string name="titlePrivacyPolicy">Politique de confidentialité</string>
     <string name="today">Aujourd\'hui</string>

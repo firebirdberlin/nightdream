@@ -25,7 +25,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Aggiungi un carattere personalizzato</string>
     <string name="alarm">Sveglia</string>
     <string name="alarmFadeIn">Volume incrementale</string>
-    <string name="alarmStartDate">Prossimo allarme </string>
+    <string name="alarmStartDate">Prossimo allarme</string>
     <string name="alarmStartsFrom">A partire da</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Spegni lo schermo durante la notte</string>
@@ -37,6 +37,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="appearance">Aspetto</string>
     <string name="app_name">Orologio notturno</string>
     <string name="auto_brightness">Luminosità automatica</string>
+    <string name="autostartForNotificationsSummary">Attiva l\'app quando sono mostrate nuove notifiche</string>
     <string name="autostartForNotificationsTitle">Notifiche</string>
     <string name="autostart_message_disabled">Disabilitare lo screensaver (daydream) per attivare le opzioni di avvio automatico</string>
     <string name="autostart_timerange_label_end">Ora di arresto</string>
@@ -47,7 +48,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">Immagine</string>
     <string name="background_image_select">Seleziona una immagine</string>
     <string name="backgroundServiceDialogTitle">Ferma servizio in background</string>
-    <string name="batteryTimeoutNever">Mai</string>
+    <string name="backgroundServiceNotificationText">Il servizio in backgroud è attivo</string>
+    <string name="backgroundServiceNotificationTextLocation">Aggiornamento localizzazione in avanzamento</string>
+    <string name="backgroundServiceNotificationTextNightMode">Il modo notte è attivo</string>
+    <string name="batteryTimeoutDescription">Al termine della batteria</string>
+    <string name="batteryTimeoutNever">mai</string>
+    <string name="batteryTimeout1min">1 min</string>
+    <string name="batteryTimeout2min">2 min</string>
+    <string name="batteryTimeout5min">5 min</string>
+    <string name="batteryTimeout10min">10 min</string>
+    <string name="batteryTimeout15min">15 min</string>
+    <string name="batteryTimeout30min">30 min</string>
     <string name="behaviour">Comportamento</string>
     <string name="brightness">Luminosità</string>
     <string name="brightness_night_mode">Luminosità in modalità notturna</string>
