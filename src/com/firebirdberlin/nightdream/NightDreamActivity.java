@@ -37,6 +37,7 @@ import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
+import com.firebirdberlin.nightdream.receivers.ScheduledAutoStartReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
@@ -350,6 +351,7 @@ public class NightDreamActivity extends BillingHelperActivity
         handler.removeCallbacks(checkKeepScreenOn);
 
         PowerConnectionReceiver.schedule(this);
+        ScheduledAutoStartReceiver.schedule(this);
         cancelShutdown();
         NightModeReceiver.cancel(this);
         unregister(nightModeReceiver);
@@ -563,11 +565,15 @@ public class NightDreamActivity extends BillingHelperActivity
         boolean isCharging = Utility.isCharging(this);
         long now = Calendar.getInstance().getTimeInMillis();
 
-        Log.d(TAG, "screenWasOn = " + String.valueOf(screenWasOn));
-        Log.d(TAG, "mode = " + String.valueOf(mode));
-        Log.d(TAG, "isCharging = " + String.valueOf(isCharging));
+        Log.d(TAG, "screenWasOn = " + screenWasOn);
+        Log.d(TAG, "mode = " + mode);
+        Log.d(TAG, "isCharging = " + isCharging);
         Log.d(TAG, "now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS = " +
                 String.valueOf(now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS ));
+
+        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
+            return true;
+        }
 
         long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
         if ( // keep screen on
@@ -650,39 +656,49 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private PendingIntent getShutdownIntent() {
         Intent alarmIntent = new Intent(Config.ACTION_SHUT_DOWN);
-        return PendingIntent.getBroadcast(this,
-                                          PENDING_INTENT_STOP_APP,
-                alarmIntent, 0);
+        return PendingIntent.getBroadcast(
+                this,
+                PENDING_INTENT_STOP_APP,
+                alarmIntent,
+                0
+        );
     }
 
     private void scheduleShutdown() {
         if (mySettings == null) return;
 
-        Calendar start = new SimpleTime(mySettings.autostartTimeRangeStartInMinutes).getCalendar();
-        Calendar end = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes).getCalendar();
-        if( start.equals(end)) {
-            cancelShutdown();
-            return;
-        }
+        cancelShutdown();
 
-
+        Calendar calendar = null;
         if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
-            PendingIntent pendingIntent = getShutdownIntent();
             SimpleTime simpleEndTime = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes);
-            Calendar calendar = simpleEndTime.getCalendar();
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.cancel(pendingIntent);
-
-            pendingIntent = getShutdownIntent();
-            if (Build.VERSION.SDK_INT >= 19){
-                alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-            } else {
-                deprecatedSetAlarm(calendar, pendingIntent);
-            }
-        } else {
-            cancelShutdown();
+            calendar = simpleEndTime.getCalendar();
         }
 
+        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
+            SimpleTime simpleEndTime = new SimpleTime(mySettings.scheduledAutoStartTimeRangeEndInMinutes);
+            Calendar calendar2 = simpleEndTime.getCalendar();
+            if (calendar == null) {
+                calendar = calendar2;
+            } else
+            if (calendar2.before(calendar)) {
+                calendar = calendar2;
+            }
+        }
+
+        scheduleShutdown(calendar);
+    }
+
+    private void scheduleShutdown(Calendar calendar) {
+        if (calendar == null) return;
+        PendingIntent pendingIntent = getShutdownIntent();
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            deprecatedSetAlarm(calendar, pendingIntent);
+        }
     }
 
     @SuppressWarnings("deprecation")

@@ -7,6 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
@@ -74,6 +78,12 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
                 context, PENDING_INTENT_START_APP, alarmIntent, 0);
 
         Settings settings = new Settings(context);
+        if (settings.scheduledAutoStartEnabled) {
+            // The autostart feature is replaced by a new version which has a seperate setting
+            // in the preferences. Thus, the old autostart is deactivated when the new one is
+            // active.
+            return;
+        }
         Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -85,28 +95,55 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         }
     }
 
+    public static void conditionallyStartApp(final Context context, final String action) {
+        Settings settings = new Settings(context);
+
+        if (settings.scheduledAutoStartEnabled && Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+            return;
+        }
+
+        if (shallAutostart(context, settings)) {
+            final SensorManager mSensorManager = (SensorManager)
+                    context.getSystemService(Context.SENSOR_SERVICE);
+            if (mSensorManager == null) return;
+
+            Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            if (mProximity == null) return;
+
+            mSensorManager.registerListener(new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    if (sensorEvent.values[0] > 0 ) {
+                        NightDreamActivity.start(context);
+                    }
+                    mSensorManager.unregisterListener(this);
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+
+                }
+            }, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent != null) {
-            String action = intent.getAction();
-            action = (action == null) ? "none" : action;
-            Log.d(TAG, action);
+        if (intent == null) {
+            return;
         }
+        String action = intent.getAction();
+        action = (action == null) ? "none" : action;
+        Log.d(TAG, action);
+
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
 
-        conditionallyStartApp(context);
+        conditionallyStartApp(context, action);
 
         if (wakelock.isHeld()) {
            wakelock.release();
-        }
-    }
-
-    public static void conditionallyStartApp(Context context) {
-        Settings settings = new Settings(context);
-        if (shallAutostart(context, settings)) {
-            NightDreamActivity.start(context);
         }
     }
 

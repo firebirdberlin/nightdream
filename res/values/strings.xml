@@ -186,8 +186,10 @@ OR
     <string name="radio_station">Radio station</string>
     <string name="radio_station_dialog_title">Select a radio station</string>
     <string name="radio_station_none">no radio station</string>
-    <string name="radio_stream_activate_wifi">WiFi</string>
+    <string name="radio_stream_activate_wifi">enable WiFi</string>
     <string name="radio_stream_activate_wifi_desc">If on, WiFi will be activated a few minutes before the stream starts to play.</string>
+    <string name="radio_stream_require_wifi">require WiFi connection</string>
+    <string name="radio_stream_require_wifi_desc">If on, alarms will play web radio streams only with an established WiFi connection.</string>
     <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_failure">Radio stream failure</string>
@@ -211,6 +213,11 @@ OR
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="restless_mode">Move the clock around</string>
     <string name="review_request">Please rate this application. Thanks !</string>
+    <string name="scheduledAutoStart">Scheduled Autostart</string>
+    <string name="scheduledAutoStartChargerRequired">only when charging</string>
+    <string name="scheduledAutoStartEnabledDesc">Schedule the autostart for a specific time.</string>
+    <string name="scheduledAutoStartEnabledTitle">Scheduled Autostart</string>
+    <string name="scheduledAutoStartTimeRange">time range</string>
     <string name="screen_orientation_automatic">automatic</string>
     <string name="screen_orientation_landscape">landscape</string>
     <string name="screen_orientation_portrait">portrait</string>
