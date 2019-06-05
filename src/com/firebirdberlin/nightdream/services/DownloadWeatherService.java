@@ -45,6 +45,7 @@ public class DownloadWeatherService extends JobIntentService {
         float lon = bundle.getFloat("lon");
         String cityID = bundle.getString("cityID", "");
         WeatherEntry entry = OpenWeatherMapApi.fetchWeatherData(cityID, lat, lon);
+        //WeatherEntry entry = DarkSkyApi.fetchWeatherData(lat, lon);
         onPostExecute(entry);
     }
 

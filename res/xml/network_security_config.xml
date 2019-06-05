@@ -5,6 +5,7 @@
     </domain-config>
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">www.radio-browser.info</domain>
+        <domain includeSubdomains="true">api.darksky.net</domain>
     </domain-config>
 
     <!-- radio streams are usually sent via http -->
