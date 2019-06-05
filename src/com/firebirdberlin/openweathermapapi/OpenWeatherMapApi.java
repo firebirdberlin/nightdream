@@ -4,6 +4,7 @@ package com.firebirdberlin.openweathermapapi;
 import android.net.Uri;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.BuildConfig;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
@@ -28,7 +29,7 @@ public class OpenWeatherMapApi {
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "http://api.openweathermap.org/data/2.5";
     private static String TAG = "OpenWeatherMapApi";
-    private static String APPID = "645d3eb40425e8af8edc25ddbf153db8";
+    private static String APPID = BuildConfig.API_KEY_OWM;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
