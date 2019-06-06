@@ -500,10 +500,7 @@ public class NightDreamUI {
 
         long diff = entry.ageMillis();
 
-        if (WeatherService.shallUpdateWeatherData(mContext, settings)) {
-            Log.d(TAG, "Weather data outdated. Trying to refresh ! (" + diff + ")");
-            WeatherService.start(mContext, settings.weatherCityID);
-        }
+        WeatherService.start(mContext, settings.weatherCityID);
 
         // handle outdated weather data
         if (entry.timestamp == -1L || diff > 8 * 60 * 60 * 1000) {

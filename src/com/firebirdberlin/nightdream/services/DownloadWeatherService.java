@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
@@ -30,6 +31,7 @@ public class DownloadWeatherService extends JobIntentService {
     }
 
     public static void start(Context context, String cityID) {
+        Log.d(TAG, "start() -> enqueueWork");
         Intent i = new Intent(context, DownloadWeatherService.class);
         i.putExtra("cityID", cityID);
         enqueueWork(context, DownloadWeatherService.class, Config.JOB_ID_FETCH_WEATHER_DATA, i);
@@ -38,12 +40,16 @@ public class DownloadWeatherService extends JobIntentService {
     @Override
     protected void onHandleWork(Intent intent) {
         mContext = this;
-        Log.d(TAG, TAG + " started");
-
+        Log.i(TAG, "onHandleWork");
+        Settings settings = new Settings(this);
+        if (! WeatherService.shallUpdateWeatherData(this, settings)) {
+            return;
+        }
         Bundle bundle = intent.getExtras();
         float lat = bundle.getFloat("lat");
         float lon = bundle.getFloat("lon");
         String cityID = bundle.getString("cityID", "");
+        Log.e(TAG, "fetchWeatherData");
         WeatherEntry entry = OpenWeatherMapApi.fetchWeatherData(cityID, lat, lon);
         //WeatherEntry entry = DarkSkyApi.fetchWeatherData(lat, lon);
         onPostExecute(entry);

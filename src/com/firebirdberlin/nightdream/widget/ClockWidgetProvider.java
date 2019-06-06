@@ -96,11 +96,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setShowDivider(settings.showDivider);
         clockLayout.showDate(showAdditionalLines && settings.showDate);
 
-        // update weather data via api if outdated
-        if (WeatherService.shallUpdateWeatherData(context, settings)) {
-            WeatherService.start(context, settings.weatherCityID);
-            //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated weather");
-        }
+        WeatherService.start(context, settings.weatherCityID);
 
         // update weather date if not outdated
         if (settings.weatherEntry != null
