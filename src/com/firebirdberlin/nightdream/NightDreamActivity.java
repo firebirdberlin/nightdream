@@ -484,9 +484,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onLocationUpdated() {
         // we need to reload the location
         mySettings = new Settings(this);
-        if (WeatherService.shallUpdateWeatherData(this, mySettings)) {
-            DownloadWeatherService.start(this, mySettings.getLocation());
-        }
+        DownloadWeatherService.start(this, mySettings.getLocation());
     }
 
     private void setupWeatherForecastIcon() {
