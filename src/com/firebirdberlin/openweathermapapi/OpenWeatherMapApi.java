@@ -280,7 +280,7 @@ public class OpenWeatherMapApi {
             }
 
         } else {
-            Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
+            Log.w(TAG, " >> responseCode " + responseCode);
         }
         return cities;
     }

@@ -14,7 +14,7 @@ public class WeatherService {
     public static void start(Context context, String cityID) {
         Log.d(TAG, "start(" + cityID + ")");
         if (!cityID.isEmpty()) {
-            DownloadWeatherService.start(context, cityID);
+            DownloadWeatherService.start(context);
             return;
         }
 

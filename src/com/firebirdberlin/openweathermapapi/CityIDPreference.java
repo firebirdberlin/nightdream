@@ -97,19 +97,17 @@ public class CityIDPreference extends DialogPreference
             getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.city_id_search_dialog, null);
 
-        queryText = ((EditText) v.findViewById(R.id.query_string));
-        spinner = (ContentLoadingProgressBar) v.findViewById(R.id.progress_bar);
-        cityListView = (ListView) v.findViewById(R.id.radio_stream_list_view);
-        noResultsText = (TextView) v.findViewById(R.id.no_results);
+        queryText = (v.findViewById(R.id.query_string));
+        spinner = v.findViewById(R.id.progress_bar);
+        cityListView = v.findViewById(R.id.radio_stream_list_view);
+        noResultsText = v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
 
         queryText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
                     startSearch();
-
                     return true;
                 }
                 return false;
@@ -121,14 +119,13 @@ public class CityIDPreference extends DialogPreference
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 City city = (City) parent.getItemAtPosition(position);
-                String cityid = String.format("%d", city.id);
-                persist(cityid, city.name);
+                persist(city);
                 getDialog().dismiss();
 
             }
         });
 
-        searchButton = ((Button) v.findViewById(R.id.start_search));
+        searchButton = (v.findViewById(R.id.start_search));
         searchButton.setEnabled(false);
         searchButton.setOnClickListener(new View.OnClickListener() {
 
@@ -189,23 +186,39 @@ public class CityIDPreference extends DialogPreference
         this.cities.clear();
         // the positive button is used to clear the contents.
         if (positiveResult) {
-            persist("", "");
+            persist(null);
         }
     }
 
-    protected void persist(String value, String cityName) {
-        persistString(value);
+    private void persist(City city) {
+        if (city == null) {
 
-        String keyName = String.format("%s_name", getKey());
-        SharedPreferences prefs = getSharedPreferences();
-        SharedPreferences.Editor prefEditor = prefs.edit();
-        prefEditor.putString(keyName, cityName);
-        prefEditor.apply();
+            persistString("");
+            SharedPreferences prefs = getSharedPreferences();
+            SharedPreferences.Editor prefEditor = prefs.edit();
+            String keyName = String.format("%s_name", getKey());
+            String keyJson = String.format("%s_json", getKey());
+            prefEditor.putString(keyName, "");
+            prefEditor.putString(keyJson, "");
+            prefEditor.apply();
+            setSummary(getSummaryText("", ""));
+            notifyChanged();
+        } else {
+            String cityId = String.format("%d", city.id);
+            persistString(cityId);
 
-        setSummary(getSummaryText(value, cityName));
-        notifyChanged();
+            SharedPreferences prefs = getSharedPreferences();
+            SharedPreferences.Editor prefEditor = prefs.edit();
+            String keyName = String.format("%s_name", getKey());
+            String keyJson = String.format("%s_json", getKey());
+            prefEditor.putString(keyName, city.name);
+            prefEditor.putString(keyJson, city.toJson());
+            prefEditor.apply();
+
+            setSummary(getSummaryText(cityId, city.name));
+            notifyChanged();
+        }
     }
-
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return (a.getString(index));

@@ -19,6 +19,7 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
+import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -635,6 +636,11 @@ public class Settings {
         prefEditor.putLong("location_time", location.getTime());
         prefEditor.putString("location_provider", location.getProvider());
         prefEditor.commit();
+    }
+
+    public City getCityForWeather() {
+        String json = settings.getString("weatherCityID_json", "");
+        return City.fromJson(json);
     }
 
     public String getValidCityID() {
