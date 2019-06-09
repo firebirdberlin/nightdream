@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.BuildConfig;
+import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import org.json.JSONArray;
@@ -30,13 +31,13 @@ public class DarkSkyApi {
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
-    public static WeatherEntry fetchWeatherData(float lat, float lon) {
+    public static WeatherEntry fetchWeatherData(City city, float lat, float lon) {
         int responseCode = 0;
         String response = "";
         String responseText = "";
 
         try {
-            URL url = getUrlForecast(lat, lon);
+            URL url = getUrlForecast(city, lat, lon);
             Log.i(TAG, "requesting " + url.toString());
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Accept-Encoding", "gzip");
@@ -60,14 +61,14 @@ public class DarkSkyApi {
         }
 
         JSONObject json = getJSONObject(responseText);
-        return getWeatherEntryFromJSONObject(json);
+        return getWeatherEntryFromJSONObject(city, json);
     }
 
     private static double toKelvin(double celsius) {
         return celsius + 273.15;
     }
 
-    private static WeatherEntry getWeatherEntryFromJSONObject(JSONObject json) {
+    private static WeatherEntry getWeatherEntryFromJSONObject(City city, JSONObject json) {
         WeatherEntry entry = new WeatherEntry();
         if (json == null) {
             return entry;
@@ -78,8 +79,8 @@ public class DarkSkyApi {
 
         JSONObject jsonCurrently = getJSONObject(json, "currently");
 
-        entry.cityID = -1;
-        entry.cityName = String.format("%3.2f, %3.2f", entry.lat, entry.lon);
+        entry.cityID = (city != null) ? city.id : -1;
+        entry.cityName = (city != null) ? city.name : String.format("%3.2f, %3.2f", entry.lat, entry.lon);
         entry.description = getValue(jsonCurrently, "summary", "");
         entry.clouds = (int) (100 * getValue(jsonCurrently, "cloudCover", 0.f));
         entry.timestamp = getValue(jsonCurrently, "time", 0L);
@@ -180,8 +181,14 @@ public class DarkSkyApi {
         return sb.toString();
     }
 
-    private static URL getUrlForecast(float lat, float lon) throws MalformedURLException {
+    private static URL getUrlForecast(City city, float lat, float lon) throws MalformedURLException {
         Uri.Builder builder = getPathBuilder("forecast");
+
+
+        if (city != null) {
+            lat = (float) city.lat;
+            lon = (float) city.lon;
+        }
 
         builder = builder
                 .appendPath(String.valueOf(lat) + "," + String.valueOf(lon))
