@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -50,6 +49,7 @@ public class NightModeListener extends Service {
 
     @Override
     public void onCreate(){
+        startForeground();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
@@ -81,15 +81,6 @@ public class NightModeListener extends Service {
         pwrReceiver = registerPowerDisconnectionReceiver();
         broadcastReceiver = registerScreenOnBroadcastReceiver();
 
-        Intent i = new Intent(this, NightDreamActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
-
-
-        Notification note = Utility.getForegroundServiceNotification(
-                this, R.string.backgroundServiceNotificationTextNightMode);
-        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES_NIGHT_MODE, note);
-
         if (reactivate_on_noise ) {
             handler.postDelayed(startRecording, 1000);
         }
@@ -100,6 +91,12 @@ public class NightModeListener extends Service {
         lightSensorEventListener.register();
 
         return Service.START_REDELIVER_INTENT;
+    }
+
+    private void startForeground() {
+        Notification note = Utility.getForegroundServiceNotification(
+                this, R.string.backgroundServiceNotificationTextNightMode);
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES_NIGHT_MODE, note);
     }
 
     @Override
