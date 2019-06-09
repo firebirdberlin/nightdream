@@ -29,9 +29,13 @@ public class CustomDigitalFlipClock extends LinearLayout {
     private static final String TAG = "CustomDigitalFlipClock";
     private static final char[] HOURS = new char[]{'0', '1', '2'};
     private static final char[] HOURS12 = new char[]{'0', '1'};
-    private static final char[] LOWHOURS24 = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private static final char[] LOWHOURS24 = new char[]{
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            '0', '1', '2', '3'};
     private static final char[] LOWHOURS12 = new char[]{'2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1'};
     private static final char[] SEXAGISIMAL = new char[]{'0', '1', '2', '3', '4', '5'};
+
     TimeReceiver timeReceiver;
     private Context context;
     private FormatChangeObserver mFormatChangeObserver;
@@ -85,10 +89,9 @@ public class CustomDigitalFlipClock extends LinearLayout {
         Calendar time = Calendar.getInstance();
         int hour = time.get(get24HourMode() ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
         int highHour = hour / 10;
-        int lowHour = (hour - highHour * 10);
+        int lowHour = hour;
         if (!get24HourMode()) {
             highHour = (hour == 0) ? 1 : highHour;
-            lowHour = hour;
         }
         int minutes = time.get(Calendar.MINUTE);
         int highMinute = minutes / 10;
@@ -175,10 +178,9 @@ public class CustomDigitalFlipClock extends LinearLayout {
             Calendar time = Calendar.getInstance();
             int hour = time.get(get24HourMode() ? Calendar.HOUR_OF_DAY : Calendar.HOUR);
             int highHour = hour / 10;
-            int lowHour = (hour - highHour * 10);
+            int lowHour = hour;
             if (!get24HourMode()) {
                 highHour = (hour == 0) ? 1 : highHour;
-                lowHour = hour;
             }
             int minutes = time.get(Calendar.MINUTE);
             int highMinute = minutes / 10;
