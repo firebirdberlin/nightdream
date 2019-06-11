@@ -665,12 +665,14 @@ public class NightDreamActivity extends BillingHelperActivity
         cancelShutdown();
 
         Calendar calendar = null;
-        if (PowerConnectionReceiver.shallAutostart(this, mySettings)) {
+        if (PowerConnectionReceiver.shallAutostart(this, mySettings)
+                && mySettings.autostartTimeRangeStartInMinutes != mySettings.autostartTimeRangeEndInMinutes) {
             SimpleTime simpleEndTime = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes);
             calendar = simpleEndTime.getCalendar();
         }
 
-        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
+        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)
+                &&mySettings.scheduledAutoStartTimeRangeEndInMinutes != mySettings.scheduledAutoStartTimeRangeEndInMinutes ) {
             SimpleTime simpleEndTime = new SimpleTime(mySettings.scheduledAutoStartTimeRangeEndInMinutes);
             Calendar calendar2 = simpleEndTime.getCalendar();
             if (calendar == null) {
