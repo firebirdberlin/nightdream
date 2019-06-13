@@ -1017,6 +1017,11 @@ public class PreferencesFragment extends PreferenceFragment {
 
         if (on) {
             ScreenWatcherService.start(mContext);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (! android.provider.Settings.canDrawOverlays(mContext)) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                }
+            }
         }
     }
 
