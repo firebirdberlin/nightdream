@@ -11,7 +11,6 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.openweathermapapi.DarkSkyApi;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -40,8 +39,9 @@ public class DownloadWeatherService extends JobIntentService {
         City city = settings.getCityForWeather();
         Location location = settings.getLocation();
         String cityID = settings.weatherCityID;
-        WeatherEntry entry = null;
+        WeatherEntry entry;
         Log.e(TAG, "fetchWeatherData");
+        /*
         if (city != null) { // city is filled since version 233
             entry = DarkSkyApi.fetchWeatherData(
                     city,
@@ -54,6 +54,12 @@ public class DownloadWeatherService extends JobIntentService {
                     (float) location.getLongitude()
             );
         }
+        */
+        entry = OpenWeatherMapApi.fetchWeatherData(
+                cityID,
+                (float) location.getLatitude(),
+                (float) location.getLongitude()
+        );
         onPostExecute(entry);
     }
 
