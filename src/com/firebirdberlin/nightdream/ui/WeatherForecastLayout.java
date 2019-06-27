@@ -164,6 +164,7 @@ public class WeatherForecastLayout extends LinearLayout {
     }
 
     private String iconToText(String code) {
+        // openweathermap
         if (code.equals("01d") ) return "B";
         if (code.equals("01n") ) return "C";
         if (code.equals("02d") ) return "H";
@@ -182,6 +183,20 @@ public class WeatherForecastLayout extends LinearLayout {
         if (code.equals("13n") ) return "W";
         if (code.equals("50d") ) return "M";
         if (code.equals("50n") ) return "M";
+        // darksky
+        if (code.equals("clear-day")) return "B";
+        if (code.equals("clear-night")) return "C";
+        if (code.equals("rain")) return "R";
+        if (code.equals("snow")) return "W";
+        if (code.equals("sleet")) return "X";
+        if (code.equals("wind")) return "F";
+        if (code.equals("fog")) return "M";
+        if (code.equals("cloudy")) return "N";
+        if (code.equals("partly-cloudy-day")) return "H";
+        if (code.equals("partly-cloudy-night")) return "I";
+        if (code.equals("thunderstorm")) return "0";
+        if (code.equals("tornado")) return "0";
+        if (code.equals("hail")) return "X";
         return "";
     }
 

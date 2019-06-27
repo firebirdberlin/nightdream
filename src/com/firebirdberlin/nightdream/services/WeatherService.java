@@ -12,8 +12,9 @@ public class WeatherService {
     private static String TAG = "WeatherService";
 
     public static void start(Context context, String cityID) {
+        Log.d(TAG, "start(" + cityID + ")");
         if (!cityID.isEmpty()) {
-            DownloadWeatherService.start(context, cityID);
+            DownloadWeatherService.start(context);
             return;
         }
 
@@ -22,7 +23,6 @@ public class WeatherService {
 
     public static boolean shallUpdateWeatherData(Context context, Settings settings) {
         if (!settings.showWeather) return false;
-
         WeatherEntry entry = settings.weatherEntry;
         long age = entry.ageMillis();
         final int maxAge = 60 * 60 * 1000;
@@ -33,10 +33,12 @@ public class WeatherService {
                 ? weatherLocation.distanceTo(gpsLocation) : -1.f;
 
         Log.d(TAG, String.format("Weather: data age %d => %b", age, age > maxAge));
-        Log.d(TAG, String.format("City ID changed => %b (%s =?= %s)",
+        Log.d(TAG, String.format("City ID changed => %b ('%s' =?= %s)",
                 (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID)),
                 settings.weatherCityID, cityID));
-        Log.d(TAG, "GPS distance " + gpsDistance + " m ");
+        if (settings.weatherCityID.isEmpty() ) {
+            Log.d(TAG, "GPS distance " + gpsDistance + " m ");
+        }
 
         boolean result = (
                 Utility.hasNetworkConnection(context) &&
@@ -44,9 +46,11 @@ public class WeatherService {
                                 age < 0L
                                         || (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID))
                                         || age > maxAge
-                                        || gpsDistance > 10000.f
+                                        || (settings.weatherCityID.isEmpty() && gpsDistance > 10000.f)
                         )
         );
+
+        Log.d(TAG, "shallUpdateWeatherData = " + result);
         return result;
     }
 }
