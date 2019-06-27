@@ -115,11 +115,7 @@ public class WeatherUpdateJobService extends JobService {
             Log.i(TAG, "action -> " + action);
             if (LocationUpdateReceiver.ACTION_LOCATION_UPDATED.equals(action)
                     || LocationUpdateReceiver.ACTION_LOCATION_FAILURE.equals(action)) {
-                // we need to reload the location
-                Settings settings = new Settings(context);
-                if (WeatherService.shallUpdateWeatherData(context, settings)) {
-                    DownloadWeatherService.start(context, settings.getLocation());
-                }
+                DownloadWeatherService.start(context);
             } else if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 unregisterLocalReceiver(broadcastReceiver);
                 jobFinished(params, false);

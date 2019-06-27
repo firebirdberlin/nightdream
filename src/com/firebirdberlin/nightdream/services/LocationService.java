@@ -35,6 +35,7 @@ public class LocationService extends Service {
 
     @Override
     public void onCreate(){
+        startForeground();
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     }
 
@@ -52,10 +53,6 @@ public class LocationService extends Service {
         }
         running = true;
         mContext = this;
-
-        Notification note = Utility.getForegroundServiceNotification(
-                this, R.string.backgroundServiceNotificationTextLocation);
-        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES_LOCATION, note);
 
         final Settings settings = new Settings(mContext);
         if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
@@ -96,6 +93,14 @@ public class LocationService extends Service {
 
         }
         return Service.START_REDELIVER_INTENT;
+    }
+
+    private void startForeground() {
+        Notification note = Utility.getForegroundServiceNotification(
+                this, R.string.backgroundServiceNotificationTextLocation
+        );
+        startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES_LOCATION, note);
+
     }
 
     private void stopWithSuccess(Location location) {

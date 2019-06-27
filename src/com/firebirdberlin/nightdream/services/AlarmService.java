@@ -44,6 +44,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public void onCreate(){
+        startForeground();
         context = this;
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
@@ -141,17 +142,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() called.");
 
-        NotificationCompat.Builder noteBuilder =
-                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
-                .setContentTitle(getString(R.string.alarm))
-                .setSmallIcon(R.drawable.ic_audio)
-                .setPriority(NotificationCompat.PRIORITY_MIN);
-
-        Notification note = noteBuilder.build();
-
-        note.flags |= Notification.FLAG_NO_CLEAR;
-        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-        startForeground(1337, note);
 
 
         Bundle extras = intent.getExtras();
@@ -168,6 +158,20 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
 
         return Service.START_REDELIVER_INTENT;
+    }
+
+    private void startForeground() {
+        NotificationCompat.Builder noteBuilder =
+                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
+                        .setContentTitle(getString(R.string.alarm))
+                        .setSmallIcon(R.drawable.ic_audio)
+                        .setPriority(NotificationCompat.PRIORITY_MIN);
+
+        Notification note = noteBuilder.build();
+
+        note.flags |= Notification.FLAG_NO_CLEAR;
+        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+        startForeground(1337, note);
     }
 
     private boolean setDataSource(Uri soundUri) {

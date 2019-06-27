@@ -22,6 +22,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
     // implementation 'com.xenione.libs:tab-digit:1.0.2'
     implementation project(':externals:android-preferences')
     implementation project(':externals:ShowcaseView:library')
@@ -32,7 +33,13 @@ dependencies {
 def getApiKeyOWM() {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty("apikey.owm");
+    return properties.getProperty("apikey.owm")
+}
+
+def getApiKeyDarkSky() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty("apikey.darksky")
 }
 
 android {
@@ -81,5 +88,6 @@ android {
     defaultConfig {
         minSdkVersion 15
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
+        buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
     }
 }
