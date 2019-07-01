@@ -1,5 +1,6 @@
 package com.firebirdberlin.openweathermapapi;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEnt
     @Override
     protected List<WeatherEntry> doInBackground(String... query) {
         String q = query[0];
-        return OpenWeatherMapApi.fetchWeatherForecast(q, 0.f, 0.f);
+        return OpenWeatherMapApi.fetchWeatherForecast((Context) delegate, q, 0.f, 0.f);
     }
 
     @Override

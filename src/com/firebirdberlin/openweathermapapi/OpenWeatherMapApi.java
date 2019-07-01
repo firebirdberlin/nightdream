@@ -1,6 +1,7 @@
 package com.firebirdberlin.openweathermapapi;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -13,6 +14,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +36,36 @@ public class OpenWeatherMapApi {
     private static String APPID = BuildConfig.API_KEY_OWM;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
+    private static String CACHE_FILE_FORECAST = "owm_forecast";
+
+    private static void storeCacheFile(File cacheFile, String responseText) {
+        try {
+            FileOutputStream stream = new FileOutputStream(cacheFile);
+            stream.write(responseText.getBytes());
+            stream.close();
+        } catch (IOException e) {
+            /*
+            if (cacheFile.exists()) {
+                cacheFile.delete();
+            }
+            */
+        }
+    }
+
+    private static String readFromCacheFile(File cacheFile) {
+        int length = (int) cacheFile.length();
+        byte[] bytes = new byte[length];
+
+        try {
+            FileInputStream in = new FileInputStream(cacheFile);
+            in.read(bytes);
+            in.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        return new String(bytes);
+    }
 
     public static WeatherEntry fetchWeatherData(String cityID, float lat, float lon) {
         int responseCode = 0;
@@ -65,35 +99,52 @@ public class OpenWeatherMapApi {
         return getWeatherEntryFromJSONObject(json);
     }
 
-    public static List<WeatherEntry> fetchWeatherForecast(String cityID, float lat, float lon) {
+    public static List<WeatherEntry> fetchWeatherForecast(Context context, String cityID, float lat, float lon) {
         int responseCode = 0;
         String response = "";
         String responseText = "";
 
         List<WeatherEntry> forecast = new ArrayList<WeatherEntry>();
 
-        try {
-            URL url = getUrlForecast(cityID, lat, lon);
-            Log.i(TAG, "requesting " + url.toString());
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            response = urlConnection.getResponseMessage();
-            responseCode = urlConnection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                responseText = getResponseText(urlConnection);
+        String cacheFileName =
+                (cityID != null)
+                        ? String.format("%s_%s.txt", CACHE_FILE_FORECAST, cityID)
+                        : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_FORECAST, lat, lon);
+        File cacheFile = new File(context.getCacheDir(), cacheFileName);
+        Log.d(TAG, cacheFileName);
+        long now = System.currentTimeMillis();
+        if (cacheFile.exists()) {
+            Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified() );
+            Log.i(TAG, "new enough: " + String.valueOf(cacheFile.lastModified() > now - 600000));
+        }
+        if (cacheFile.exists() && cacheFile.lastModified() > now - 600000 ) {
+            responseText = readFromCacheFile(cacheFile);
+        } else {
+            try {
+                URL url = getUrlForecast(cityID, lat, lon);
+                Log.i(TAG, "requesting " + url.toString());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                response = urlConnection.getResponseMessage();
+                responseCode = urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    responseText = getResponseText(urlConnection);
+                }
+                urlConnection.disconnect();
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+                e.printStackTrace();
             }
-            urlConnection.disconnect();
-        } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+
+            Log.i(TAG, " >> response " + response);
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
+                return forecast;
+            } else {
+                Log.i(TAG, " >> responseText " + responseText);
+            }
+            storeCacheFile(cacheFile, responseText);
         }
 
-        Log.i(TAG, " >> response " + response);
-        if (responseCode != HttpURLConnection.HTTP_OK) {
-            Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
-            return forecast;
-        } else {
-            Log.i(TAG, " >> responseText " + responseText);
-        }
         JSONObject json = getJSONObject(responseText);
         JSONObject jsonCity = getJSONObject(json, "city");
         String cityName = getValue(jsonCity, "name", "");

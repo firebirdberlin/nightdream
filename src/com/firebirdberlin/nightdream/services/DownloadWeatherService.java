@@ -44,9 +44,11 @@ public class DownloadWeatherService extends JobIntentService {
         /*
         if (city != null) { // city is filled since version 233
             entry = DarkSkyApi.fetchWeatherData(
+                    this,
                     city,
                     (float) location.getLatitude(),
-                    (float) location.getLongitude());
+                    (float) location.getLongitude()
+            );
         } else {
             entry = OpenWeatherMapApi.fetchWeatherData(
                     cityID,

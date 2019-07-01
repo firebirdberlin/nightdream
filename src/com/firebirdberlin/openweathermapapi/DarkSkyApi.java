@@ -1,6 +1,7 @@
 package com.firebirdberlin.openweathermapapi;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -13,6 +14,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,42 +33,88 @@ public class DarkSkyApi {
 
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.darksky.net/";
+    private static String CACHE_FILE = "DarkSkyApi";
     private static String TAG = "DarkSkyApi";
     private static String API_KEY = BuildConfig.API_KEY_DARK_SKY;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
-    public static WeatherEntry fetchWeatherData(City city, float lat, float lon) {
+    public static WeatherEntry fetchWeatherData(Context context, City city, float lat, float lon) {
         int responseCode = 0;
         String response = "";
         String responseText = "";
 
-        try {
-            URL url = getUrlForecast(city, lat, lon);
-            Log.i(TAG, "requesting " + url.toString());
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("Accept-Encoding", "gzip");
-            response = urlConnection.getResponseMessage();
-            responseCode = urlConnection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                responseText = getResponseText(urlConnection);
-            }
-            urlConnection.disconnect();
-        } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+        String cacheFileName =
+                (city != null)
+                        ? String.format("%s_%d.txt", CACHE_FILE, city.id)
+                        : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE, lat, lon);
+        File cacheFile = new File(context.getCacheDir(), cacheFileName);
+        long now = System.currentTimeMillis();
+        if (cacheFile.exists()) {
+            Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified() );
+            Log.i(TAG, "new enough: " + String.valueOf(cacheFile.lastModified() > now - 600000));
         }
-
-        Log.i(TAG, " >> response " + response);
-        if (responseCode != HttpURLConnection.HTTP_OK) {
-            Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
-            return new WeatherEntry();
+        if (cacheFile.exists() && cacheFile.lastModified() > now - 600000 ) {
+            responseText = readFromCacheFile(cacheFile);
         } else {
-            Log.i(TAG, " >> responseText " + responseText);
-        }
 
+            try {
+                URL url = getUrlForecast(city, lat, lon);
+                Log.i(TAG, "requesting " + url.toString());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setReadTimeout(READ_TIMEOUT);
+                urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+                urlConnection.setRequestProperty("Accept-Encoding", "gzip");
+                response = urlConnection.getResponseMessage();
+                responseCode = urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    responseText = getResponseText(urlConnection);
+                }
+                urlConnection.disconnect();
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+                e.printStackTrace();
+            }
+
+            Log.i(TAG, " >> response " + response);
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                Log.w(TAG, " >> responseCode " + responseCode);
+                return new WeatherEntry();
+            }
+            storeCacheFile(cacheFile, responseText);
+        }
+        Log.i(TAG, " >> responseText " + responseText);
         JSONObject json = getJSONObject(responseText);
         return getWeatherEntryFromJSONObject(city, json);
+    }
+
+    private static void storeCacheFile(File cacheFile, String responseText) {
+        try {
+            FileOutputStream stream = new FileOutputStream(cacheFile);
+            stream.write(responseText.getBytes());
+            stream.close();
+        } catch (IOException e) {
+            /*
+            if (cacheFile.exists()) {
+                cacheFile.delete();
+            }
+            */
+        }
+    }
+
+    private static String readFromCacheFile(File cacheFile) {
+        int length = (int) cacheFile.length();
+        byte[] bytes = new byte[length];
+
+        try {
+            FileInputStream in = new FileInputStream(cacheFile);
+            in.read(bytes);
+            in.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        return new String(bytes);
     }
 
     private static double toKelvin(double celsius) {
@@ -79,21 +132,20 @@ public class DarkSkyApi {
 
         JSONObject jsonCurrently = getJSONObject(json, "currently");
 
+
         entry.cityID = (city != null) ? city.id : -1;
         entry.cityName = (city != null) ? city.name : String.format("%3.2f, %3.2f", entry.lat, entry.lon);
-        entry.description = getValue(jsonCurrently, "summary", "");
         entry.clouds = (int) (100 * getValue(jsonCurrently, "cloudCover", 0.f));
-        entry.timestamp = getValue(jsonCurrently, "time", 0L);
-        entry.request_timestamp = System.currentTimeMillis();
-        entry.temperature = toKelvin(getValue(jsonCurrently, "temperature", 0.));
+        entry.description = getValue(jsonCurrently, "summary", "");
         entry.rain3h = -1f;
+        entry.request_timestamp = System.currentTimeMillis();
         entry.sunriseTime = 0L;
         entry.sunsetTime = 0L;
-
-        entry.windSpeed = getValue(jsonCurrently, "windSpeed", 0.);
-        entry.windDirection = getValue(jsonCurrently, "windBearing", -1);
-
+        entry.temperature = toKelvin(getValue(jsonCurrently, "temperature", 0.));
+        entry.timestamp = getValue(jsonCurrently, "time", 0L);
         entry.weatherIcon = getValue(jsonCurrently, "icon", "");
+        entry.windDirection = getValue(jsonCurrently, "windBearing", -1);
+        entry.windSpeed = getValue(jsonCurrently, "windSpeed", 0.);
 
         return entry;
     }
