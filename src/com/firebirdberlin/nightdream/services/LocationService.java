@@ -30,7 +30,7 @@ public class LocationService extends Service {
 
     private Context mContext = null;
     private LocationListener locationListener = null;
-    private boolean running = false;
+    private static boolean running = false;
     private Location knownLocation = null;
 
     @Override
@@ -46,53 +46,13 @@ public class LocationService extends Service {
         }
     };
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if ( running ) {
-            return Service.START_REDELIVER_INTENT;
+    public static void start(Context context) {
+        if (LocationService.running) {
+            return;
         }
-        running = true;
-        mContext = this;
-
-        final Settings settings = new Settings(mContext);
-        if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
-            Log.w(TAG, "No location permissions granted !");
-            stopWithFailure();
-            return Service.START_REDELIVER_INTENT;
-        }
-
-        knownLocation = getLastKnownLocation(settings);
-        long now = System.currentTimeMillis();
-        if ( knownLocation != null && now - knownLocation.getTime() < MAX_AGE_IN_MILLIS ) {
-            stopWithSuccess(knownLocation);
-        } else {
-            locationListener = new LocationListener() {
-                public void onLocationChanged(Location location) {
-                    stopWithSuccess(location);
-                }
-
-                public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-                public void onProviderEnabled(String provider) {}
-
-                public void onProviderDisabled(String provider) {}
-            };
-
-            if ( isLocationEnabled() ) {
-                Log.i(TAG, "Requesting network locations");
-                try {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-                    setTimeout(60000);
-                } catch (IllegalArgumentException e) {
-                    //java.lang.IllegalArgumentException: provider doesn't exist: network
-                    stopWithFailure();
-                }
-            } else {
-                stopWithFailure();
-            }
-
-        }
-        return Service.START_REDELIVER_INTENT;
+        Intent i = new Intent(context, LocationService.class);
+        //i.putExtra("start alarm", true);
+        Utility.startForegroundService(context, i);
     }
 
     private void startForeground() {
@@ -202,9 +162,52 @@ public class LocationService extends Service {
         return false;
     }
 
-    public static void start(Context context) {
-        Intent i = new Intent(context, LocationService.class);
-        //i.putExtra("start alarm", true);
-        Utility.startForegroundService(context, i);
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if ( running ) {
+            return Service.START_NOT_STICKY;
+        }
+        running = true;
+        mContext = this;
+
+        final Settings settings = new Settings(mContext);
+        if (!settings.hasPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) ) {
+            Log.w(TAG, "No location permissions granted !");
+            stopWithFailure();
+            return Service.START_NOT_STICKY;
+        }
+
+        knownLocation = getLastKnownLocation(settings);
+        long now = System.currentTimeMillis();
+        if ( knownLocation != null && now - knownLocation.getTime() < MAX_AGE_IN_MILLIS ) {
+            stopWithSuccess(knownLocation);
+        } else {
+            locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    stopWithSuccess(location);
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+                public void onProviderEnabled(String provider) {}
+
+                public void onProviderDisabled(String provider) {}
+            };
+
+            if ( isLocationEnabled() ) {
+                Log.i(TAG, "Requesting network locations");
+                try {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                    setTimeout(60000);
+                } catch (IllegalArgumentException e) {
+                    //java.lang.IllegalArgumentException: provider doesn't exist: network
+                    stopWithFailure();
+                }
+            } else {
+                stopWithFailure();
+            }
+
+        }
+        return Service.START_REDELIVER_INTENT;
     }
 }
