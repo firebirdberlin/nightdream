@@ -188,8 +188,25 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onCreate(){
         Log.d(TAG,"onCreate() called.");
+        startForeground();
         Utility.registerEventBus(this);
     }
+
+    private void startForeground() {
+        NotificationCompat.Builder noteBuilder =
+                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_RADIO)
+                        .setContentTitle(getString(R.string.radio))
+                        .setSmallIcon(R.drawable.ic_radio)
+                        .setPriority(NotificationCompat.PRIORITY_MAX);
+
+        Notification note = noteBuilder.build();
+
+        note.flags |= Notification.FLAG_NO_CLEAR;
+        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+
+        startForeground(1337, note);
+    }
+
 
     @Override
     public IBinder onBind(Intent intent) {
