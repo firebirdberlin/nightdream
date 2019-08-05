@@ -137,7 +137,7 @@ public class PlaylistParser {
     private PlaylistInfo parseM3U(List<String> lines) {
 
         if (lines.isEmpty()) {
-            return null;
+            return erroneousPlaylist(PlaylistInfo.Error.INVALID_CONTENT);
         }
 
         boolean extendedFormat = lines.get(0).startsWith(M3U_EXT_FILE_HEADER);
@@ -178,7 +178,7 @@ public class PlaylistParser {
             }
         }
 
-        return null;
+        return erroneousPlaylist(PlaylistInfo.Error.INVALID_CONTENT);
     }
 
     private boolean isValidUrl(String s) {
@@ -220,7 +220,7 @@ public class PlaylistParser {
     private PlaylistInfo parsePLS(List<String> lines) {
 
         if (lines.isEmpty()) {
-            return null;
+            return erroneousPlaylist(PlaylistInfo.Error.INVALID_CONTENT);
         }
 
         boolean valid = lines.get(0).startsWith(PLS_FILE_HEADER);
@@ -265,7 +265,7 @@ public class PlaylistParser {
             }
         }
 
-        return null;
+        return erroneousPlaylist(PlaylistInfo.Error.INVALID_CONTENT);
     }
 
     private boolean isASHXContentType(String contentType) {
@@ -291,7 +291,7 @@ public class PlaylistParser {
         }
 
         if (streamUrl == null || streamUrl.isEmpty()) {
-            return null;
+            return erroneousPlaylist(PlaylistInfo.Error.INVALID_URL);
         }
 
         // handle nested m3u/pls playlist urls
@@ -310,7 +310,7 @@ public class PlaylistParser {
     private PlaylistInfo parseASX(List<String> lines) {
 
         if (lines.isEmpty()) {
-            return null;
+            return erroneousPlaylist(PlaylistInfo.Error.INVALID_URL);
         }
 
         Pattern pattern = Pattern.compile("[^<]*<refhref=\"(https?://[^\"]*)\"/>.*");
@@ -327,6 +327,6 @@ public class PlaylistParser {
             }
         }
 
-        return null;
+        return erroneousPlaylist(PlaylistInfo.Error.INVALID_URL);
     }
 }
