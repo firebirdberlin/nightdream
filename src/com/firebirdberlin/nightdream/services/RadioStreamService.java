@@ -388,7 +388,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     @Override
     public void onPlaylistRequestFinished(PlaylistInfo result) {
-        if (result.valid) {
+        if (result != null && result.valid) {
             statusCheckTask = new HttpStatusCheckTask(this);
             statusCheckTask.execute(result.streamUrl);
             return;

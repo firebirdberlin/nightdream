@@ -1001,6 +1001,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
+        if (!isAdded() ) return;
         boolean shallAutostart = sharedPreferences.getBoolean("handle_power", false);
         boolean on = shallAutostart || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false);
         int newState = on ?
@@ -1026,6 +1027,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupAlarmClock(SharedPreferences sharedPreferences) {
+        if (!isAdded() ) return;
         boolean on = sharedPreferences.getBoolean("useInternalAlarm", false);
 
         if (!on) {

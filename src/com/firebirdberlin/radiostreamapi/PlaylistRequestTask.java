@@ -6,11 +6,11 @@ import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 
 public class PlaylistRequestTask extends AsyncTask<String, Void, PlaylistInfo> {
 
-    public interface AsyncResponse {
-        public void onPlaylistRequestFinished(PlaylistInfo result);
-    }
+    private AsyncResponse delegate;
 
-    private AsyncResponse delegate = null;
+    public interface AsyncResponse {
+        void onPlaylistRequestFinished(PlaylistInfo result);
+    }
 
     public PlaylistRequestTask(AsyncResponse listener) {
         this.delegate = listener;
