@@ -163,6 +163,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Intent intent = new Intent(context, NightDreamActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }
 
