@@ -42,6 +42,7 @@ public abstract class BillingHelperActivity extends Activity {
     IInAppBillingService mService;
     BillingHelper billingHelper;
     UpdatePurchasesTask updatePurchasesTask;
+    IBinder binderService = null;
 
     ServiceConnection mServiceConn = new ServiceConnection() {
         @Override
@@ -54,20 +55,27 @@ public abstract class BillingHelperActivity extends Activity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG, "IIAB service connected");
-            mService = IInAppBillingService.Stub.asInterface(service);
+            binderService = service;
+            checkBillingHelper();
+        }
+    };
+    void checkBillingHelper() {
+        if (mService == null) {
+            mService = IInAppBillingService.Stub.asInterface(binderService);
+        }
+        if (billingHelper == null) {
+            Log.d(TAG, "creating billingHelper");
             billingHelper = new BillingHelper(getApplicationContext(), mService);
             updateAllPurchases();
         }
-    };
+    }
 
     public boolean isPurchased(String sku) {
         Log.i(TAG, "Checking purchase " + sku);
         if (Utility.isEmulator()) {
             return true;
         }
-        if (billingHelper == null) {
-            return false;
-        }
+        checkBillingHelper();
         Log.i(TAG, " => " + String.valueOf(billingHelper.isPurchased(sku)));
         return billingHelper.isPurchased(sku);
     }
