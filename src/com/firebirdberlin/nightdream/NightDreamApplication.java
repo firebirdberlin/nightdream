@@ -2,15 +2,14 @@ package com.firebirdberlin.nightdream;
 
 
 import android.app.Application;
-import android.appwidget.AppWidgetManager;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 /**
- * A global Application instance which notifies widgets to update its content on orientation change events.
+ * A global Application instance which notifies widgets to update its content on orientation
+ * change events.
  */
 public class NightDreamApplication extends Application {
 
@@ -26,7 +25,7 @@ public class NightDreamApplication extends Application {
     }
 
     /**
-     * Notify widget that a configuration change event occored.
+     * Notify widget that a configuration change event occurred.
      */
     private void notifyClockWidgets() {
         // update all widget instances via intent

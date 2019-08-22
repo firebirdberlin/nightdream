@@ -19,6 +19,7 @@ import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.receivers.StopServiceReceiver;
+import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 
@@ -127,10 +128,18 @@ public class ScreenWatcherService extends Service {
 
 
     public static void conditionallyStart(Context context, Settings settings) {
-        if (settings.handle_power || settings.standbyEnabledWhileDisconnected) {
+        if (settings.handle_power
+                || settings.standbyEnabledWhileDisconnected
+                || ClockWidgetProvider.hasWidgets(context)) {
             ScreenWatcherService.start(context);
         }
     }
+
+    public static void conditionallyStart(Context context) {
+        Settings settings = new Settings(context);
+        conditionallyStart(context, settings);
+    }
+
 
     public static void start(Context context) {
         if (ScreenWatcherService.isRunning) return;

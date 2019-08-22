@@ -187,11 +187,6 @@
         </receiver>
 
         <service
-            android:name=".widget.ClockWidgetJobService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
             android:name=".services.WeatherUpdateJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
