@@ -17,6 +17,7 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
+import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 import java.util.Calendar;
 
@@ -45,6 +46,9 @@ public class ScreenReceiver extends BroadcastReceiver {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
         ScreenReceiver receiver = new ScreenReceiver();
         ctx.registerReceiver(receiver, filter);
         return receiver;
@@ -168,7 +172,24 @@ public class ScreenReceiver extends BroadcastReceiver {
             isScreenUp = false;
             Settings settings = new Settings(context);
             settings.deleteNextAlwaysOnTime();
+            ClockWidgetProvider.updateAllWidgets(context);
         }
+
+        switch (intent.getAction()) {
+            case Intent.ACTION_TIME_TICK:
+                Log.i(TAG, "time tick");
+                ClockWidgetProvider.updateAllWidgets(context);
+                break;
+            case Intent.ACTION_TIME_CHANGED:
+                Log.i(TAG, "time changed");
+                ClockWidgetProvider.updateAllWidgets(context);
+                break;
+            case Intent.ACTION_TIMEZONE_CHANGED:
+                Log.i(TAG, "timezone changed");
+                ClockWidgetProvider.updateAllWidgets(context);
+                break;
+        }
+
     }
 
 }

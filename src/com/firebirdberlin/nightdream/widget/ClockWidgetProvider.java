@@ -1,16 +1,12 @@
 package com.firebirdberlin.nightdream.widget;
 
 import android.annotation.TargetApi;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.job.JobScheduler;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -28,30 +24,15 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
-
-import java.util.Calendar;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
-    private static TimeReceiver timeReceiver;
-    private static ScreenReceiver screenReceiver;
-
-    private static final class ViewInfo {
-        public final View view;
-        public final int widgetWidthPixel;
-        public final int widgetHeightPixel;
-
-        public ViewInfo(View view, int widgetWidthPixel, int widgetHeightPixel) {
-            this.view = view;
-            this.widgetWidthPixel = widgetWidthPixel;
-            this.widgetHeightPixel = widgetHeightPixel;
-        }
-    }
 
     private static ViewInfo prepareSourceView(Context context, WidgetDimension dimension) {
 
@@ -65,7 +46,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         LayoutInflater inflater = LayoutInflater.from(context);
         View container = inflater.inflate(R.layout.clock_widget_clock_layout, null);
 
-        ClockLayout clockLayout = (ClockLayout) container.findViewById(R.id.clockLayout);
+        ClockLayout clockLayout = container.findViewById(R.id.clockLayout);
 
         updateClockLayoutSettings(context, clockLayout, widgetSize);
 
@@ -129,7 +110,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         int width;
         int height;
         // detect screen orientation:
-        // portrait mode: width=minWidth, height=maxHeight, landscape mode: width=maxWidth, height=minHeight
+        //   portrait mode: width=minWidth, height=maxHeight,
+        //   landscape mode: width=maxWidth, height=minHeight
         final int orientation = context.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Log.i(TAG, "portrait");
@@ -145,20 +127,28 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     }
 
     public static void updateAllWidgets(Context context) {
+        if (!Utility.isScreenOn(context)) {
+            return;
+        }
         // update all widget instances via intent
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final int[] appWidgetIds = getAppWidgetIds(context, appWidgetManager);
+        final int[] appWidgetIds = getAppWidgetIds(context);
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, ClockWidgetProvider.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
         context.sendBroadcast(intent);
     }
 
-    public static int[] getAppWidgetIds(Context context, AppWidgetManager appWidgetManager) {
+    public static int[] getAppWidgetIds(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         return appWidgetManager.getAppWidgetIds(new ComponentName(context, ClockWidgetProvider.class));
     }
 
-    public WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
+    public static boolean hasWidgets(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        final int[] widgetsIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, ClockWidgetProvider.class));
+        return widgetsIds.length > 0;
+    }
 
+    public WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
         // API 16 and up only
         //portrait mode: width=minWidth, height=maxHeight, landscape mode: width=maxWidth, height=minHeight
         int minWidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
@@ -171,41 +161,24 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // call when first widget instance is put to home screen
+        // called when first widget instance is put to home screen
         super.onEnabled(context);
-        Log.d(TAG, "onEnabled");
+        Log.i(TAG, "onEnabled");
+        ScreenWatcherService.conditionallyStart(context);
     }
 
     @Override
     public void onDisabled(Context context) {
         // when last instance was removed
         super.onDisabled(context);
-        unsetTimeTick(context);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            if (jobScheduler != null) {
-                jobScheduler.cancel(0);
-            }
-        } else {
-            // stop alarm
-            stopAlarmManagerService(context);
-        }
-
+        Log.i(TAG, "onDisabled");
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
-        setTimeTick(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ClockWidgetJobService.schedule(context);
-        } else {
-            scheduleAlarmManagerService(context);
-        }
 
         for (int widgetId : appWidgetIds) {
-
             // API 16 and up only
             Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
 
@@ -223,80 +196,24 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         task.execute(context);
     }
 
-    void setTimeTick(Context context) {
-        if (timeReceiver != null) return;
-        Log.d(TAG, "setTimeTick()");
-        if (screenReceiver != null) {
-            context.getApplicationContext().unregisterReceiver(screenReceiver);
-            screenReceiver = null;
-        }
-        timeReceiver = new TimeReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        context.getApplicationContext().registerReceiver(timeReceiver, intentFilter);
-    }
-
-    void unsetTimeTick(Context context) {
-        Log.d(TAG, "unsetTimeTick");
-        if (timeReceiver != null) {
-            context.getApplicationContext().unregisterReceiver(timeReceiver);
-            timeReceiver = null;
-        }
-        if (screenReceiver == null) {
-            screenReceiver = new ScreenReceiver();
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-
-            context.getApplicationContext().registerReceiver(screenReceiver, intentFilter);
-        }
-    }
-
-    private void scheduleAlarmManagerService(Context context) {
-        final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (manager == null) {
-            return;
-        }
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        final int[] appWidgetIds = ClockWidgetProvider.getAppWidgetIds(context, appWidgetManager);
-        Intent alarmIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        alarmIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-
-        final int ALARM_ID = 0;
-        final int INTERVAL_MILLIS = 60000;
-
-        PendingIntent removedIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        Log.d(TAG, "StartAlarm");
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MILLISECOND, INTERVAL_MILLIS);
-
-        manager.cancel(removedIntent);
-        manager.setRepeating(AlarmManager.ELAPSED_REALTIME, calendar.getTimeInMillis(), INTERVAL_MILLIS, pendingIntent);
-    }
-
-    private void stopAlarmManagerService(Context context) {
-
-        final int ALARM_ID = 0;
-
-        Intent alarmIntent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ALARM_ID, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (manager == null) {
-            return;
-        }
-        manager.cancel(pendingIntent);
-    }
-
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
-        //Log.d(TAG, "onAppWidgetOptionsChanged");
         WidgetDimension w = widgetDimensionFromBundle(bundle);
         Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
 
         updateWidget(context, appWidgetManager, appWidgetId, w);
+    }
+
+    private static final class ViewInfo {
+        public final View view;
+        public final int widgetWidthPixel;
+        public final int widgetHeightPixel;
+
+        public ViewInfo(View view, int widgetWidthPixel, int widgetHeightPixel) {
+            this.view = view;
+            this.widgetWidthPixel = widgetWidthPixel;
+            this.widgetHeightPixel = widgetHeightPixel;
+        }
     }
 
     private static class PrepareBitmapTask extends AsyncTask<Context, Void, RemoteViews> {
@@ -427,28 +344,4 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             this.maxHeight = maxHeight;
         }
     }
-
-    class TimeReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "time tick");
-            String action = intent.getAction();
-            if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                unsetTimeTick(context);
-            } else if (Intent.ACTION_TIME_TICK.equals(action)) {
-                updateAllWidgets(context);
-            }
-        }
-    }
-
-    class ScreenReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "screen ON");
-            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
-                updateAllWidgets(context);
-            }
-        }
-    }
-
 }
