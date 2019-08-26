@@ -302,6 +302,14 @@ public class ClockLayout extends LinearLayout {
             }
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
+                weatherLayout.setMaxWidth((int) (0.9 * parentWidth));
+                weatherLayout.setMaxFontSizesInPx(
+                        Utility.spToPx(context, 6.f),
+                        Utility.spToPx(context, 20.f));
+                weatherLayout.update();
+                weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
+            }
         } else if (layoutId == LAYOUT_ID_ANALOG) {
             setupLayoutAnalog(parentWidth, parentHeight, config, displayInWidget);
         } else {
