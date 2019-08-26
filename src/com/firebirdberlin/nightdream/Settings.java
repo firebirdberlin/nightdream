@@ -380,19 +380,16 @@ public class Settings {
 
     private Typeface loadTypeface() {
         final String ASSET_PATH = "file:///android_asset/";
-        if (settings.contains("typeface") ||
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (settings.contains("typeface")) {
 
             int typeface = Integer.parseInt(settings.getString("typeface", "6"));
             String path = mapIntToTypefacePath(typeface);
             if (path != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                    String name = path.substring(6);
-                    setFontUri(ASSET_PATH + path, name);
-                    SharedPreferences.Editor prefEditor = settings.edit();
-                    prefEditor.remove("typeface");
-                    prefEditor.commit();
-                }
+                String name = path.substring(6);
+                setFontUri(ASSET_PATH + path, name);
+                SharedPreferences.Editor prefEditor = settings.edit();
+                prefEditor.remove("typeface");
+                prefEditor.commit();
                 return FontCache.get(mContext, path);
             }
         }

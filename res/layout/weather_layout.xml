@@ -25,6 +25,7 @@
             android:singleLine="true"
             android:text=""
             android:textSize="20sp"
+            android:paddingStart="5sp"
             android:textStyle="bold" />
 
         <TextView
@@ -35,13 +36,8 @@
             android:paddingLeft="5sp"
             android:singleLine="true"
             android:text=""
+            android:paddingStart="5sp"
             android:textSize="20sp" />
-
-        <com.firebirdberlin.nightdream.ui.DirectionIconView
-            android:id="@+id/iconWindDirection"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="5sp" />
 
         <TextView
             android:id="@+id/windText"
@@ -52,5 +48,13 @@
             android:singleLine="true"
             android:text=""
             android:textSize="20sp"
+            android:paddingStart="5sp"
             android:textStyle="bold" />
+
+        <com.firebirdberlin.nightdream.ui.DirectionIconView
+            android:id="@+id/iconWindDirection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="5sp"
+            android:paddingLeft="5sp" />
 </LinearLayout>

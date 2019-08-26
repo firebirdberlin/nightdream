@@ -19,7 +19,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 public class WeatherLayout extends LinearLayout {
 
     private static final String TAG = "NightDream.WeatherLayout";
-    private Context context = null;
+    private Context context;
     private TextView iconText = null;
     private TextView iconWind = null;
     private DirectionIconView iconWindDirection = null;
@@ -52,11 +52,11 @@ public class WeatherLayout extends LinearLayout {
         View child = inflater.inflate(R.layout.weather_layout, null);
         addView(child);
 
-        iconText = (TextView) findViewById(R.id.iconText);
-        iconWind = (TextView) findViewById(R.id.iconWind);
-        iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
-        temperatureText = (TextView) findViewById(R.id.temperatureText);
-        windText = (TextView) findViewById(R.id.windText);
+        iconText = findViewById(R.id.iconText);
+        iconWind = findViewById(R.id.iconWind);
+        iconWindDirection = findViewById(R.id.iconWindDirection);
+        temperatureText = findViewById(R.id.temperatureText);
+        windText = findViewById(R.id.windText);
 
         Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
         iconText.setTypeface(typeface);
