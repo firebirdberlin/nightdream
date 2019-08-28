@@ -54,6 +54,7 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
+import com.firebirdberlin.openweathermapapi.models.City;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -510,9 +511,10 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onWeatherForecastClick(View v) {
+        City city = mySettings.getCityForWeather();
         String cityID = mySettings.getValidCityID();
         if (cityID != null && !cityID.isEmpty()) {
-            WeatherForecastActivity.start(this, cityID);
+            WeatherForecastActivity.start(this, city, cityID);
         }
 
     }
