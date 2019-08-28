@@ -14,18 +14,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
@@ -39,7 +38,27 @@ public class DarkSkyApi {
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
-    public static WeatherEntry fetchWeatherData(Context context, City city, float lat, float lon) {
+    public static WeatherEntry fetchCurrentWeatherData(Context context, City city, float lat, float lon) {
+
+        String responseText = fetchWeatherData(context, city, lat, lon);
+        if (responseText == null) {
+            return new WeatherEntry();
+        }
+        JSONObject json = getJSONObject(responseText);
+        return getWeatherEntryFromJSONObject(city, json);
+    }
+
+    public static List<WeatherEntry> fetchHourlyWeatherData(Context context, City city, float lat, float lon) {
+
+        String responseText = fetchWeatherData(context, city, lat, lon);
+        if (responseText == null) {
+            return new ArrayList<>();
+        }
+        JSONObject json = getJSONObject(responseText);
+        return getWeatherEntriesHourly(city, json);
+    }
+
+    private static String fetchWeatherData(Context context, City city, float lat, float lon) {
         int responseCode = 0;
         String response = "";
         String responseText = "";
@@ -79,13 +98,12 @@ public class DarkSkyApi {
             Log.i(TAG, " >> response " + response);
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 Log.w(TAG, " >> responseCode " + responseCode);
-                return new WeatherEntry();
+                return null;
             }
             storeCacheFile(cacheFile, responseText);
         }
         Log.i(TAG, " >> responseText " + responseText);
-        JSONObject json = getJSONObject(responseText);
-        return getWeatherEntryFromJSONObject(city, json);
+        return responseText;
     }
 
     private static void storeCacheFile(File cacheFile, String responseText) {
@@ -137,6 +155,7 @@ public class DarkSkyApi {
         entry.cityName = (city != null) ? city.name : String.format("%3.2f, %3.2f", entry.lat, entry.lon);
         entry.clouds = (int) (100 * getValue(jsonCurrently, "cloudCover", 0.f));
         entry.description = getValue(jsonCurrently, "summary", "");
+        entry.rain1h = getValue(jsonCurrently, "precipIntensity", -1.);
         entry.rain3h = -1f;
         entry.request_timestamp = System.currentTimeMillis();
         entry.sunriseTime = 0L;
@@ -148,6 +167,41 @@ public class DarkSkyApi {
         entry.windSpeed = getValue(jsonCurrently, "windSpeed", 0.);
 
         return entry;
+    }
+
+    private static List<WeatherEntry> getWeatherEntriesHourly(City city, JSONObject json) {
+        List<WeatherEntry> entries = new ArrayList<>();
+        if (json == null) {
+            return entries;
+        }
+        long now = System.currentTimeMillis();
+        float lat = getValue(json, "latitude", -1.f);
+        float lon = getValue(json, "longitude", -1.f);
+        JSONObject jsonHourly = getJSONObject(json, "hourly");
+        JSONArray jsonData = getJSONArray(jsonHourly, "data");
+
+        for(int i=0; i< jsonData.length(); i++){
+            JSONObject jsonEntry = getJSONObject(jsonData, i);
+            WeatherEntry entry = new WeatherEntry();
+            entry.cityID = (city != null) ? city.id : -1;
+            entry.cityName = (city != null) ? city.name : String.format("%3.2f, %3.2f", entry.lat, entry.lon);
+            entry.clouds = (int) (100 * getValue(jsonEntry, "cloudCover", 0.f));
+            entry.description = getValue(jsonEntry, "summary", "");
+            entry.lat = lat;
+            entry.lon = lon;
+            entry.rain1h = getValue(jsonEntry, "precipIntensity", -1.);
+            entry.rain3h = -1f;
+            entry.request_timestamp = now;
+            entry.sunriseTime = 0L;
+            entry.sunsetTime = 0L;
+            entry.temperature = toKelvin(getValue(jsonEntry, "temperature", 0.));
+            entry.timestamp = getValue(jsonEntry, "time", 0L);
+            entry.weatherIcon = getValue(jsonEntry, "icon", "");
+            entry.windDirection = getValue(jsonEntry, "windBearing", -1);
+            entry.windSpeed = getValue(jsonEntry, "windSpeed", 0.);
+            entries.add(entry);
+        }
+        return entries;
     }
 
     private static JSONObject getJSONObject(String string_representation) {
@@ -235,7 +289,6 @@ public class DarkSkyApi {
 
     private static URL getUrlForecast(City city, float lat, float lon) throws MalformedURLException {
         Uri.Builder builder = getPathBuilder("forecast");
-
 
         if (city != null) {
             lat = (float) city.lat;

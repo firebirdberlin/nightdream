@@ -3,28 +3,35 @@ package com.firebirdberlin.openweathermapapi;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import java.util.List;
-
-import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
+import java.util.List;
+
 public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEntry>> {
 
-    public interface AsyncResponse {
-        public void onRequestFinished(List<WeatherEntry> entries);
-    }
+    private AsyncResponse delegate;
 
-    private AsyncResponse delegate = null;
+    @Override
+    protected List<WeatherEntry> doInBackground(String... query) {
+        String q = query[0];
+        String cityJson = query[1];
+        if (cityJson != null && !cityJson.isEmpty()) {
+            City city = City.fromJson(cityJson);
+            return DarkSkyApi.fetchHourlyWeatherData(
+                    (Context) delegate, city, (float) city.lat, (float) city.lon
+            );
+        }
+        return OpenWeatherMapApi.fetchWeatherForecast((Context) delegate, q, 0.f, 0.f);
+
+    }
 
     public ForecastRequestTask(AsyncResponse listener) {
         this.delegate = listener;
     }
 
-    @Override
-    protected List<WeatherEntry> doInBackground(String... query) {
-        String q = query[0];
-        return OpenWeatherMapApi.fetchWeatherForecast((Context) delegate, q, 0.f, 0.f);
+    public interface AsyncResponse {
+        void onRequestFinished(List<WeatherEntry> entries);
     }
 
     @Override

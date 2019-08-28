@@ -182,6 +182,7 @@ public class OpenWeatherMapApi {
         entry.timestamp = getValue(json, "dt", 0L);
         entry.request_timestamp = System.currentTimeMillis();
         entry.temperature = getValue(jsonMain, "temp", 0.);
+        entry.rain1h = getValue(jsonRain, "1h", -1.);
         entry.rain3h = getValue(jsonRain, "3h", -1.);
         entry.sunriseTime = getValue(jsonSys, "sunrise", 0L);
         entry.sunsetTime = getValue(jsonSys, "sunset", 0L);
