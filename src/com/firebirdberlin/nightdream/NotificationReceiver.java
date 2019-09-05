@@ -1,16 +1,14 @@
 package com.firebirdberlin.nightdream;
 
-import java.lang.ClassCastException;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -29,7 +27,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     public NotificationReceiver(Window window) {
         View v = window.getDecorView().findViewById(android.R.id.content);
-        notificationBar = (LinearLayout) v.findViewById(R.id.notificationbar);
+        notificationBar = v.findViewById(R.id.notificationbar);
     }
 
     public void setColor(int color) {
@@ -96,12 +94,17 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private Drawable resize(Context context, Drawable image, int size) {
         Bitmap b = ((BitmapDrawable) image).getBitmap();
+
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, size, size, false);
+
+        DisplayMetrics metrics = context.getApplicationContext().getResources().getDisplayMetrics();
+        bitmapResized.setDensity(metrics.densityDpi);
+
         return new BitmapDrawable(context.getResources(), bitmapResized);
     }
 
     private Drawable getNotificationIcon(Context context, String packageName, int id) {
-        Log.d(TAG, "getNotificationIcon for id = " + String.valueOf(id));
+        Log.d(TAG, "getNotificationIcon for id = " + id);
         if (packageName == null || id == -1) return null;
         try {
             Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
