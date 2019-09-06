@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.openweathermapapi.DarkSkyApi;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -39,29 +40,27 @@ public class DownloadWeatherService extends JobIntentService {
         City city = settings.getCityForWeather();
         Location location = settings.getLocation();
         String cityID = settings.weatherCityID;
+        Settings.WeatherProvider weatherProvider = settings.getWeatherProvider();
         WeatherEntry entry;
         Log.e(TAG, "fetchWeatherData");
-        /*
-        if (city != null) { // city is filled since version 233
-            entry = DarkSkyApi.fetchCurrentWeatherData(
-                    this,
-                    city,
-                    (float) location.getLatitude(),
-                    (float) location.getLongitude()
-            );
-        } else {
-            entry = OpenWeatherMapApi.fetchWeatherData(
-                    cityID,
-                    (float) location.getLatitude(),
-                    (float) location.getLongitude()
-            );
+        switch (weatherProvider) {
+            case OPEN_WEATHER_MAP:
+            default:
+                entry = OpenWeatherMapApi.fetchWeatherData(
+                        cityID,
+                        (float) location.getLatitude(),
+                        (float) location.getLongitude()
+                );
+                break;
+            case DARK_SKY:
+                entry = DarkSkyApi.fetchCurrentWeatherData(
+                        this,
+                        city,
+                        (float) location.getLatitude(),
+                        (float) location.getLongitude()
+                );
+                break;
         }
-        */
-        entry = OpenWeatherMapApi.fetchWeatherData(
-                cityID,
-                (float) location.getLatitude(),
-                (float) location.getLongitude()
-        );
         onPostExecute(entry);
     }
 

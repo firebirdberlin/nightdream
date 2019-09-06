@@ -36,6 +36,17 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
+    public WeatherProvider getWeatherProvider() {
+        String provider = settings.getString("weatherProvider", "0");
+        switch (provider) {
+            case "0":
+            default:
+                return WeatherProvider.OPEN_WEATHER_MAP;
+            case "1":
+                return WeatherProvider.DARK_SKY;
+        }
+    }
+
     public final static int BACKGROUND_BLACK = 1;
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
@@ -635,19 +646,31 @@ public class Settings {
         prefEditor.commit();
     }
 
+    public City getValidCity() {
+        City city = getCityForWeather();
+
+        if (city != null) {
+            return city;
+        }
+
+        if (this.weatherEntry != null) {
+            City c = new City();
+            c.id = this.weatherEntry.cityID;
+            c.name = this.weatherEntry.cityName;
+            c.lat = this.weatherEntry.lat;
+            c.lon = this.weatherEntry.lon;
+            return c;
+        }
+        return null;
+    }
+
     public City getCityForWeather() {
         String json = settings.getString("weatherCityID_json", "");
         return City.fromJson(json);
     }
 
-    public String getValidCityID() {
-        if (this.weatherCityID != null && !this.weatherCityID.isEmpty()) {
-            return this.weatherCityID;
-        } else if (this.weatherEntry != null && this.weatherEntry.cityID > 0) {
-            return String.valueOf(this.weatherEntry.cityID);
-        }
-        return null;
-    }
+
+    public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY}
 
     public WeatherEntry getWeatherEntry() {
         this.weatherEntry = new WeatherEntry();

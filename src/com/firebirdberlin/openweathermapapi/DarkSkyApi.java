@@ -48,9 +48,9 @@ public class DarkSkyApi {
         return getWeatherEntryFromJSONObject(city, json);
     }
 
-    public static List<WeatherEntry> fetchHourlyWeatherData(Context context, City city, float lat, float lon) {
+    public static List<WeatherEntry> fetchHourlyWeatherData(Context context, City city) {
 
-        String responseText = fetchWeatherData(context, city, lat, lon);
+        String responseText = fetchWeatherData(context, city, (float) city.lat, (float) city.lon);
         if (responseText == null) {
             return new ArrayList<>();
         }
