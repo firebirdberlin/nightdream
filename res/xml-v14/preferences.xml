@@ -535,6 +535,13 @@
                 owmapi:textSummary=""
                 />
 
+            <ListPreference
+                android:defaultValue="0"
+                android:entries="@array/weatherProvider"
+                android:entryValues="@array/weatherProviderValues"
+                android:key="weatherProvider"
+                android:title="@string/weatherProvider" />
+
             <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
                 android:dependency="showWeather"
                 android:key="weatherPreview"

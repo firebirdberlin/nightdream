@@ -277,6 +277,7 @@ OR
     <string name="weather_city_id_title">Search location</string>
     <string name="weather_info_title">Information</string>
     <string name="weather">Weather</string>
+    <string name="weatherProvider">Weather Provider</string>
     <string name="welcome_screen_text1">Welcome to your new night clock ! This app shows the current time while charging your mobile.</string>
     <string name="welcome_screen_text2">Open the preferences here !</string>
     <string name="welcome_screen_text3">Click and slide for changing the screen brightness. Try it now !</string>

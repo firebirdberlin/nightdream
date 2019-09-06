@@ -89,7 +89,7 @@ public class OpenWeatherMapApi {
 
         Log.i(TAG, " >> response " + response);
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
+            Log.w(TAG, " >> responseCode " + responseCode);
             return new WeatherEntry();
         } else {
             Log.i(TAG, " >> responseText " + responseText);
@@ -99,13 +99,19 @@ public class OpenWeatherMapApi {
         return getWeatherEntryFromJSONObject(json);
     }
 
-    public static List<WeatherEntry> fetchWeatherForecast(Context context, String cityID, float lat, float lon) {
+    public static List<WeatherEntry> fetchWeatherForecast(Context context, City city) {
         int responseCode = 0;
         String response = "";
         String responseText = "";
 
+        if (city == null) {
+            return null;
+        }
         List<WeatherEntry> forecast = new ArrayList<WeatherEntry>();
 
+        String cityID = (city.id > 0) ? String.format("%d", city.id) : null;
+        float lat = (float) city.lat;
+        float lon = (float) city.lon;
         String cacheFileName =
                 (cityID != null)
                         ? String.format("%s_%s.txt", CACHE_FILE_FORECAST, cityID)
