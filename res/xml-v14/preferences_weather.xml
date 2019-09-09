@@ -70,6 +70,10 @@
         app:key="weatherProvider"
         app:title="@string/weatherProvider" />
 
+    <Preference
+        app:key="weatherProviderAttribution"
+        app:icon="@drawable/ic_about"/>
+
     <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
         app:iconSpaceReserved="false"
         app:dependency="showWeather"

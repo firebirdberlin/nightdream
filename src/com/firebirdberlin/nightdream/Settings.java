@@ -36,6 +36,9 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
+    public String getWeatherProviderString() {
+        return settings.getString("weatherProvider", "0");
+    }
     public WeatherProvider getWeatherProvider() {
         String provider = settings.getString("weatherProvider", "0");
         switch (provider) {

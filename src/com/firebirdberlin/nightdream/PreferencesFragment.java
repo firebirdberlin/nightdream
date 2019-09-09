@@ -48,6 +48,7 @@ import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -180,6 +181,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         case "batteryTimeout":
                             settings.batteryTimeout = Integer.parseInt(sharedPreferences.getString("batteryTimeout", "-1"));
                             setupBatteryTimeoutPreference();
+                            break;
+                        case "weatherProvider":
+                            setupWeatherProviderPreference();
                             break;
                     }
 
@@ -650,6 +654,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
             Preference prefFetchWeatherData = findPreference("showWeather");
             prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
+            setupWeatherProviderPreference();
         } else if ("about".equals(rootKey)) {
 
             Preference recommendApp = findPreference("recommendApp");
@@ -697,13 +702,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 
         } else {
-
-
-
             // main
             setupDaydreamPreferences();
             setupTranslationRequest();
-
         }
     }
 
@@ -944,6 +945,35 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         for (int i=0; i< valueArray.length; i++) {
             String v = valueArray[i];
             if (Integer.parseInt(v) == settings.batteryTimeout) {
+                pref.setSummary(stringArray[i]);
+                return;
+            }
+        }
+    }
+
+    private void setupWeatherProviderPreference() {
+        if (!isAdded() ) return;
+        Preference pref = findPreference("weatherProvider");
+        Preference prefAttribution = findPreference("weatherProviderAttribution");
+        if (settings.getWeatherProviderString().equals("0")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://openweathermap.org"));
+            prefAttribution.setIntent(intent);
+            prefAttribution.setTitle("Powered by OpenWeatherMap");
+            prefAttribution.setSummary("https://openweathermap.org");
+        }
+        else if (settings.getWeatherProviderString().equals("1")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://darksky.net/poweredby/"));
+            prefAttribution.setIntent(intent);
+            prefAttribution.setTitle("Powered by Dark Sky");
+            prefAttribution.setSummary("https://darksky.net/poweredby/");
+        }
+
+        String[] valueArray = getResources().getStringArray(R.array.weatherProviderValues);
+        String[] stringArray = getResources().getStringArray(R.array.weatherProvider);
+        for (int i=0; i< valueArray.length; i++) {
+            String v = valueArray[i];
+
+            if (v.equals(settings.getWeatherProviderString())) {
                 pref.setSummary(stringArray[i]);
                 return;
             }

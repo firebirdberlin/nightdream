@@ -183,17 +183,6 @@ vi - Phong Nguyen"/>
 
         <Preference
             app:iconSpaceReserved="false"
-            app:icon="@drawable/ic_cloud"
-            app:key="about_owm"
-            app:summary="OpenWeatherMap"
-            app:title="@string/weather">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="http://openweathermap.com" />
-        </Preference>
-
-        <Preference
-            app:iconSpaceReserved="false"
             app:icon="@drawable/ic_radio"
             app:key="about_radio_browser"
             app:summary="radio-browser.info"
