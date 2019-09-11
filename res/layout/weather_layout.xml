@@ -28,6 +28,13 @@
             android:paddingStart="5sp"
             android:textStyle="bold" />
 
+        <com.firebirdberlin.nightdream.ui.DirectionIconView
+            android:id="@+id/iconWindDirection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="5sp"
+            android:paddingLeft="5sp" />
+
         <TextView
             android:id="@+id/iconWind"
             android:layout_width="wrap_content"
@@ -51,10 +58,4 @@
             android:paddingStart="5sp"
             android:textStyle="bold" />
 
-        <com.firebirdberlin.nightdream.ui.DirectionIconView
-            android:id="@+id/iconWindDirection"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="5sp"
-            android:paddingLeft="5sp" />
 </LinearLayout>
