@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="weatherProviderValues">
+          <item>0</item>
+          <item>1</item>
+     </string-array>
+
+
+    <string-array name="weatherProvider">
+        <item>OpenWeatherMap</item>
+        <item>Dark Sky</item>
+     </string-array>
+</resources>

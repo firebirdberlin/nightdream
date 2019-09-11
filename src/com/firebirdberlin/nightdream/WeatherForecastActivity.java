@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
+import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.DateFormat;
@@ -24,10 +25,13 @@ public class WeatherForecastActivity extends Activity
     final static String TAG = "WeatherForecastActivity";
 
     private LinearLayout scrollView = null;
+    private Settings settings;
 
-    public static void start(Context context, String cityID) {
+    public static void start(Context context, City city) {
         Intent intent = new Intent(context, WeatherForecastActivity.class);
-        intent.putExtra("cityID", cityID);
+        if (city != null) {
+            intent.putExtra("city", city.toJson());
+        }
         context.startActivity(intent);
     }
 
@@ -35,7 +39,7 @@ public class WeatherForecastActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_forecast);
-        scrollView = (LinearLayout) findViewById(R.id.scroll_view);
+        scrollView = findViewById(R.id.scroll_view);
     }
 
     @Override
@@ -43,15 +47,19 @@ public class WeatherForecastActivity extends Activity
         super.onStart();
         Log.i(TAG, "onResume()");
         Intent intent = getIntent();
-        String cityID = intent.getStringExtra("cityID");
-        new ForecastRequestTask(this).execute(cityID);
+        String cityJson = intent.getStringExtra("city");
+        if (cityJson != null && cityJson.isEmpty()) {
+            cityJson = "";
+        }
+        settings = new Settings(this);
+
+        new ForecastRequestTask(this, settings.getWeatherProvider()).execute(cityJson);
     }
 
     public void onRequestFinished(List<WeatherEntry> entries) {
         Log.i(TAG, "onRequestFinished()");
         Log.i(TAG, String.format(" > got %d entries", entries.size()));
         scrollView.removeAllViews();
-        Settings settings = new Settings(this);
 
         String timeFormat = settings.getFullTimeFormat();
 

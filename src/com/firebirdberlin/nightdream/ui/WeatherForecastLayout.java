@@ -60,16 +60,16 @@ public class WeatherForecastLayout extends LinearLayout {
                                        );
         addView(child, lp);
 
-        timeView = (TextView) findViewById(R.id.timeView);
-        iconText = (TextView) findViewById(R.id.iconText);
-        iconWind = (TextView) findViewById(R.id.iconWind);
-        iconRain3h = (TextView) findViewById(R.id.iconRain3h);
-        iconClouds = (TextView) findViewById(R.id.iconClouds);
-        iconWindDirection = (DirectionIconView) findViewById(R.id.iconWindDirection);
-        cloudText = (TextView) findViewById(R.id.cloudText);
-        temperatureText = (TextView) findViewById(R.id.temperatureText);
-        rainText = (TextView) findViewById(R.id.rainText);
-        windText = (TextView) findViewById(R.id.windText);
+        timeView = findViewById(R.id.timeView);
+        iconText = findViewById(R.id.iconText);
+        iconWind = findViewById(R.id.iconWind);
+        iconRain3h = findViewById(R.id.iconRain3h);
+        iconClouds = findViewById(R.id.iconClouds);
+        iconWindDirection = findViewById(R.id.iconWindDirection);
+        cloudText = findViewById(R.id.cloudText);
+        temperatureText = findViewById(R.id.temperatureText);
+        rainText = findViewById(R.id.rainText);
+        windText = findViewById(R.id.windText);
         Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
         iconClouds.setTypeface(typeface);
         iconText.setTypeface(typeface);
@@ -142,7 +142,11 @@ public class WeatherForecastLayout extends LinearLayout {
 
         if (entry != null && entry.rain3h >= 0.) {
             iconRain3h.setText("R");
-            rainText.setText(formatRainText(entry));
+            rainText.setText(formatRainText(entry.rain3h));
+        } else
+        if (entry != null && entry.rain1h > 0.) {
+            iconRain3h.setText("R");
+            rainText.setText(formatRainText(entry.rain1h));
         } else {
             iconRain3h.setText("");
             rainText.setText("");
@@ -200,8 +204,8 @@ public class WeatherForecastLayout extends LinearLayout {
         return "";
     }
 
-    private String formatRainText(WeatherEntry entry) {
-        return String.format("%.1f mm", entry.rain3h);
+    private String formatRainText(double rainValue) {
+        return String.format("%.1f mm", rainValue);
     }
 
     private String formatCloudsText(WeatherEntry entry) {
