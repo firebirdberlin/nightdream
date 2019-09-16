@@ -9,9 +9,23 @@
         <item name="android:navigationBarColor">#000000</item>
     </style>
 
+    <!--
     <style name="SecondaryActivityTheme" parent="android:Theme.Material">
         <item name="android:colorAccent">@color/blue</item>
         <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
+    </style>
+-->
+
+    <style name="SecondaryActivityTheme" parent="Theme.AppCompat.DayNight">
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="AlarmClockActivityTheme" parent="Theme.AppCompat.DayNight">
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="colorAccent">@color/blue</item>
     </style>
 
     <style name="DialogTheme" parent="android:Theme.Material.Dialog">

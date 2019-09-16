@@ -4,11 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.JobIntentService;
-import android.support.v4.content.LocalBroadcastManager;
+
+import androidx.core.app.JobIntentService;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;

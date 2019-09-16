@@ -22,8 +22,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -54,12 +54,13 @@ import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+/*
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
+*/
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.FileDescriptor;
@@ -69,12 +70,9 @@ import java.util.Random;
 
 
 public class NightDreamUI {
-    static final long SHOWCASE_ID_ONBOARDING = 1;
-    private static final long SHOWCASE_ID_SCREEN_LOCK = 4;
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-    private static int showcaseCounter = 0;
     private static String TAG ="NightDreamUI";
     final private Handler handler = new Handler();
     private int screen_alpha_animation_duration = 3000;
@@ -128,6 +126,10 @@ public class NightDreamUI {
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
+    /*
+    static final long SHOWCASE_ID_ONBOARDING = 1;
+    private static final long SHOWCASE_ID_SCREEN_LOCK = 4;
+    private static int showcaseCounter = 0;
     private ShowcaseView showcaseView = null;
     private View.OnClickListener showCaseOnClickListener = new View.OnClickListener() {
         @Override
@@ -136,6 +138,7 @@ public class NightDreamUI {
             setupShowcaseView();
         }
     };
+     */
     private boolean locked = false;
     private float last_ambient = 4.0f;
     private float LIGHT_VALUE_DARK = 4.2f;
@@ -297,6 +300,7 @@ public class NightDreamUI {
             return false;
         }
     };
+    /*
     private OnShowcaseEventListener showcaseViewEventListener = new OnShowcaseEventListener() {
         @Override
         public void onShowcaseViewHide(ShowcaseView view) {
@@ -329,6 +333,7 @@ public class NightDreamUI {
 
         }
     };
+     */
     private Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
@@ -766,11 +771,14 @@ public class NightDreamUI {
                     float s = getScaleFactor(newConfig);
                     clockLayout.setScaleFactor(s);
 
+                    handler.postDelayed(moveAround, 60000);
+/*
                     if ( showcaseView == null ) {
                         handler.postDelayed(moveAround, 60000);
                     } else {
                         setupShowcaseView();
                     }
+ */
                     sidePanel.post(setupSidePanel);
                 }
         };
@@ -856,7 +864,8 @@ public class NightDreamUI {
         brightness = getValidBrightnessValue(brightness);
         setBrightness(brightness);
 
-        if ( showcaseView == null && !AlarmHandlerService.alarmIsRunning()) {
+        //if ( showcaseView == null && !AlarmHandlerService.alarmIsRunning()) {
+        if (!AlarmHandlerService.alarmIsRunning()) {
             setAlpha(clockLayout, v, millis);
         }
 
@@ -1277,10 +1286,10 @@ public class NightDreamUI {
     }
 
     private void setupShowcase() {
+/*
         if (showcaseView != null) {
             return;
         }
-
         long firstInstallTime = Utility.getFirstInstallTime(mContext);
         Calendar install_time = Calendar.getInstance();
         install_time.setTimeInMillis(firstInstallTime);
@@ -1313,9 +1322,11 @@ public class NightDreamUI {
         showShowcase();
 
         setupShowcaseForScreenLock();
+ */
     }
 
     private void setupShowcaseView() {
+/*
         if (showcaseView == null) return;
         if (showcaseView.getShowcaseTag() != SHOWCASE_ID_ONBOARDING) return;
 
@@ -1358,9 +1369,11 @@ public class NightDreamUI {
                 break;
         }
         hideSystemUI();
+ */
     }
 
     private void setupShowcaseForScreenLock() {
+/*
         if (showcaseView != null) {
             return;
         }
@@ -1378,12 +1391,15 @@ public class NightDreamUI {
             showShowcase();
         }
 
+ */
     }
     private void showShowcase() {
+/*
         showcaseView.show();
         if ( !showcaseView.isShowing()) {
             showcaseView = null;
         }
+ */
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {

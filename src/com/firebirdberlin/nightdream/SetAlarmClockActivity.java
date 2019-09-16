@@ -53,7 +53,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_alarm_clock);
-        setTheme(R.style.SecondaryActivityTheme);
+        setTheme(R.style.AlarmClockActivityTheme);
 
         scrollView = findViewById(R.id.scroll_view);
         // https://www.youtube.com/watch?v=55wLsaWpQ4g

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
-import android.support.v4.widget.ContentLoadingProgressBar;
+import androidx.core.widget.ContentLoadingProgressBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;

@@ -5,7 +5,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.widget.ContentLoadingProgressBar;
+import androidx.core.widget.ContentLoadingProgressBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -20,7 +20,6 @@ import com.firebirdberlin.radiostreamapi.IcyHeaderInfo;
 import com.firebirdberlin.radiostreamapi.IcyHeaderReader;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
-import com.firebirdberlin.radiostreamapi.StreamInfo;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
