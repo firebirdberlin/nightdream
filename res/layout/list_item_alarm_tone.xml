@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,12 +8,12 @@
     android:background="@android:color/transparent"
     android:baselineAligned="true"
     android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:minHeight="?attr/listPreferredItemHeightSmall"
     android:orientation="horizontal"
     android:paddingEnd="12dp"
-    android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
     android:paddingRight="12dp"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:paddingStart="12dp"
     tools:targetApi="ice_cream_sandwich">
 
         <RadioButton
@@ -34,8 +35,8 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:paddingStart="5dp"
-            android:src="@drawable/ic_delete"
+            app:srcCompat="@drawable/ic_delete"
             android:textAlignment="viewEnd"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:textAppearance="?attr/textAppearanceListItemSmall"
             android:textColor="?android:attr/textColorHighlight" />
 </LinearLayout>

@@ -2,12 +2,12 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity extends AppCompatActivity {
     PreferencesFragment fragment = null;
 
     public static void start(Context context) {
@@ -29,7 +29,7 @@ public class PreferencesActivity extends PreferenceActivity {
             }
         }
 
-        getFragmentManager()
+        getSupportFragmentManager()
             .beginTransaction()
             .replace(android.R.id.content, fragment)
             .commit();

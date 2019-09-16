@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -27,9 +26,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings.System;
-
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -38,6 +34,10 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -290,7 +290,7 @@ public class Utility {
     }
 
     public static void hideSystemUI(Context context) {
-        hideSystemUI(((Activity) context).getWindow());
+        hideSystemUI(((AppCompatActivity) context).getWindow());
     }
 
     public static void hideSystemUI(Window window) {

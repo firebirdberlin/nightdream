@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_below="@android:id/summary"
     android:gravity="center"
     android:paddingTop="5dp"
@@ -19,7 +20,7 @@
             android:paddingBottom="5dp">
             <ImageView
                 android:id="@+id/iconDay"
-                android:src="@drawable/ic_sun"
+                app:srcCompat="@drawable/ic_sun"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="left"
@@ -28,7 +29,7 @@
                 android:scaleType="fitCenter" />
             <ImageView
                 android:id="@+id/iconNight"
-                android:src="@drawable/ic_moon"
+                app:srcCompat="@drawable/ic_moon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
@@ -44,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/choose_primary_color"
-                android:textAppearance="?android:attr/textAppearanceListItem"/>
+                android:textAppearance="?attr/textAppearanceListItem"/>
 
             <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -73,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/choose_secondary_color"
-                android:textAppearance="?android:attr/textAppearanceListItem"/>
+                android:textAppearance="?attr/textAppearanceListItem"/>
 
             <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
                 xmlns:android="http://schemas.android.com/apk/res/android"

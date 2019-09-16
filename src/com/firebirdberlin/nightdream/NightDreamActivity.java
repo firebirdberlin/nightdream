@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
-import android.app.FragmentManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
@@ -18,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,6 +25,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -302,7 +303,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void showStopBackgroundServicesDialog() {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
         dialog.show(fm, "sleep_timer");
     }

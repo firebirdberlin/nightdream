@@ -2,13 +2,15 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.Preference;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -35,8 +37,9 @@ public class ColorSelectionPreference extends Preference
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
-        preferenceView = super.onCreateView(parent);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        preferenceView = holder.itemView;
 
         View summary = preferenceView.findViewById(android.R.id.summary);
         if (summary != null) {
@@ -47,11 +50,11 @@ public class ColorSelectionPreference extends Preference
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 layoutInflater.inflate(R.layout.color_selection_layout, summaryParent2, true);
 
-                primaryColorView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.primaryColor);
-                secondaryColorView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.secondaryColor);
+                primaryColorView = summaryParent2.findViewById(R.id.primaryColor);
+                secondaryColorView = summaryParent2.findViewById(R.id.secondaryColor);
 
-                primaryColorNightView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.primaryColorNight);
-                secondaryColorNightView = (ColorPrefWidgetView) summaryParent2.findViewById(R.id.secondaryColorNight);
+                primaryColorNightView = summaryParent2.findViewById(R.id.primaryColorNight);
+                secondaryColorNightView = summaryParent2.findViewById(R.id.secondaryColorNight);
 
                 primaryColorView.setOnClickListener(this);
                 secondaryColorView.setOnClickListener(this);
@@ -62,7 +65,7 @@ public class ColorSelectionPreference extends Preference
             }
         }
 
-        return preferenceView;
+        updateView();
     }
 
     private void toggleDayNightPreviewMode(ViewGroup summaryParent2) {
@@ -82,12 +85,6 @@ public class ColorSelectionPreference extends Preference
                 notifyChanged();
             }
         });
-    }
-
-    @Override
-    public void onBindView(View view) {
-        super.onBindView(view);
-        updateView();
     }
 
     protected void updateView() {

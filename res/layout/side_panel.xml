@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/side_panel"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
@@ -20,7 +21,7 @@
             android:contentDescription="settings"
             android:onClick="onSettingsClick"
             android:padding="5dp"
-            android:src="@drawable/ic_settings" />
+            app:srcCompat="@drawable/ic_settings" />
 
         <ImageView
             android:id="@+id/alarm_clock_icon"
@@ -30,7 +31,7 @@
             android:contentDescription="@string/alarm"
             android:onClick="onAlarmClockClick"
             android:padding="5dp"
-            android:src="@drawable/ic_alarm_clock"
+            app:srcCompat="@drawable/ic_alarm_clock"
             android:visibility="gone" />
 
         <ImageView
@@ -41,7 +42,7 @@
             android:contentDescription="@string/weather"
             android:onClick="onWeatherForecastClick"
             android:padding="5dp"
-            android:src="@drawable/ic_cloud"
+            app:srcCompat="@drawable/ic_cloud"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -71,7 +72,7 @@
             android:contentDescription="@string/night_mode"
             android:onClick="onNightModeClick"
             android:padding="5dp"
-            android:src="@drawable/ic_sun" />
+            app:srcCompat="@drawable/ic_sun" />
     </LinearLayout>
 
 </LinearLayout>

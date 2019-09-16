@@ -1,10 +1,8 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.net.Uri;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -82,7 +84,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         fontButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(settings.fontUri);
