@@ -1,12 +1,14 @@
 package com.firebirdberlin.nightdream;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +22,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-public class WeatherForecastActivity extends Activity
+public class WeatherForecastActivity extends AppCompatActivity
                                      implements ForecastRequestTask.AsyncResponse {
     final static String TAG = "WeatherForecastActivity";
 
@@ -39,6 +41,7 @@ public class WeatherForecastActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_forecast);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         scrollView = findViewById(R.id.scroll_view);
     }
 
@@ -102,16 +105,10 @@ public class WeatherForecastActivity extends Activity
     }
 
     private void actionBarSetup(String subtitle) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar ab = getActionBar();
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
             ab.setTitle(R.string.forecast);
             ab.setSubtitle(subtitle);
-        } else {
-            setTitle(R.string.forecast);
         }
-    }
-
-    private boolean is24HourFormat() {
-        return android.text.format.DateFormat.is24HourFormat(this);
     }
 }

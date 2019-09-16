@@ -4,7 +4,6 @@
     package="com.firebirdberlin.nightdream"
     android:versionCode="240"
     android:versionName="2.8.26">
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
@@ -202,17 +201,12 @@
             android:label="@string/forecast"
             android:theme="@style/SecondaryActivityTheme"
             android:parentActivityName=".NightDreamActivity">
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.firebirdberlin.nightdream.NightDreamActivity" />
         </activity>
         <activity
             android:name=".SetAlarmClockActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/alarm"
-            android:theme="@style/SecondaryActivityTheme"
+            android:theme="@style/AlarmClockActivityTheme"
             android:parentActivityName=".NightDreamActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SET_ALARM" />
@@ -222,10 +216,6 @@
                 <action android:name="android.intent.action.SHOW_ALARMS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.firebirdberlin.nightdream.NightDreamActivity" />
         </activity>
 
     </application>

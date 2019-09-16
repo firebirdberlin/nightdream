@@ -7,7 +7,7 @@
     android:padding="26dp"
     android:theme="@style/DialogTheme">
 
-    <android.support.v4.widget.ContentLoadingProgressBar
+    <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="match_parent"
