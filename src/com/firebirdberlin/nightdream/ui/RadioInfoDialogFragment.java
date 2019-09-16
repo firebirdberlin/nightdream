@@ -2,9 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,11 +12,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.core.widget.ContentLoadingProgressBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
@@ -27,7 +28,7 @@ import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStrea
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class RadioInfoDialogFragment extends DialogFragment {
+public class RadioInfoDialogFragment extends AppCompatDialogFragment {
 
     public static String TAG = "RadioInfoDialogFragment";
 

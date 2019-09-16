@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentResolver;
@@ -22,6 +21,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialogFragment;
+
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.models.FileUri;
 
@@ -34,10 +36,10 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static android.app.Activity.RESULT_OK;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class ManageAlarmSoundsDialogFragment extends DialogFragment {
+public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     final static String TAG = "ManageAlarmSoundsDialog";
     final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     protected File DIRECTORY = null;

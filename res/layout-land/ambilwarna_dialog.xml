@@ -2,6 +2,7 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/ambilwarna_viewContainer"
@@ -30,7 +31,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ambilwarna_arrow_down"
+            app:srcCompat="@drawable/ambilwarna_arrow_down"
             android:paddingTop="@dimen/ambilwarna_spacer"
             android:paddingBottom="@dimen/ambilwarna_spacer"
         />
@@ -61,7 +62,7 @@
         android:layout_height="@dimen/ambilwarna_hsvHeight"
         android:layout_toRightOf="@id/ambilwarna_viewSatBri"
         android:layout_marginLeft="@dimen/ambilwarna_spacer"
-        android:src="@drawable/ambilwarna_hue"
+        app:srcCompat="@drawable/ambilwarna_hue"
         android:scaleType="fitXY"
     />
 
@@ -69,7 +70,7 @@
         android:id="@+id/ambilwarna_cursor"
         android:layout_width="9dp"
         android:layout_height="9dp"
-        android:src="@drawable/ambilwarna_cursor"
+        app:srcCompat="@drawable/ambilwarna_cursor"
         android:scaleType="matrix"
         android:background="@android:color/transparent"
         />
@@ -78,7 +79,7 @@
         android:id="@+id/ambilwarna_target"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:src="@drawable/ambilwarna_target"
+        app:srcCompat="@drawable/ambilwarna_target"
         android:scaleType="matrix"
         android:background="@android:color/transparent"
          />

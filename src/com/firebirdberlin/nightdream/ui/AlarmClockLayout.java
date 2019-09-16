@@ -4,7 +4,6 @@ package com.firebirdberlin.nightdream.ui;
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -25,6 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.BillingHelper;
 import com.firebirdberlin.nightdream.BillingHelperActivity;
@@ -229,7 +231,7 @@ public class AlarmClockLayout extends LinearLayout {
             public void onClick(View view) {
                 if (alarmClockEntry == null) return;
 
-                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                 ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
                 dialog.setIsPurchased(
                         ((BillingHelperActivity) context).isPurchased(BillingHelper.ITEM_WEB_RADIO)
@@ -280,7 +282,7 @@ public class AlarmClockLayout extends LinearLayout {
                 if (! billingHelperActivity.isPurchased(BillingHelper.ITEM_WEB_RADIO) ) {
                     billingHelperActivity.showPurchaseDialog();
                 } else {
-                    FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                    FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                     SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
                     dialog.setRadioStations(radioStations);
                     dialog.setOnStationSlotSelectedListener(new SelectRadioStationSlotDialogFragment.SelectRadioStationSlotDialogListener() {

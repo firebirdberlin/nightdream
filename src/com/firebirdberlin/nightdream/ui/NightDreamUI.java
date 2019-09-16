@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,8 +21,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
-import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -38,6 +35,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
@@ -54,6 +55,14 @@ import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.FileDescriptor;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Random;
+
 /*
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -61,12 +70,6 @@ import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 */
-import org.greenrobot.eventbus.Subscribe;
-
-import java.io.FileDescriptor;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Random;
 
 
 public class NightDreamUI {
@@ -929,7 +932,7 @@ public class NightDreamUI {
     }
 
     private void setScreenOrientation(int orientation) {
-        ((Activity) mContext).setRequestedOrientation(orientation);
+        ((AppCompatActivity) mContext).setRequestedOrientation(orientation);
     }
 
     private void fadeSoftButtons() {

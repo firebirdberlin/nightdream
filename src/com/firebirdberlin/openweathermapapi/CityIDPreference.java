@@ -1,12 +1,9 @@
 package com.firebirdberlin.openweathermapapi;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
-import androidx.core.widget.ContentLoadingProgressBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -21,6 +18,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.core.widget.ContentLoadingProgressBar;
+import androidx.preference.DialogPreference;
+import androidx.preference.PreferenceViewHolder;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -84,15 +85,18 @@ public class CityIDPreference extends DialogPreference
         }
     }
 
+    /*
     @Override
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+    protected void onPrepareDialogBuilder(android.app.AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         builder.setNegativeButton(null, null);
     }
-
+*/
     @Override
-    protected View onCreateDialogView() {
-        adapter = new ArrayAdapter<City>(mContext, android.R.layout.simple_list_item_1, cities);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        setNegativeButtonText(null);
+        adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, cities);
         LayoutInflater inflater = (LayoutInflater)
             getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View v = inflater.inflate(R.layout.city_id_search_dialog, null);
@@ -120,7 +124,7 @@ public class CityIDPreference extends DialogPreference
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 City city = (City) parent.getItemAtPosition(position);
                 persist(city);
-                getDialog().dismiss();
+                //getDialog().dismiss();
 
             }
         });
@@ -152,8 +156,6 @@ public class CityIDPreference extends DialogPreference
             }
         });
 
-
-        return v;
     }
 
     private void startSearch() {
@@ -180,7 +182,9 @@ public class CityIDPreference extends DialogPreference
         noResultsText.setVisibility((cities.size() == 0) ? View.VISIBLE : View.GONE);
     }
 
-    @Override
+
+    // TODO
+    /*@Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         this.cities.clear();
@@ -188,7 +192,7 @@ public class CityIDPreference extends DialogPreference
         if (positiveResult) {
             persist(null);
         }
-    }
+    }*/
 
     private void persist(City city) {
         if (city == null) {

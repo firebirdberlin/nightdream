@@ -1,7 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -16,6 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -277,7 +278,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                 preferredCountry = s.countryCode;
            }
         }
-        RadioStreamDialogFragment.showDialog((Activity)getContext(), stationIndex, station, preferredCountry, listener);
+        RadioStreamDialogFragment.showDialog((AppCompatActivity)getContext(), stationIndex, station, preferredCountry, listener);
     }
 
     private void hideSystemUI() {

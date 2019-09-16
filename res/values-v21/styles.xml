@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="PreferencesTheme" parent="android:Theme.Material">
-        <item name="android:background">#212121</item>
-        <item name="android:colorAccent">@color/blue</item>
-        <item name="android:colorPrimary">#000000</item>
+    <style name="ActivityTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/customBackgroundColor</item>
+    </style>
+
+    <style name="PreferencesTheme" parent="Theme.AppCompat">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="background">@color/grey</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="colorPrimary">@color/black</item>
         <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
-        <item name="android:colorPrimaryDark">#000000</item>
-        <item name="android:navigationBarColor">#000000</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
     </style>
 
     <!--
@@ -17,19 +25,19 @@
 -->
 
     <style name="SecondaryActivityTheme" parent="Theme.AppCompat.DayNight">
-        <item name="android:windowActionBar">true</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
         <item name="colorAccent">@color/blue</item>
     </style>
 
     <style name="AlarmClockActivityTheme" parent="Theme.AppCompat.DayNight">
-        <item name="android:windowActionBar">true</item>
-        <item name="android:windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
         <item name="colorAccent">@color/blue</item>
     </style>
 
-    <style name="DialogTheme" parent="android:Theme.Material.Dialog">
-        <item name="android:colorAccent">@color/blue</item>
+    <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/blue</item>
         <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
     </style>
 </resources>

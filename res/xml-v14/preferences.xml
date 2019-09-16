@@ -1,44 +1,45 @@
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:key="main_screen">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    app:key="main_screen">
 
     <Preference
-        android:icon="@drawable/ic_attention"
-        android:key="translations_wanted"
-        android:summary="Please add or update the translation for your language."
-        android:title="Translations wanted !">
+        app:icon="@drawable/ic_attention"
+        app:key="translations_wanted"
+        app:summary="Please add or update the translation for your language."
+        app:title="Translations wanted !">
         <intent
             android:action="android.intent.action.VIEW"
             android:data="https://nightclock.duckdns.org/pastt" />
     </Preference>
 
     <Preference
-        android:icon="@drawable/ic_attention"
-        android:key="upgrade_wanted"
-        android:summary="@string/buy_upgrade_summary"
-        android:title="@string/buy_upgrade_title">
+        app:icon="@drawable/ic_attention"
+        app:key="upgrade_wanted"
+        app:summary="@string/buy_upgrade_summary"
+        app:title="@string/buy_upgrade_title">
     </Preference>
 
     <PreferenceScreen
-        android:icon="@drawable/ic_power"
-        android:key="autostart"
-        android:title="@string/handle_power">
+        app:icon="@drawable/ic_power"
+        app:key="autostart"
+        app:title="@string/handle_power">
 
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="handle_power"
-            android:title="@string/handle_power" />
+            app:defaultValue="false"
+            app:key="handle_power"
+            app:title="@string/handle_power" />
 
         <PreferenceCategory
             key="category_handle_power_autostart_time"
-            android:dependency="handle_power"
-            android:title="@string/category_handle_power_autostart_time">
+            app:dependency="handle_power"
+            app:title="@string/category_handle_power_autostart_time">
 
             <de.firebirdberlin.preference.TimeRangePreference
                 xmlns:timerange="timerange"
-                android:defaultValue="0"
-                android:dependency="handle_power"
-                android:key="autostart_time_range"
+                app:defaultValue="0"
+                app:dependency="handle_power"
+                app:key="autostart_time_range"
                 timerange:end_text="@string/autostart_timerange_label_end"
                 timerange:key_suffix_end="_end"
                 timerange:key_suffix_start="_start"
@@ -47,231 +48,231 @@
 
         <PreferenceCategory
             key="category_handle_power"
-            android:dependency="handle_power"
-            android:title="@string/category_handle_power">
+            app:dependency="handle_power"
+            app:title="@string/category_handle_power">
 
             <CheckBoxPreference
-                android:defaultValue="true"
-                android:key="handle_power_ac"
-                android:title="@string/handle_power_ac" />
+                app:defaultValue="true"
+                app:key="handle_power_ac"
+                app:title="@string/handle_power_ac" />
 
             <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="handle_power_usb"
-                android:title="@string/handle_power_usb" />
+                app:defaultValue="false"
+                app:key="handle_power_usb"
+                app:title="@string/handle_power_usb" />
 
             <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="handle_power_wireless"
-                android:title="@string/handle_power_wireless" />
+                app:defaultValue="false"
+                app:key="handle_power_wireless"
+                app:title="@string/handle_power_wireless" />
 
             <CheckBoxPreference
-                android:defaultValue="true"
-                android:key="handle_power_desk"
-                android:title="@string/handle_power_desk" />
+                app:defaultValue="true"
+                app:key="handle_power_desk"
+                app:title="@string/handle_power_desk" />
 
             <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="handle_power_car"
-                android:title="@string/handle_power_car" />
+                app:defaultValue="false"
+                app:key="handle_power_car"
+                app:title="@string/handle_power_car" />
 
         </PreferenceCategory>
 
         <PreferenceCategory
-            android:title="@string/handle_auto_stop">
+            app:title="@string/handle_auto_stop">
 
             <SwitchPreference
-                android:defaultValue="true"
-                android:key="handle_power_disconnection"
-                android:summary="@string/handle_power_disconnection_summary"
-                android:title="@string/handle_power_disconnection" />
+                app:defaultValue="true"
+                app:key="handle_power_disconnection"
+                app:summary="@string/handle_power_disconnection_summary"
+                app:title="@string/handle_power_disconnection" />
 
             <SwitchPreference
-                android:defaultValue="true"
-                android:key="handle_power_disconnection_at_time_range_end"
-                android:title="@string/handle_power_disconnection_at_time_range_end" />
+                app:defaultValue="true"
+                app:key="handle_power_disconnection_at_time_range_end"
+                app:title="@string/handle_power_disconnection_at_time_range_end" />
 
             <ListPreference
-                android:defaultValue="-1"
-                android:entries="@array/batteryTimeout"
-                android:entryValues="@array/batteryTimeoutValues"
-                android:key="batteryTimeout"
-                android:title="@string/batteryTimeoutDescription" />
+                app:defaultValue="-1"
+                app:entries="@array/batteryTimeout"
+                app:entryValues="@array/batteryTimeoutValues"
+                app:key="batteryTimeout"
+                app:title="@string/batteryTimeoutDescription" />
 
         </PreferenceCategory>
 
         <Preference
-            android:icon="@drawable/ic_googleplay"
-            android:key="purchaseActions"
-            android:title="@string/purchaseActions" />
+            app:icon="@drawable/ic_googleplay"
+            app:key="purchaseActions"
+            app:title="@string/purchaseActions" />
 
         <PreferenceCategory
-            android:icon="@drawable/ic_expert"
-            android:key="expert_screen"
-            android:enabled="false"
-            android:title="@string/always_on">
+            app:icon="@drawable/ic_expert"
+            app:key="expert_screen"
+            app:enabled="false"
+            app:title="@string/always_on">
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:key="standbyEnabledWhileDisconnected"
-                android:summary="@string/standbyEnabledWhileDisconnectedSummary"
-                android:title="@string/standbyEnabledWhileDisconnectedTitle" />
+                app:defaultValue="false"
+                app:key="standbyEnabledWhileDisconnected"
+                app:summary="@string/standbyEnabledWhileDisconnectedSummary"
+                app:title="@string/standbyEnabledWhileDisconnectedTitle" />
 
             <de.firebirdberlin.preference.TimeRangePreference
                 xmlns:timerange="timerange"
-                android:defaultValue="0"
-                android:dependency="standbyEnabledWhileDisconnected"
-                android:key="always_on_time_range"
-                android:title="@string/standbyEnabledWhileDisconnectedTimeRangeTitle"
+                app:defaultValue="0"
+                app:dependency="standbyEnabledWhileDisconnected"
+                app:key="always_on_time_range"
+                app:title="@string/standbyEnabledWhileDisconnectedTimeRangeTitle"
                 timerange:end_text="@string/autostart_timerange_label_end"
                 timerange:key_suffix_end="_end"
                 timerange:key_suffix_start="_start"
                 timerange:start_text="@string/autostart_timerange_label_start" />
 
             <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="standbyEnabledWhileDisconnectedScreenUp"
-                android:dependency="standbyEnabledWhileDisconnected"
-                android:title="@string/standbyEnabledWhileDisconnectedScreepUpTitle" />
+                app:defaultValue="false"
+                app:key="standbyEnabledWhileDisconnectedScreenUp"
+                app:dependency="standbyEnabledWhileDisconnected"
+                app:title="@string/standbyEnabledWhileDisconnectedScreepUpTitle" />
 
             <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                android:defaultValue="20"
-                android:key="alwaysOnBatteryLevel"
-                android:dependency="standbyEnabledWhileDisconnected"
+                app:defaultValue="20"
+                app:key="alwaysOnBatteryLevel"
+                app:dependency="standbyEnabledWhileDisconnected"
                 android:max="90"
-                android:title="@string/alwaysOnBatteryLevel"
+                app:title="@string/alwaysOnBatteryLevel"
                 seekbar:interval="5"
                 seekbar:min="0"
                 seekbar:unitsLeft=""
                 seekbar:unitsRight="%"/>
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:key="autostartForNotifications"
-                android:summary="@string/autostartForNotificationsSummary"
-                android:title="@string/autostartForNotificationsTitle" />
+                app:defaultValue="false"
+                app:key="autostartForNotifications"
+                app:summary="@string/autostartForNotificationsSummary"
+                app:title="@string/autostartForNotificationsTitle" />
         </PreferenceCategory>
 
         <PreferenceCategory
-            android:enabled="false"
-            android:icon="@drawable/ic_expert"
-            android:key="scheduled_autostart_screen"
-            android:title="@string/scheduledAutoStart">
+            app:enabled="false"
+            app:icon="@drawable/ic_expert"
+            app:key="scheduled_autostart_screen"
+            app:title="@string/scheduledAutoStart">
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:key="scheduledAutoStartEnabled"
-                android:summary="@string/scheduledAutoStartEnabledDesc"
-                android:title="@string/scheduledAutoStartEnabledTitle" />
+                app:defaultValue="false"
+                app:key="scheduledAutoStartEnabled"
+                app:summary="@string/scheduledAutoStartEnabledDesc"
+                app:title="@string/scheduledAutoStartEnabledTitle" />
 
             <de.firebirdberlin.preference.TimeRangePreference
                 xmlns:timerange="timerange"
-                android:defaultValue="0"
-                android:dependency="scheduledAutoStartEnabled"
-                android:key="scheduledAutoStartTimeRange"
-                android:title="@string/scheduledAutoStartTimeRange"
+                app:defaultValue="0"
+                app:dependency="scheduledAutoStartEnabled"
+                app:key="scheduledAutoStartTimeRange"
+                app:title="@string/scheduledAutoStartTimeRange"
                 timerange:end_text="@string/autostart_timerange_label_end"
                 timerange:key_suffix_end="_end"
                 timerange:key_suffix_start="_start"
                 timerange:start_text="@string/autostart_timerange_label_start" />
 
             <CheckBoxPreference
-                android:defaultValue="true"
-                android:dependency="scheduledAutoStartEnabled"
-                android:key="scheduledAutoStartChargerRequired"
-                android:title="@string/scheduledAutoStartChargerRequired" />
+                app:defaultValue="true"
+                app:dependency="scheduledAutoStartEnabled"
+                app:key="scheduledAutoStartChargerRequired"
+                app:title="@string/scheduledAutoStartChargerRequired" />
 
         </PreferenceCategory>
     </PreferenceScreen>
 
     <PreferenceScreen
-        android:icon="@drawable/ic_appearance"
-        android:key="colors_screen"
-        android:title="@string/appearance">
+        app:icon="@drawable/ic_appearance"
+        app:key="colors_screen"
+        app:title="@string/appearance">
 
         <PreferenceCategory
-            android:title="@string/appearance">
+            app:title="@string/appearance">
 
             <Preference
-                android:icon="@drawable/ic_googleplay"
-                android:key="purchaseDesignPackage"
-                android:title="@string/purchaseWeatherData" />
+                app:icon="@drawable/ic_googleplay"
+                app:key="purchaseDesignPackage"
+                app:title="@string/purchaseWeatherData" />
 
             <ListPreference
-                android:defaultValue="0"
-                android:entries="@array/clockLayout"
-                android:entryValues="@array/clockLayoutValues"
-                android:key="clockLayout"
-                android:title="@string/clock_layout" />
+                app:defaultValue="0"
+                app:entries="@array/clockLayout"
+                app:entryValues="@array/clockLayoutValues"
+                app:key="clockLayout"
+                app:title="@string/clock_layout" />
 
             <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:key="clockLayoutPreview"
-                android:selectable="false"
-                android:title="@string/preview" />
+                app:key="clockLayoutPreview"
+                app:selectable="false"
+                app:title="@string/preview" />
 
             <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
                 android:descendantFocusability="afterDescendants"
-                android:key="colorSelection"
-                android:selectable="true"
-                android:title="@string/colors"
+                app:key="colorSelection"
+                app:selectable="true"
+                app:title="@string/colors"
                 />
 
             <SwitchPreference
-                android:defaultValue="true"
-                android:key="showDate"
-                android:title="@string/show_date" />
+                app:defaultValue="true"
+                app:key="showDate"
+                app:title="@string/show_date" />
 
             <com.firebirdberlin.nightdream.DateFormatPreference
-                android:dependency="showDate"
-                android:key="dateFormat"
-                android:title="@string/date_format" />
+                app:dependency="showDate"
+                app:key="dateFormat"
+                app:title="@string/date_format" />
 
             <com.firebirdberlin.nightdream.DateFormatPreference
                 xmlns:custom="http://schemas.android.com/apk/res-auto"
-                android:key="timeFormat"
-                android:title="@string/timeFormat"
+                app:key="timeFormat"
+                app:title="@string/timeFormat"
                 custom:formatType="time" />
 
         </PreferenceCategory>
 
-        <PreferenceCategory android:title="@string/background">
+        <PreferenceCategory app:title="@string/background">
             <ListPreference
-                android:defaultValue="1"
-                android:entries="@array/backgroundModes"
-                android:entryValues="@array/backgroundModeValues"
-                android:key="backgroundMode"
-                android:title="@string/background" />
+                app:defaultValue="1"
+                app:entries="@array/backgroundModes"
+                app:entryValues="@array/backgroundModeValues"
+                app:key="backgroundMode"
+                app:title="@string/background" />
 
             <Preference
-                android:key="chooseBackgroundImage"
-                android:title="@string/background_image"/>
+                app:key="chooseBackgroundImage"
+                app:title="@string/background_image"/>
 
             <CheckBoxPreference
-                android:defaultValue="true"
-                android:key="hideBackgroundImage"
-                android:summary="@string/hide_background_image_in_night_mode_summary"
-                android:title="@string/hide_background_image_in_night_mode" />
+                app:defaultValue="true"
+                app:key="hideBackgroundImage"
+                app:summary="@string/hide_background_image_in_night_mode_summary"
+                app:title="@string/hide_background_image_in_night_mode" />
 
         </PreferenceCategory>
 
         <PreferenceCategory
-            android:key="category_brightness"
-            android:title="@string/brightness">
+            app:key="category_brightness"
+            app:title="@string/brightness">
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:key="autoBrightness"
-                android:title="@string/auto_brightness" />
+                app:defaultValue="false"
+                app:key="autoBrightness"
+                app:title="@string/auto_brightness" />
 
             <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                android:defaultValue="80"
-                android:key="brightness_offset"
+                app:defaultValue="80"
+                app:key="brightness_offset"
                 android:max="100"
-                android:title="@string/brightness_offset"
+                app:title="@string/brightness_offset"
                 seekbar:interval="1"
                 seekbar:min="-100"
                 seekbar:unitsLeft=""
@@ -281,135 +282,135 @@
     </PreferenceScreen>
 
     <PreferenceScreen
-        android:icon="@drawable/ic_expert"
-        android:title="@string/behaviour">
+        app:icon="@drawable/ic_expert"
+        app:title="@string/behaviour">
 
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="doubleTapToFinish"
-            android:summary="@string/doubleTapToFinishSummary"
-            android:title="@string/doubleTapToFinishTitle" />
+            app:defaultValue="false"
+            app:key="doubleTapToFinish"
+            app:summary="@string/doubleTapToFinishSummary"
+            app:title="@string/doubleTapToFinishTitle" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="restlessMode"
-            android:title="@string/restless_mode" />
+            app:defaultValue="true"
+            app:key="restlessMode"
+            app:title="@string/restless_mode" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="persistentBatteryValueWhileCharging"
-            android:summary="@string/persistent_battery_value_while_charging_summary"
-            android:title="@string/persistent_battery_value_while_charging" />
+            app:defaultValue="true"
+            app:key="persistentBatteryValueWhileCharging"
+            app:summary="@string/persistent_battery_value_while_charging_summary"
+            app:title="@string/persistent_battery_value_while_charging" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="showBatteryWarning"
-            android:summary="@string/showBatteryWarningSummary"
-            android:title="@string/showBatteryWarningTitle" />
+            app:defaultValue="true"
+            app:key="showBatteryWarning"
+            app:summary="@string/showBatteryWarningSummary"
+            app:title="@string/showBatteryWarningTitle" />
 
         <ListPreference
-            android:defaultValue="-1"
-            android:entries="@array/screenOrientation"
-            android:entryValues="@array/screenOrientationValues"
-            android:key="screenOrientation"
-            android:title="@string/screenOrientation" />
+            app:defaultValue="-1"
+            app:entries="@array/screenOrientation"
+            app:entryValues="@array/screenOrientationValues"
+            app:key="screenOrientation"
+            app:title="@string/screenOrientation" />
 
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="clockLayoutMirrorText"
-            android:title="@string/clock_layout_mirror_text" />
+            app:defaultValue="false"
+            app:key="clockLayoutMirrorText"
+            app:title="@string/clock_layout_mirror_text" />
 
         <Preference
-            android:icon="@drawable/ic_googleplay"
-            android:key="purchaseActions2"
-            android:title="@string/purchaseActions" />
+            app:icon="@drawable/ic_googleplay"
+            app:key="purchaseActions2"
+            app:title="@string/purchaseActions" />
 
         <SwitchPreference
-            android:defaultValue="false"
-            android:enabled="false"
-            android:key="activateDoNotDisturb"
-            android:summary="@string/activateDoNotDisturbSummary"
-            android:title="@string/activateDoNotDisturb" />
+            app:defaultValue="false"
+            app:enabled="false"
+            app:key="activateDoNotDisturb"
+            app:summary="@string/activateDoNotDisturbSummary"
+            app:title="@string/activateDoNotDisturb" />
 
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="useDeviceLock"
-            android:enabled="false"
-            android:summary="@string/useDeviceLockDescription"
-            android:title="@string/useDeviceLock" />
+            app:defaultValue="false"
+            app:key="useDeviceLock"
+            app:enabled="false"
+            app:summary="@string/useDeviceLockDescription"
+            app:title="@string/useDeviceLock" />
 
     </PreferenceScreen>
 
     <PreferenceScreen
-        android:icon="@drawable/ic_nightmode"
-        android:key="night_mode_screen"
-        android:title="@string/night_mode">
+        app:icon="@drawable/ic_nightmode"
+        app:key="night_mode_screen"
+        app:title="@string/night_mode">
 
         <PreferenceCategory
-            android:key="category_night_mode"
-            android:title="@string/night_mode">
+            app:key="category_night_mode"
+            app:title="@string/night_mode">
 
             <ListPreference
-                android:defaultValue="1"
-                android:entries="@array/nightModeActivationValues"
-                android:entryValues="@array/nightModeActivationModes"
-                android:key="nightModeActivationMode"
-                android:summary="%s"
-                android:title="@string/night_mode_activation_mode" />
+                app:defaultValue="1"
+                app:entries="@array/nightModeActivationValues"
+                app:entryValues="@array/nightModeActivationModes"
+                app:key="nightModeActivationMode"
+                app:summary="%s"
+                app:title="@string/night_mode_activation_mode" />
 
             <de.firebirdberlin.preference.TimeRangePreference
                 xmlns:timerange="timerange"
-                android:defaultValue="0"
-                android:enabled="false"
-                android:key="nightmode_timerange"
-                android:title="@string/night_mode_timerange_title"
+                app:defaultValue="0"
+                app:enabled="false"
+                app:key="nightmode_timerange"
+                app:title="@string/night_mode_timerange_title"
                 timerange:end_text="@string/night_mode_timerange_label_end"
                 timerange:key_suffix_end="_end"
                 timerange:key_suffix_start="_start"
                 timerange:start_text="@string/night_mode_timerange_label_start" />
 
             <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="Night.muteRinger"
-                android:title="@string/mute_ringer" />
+                app:defaultValue="false"
+                app:key="Night.muteRinger"
+                app:title="@string/mute_ringer" />
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:key="ambientNoiseDetection"
-                android:summary="@string/ambient_noise_summary"
-                android:title="@string/ambient_noise" />
+                app:defaultValue="false"
+                app:key="ambientNoiseDetection"
+                app:summary="@string/ambient_noise_summary"
+                app:title="@string/ambient_noise" />
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:key="allow_screen_off"
-                android:summary="@string/allow_screen_off_summary"
-                android:title="@string/allow_screen_off" />
+                app:defaultValue="false"
+                app:key="allow_screen_off"
+                app:summary="@string/allow_screen_off_summary"
+                app:title="@string/allow_screen_off" />
 
             <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                android:defaultValue="20"
-                android:dependency="allow_screen_off"
-                android:key="reactivate_on_ambient_light_value"
+                app:defaultValue="20"
+                app:dependency="allow_screen_off"
+                app:key="reactivate_on_ambient_light_value"
                 android:max="30"
-                android:summary="@string/reactivate_on_ambient_light_value_summary"
-                android:title="@string/reactivate_on_ambient_light_value"
+                app:summary="@string/reactivate_on_ambient_light_value_summary"
+                app:title="@string/reactivate_on_ambient_light_value"
                 seekbar:interval="1"
                 seekbar:min="5"
                 seekbar:unitsLeft=""
                 seekbar:unitsRight="lux"/>
 
             <CheckBoxPreference
-                android:defaultValue="false"
-                android:dependency="allow_screen_off"
-                android:key="reactivate_screen_on_noise"
-                android:title="@string/reactivate_screen_on_noise" />
+                app:defaultValue="false"
+                app:dependency="allow_screen_off"
+                app:key="reactivate_screen_on_noise"
+                app:title="@string/reactivate_screen_on_noise" />
 
             <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                android:defaultValue="5"
-                android:key="NoiseSensitivity"
+                app:defaultValue="5"
+                app:key="NoiseSensitivity"
                 android:max="10"
-                android:title="@string/noise_sensitivity"
+                app:title="@string/noise_sensitivity"
                 seekbar:interval="1"
                 seekbar:min="0"
                 seekbar:unitsLeft=""
@@ -418,159 +419,161 @@
     </PreferenceScreen>
 
     <PreferenceScreen
-            android:icon="@drawable/ic_alarm_clock"
-            android:key="alarm_screen"
-            android:title="@string/alarm">
+            app:icon="@drawable/ic_alarm_clock"
+            app:key="alarm_screen"
+            app:title="@string/alarm">
 
             <SwitchPreference
-                android:defaultValue="true"
-                android:key="useInternalAlarm"
-                android:title="@string/use_internal_alarm" />
+                app:defaultValue="true"
+                app:key="useInternalAlarm"
+                app:title="@string/use_internal_alarm" />
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:dependency="useInternalAlarm"
-                android:key="useAlarmSwipeGesture"
-                android:title="@string/useAlarmSwipeGesture" />
+                app:defaultValue="false"
+                app:dependency="useInternalAlarm"
+                app:key="useAlarmSwipeGesture"
+                app:title="@string/useAlarmSwipeGesture" />
 
             <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                android:defaultValue="3"
-                android:dependency="useInternalAlarm"
-                android:key="alarmVolume"
-                android:title="@string/alarmVolume" />
+                app:defaultValue="3"
+                app:dependency="useInternalAlarm"
+                app:key="alarmVolume"
+                app:title="@string/alarmVolume" />
 
             <CheckBoxPreference
-                android:defaultValue="true"
-                android:dependency="useInternalAlarm"
-                android:key="alarmFadeIn"
-                android:title="@string/alarmFadeIn" />
+                app:defaultValue="true"
+                app:dependency="useInternalAlarm"
+                app:key="alarmFadeIn"
+                app:title="@string/alarmFadeIn" />
 
             <de.firebirdberlin.preference.InlineSeekBarPreference
                 xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-                android:defaultValue="5"
-                android:dependency="useInternalAlarm"
-                android:key="snoozeTimeInMinutes"
+                app:defaultValue="5"
+                app:dependency="useInternalAlarm"
+                app:key="snoozeTimeInMinutes"
                 android:max="60"
-                android:title="@string/snoozeTime"
+                app:title="@string/snoozeTime"
                 seekbar:interval="1"
                 seekbar:min="5"
                 seekbar:unitsLeft=""
                 seekbar:unitsRight="min"/>
 
             <PreferenceCategory
-                android:key="category_radio_stream"
-                android:title="@string/radio_stream">
+                app:key="category_radio_stream"
+                app:title="@string/radio_stream">
 
                 <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="radioStreamMusicIsAllowedForAlarms"
-                    android:title="@string/radio_stream_music_allowed" />
+                    app:defaultValue="false"
+                    app:key="radioStreamMusicIsAllowedForAlarms"
+                    app:title="@string/radio_stream_music_allowed" />
 
                 <SwitchPreference
-                    android:defaultValue="true"
-                    android:key="radioStreamRequireWiFi"
-                    android:summary="@string/radio_stream_require_wifi_desc"
-                    android:title="@string/radio_stream_require_wifi" />
+                    app:defaultValue="true"
+                    app:key="radioStreamRequireWiFi"
+                    app:summary="@string/radio_stream_require_wifi_desc"
+                    app:title="@string/radio_stream_require_wifi" />
 
                 <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="radioStreamActivateWiFi"
-                    android:summary="@string/radio_stream_activate_wifi_desc"
-                    android:title="@string/radio_stream_activate_wifi" />
+                    app:defaultValue="false"
+                    app:key="radioStreamActivateWiFi"
+                    app:summary="@string/radio_stream_activate_wifi_desc"
+                    app:title="@string/radio_stream_activate_wifi" />
             </PreferenceCategory>
         </PreferenceScreen>
 
         <PreferenceScreen
-            android:icon="@drawable/ic_cloud"
-            android:key="weather_screen"
-            android:title="@string/weather">
+            app:icon="@drawable/ic_cloud"
+            app:key="weather_screen"
+            app:title="@string/weather">
 
             <Preference
-                android:icon="@drawable/ic_googleplay"
-                android:key="purchaseWeatherData"
-                android:title="@string/purchaseWeatherData"/>
+                app:icon="@drawable/ic_googleplay"
+                app:key="purchaseWeatherData"
+                app:title="@string/purchaseWeatherData"/>
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:enabled="false"
-                android:key="showWeather"
-                android:title="@string/show_weather" />
+                app:defaultValue="false"
+                app:enabled="false"
+                app:key="showWeather"
+                app:title="@string/show_weather" />
 
             <SwitchPreference
-                android:defaultValue="true"
-                android:dependency="showWeather"
-                android:key="showTemperature"
-                android:title="@string/show_temperature" />
+                app:defaultValue="true"
+                app:dependency="showWeather"
+                app:key="showTemperature"
+                app:title="@string/show_temperature" />
 
             <ListPreference
-                android:defaultValue="1"
-                android:dependency="showTemperature"
-                android:entries="@array/temperatureUnit"
-                android:entryValues="@array/temperatureUnitValues"
-                android:key="temperatureUnit"
-                android:title="@string/temperatureUnit" />
+                app:defaultValue="1"
+                app:dependency="showTemperature"
+                app:entries="@array/temperatureUnit"
+                app:entryValues="@array/temperatureUnitValues"
+                app:key="temperatureUnit"
+                app:title="@string/temperatureUnit" />
 
             <SwitchPreference
-                android:defaultValue="false"
-                android:dependency="showWeather"
-                android:key="showWindSpeed"
-                android:title="@string/show_wind_speed" />
+                app:defaultValue="false"
+                app:dependency="showWeather"
+                app:key="showWindSpeed"
+                app:title="@string/show_wind_speed" />
 
             <ListPreference
-                android:defaultValue="1"
-                android:dependency="showWindSpeed"
-                android:entries="@array/speedUnit"
-                android:entryValues="@array/speedUnitValues"
-                android:key="speedUnit"
-                android:title="@string/speedUnit" />
+                app:defaultValue="1"
+                app:dependency="showWindSpeed"
+                app:entries="@array/speedUnit"
+                app:entryValues="@array/speedUnitValues"
+                app:key="speedUnit"
+                app:title="@string/speedUnit" />
 
             <com.firebirdberlin.openweathermapapi.CityIDPreference
                 xmlns:owmapi="owmapi"
-                android:dependency="showWeather"
-                android:icon="@drawable/ic_search"
-                android:key="weatherCityID"
-                android:title="@string/weather_city_id_title"
+                app:dependency="showWeather"
+                app:icon="@drawable/ic_search"
+                app:key="weatherCityID"
+                app:title="@string/weather_city_id_title"
                 owmapi:textClear="@string/clear"
                 owmapi:textSummary=""
                 />
 
             <ListPreference
-                android:defaultValue="0"
-                android:entries="@array/weatherProvider"
-                android:entryValues="@array/weatherProviderValues"
-                android:key="weatherProvider"
-                android:title="@string/weatherProvider" />
+                app:defaultValue="0"
+                app:entries="@array/weatherProvider"
+                app:entryValues="@array/weatherProviderValues"
+                app:key="weatherProvider"
+                app:title="@string/weatherProvider" />
 
             <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
-                android:dependency="showWeather"
-                android:key="weatherPreview"
-                android:title="@string/weather_info_title" />
+                app:dependency="showWeather"
+                app:key="weatherPreview"
+                app:title="@string/weather_info_title" />
 
         </PreferenceScreen>
 
         <Preference
-            android:icon="@drawable/ic_menu"
-            android:key="startNotificationService"
-            android:title="@string/buttonAccessibilitySettings" />
+            app:icon="@drawable/ic_menu"
+            app:key="startNotificationService"
+            app:title="@string/buttonAccessibilitySettings" />
 
         <PreferenceScreen
-            android:icon="@drawable/ic_about"
-            android:key="about_screen"
-            android:title="@string/about">
+            app:icon="@drawable/ic_about"
+            app:key="about_screen"
+            app:title="@string/about">
 
             <de.firebirdberlin.preference.VersionPreference
-                android:icon="@drawable/ic_clock"
-                android:key="version"
-                android:selectable="true"
-                android:title="NightDream">
-                <intent android:action="android.intent.action.VIEW"
-                    android:data="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream"/>
+                app:icon="@drawable/ic_clock"
+                app:key="version"
+                app:selectable="true"
+                app:title="NightDream">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream"
+                    />
             </de.firebirdberlin.preference.VersionPreference>
 
             <Preference
-                android:icon="@drawable/ic_faq"
-                android:title="FAQ">
+                app:icon="@drawable/ic_faq"
+                app:title="FAQ">
                 <intent
                     android:action="android.intent.action.VIEW"
                     android:data="https://github.com/firebirdberlin/nightdream/wiki" />
@@ -578,46 +581,48 @@
             </Preference>
 
             <Preference
-                android:icon="@drawable/ic_share"
-                android:key="recommendApp"
-                android:title="@string/recommend"/>
+                app:icon="@drawable/ic_share"
+                app:key="recommendApp"
+                app:title="@string/recommend"/>
 
             <Preference
-                android:icon="@drawable/ic_undo"
-                android:key="reset_to_defaults"
-                android:title="@string/reset_to_defaults"/>
+                app:icon="@drawable/ic_undo"
+                app:key="reset_to_defaults"
+                app:title="@string/reset_to_defaults"/>
 
             <Preference
-                android:icon="@drawable/ic_delete"
-                android:key="uninstallApp"
-                android:title="@string/uninstall"/>
+                app:icon="@drawable/ic_delete"
+                app:key="uninstallApp"
+                app:title="@string/uninstall"/>
 
             <Preference
-                android:title="@string/titlePrivacyPolicy">
-                <intent android:action="android.intent.action.VIEW"
-                    android:data="http://nightclock.duckdns.org/apps/NightDream/privacy.html" />
+                app:title="@string/titlePrivacyPolicy">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="http://nightclock.duckdns.org/apps/NightDream/privacy.html"
+                    />
             </Preference>
 
-            <PreferenceScreen android:title="@string/credits">
+            <PreferenceScreen app:title="@string/credits">
                 <Preference
-                    android:enabled="true"
-                    android:key="credits"
-                    android:selectable="false"
-                    android:summary="stefan.fruhner@googlemail.com"
-                    android:title="Stefan Fruhner (2018)" />
+                    app:enabled="true"
+                    app:key="credits"
+                    app:selectable="false"
+                    app:summary="stefan.fruhner@googlemail.com"
+                    app:title="Stefan Fruhner (2018)" />
 
                 <Preference
-                    android:enabled="true"
-                    android:key="credits_pr"
-                    android:selectable="false"
-                    android:summary="Martin Poschmann"
-                    android:title="@string/credits_pull_requests" />
+                    app:enabled="true"
+                    app:key="credits_pr"
+                    app:selectable="false"
+                    app:summary="Martin Poschmann"
+                    app:title="@string/credits_pull_requests" />
 
                 <Preference
-                    android:enabled="true"
-                    android:key="translations"
-                    android:selectable="false"
-                    android:summary="
+                    app:enabled="true"
+                    app:key="translations"
+                    app:selectable="false"
+                    app:summary="
 ar - M. Hakam et. al.\n
 cs - Tomáš Holub\n
 de - Stefan Fruhner et. al.\n
@@ -628,13 +633,13 @@ he - Nati Rubinstein\n
 hr - Tomislav Gal\n
 hu - Szabados János\n
 nl - Leo van der Meulen et. al.\n"
-                    android:title="@string/translations" />
+                    app:title="@string/translations" />
 
                 <Preference
-                    android:enabled="true"
-                    android:key="translations2"
-                    android:selectable="false"
-                    android:summary="
+                    app:enabled="true"
+                    app:key="translations2"
+                    app:selectable="false"
+                    app:summary="
 pl - Wojciech Mudyn et. al.\n
 ro - Lucian Balaj\n
 ru - Denis Korotkov et. al.\n
@@ -646,108 +651,105 @@ uk - Ernest Feynman\n
 vi - Phong Nguyen"/>
 
                 <Preference
-                    android:icon="@drawable/ic_icons8"
-                    android:key="about_icons8"
-                    android:summary="icons8"
-                    android:title="Icons">
-                    <intent android:action="android.intent.action.VIEW"
+                    app:icon="@drawable/ic_icons8"
+                    app:key="about_icons8"
+                    app:summary="icons8"
+                    app:title="Icons">
+                    <intent
+                        android:action="android.intent.action.VIEW"
                         android:data="https://icons8.com"/>
                 </Preference>
 
                 <Preference
-                    android:icon="@drawable/ic_cloud"
-                    android:key="about_owm"
-                    android:summary="OpenWeatherMap"
-                    android:title="@string/weather">
+                    app:icon="@drawable/ic_cloud"
+                    app:key="about_owm"
+                    app:summary="OpenWeatherMap"
+                    app:title="@string/weather">
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="http://openweathermap.com" />
                 </Preference>
 
                 <Preference
-                    android:icon="@drawable/ic_radio"
-                    android:key="about_radio_browser"
-                    android:summary="radio-browser.info"
-                    android:title="@string/radio_stream">
+                    app:icon="@drawable/ic_radio"
+                    app:key="about_radio_browser"
+                    app:summary="radio-browser.info"
+                    app:title="@string/radio_stream">
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="http://www.radio-browser.info" />
                 </Preference>
 
                 <!--<Preference-->
-                    <!--android:icon="@drawable/ic_radio"-->
-                    <!--android:key="about_dirble"-->
-                    <!--android:summary="Dirble.com"-->
-                    <!--android:title="@string/radio_stream">-->
+                    <!--app:icon="@drawable/ic_radio"-->
+                    <!--app:key="about_dirble"-->
+                    <!--app:summary="Dirble.com"-->
+                    <!--app:title="@string/radio_stream">-->
                     <!--<intent-->
-                        <!--android:action="android.intent.action.VIEW"-->
-                        <!--android:data="http://www.dirble.com" />-->
+                        <!--app:action="android.intent.action.VIEW"-->
+                        <!--app:data="http://www.dirble.com" />-->
                 <!--</Preference>-->
 
                 <Preference
-                    android:key="about_showcaseview"
-                    android:summary="by Alex Curran"
-                    android:title="ShowcaseView library">
-                    <intent android:action="android.intent.action.VIEW"
-                        android:data="https://github.com/amlcurran/ShowcaseView"/>
-                </Preference>
-
-                <Preference
-                    android:key="about_roboto"
-                    android:summary="by Christian Robertson"
-                    android:title="Roboto Font">
+                    app:key="about_roboto"
+                    app:summary="by Christian Robertson"
+                    app:title="Roboto Font">
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="https://fonts.google.com/specimen/Roboto" />
                 </Preference>
 
                 <Preference
-                    android:key="about_meteocons"
-                    android:summary="by Alessio Atzeni"
-                    android:title="Meteocons Font">
-                    <intent android:action="android.intent.action.VIEW"
+                    app:key="about_meteocons"
+                    app:summary="by Alessio Atzeni"
+                    app:title="Meteocons Font">
+                    <intent
+                        android:action="android.intent.action.VIEW"
                         android:data="http://www.alessioatzeni.com/meteocons/"/>
                 </Preference>
 
                 <Preference
-                    android:key="about_7segment"
-                    android:summary="by Jan Bobrowski"
-                    android:title="7-Segment Digital Font">
-                    <intent android:action="android.intent.action.VIEW"
+                    app:key="about_7segment"
+                    app:summary="by Jan Bobrowski"
+                    app:title="7-Segment Digital Font">
+                    <intent
+                        android:action="android.intent.action.VIEW"
                         android:data="http://torinak.com/7segment"/>
                 </Preference>
 
                 <Preference
-                    android:key="about_dancing_script"
-                    android:summary="by Pablo Impallari"
-                    android:title="Dancing Script Regular Font">
+                    app:key="about_dancing_script"
+                    app:summary="by Pablo Impallari"
+                    app:title="Dancing Script Regular Font">
                     <intent
                         android:action="android.intent.action.VIEW"
-                        android:data="https://fonts.google.com/specimen/Dancing+Script?selection.family=Dancing+Script" />
+                        android:data="https://fonts.google.com/specimen/Dancing+Script?selection.family=Dancing+Script"
+                        />
                 </Preference>
 
                 <Preference
-                    android:key="about_tab_digit"
-                    android:summary="by Eugeni Senent (xenione)"
-                    android:title="Tab-Digit">
+                    app:key="about_tab_digit"
+                    app:summary="by Eugeni Senent (xenione)"
+                    app:title="Tab-Digit">
                     <intent
                         android:action="android.intent.action.VIEW"
-                        android:data="https://github.com/xenione/tab-digit" />
+                        android:data="https://github.com/xenione/tab-digit"
+                        />
                 </Preference>
             </PreferenceScreen>
 
-            <PreferenceCategory android:title="@string/contribute">
+            <PreferenceCategory app:title="@string/contribute">
                 <Preference
-                    android:icon="@drawable/ic_googleplay"
-                    android:title="@string/contribute_beta_channel">
+                    app:icon="@drawable/ic_googleplay"
+                    app:title="@string/contribute_beta_channel">
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="https://play.google.com/apps/testing/com.firebirdberlin.nightdream" />
                 </Preference>
 
                 <Preference
-                    android:icon="@drawable/ic_github"
-                    android:title="@string/contribute_source_code">
+                    app:icon="@drawable/ic_github"
+                    app:title="@string/contribute_source_code">
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="https://github.com/firebirdberlin/nightdream" />
@@ -755,8 +757,8 @@ vi - Phong Nguyen"/>
                 </Preference>
 
                 <Preference
-                    android:icon="@drawable/ic_github"
-                    android:title="@string/contribute_translation">
+                    app:icon="@drawable/ic_github"
+                    app:title="@string/contribute_translation">
                     <intent
                         android:action="android.intent.action.VIEW"
                         android:data="https://nightclock.duckdns.org/pastt" />
@@ -764,19 +766,20 @@ vi - Phong Nguyen"/>
             </PreferenceCategory>
 
             <PreferenceCategory
-                android:key="donation_screen"
-                android:title="@string/donate">
+                app:key="donation_screen"
+                app:title="@string/donate">
                 <Preference
-                    android:icon="@drawable/ic_googleplay"
-                    android:key="donation_play"
-                    android:title="@string/donate" />
+                    app:icon="@drawable/ic_googleplay"
+                    app:key="donation_play"
+                    app:title="@string/donate" />
             </PreferenceCategory>
 
-            <PreferenceCategory android:title="@string/other_apps">
+            <PreferenceCategory app:title="@string/other_apps">
                 <Preference
-                    android:summary="@string/other_apps_tinytimetracker_summary"
-                    android:title="@string/other_apps_tinytimetracker">
-                    <intent android:action="android.intent.action.VIEW"
+                    app:summary="@string/other_apps_tinytimetracker_summary"
+                    app:title="@string/other_apps_tinytimetracker">
+                    <intent
+                        android:action="android.intent.action.VIEW"
                         android:data="market://details?id=com.firebirdberlin.tinytimetracker"/>
                 </Preference>
             </PreferenceCategory>

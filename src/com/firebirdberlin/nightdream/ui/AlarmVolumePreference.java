@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
-import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,9 @@ import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 
 import com.firebirdberlin.nightdream.R;
 
@@ -47,8 +49,9 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
-        View ret = super.onCreateView(parent);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        View ret = holder.itemView;
 
         View summary = ret.findViewById(android.R.id.summary);
         if (summary != null) {
@@ -66,12 +69,6 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
             }
         }
         setupIcon();
-        return ret;
-    }
-
-    @Override
-    public void onBindView(View view) {
-        super.onBindView(view);
         updateView();
     }
 

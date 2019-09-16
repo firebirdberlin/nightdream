@@ -3,13 +3,11 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.firebirdberlin.nightdream.R;
+import androidx.appcompat.widget.AppCompatImageView;
 
-public class WebRadioImageView extends ImageView {
+public class WebRadioImageView extends AppCompatImageView {
     private static String TAG ="WebRadioImageView";
 
     private Context context;

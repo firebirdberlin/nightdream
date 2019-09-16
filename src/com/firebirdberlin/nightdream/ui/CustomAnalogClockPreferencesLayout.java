@@ -2,8 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -16,6 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
@@ -111,12 +113,12 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        final TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
+        final TextView fontButton = child.findViewById(R.id.typeface_preference);
         setFontButtonText(fontButton, config);
         fontButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(config.fontUri);
