@@ -1,0 +1,75 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:icon="@drawable/ic_alarm_clock"
+    app:key="alarms"
+    app:title="@string/alarm">
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="useInternalAlarm"
+        app:title="@string/use_internal_alarm" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:dependency="useInternalAlarm"
+        app:key="useAlarmSwipeGesture"
+        app:title="@string/useAlarmSwipeGesture" />
+
+    <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
+        app:iconSpaceReserved="false"
+        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+        app:defaultValue="3"
+        app:dependency="useInternalAlarm"
+        app:key="alarmVolume"
+        app:title="@string/alarmVolume" />
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:dependency="useInternalAlarm"
+        app:key="alarmFadeIn"
+        app:title="@string/alarmFadeIn" />
+
+    <de.firebirdberlin.preference.InlineSeekBarPreference
+        app:iconSpaceReserved="false"
+        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+        app:defaultValue="5"
+        app:dependency="useInternalAlarm"
+        app:key="snoozeTimeInMinutes"
+        app:title="@string/snoozeTime"
+        seekbar:interval="1"
+        seekbar:max="60"
+        seekbar:min="5"
+        seekbar:unitsLeft=""
+        seekbar:unitsRight="min"/>
+
+    <PreferenceCategory
+        app:layout="@layout/preferences_category"
+        app:iconSpaceReserved="false"
+        app:key="category_radio_stream"
+        app:title="@string/radio_stream">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="radioStreamMusicIsAllowedForAlarms"
+            app:title="@string/radio_stream_music_allowed" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="radioStreamRequireWiFi"
+            app:summary="@string/radio_stream_require_wifi_desc"
+            app:title="@string/radio_stream_require_wifi" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="radioStreamActivateWiFi"
+            app:summary="@string/radio_stream_activate_wifi_desc"
+            app:title="@string/radio_stream_activate_wifi" />
+    </PreferenceCategory>
+</PreferenceScreen>

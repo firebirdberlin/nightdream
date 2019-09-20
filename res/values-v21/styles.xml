@@ -7,8 +7,8 @@
     </style>
 
     <style name="PreferencesTheme" parent="Theme.AppCompat">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
         <item name="background">@color/grey</item>
         <item name="colorAccent">@color/blue</item>
         <item name="colorPrimary">@color/black</item>

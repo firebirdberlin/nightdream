@@ -10,6 +10,7 @@
     android:layout_centerInParent="true"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
+    android:tag="custom"
     tools:targetApi="honeycomb">
 
     <com.firebirdberlin.nightdream.ui.ClockLayout xmlns:android="http://schemas.android.com/apk/res/android"
