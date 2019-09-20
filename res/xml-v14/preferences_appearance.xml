@@ -14,6 +14,7 @@
             app:iconSpaceReserved="false"
             app:icon="@drawable/ic_googleplay"
             app:key="purchaseDesignPackage"
+            app:isPreferenceVisible="false"
             app:title="@string/purchaseWeatherData" />
 
         <ListPreference

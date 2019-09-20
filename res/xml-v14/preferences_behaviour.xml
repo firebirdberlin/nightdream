@@ -49,6 +49,7 @@
         app:iconSpaceReserved="false"
         app:icon="@drawable/ic_googleplay"
         app:key="purchaseActions2"
+        app:isPreferenceVisible="false"
         app:title="@string/purchaseActions" />
 
     <SwitchPreferenceCompat
