@@ -22,16 +22,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-/*
-import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
-import android.preference.SwitchPreference;
-
- */
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
@@ -60,7 +50,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
-import de.firebirdberlin.preference.TimeRangePreference;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class PreferencesFragment extends PreferenceFragmentCompat {
@@ -221,8 +210,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
-
-
     }
 
     @Override
@@ -405,24 +392,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("activateDoNotDisturb", purchased_actions);
         enablePreference("useDeviceLock", purchased_actions);
 
-        if (purchased_donation) {
-            removePreference("donation_play");
+        if (!purchased_donation) {
+            showPreference("donation_category");
         }
 
-        if (purchased_weather_data) {
-            removePreference("purchaseWeatherData");
-            removePreference("purchaseDesignPackage");
+        if (!purchased_weather_data) {
+            showPreference("purchasedWeatherData");
+            showPreference("purchaseDesignPackage");
         }
 
-        if (purchased_actions) {
-            removePreference("purchaseActions");
-            removePreference("purchaseActions2");
+        if (!purchased_actions) {
+            showPreference("purchaseActions");
+            showPreference("purchaseActions2");
         }
 
-        if (! Utility.languageIs("de", "en") ||
-                purchased_donation || purchased_pro ||
-                (purchased_web_radio && purchased_weather_data)) {
-            removePreference("upgrade_wanted");
+        if (Utility.languageIs("de", "en") &&
+                ! (purchased_donation || purchased_pro ||
+                     (purchased_web_radio && purchased_weather_data))) {
+            showPreference("upgrade_wanted");
         }
     }
 
@@ -590,6 +577,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         } else {
             setPreferencesFromResource(R.xml.preferences, rootKey);
         }
+
+        initPurchasePreference("purchaseActions");
+        initPurchasePreference("donation_play");
+        initPurchasePreference("purchaseWeatherData");
+        initPurchasePreference("purchaseDesignPackage");
+        initPurchasePreference("upgrade_wanted");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         init();
     }
 
@@ -605,12 +603,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             removePreference("startNotificationService");
             removePreference("autostartForNotifications");
         }
-
-        initPurchasePreference("purchaseActions");
-        initPurchasePreference("donation_play");
-        initPurchasePreference("purchaseWeatherData");
-        initPurchasePreference("purchaseDesignPackage");
-        initPurchasePreference("upgrade_wanted");
 
 
         if ("autostart".equals(rootKey)) {
@@ -924,16 +916,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
     private void setupClockLayoutPreference() {
+
         Preference pref = findPreference("clockLayout");
-        if (pref != null) {
-            String[] valueArray = getResources().getStringArray(R.array.clockLayoutValues);
-            String[] stringArray = getResources().getStringArray(R.array.clockLayout);
-            for (int i=0; i< valueArray.length; i++) {
-                String v = valueArray[i];
-                if (Integer.parseInt(v) == settings.clockLayout) {
-                    pref.setSummary(stringArray[i]);
-                    return;
-                }
+        if (!isAdded() || pref == null) {
+            return;
+        }
+        String[] valueArray = getResources().getStringArray(R.array.clockLayoutValues);
+        String[] stringArray = getResources().getStringArray(R.array.clockLayout);
+        for (int i=0; i< valueArray.length; i++) {
+            String v = valueArray[i];
+            if (Integer.parseInt(v) == settings.clockLayout) {
+                pref.setSummary(stringArray[i]);
+                return;
             }
         }
     }
@@ -952,7 +946,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupBrightnessControls(SharedPreferences prefs) {
-        //if (!isAdded() ) return;
+        if (!isAdded() ) return;
         Preference brightnessOffset = findPreference("brightness_offset");
         if (brightnessOffset == null) {
             return;
@@ -971,7 +965,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("minBrightness", (int) (100 * nightModeBrightness));
-            prefEditor.commit();
+            prefEditor.apply();
 
             InlineSeekBarPreference prefMinBrightness = new InlineSeekBarPreference(mContext);
             prefMinBrightness.setKey("minBrightness");
@@ -996,7 +990,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("nightModeBrightnessInt", (int) (100 * nightModeBrightness));
-            prefEditor.commit();
+            prefEditor.apply();
             InlineSeekBarPreference prefNightModeBrightness = new InlineSeekBarPreference(mContext);
             prefNightModeBrightness.setKey("nightModeBrightnessInt");
             prefNightModeBrightness.setTitle(getString(R.string.brightness_night_mode));
@@ -1047,7 +1041,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
-        //if (!isAdded() ) return;
+        if (!isAdded() ) return;
         boolean shallAutostart = sharedPreferences.getBoolean("handle_power", false);
         boolean on = shallAutostart || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false);
         int newState = on ?
@@ -1073,7 +1067,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupAlarmClock(SharedPreferences sharedPreferences) {
-        //if (!isAdded() ) return;
+        if (!isAdded() ) return;
         boolean on = sharedPreferences.getBoolean("useInternalAlarm", false);
 
         if (!on) {
@@ -1083,7 +1077,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 
     private void setupNotificationAccessPermission(SharedPreferences sharedPreferences, String preferenceKey) {
-        //if (!isAdded() ) return;
+        if (!isAdded() ) return;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return;
         }
@@ -1100,7 +1094,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupDeviceAdministratorPermissions(SharedPreferences sharedPreferences) {
-        //if (!isAdded() ) return;
+        if (!isAdded() ) return;
         boolean on = sharedPreferences.getBoolean("useDeviceLock", false);
         if (on) {
             DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -1147,6 +1141,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference preference = findPreference(key);
         if (preference != null) {
             preference.setEnabled(on);
+        }
+    }
+
+    private void showPreference(String key) {
+        Preference preference = findPreference(key);
+        if (preference != null) {
+            preference.setVisible(true);
         }
     }
 

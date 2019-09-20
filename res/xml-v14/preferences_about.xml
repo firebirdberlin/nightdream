@@ -91,7 +91,8 @@
     <PreferenceCategory
         app:iconSpaceReserved="false"
         android:layout="@layout/preferences_category"
-        app:key="donation_screen"
+        app:key="donation_category"
+        app:isPreferenceVisible="false"
         app:title="@string/donate">
         <Preference
             app:iconSpaceReserved="false"

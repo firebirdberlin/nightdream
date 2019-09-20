@@ -17,6 +17,7 @@
     <Preference
         app:icon="@drawable/ic_attention"
         app:key="upgrade_wanted"
+        app:isPreferenceVisible="false"
         app:summary="@string/buy_upgrade_summary"
         app:title="@string/buy_upgrade_title">
     </Preference>

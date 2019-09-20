@@ -77,11 +77,9 @@ public class ClockLayoutPreviewPreference extends Preference {
                     (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 View view = summaryParent2.findViewWithTag("custom");
-                if (view != null) {
-                    Log.d(TAG,"removing custom view");
-                    summaryParent2.removeView(view);
+                if (view == null) {
+                    layoutInflater.inflate(R.layout.clock_layout_preference, summaryParent2, true);
                 }
-                layoutInflater.inflate(R.layout.clock_layout_preference, summaryParent2, true);
 
                 RelativeLayout previewContainer = summaryParent2.findViewById(R.id.previewContainer);
                 clockLayout = summaryParent2.findViewById(R.id.clockLayout);

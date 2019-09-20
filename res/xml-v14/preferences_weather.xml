@@ -9,6 +9,7 @@
         app:iconSpaceReserved="false"
         app:icon="@drawable/ic_googleplay"
         app:key="purchaseWeatherData"
+        app:isPreferenceVisible="false"
         app:title="@string/purchaseWeatherData"/>
 
     <SwitchPreferenceCompat
