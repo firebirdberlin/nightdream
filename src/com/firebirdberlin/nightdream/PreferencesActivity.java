@@ -3,11 +3,16 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 
-public class PreferencesActivity extends AppCompatActivity {
+public class PreferencesActivity extends AppCompatActivity
+                                 implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     PreferencesFragment fragment = null;
 
     public static void start(Context context) {
@@ -33,8 +38,8 @@ public class PreferencesActivity extends AppCompatActivity {
             .beginTransaction()
             .replace(android.R.id.content, fragment)
             .commit();
-
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -68,5 +73,22 @@ public class PreferencesActivity extends AppCompatActivity {
                 return fragment.purchased_web_radio;
         }
         return false;
+    }
+
+    @Override
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+        Log.d("Pref", pref.getKey());
+        // Instantiate the new Fragment
+        final Fragment fragment =
+                Fragment.instantiate(this, pref.getFragment(), pref.getExtras());
+        fragment.setTargetFragment(caller, 0);
+        Bundle args = new Bundle();
+        args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
+        fragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, fragment)
+                .addToBackStack(null)
+                .commit();
+        return true;
     }
 }
