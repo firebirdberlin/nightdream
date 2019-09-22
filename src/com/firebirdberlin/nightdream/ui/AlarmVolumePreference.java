@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
@@ -29,7 +30,7 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
     private int maxValue = 100;
     private int currentValue;
 
-    private SeekBar seekBar;
+    private AppCompatSeekBar seekBar;
     private ImageView icon;
 
     public AlarmVolumePreference(Context context, AttributeSet attrs) {
@@ -60,10 +61,13 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
                 final LayoutInflater layoutInflater =
                     (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
-                layoutInflater.inflate(R.layout.alarm_volume_preference, summaryParent2);
+                View view = summaryParent2.findViewWithTag("custom");
+                if (view == null) {
+                    layoutInflater.inflate(R.layout.alarm_volume_preference, summaryParent2);
+                }
 
-                icon = (ImageView) summaryParent2.findViewById(R.id.icon);
-                seekBar = (SeekBar) summaryParent2.findViewById(R.id.seekBar);
+                icon = summaryParent2.findViewById(R.id.icon);
+                seekBar = summaryParent2.findViewById(R.id.seekBar);
                 seekBar.setMax(maxValue);
                 seekBar.setOnSeekBarChangeListener(this);
             }

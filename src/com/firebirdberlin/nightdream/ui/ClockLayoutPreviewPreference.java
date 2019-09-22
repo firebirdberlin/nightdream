@@ -146,7 +146,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         preferencesContainer.removeAllViews();
         if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
             CustomDigitalClockPreferencesLayout prefs =
-                    new CustomDigitalClockPreferencesLayout(context, settings);
+                    new CustomDigitalClockPreferencesLayout(context, settings, getActivity());
             prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
                     new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
@@ -172,7 +172,7 @@ public class ClockLayoutPreviewPreference extends Preference {
             }
             AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
             CustomAnalogClockPreferencesLayout prefs =
-                    new CustomAnalogClockPreferencesLayout(context, preset);
+                    new CustomAnalogClockPreferencesLayout(context, preset, getActivity());
 
             prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(

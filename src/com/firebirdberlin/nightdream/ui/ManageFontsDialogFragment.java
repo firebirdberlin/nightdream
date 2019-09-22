@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.ui;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
