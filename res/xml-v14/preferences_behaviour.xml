@@ -33,6 +33,7 @@
         app:title="@string/showBatteryWarningTitle" />
 
     <ListPreference
+        app:iconSpaceReserved="false"
         app:defaultValue="-1"
         app:entries="@array/screenOrientation"
         app:entryValues="@array/screenOrientationValues"

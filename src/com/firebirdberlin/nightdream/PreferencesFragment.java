@@ -27,6 +27,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -41,6 +42,8 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
+import com.firebirdberlin.openweathermapapi.CityIDPreference;
+import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -133,7 +136,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
                             // reset the brightness level
                             settings.setBrightnessOffset(0.8f);
-                            pref.setProgress(80);
+                            if (pref != null) {
+                                pref.setProgress(80);
+                            }
                             setupBrightnessControls(sharedPreferences);
                             break;
                         case "minBrightness":
@@ -1187,6 +1192,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             storeWeatherDataPurchase(true, true);
             togglePurchasePreferences();
         }
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        if (preference instanceof CityIDPreference) {
+            DialogFragment dialogFragment = CityIdDialogFragment.newInstance(preference.getKey());
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(getFragmentManager(), null);
+        } else super.onDisplayPreferenceDialog(preference);
     }
 
     private void setupDaydreamPreferences() {
