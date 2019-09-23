@@ -173,6 +173,7 @@ OR
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
     <string name="position">Position</string>
+    <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
     <string name="product_name_actions">Always On package</string>

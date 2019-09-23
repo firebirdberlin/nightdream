@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
@@ -16,15 +17,15 @@ public class PreferencesActivity extends AppCompatActivity
     PreferencesFragment fragment = null;
 
     public static void start(Context context) {
-            Intent intent = new Intent(context, PreferencesActivity.class);
-            context.startActivity(intent);
+        Intent intent = new Intent(context, PreferencesActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.PreferencesTheme);
-
+        initTitleBar();
         fragment = new PreferencesFragment();
         Intent intent = getIntent();
         if (intent.hasExtra("shallShowPurchaseDialog")) {
@@ -35,9 +36,9 @@ public class PreferencesActivity extends AppCompatActivity
         }
 
         getSupportFragmentManager()
-            .beginTransaction()
-            .replace(android.R.id.content, fragment)
-            .commit();
+                .beginTransaction()
+                .replace(android.R.id.content, fragment)
+                .commit();
     }
 
 
@@ -56,6 +57,20 @@ public class PreferencesActivity extends AppCompatActivity
             fragment.showPurchaseDialog();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        initTitleBar();
+    }
+
+    void initTitleBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar !=null) {
+            actionBar.setTitle(R.string.preferences);
+        }
+    }
+
     public boolean isPurchased(String sku) {
         if (fragment == null) {
             return false;
@@ -89,6 +104,12 @@ public class PreferencesActivity extends AppCompatActivity
                 .replace(android.R.id.content, fragment)
                 .addToBackStack(null)
                 .commit();
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(pref.getTitle());
+        }
+
         return true;
     }
 }
