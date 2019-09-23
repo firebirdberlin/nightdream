@@ -702,7 +702,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 
         } else {
-            // main
+            // main page
             setupDaydreamPreferences();
             setupTranslationRequest();
         }
@@ -1234,7 +1234,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupDaydreamPreferences() {
-        //if (!isAdded() ) return;
         enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
         Preference pref = findPreference("autostart");
         boolean on = pref.isEnabled();
@@ -1244,7 +1243,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private class DaydreamSettingsObserver extends ContentObserver {
 
-        public DaydreamSettingsObserver(Handler handler) {
+        DaydreamSettingsObserver(Handler handler) {
             super(handler);
         }
 
