@@ -151,45 +151,49 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     private void showTimePicker(int hour, int min, final Long entry_id) {
         final Context context = this;
-        TimePickerDialog mTimePicker = new TimePickerDialog(context, R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                // Bug Android 4.1: Dialog is submitted twice
-                // >> ignore second call to this method.
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-                        && !timePicker.isShown()) return;
+        TimePickerDialog mTimePicker = new TimePickerDialog(
+                context,
+               // R.style.DialogTheme,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        // Bug Android 4.1: Dialog is submitted twice
+                        // >> ignore second call to this method.
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
+                                && !timePicker.isShown()) return;
 
-                SimpleTime entry = null;
-                boolean isNew = (entry_id == null);
-                if (isNew) {
-                    entry = new SimpleTime();
-                } else {
-                    for (SimpleTime e : entries) {
-                        if (e.id == entry_id) {
-                            entry = e;
-                            break;
+                        SimpleTime entry = null;
+                        boolean isNew = (entry_id == null);
+                        if (isNew) {
+                            entry = new SimpleTime();
+                        } else {
+                            for (SimpleTime e : entries) {
+                                if (e.id == entry_id) {
+                                    entry = e;
+                                    break;
+                                }
+                            }
                         }
-                    }
-                }
-                if (entry != null) {
-                    entry.hour = selectedHour;
-                    entry.min = selectedMinute;
-                    entry.isActive = true;
-                    if (isNew) {
-                        entry.autocompleteRecurringDays();
-                    }
-                    entry = db.save(entry);
-                    if (entry_id == null) {
-                        entries.add(entry);
-                        update(entry.id);
-                    } else {
-                        update();
-                    }
+                        if (entry != null) {
+                            entry.hour = selectedHour;
+                            entry.min = selectedMinute;
+                            entry.isActive = true;
+                            if (isNew) {
+                                entry.autocompleteRecurringDays();
+                            }
+                            entry = db.save(entry);
+                            if (entry_id == null) {
+                                entries.add(entry);
+                                update(entry.id);
+                            } else {
+                                update();
+                            }
 
-                }
-                WakeUpReceiver.schedule(context, db);
-            }
-        }, hour, min, Utility.is24HourFormat(context));
+                        }
+                        WakeUpReceiver.schedule(context, db);
+                    }
+                },
+            hour, min, Utility.is24HourFormat(context));
         // fix broken dialog appearance on some devices
         mTimePicker.setTitle(null);
         mTimePicker.show();
