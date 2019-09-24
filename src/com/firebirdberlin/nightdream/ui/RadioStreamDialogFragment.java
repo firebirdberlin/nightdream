@@ -19,8 +19,6 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
 
     private final static String TAG = "RadioStreamDialogFragment";
 
-    private RadioStreamDialog radioStreamDialog;
-
     private RadioStreamDialogListener listener;
     private RadioStation radioStation;
     private int stationIndex;
@@ -84,7 +82,7 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
 
         // Warning: must use context of AlertDialog.Builder here so that the changed theme is applied by LayoutInflater in RadioStreamDialog!
         // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme for this DialogFragment)
-        radioStreamDialog = new RadioStreamDialog(builder.getContext(), radioStation, preferredCountry);
+        RadioStreamDialog radioStreamDialog = new RadioStreamDialog(builder.getContext(), radioStation, preferredCountry);
 
         RadioStreamDialogListener dialogDismissListener = new RadioStreamDialogListener() {
             @Override
