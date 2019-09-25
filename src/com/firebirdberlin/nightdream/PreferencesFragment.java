@@ -722,7 +722,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             removePreference("category_brightness");
             removePreference("reactivate_on_ambient_light_value");
 
-            ListPreference nightModePref = (ListPreference) findPreference("nightModeActivationMode");
+            ListPreference nightModePref = findPreference("nightModeActivationMode");
             nightModePref.setEntries(new String[]{
                                         getString(R.string.night_mode_activation_manual),
                                         getString(R.string.night_mode_activation_scheduled),
@@ -732,14 +732,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupTranslationRequest() {
-        if (Utility.languageIs("de", "en")) {
-            removePreference("translations_wanted");
+        if (!Utility.languageIs("de", "en")) {
+            showPreference("translations_wanted");
         }
     }
 
     private void setupAlarmClockPreferences() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            removePreference("radioStreamActivateWiFi");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            showPreference("radioStreamActivateWiFi");
         }
     }
 
@@ -997,7 +997,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             title = getString(R.string.brightness_offset);
         }
         brightnessOffset.setTitle(title);
-        PreferenceCategory category = (PreferenceCategory) findPreference("category_brightness");
+        PreferenceCategory category = findPreference("category_brightness");
 
         removePreference("maxBrightnessBattery");
         removePreference("nightModeBrightnessInt");

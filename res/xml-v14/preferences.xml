@@ -8,7 +8,8 @@
         app:icon="@drawable/ic_attention"
         app:key="translations_wanted"
         app:summary="Please add or update the translation for your language."
-        app:title="Translations wanted !">
+        app:title="Translations wanted !"
+        app:isPreferenceVisible="false">
         <intent
             android:action="android.intent.action.VIEW"
             android:data="https://nightclock.duckdns.org/pastt" />
