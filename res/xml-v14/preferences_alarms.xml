@@ -70,6 +70,7 @@
             app:defaultValue="false"
             app:key="radioStreamActivateWiFi"
             app:summary="@string/radio_stream_activate_wifi_desc"
-            app:title="@string/radio_stream_activate_wifi" />
+            app:title="@string/radio_stream_activate_wifi"
+            app:isPreferenceVisible="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

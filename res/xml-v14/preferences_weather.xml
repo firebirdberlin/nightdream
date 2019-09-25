@@ -64,6 +64,7 @@
 
     <ListPreference
         app:iconSpaceReserved="false"
+        app:dependency="showWeather"
         app:defaultValue="0"
         app:entries="@array/weatherProvider"
         app:entryValues="@array/weatherProviderValues"
@@ -72,6 +73,8 @@
 
     <Preference
         app:key="weatherProviderAttribution"
+        app:dependency="showWeather"
+        app:enableCopying="true"
         app:icon="@drawable/ic_about"/>
 
     <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
