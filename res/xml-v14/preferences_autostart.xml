@@ -88,7 +88,7 @@
 
         <ListPreference
             app:iconSpaceReserved="false"
-            app:defaultValue="-1"
+            app:defaultValue="4"
             app:entries="@array/batteryTimeout"
             app:entryValues="@array/batteryTimeoutValues"
             app:key="batteryTimeout"
