@@ -122,11 +122,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    Log.i(TAG, "preference " + key + " changed");
-                    ClockLayoutPreviewPreference preview = (ClockLayoutPreviewPreference) findPreference("clockLayoutPreview");
-                    if (preview != null) {
-                        Log.i(TAG, preview.toString() + "found");
-                        preview.invalidate();
+                    if ("appearance".equals(rootKey)) {
+                        ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
+                        if (preview != null) {
+                            preview.invalidate();
+                        }
                     }
                     switch (key) {
                         case "brightness_offset":
@@ -134,7 +134,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             settings.setBrightnessOffset(offsetInt / 100.f);
                             break;
                         case "autoBrightness":
-                            InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
+                            InlineSeekBarPreference pref = findPreference("brightness_offset");
                             // reset the brightness level
                             settings.setBrightnessOffset(0.8f);
                             if (pref != null) {
@@ -658,48 +658,53 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         } else if ("about".equals(rootKey)) {
 
             Preference recommendApp = findPreference("recommendApp");
-            recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    recommendApp();
-                    return true;
-                }
-            });
-
+            if (recommendApp != null) {
+                recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        recommendApp();
+                        return true;
+                    }
+                });
+            }
             Preference uninstallApp = findPreference("uninstallApp");
-            uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    uninstallApplication();
-                    return true;
-                }
-            });
-
+            if (uninstallApp != null) {
+                uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        uninstallApplication();
+                        return true;
+                    }
+                });
+            }
             Preference resetToDefaults = findPreference("reset_to_defaults");
-            resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    new AlertDialog.Builder(mContext)
-                            .setTitle(getResources().getString(R.string.confirm_reset))
-                            .setMessage(getResources().getString(R.string.confirm_reset_question))
-                            .setNegativeButton(android.R.string.no, null)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    settings.clear();
-                                    getPreferenceScreen().removeAll();
-                                    WakeUpReceiver.cancelAlarm(mContext);
-                                    DataSource db = new DataSource(context);
-                                    db.open();
-                                    db.dropData();
-                                    db.close();
-                                    addPreferencesFromResource(R.xml.preferences);
-                                    init();
-                                    storeWeatherDataPurchase(purchased_weather_data, purchased_donation);
-                                    togglePurchasePreferences();
-                                }
-                            }).show();
+            if (resetToDefaults != null) {
 
-                    return true;
-                }
-            });
+                resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        new AlertDialog.Builder(mContext)
+                                .setTitle(getResources().getString(R.string.confirm_reset))
+                                .setMessage(getResources().getString(R.string.confirm_reset_question))
+                                .setNegativeButton(android.R.string.no, null)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        settings.clear();
+                                        getPreferenceScreen().removeAll();
+                                        WakeUpReceiver.cancelAlarm(mContext);
+                                        DataSource db = new DataSource(context);
+                                        db.open();
+                                        db.dropData();
+                                        db.close();
+                                        addPreferencesFromResource(R.xml.preferences);
+                                        init();
+                                        storeWeatherDataPurchase(purchased_weather_data, purchased_donation);
+                                        togglePurchasePreferences();
+                                    }
+                                }).show();
 
+                        return true;
+                    }
+                });
+
+            }
 
         } else {
             // main page
@@ -882,8 +887,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     settings.setReactivateScreenOnNoise(false);
                     settings.setUseAmbientNoiseDetection(false);
 
-                    SwitchPreferenceCompat prefAmbientNoiseDetection = (SwitchPreferenceCompat) findPreference("ambientNoiseDetection");
-                    CheckBoxPreference prefAmbientNoiseReactivation = (CheckBoxPreference) findPreference("reactivate_screen_on_noise");
+                    SwitchPreferenceCompat prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
+                    CheckBoxPreference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
                     prefAmbientNoiseDetection.setChecked(false);
                     prefAmbientNoiseReactivation.setChecked(false);
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
@@ -896,7 +901,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     settings.setFetchWeatherData(false);
 
-                    SwitchPreferenceCompat prefShowWeather = (SwitchPreferenceCompat) findPreference("showWeather");
+                    SwitchPreferenceCompat prefShowWeather = findPreference("showWeather");
                     prefShowWeather.setChecked(false);
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
                 }
