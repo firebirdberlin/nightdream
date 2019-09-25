@@ -940,6 +940,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void setupBatteryTimeoutPreference() {
         Preference pref = findPreference("batteryTimeout");
+        if (!isAdded() || pref == null) {
+            return;
+        }
         String[] valueArray = getResources().getStringArray(R.array.batteryTimeoutValues);
         String[] stringArray = getResources().getStringArray(R.array.batteryTimeout);
         for (int i=0; i< valueArray.length; i++) {
@@ -952,8 +955,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupWeatherProviderPreference() {
-        if (!isAdded() ) return;
         Preference pref = findPreference("weatherProvider");
+        if (!isAdded() || pref == null) {
+            return;
+        }
         Preference prefAttribution = findPreference("weatherProviderAttribution");
         if (settings.getWeatherProviderString().equals("0")) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://openweathermap.org"));
