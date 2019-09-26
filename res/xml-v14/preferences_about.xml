@@ -34,6 +34,12 @@
         app:key="recommendApp"
         app:title="@string/recommend"/>
 
+    <de.firebirdberlin.preference.AppDetailsPreference
+        app:key="appDetails"
+        app:icon="@drawable/ic_info"
+        app:title="@string/manage_permissions"
+        />
+
     <Preference
         app:iconSpaceReserved="false"
         app:icon="@drawable/ic_undo"
