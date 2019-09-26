@@ -134,6 +134,7 @@ OR
     <string name="inner_circle_radius">Inner circle radius</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
+    <string name="manage_permissions">Manage permissions</string>
     <string name="maxBrightness">Maximum screen brightness</string>
     <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
     <string name="message_mobile_data_connection_confirmation">You are connected to a mobile network. Play the radio stream?</string>

@@ -48,10 +48,10 @@
         app:title="@string/night_mode"/>
 
     <Preference
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
         app:icon="@drawable/ic_alarm_clock"
         app:key="alarms"
-        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-        app:title="@string/alarm"/>
+        app:title="@string/alarm" />
 
     <Preference
         app:icon="@drawable/ic_cloud"

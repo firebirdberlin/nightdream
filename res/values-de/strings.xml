@@ -284,4 +284,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="prev">vorheriges</string>
     <string name="position">Position</string>
     <string name="typeface_dancing_script">Dancing Script Regular</string>
+    <string name="activateDoNotDisturb">\"Nicht stören\" aktivieren</string>
+    <string name="activateDoNotDisturbSummary">\"Nicht stören\" aktivieren, solange die App aktiv ist.</string>
+    <string name="manage_permissions">Berechtigungen</string>
 </resources>
