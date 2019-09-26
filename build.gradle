@@ -34,6 +34,7 @@ dependencies {
     // implementation project(':externals:ShowcaseView:library')
     implementation project(':externals:tab-digit:digit')
     implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation 'com.google.android.material:material:1.0.0'
 }
 
 def getApiKeyOWM() {
