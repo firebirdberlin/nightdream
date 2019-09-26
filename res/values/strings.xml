@@ -171,6 +171,7 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
+    <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
     <string name="position">Position</string>

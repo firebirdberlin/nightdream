@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -44,14 +47,15 @@ import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.CityIDPreference;
 import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
@@ -84,6 +88,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public boolean purchased_web_radio = false;
     public boolean purchased_pro = false;
     public boolean purchased_actions = false;
+    Snackbar snackbar;
     String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
     IInAppBillingService mService;
@@ -167,6 +172,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             break;
                         case "handle_power":
                         case "standbyEnabledWhileDisconnected":
+                        case "scheduledAutoStartEnabled":
+                        case "autostartForNotifications":
                             setupStandByService(sharedPreferences);
                             break;
                         case "useInternalAlarm":
@@ -225,6 +232,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        dismissSnackBar();
     }
 
     @Override
@@ -595,6 +608,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    public boolean onPreferenceTreeClick(Preference preference) {
+        if ( preference != null && preference.getKey().equals("autostart")) {
+            dismissSnackBar();
+        }
+
+        return super.onPreferenceTreeClick(preference);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         init();
@@ -710,6 +732,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             // main page
             setupDaydreamPreferences();
             setupTranslationRequest();
+        }
+
+        if (rootKey == null || "autostart".equals(rootKey) ) {
+            conditionallyShowSnackBar(null);
         }
     }
 
@@ -1087,8 +1113,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
         if (!isAdded() ) return;
-        boolean shallAutostart = sharedPreferences.getBoolean("handle_power", false);
-        boolean on = shallAutostart || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false);
+        boolean on = isAutostartActivated(sharedPreferences);
         int newState = on ?
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
@@ -1098,17 +1123,35 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
 
         PackageManager pm = mContext.getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(mContext, ScreenWatcherService.class),
-                newState, PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(
+                new ComponentName(mContext, ScreenWatcherService.class),
+                newState, PackageManager.DONT_KILL_APP
+        );
 
         if (on) {
             ScreenWatcherService.start(mContext);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                if (! android.provider.Settings.canDrawOverlays(mContext)) {
-                    startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
-                }
-            }
         }
+        conditionallyShowSnackBar(sharedPreferences);
+    }
+
+    private boolean isAutostartActivated(SharedPreferences sharedPreferences) {
+        return (
+                sharedPreferences.getBoolean("handle_power", false)
+                        || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false)
+                        || sharedPreferences.getBoolean("scheduledAutoStartEnabled", false)
+                        || sharedPreferences.getBoolean("autostartForNotifications", false)
+        );
+    }
+
+    private boolean hasCanDrawOverlaysPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return (android.provider.Settings.canDrawOverlays(mContext));
+        }
+        return true;
+    }
+
+    void requestCanDrawOverlaysPermission() {
+        startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
     }
 
     private void setupAlarmClock(SharedPreferences sharedPreferences) {
@@ -1261,6 +1304,56 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
             setupDaydreamPreferences();
+        }
+    }
+    private void conditionallyShowSnackBar(SharedPreferences settings){
+        if (settings == null) {
+            settings = mContext.getSharedPreferences(PREFS_KEY, 0);
+        }
+        if (isAutostartActivated(settings) && !hasCanDrawOverlaysPermission()) {
+            View view = getActivity().findViewById(android.R.id.content);
+            snackbar = Snackbar.make(view, R.string.permission_request_autostart, Snackbar.LENGTH_INDEFINITE);
+            int color = getRandomMaterialColor();
+            int textColor = getContrastColor(color);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(color);
+            snackbar.setActionTextColor(textColor);
+
+            TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+            tv.setTextColor(textColor);
+
+            snackbar.setAction(android.R.string.ok, new CanDrawOverlaysPermissionListener());
+            snackbar.show();
+        } else {
+            dismissSnackBar();
+        }
+    }
+
+    void dismissSnackBar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
+    }
+
+    private int getRandomMaterialColor() {
+        int[] colors = getResources().getIntArray(R.array.materialColors);
+        return colors[new Random().nextInt(colors.length)];
+    }
+
+    private int getContrastColor(int color) {
+        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
+        return y >= 128 ? Color.BLACK : Color.WHITE;
+    }
+
+
+    public class CanDrawOverlaysPermissionListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if (isAdded()) {
+                requestCanDrawOverlaysPermission();
+            }
         }
     }
 }
