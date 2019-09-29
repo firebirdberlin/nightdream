@@ -427,12 +427,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             showPreference("purchaseActions");
             showPreference("purchaseActions2");
         }
-
-        if (Utility.languageIs("de", "en") &&
-                ! (purchased_donation || purchased_pro ||
-                     (purchased_web_radio && purchased_weather_data))) {
-            showPreference("upgrade_wanted");
-        }
     }
 
     public void purchaseIntent(String sku, int REQUEST_CODE) {
@@ -604,7 +598,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseWeatherData");
         initPurchasePreference("purchaseDesignPackage");
-        initPurchasePreference("upgrade_wanted");
     }
 
     @Override
@@ -736,6 +729,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         if (rootKey == null || "autostart".equals(rootKey) ) {
             conditionallyShowSnackBar(null);
+        }
+        if (rootKey == null) {
+            conditionallyShowSnackBarPurchase(null);
         }
     }
 
@@ -1044,6 +1040,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             prefMinBrightness.setSummary("");
             prefMinBrightness.setRange(-100, 100);
             prefMinBrightness.setDefaultValue(0);
+            prefMinBrightness.setIconSpaceReserved(false);
 
             InlineSeekBarPreference prefMaxBrightness = new InlineSeekBarPreference(mContext);
             prefMaxBrightness.setKey("maxBrightness");
@@ -1051,6 +1048,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             prefMaxBrightness.setSummary("");
             prefMaxBrightness.setRange(1, 100);
             prefMaxBrightness.setDefaultValue(50);
+            prefMaxBrightness.setIconSpaceReserved(false);
 
             category.addPreference(prefMinBrightness);
             category.addPreference(prefMaxBrightness);
@@ -1068,6 +1066,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             prefNightModeBrightness.setSummary("");
             prefNightModeBrightness.setRange(-100, 100);
             prefNightModeBrightness.setDefaultValue(0);
+            prefNightModeBrightness.setIconSpaceReserved(false);
             category.addPreference(prefNightModeBrightness);
         }
 
@@ -1077,6 +1076,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         prefMaxBrightnessBattery.setSummary("");
         prefMaxBrightnessBattery.setRange(1, 100);
         prefMaxBrightnessBattery.setDefaultValue(25);
+        prefMaxBrightnessBattery.setIconSpaceReserved(false);
         category.addPreference(prefMaxBrightnessBattery);
     }
 
@@ -1328,6 +1328,43 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             dismissSnackBar();
         }
     }
+    private void conditionallyShowSnackBarPurchase(SharedPreferences settings){
+        if (settings == null) {
+            settings = mContext.getSharedPreferences(PREFS_KEY, 0);
+        }
+        Log.d(TAG, "days: " + Utility.getDaysSinceFirstInstall(mContext));
+        long lastTimeShown = settings.getLong("puchaseSnackBarTimestamp", 0L);
+        long timeSinceShown = System.currentTimeMillis() - lastTimeShown;
+        Log.i(TAG, "timeSinceShown: " + Utility.getDaysSinceFirstInstall(mContext));
+        long daysInstalled = Utility.getDaysSinceFirstInstall(mContext);
+        if (
+                purchased_donation || purchased_pro
+                        || (purchased_web_radio && purchased_weather_data)
+                        || (snackbar != null && snackbar.isShown())
+                        || !hasCanDrawOverlaysPermission()
+                        || daysInstalled < 7
+                        || timeSinceShown < 60000 * 60 * 24 * 7
+        ) {
+            return;
+        }
+        View view = getActivity().findViewById(android.R.id.content);
+        snackbar = Snackbar.make(view, R.string.buy_upgrade_summary, Snackbar.LENGTH_INDEFINITE);
+        int color = getRandomMaterialColor();
+        int textColor = getContrastColor(color);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(color);
+        snackbar.setActionTextColor(textColor);
+
+        TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        tv.setTextColor(textColor);
+
+        snackbar.setAction(android.R.string.ok, new BuyUpgradeListener());
+        snackbar.setDuration(10000);
+        snackbar.show();
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("puchaseSnackBarTimestamp", System.currentTimeMillis());
+        prefEditor.apply();
+    }
 
     void dismissSnackBar() {
         if (snackbar != null && snackbar.isShown()) {
@@ -1353,6 +1390,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         public void onClick(View v) {
             if (isAdded()) {
                 requestCanDrawOverlaysPermission();
+            }
+        }
+    }
+
+    public class BuyUpgradeListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isAdded()) {
+                purchaseIntent(ITEM_PRO, REQUEST_CODE_PURCHASE_PRO);
             }
         }
     }
