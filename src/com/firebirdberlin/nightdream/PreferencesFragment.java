@@ -419,7 +419,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
 
         if (!purchased_weather_data) {
-            showPreference("purchasedWeatherData");
+            showPreference("purchaseWeatherData");
             showPreference("purchaseDesignPackage");
         }
 

@@ -9,7 +9,7 @@
         app:iconSpaceReserved="false"
         app:defaultValue="true"
         app:key="useInternalAlarm"
-        app:title="@string/use_internal_alarm" />
+        app:title="@string/use_internal_alarm"/>
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
