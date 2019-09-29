@@ -52,6 +52,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.POWER_SERVICE;
 
@@ -198,6 +199,12 @@ public class Utility {
         } catch (NameNotFoundException e) {
             return 0L;
         }
+    }
+
+    public static long getDaysSinceFirstInstall(Context context) {
+        long firstInstall = getFirstInstallTime(context);
+        long msDiff = Calendar.getInstance().getTimeInMillis() - firstInstall;
+        return TimeUnit.MILLISECONDS.toDays(msDiff);
     }
 
     public static boolean hasNetworkConnection(Context context) {

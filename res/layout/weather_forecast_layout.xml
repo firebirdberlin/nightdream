@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="1dp"
-            app:layout_minWidth="180dp"
+            app:layout_minWidth="200dp"
             android:orientation="horizontal">
 
             <TextView

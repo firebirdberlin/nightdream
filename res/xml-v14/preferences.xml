@@ -16,14 +16,6 @@
     </Preference>
 
     <Preference
-        app:icon="@drawable/ic_attention"
-        app:key="upgrade_wanted"
-        app:isPreferenceVisible="false"
-        app:summary="@string/buy_upgrade_summary"
-        app:title="@string/buy_upgrade_title">
-    </Preference>
-
-    <Preference
         app:icon="@drawable/ic_power"
         app:key="autostart"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
@@ -68,5 +60,12 @@
         app:icon="@drawable/ic_about"
         app:key="about"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-        app:title="@string/about"/>
+        app:title="@string/about"
+        />
+
+    <!-- Add an empty preference so that we have space to show a snackbar at the bottom -->
+    <Preference
+        app:key="empty"
+        app:title=""
+        />
 </PreferenceScreen>
