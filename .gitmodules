@@ -3,5 +3,5 @@
 	url = https://github.com/firebirdberlin/android-preferences.git
 [submodule "externals/tab-digit"]
 	path = externals/tab-digit
-	url = https://github.com/martinposchmann/tab-digit.git
+	url = https://github.com/firebirdberlin/tab-digit.git
 	branch = development
