@@ -19,7 +19,7 @@
 
         <de.firebirdberlin.preference.TimeRangePreference
             xmlns:timerange="timerange"
-            app:iconSpaceReserved="true"
+            app:iconSpaceReserved="false"
             app:defaultValue="0"
             app:dependency="handle_power"
             app:key="autostart_time_range"
