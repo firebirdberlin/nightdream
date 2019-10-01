@@ -127,7 +127,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    if ("appearance".equals(rootKey)) {
+                    if (isAdded() && "appearance".equals(rootKey)) {
                         ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
                         if (preview != null) {
                             preview.invalidate();
@@ -602,7 +602,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
-        if ( preference != null && preference.getKey().equals("autostart")) {
+        if (preference != null && "autostart".equals(preference.getKey())) {
             dismissSnackBar();
         }
 

@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="customBackgroundColor">#000000</color>
-    <style name="PreferencesTheme">
-    </style>
 
-    <!--
-    <style name="DialogTheme" parent="android:Theme.Dialog">
-    </style>
-    -->
-
-    <!-- must set default theme as parent, otherwise changing theme in AlertDialog.Builder wont work at least for API level 16 -->
-    <style name="SecondaryActivityTheme" parent="@android:style/Theme.DeviceDefault">
-    </style>
-
-    <style name="DialogTheme" parent="@android:style/Theme.DeviceDefault">
-    </style>
-
-    <style name="ActivityTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+    <style name="ActivityTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@color/customBackgroundColor</item>
     </style>
+
+    <style name="PreferencesTheme" parent="Theme.AppCompat">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="background">@color/grey</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
+    </style>
+
+    <style name="SecondaryActivityTheme" parent="Theme.AppCompat.DayNight">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="AlarmClockActivityTheme" parent="Theme.AppCompat.DayNight">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
+    </style>
+
 </resources>
