@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
@@ -48,6 +48,7 @@ public class SelectRadioStationSlotDialogFragment extends AppCompatDialogFragmen
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position
                         // of the selected item
+                        Settings.setDefaultAlarmRadioStation(getContext(), which - 1);
                         mListener.onStationSlotSelected(which, stationsSeq[which].toString());
                     }
                 });

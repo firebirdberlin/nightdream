@@ -165,6 +165,8 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                         boolean isNew = (entry_id == null);
                         if (isNew) {
                             entry = new SimpleTime();
+                            entry.soundUri = Settings.getDefaultAlarmTone(context);
+                            entry.radioStationIndex = Settings.getDefaultRadioStation(context);
                         } else {
                             for (SimpleTime e : entries) {
                                 if (e.id == entry_id) {

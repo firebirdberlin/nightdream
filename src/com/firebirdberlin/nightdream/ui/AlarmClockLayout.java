@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -236,6 +235,7 @@ public class AlarmClockLayout extends LinearLayout {
                 dialog.setIsPurchased(
                         ((BillingHelperActivity) context).isPurchased(BillingHelper.ITEM_WEB_RADIO)
                 );
+                dialog.setContext(getContext());
                 dialog.setSelectedUri(alarmClockEntry.soundUri);
                 dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
                     @Override
