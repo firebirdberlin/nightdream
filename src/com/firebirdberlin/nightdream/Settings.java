@@ -11,8 +11,9 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
+
+import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.BatteryValue;
@@ -761,5 +762,39 @@ public class Settings {
 
     public void deleteFavoriteRadioStation(int stationIndex) {
         persistFavoriteRadioStation(null, stationIndex);
+    }
+
+    public static void setDefaultAlarmTone(Context context, String uriString) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("defaultAlarmTone", uriString);
+        edit.apply();
+    }
+
+    public static void setDefaultAlarmRadioStation(Context context, int stationIndex) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putInt("defaultAlarmRadioStation", stationIndex);
+        edit.apply();
+    }
+
+    static int getDefaultRadioStation(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return -1;
+        }
+        return preferences.getInt("defaultAlarmRadioStation", -1);
+    }
+
+    static String getDefaultAlarmTone(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return null;
+        }
+        return preferences.getString("defaultAlarmTone", null);
+    }
+
+    private static SharedPreferences getDefaultSharedPreferences(Context context) {
+        return context.getSharedPreferences("defaults", Context.MODE_PRIVATE);
     }
 }
