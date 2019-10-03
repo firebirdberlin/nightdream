@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="6dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -13,7 +14,6 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         tools:targetApi="ice_cream_sandwich">
-
 
         <ImageButton
             android:id="@+id/toggle_preference_prev"
@@ -85,6 +85,8 @@
 
             <TextView
                 android:id="@+id/digit_style_preference"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
@@ -122,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:paddingBottom="8dp"
+            android:paddingBottom="10dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp" />
@@ -132,6 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/digit_emphasize_quarters"
+            android:paddingBottom="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp"
@@ -161,7 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="20"
-            android:paddingBottom="8dp"
+            android:paddingBottom="2dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp" />
@@ -185,6 +188,8 @@
 
             <TextView
                 android:id="@+id/hand_shape_preference"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
@@ -296,6 +301,8 @@
 
             <TextView
                 android:id="@+id/tick_style_hours_preference"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
@@ -407,6 +414,8 @@
 
             <TextView
                 android:id="@+id/decoration_preference"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="8"

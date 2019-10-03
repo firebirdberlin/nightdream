@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="horizontal"
+    android:paddingTop="6dp"
     android:padding="0px">
     <com.xenione.digit.TabDigit
         xmlns:digit="http://schemas.android.com/apk/res-auto"

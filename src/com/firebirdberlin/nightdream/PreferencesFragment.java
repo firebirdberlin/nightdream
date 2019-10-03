@@ -1110,7 +1110,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void initUseDeviceLockPreference() {
-        SwitchPreferenceCompat pref = (SwitchPreferenceCompat) findPreference("useDeviceLock");
+        SwitchPreferenceCompat pref = findPreference("useDeviceLock");
         if (pref == null) {
             return;
         }
