@@ -37,8 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:clickable="true"
-            android:contentDescription="settings"
-            app:srcCompat="@drawable/ic_menu" />
+            app:srcCompat="@drawable/ic_menu"
+            android:focusable="true" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -51,13 +51,12 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
                 android:fontFamily="monospace"
-                android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:text=""
                 android:textColor="#C2C2C2"
                 android:textSize="20sp"
-                />
+                android:singleLine="true" />
 
         </LinearLayout>
 

@@ -91,7 +91,7 @@ public class NightDreamUI {
     private ImageView background_image;
     private ImageView menuIcon;
     private ImageView nightModeIcon;
-    private WebRadioImageView radioIcon;
+    private ImageView radioIcon;
     private LightSensorEventListener lightSensorEventListener = null;
     private FrameLayout clockLayoutContainer;
     private ClockLayout clockLayout;
@@ -581,6 +581,7 @@ public class NightDreamUI {
         final boolean webRadioViewActive = bottomPanelLayout.isWebRadioViewActive();
         final int color = (webRadioViewActive ? accentColor : textColor);
         radioIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        Utility.setIconSize(mContext, radioIcon);
     }
 
     private void colorizeImageView(View view, int color) {
@@ -597,6 +598,7 @@ public class NightDreamUI {
             nightModeIcon.setVisibility(View.GONE);
         }
         nightModeIcon.setImageResource( (mode == 0) ? R.drawable.ic_moon : R.drawable.ic_sun );
+        Utility.setIconSize(mContext, nightModeIcon);
     }
 
     private void setupBackgroundImage() {

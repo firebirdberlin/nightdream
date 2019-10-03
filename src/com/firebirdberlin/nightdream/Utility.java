@@ -34,6 +34,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -597,5 +598,11 @@ public class Utility {
                 Log.d(TAG, String.format("%s = '%s'", key, strValue));
             }
         }
+    }
+
+    public static void setIconSize(Context context, ImageView icon) {
+        int dim = Utility.dpToPx(context, 48);
+        icon.getLayoutParams().height = dim;
+        icon.getLayoutParams().width = dim;
     }
 }
