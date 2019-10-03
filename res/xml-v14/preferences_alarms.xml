@@ -1,7 +1,7 @@
 <PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-    app:icon="@drawable/ic_alarm_clock"
+    app:icon="@drawable/ic_alarm_clock_icon"
     app:key="alarms"
     app:title="@string/alarm">
 

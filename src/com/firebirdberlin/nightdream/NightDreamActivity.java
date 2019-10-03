@@ -53,7 +53,6 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
-import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 
@@ -78,7 +77,7 @@ public class NightDreamActivity extends BillingHelperActivity
     mAudioManager AudioManage = null;
     private ImageView weatherIcon;
     private ImageView alarmClockIcon;
-    private WebRadioImageView radioIcon;
+    private ImageView radioIcon;
     private BottomPanelLayout bottomPanelLayout;
     private boolean screenWasOn = false;
     private Context context = null;
@@ -475,11 +474,13 @@ public class NightDreamActivity extends BillingHelperActivity
     public void setRadioIconActive() {
         int accentColor = (mode == 0) ? mySettings.clockColorNight : mySettings.clockColor;
         radioIcon.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        Utility.setIconSize(this, radioIcon);
     }
 
     public void setRadioIconInactive() {
         int textColor = (mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor;
         radioIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+        Utility.setIconSize(this, radioIcon);
     }
 
     public void onLocationFailure() { }
@@ -507,6 +508,7 @@ public class NightDreamActivity extends BillingHelperActivity
         } else {
             alarmClockIcon.setVisibility(View.VISIBLE);
         }
+        Utility.setIconSize(this, alarmClockIcon);
     }
 
     public void onWeatherForecastClick(View v) {

@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:contentDescription="settings"
             android:onClick="onSettingsClick"
             android:padding="5dp"
@@ -28,10 +29,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:contentDescription="@string/alarm"
             android:onClick="onAlarmClockClick"
             android:padding="5dp"
-            app:srcCompat="@drawable/ic_alarm_clock"
+            app:srcCompat="@drawable/ic_alarm_clock_icon"
             android:visibility="gone" />
 
         <ImageView
@@ -39,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:contentDescription="@string/weather"
             android:onClick="onWeatherForecastClick"
             android:padding="5dp"
@@ -53,7 +56,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <com.firebirdberlin.nightdream.ui.WebRadioImageView
+        <ImageView
             android:id="@+id/radio_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +65,8 @@
             android:onClick="onRadioClick"
             android:padding="5dp"
             android:src="@drawable/ic_radio"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:focusable="true" />
 
         <ImageView
             android:id="@+id/night_mode_icon"
@@ -72,7 +76,8 @@
             android:contentDescription="@string/night_mode"
             android:onClick="onNightModeClick"
             android:padding="5dp"
-            app:srcCompat="@drawable/ic_sun" />
+            app:srcCompat="@drawable/ic_sun"
+            android:focusable="true" />
     </LinearLayout>
 
 </LinearLayout>
