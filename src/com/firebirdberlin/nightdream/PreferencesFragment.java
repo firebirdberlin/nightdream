@@ -128,10 +128,21 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                     if (isAdded() && "appearance".equals(rootKey)) {
-                        ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
-                        if (preview != null) {
-                            preview.invalidate();
+                        View v = getView();
+                        if (v != null) {
+                            v.post(
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
+                                            if (preview != null) {
+                                                preview.invalidate();
+                                            }
+                                        }
+                                    }
+                            );
                         }
+
                     }
                     switch (key) {
                         case "brightness_offset":

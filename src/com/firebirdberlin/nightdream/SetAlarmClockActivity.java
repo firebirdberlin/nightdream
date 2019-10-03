@@ -153,7 +153,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         final Context context = this;
         TimePickerDialog mTimePicker = new TimePickerDialog(
                 context,
-               // R.style.DialogTheme,
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
@@ -210,13 +209,14 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog mDatePicker = new DatePickerDialog(context, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog mDatePicker = new DatePickerDialog(
+                context,
+                new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 // Bug Android 4.1: Dialog is submitted twice
                 // >> ignore second call to this method.
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-                        && !view.isShown()) return;
+                if (!view.isShown()) return;
 
                 Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.YEAR, year);
