@@ -287,4 +287,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="activateDoNotDisturb">\"Nicht stören\" aktivieren</string>
     <string name="activateDoNotDisturbSummary">\"Nicht stören\" aktivieren, solange die App aktiv ist.</string>
     <string name="manage_permissions">Berechtigungen</string>
+    <string name="decoration_glow_effect">Glüheffekt</string>
+    <string name="weatherProvider">Anbieter für Wetterdate</string>
+    <string name="permission_request_autostart">Bitte geben Sie die Berechtigung für den Autostart (Über anderen Apps einblenden).</string>
 </resources>

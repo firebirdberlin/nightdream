@@ -67,5 +67,6 @@
     <Preference
         app:key="empty"
         app:title=""
+        app:enabled="false"
         />
 </PreferenceScreen>

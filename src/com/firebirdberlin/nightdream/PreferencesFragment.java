@@ -613,7 +613,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
-        if (preference != null && "autostart".equals(preference.getKey())) {
+        if (preference != null && rootKey == null) {
             dismissSnackBar();
         }
 
