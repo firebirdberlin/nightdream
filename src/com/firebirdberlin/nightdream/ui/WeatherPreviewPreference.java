@@ -1,13 +1,15 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
-import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.TextView;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -31,8 +33,9 @@ public class WeatherPreviewPreference extends Preference {
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
-        preferenceView = super.onCreateView(parent);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        preferenceView = holder.itemView;
 
         View summary = preferenceView.findViewById(android.R.id.summary);
         if (summary != null) {
@@ -43,18 +46,12 @@ public class WeatherPreviewPreference extends Preference {
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 layoutInflater.inflate(R.layout.weather_preview_preference, summaryParent2, true);
 
-                lastWeatherCalculationTime = (TextView) summaryParent2.findViewById(R.id.lastWeatherCalculationTime);
-                lastLocationUpdateTime = (TextView) summaryParent2.findViewById(R.id.lastLocationUpdateTime);
-                cityName = (TextView) summaryParent2.findViewById(R.id.lastCityName);
+                lastWeatherCalculationTime = summaryParent2.findViewById(R.id.lastWeatherCalculationTime);
+                lastLocationUpdateTime = summaryParent2.findViewById(R.id.lastLocationUpdateTime);
+                cityName = summaryParent2.findViewById(R.id.lastCityName);
             }
         }
 
-        return preferenceView;
-    }
-
-    @Override
-    public void onBindView(View view) {
-        super.onBindView(view);
         updateView();
     }
 

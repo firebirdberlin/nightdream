@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.AlarmManager;
-import android.app.FragmentManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
@@ -18,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,6 +25,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -52,7 +53,6 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
-import com.firebirdberlin.nightdream.ui.WebRadioImageView;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 
@@ -77,7 +77,7 @@ public class NightDreamActivity extends BillingHelperActivity
     mAudioManager AudioManage = null;
     private ImageView weatherIcon;
     private ImageView alarmClockIcon;
-    private WebRadioImageView radioIcon;
+    private ImageView radioIcon;
     private BottomPanelLayout bottomPanelLayout;
     private boolean screenWasOn = false;
     private Context context = null;
@@ -302,7 +302,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void showStopBackgroundServicesDialog() {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
         dialog.show(fm, "sleep_timer");
     }
@@ -474,11 +474,13 @@ public class NightDreamActivity extends BillingHelperActivity
     public void setRadioIconActive() {
         int accentColor = (mode == 0) ? mySettings.clockColorNight : mySettings.clockColor;
         radioIcon.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        Utility.setIconSize(this, radioIcon);
     }
 
     public void setRadioIconInactive() {
         int textColor = (mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor;
         radioIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+        Utility.setIconSize(this, radioIcon);
     }
 
     public void onLocationFailure() { }
@@ -506,6 +508,7 @@ public class NightDreamActivity extends BillingHelperActivity
         } else {
             alarmClockIcon.setVisibility(View.VISIBLE);
         }
+        Utility.setIconSize(this, alarmClockIcon);
     }
 
     public void onWeatherForecastClick(View v) {
@@ -798,4 +801,5 @@ public class NightDreamActivity extends BillingHelperActivity
             }
         }
     }
+
 }

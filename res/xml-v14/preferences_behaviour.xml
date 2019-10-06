@@ -1,0 +1,72 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:key="behaviour"
+    app:icon="@drawable/ic_expert"
+    app:title="@string/behaviour">
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="doubleTapToFinish"
+        app:summary="@string/doubleTapToFinishSummary"
+        app:title="@string/doubleTapToFinishTitle" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="restlessMode"
+        app:title="@string/restless_mode" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="persistentBatteryValueWhileCharging"
+        app:summary="@string/persistent_battery_value_while_charging_summary"
+        app:title="@string/persistent_battery_value_while_charging" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="showBatteryWarning"
+        app:summary="@string/showBatteryWarningSummary"
+        app:title="@string/showBatteryWarningTitle" />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="-1"
+        app:entries="@array/screenOrientation"
+        app:entryValues="@array/screenOrientationValues"
+        app:key="screenOrientation"
+        app:title="@string/screenOrientation" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="clockLayoutMirrorText"
+        app:title="@string/clock_layout_mirror_text" />
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseActions2"
+        app:isPreferenceVisible="false"
+        app:title="@string/purchaseActions" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:enabled="false"
+        app:key="activateDoNotDisturb"
+        app:summary="@string/activateDoNotDisturbSummary"
+        app:title="@string/activateDoNotDisturb" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="useDeviceLock"
+        app:enabled="false"
+        app:summary="@string/useDeviceLockDescription"
+        app:title="@string/useDeviceLock" />
+
+</PreferenceScreen>

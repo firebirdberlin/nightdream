@@ -2,9 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,13 +14,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialogFragment;
+
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.models.FileUri;
 
 import java.io.File;
@@ -34,20 +35,20 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static android.app.Activity.RESULT_OK;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class ManageAlarmSoundsDialogFragment extends DialogFragment {
+public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     final static String TAG = "ManageAlarmSoundsDialog";
     final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    protected File DIRECTORY = null;
+    private File DIRECTORY = null;
     // Use this instance of the interface to deliver action events
-    ManageAlarmSoundsDialogListener mListener;
-    ListView listView;
-    Button addCustomAlarmTone;
-    AlarmToneAdapter arrayAdapter;
-    Uri selectedUri;
-    boolean isPurchased = false;
+    private ManageAlarmSoundsDialogListener mListener;
+    private ListView listView;
+    private AlarmToneAdapter arrayAdapter;
+    private Uri selectedUri;
+    private boolean isPurchased = false;
+    private Context context;
 
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
         FileChannel inChannel = src.getChannel();
@@ -68,9 +69,13 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
         this.isPurchased = isPurchased;
     }
 
-    public File[] listFiles() {
+    private File[] listFiles() {
         if (DIRECTORY == null) return null;
         return DIRECTORY.listFiles();
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public void setSelectedUri(String uriString) {
@@ -86,7 +91,7 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.manage_alarm_sounds_dialog, null);
         listView = view.findViewById(R.id.listView);
-        addCustomAlarmTone = view.findViewById(R.id.addCustomAlarmTone);
+        Button addCustomAlarmTone = view.findViewById(R.id.addCustomAlarmTone);
         String btnTxt = getActivity().getString(R.string.add_custom_alarm_tone);
         if (!isPurchased) {
             String productName = getActivity().getString(R.string.product_name_webradio);
@@ -122,12 +127,11 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.d("debug", "ok clicked");
                         if (arrayAdapter != null) {
                             if (mListener != null) {
                                 FileUri fileUri = arrayAdapter.getSelectedUri();
                                 if (fileUri != null) {
-                                    Log.d("debug", fileUri.uri.toString());
+                                    Settings.setDefaultAlarmTone(context, fileUri.uri.toString());
                                     mListener.onAlarmToneSelected(fileUri.uri, fileUri.name);
                                 }
                             }
@@ -157,14 +161,10 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    selectCustomTone();
-                }
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                selectCustomTone();
             }
         }
     }
@@ -179,7 +179,6 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
     private void initListView() {
         ArrayList<FileUri> sounds = getAlarmSounds();
 
-        Log.i(TAG, DIRECTORY.getAbsolutePath());
         final File file_list[] = listFiles();
         if (file_list != null && file_list.length > 0) {
             for (File file : file_list) {
@@ -231,7 +230,6 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                 if (DIRECTORY == null) return;
                 //the selected audio.
                 Uri uri = data.getData();
-                Log.i(TAG, uri.getPath());
 
                 ContentResolver contentResolver = getActivity().getContentResolver();
                 Cursor returnCursor = contentResolver.query(uri, null, null, null, null);
@@ -273,8 +271,6 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
                     return;
                 }
 
-                Log.i(TAG, uri.getPath() + " => " + dstFile.getAbsolutePath());
-
                 try {
                     copyFile(src, dst);
                 } catch (IOException e) {
@@ -293,7 +289,7 @@ public class ManageAlarmSoundsDialogFragment extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void setOnAlarmToneSelectedListener(ManageAlarmSoundsDialogListener listener) {
+    void setOnAlarmToneSelectedListener(ManageAlarmSoundsDialogListener listener) {
         this.mListener = listener;
     }
 

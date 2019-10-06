@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,6 +14,9 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.vending.billing.IInAppBillingService;
 
 import org.json.JSONException;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class BillingHelperActivity extends Activity {
+public abstract class BillingHelperActivity extends AppCompatActivity {
     static final String TAG = "BillingActivity";
 
 

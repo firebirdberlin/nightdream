@@ -1,45 +1,21 @@
 package com.firebirdberlin.openweathermapapi;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.firebirdberlin.nightdream.R;
+import androidx.annotation.Nullable;
+import androidx.preference.DialogPreference;
+
 import com.firebirdberlin.openweathermapapi.models.City;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class CityIDPreference extends DialogPreference
-                              implements CityRequestTask.AsyncResponse {
-    private final static String TAG = "NightDream.CityIDPreference";
+public class CityIDPreference extends DialogPreference {
+    private final static String TAG = "CityIDPreference";
     private static final String NAMESPACE = "owmapi";
     private Context mContext = null;
-    private EditText queryText = null;
-    private ArrayList<City> cities = new ArrayList<City>();
-    private ArrayAdapter<City> adapter;
-    private ListView cityListView;
-    private TextView noResultsText;
-    private ContentLoadingProgressBar spinner;
-    private Button searchButton;
     private String textSummary = "";
 
     public CityIDPreference(Context ctx) {
@@ -84,113 +60,7 @@ public class CityIDPreference extends DialogPreference
         }
     }
 
-    @Override
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-        super.onPrepareDialogBuilder(builder);
-        builder.setNegativeButton(null, null);
-    }
-
-    @Override
-    protected View onCreateDialogView() {
-        adapter = new ArrayAdapter<City>(mContext, android.R.layout.simple_list_item_1, cities);
-        LayoutInflater inflater = (LayoutInflater)
-            getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View v = inflater.inflate(R.layout.city_id_search_dialog, null);
-
-        queryText = (v.findViewById(R.id.query_string));
-        spinner = v.findViewById(R.id.progress_bar);
-        cityListView = v.findViewById(R.id.radio_stream_list_view);
-        noResultsText = v.findViewById(R.id.no_results);
-        noResultsText.setVisibility(View.GONE);
-
-        queryText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    startSearch();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        cityListView.setAdapter(adapter);
-        cityListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                City city = (City) parent.getItemAtPosition(position);
-                persist(city);
-                getDialog().dismiss();
-
-            }
-        });
-
-        searchButton = (v.findViewById(R.id.start_search));
-        searchButton.setEnabled(false);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                startSearch();
-            }
-        });
-
-        queryText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchButton.setEnabled(queryText.getText().length() > 0 );
-            }
-        });
-
-
-        return v;
-    }
-
-    private void startSearch() {
-        spinner.show();
-        cityListView.setVisibility(View.GONE);
-        noResultsText.setVisibility(View.GONE);
-        String query = queryText.getText().toString().trim();
-        new CityRequestTask(this).execute(query);
-
-        InputMethodManager imm =
-                (InputMethodManager) queryText.getContext()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
-        searchButton.setEnabled(false);
-    }
-
-    @Override
-    public void onRequestFinished(List<City> cities){
-        this.cities.clear();
-        this.cities.addAll(cities);
-        ((ArrayAdapter) cityListView.getAdapter()).notifyDataSetChanged();
-        spinner.hide();
-        cityListView.setVisibility((cities.size() == 0) ? View.GONE : View.VISIBLE);
-        noResultsText.setVisibility((cities.size() == 0) ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
-        this.cities.clear();
-        // the positive button is used to clear the contents.
-        if (positiveResult) {
-            persist(null);
-        }
-    }
-
-    private void persist(City city) {
+    protected void persist(City city) {
         if (city == null) {
 
             persistString("");
@@ -204,6 +74,7 @@ public class CityIDPreference extends DialogPreference
             setSummary(getSummaryText("", ""));
             notifyChanged();
         } else {
+
             String cityId = String.format("%d", city.id);
             persistString(cityId);
 
@@ -225,12 +96,11 @@ public class CityIDPreference extends DialogPreference
     }
 
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
+    protected void onSetInitialValue(@Nullable Object defaultValue) {
+        super.onSetInitialValue(defaultValue);
         setTitle(getTitle());
-
         String def = (String) defaultValue;
         String name = getCityName();
-
         setSummary(getSummaryText(getPersistedString(def), name));
     }
 

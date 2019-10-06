@@ -2,8 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -12,7 +10,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
-import android.preference.Preference;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 
 import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.PreferencesFragment;
@@ -63,8 +65,9 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
-        preferenceView = super.onCreateView(parent);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        preferenceView = holder.itemView;
 
         View summary = preferenceView.findViewById(android.R.id.summary);
         if (summary != null) {
@@ -73,7 +76,10 @@ public class ClockLayoutPreviewPreference extends Preference {
                 final LayoutInflater layoutInflater =
                     (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
-                layoutInflater.inflate(R.layout.clock_layout_preference, summaryParent2, true);
+                View view = summaryParent2.findViewWithTag("custom");
+                if (view == null) {
+                    layoutInflater.inflate(R.layout.clock_layout_preference, summaryParent2, true);
+                }
 
                 RelativeLayout previewContainer = summaryParent2.findViewById(R.id.previewContainer);
                 clockLayout = summaryParent2.findViewById(R.id.clockLayout);
@@ -88,13 +94,6 @@ public class ClockLayoutPreviewPreference extends Preference {
                 }
             }
         }
-
-        return preferenceView;
-    }
-
-    @Override
-    public void onBindView(View view) {
-        super.onBindView(view);
         updateView();
     }
 
@@ -147,7 +146,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         preferencesContainer.removeAllViews();
         if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
             CustomDigitalClockPreferencesLayout prefs =
-                    new CustomDigitalClockPreferencesLayout(context, settings);
+                    new CustomDigitalClockPreferencesLayout(context, settings, getActivity());
             prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
                     new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
@@ -173,7 +172,7 @@ public class ClockLayoutPreviewPreference extends Preference {
             }
             AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
             CustomAnalogClockPreferencesLayout prefs =
-                    new CustomAnalogClockPreferencesLayout(context, preset);
+                    new CustomAnalogClockPreferencesLayout(context, preset, getActivity());
 
             prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
@@ -246,14 +245,15 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private boolean purchased(String sku) {
         PreferencesActivity preferencesActivity = (PreferencesActivity) getActivity();
+
         return preferencesActivity.isPurchased(sku);
     }
 
-    private Activity getActivity() {
+    private AppCompatActivity getActivity() {
         Context context = getContext();
         while (context instanceof ContextWrapper) {
-            if (context instanceof Activity) {
-                return (Activity) context;
+            if (context instanceof AppCompatActivity) {
+                return (AppCompatActivity) context;
             }
             context = ((ContextWrapper) context).getBaseContext();
         }

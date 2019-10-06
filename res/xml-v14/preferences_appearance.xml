@@ -1,0 +1,116 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:key="appearance"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/appearance">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:title="@string/appearance">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_googleplay"
+            app:key="purchaseDesignPackage"
+            app:isPreferenceVisible="false"
+            app:title="@string/purchaseWeatherData" />
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="0"
+            app:entries="@array/clockLayout"
+            app:entryValues="@array/clockLayoutValues"
+            app:key="clockLayout"
+            app:title="@string/clock_layout" />
+
+        <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
+            app:iconSpaceReserved="false"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:key="clockLayoutPreview"
+            app:selectable="false"
+            app:title="@string/preview" />
+
+        <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
+            app:iconSpaceReserved="false"
+            android:descendantFocusability="afterDescendants"
+            app:key="colorSelection"
+            app:selectable="true"
+            app:title="@string/colors"
+            />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="showDate"
+            app:title="@string/show_date" />
+
+        <com.firebirdberlin.nightdream.DateFormatPreference
+            app:iconSpaceReserved="false"
+            app:dependency="showDate"
+            app:key="dateFormat"
+            app:title="@string/date_format" />
+
+        <com.firebirdberlin.nightdream.DateFormatPreference
+            app:iconSpaceReserved="false"
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            app:key="timeFormat"
+            app:title="@string/timeFormat"
+            custom:formatType="time" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:title="@string/background">
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="1"
+            app:entries="@array/backgroundModes"
+            app:entryValues="@array/backgroundModeValues"
+            app:key="backgroundMode"
+            app:title="@string/background" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="chooseBackgroundImage"
+            app:title="@string/background_image"/>
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="hideBackgroundImage"
+            app:summary="@string/hide_background_image_in_night_mode_summary"
+            app:title="@string/hide_background_image_in_night_mode" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:key="category_brightness"
+        app:title="@string/brightness">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="autoBrightness"
+            app:title="@string/auto_brightness" />
+
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+            app:iconSpaceReserved="false"
+            app:defaultValue="80"
+            app:key="brightness_offset"
+            app:title="@string/brightness_offset"
+            seekbar:interval="1"
+            seekbar:max="100"
+            seekbar:min="-100"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight=""/>
+    </PreferenceCategory>
+</PreferenceScreen>

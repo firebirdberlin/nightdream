@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -27,9 +26,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings.System;
-import android.provider.Telephony;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -38,6 +34,11 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -52,6 +53,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.POWER_SERVICE;
 
@@ -200,6 +202,12 @@ public class Utility {
         }
     }
 
+    public static long getDaysSinceFirstInstall(Context context) {
+        long firstInstall = getFirstInstallTime(context);
+        long msDiff = Calendar.getInstance().getTimeInMillis() - firstInstall;
+        return TimeUnit.MILLISECONDS.toDays(msDiff);
+    }
+
     public static boolean hasNetworkConnection(Context context) {
         ConnectivityManager cm =
             (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -290,7 +298,7 @@ public class Utility {
     }
 
     public static void hideSystemUI(Context context) {
-        hideSystemUI(((Activity) context).getWindow());
+        hideSystemUI(((AppCompatActivity) context).getWindow());
     }
 
     public static void hideSystemUI(Window window) {
@@ -590,5 +598,17 @@ public class Utility {
                 Log.d(TAG, String.format("%s = '%s'", key, strValue));
             }
         }
+    }
+
+    public static void setIconSize(Context context, ImageView icon) {
+        int dim = Utility.dpToPx(context, 48);
+        icon.getLayoutParams().height = dim;
+        icon.getLayoutParams().width = dim;
+    }
+
+    public static boolean isAirplaneModeOn(Context context) {
+        return android.provider.Settings.System.getInt(
+                context.getContentResolver(),
+                android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
     }
 }

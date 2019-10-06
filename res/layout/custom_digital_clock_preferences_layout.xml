@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="6dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -9,9 +10,9 @@
         android:id="@+id/typeface_preference"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dip"
-        android:layout_marginTop="6dip"
-        android:background="?android:attr/selectableItemBackground"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:ellipsize="marquee"
         android:fadingEdge="horizontal"
@@ -22,6 +23,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"
+        android:focusable="true"
         tools:targetApi="ice_cream_sandwich" />
 
     <TextView

@@ -1,0 +1,87 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:icon="@drawable/ic_cloud"
+    app:key="weather"
+    app:title="@string/weather">
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseWeatherData"
+        app:isPreferenceVisible="false"
+        app:title="@string/purchaseWeatherData"/>
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:enabled="false"
+        app:key="showWeather"
+        app:title="@string/show_weather" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:dependency="showWeather"
+        app:key="showTemperature"
+        app:title="@string/show_temperature" />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:dependency="showTemperature"
+        app:entries="@array/temperatureUnit"
+        app:entryValues="@array/temperatureUnitValues"
+        app:key="temperatureUnit"
+        app:title="@string/temperatureUnit" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:dependency="showWeather"
+        app:key="showWindSpeed"
+        app:title="@string/show_wind_speed" />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:dependency="showWindSpeed"
+        app:entries="@array/speedUnit"
+        app:entryValues="@array/speedUnitValues"
+        app:key="speedUnit"
+        app:title="@string/speedUnit" />
+
+    <com.firebirdberlin.openweathermapapi.CityIDPreference
+        app:iconSpaceReserved="false"
+        xmlns:owmapi="owmapi"
+        app:dependency="showWeather"
+        app:icon="@drawable/ic_search"
+        app:key="weatherCityID"
+        app:title="@string/weather_city_id_title"
+        owmapi:textClear="@string/clear"
+        owmapi:textSummary=""
+        />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:dependency="showWeather"
+        app:defaultValue="0"
+        app:entries="@array/weatherProvider"
+        app:entryValues="@array/weatherProviderValues"
+        app:key="weatherProvider"
+        app:title="@string/weatherProvider" />
+
+    <Preference
+        app:key="weatherProviderAttribution"
+        app:dependency="showWeather"
+        app:enableCopying="true"
+        app:icon="@drawable/ic_about"/>
+
+    <com.firebirdberlin.nightdream.ui.WeatherPreviewPreference
+        app:iconSpaceReserved="false"
+        app:dependency="showWeather"
+        app:key="weatherPreview"
+        app:title="@string/weather_info_title" />
+
+</PreferenceScreen>
+

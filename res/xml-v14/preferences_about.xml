@@ -1,0 +1,265 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:icon="@drawable/ic_about"
+    app:key="about"
+    app:title="@string/about">
+
+    <de.firebirdberlin.preference.VersionPreference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_clock"
+        app:key="version"
+        app:selectable="true"
+        app:title="NightDream">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream"
+            />
+    </de.firebirdberlin.preference.VersionPreference>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_faq"
+        app:title="FAQ">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/firebirdberlin/nightdream/wiki" />
+
+    </Preference>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_share"
+        app:key="recommendApp"
+        app:title="@string/recommend"/>
+
+    <de.firebirdberlin.preference.AppDetailsPreference
+        app:key="appDetails"
+        app:icon="@drawable/ic_info"
+        app:title="@string/manage_permissions"
+        />
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_undo"
+        app:key="reset_to_defaults"
+        app:title="@string/reset_to_defaults"/>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_delete"
+        app:key="uninstallApp"
+        app:title="@string/uninstall"/>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:title="@string/titlePrivacyPolicy">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="http://nightclock.duckdns.org/apps/NightDream/privacy.html"
+            />
+    </Preference>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:layout="@layout/preferences_category"
+        app:title="@string/contribute">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_googleplay"
+            app:title="@string/contribute_beta_channel">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/apps/testing/com.firebirdberlin.nightdream" />
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_github"
+            app:title="@string/contribute_source_code">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/firebirdberlin/nightdream" />
+
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_github"
+            app:title="@string/contribute_translation">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://nightclock.duckdns.org/pastt" />
+        </Preference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:layout="@layout/preferences_category"
+        app:key="donation_category"
+        app:isPreferenceVisible="false"
+        app:title="@string/donate">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_googleplay"
+            app:key="donation_play"
+            app:title="@string/donate" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:layout="@layout/preferences_category"
+        app:title="@string/other_apps">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:summary="@string/other_apps_tinytimetracker_summary"
+            app:title="@string/other_apps_tinytimetracker">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="market://details?id=com.firebirdberlin.tinytimetracker"/>
+        </Preference>
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:layout="@layout/preferences_category"
+        app:title="@string/credits">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:enabled="true"
+            app:key="credits"
+            app:selectable="false"
+            app:summary="stefan.fruhner@googlemail.com"
+            app:title="Stefan Fruhner (2019)"
+            app:enableCopying="true"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:enabled="true"
+            app:key="credits_pr"
+            app:selectable="false"
+            app:summary="Martin Poschmann"
+            app:title="@string/credits_pull_requests" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:enabled="true"
+            app:key="translations"
+            app:selectable="false"
+            app:summary="
+ar - M. Hakam et. al.\n
+cs - Tomáš Holub\n
+de - Stefan Fruhner et. al.\n
+eu - Rober Cano\n
+es - Romina Ramírez et. al.\n
+fr - Michel Dumont\n
+he - Nati Rubinstein\n
+hr - Tomislav Gal\n
+hu - Szabados János\n
+nl - Leo van der Meulen et. al.\n"
+            app:title="@string/translations" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:enabled="true"
+            app:key="translations2"
+            app:selectable="false"
+            app:summary="
+pl - Wojciech Mudyn et. al.\n
+ro - Lucian Balaj\n
+ru - Denis Korotkov et. al.\n
+sk - Martin Renko\n
+sr - Vladimir Milić\n
+sv - Johnny Wahlberg\n
+tr - Işıl Aylanç\n
+uk - Ernest Feynman\n
+vi - Phong Nguyen"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_icons8"
+            app:key="about_icons8"
+            app:summary="icons8"
+            app:title="Icons">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://icons8.com"/>
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_radio"
+            app:key="about_radio_browser"
+            app:summary="radio-browser.info"
+            app:title="@string/radio_stream">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.radio-browser.info" />
+        </Preference>
+
+        <!--<Preference-->
+        <!--app:icon="@drawable/ic_radio"-->
+        <!--app:key="about_dirble"-->
+        <!--app:summary="Dirble.com"-->
+        <!--app:title="@string/radio_stream">-->
+        <!--<intent-->
+        <!--app:action="android.intent.action.VIEW"-->
+        <!--app:data="http://www.dirble.com" />-->
+        <!--</Preference>-->
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_roboto"
+            app:summary="by Christian Robertson"
+            app:title="Roboto Font">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://fonts.google.com/specimen/Roboto" />
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_meteocons"
+            app:summary="by Alessio Atzeni"
+            app:title="Meteocons Font">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.alessioatzeni.com/meteocons/"/>
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_7segment"
+            app:summary="by Jan Bobrowski"
+            app:title="7-Segment Digital Font">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://torinak.com/7segment"/>
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_dancing_script"
+            app:summary="by Pablo Impallari"
+            app:title="Dancing Script Regular Font">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://fonts.google.com/specimen/Dancing+Script?selection.family=Dancing+Script"
+                />
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_tab_digit"
+            app:summary="by Eugeni Senent (xenione)"
+            app:title="Tab-Digit">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/xenione/tab-digit"
+                />
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

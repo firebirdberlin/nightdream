@@ -70,6 +70,7 @@ OR
     <string name="brightness_offset">Brightness offset</string>
     <string name="buttonAccessibilitySettings">Show notifications</string>
     <string name="buy">Buy</string>
+    <string name="buy_upgrade_error">Ooops, I couldn\'t access the billing services.</string>
     <string name="buy_upgrade_summary">Upgrade to the professional version now.</string>
     <string name="buy_upgrade_title">Upgrade</string>
     <string name="category_handle_power">… and when connected to</string>
@@ -134,6 +135,7 @@ OR
     <string name="inner_circle_radius">Inner circle radius</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
+    <string name="manage_permissions">Manage permissions</string>
     <string name="maxBrightness">Maximum screen brightness</string>
     <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
     <string name="message_mobile_data_connection_confirmation">You are connected to a mobile network. Play the radio stream?</string>
@@ -170,9 +172,11 @@ OR
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
+    <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
     <string name="position">Position</string>
+    <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
     <string name="product_name_actions">Always On package</string>
