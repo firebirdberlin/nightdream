@@ -70,6 +70,7 @@ OR
     <string name="brightness_offset">Brightness offset</string>
     <string name="buttonAccessibilitySettings">Show notifications</string>
     <string name="buy">Buy</string>
+    <string name="buy_upgrade_error">Ooops, I couldn\'t access the billing services.</string>
     <string name="buy_upgrade_summary">Upgrade to the professional version now.</string>
     <string name="buy_upgrade_title">Upgrade</string>
     <string name="category_handle_power">… and when connected to</string>
