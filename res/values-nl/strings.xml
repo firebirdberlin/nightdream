@@ -189,7 +189,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi">Wi-Fi</string>
     <string name="radio_stream_activate_wifi_desc">Wanneer aan: Wi-Fi wordt enkele minuten voor het starten van de radio stream ingeschakeld</string>
     <string name="radio_stream_require_wifi">Wi-Fi verbinding nodig</string>
-    <string name="radio_stream_require_wifi_desc">Wanneer aan, alarm zal streams van internet radio's alleen afspelen als er Wi-Fi connectie is</string>
+    <string name="radio_stream_require_wifi_desc">Wanneer aan, alarm zal streams van internet radio\'s alleen afspelen als er Wi-Fi connectie is</string>
     <string name="radio_stream_enabled">Ingeschakeld</string>
     <string name="radio_stream">Radiostreams</string>
     <string name="radio_stream_failure">Probleem met de radiostream</string>
