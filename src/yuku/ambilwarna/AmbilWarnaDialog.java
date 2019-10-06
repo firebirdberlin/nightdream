@@ -1,12 +1,20 @@
 package yuku.ambilwarna;
 
-import android.app.*;
-import android.content.*;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.graphics.*;
+import android.graphics.Color;
 import android.os.Build;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+import androidx.appcompat.app.AlertDialog;
+
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.ui.ColorPrefWidgetView;
 

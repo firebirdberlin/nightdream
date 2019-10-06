@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+    <string name="about">Sobre</string>
+    <string name="action_skip">Passa</string>
+    <string name="action_snooze">Snooze</string>
+    <string name="action_stop">Atura</string>
+    <string name="activateDoNotDisturb">No molestar</string>
+    <string name="activateDoNotDisturbSummary">Activa "no molestar" mentre l\'App estigui activa</string>
+    <string name="add_new_alarm">Afegir nova alarma</string>
+    <string name="add_custom_alarm_tone">Afegir tó personalitzat</string>
+    <string name="add_custom_font">Afegir tipus de lletra personalitzat</string>
+    <string name="alarm">Alarma</string>
+    <string name="alarmUpcoming">Propera Alarma</string>
+</resources>

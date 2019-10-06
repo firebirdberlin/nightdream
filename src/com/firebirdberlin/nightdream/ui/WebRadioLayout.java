@@ -1,8 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -24,6 +21,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
@@ -247,7 +248,7 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     private void showSleepTimerDialog() {
-        FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
         SleepTimerDialogFragment dialog = new SleepTimerDialogFragment();
         dialog.show(fm, "sleep_timer");
     }
@@ -339,7 +340,7 @@ public class WebRadioLayout extends RelativeLayout {
             return;
         }
 
-        FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
         RadioInfoDialogFragment dialog = new RadioInfoDialogFragment();
         dialog.show(fm, "radio info");
     }

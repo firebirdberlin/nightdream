@@ -1,9 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -11,14 +8,16 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
+
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
-public class RadioStreamDialogFragment extends DialogFragment {
+public class RadioStreamDialogFragment extends AppCompatDialogFragment {
 
     private final static String TAG = "RadioStreamDialogFragment";
-
-    private RadioStreamDialog radioStreamDialog;
 
     private RadioStreamDialogListener listener;
     private RadioStation radioStation;
@@ -40,15 +39,15 @@ public class RadioStreamDialogFragment extends DialogFragment {
         return f;
     }
 
-    public static void showDialog(Activity parentActivity, int stationIndex,
+    public static void showDialog(AppCompatActivity parentActivity, int stationIndex,
                                   RadioStation radioStation,
                                   String preferredCountry,
                                   RadioStreamDialogListener listener) {
         RadioStreamDialogFragment dialogFragment = RadioStreamDialogFragment.newInstance(listener, radioStation, stationIndex, preferredCountry);
-        dialogFragment.show(parentActivity.getFragmentManager(), "radio_stream_dialog");
+        dialogFragment.show(parentActivity.getSupportFragmentManager(), "radio_stream_dialog");
 
         // edit the window flags in order to show the soft keyboard when the device is locked
-        parentActivity.getFragmentManager().executePendingTransactions();
+        parentActivity.getSupportFragmentManager().executePendingTransactions();
         Dialog dialog = dialogFragment.getDialog();
         if (dialog != null) {
             Window window = dialog.getWindow();
@@ -83,7 +82,7 @@ public class RadioStreamDialogFragment extends DialogFragment {
 
         // Warning: must use context of AlertDialog.Builder here so that the changed theme is applied by LayoutInflater in RadioStreamDialog!
         // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme for this DialogFragment)
-        radioStreamDialog = new RadioStreamDialog(builder.getContext(), radioStation, preferredCountry);
+        RadioStreamDialog radioStreamDialog = new RadioStreamDialog(builder.getContext(), radioStation, preferredCountry);
 
         RadioStreamDialogListener dialogDismissListener = new RadioStreamDialogListener() {
             @Override

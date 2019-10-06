@@ -68,6 +68,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Helligkeits-Richtwert</string>
     <string name="buttonAccessibilitySettings">Benachrichtigungen anzeigen</string>
     <string name="buy">Kaufen</string>
+    <string name="buy_upgrade_error">Ups, konnte die Google Services nicht erreichen.</string>
     <string name="buy_upgrade_summary">Jetzt auf die Pro-Version upgraden!</string>
     <string name="buy_upgrade_title">Pro-Version</string>
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
@@ -169,6 +170,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_width">Dicke des äußeren Kreises</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
+    <string name="preferences">Einstellungen</string>
     <string name="preview">Vorschau</string>
     <string name="product_name_actions">Always-On Paket</string>
     <string name="product_name_donation">Spende</string>
@@ -283,4 +285,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="prev">vorheriges</string>
     <string name="position">Position</string>
     <string name="typeface_dancing_script">Dancing Script Regular</string>
+    <string name="activateDoNotDisturb">\"Nicht stören\" aktivieren</string>
+    <string name="activateDoNotDisturbSummary">\"Nicht stören\" aktivieren, solange die App aktiv ist.</string>
+    <string name="manage_permissions">Berechtigungen</string>
+    <string name="decoration_glow_effect">Glüheffekt</string>
+    <string name="weatherProvider">Anbieter für Wetterdate</string>
+    <string name="permission_request_autostart">Bitte geben Sie die Berechtigung für den Autostart (Über anderen Apps einblenden).</string>
 </resources>

@@ -34,7 +34,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off_summary">Scherm \'s nachts uitzetten.</string>
     <string name="allow_screen_off">Scherm uitzetten</string>
     <string name="always_on">Altijd aan</string>
-    <string name="alwaysOnBatteryLevel">Battery meer dan</string>
+    <string name="alwaysOnBatteryLevel">Batterij meer dan</string>
     <string name="ambient_noise">Omgevingsgeluidsensor</string>
     <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmodus onderdrukken?</string>
     <string name="appearance">Uiterlijk</string>
@@ -50,10 +50,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_gradient">Verloop</string>
     <string name="background_image">Afbeelding</string>
     <string name="background_image_select">Selecteer een afbeelding</string>
-    <string name="backgroundServiceDialogTitle">Stop achtergrond service</string>
+    <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
     <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterij voorspelling. Doorgaan?</string>
-    <string name="backgroundServiceNotificationText">Achtergrond service actief</string>
-    <string name="backgroundServiceNotificationTextLocation">Locatie update is bezig</string>
+    <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
+    <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
     <string name="batteryTimeoutDescription">Tijdslimiet batterij</string>
     <string name="batteryTimeoutNever">Nooit</string>
@@ -91,7 +91,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question_layout">Weet je zeker dat je de standaardwaarden van de indeling wilt herstellen?</string>
     <string name="confirm_reset">Standaardwaarden</string>
     <string name="contribute">Bijdragen</string>
-    <string name="contribute_beta_channel">Verkrijg Beta versie</string>
+    <string name="contribute_beta_channel">Verkrijg betaversie</string>
     <string name="contribute_source_code">Broncode</string>
     <string name="contribute_translation">Vertaling</string>
     <string name="country">Land</string>
@@ -103,7 +103,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Bedankt</string>
     <string name="digit_emphasize_quarters">Kwartieren benadrukken</string>
     <string name="decoration">Decoratie</string>
-    <string name="decoration_glow_effect">Schijnsel effect</string>
+    <string name="decoration_glow_effect">Schijnseleffect</string>
     <string name="decoration_style_none">Geen</string>
     <string name="decoration_style_minute_hand">Minuutwijzer</string>
     <string name="decoration_style_labels">Getallen</string>
@@ -113,7 +113,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishTitle">Dubbeltikken om te sluiten</string>
     <string name="expertPreferences">Geavanceerde instellingen</string>
     <string name="gift_for_donors">Donatie</string>
-    <string name="forecast">Weersvoorspelling voor 5 dagen</string>
+    <string name="forecast">Weersvoorspelling voor vijf dagen</string>
     <string name="hand_shape_arc">Boog</string>
     <string name="hand_shape_bar">Balk</string>
     <string name="hand_shape_triangle">Driehoek</string>
@@ -188,6 +188,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_station_none">geen radio station</string>
     <string name="radio_stream_activate_wifi">Wi-Fi</string>
     <string name="radio_stream_activate_wifi_desc">Wanneer aan: Wi-Fi wordt enkele minuten voor het starten van de radio stream ingeschakeld</string>
+    <string name="radio_stream_require_wifi">Wi-Fi verbinding nodig</string>
+    <string name="radio_stream_require_wifi_desc">Wanneer aan, alarm zal streams van internet radio's alleen afspelen als er Wi-Fi connectie is</string>
     <string name="radio_stream_enabled">Ingeschakeld</string>
     <string name="radio_stream">Radiostreams</string>
     <string name="radio_stream_failure">Probleem met de radiostream</string>
@@ -211,6 +213,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="reset_to_defaults">Standaardwaarden herstellen</string>
     <string name="restless_mode">Klok willekeurig verplaatsen</string>
     <string name="review_request">Beoordeel deze applicatie. Bedankt!</string>
+    <string name="scheduledAutoStart">Geplande start</string>
+    <string name="scheduledAutoStartChargerRequired">Alleen met opladen </string>
+    <string name="scheduledAutoStartEnabledDesc">Plan automatisch starten voor een bepaalde tijd </string>
+    <string name="scheduledAutoStartEnabledTitle">Gepland starten </string>
+    <string name="scheduledAutoStartTimeRange">Tijd gedeelte</string>
     <string name="screen_orientation_automatic">Automatisch</string>
     <string name="screen_orientation_landscape">Landschap</string>
     <string name="screen_orientation_portrait">Portret</string>

@@ -123,6 +123,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_regular">روبوتو معتاد</string>
     <string name="typeface_roboto_thin">روبوتو رفيع</string>
     <string name="typeface">نوع الخط</string>
+    <string name="useAlarmSwipeGesture">١٠</string>
     <string name="use_internal_alarm">منبه سريع</string>
     <string name="weather_calculation_time">وقت حساب الطقس</string>
     <string name="weather_city_id_summary">إسم المدينة في  (OpenWeatherMap) . اتركها خالية من أجل تحديد المكان تلقائياً</string>

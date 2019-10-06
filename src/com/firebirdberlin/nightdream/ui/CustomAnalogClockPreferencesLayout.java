@@ -2,8 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -17,6 +15,10 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 
@@ -26,9 +28,13 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
     static int active_layout = 0;
     private OnConfigChangedListener mListener = null;
     private boolean isPurchased = false;
+    AppCompatActivity activity;
 
-    public CustomAnalogClockPreferencesLayout(Context context, AnalogClockConfig.Style preset) {
+    public CustomAnalogClockPreferencesLayout(
+            Context context, AnalogClockConfig.Style preset, AppCompatActivity activity
+    ) {
         super(context);
+        this.activity = activity;
         init(context, preset);
     }
 
@@ -90,10 +96,10 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
     }
 
     private void setupLayoutForLabels(View child, final AnalogClockConfig config) {
-        final TextView info = (TextView) child.findViewById(R.id.info_text_labels);
+        final TextView info = child.findViewById(R.id.info_text_labels);
         info.setVisibility(INVISIBLE);
 
-        final TextView digitStylePreference = (TextView) child.findViewById(R.id.digit_style_preference);
+        final TextView digitStylePreference = child.findViewById(R.id.digit_style_preference);
         setChoice(digitStylePreference, R.array.numberStyles, config.digitStyle.getValue());
         digitStylePreference.setOnClickListener(new OnClickListener() {
             @Override
@@ -111,12 +117,15 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        final TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
+        final TextView fontButton = child.findViewById(R.id.typeface_preference);
         setFontButtonText(fontButton, config);
         fontButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                if (activity == null) {
+                    return;
+                }
+                FragmentManager fm = activity.getSupportFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(config.fontUri);

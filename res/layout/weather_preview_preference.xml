@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_below="@android:id/summary"
     android:gravity="center"
@@ -14,35 +15,35 @@
         android:id="@+id/lastLocationUpdateTimeDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
+        app:fontFamily="monospace"
         android:text="@string/location_time"
         />
     <TextView
         android:id="@+id/lastLocationUpdateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
+        app:fontFamily="monospace"
         android:text=""
         />
     <TextView
         android:id="@+id/weatherCalculationTimeDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
+        app:fontFamily="monospace"
         android:text="@string/weather_calculation_time"
         />
     <TextView
         android:id="@+id/lastWeatherCalculationTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
+        app:fontFamily="monospace"
         android:text=""
         />
     <TextView
         android:id="@+id/lastCityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
+        app:fontFamily="monospace"
         android:text=""
         />
     </LinearLayout>

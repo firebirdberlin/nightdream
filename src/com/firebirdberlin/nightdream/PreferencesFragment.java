@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
@@ -17,22 +16,28 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
-import android.preference.SwitchPreference;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.vending.billing.IInAppBillingService;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
@@ -40,6 +45,9 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
+import com.firebirdberlin.openweathermapapi.CityIDPreference;
+import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,11 +55,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class PreferencesFragment extends PreferenceFragment {
+public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String TAG = "PreferencesFragment";
     public static final String ITEM_DONATION = "donation";
     public static final String ITEM_WEATHER_DATA = "weather_data";
@@ -79,6 +88,8 @@ public class PreferencesFragment extends PreferenceFragment {
     public boolean purchased_web_radio = false;
     public boolean purchased_pro = false;
     public boolean purchased_actions = false;
+    Snackbar snackbar;
+    String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
     IInAppBillingService mService;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
@@ -116,16 +127,35 @@ public class PreferencesFragment extends PreferenceFragment {
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    if (isAdded() && "appearance".equals(rootKey)) {
+                        View v = getView();
+                        if (v != null) {
+                            v.post(
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
+                                            if (preview != null) {
+                                                preview.invalidate();
+                                            }
+                                        }
+                                    }
+                            );
+                        }
+
+                    }
                     switch (key) {
                         case "brightness_offset":
                             int offsetInt = sharedPreferences.getInt("brightness_offset", 0);
                             settings.setBrightnessOffset(offsetInt / 100.f);
                             break;
                         case "autoBrightness":
-                            InlineSeekBarPreference pref = (InlineSeekBarPreference) findPreference("brightness_offset");
+                            InlineSeekBarPreference pref = findPreference("brightness_offset");
                             // reset the brightness level
                             settings.setBrightnessOffset(0.8f);
-                            pref.setProgress(80);
+                            if (pref != null) {
+                                pref.setProgress(80);
+                            }
                             setupBrightnessControls(sharedPreferences);
                             break;
                         case "minBrightness":
@@ -142,8 +172,6 @@ public class PreferencesFragment extends PreferenceFragment {
                         case "clockLayout":
                             Log.d(TAG, String.format("%s = %s", key, sharedPreferences.getString(key, "none")));
                             resetScaleFactor(sharedPreferences);
-                            ClockLayoutPreviewPreference preview = (ClockLayoutPreviewPreference) findPreference("clockLayoutPreview");
-                            preview.invalidate();
                             settings.clockLayout = Integer.parseInt(sharedPreferences.getString("clockLayout", "0"));
                             setupClockLayoutPreference();
                             break;
@@ -155,6 +183,8 @@ public class PreferencesFragment extends PreferenceFragment {
                             break;
                         case "handle_power":
                         case "standbyEnabledWhileDisconnected":
+                        case "scheduledAutoStartEnabled":
+                        case "autostartForNotifications":
                             setupStandByService(sharedPreferences);
                             break;
                         case "useInternalAlarm":
@@ -169,6 +199,9 @@ public class PreferencesFragment extends PreferenceFragment {
                         case "batteryTimeout":
                             settings.batteryTimeout = Integer.parseInt(sharedPreferences.getString("batteryTimeout", "-1"));
                             setupBatteryTimeoutPreference();
+                            break;
+                        case "weatherProvider":
+                            setupWeatherProviderPreference();
                             break;
                     }
 
@@ -204,13 +237,18 @@ public class PreferencesFragment extends PreferenceFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
-
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        dismissSnackBar();
     }
 
     @Override
@@ -222,6 +260,7 @@ public class PreferencesFragment extends PreferenceFragment {
         serviceIntent.setPackage("com.android.vending");
         getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
+
 
     @Override
     public void onStart() {
@@ -386,39 +425,37 @@ public class PreferencesFragment extends PreferenceFragment {
         enablePreference("activateDoNotDisturb", purchased_actions);
         enablePreference("useDeviceLock", purchased_actions);
 
-        if (purchased_donation) {
-            removePreference("donation_play");
+        if (!purchased_donation) {
+            showPreference("donation_category");
         }
 
-        if (purchased_weather_data) {
-            removePreference("purchaseWeatherData");
-            removePreference("purchaseDesignPackage");
+        if (!purchased_weather_data) {
+            showPreference("purchaseWeatherData");
+            showPreference("purchaseDesignPackage");
         }
 
-        if (purchased_actions) {
-            removePreference("purchaseActions");
-            removePreference("purchaseActions2");
-        }
-
-        if (! Utility.languageIs("de", "en") ||
-                purchased_donation || purchased_pro ||
-                (purchased_web_radio && purchased_weather_data)) {
-            removePreference("upgrade_wanted");
+        if (!purchased_actions) {
+            showPreference("purchaseActions");
+            showPreference("purchaseActions2");
         }
     }
 
     public void purchaseIntent(String sku, int REQUEST_CODE) {
         if (mService == null) return;
         try {
+            Activity activity = getActivity();
             String developerPayload = "abcdefghijklmnopqrstuvwxyz";
             Bundle buyIntentBundle = mService.getBuyIntent(
-                    3, getActivity().getPackageName(),
+                    3, activity.getPackageName(),
                     sku, "inapp", developerPayload
             );
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-            getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
-                    REQUEST_CODE, new Intent(), 0, 0, 0);
-        } catch (RemoteException | SendIntentException ignored) {
+            activity.startIntentSenderForResult(
+                    pendingIntent.getIntentSender(),
+                    REQUEST_CODE, new Intent(), 0, 0, 0
+            );
+        } catch (RemoteException | SendIntentException | NullPointerException ignored) {
+            Toast.makeText(mContext, R.string.buy_upgrade_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -547,8 +584,49 @@ public class PreferencesFragment extends PreferenceFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        Log.d("Prefs", "rootKey " + rootKey);
+        this.rootKey = rootKey;
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
-        addPreferencesFromResource(R.xml.preferences);
+        if ("autostart".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
+        } else if ("appearance".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_appearance, rootKey);
+        } else if ("behaviour".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_behaviour, rootKey);
+        } else if ("nightmode".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_nightmode, rootKey);
+        } else if ("weather".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_weather, rootKey);
+        } else if ("alarms".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_alarms, rootKey);
+        } else if ("about".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_about, rootKey);
+        } else {
+            setPreferencesFromResource(R.xml.preferences, rootKey);
+        }
+
+        initPurchasePreference("purchaseActions");
+        initPurchasePreference("donation_play");
+        initPurchasePreference("purchaseWeatherData");
+        initPurchasePreference("purchaseDesignPackage");
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(Preference preference) {
+        if (preference != null && rootKey == null) {
+            dismissSnackBar();
+        }
+
+        return super.onPreferenceTreeClick(preference);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         init();
     }
 
@@ -560,121 +638,123 @@ public class PreferencesFragment extends PreferenceFragment {
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
 
-        setupBrightnessControls(prefs);
-        setupBackgroundImageControls(prefs);
-        setupNightModePreferences(prefs);
-        initUseDeviceLockPreference();
-
-
-        Preference goToSettings = findPreference("startNotificationService");
-        if (Build.VERSION.SDK_INT >= 18) {
-            goToSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-
-                    startNotificationListenerSettings();
-
-                    return true;
-                }
-            });
-        } else {
+        if (Build.VERSION.SDK_INT < 18) {
             removePreference("startNotificationService");
             removePreference("autostartForNotifications");
         }
 
-        Preference chooseImage = findPreference("chooseBackgroundImage");
-        chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                checkPermissionAndSelectBackgroundImage();
-                return true;
+
+        if ("autostart".equals(rootKey)) {
+            Preference prefHandlePower = findPreference("handle_power");
+            prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                public boolean onPreferenceChange(Preference preference, Object new_value) {
+                    boolean on = Boolean.parseBoolean(new_value.toString());
+                    Utility.toggleComponentState(context, PowerConnectionReceiver.class, on);
+                    return true;
+                }
+            });
+
+            setupBatteryTimeoutPreference();
+        } else if ("appearance".equals(rootKey)) {
+            setupBrightnessControls(prefs);
+            setupBackgroundImageControls(prefs);
+            Preference chooseImage = findPreference("chooseBackgroundImage");
+            chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    checkPermissionAndSelectBackgroundImage();
+                    return true;
+                }
+            });
+            setupLightSensorPreferences();
+            setupClockLayoutPreference();
+        } else if ("behaviour".equals(rootKey)) {
+            initUseDeviceLockPreference();
+            setupDoNotDisturbPreference();
+        } else if ("nightmode".equals(rootKey)) {
+            setupNightModePreferences(prefs);
+            Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
+            Preference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
+
+            prefAmbientNoiseDetection.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
+            prefAmbientNoiseReactivation.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
+        } else if ("alarms".equals(rootKey)) {
+
+            setupAlarmClockPreferences();
+        } else if ("weather".equals(rootKey)) {
+
+            Preference prefFetchWeatherData = findPreference("showWeather");
+            prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
+            setupWeatherProviderPreference();
+        } else if ("about".equals(rootKey)) {
+
+            Preference recommendApp = findPreference("recommendApp");
+            if (recommendApp != null) {
+                recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        recommendApp();
+                        return true;
+                    }
+                });
             }
-        });
-
-        Preference donationPreference = findPreference("donation_play");
-        Preference purchaseWeatherDataPreference = findPreference("purchaseWeatherData");
-        Preference purchaseDesignPackagePreference = findPreference("purchaseDesignPackage");
-        Preference purchaseActionsPreference = findPreference("purchaseActions");
-        Preference purchaseWantedPreference = findPreference("upgrade_wanted");
-
-        donationPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
-        purchaseWeatherDataPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
-        purchaseDesignPackagePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
-        purchaseActionsPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
-        purchaseWantedPreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
-
-        Preference prefHandlePower = findPreference("handle_power");
-        Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
-        Preference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
-
-        prefAmbientNoiseDetection.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
-        prefAmbientNoiseReactivation.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
-
-        Preference prefFetchWeatherData = findPreference("showWeather");
-        prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
-
-        prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            public boolean onPreferenceChange(Preference preference, Object new_value) {
-                boolean on = Boolean.parseBoolean(new_value.toString());
-                Utility.toggleComponentState(context, PowerConnectionReceiver.class, on);
-                return true;
+            Preference uninstallApp = findPreference("uninstallApp");
+            if (uninstallApp != null) {
+                uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        uninstallApplication();
+                        return true;
+                    }
+                });
             }
-        });
+            Preference resetToDefaults = findPreference("reset_to_defaults");
+            if (resetToDefaults != null) {
 
+                resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    public boolean onPreferenceClick(Preference preference) {
+                        new AlertDialog.Builder(mContext)
+                                .setTitle(getResources().getString(R.string.confirm_reset))
+                                .setMessage(getResources().getString(R.string.confirm_reset_question))
+                                .setNegativeButton(android.R.string.no, null)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        settings.clear();
+                                        getPreferenceScreen().removeAll();
+                                        WakeUpReceiver.cancelAlarm(mContext);
+                                        DataSource db = new DataSource(context);
+                                        db.open();
+                                        db.dropData();
+                                        db.close();
+                                        addPreferencesFromResource(R.xml.preferences);
+                                        init();
+                                        storeWeatherDataPurchase(purchased_weather_data, purchased_donation);
+                                        togglePurchasePreferences();
+                                    }
+                                }).show();
 
-        Preference recommendApp = findPreference("recommendApp");
-        recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                recommendApp();
-                return true;
+                        return true;
+                    }
+                });
+
             }
-        });
 
-        Preference uninstallApp = findPreference("uninstallApp");
-        uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                uninstallApplication();
-                return true;
-            }
-        });
+        } else {
+            // main page
+            setupDaydreamPreferences();
+            setupTranslationRequest();
+        }
 
-        Preference resetToDefaults = findPreference("reset_to_defaults");
-        resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                new AlertDialog.Builder(mContext)
-                        .setTitle(getResources().getString(R.string.confirm_reset))
-                        .setMessage(getResources().getString(R.string.confirm_reset_question))
-                        .setNegativeButton(android.R.string.no, null)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                settings.clear();
-                                getPreferenceScreen().removeAll();
-                                WakeUpReceiver.cancelAlarm(mContext);
-                                DataSource db = new DataSource(context);
-                                db.open();
-                                db.dropData();
-                                db.close();
-                                addPreferencesFromResource(R.xml.preferences);
-                                init();
-                                storeWeatherDataPurchase(purchased_weather_data, purchased_donation);
-                                togglePurchasePreferences();
-                            }
-                        }).show();
-
-                return true;
-            }
-        });
-
-        setupLightSensorPreferences();
-        setupDaydreamPreferences();
-        setupTranslationRequest();
-        setupAlarmClockPreferences();
-        setupBatteryTimeoutPreference();
-        setupClockLayoutPreference();
-        setupDoNotDisturbPreference();
+        if (rootKey == null || "autostart".equals(rootKey) ) {
+            conditionallyShowSnackBar(null);
+        }
+        if (rootKey == null) {
+            conditionallyShowSnackBarPurchase();
+        }
     }
 
-    private void startNotificationListenerSettings() {
-        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-        startActivityForResult(intent, 0);
+    void initPurchasePreference(String key) {
+        Preference purchasePreference = findPreference(key);
+        if (purchasePreference != null) {
+            purchasePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        }
     }
 
     private void setupLightSensorPreferences() {
@@ -684,7 +764,7 @@ public class PreferencesFragment extends PreferenceFragment {
             removePreference("category_brightness");
             removePreference("reactivate_on_ambient_light_value");
 
-            ListPreference nightModePref = (ListPreference) findPreference("nightModeActivationMode");
+            ListPreference nightModePref = findPreference("nightModeActivationMode");
             nightModePref.setEntries(new String[]{
                                         getString(R.string.night_mode_activation_manual),
                                         getString(R.string.night_mode_activation_scheduled),
@@ -694,14 +774,14 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupTranslationRequest() {
-        if (Utility.languageIs("de", "en")) {
-            removePreference("translations_wanted");
+        if (!Utility.languageIs("de", "en")) {
+            showPreference("translations_wanted");
         }
     }
 
     private void setupAlarmClockPreferences() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            removePreference("radioStreamActivateWiFi");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            showPreference("radioStreamActivateWiFi");
         }
     }
 
@@ -844,8 +924,8 @@ public class PreferencesFragment extends PreferenceFragment {
                     settings.setReactivateScreenOnNoise(false);
                     settings.setUseAmbientNoiseDetection(false);
 
-                    SwitchPreference prefAmbientNoiseDetection = (SwitchPreference) findPreference("ambientNoiseDetection");
-                    CheckBoxPreference prefAmbientNoiseReactivation = (CheckBoxPreference) findPreference("reactivate_screen_on_noise");
+                    SwitchPreferenceCompat prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
+                    CheckBoxPreference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
                     prefAmbientNoiseDetection.setChecked(false);
                     prefAmbientNoiseReactivation.setChecked(false);
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
@@ -858,7 +938,7 @@ public class PreferencesFragment extends PreferenceFragment {
                         && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     settings.setFetchWeatherData(false);
 
-                    SwitchPreference prefShowWeather = (SwitchPreference) findPreference("showWeather");
+                    SwitchPreferenceCompat prefShowWeather = findPreference("showWeather");
                     prefShowWeather.setChecked(false);
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
                 }
@@ -884,8 +964,11 @@ public class PreferencesFragment extends PreferenceFragment {
         }
     }
     private void setupClockLayoutPreference() {
-        if (!isAdded() ) return;
+
         Preference pref = findPreference("clockLayout");
+        if (!isAdded() || pref == null) {
+            return;
+        }
         String[] valueArray = getResources().getStringArray(R.array.clockLayoutValues);
         String[] stringArray = getResources().getStringArray(R.array.clockLayout);
         for (int i=0; i< valueArray.length; i++) {
@@ -898,8 +981,10 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void setupBatteryTimeoutPreference() {
-        if (!isAdded() ) return;
         Preference pref = findPreference("batteryTimeout");
+        if (!isAdded() || pref == null) {
+            return;
+        }
         String[] valueArray = getResources().getStringArray(R.array.batteryTimeoutValues);
         String[] stringArray = getResources().getStringArray(R.array.batteryTimeout);
         for (int i=0; i< valueArray.length; i++) {
@@ -911,16 +996,50 @@ public class PreferencesFragment extends PreferenceFragment {
         }
     }
 
+    private void setupWeatherProviderPreference() {
+        Preference pref = findPreference("weatherProvider");
+        if (!isAdded() || pref == null) {
+            return;
+        }
+        Preference prefAttribution = findPreference("weatherProviderAttribution");
+        if (settings.getWeatherProviderString().equals("0")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://openweathermap.org"));
+            prefAttribution.setIntent(intent);
+            prefAttribution.setTitle("Powered by OpenWeatherMap");
+            prefAttribution.setSummary("https://openweathermap.org");
+        }
+        else if (settings.getWeatherProviderString().equals("1")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://darksky.net/poweredby/"));
+            prefAttribution.setIntent(intent);
+            prefAttribution.setTitle("Powered by Dark Sky");
+            prefAttribution.setSummary("https://darksky.net/poweredby/");
+        }
+
+        String[] valueArray = getResources().getStringArray(R.array.weatherProviderValues);
+        String[] stringArray = getResources().getStringArray(R.array.weatherProvider);
+        for (int i=0; i< valueArray.length; i++) {
+            String v = valueArray[i];
+
+            if (v.equals(settings.getWeatherProviderString())) {
+                pref.setSummary(stringArray[i]);
+                return;
+            }
+        }
+    }
+
     private void setupBrightnessControls(SharedPreferences prefs) {
         if (!isAdded() ) return;
         Preference brightnessOffset = findPreference("brightness_offset");
+        if (brightnessOffset == null) {
+            return;
+        }
         boolean on = prefs.getBoolean("autoBrightness", false);
         String title = getString(R.string.brightness);
         if (on) {
             title = getString(R.string.brightness_offset);
         }
         brightnessOffset.setTitle(title);
-        PreferenceCategory category = (PreferenceCategory) findPreference("category_brightness");
+        PreferenceCategory category = findPreference("category_brightness");
 
         removePreference("maxBrightnessBattery");
         removePreference("nightModeBrightnessInt");
@@ -928,7 +1047,7 @@ public class PreferencesFragment extends PreferenceFragment {
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("minBrightness", (int) (100 * nightModeBrightness));
-            prefEditor.commit();
+            prefEditor.apply();
 
             InlineSeekBarPreference prefMinBrightness = new InlineSeekBarPreference(mContext);
             prefMinBrightness.setKey("minBrightness");
@@ -936,6 +1055,7 @@ public class PreferencesFragment extends PreferenceFragment {
             prefMinBrightness.setSummary("");
             prefMinBrightness.setRange(-100, 100);
             prefMinBrightness.setDefaultValue(0);
+            prefMinBrightness.setIconSpaceReserved(false);
 
             InlineSeekBarPreference prefMaxBrightness = new InlineSeekBarPreference(mContext);
             prefMaxBrightness.setKey("maxBrightness");
@@ -943,6 +1063,7 @@ public class PreferencesFragment extends PreferenceFragment {
             prefMaxBrightness.setSummary("");
             prefMaxBrightness.setRange(1, 100);
             prefMaxBrightness.setDefaultValue(50);
+            prefMaxBrightness.setIconSpaceReserved(false);
 
             category.addPreference(prefMinBrightness);
             category.addPreference(prefMaxBrightness);
@@ -953,13 +1074,14 @@ public class PreferencesFragment extends PreferenceFragment {
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("nightModeBrightnessInt", (int) (100 * nightModeBrightness));
-            prefEditor.commit();
+            prefEditor.apply();
             InlineSeekBarPreference prefNightModeBrightness = new InlineSeekBarPreference(mContext);
             prefNightModeBrightness.setKey("nightModeBrightnessInt");
             prefNightModeBrightness.setTitle(getString(R.string.brightness_night_mode));
             prefNightModeBrightness.setSummary("");
             prefNightModeBrightness.setRange(-100, 100);
             prefNightModeBrightness.setDefaultValue(0);
+            prefNightModeBrightness.setIconSpaceReserved(false);
             category.addPreference(prefNightModeBrightness);
         }
 
@@ -969,6 +1091,7 @@ public class PreferencesFragment extends PreferenceFragment {
         prefMaxBrightnessBattery.setSummary("");
         prefMaxBrightnessBattery.setRange(1, 100);
         prefMaxBrightnessBattery.setDefaultValue(25);
+        prefMaxBrightnessBattery.setIconSpaceReserved(false);
         category.addPreference(prefMaxBrightnessBattery);
     }
 
@@ -991,7 +1114,10 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     private void initUseDeviceLockPreference() {
-        SwitchPreference pref = (SwitchPreference) findPreference("useDeviceLock");
+        SwitchPreferenceCompat pref = findPreference("useDeviceLock");
+        if (pref == null) {
+            return;
+        }
 
         DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
         ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
@@ -1002,8 +1128,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
         if (!isAdded() ) return;
-        boolean shallAutostart = sharedPreferences.getBoolean("handle_power", false);
-        boolean on = shallAutostart || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false);
+        boolean on = isAutostartActivated(sharedPreferences);
         int newState = on ?
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
@@ -1013,17 +1138,35 @@ public class PreferencesFragment extends PreferenceFragment {
         }
 
         PackageManager pm = mContext.getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(mContext, ScreenWatcherService.class),
-                newState, PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(
+                new ComponentName(mContext, ScreenWatcherService.class),
+                newState, PackageManager.DONT_KILL_APP
+        );
 
         if (on) {
             ScreenWatcherService.start(mContext);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                if (! android.provider.Settings.canDrawOverlays(mContext)) {
-                    startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
-                }
-            }
         }
+        conditionallyShowSnackBar(sharedPreferences);
+    }
+
+    private boolean isAutostartActivated(SharedPreferences sharedPreferences) {
+        return (
+                sharedPreferences.getBoolean("handle_power", false)
+                        || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false)
+                        || sharedPreferences.getBoolean("scheduledAutoStartEnabled", false)
+                        || sharedPreferences.getBoolean("autostartForNotifications", false)
+        );
+    }
+
+    private boolean hasCanDrawOverlaysPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return (android.provider.Settings.canDrawOverlays(mContext));
+        }
+        return true;
+    }
+
+    void requestCanDrawOverlaysPermission() {
+        startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
     }
 
     private void setupAlarmClock(SharedPreferences sharedPreferences) {
@@ -1104,6 +1247,13 @@ public class PreferencesFragment extends PreferenceFragment {
         }
     }
 
+    private void showPreference(String key) {
+        Preference preference = findPreference(key);
+        if (preference != null) {
+            preference.setVisible(true);
+        }
+    }
+
     private void removePreference(String key) {
         Preference preference = findPreference(key);
         removePreference(preference);
@@ -1142,8 +1292,16 @@ public class PreferencesFragment extends PreferenceFragment {
         }
     }
 
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        if (preference instanceof CityIDPreference) {
+            DialogFragment dialogFragment = CityIdDialogFragment.newInstance(preference.getKey());
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(getFragmentManager(), null);
+        } else super.onDisplayPreferenceDialog(preference);
+    }
+
     private void setupDaydreamPreferences() {
-        if (!isAdded() ) return;
         enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
         Preference pref = findPreference("autostart");
         boolean on = pref.isEnabled();
@@ -1153,7 +1311,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
     private class DaydreamSettingsObserver extends ContentObserver {
 
-        public DaydreamSettingsObserver(Handler handler) {
+        DaydreamSettingsObserver(Handler handler) {
             super(handler);
         }
 
@@ -1161,6 +1319,101 @@ public class PreferencesFragment extends PreferenceFragment {
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
             setupDaydreamPreferences();
+        }
+    }
+    private void conditionallyShowSnackBar(SharedPreferences settings){
+        if (settings == null) {
+            settings = mContext.getSharedPreferences(PREFS_KEY, 0);
+        }
+        if (isAutostartActivated(settings) && !hasCanDrawOverlaysPermission()) {
+            View view = getActivity().findViewById(android.R.id.content);
+            snackbar = Snackbar.make(view, R.string.permission_request_autostart, Snackbar.LENGTH_INDEFINITE);
+            int color = getRandomMaterialColor();
+            int textColor = getContrastColor(color);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(color);
+            snackbar.setActionTextColor(textColor);
+
+            TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+            tv.setTextColor(textColor);
+
+            snackbar.setAction(android.R.string.ok, new CanDrawOverlaysPermissionListener());
+            snackbar.show();
+        } else {
+            dismissSnackBar();
+        }
+    }
+    private void conditionallyShowSnackBarPurchase(){
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_KEY, 0);
+        Log.d(TAG, "days: " + Utility.getDaysSinceFirstInstall(mContext));
+        long lastTimeShown = settings.getLong("purchaseSnackBarTimestamp", 0L);
+        long timeSinceShown = System.currentTimeMillis() - lastTimeShown;
+        Log.i(TAG, "timeSinceShown: " + Utility.getDaysSinceFirstInstall(mContext));
+        long daysInstalled = Utility.getDaysSinceFirstInstall(mContext);
+        if (
+                mService != null
+                        || (snackbar != null && snackbar.isShown())
+                        || Utility.isAirplaneModeOn(mContext)
+                        || purchased_donation || purchased_pro
+                        || (purchased_web_radio && purchased_weather_data)
+                        || daysInstalled < 7
+                        || timeSinceShown < 60000 * 60 * 24 * 7
+        ) {
+            return;
+        }
+        View view = getActivity().findViewById(android.R.id.content);
+        snackbar = Snackbar.make(view, R.string.buy_upgrade_summary, Snackbar.LENGTH_INDEFINITE);
+        int color = getRandomMaterialColor();
+        int textColor = getContrastColor(color);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(color);
+        snackbar.setActionTextColor(textColor);
+
+        TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        tv.setTextColor(textColor);
+
+        snackbar.setAction(android.R.string.ok, new BuyUpgradeListener());
+        snackbar.setDuration(10000);
+        snackbar.show();
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putLong("purchaseSnackBarTimestamp", System.currentTimeMillis());
+        prefEditor.apply();
+    }
+
+    void dismissSnackBar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
+    }
+
+    private int getRandomMaterialColor() {
+        int[] colors = getResources().getIntArray(R.array.materialColors);
+        return colors[new Random().nextInt(colors.length)];
+    }
+
+    private int getContrastColor(int color) {
+        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
+        return y >= 128 ? Color.BLACK : Color.WHITE;
+    }
+
+
+    public class CanDrawOverlaysPermissionListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if (isAdded()) {
+                requestCanDrawOverlaysPermission();
+            }
+        }
+    }
+
+    public class BuyUpgradeListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (isAdded()) {
+                purchaseIntent(ITEM_PRO, REQUEST_CODE_PURCHASE_PRO);
+            }
         }
     }
 }

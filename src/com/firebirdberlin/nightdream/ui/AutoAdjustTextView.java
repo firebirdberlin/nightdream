@@ -9,14 +9,15 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
-import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FontCache;
 
 
-public class AutoAdjustTextView extends TextView {
+public class AutoAdjustTextView extends AppCompatTextView {
     private static final String TAG = "AutoAdjustTextView";
     private int maxWidth = -1;
     private int maxHeight = -1;

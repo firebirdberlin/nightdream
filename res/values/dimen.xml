@@ -5,4 +5,5 @@
     <dimen name="ambilwarna_hueWidth">30dp</dimen>
     <dimen name="ambilwarna_spacer">8dp</dimen>
     <dimen name="ambilwarna_distance">20dp</dimen>
+    <dimen name="preference_horizontal_margin">16dp</dimen>
 </resources>

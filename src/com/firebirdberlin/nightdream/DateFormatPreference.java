@@ -5,8 +5,9 @@ import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Build;
 import android.os.Handler;
-import android.preference.ListPreference;
 import android.util.AttributeSet;
+
+import androidx.preference.ListPreference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -185,10 +186,5 @@ public class DateFormatPreference extends ListPreference {
                 initHourFormatType();
             }
         }
-    }
-
-    @Override
-    public void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
     }
 }

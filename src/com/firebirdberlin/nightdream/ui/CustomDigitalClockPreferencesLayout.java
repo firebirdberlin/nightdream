@@ -1,12 +1,8 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -14,6 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -24,10 +24,14 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
     private OnConfigChangedListener mListener = null;
     private Settings settings = null;
     private boolean isPurchased = false;
+    AppCompatActivity activity = null;
 
-    public CustomDigitalClockPreferencesLayout(Context context, Settings settings) {
+    public CustomDigitalClockPreferencesLayout(
+            Context context, Settings settings, AppCompatActivity activity
+    ) {
         super(context);
         this.settings = settings;
+        this.activity = activity;
         init(context);
     }
 
@@ -36,7 +40,8 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         init(context);
     }
 
-    private void init(Context context) {
+    private void init(final Context context) {
+
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child = inflater.inflate(R.layout.custom_digital_clock_preferences_layout, null);
@@ -76,14 +81,18 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 }
             }
         });
-        TextView fontButton = (TextView) child.findViewById(R.id.typeface_preference);
+        TextView fontButton = child.findViewById(R.id.typeface_preference);
         String fontButtonText = fontButton.getText().toString();
         fontButtonText = String.format("%s: %s", fontButtonText, settings.fontName);
         fontButton.setText(fontButtonText);
         fontButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fm = ((Activity) getContext()).getFragmentManager();
+                if (activity == null) {
+                    return;
+                }
+
+                FragmentManager fm = activity.getSupportFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(settings.fontUri);

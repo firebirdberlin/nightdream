@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
-import android.preference.Preference;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,19 +15,22 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
+
 import com.firebirdberlin.nightdream.R;
 
 public class AlarmVolumePreference extends Preference implements OnSeekBarChangeListener {
     private static final String ANDROIDNS = "http://schemas.android.com/apk/res/android";
-    private static final String SEEKBAR = "http://schemas.android.com/apk/lib/android";
     private static final int DEFAULT_VALUE = 50;
 
-    private AudioManager audioManager;
-    private int stream = AudioManager.STREAM_ALARM;
+    private int minValue = 0;
     private int maxValue = 100;
     private int currentValue;
 
-    private SeekBar seekBar;
+    private AppCompatSeekBar seekBar;
     private ImageView icon;
 
     public AlarmVolumePreference(Context context, AttributeSet attrs) {
@@ -41,37 +44,50 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
     }
 
     private void setValuesFromXml(AttributeSet attrs) {
-        stream = attrs.getAttributeIntValue(ANDROIDNS, "stream", AudioManager.STREAM_ALARM);
-        audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-        maxValue = audioManager.getStreamMaxVolume(stream);
+        int stream = attrs.getAttributeIntValue(ANDROIDNS, "stream", AudioManager.STREAM_ALARM);
+        AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) {
+            maxValue = audioManager.getStreamMaxVolume(stream);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                minValue = audioManager.getStreamMinVolume(stream);
+            }
+        } else {
+            maxValue = 7;
+            minValue = 0;
+        }
+
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
-        View ret = super.onCreateView(parent);
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        View ret = holder.itemView;
 
         View summary = ret.findViewById(android.R.id.summary);
         if (summary != null) {
             ViewParent summaryParent = summary.getParent();
             if (summaryParent instanceof ViewGroup) {
                 final LayoutInflater layoutInflater =
-                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                if (layoutInflater == null) {
+                    return;
+                }
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
-                layoutInflater.inflate(R.layout.alarm_volume_preference, summaryParent2);
+                View view = summaryParent2.findViewWithTag("custom");
+                if (view == null) {
+                    layoutInflater.inflate(R.layout.alarm_volume_preference, summaryParent2);
+                }
 
-                icon = (ImageView) summaryParent2.findViewById(R.id.icon);
-                seekBar = (SeekBar) summaryParent2.findViewById(R.id.seekBar);
+                icon = summaryParent2.findViewById(R.id.icon);
+                seekBar = summaryParent2.findViewById(R.id.seekBar);
                 seekBar.setMax(maxValue);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    seekBar.setMin(minValue);
+                }
                 seekBar.setOnSeekBarChangeListener(this);
             }
         }
         setupIcon();
-        return ret;
-    }
-
-    @Override
-    public void onBindView(View view) {
-        super.onBindView(view);
         updateView();
     }
 
@@ -79,7 +95,6 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
         if (seekBar != null) seekBar.setProgress(currentValue);
     }
 
-    //region OnSeekBarChangeListener interface
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (progress > maxValue) progress = maxValue;
 
@@ -95,57 +110,32 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
         setupIcon();
     }
 
-    public void onStartTrackingTouch(SeekBar seekBar) {
-    }
+    public void onStartTrackingTouch(SeekBar seekBar) {}
 
     public void onStopTrackingTouch(SeekBar seekBar) {
         notifyChanged();
     }
-    //endregion
 
     private void setupIcon() {
-        if ( currentValue == 0 ) {
+        if (currentValue == minValue) {
             icon.setImageResource(R.drawable.ic_no_audio);
-            icon.setColorFilter( Color.GRAY, PorterDuff.Mode.SRC_ATOP );
+            icon.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
         } else {
             icon.setImageResource(R.drawable.ic_audio);
-            icon.setColorFilter( Color.WHITE, PorterDuff.Mode.SRC_ATOP );
+            icon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
         }
         icon.invalidate();
     }
 
     @Override
     protected Object onGetDefaultValue(TypedArray ta, int index) {
-        int defaultValue = ta.getInt(index, DEFAULT_VALUE);
-        return defaultValue;
+        return ta.getInt(index, DEFAULT_VALUE);
     }
 
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        if (restoreValue) {
-            currentValue = getPersistedInt(currentValue);
-        }
-        else {
-            int temp = 0;
-            if (defaultValue instanceof Integer) temp = (Integer) defaultValue;
+    protected void onSetInitialValue(@Nullable Object defaultValue) {
+        super.onSetInitialValue(defaultValue);
 
-            persistInt(temp);
-            currentValue = temp;
-        }
-    }
-
-    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
-                                                  String name, String defaultValue) {
-        String value = attrs.getAttributeValue(namespace, name);
-        if (value == null) value = defaultValue;
-
-        return value;
-    }
-
-    private void setMax(int value){
-        if (seekBar != null) {
-            seekBar.setMax(value);
-            seekBar.invalidate();
-        }
+        currentValue = getPersistedInt(DEFAULT_VALUE);
     }
 }

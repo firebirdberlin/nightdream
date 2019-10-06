@@ -1,0 +1,197 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:key="autostart"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/handle_power">
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="handle_power"
+        app:title="@string/handle_power" />
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:key="category_handle_power_autostart_time"
+        app:dependency="handle_power"
+        app:title="@string/category_handle_power_autostart_time">
+
+        <de.firebirdberlin.preference.TimeRangePreference
+            xmlns:timerange="timerange"
+            app:iconSpaceReserved="false"
+            app:defaultValue="0"
+            app:dependency="handle_power"
+            app:key="autostart_time_range"
+            timerange:end_text="@string/autostart_timerange_label_end"
+            timerange:key_suffix_end="_end"
+            timerange:key_suffix_start="_start"
+            timerange:start_text="@string/autostart_timerange_label_start" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:key="category_handle_power"
+        app:dependency="handle_power"
+        app:title="@string/category_handle_power">
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="handle_power_ac"
+            app:title="@string/handle_power_ac" />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="handle_power_usb"
+            app:title="@string/handle_power_usb" />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="handle_power_wireless"
+            app:title="@string/handle_power_wireless" />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="handle_power_desk"
+            app:title="@string/handle_power_desk" />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="handle_power_car"
+            app:title="@string/handle_power_car" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:title="@string/handle_auto_stop">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="handle_power_disconnection"
+            app:summary="@string/handle_power_disconnection_summary"
+            app:title="@string/handle_power_disconnection" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="handle_power_disconnection_at_time_range_end"
+            app:title="@string/handle_power_disconnection_at_time_range_end" />
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="4"
+            app:entries="@array/batteryTimeout"
+            app:entryValues="@array/batteryTimeoutValues"
+            app:key="batteryTimeout"
+            app:title="@string/batteryTimeoutDescription" />
+
+    </PreferenceCategory>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseActions"
+        app:isPreferenceVisible="false"
+        app:title="@string/purchaseActions" />
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:icon="@drawable/ic_expert"
+        app:key="expert_screen"
+        app:enabled="false"
+        app:title="@string/always_on">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="standbyEnabledWhileDisconnected"
+            app:summary="@string/standbyEnabledWhileDisconnectedSummary"
+            app:title="@string/standbyEnabledWhileDisconnectedTitle" />
+
+        <de.firebirdberlin.preference.TimeRangePreference
+            app:iconSpaceReserved="false"
+            xmlns:timerange="timerange"
+            app:defaultValue="0"
+            app:dependency="standbyEnabledWhileDisconnected"
+            app:key="always_on_time_range"
+            app:title="@string/standbyEnabledWhileDisconnectedTimeRangeTitle"
+            timerange:end_text="@string/autostart_timerange_label_end"
+            timerange:key_suffix_end="_end"
+            timerange:key_suffix_start="_start"
+            timerange:start_text="@string/autostart_timerange_label_start" />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="standbyEnabledWhileDisconnectedScreenUp"
+            app:dependency="standbyEnabledWhileDisconnected"
+            app:title="@string/standbyEnabledWhileDisconnectedScreepUpTitle" />
+
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:iconSpaceReserved="false"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+            app:defaultValue="20"
+            app:key="alwaysOnBatteryLevel"
+            app:dependency="standbyEnabledWhileDisconnected"
+            app:title="@string/alwaysOnBatteryLevel"
+            seekbar:interval="5"
+            seekbar:max="90"
+            seekbar:min="0"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="%"/>
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="autostartForNotifications"
+            app:summary="@string/autostartForNotificationsSummary"
+            app:title="@string/autostartForNotificationsTitle" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:enabled="false"
+        app:icon="@drawable/ic_expert"
+        app:key="scheduled_autostart_screen"
+        app:title="@string/scheduledAutoStart">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="scheduledAutoStartEnabled"
+            app:summary="@string/scheduledAutoStartEnabledDesc"
+            app:title="@string/scheduledAutoStartEnabledTitle" />
+
+        <de.firebirdberlin.preference.TimeRangePreference
+            app:iconSpaceReserved="false"
+            xmlns:timerange="timerange"
+            app:defaultValue="0"
+            app:dependency="scheduledAutoStartEnabled"
+            app:key="scheduledAutoStartTimeRange"
+            app:title="@string/scheduledAutoStartTimeRange"
+            timerange:end_text="@string/autostart_timerange_label_end"
+            timerange:key_suffix_end="_end"
+            timerange:key_suffix_start="_start"
+            timerange:start_text="@string/autostart_timerange_label_start" />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:dependency="scheduledAutoStartEnabled"
+            app:key="scheduledAutoStartChargerRequired"
+            app:title="@string/scheduledAutoStartChargerRequired" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
+
