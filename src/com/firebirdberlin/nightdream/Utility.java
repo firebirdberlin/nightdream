@@ -605,4 +605,10 @@ public class Utility {
         icon.getLayoutParams().height = dim;
         icon.getLayoutParams().width = dim;
     }
+
+    public static boolean isAirplaneModeOn(Context context) {
+        return android.provider.Settings.System.getInt(
+                context.getContentResolver(),
+                android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+    }
 }

@@ -443,15 +443,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void purchaseIntent(String sku, int REQUEST_CODE) {
         if (mService == null) return;
         try {
+            Activity activity = getActivity();
             String developerPayload = "abcdefghijklmnopqrstuvwxyz";
             Bundle buyIntentBundle = mService.getBuyIntent(
-                    3, getActivity().getPackageName(),
+                    3, activity.getPackageName(),
                     sku, "inapp", developerPayload
             );
             PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-            getActivity().startIntentSenderForResult(pendingIntent.getIntentSender(),
-                    REQUEST_CODE, new Intent(), 0, 0, 0);
-        } catch (RemoteException | SendIntentException ignored) {
+            activity.startIntentSenderForResult(
+                    pendingIntent.getIntentSender(),
+                    REQUEST_CODE, new Intent(), 0, 0, 0
+            );
+        } catch (RemoteException | SendIntentException | NullPointerException ignored) {
+            Toast.makeText(mContext, R.string.buy_upgrade_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -742,7 +746,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             conditionallyShowSnackBar(null);
         }
         if (rootKey == null) {
-            conditionallyShowSnackBarPurchase(null);
+            conditionallyShowSnackBarPurchase();
         }
     }
 
@@ -1339,20 +1343,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             dismissSnackBar();
         }
     }
-    private void conditionallyShowSnackBarPurchase(SharedPreferences settings){
-        if (settings == null) {
-            settings = mContext.getSharedPreferences(PREFS_KEY, 0);
-        }
+    private void conditionallyShowSnackBarPurchase(){
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_KEY, 0);
         Log.d(TAG, "days: " + Utility.getDaysSinceFirstInstall(mContext));
-        long lastTimeShown = settings.getLong("puchaseSnackBarTimestamp", 0L);
+        long lastTimeShown = settings.getLong("purchaseSnackBarTimestamp", 0L);
         long timeSinceShown = System.currentTimeMillis() - lastTimeShown;
         Log.i(TAG, "timeSinceShown: " + Utility.getDaysSinceFirstInstall(mContext));
         long daysInstalled = Utility.getDaysSinceFirstInstall(mContext);
         if (
-                purchased_donation || purchased_pro
-                        || (purchased_web_radio && purchased_weather_data)
+                mService != null
                         || (snackbar != null && snackbar.isShown())
-                        || !hasCanDrawOverlaysPermission()
+                        || Utility.isAirplaneModeOn(mContext)
+                        || purchased_donation || purchased_pro
+                        || (purchased_web_radio && purchased_weather_data)
                         || daysInstalled < 7
                         || timeSinceShown < 60000 * 60 * 24 * 7
         ) {
@@ -1373,7 +1376,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         snackbar.setDuration(10000);
         snackbar.show();
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("puchaseSnackBarTimestamp", System.currentTimeMillis());
+        prefEditor.putLong("purchaseSnackBarTimestamp", System.currentTimeMillis());
         prefEditor.apply();
     }
 
