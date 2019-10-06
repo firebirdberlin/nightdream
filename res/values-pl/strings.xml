@@ -209,6 +209,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="reset_to_defaults">Przywrócenie ustawień domyślnych</string>
     <string name="restless_mode">Przesuwaj zegar na całym ekranie</string>
     <string name="review_request">Oceń aplikacje Dziękuje !</string>
+    <string name="scheduledAutoStartChargerRequired">Tylko podczas ładowania</string>
     <string name="screen_orientation_automatic">Automatyczna orientacja ekranu</string>
     <string name="screen_orientation_landscape">Orientacja ekranu pionowa</string>
     <string name="screen_orientation_portrait">Orientacja ekranu pozioma</string>
