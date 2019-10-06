@@ -17,8 +17,10 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">O aplikaci</string>
+    <string name="action_skip">Přeskočit</string>
     <string name="action_snooze">Odložení buzení</string>
     <string name="action_stop">Zastavení</string>
+    <string name="activateDoNotDisturb">Aktivuj - nerušit</string>
     <string name="add_new_alarm">nový budík</string>
     <string name="add_custom_alarm_tone">uživatelský tón budíku</string>
     <string name="add_custom_font">uživatelské písmo</string>

@@ -34,7 +34,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off_summary">Выключать экран в ночное время</string>
     <string name="allow_screen_off">Выключить экран</string>
     <string name="always_on">Всегда выключено</string>
-    <string name="alwaysOnBatteryLevel">Уровень заряда "Всегда включено"</string>
+    <string name="alwaysOnBatteryLevel">Уровень заряда АКБ более</string>
     <string name="ambient_noise">Определение шума</string>
     <string name="ambient_noise_summary">Должен ли внешний шум предотвращать переход в ночной режим?</string>
     <string name="appearance">Внешний вид</string>
@@ -84,7 +84,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_digit_analog">Аналоговые часы с цифрами</string>
     <string name="clock_layout_digital_flip">Перекидные цифровые часы</string>
     <string name="clock_layout">Тип часов</string>
-    <string name="clock_layout_modern_analog">Модерновые аналоговые часы</string>
+    <string name="clock_layout_modern_analog">Современные аналоговые часы</string>
     <string name="clock_layout_mirror_text">Зеркальный текст</string>
     <string name="colors">Цвета</string>
     <string name="confirm_reset_question">Вы уверены в сбросе всех настроек?</string>
@@ -124,7 +124,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_desk">Настольная док-станция</string>
     <string name="handle_power_disconnection">Автоматическое завершение</string>
     <string name="handle_power_disconnection_summary">Закрыть приложение при завершении зарядки</string>
-    <string name="handle_power_disconnection_at_time_range_end">Время откл.  после автозапуска</string>
+    <string name="handle_power_disconnection_at_time_range_end">По заверш. диапазона времени автозапуска</string>
     <string name="handle_power_usb">Зарядка от USB</string>
     <string name="handle_power_wireless">Беспроводная зарядка</string>
     <string name="hide_background_image_in_night_mode">Скрыть</string>
@@ -188,6 +188,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_station_none">Нет радиостанций</string>
     <string name="radio_stream_activate_wifi">WiFi</string>
     <string name="radio_stream_activate_wifi_desc">Когда Включено, будет активирован Вай-фай за несколько минут до начала проигрывания интернет радио</string>
+    <string name="radio_stream_require_wifi">требуется подключение к WiFi</string>
+    <string name="radio_stream_require_wifi_desc">Если включено, будильники будут воспроизводить веб-радиопотоки только при установленном соединении WiFi.</string>
     <string name="radio_stream_enabled">Включено</string>
     <string name="radio_stream">Потоковое радио</string>
     <string name="radio_stream_failure">Поток неожиданно остановлен</string>
@@ -211,6 +213,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="reset_to_defaults">Сброс настроек</string>
     <string name="restless_mode">Перемещать часы по экрану</string>
     <string name="review_request">Пожалуйста, оцените это приложение. Спасибо!</string>
+    <string name="scheduledAutoStart">Запланированный Автозапуск</string>
+    <string name="scheduledAutoStartChargerRequired">только при зарядке</string>
+    <string name="scheduledAutoStartEnabledDesc">Запланируйте Автозапуск на определенное время.</string>
+    <string name="scheduledAutoStartEnabledTitle">Запланированный Автозапуск</string>
+    <string name="scheduledAutoStartTimeRange">временной интервал</string>
     <string name="screen_orientation_automatic">автоматически</string>
     <string name="screen_orientation_landscape">ландшафт</string>
     <string name="screen_orientation_portrait">портрет</string>
