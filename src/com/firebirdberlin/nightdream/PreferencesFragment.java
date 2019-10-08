@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,8 +41,6 @@ import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.CityIDPreference;
 import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Random;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
@@ -1044,8 +1041,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (isAutostartActivated(settings) && !hasCanDrawOverlaysPermission()) {
             View view = getActivity().findViewById(android.R.id.content);
             snackbar = Snackbar.make(view, R.string.permission_request_autostart, Snackbar.LENGTH_INDEFINITE);
-            int color = getRandomMaterialColor();
-            int textColor = getContrastColor(color);
+            int color = Utility.getRandomMaterialColor(mContext);
+            int textColor = Utility.getContrastColor(color);
             View snackbarView = snackbar.getView();
             snackbarView.setBackgroundColor(color);
             snackbar.setActionTextColor(textColor);
@@ -1078,8 +1075,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
         View view = getActivity().findViewById(android.R.id.content);
         snackbar = Snackbar.make(view, R.string.buy_upgrade_summary, Snackbar.LENGTH_INDEFINITE);
-        int color = getRandomMaterialColor();
-        int textColor = getContrastColor(color);
+        int color = Utility.getRandomMaterialColor(mContext);
+        int textColor = Utility.getContrastColor(color);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(color);
         snackbar.setActionTextColor(textColor);
@@ -1101,17 +1098,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             snackbar = null;
         }
     }
-
-    private int getRandomMaterialColor() {
-        int[] colors = getResources().getIntArray(R.array.materialColors);
-        return colors[new Random().nextInt(colors.length)];
-    }
-
-    private int getContrastColor(int color) {
-        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
-        return y >= 128 ? Color.BLACK : Color.WHITE;
-    }
-
 
     public class CanDrawOverlaysPermissionListener implements View.OnClickListener {
 

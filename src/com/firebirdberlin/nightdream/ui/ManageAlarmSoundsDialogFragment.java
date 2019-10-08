@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FileUri;
 
 import java.io.File;
@@ -33,7 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Random;
 
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
@@ -96,7 +96,10 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
         if (!isPurchased) {
             String productName = getActivity().getString(R.string.product_name_webradio);
             btnTxt += "\n (" + productName + ")";
-            addCustomAlarmTone.setBackgroundColor(getRandomMaterialColor());
+            int color = Utility.getRandomMaterialColor(context);
+            int textColor = Utility.getContrastColor(color);
+            addCustomAlarmTone.setBackgroundColor(color);
+            addCustomAlarmTone.setTextColor(textColor);
         }
         addCustomAlarmTone.setText(btnTxt);
         addCustomAlarmTone.setOnClickListener(new View.OnClickListener() {
@@ -148,11 +151,6 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
                     }
                 });
         return builder.create();
-    }
-
-    private int getRandomMaterialColor() {
-        int[] colors = getResources().getIntArray(R.array.materialColors);
-        return colors[new Random().nextInt(colors.length)];
     }
 
     private boolean hasPermission(String permission) {

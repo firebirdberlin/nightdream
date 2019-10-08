@@ -12,6 +12,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -53,6 +54,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.POWER_SERVICE;
@@ -610,5 +612,15 @@ public class Utility {
         return android.provider.Settings.System.getInt(
                 context.getContentResolver(),
                 android.provider.Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+    }
+
+    public static int getRandomMaterialColor(Context context) {
+        int[] colors = context.getResources().getIntArray(R.array.materialColors);
+        return colors[new Random().nextInt(colors.length)];
+    }
+
+    public static int getContrastColor(int color) {
+        double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
+        return y >= 128 ? Color.BLACK : Color.WHITE;
     }
 }

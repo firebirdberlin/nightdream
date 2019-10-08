@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FileUri;
 
 import java.io.BufferedInputStream;
@@ -34,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -122,7 +122,13 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         if (!isPurchased) {
             String productName = getActivity().getString(R.string.product_name_weather);
             btnTxt += "\n (" + productName + ")";
-            btnAddCustomFont.setBackgroundColor(getRandomMaterialColor());
+            Context context = getContext();
+            if (context != null) {
+                int color = Utility.getRandomMaterialColor(getContext());
+                int textColor = Utility.getContrastColor(color);
+                btnAddCustomFont.setBackgroundColor(color);
+                btnAddCustomFont.setTextColor(textColor);
+            }
         }
         btnAddCustomFont.setText(btnTxt);
 
@@ -172,11 +178,6 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
                     }
                 });
         return builder.create();
-    }
-
-    private int getRandomMaterialColor() {
-        int[] colors = getResources().getIntArray(R.array.materialColors);
-        return colors[new Random().nextInt(colors.length)];
     }
 
     private boolean hasPermission(String permission) {
