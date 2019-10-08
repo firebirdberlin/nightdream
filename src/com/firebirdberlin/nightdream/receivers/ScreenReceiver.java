@@ -140,8 +140,11 @@ public class ScreenReceiver extends BroadcastReceiver {
 
             }
         };
-        sensorMan.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorMan.registerListener(eventListener, proximitySensor , SensorManager.SENSOR_DELAY_GAME);
+        try {
+            sensorMan.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_GAME);
+            sensorMan.registerListener(eventListener, proximitySensor, SensorManager.SENSOR_DELAY_GAME);
+        } catch (IllegalStateException ignored) {
+        }
     }
 
     @Override
