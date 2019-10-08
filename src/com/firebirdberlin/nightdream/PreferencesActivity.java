@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 
-public class PreferencesActivity extends AppCompatActivity
+public class PreferencesActivity extends BillingHelperActivity
                                  implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     PreferencesFragment fragment = null;
 
@@ -27,13 +27,6 @@ public class PreferencesActivity extends AppCompatActivity
         setTheme(R.style.PreferencesTheme);
         initTitleBar();
         fragment = new PreferencesFragment();
-        Intent intent = getIntent();
-        if (intent.hasExtra("shallShowPurchaseDialog")) {
-            boolean showDialog = intent.getBooleanExtra("shallShowPurchaseDialog", false);
-            if (showDialog) {
-                fragment.setShowPurchaseDialog();
-            }
-        }
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -41,6 +34,22 @@ public class PreferencesActivity extends AppCompatActivity
                 .commit();
     }
 
+    public void restartFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+
+        initTitleBar();
+        if (fragment != null) {
+            fm.beginTransaction()
+                    .remove(fragment)
+                    .commit();
+            fm.popBackStackImmediate();
+        }
+        fragment = new PreferencesFragment();
+
+        fm.beginTransaction()
+                .replace(android.R.id.content, fragment)
+                .commit();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -49,12 +58,6 @@ public class PreferencesActivity extends AppCompatActivity
         // billing requests.
         if (requestCode > 1000) {
             fragment.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    public void showPurchaseDialog() {
-        if (fragment != null) {
-            fragment.showPurchaseDialog();
         }
     }
 
@@ -69,25 +72,6 @@ public class PreferencesActivity extends AppCompatActivity
         if(actionBar !=null) {
             actionBar.setTitle(R.string.preferences);
         }
-    }
-
-    public boolean isPurchased(String sku) {
-        if (fragment == null) {
-            return false;
-        }
-        switch (sku) {
-            case PreferencesFragment.ITEM_ACTIONS:
-                return fragment.purchased_actions;
-            case PreferencesFragment.ITEM_DONATION:
-                return fragment.purchased_donation;
-            case PreferencesFragment.ITEM_PRO:
-                return fragment.purchased_pro;
-            case PreferencesFragment.ITEM_WEATHER_DATA:
-                return fragment.purchased_weather_data;
-            case PreferencesFragment.ITEM_WEB_RADIO:
-                return fragment.purchased_web_radio;
-        }
-        return false;
     }
 
     @Override

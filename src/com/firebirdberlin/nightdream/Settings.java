@@ -267,7 +267,6 @@ public class Settings {
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
 
-        Log.w(TAG, "fontUri2: " + fontUri);
         String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
         sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
         sleepTimeInMillis = settings.getLong("sleepTimeInMillis", 0L);

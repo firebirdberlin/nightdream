@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class BillingHelperActivity extends AppCompatActivity {
-    static final String TAG = "BillingActivity";
+    static final String TAG = "BillingHelperActivity";
 
 
     public static final int REQUEST_CODE_PURCHASE_DONATION = 1001;
@@ -41,7 +42,8 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
     private static final int PRODUCT_ID_PRO = 3;
     private static final int PRODUCT_ID_ACTIONS = 4;
 
-    IInAppBillingService mService;
+    // we can have only one service connection to IIAB services
+    static IInAppBillingService mService;
     BillingHelper billingHelper;
     UpdatePurchasesTask updatePurchasesTask;
     IBinder binderService = null;
@@ -78,7 +80,7 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
             return true;
         }
         checkBillingHelper();
-        Log.i(TAG, " => " + String.valueOf(billingHelper.isPurchased(sku)));
+        Log.i(TAG, " => " + billingHelper.isPurchased(sku));
         return billingHelper.isPurchased(sku);
     }
 
@@ -195,6 +197,7 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
             startIntentSenderForResult(pendingIntent.getIntentSender(),
                     REQUEST_CODE, new Intent(), 0, 0, 0);
         } catch (RemoteException | IntentSender.SendIntentException | NullPointerException ignored) {
+            Toast.makeText(this, R.string.buy_upgrade_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -256,12 +259,14 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
                         requestCode == REQUEST_CODE_PURCHASE_WEATHER ||
                         requestCode == REQUEST_CODE_PURCHASE_ACTIONS ||
                         requestCode == REQUEST_CODE_PURCHASE_WEB_RADIO)) {
-            Log.i(TAG, "Purchase request for " + String.valueOf(requestCode));
+            Log.i(TAG, "Purchase request for " + requestCode);
             int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
             String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
             Log.i(TAG, purchaseData);
-            updateAllPurchases();
+            if (billingHelper != null) {
+                billingHelper.getPurchases();
+            }
 
             try {
                 JSONObject jo = new JSONObject(purchaseData);

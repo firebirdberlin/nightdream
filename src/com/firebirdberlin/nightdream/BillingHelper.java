@@ -19,16 +19,17 @@ public class BillingHelper {
    public static final String ITEM_PRO = "pro";
    public static final String ITEM_ACTIONS = "actions";
 
-   private final Map<String, Boolean> purchases = createMap();
-   IInAppBillingService mService;
+    private static final Map<String, Boolean> purchases = createMap();
+    private static IInAppBillingService mService;
    Context context;
 
    public BillingHelper(Context context, IInAppBillingService mService) {
+       createMap();
       this.context = context;
-      this.mService = mService;
+       BillingHelper.mService = mService;
    }
 
-   private Map<String, Boolean> createMap() {
+    private static Map<String, Boolean> createMap() {
       Map<String,Boolean> map = new HashMap<>();
       map.put(ITEM_DONATION, false);
       map.put(ITEM_WEATHER_DATA, false);
@@ -44,6 +45,7 @@ public class BillingHelper {
          purchases.put(key, false);
       }
       if (mService == null) {
+          Log.e(TAG, "mService == null");
          return purchases;
       }
 
@@ -51,11 +53,13 @@ public class BillingHelper {
       try {
          ownedItems = mService.getPurchases(3, context.getPackageName(), "inapp", null);
       } catch (RemoteException e) {
+          Log.e(TAG, "RemoteException");
          return purchases;
       }
 
 
       if (ownedItems == null) {
+          Log.e(TAG, "ownedItems == null");
           return purchases;
       }
 
@@ -81,16 +85,16 @@ public class BillingHelper {
             // do something with this purchase information
             // e.g. display the updated list of products owned by user
             // or consume the purchase
-            /*
-                try {
-                    JSONObject o = new JSONObject(purchaseData);
-                    String purchaseToken = o.getString("purchaseToken");
-                    mService.consumePurchase(3, context.getPackageName(), purchaseToken);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-             */
+/*
+            try {
+               JSONObject o = new JSONObject(purchaseData);
+               String purchaseToken = o.getString("purchaseToken");
+               mService.consumePurchase(3, context.getPackageName(), purchaseToken);
+            }
+            catch (Exception e) {
+               e.printStackTrace();
+            }
+*/
          }
 
          // if continuationToken != null, call getPurchases again
@@ -111,7 +115,7 @@ public class BillingHelper {
       }
 
       for (Map.Entry<String, Boolean> entry : purchases.entrySet()) {
-           Log.i(TAG, "owned " + entry.getKey() + " = " + String.valueOf(entry.getValue()));
+          Log.i(TAG, "owned " + entry.getKey() + " = " + entry.getValue());
        }
       return purchases;
    }

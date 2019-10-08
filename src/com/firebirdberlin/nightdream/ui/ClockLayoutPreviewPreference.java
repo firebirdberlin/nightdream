@@ -27,8 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
+import com.firebirdberlin.nightdream.BillingHelper;
 import com.firebirdberlin.nightdream.PreferencesActivity;
-import com.firebirdberlin.nightdream.PreferencesFragment;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -147,7 +147,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
             CustomDigitalClockPreferencesLayout prefs =
                     new CustomDigitalClockPreferencesLayout(context, settings, getActivity());
-            prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
+            prefs.setIsPurchased(purchased(BillingHelper.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
                     new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
                         @Override
@@ -174,7 +174,7 @@ public class ClockLayoutPreviewPreference extends Preference {
             CustomAnalogClockPreferencesLayout prefs =
                     new CustomAnalogClockPreferencesLayout(context, preset, getActivity());
 
-            prefs.setIsPurchased(purchased(PreferencesFragment.ITEM_WEATHER_DATA));
+            prefs.setIsPurchased(purchased(BillingHelper.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
                     new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
                         @Override
@@ -225,16 +225,16 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     private void setupPurchaseHint(Settings settings) {
-        boolean purchasedWeatherData = purchased(PreferencesFragment.ITEM_WEATHER_DATA);
+        boolean purchasedWeatherData = purchased(BillingHelper.ITEM_WEATHER_DATA);
         Log.i(TAG, "purchasedWeather:" + String.valueOf(purchasedWeatherData));
         int layoutID = settings.getClockLayoutID(true);
         if (layoutID == ClockLayout.LAYOUT_ID_DIGITAL_FLIP
-                && ! purchased(PreferencesFragment.ITEM_DONATION)) {
+                && !purchased(BillingHelper.ITEM_DONATION)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.gift_for_donors));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
         }
         else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
-                && ! purchased(PreferencesFragment.ITEM_WEATHER_DATA)) {
+                && !purchased(BillingHelper.ITEM_WEATHER_DATA)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.product_name_weather));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
         } else {
