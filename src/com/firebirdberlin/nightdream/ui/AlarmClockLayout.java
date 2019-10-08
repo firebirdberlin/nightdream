@@ -285,19 +285,21 @@ public class AlarmClockLayout extends LinearLayout {
                     FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                     SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
                     dialog.setRadioStations(radioStations);
-                    dialog.setOnStationSlotSelectedListener(new SelectRadioStationSlotDialogFragment.SelectRadioStationSlotDialogListener() {
-                        @Override
-                        public void onStationSlotSelected(int index, String name) {
-                            Log.i(TAG, "onStationSlotSelected: " + String.valueOf(index) + ", " + name);
-                            if (alarmClockEntry == null) {
-                                return;
-                            }
-                            textViewRadio.setText(name);
-                            alarmClockEntry.radioStationIndex = index - 1;
-                            ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
-                        }
+                    dialog.setOnStationSlotSelectedListener(
+                            new SelectRadioStationSlotDialogFragment.SelectRadioStationSlotDialogListener() {
+                                @Override
+                                public void onStationSlotSelected(int index, String name) {
+                                    Log.i(TAG, "onStationSlotSelected: " + index + ", " + name);
+                                    if (alarmClockEntry == null) {
+                                        return;
+                                    }
+                                    textViewRadio.setText(name);
+                                    alarmClockEntry.radioStationIndex = index - 1;
+                                    ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                                }
 
-                    });
+                            }
+                    );
                     dialog.show(fm, "radio station");
                 }
             }
