@@ -4,14 +4,11 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
@@ -21,8 +18,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -39,7 +34,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreferenceCompat;
 
-import com.android.vending.billing.IInAppBillingService;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
@@ -49,12 +43,6 @@ import com.firebirdberlin.openweathermapapi.CityIDPreference;
 import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
@@ -62,36 +50,15 @@ import de.firebirdberlin.preference.InlineSeekBarPreference;
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String TAG = "PreferencesFragment";
-    public static final String ITEM_DONATION = "donation";
-    public static final String ITEM_WEATHER_DATA = "weather_data";
-    public static final String ITEM_WEB_RADIO = "web_radio";
-    public static final String ITEM_PRO = "pro";
-    public static final String ITEM_ACTIONS = "actions";
-    public static final int REQUEST_CODE_PURCHASE_DONATION = 1001;
-    public static final int REQUEST_CODE_PURCHASE_WEATHER = 1002;
-    public static final int REQUEST_CODE_PURCHASE_WEB_RADIO = 1003;
-    public static final int REQUEST_CODE_PURCHASE_PRO = 1004;
-    public static final int REQUEST_CODE_PURCHASE_ACTIONS = 1005;
     public static final String PREFS_KEY = "NightDream preferences";
-    private static final int PRODUCT_ID_WEATHER_DATA = 0;
-    private static final int PRODUCT_ID_WEB_RADIO = 1;
-    private static final int PRODUCT_ID_DONATION = 2;
-    private static final int PRODUCT_ID_PRO = 3;
-    private static final int PRODUCT_ID_ACTIONS = 4;
     private static int RESULT_LOAD_IMAGE = 1;
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
     private final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 5;
-    public boolean purchased_donation = false;
-    public boolean purchased_weather_data = false;
-    public boolean purchased_web_radio = false;
-    public boolean purchased_pro = false;
-    public boolean purchased_actions = false;
     Snackbar snackbar;
     String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
-    IInAppBillingService mService;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
             new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
@@ -212,26 +179,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             };
 
-    private boolean shallShowPurchaseDialog = false;
-    ServiceConnection mServiceConn = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name,
-                                       IBinder service) {
-            Log.i(TAG, "IIAB service connected");
-            mService = IInAppBillingService.Stub.asInterface(service);
-            getPurchases();
-            if (shallShowPurchaseDialog) {
-                showPurchaseDialog();
-                shallShowPurchaseDialog = false;
-            }
-        }
-    };
-
     @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
@@ -254,11 +201,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // bind the in-app billing service
-        Intent serviceIntent =
-                new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        getActivity().bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
 
 
@@ -266,8 +208,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onStart() {
         super.onStart();
 
-        // InAppBillingService service doesnt seem to be available in emulator
-        activatePurchasesIfDebuggable();
         daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler());
         mContext.getContentResolver().registerContentObserver(
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
@@ -279,19 +219,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 daydreamSettingsObserver);
     }
 
-    public void setShowPurchaseDialog() {
-        this.shallShowPurchaseDialog = true;
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // unbind the in-app billing service
-        if (mService != null) {
-            getActivity().unbindService(mServiceConn);
-        }
-
         try {
             mContext.getContentResolver().unregisterContentObserver(daydreamSettingsObserver);
         } catch (IllegalArgumentException | NullPointerException ignored) {
@@ -299,94 +229,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private void getPurchases() {
-        if (Utility.isEmulator()) {
-            activatePurchasesIfDebuggable();
-            return;
-        }
-        if (mService == null || getActivity() == null) {
-            return;
-        }
-
-        Bundle ownedItems;
-        try {
-            ownedItems = mService.getPurchases(3, getActivity().getPackageName(), "inapp", null);
-        } catch (RemoteException e) {
-            return;
-        }
-
-        if (ownedItems == null) {
-            purchased_web_radio = false;
-            purchased_actions = false;
-            purchased_weather_data = false;
-            storeWeatherDataPurchase(false, false);
-            return;
-        }
-
-        int response = ownedItems.getInt("RESPONSE_CODE");
-        if (response == 0) {
-            ArrayList<String> ownedSkus =
-                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
-            ArrayList<String> purchaseDataList =
-                    ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
-            ArrayList<String> signatureList =
-                    ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
-            String continuationToken = ownedItems.getString("INAPP_CONTINUATION_TOKEN");
-
-            boolean weatherDataIsPurchased = false;
-            for (int i = 0; i < purchaseDataList.size(); ++i) {
-                String purchaseData = purchaseDataList.get(i);
-                String signature = signatureList.get(i);
-                String sku = ownedSkus.get(i);
-
-                if (ITEM_DONATION.equals(sku)) {
-                    purchased_donation = true;
-                    weatherDataIsPurchased = true;
-                    purchased_web_radio = true;
-                    purchased_actions = true;
-                }
-                if (ITEM_PRO.equals(sku)) {
-                    purchased_pro = true;
-                    purchased_web_radio = true;
-                    weatherDataIsPurchased = true;
-                    purchased_actions = true;
-                }
-                if (ITEM_WEATHER_DATA.equals(sku)) {
-                    weatherDataIsPurchased = true;
-                }
-                if (ITEM_WEB_RADIO.equals(sku)) {
-                    purchased_web_radio = true;
-                }
-                if (ITEM_ACTIONS.equals(sku)) {
-                    purchased_actions = true;
-                }
-
-                // do something with this purchase information
-                // e.g. display the updated list of products owned by user
-                // or consume the purchase
-//                try {
-//                    JSONObject o = new JSONObject(purchaseData);
-//                    String purchaseToken = o.getString("purchaseToken");
-//                    mService.consumePurchase(3, getActivity().getPackageName(), purchaseToken);
-//                }
-//                catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-            }
-
-            storeWeatherDataPurchase(weatherDataIsPurchased, purchased_donation);
-            resetAlwaysOnModeIfNotPurchased();
-            resetUseDeviceLockIfNotPurchased();
-            togglePurchasePreferences();
-
-            // if continuationToken != null, call getPurchases again
-            // and pass in the token to retrieve more items
-        }
-
-    }
-
     private void resetAlwaysOnModeIfNotPurchased() {
-        if (purchased_actions) {
+        if (isPurchased(BillingHelper.ITEM_ACTIONS)) {
             return;
         }
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -397,7 +241,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void resetUseDeviceLockIfNotPurchased() {
-        if (purchased_actions) {
+        if (isPurchased(BillingHelper.ITEM_ACTIONS)) {
             return;
         }
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -408,7 +252,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void storeWeatherDataPurchase(boolean weatherIsPurchased, boolean donationIsPurchased) {
-        purchased_weather_data = weatherIsPurchased;
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
@@ -419,166 +262,48 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 
     private void togglePurchasePreferences() {
-        enablePreference("showWeather", purchased_weather_data);
-        enablePreference("expert_screen", purchased_actions);
-        enablePreference("scheduled_autostart_screen", purchased_actions);
-        enablePreference("activateDoNotDisturb", purchased_actions);
-        enablePreference("useDeviceLock", purchased_actions);
+        boolean isPurchasedDonation = isPurchased(BillingHelper.ITEM_DONATION);
+        boolean isPurchasedWeather = isPurchased(BillingHelper.ITEM_WEATHER_DATA);
+        boolean isPurchasedActions = isPurchased(BillingHelper.ITEM_ACTIONS);
+        Log.i(TAG, "actions: " + isPurchasedActions);
+        Log.i(TAG, "weather: " + isPurchasedWeather);
+        Log.i(TAG, "donation: " + isPurchasedDonation);
+        enablePreference("showWeather", isPurchasedWeather);
+        enablePreference("expert_screen", isPurchasedActions);
+        enablePreference("scheduled_autostart_screen", isPurchasedActions);
+        enablePreference("activateDoNotDisturb", isPurchasedActions);
+        enablePreference("useDeviceLock", isPurchasedActions);
 
-        if (!purchased_donation) {
+        if (isPurchasedDonation) {
+            hidePreference("donation_category");
+        } else {
             showPreference("donation_category");
         }
-
-        if (!purchased_weather_data) {
+        if (isPurchasedWeather) {
+            hidePreference("purchaseWeatherData");
+            hidePreference("purchaseDesignPackage");
+        } else {
             showPreference("purchaseWeatherData");
             showPreference("purchaseDesignPackage");
         }
 
-        if (!purchased_actions) {
+        if (isPurchasedActions) {
+            hidePreference("purchaseActions");
+            hidePreference("purchaseActions2");
+        } else {
             showPreference("purchaseActions");
             showPreference("purchaseActions2");
         }
     }
 
-    public void purchaseIntent(String sku, int REQUEST_CODE) {
-        if (mService == null) return;
-        try {
-            Activity activity = getActivity();
-            String developerPayload = "abcdefghijklmnopqrstuvwxyz";
-            Bundle buyIntentBundle = mService.getBuyIntent(
-                    3, activity.getPackageName(),
-                    sku, "inapp", developerPayload
-            );
-            PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
-            activity.startIntentSenderForResult(
-                    pendingIntent.getIntentSender(),
-                    REQUEST_CODE, new Intent(), 0, 0, 0
-            );
-        } catch (RemoteException | SendIntentException | NullPointerException ignored) {
-            Toast.makeText(mContext, R.string.buy_upgrade_error, Toast.LENGTH_SHORT).show();
-        }
+    private void showPurchaseDialog() {
+        PreferencesActivity activity = ((PreferencesActivity) mContext);
+        activity.showPurchaseDialog();
     }
 
-
-    public void showPurchaseDialog() {
-        Log.i(TAG, "showPurchaseDialog()");
-        if (purchased_donation) return;
-        List<CharSequence> entries = new ArrayList<>();
-        final List<Integer> values = new ArrayList<>();
-        HashMap<String, String> prices = getPrices();
-
-        if (!purchased_pro && !purchased_weather_data && !purchased_web_radio) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_pro, ITEM_PRO));
-            values.add(PRODUCT_ID_PRO);
-        }
-
-        if (!purchased_weather_data) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_weather, ITEM_WEATHER_DATA));
-            values.add(PRODUCT_ID_WEATHER_DATA);
-        }
-
-        if (!purchased_web_radio) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_webradio, ITEM_WEB_RADIO));
-            values.add(PRODUCT_ID_WEB_RADIO);
-        }
-
-        if (!purchased_actions) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_actions, ITEM_ACTIONS));
-            values.add(PRODUCT_ID_ACTIONS);
-        }
-
-        if (!purchased_donation) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_donation, ITEM_DONATION));
-            values.add(PRODUCT_ID_DONATION);
-        }
-
-        new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.buy))
-                .setItems(
-                        entries.toArray(new CharSequence[entries.size()]),
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int which) {
-                                Log.i(TAG, String.format("selected %d", which));
-                                int selected = values.get(which);
-                                switch (selected) {
-                                    case PRODUCT_ID_WEATHER_DATA:
-                                        purchaseIntent(ITEM_WEATHER_DATA, REQUEST_CODE_PURCHASE_WEATHER);
-                                        break;
-                                    case PRODUCT_ID_WEB_RADIO:
-                                        purchaseIntent(ITEM_WEB_RADIO, REQUEST_CODE_PURCHASE_WEB_RADIO);
-                                        break;
-                                    case PRODUCT_ID_DONATION:
-                                        purchaseIntent(ITEM_DONATION, REQUEST_CODE_PURCHASE_DONATION);
-                                        break;
-                                    case PRODUCT_ID_PRO:
-                                        purchaseIntent(ITEM_PRO, REQUEST_CODE_PURCHASE_PRO);
-                                        break;
-                                    case PRODUCT_ID_ACTIONS:
-                                        purchaseIntent(ITEM_ACTIONS, REQUEST_CODE_PURCHASE_ACTIONS);
-                                        break;
-                                }
-                            }
-                        })
-                .setNeutralButton(android.R.string.cancel, null)
-                .show();
-    }
-
-    private String getProductWithPrice(HashMap<String, String> prices, int resId, String sku) {
-        String price = prices.get(sku);
-        if (price != null) {
-            return String.format("%s (%s)", getResources().getString(resId), price);
-        }
-        return getResources().getString(resId);
-    }
-
-    private HashMap<String, String> getPrices() {
-        HashMap<String, String> map = new HashMap<>();
-        if (mService == null) return map;
-
-        ArrayList<String> skuList = new ArrayList<String>();
-        skuList.add(ITEM_WEATHER_DATA);
-        skuList.add(ITEM_WEB_RADIO);
-        skuList.add(ITEM_ACTIONS);
-        skuList.add(ITEM_DONATION);
-        skuList.add(ITEM_PRO);
-        Bundle querySkus = new Bundle();
-        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
-
-        Bundle skuDetails;
-        try {
-            skuDetails = mService.getSkuDetails(3, getActivity().getPackageName(), "inapp", querySkus);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return map;
-        }
-        final int BILLING_RESPONSE_RESULT_OK = 0;
-        int response = skuDetails.getInt("RESPONSE_CODE");
-        if (response == BILLING_RESPONSE_RESULT_OK) {
-            ArrayList<String> responseList
-                    = skuDetails.getStringArrayList("DETAILS_LIST");
-
-            for (String thisResponse : responseList) {
-                try {
-                    JSONObject object = new JSONObject(thisResponse);
-                    String sku = object.getString("productId");
-                    String price = object.getString("price");
-                    map.put(sku, price);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return map;
-    }
-
-    public void showThankYouDialog() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.dialog_title_thank_you))
-                .setMessage(R.string.dialog_message_thank_you)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+    private boolean isPurchased(String sku) {
+        PreferencesActivity activity = ((PreferencesActivity) mContext);
+        return activity.isPurchased(sku);
     }
 
     @Override
@@ -610,6 +335,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
 
         initPurchasePreference("purchaseActions");
+        initPurchasePreference("purchaseActions2");
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseWeatherData");
         initPurchasePreference("purchaseDesignPackage");
@@ -633,6 +359,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void init() {
         final Context context = mContext;
 
+        togglePurchasePreferences();
         settings = new Settings(mContext);
 
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -723,10 +450,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                         db.open();
                                         db.dropData();
                                         db.close();
-                                        addPreferencesFromResource(R.xml.preferences);
-                                        init();
-                                        storeWeatherDataPurchase(purchased_weather_data, purchased_donation);
-                                        togglePurchasePreferences();
+                                        storeWeatherDataPurchase(
+                                                isPurchased(BillingHelper.ITEM_WEATHER_DATA),
+                                                isPurchased(BillingHelper.ITEM_DONATION)
+                                        );
+                                        PreferencesActivity activity = ((PreferencesActivity) mContext);
+                                        activity.restartFragment();
                                     }
                                 }).show();
 
@@ -742,10 +471,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setupTranslationRequest();
         }
 
+
         if (rootKey == null || "autostart".equals(rootKey) ) {
             conditionallyShowSnackBar(null);
         }
-        if (rootKey == null) {
+
+        if (isAdded() && rootKey == null) {
             conditionallyShowSnackBarPurchase();
         }
     }
@@ -803,47 +534,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (requestCode == RESULT_LOAD_IMAGE_KITKAT && resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
             settings.setBackgroundImageURI(uri.toString());
-        }
-        else
-        if (resultCode == Activity.RESULT_OK &&
-                (requestCode == REQUEST_CODE_PURCHASE_DONATION ||
-                        requestCode == REQUEST_CODE_PURCHASE_PRO ||
-                    requestCode == REQUEST_CODE_PURCHASE_WEATHER ||
-                        requestCode == REQUEST_CODE_PURCHASE_WEB_RADIO ||
-                        requestCode == REQUEST_CODE_PURCHASE_ACTIONS)) {
-            Log.i(TAG, "Purchase request for " + String.valueOf(requestCode));
-            int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-            String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
-            Log.i(TAG, purchaseData);
+        } else if (resultCode == Activity.RESULT_OK &&
+                (requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_DONATION ||
+                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_PRO ||
+                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_WEATHER ||
+                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_WEB_RADIO ||
+                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_ACTIONS)) {
 
-            try {
-                JSONObject jo = new JSONObject(purchaseData);
-                String sku = jo.getString("productId");
-                if (ITEM_DONATION.equals(sku)) {
-                    purchased_donation = true;
-                    purchased_actions = true;
-                    purchased_web_radio = true;
-                    storeWeatherDataPurchase(true, true);
-                    showThankYouDialog();
-                } else if (ITEM_PRO.equals(sku)) {
-                    purchased_pro = true;
-                    purchased_actions = true;
-                    purchased_web_radio = true;
-                    storeWeatherDataPurchase(true, purchased_donation);
-                    showThankYouDialog();
-                } else if (ITEM_WEATHER_DATA.equals(sku)) {
-                    storeWeatherDataPurchase(true, purchased_donation);
-                } else if (ITEM_WEB_RADIO.equals(sku)) {
-                    purchased_web_radio = true;
-                } else if (ITEM_ACTIONS.equals(sku)) {
-                    purchased_actions = true;
-                }
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-            togglePurchasePreferences();
+            Log.w(TAG, "purchase detected");
+            storeWeatherDataPurchase(
+                    isPurchased(BillingHelper.ITEM_WEATHER_DATA),
+                    isPurchased(BillingHelper.ITEM_DONATION)
+            );
+            resetAlwaysOnModeIfNotPurchased();
+            resetUseDeviceLockIfNotPurchased();
+            //togglePurchasePreferences();
+
+            PreferencesActivity activity = ((PreferencesActivity) mContext);
+            activity.restartFragment();
         }
     }
 
@@ -1254,6 +962,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
+    private void hidePreference(String key) {
+        Preference preference = findPreference(key);
+        if (preference != null) {
+            preference.setVisible(false);
+        }
+    }
+
     private void removePreference(String key) {
         Preference preference = findPreference(key);
         removePreference(preference);
@@ -1280,16 +995,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
         return null;
-    }
-
-    private void activatePurchasesIfDebuggable() {
-        if (Utility.isEmulator()) {
-            purchased_donation = true;
-            purchased_actions = true;
-            purchased_web_radio = true;
-            storeWeatherDataPurchase(true, true);
-            togglePurchasePreferences();
-        }
     }
 
     @Override
@@ -1351,11 +1056,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Log.i(TAG, "timeSinceShown: " + Utility.getDaysSinceFirstInstall(mContext));
         long daysInstalled = Utility.getDaysSinceFirstInstall(mContext);
         if (
-                mService != null
-                        || (snackbar != null && snackbar.isShown())
+                (snackbar != null && snackbar.isShown())
                         || Utility.isAirplaneModeOn(mContext)
-                        || purchased_donation || purchased_pro
-                        || (purchased_web_radio && purchased_weather_data)
+                        || isPurchased(BillingHelper.ITEM_DONATION) || isPurchased(BillingHelper.ITEM_PRO)
+                        || (isPurchased(BillingHelper.ITEM_WEB_RADIO) && isPurchased(BillingHelper.ITEM_WEATHER_DATA))
                         || daysInstalled < 7
                         || timeSinceShown < 60000 * 60 * 24 * 7
         ) {
@@ -1412,7 +1116,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         @Override
         public void onClick(View v) {
             if (isAdded()) {
-                purchaseIntent(ITEM_PRO, REQUEST_CODE_PURCHASE_PRO);
+                PreferencesActivity activity = ((PreferencesActivity) mContext);
+                activity.purchaseIntent(BillingHelper.ITEM_PRO, BillingHelperActivity.REQUEST_CODE_PURCHASE_PRO);
+
             }
         }
     }
