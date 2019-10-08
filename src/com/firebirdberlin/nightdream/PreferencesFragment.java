@@ -398,6 +398,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             initUseDeviceLockPreference();
             setupDoNotDisturbPreference();
         } else if ("nightmode".equals(rootKey)) {
+            setupLightSensorPreferences();
             setupNightModePreferences(prefs);
             Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
             Preference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
@@ -496,11 +497,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             removePreference("reactivate_on_ambient_light_value");
 
             ListPreference nightModePref = findPreference("nightModeActivationMode");
-            nightModePref.setEntries(new String[]{
-                                        getString(R.string.night_mode_activation_manual),
-                                        getString(R.string.night_mode_activation_scheduled),
-            });
-            nightModePref.setEntryValues(new String[]{"0", "2"});
+            if (nightModePref != null) {
+                nightModePref.setEntries(
+                        new String[]{
+                                getString(R.string.night_mode_activation_manual),
+                                getString(R.string.night_mode_activation_scheduled),
+                        }
+                );
+                nightModePref.setEntryValues(new String[]{"0", "2"});
+            }
         }
     }
 
@@ -813,7 +818,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void setupNightModePreferences(SharedPreferences prefs) {
         int nightModeActivationMode = Integer.parseInt(prefs.getString("nightModeActivationMode", "1"));
-        Log.i(TAG, "setupNightModePreferences " + String.valueOf(nightModeActivationMode));
+        Log.i(TAG, "setupNightModePreferences " + nightModeActivationMode);
         enablePreference("nightmode_timerange",
                          nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED);
         // TODO WHY ?
@@ -1007,8 +1012,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupDaydreamPreferences() {
+        if (!isAdded()) {
+            return;
+        }
         enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
         Preference pref = findPreference("autostart");
+        if (pref == null) {
+            return;
+        }
         boolean on = pref.isEnabled();
         String summary = on ? "" : getString(R.string.autostart_message_disabled);
         pref.setSummary(summary);

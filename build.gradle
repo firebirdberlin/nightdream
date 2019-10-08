@@ -86,6 +86,7 @@ android {
             }
             proguardFile '/home/stefan/android/projects/nightdream/proguard-project.txt'
             minifyEnabled true
+            shrinkResources true
         }
     }
 

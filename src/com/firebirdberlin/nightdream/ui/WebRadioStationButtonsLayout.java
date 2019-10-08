@@ -7,7 +7,6 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +40,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         @Override
         public void onClick(final View v) {
             int index = (int) v.getTag();
-            if (activeStationIndex != null && index == activeStationIndex.intValue()) {
+            if (activeStationIndex != null && index == activeStationIndex) {
                 stopRadioStream();
             } else {
                 startRadioStreamOrShowDialog(index);
@@ -131,7 +130,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             Button b = (Button) getChildAt(i);
             b.setVisibility(i <= lastButtonInUseIndex + 1 ? VISIBLE : GONE);
 
-            final boolean active = (activeStationIndex != null && activeStationIndex.intValue() == i);
+            final boolean active = (activeStationIndex != null && activeStationIndex == i);
             int color = active ? accentColor : textColor;
 
             if (active) {
@@ -203,7 +202,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             // is stream was already playing before, don't ask again? (but what if user switched from wifi to 3g since stream start?)
             if (Utility.hasFastNetworkConnection(context) || wasAlreadyPlaying) {
                 RadioStreamService.startStream(context, radioStationIndex);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            } else {
                 new AlertDialog.Builder(context, R.style.DialogTheme)
                         .setTitle(R.string.message_mobile_data_connection)
                         .setMessage(R.string.message_mobile_data_connection_confirmation)
@@ -259,10 +258,11 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                 if (activeStationIndex != null && stationIndex == activeStationIndex) {
                     stopRadioStream();
                 }
-                settings.deleteFavoriteRadioStation(stationIndex);
-                stations = settings.getFavoriteRadioStations();
+                if (settings != null) {
+                    settings.deleteFavoriteRadioStation(stationIndex);
+                    stations = settings.getFavoriteRadioStations();
+                }
                 updateButtonState();
-
                 hideSystemUI();
 
             }
