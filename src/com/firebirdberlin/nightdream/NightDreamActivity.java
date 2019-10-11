@@ -339,6 +339,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
+
     protected void onPause() {
         super.onPause();
         Log.i(TAG ,"onPause()");
@@ -455,7 +456,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if ( AlarmHandlerService.alarmIsRunning() ) {
             AlarmHandlerService.stop(this);
         }
-        if (!isPurchased(BillingHelper.ITEM_WEB_RADIO)) {
+        if (!isPurchased(BillingHelperActivity.ITEM_WEB_RADIO)) {
             showPurchaseDialog();
             return;
         }

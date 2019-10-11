@@ -227,7 +227,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void resetAlwaysOnModeIfNotPurchased() {
-        if (isPurchased(BillingHelper.ITEM_ACTIONS)) {
+        if (isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
             return;
         }
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -238,7 +238,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void resetUseDeviceLockIfNotPurchased() {
-        if (isPurchased(BillingHelper.ITEM_ACTIONS)) {
+        if (isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
             return;
         }
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -257,11 +257,25 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
     }
 
+    void onPurchasesInitialized() {
+        Log.w(TAG, "purchase detected");
+        storeWeatherDataPurchase(
+                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
+                isPurchased(BillingHelperActivity.ITEM_DONATION)
+        );
+        resetAlwaysOnModeIfNotPurchased();
+        resetUseDeviceLockIfNotPurchased();
+        //togglePurchasePreferences();
+
+        PreferencesActivity activity = ((PreferencesActivity) mContext);
+        activity.restartFragment();
+        togglePurchasePreferences();
+    }
 
     private void togglePurchasePreferences() {
-        boolean isPurchasedDonation = isPurchased(BillingHelper.ITEM_DONATION);
-        boolean isPurchasedWeather = isPurchased(BillingHelper.ITEM_WEATHER_DATA);
-        boolean isPurchasedActions = isPurchased(BillingHelper.ITEM_ACTIONS);
+        boolean isPurchasedDonation = isPurchased(BillingHelperActivity.ITEM_DONATION);
+        boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
+        boolean isPurchasedActions = isPurchased(BillingHelperActivity.ITEM_ACTIONS);
         Log.i(TAG, "actions: " + isPurchasedActions);
         Log.i(TAG, "weather: " + isPurchasedWeather);
         Log.i(TAG, "donation: " + isPurchasedDonation);
@@ -449,8 +463,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                         db.dropData();
                                         db.close();
                                         storeWeatherDataPurchase(
-                                                isPurchased(BillingHelper.ITEM_WEATHER_DATA),
-                                                isPurchased(BillingHelper.ITEM_DONATION)
+                                                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
+                                                isPurchased(BillingHelperActivity.ITEM_DONATION)
                                         );
                                         PreferencesActivity activity = ((PreferencesActivity) mContext);
                                         activity.restartFragment();
@@ -479,7 +493,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    void initPurchasePreference(String key) {
+    private void initPurchasePreference(String key) {
         Preference purchasePreference = findPreference(key);
         if (purchasePreference != null) {
             purchasePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
@@ -536,26 +550,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (requestCode == RESULT_LOAD_IMAGE_KITKAT && resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
             settings.setBackgroundImageURI(uri.toString());
-        } else if (resultCode == Activity.RESULT_OK &&
-                (requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_DONATION ||
-                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_PRO ||
-                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_WEATHER ||
-                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_WEB_RADIO ||
-                        requestCode == BillingHelperActivity.REQUEST_CODE_PURCHASE_ACTIONS)) {
-
-            Log.w(TAG, "purchase detected");
-            storeWeatherDataPurchase(
-                    isPurchased(BillingHelper.ITEM_WEATHER_DATA),
-                    isPurchased(BillingHelper.ITEM_DONATION)
-            );
-            resetAlwaysOnModeIfNotPurchased();
-            resetUseDeviceLockIfNotPurchased();
-            //togglePurchasePreferences();
-
-            PreferencesActivity activity = ((PreferencesActivity) mContext);
-            activity.restartFragment();
         }
     }
+
+
 
     public String getRealPathFromURI(Uri contentUri) {
         Cursor cursor = null;
@@ -875,7 +873,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         return true;
     }
 
-    void requestCanDrawOverlaysPermission() {
+    private void requestCanDrawOverlaysPermission() {
         startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
     }
 
@@ -1066,8 +1064,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (
                 (snackbar != null && snackbar.isShown())
                         || Utility.isAirplaneModeOn(mContext)
-                        || isPurchased(BillingHelper.ITEM_DONATION) || isPurchased(BillingHelper.ITEM_PRO)
-                        || (isPurchased(BillingHelper.ITEM_WEB_RADIO) && isPurchased(BillingHelper.ITEM_WEATHER_DATA))
+                        || isPurchased(BillingHelperActivity.ITEM_DONATION) || isPurchased(BillingHelperActivity.ITEM_PRO)
+                        || (isPurchased(BillingHelperActivity.ITEM_WEB_RADIO) && isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA))
                         || daysInstalled < 7
                         || timeSinceShown < 60000 * 60 * 24 * 7
         ) {
@@ -1114,7 +1112,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         public void onClick(View v) {
             if (isAdded()) {
                 PreferencesActivity activity = ((PreferencesActivity) mContext);
-                activity.purchaseIntent(BillingHelper.ITEM_PRO, BillingHelperActivity.REQUEST_CODE_PURCHASE_PRO);
+                activity.launchBillingFlow(BillingHelperActivity.ITEM_PRO);
 
             }
         }

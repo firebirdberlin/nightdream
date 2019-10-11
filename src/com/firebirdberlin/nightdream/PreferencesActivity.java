@@ -34,6 +34,28 @@ public class PreferencesActivity extends BillingHelperActivity
                 .commit();
     }
 
+    @Override
+    protected void onPurchasesInitialized() {
+        super.onPurchasesInitialized();
+        if (fragment != null) {
+            fragment.onPurchasesInitialized();
+        }
+    }
+
+    @Override
+    protected void onItemPurchased(String sku) {
+        super.onItemPurchased(sku);
+        if (fragment != null) {
+            fragment.onPurchasesInitialized();
+        }
+    }
+
+
+    @Override
+    protected void onItemConsumed(String sku) {
+        super.onItemConsumed(sku);
+    }
+
     public void restartFragment() {
         FragmentManager fm = getSupportFragmentManager();
 
