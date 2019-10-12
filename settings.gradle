@@ -1,3 +1,2 @@
-include ':externals:ShowcaseView:library'
 include ':externals:android-preferences'
 include ':externals:tab-digit:digit'
