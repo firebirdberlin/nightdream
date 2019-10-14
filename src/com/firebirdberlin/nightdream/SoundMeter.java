@@ -19,11 +19,12 @@ package com.firebirdberlin.nightdream;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
-import org.greenrobot.eventbus.EventBus;
-import java.io.IOException;
-import java.lang.RuntimeException;
 
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.IOException;
 
 
 public class SoundMeter {
@@ -43,7 +44,6 @@ public class SoundMeter {
     }
 
     public boolean start() {
-        if (debug) Log.d(TAG,"SoundMeter.start()");
         if (mRecorder == null) {
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -69,7 +69,6 @@ public class SoundMeter {
             mRecorder.start();
             mRecorder.getMaxAmplitude(); // init
             mEMA = 0.0;
-            if (debug) Log.d(TAG," > SoundMeter started,");
         } catch (IllegalStateException e) {
             if (debug) Log.e(TAG," > IllegalStateException, when starting SoundMeter: " + e.toString());
             this.release();
@@ -98,7 +97,6 @@ public class SoundMeter {
                 if (debug) Log.e(TAG,"Error, when releasing SoundMeter: " +e.toString());
             }
             mRecorder = null;
-            if (debug) Log.d(TAG,"SoundMeter stopped,");
         }
 
         running = false;
@@ -111,7 +109,6 @@ public class SoundMeter {
             mRecorder.reset();
             mRecorder.release();
             mRecorder = null;
-            if (debug) Log.i(TAG,"SoundMeter released,");
         }
 
     }

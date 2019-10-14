@@ -1,7 +1,5 @@
 package com.firebirdberlin.nightdream.models;
 
-import android.util.Log;
-
 public class BatteryValue {
     public static int BATTERY_PLUGGED_AC = 1;
     public static int BATTERY_PLUGGED_USB = 2;
@@ -37,8 +35,6 @@ public class BatteryValue {
     }
 
     public long getEstimateMillis(BatteryValue reference) {
-        Log.d("BatteryValue", String.format("ref %d: %d", reference.chargingMethod, reference.level) );
-        Log.d("BatteryValue", String.format("act: %d: %d", chargingMethod, level) );
         if ( reference.level == -1 || reference.level == level ||
                 reference.chargingMethod != chargingMethod) {
             return -1L;

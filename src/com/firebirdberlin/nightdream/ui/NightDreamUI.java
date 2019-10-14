@@ -948,17 +948,11 @@ public class NightDreamUI {
         Utility.hideSystemUI(window);
     }
 
-    public int determineScreenMode(int current_mode, float light_value, double last_ambient_noise){
+    public int determineScreenMode(float light_value, boolean isNoisy) {
 
+        Log.d(TAG, "Sound is noisy " + isNoisy);
         LIGHT_VALUE_DARK = settings.minIlluminance + 1.f ;
-        double ambient_noise_threshold = settings.NOISE_AMPLITUDE_SLEEP;
-        if (current_mode == 0){
-            ambient_noise_threshold = settings.NOISE_AMPLITUDE_WAKE;
-        }
-
-        if (light_value <= LIGHT_VALUE_DARK
-                && ((!settings.useAmbientNoiseDetection())
-                    || last_ambient_noise < ambient_noise_threshold)){
+        if (light_value <= LIGHT_VALUE_DARK && !isNoisy) {
             return 0;
         } else if (light_value < LIGHT_VALUE_BRIGHT/2.f) { // night shift, desk light on
             return 1;
@@ -998,7 +992,7 @@ public class NightDreamUI {
             if (new_mode == 0 && !soundmeter.isRunning()) {
                 soundmeter.startMeasurement(3000);
             } else if (new_mode == 1 && !soundmeter.isRunning()) {
-                soundmeter.startMeasurement(60000);
+                soundmeter.startMeasurement(30000);
             } else if (new_mode > 1) {
                 soundmeter.stopMeasurement();
             }

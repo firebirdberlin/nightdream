@@ -12,7 +12,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -234,7 +233,6 @@ public class BatteryIconView extends View {
     }
 
     private String formatEstimate(long est) {
-        Log.i(TAG, String.format("estimate in millis: %d", est));
         if (est > 0){
             long h = est / 3600;
             long m  = ( est % 3600 ) / 60;
@@ -260,9 +258,6 @@ public class BatteryIconView extends View {
             batteryValue = batteryStats.getBatteryValue();
 
             updateBatteryViewText();
-
-            Log.i(TAG, String.format("battery level: %d, scale: %d, percent: %f", batteryValue.level, batteryValue.scale, batteryValue.getPercentage()));
-
         }
     }
 }

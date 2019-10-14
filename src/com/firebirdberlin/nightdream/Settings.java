@@ -607,7 +607,7 @@ public class Settings {
         ambientNoiseDetection = on;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("ambientNoiseDetection", on);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public boolean reactivateScreenOnNoise() {
