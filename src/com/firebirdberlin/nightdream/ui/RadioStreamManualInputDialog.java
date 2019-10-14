@@ -1,13 +1,15 @@
 package com.firebirdberlin.nightdream.ui;
 
 
-import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
-import android.os.Build;
+import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,20 +31,129 @@ import java.net.URL;
 
 public class RadioStreamManualInputDialog {
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void showDialog(final Context context, RadioStation persistedRadioStation, final RadioStreamDialogListener listener) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
 
         builder.setTitle(R.string.radio_stream_manual_input_hint);
+        View v = createDialogView(context, persistedRadioStation);
+        builder.setView(v);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.w("dismiss", "onclick1");
+
+            }
+        });
+        builder.setNeutralButton(android.R.string.cancel, null);
+
+        final AlertDialog manualInputDialog = builder.create();
+        registerDialogListener(manualInputDialog, v, listener);
+        manualInputDialog.show();
+    }
+
+    void registerDialogListener(final Dialog dialog, View v, final RadioStreamDialogListener listener) {
+        final EditText inputUrl = v.findViewById(R.id.radio_stream_manual_input_url);
+        final EditText inputDescription = v.findViewById(R.id.radio_stream_manual_input_description);
+        final ContentLoadingProgressBar progressSpinner = v.findViewById(R.id.radio_stream_manual_input_progress_bar);
+        final TextView invalidUrlMessage = v.findViewById(R.id.invalid_url);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialogInterface) {
+                Button positiveButton = ((AlertDialog) dialogInterface).getButton(DialogInterface.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        Log.w("dismiss", "onCLick()");
+
+                        final String urlString = inputUrl.getText().toString();
+                        final String description = inputDescription.getText().toString();
+
+                        final URL url = validateUrlInput(urlString);
+                        if (url == null) {
+                            showUrlErrorMessage(invalidUrlMessage);
+                            return;
+                        }
+
+                        boolean networkConnection = Utility.hasNetworkConnection(dialog.getContext());
+                        if (!networkConnection) {
+                            invalidUrlMessage.setText(R.string.message_no_data_connection);
+                            invalidUrlMessage.setVisibility(View.VISIBLE);
+                            return;
+                        }
+
+                        progressSpinner.setVisibility(View.VISIBLE);
+
+                        if (PlaylistParser.isPlaylistUrl(url)) {
+                            PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
+                                @Override
+                                public void onPlaylistRequestFinished(PlaylistInfo result) {
+                                    progressSpinner.setVisibility(View.GONE);
+
+                                    final URL resultStreamUrl = (result != null ? validateUrlInput(result.streamUrl) : null);
+                                    if (result != null && result.valid && resultStreamUrl != null) {
+                                        String stationName = getStationName(description, result.description, resultStreamUrl);
+                                        int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
+                                        persistAndDismissDialog((AlertDialog) dialog, listener, stationName, urlString, bitrate);
+                                    } else {
+                                        showUrlErrorMessage(invalidUrlMessage);
+                                    }
+
+                                }
+                            };
+                            new PlaylistRequestTask(playListResponseListener).execute(urlString);
+                        } else { // its a plain stream url
+                            HttpStatusCheckTask.AsyncResponse streamCheckResponseListener = new HttpStatusCheckTask.AsyncResponse() {
+                                @Override
+                                public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
+                                    progressSpinner.setVisibility(View.GONE);
+
+                                    if (checkResult != null && checkResult.isSuccess()) {
+
+                                        IcyHeaderInfo icyHeaderInfo = IcyHeaderReader.getHeaderInfos(checkResult.responseHeaders);
+
+                                        String name;
+                                        if (!description.isEmpty()) {
+                                            name = description;
+                                        } else if (icyHeaderInfo != null
+                                                && icyHeaderInfo.getName() != null
+                                                && !icyHeaderInfo.getName().isEmpty()) {
+                                            name = icyHeaderInfo.getName();
+                                        } else {
+                                            name = url.getHost();
+                                        }
+
+                                        int bitrate = 0;
+                                        if (icyHeaderInfo != null && icyHeaderInfo.getBitrate() != null) {
+                                            bitrate = icyHeaderInfo.getBitrate();
+                                        }
+
+                                        persistAndDismissDialog((AlertDialog) dialog, listener, name, urlString, bitrate);
+                                    } else {
+                                        showUrlErrorMessage(invalidUrlMessage);
+                                    }
+                                }
+                            };
+                            new HttpStatusCheckTask(streamCheckResponseListener).execute(urlString);
+                        }
+
+                    }
+
+                });
+
+            }
+        });
+    }
+
+    View createDialogView(final Context context, RadioStation persistedRadioStation) {
 
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.radio_stream_manual_input_dialog, null);
 
-        final EditText inputUrl = (EditText) v.findViewById(R.id.radio_stream_manual_input_url);
-        final EditText inputDescription = (EditText) v.findViewById(R.id.radio_stream_manual_input_description);
-        final ContentLoadingProgressBar progressSpinner = (ContentLoadingProgressBar) v.findViewById(R.id.radio_stream_manual_input_progress_bar);
+        final EditText inputUrl = v.findViewById(R.id.radio_stream_manual_input_url);
+        final EditText inputDescription = v.findViewById(R.id.radio_stream_manual_input_description);
+        final ContentLoadingProgressBar progressSpinner = v.findViewById(R.id.radio_stream_manual_input_progress_bar);
 
         //RadioStation persistedRadioStation = getPersistedRadioStation();
         if (persistedRadioStation != null) {
@@ -76,18 +187,20 @@ public class RadioStreamManualInputDialog {
         //inputUrl.setText("http://www.radioberlin.de/live.pls");
         //inputUrl.setText("http://www.acks.nl/acksmedia/acksradio/sb/listen192.asx");
 
-        final TextView invalidUrlMessage = (TextView) v.findViewById(R.id.invalid_url);
+        final TextView invalidUrlMessage = v.findViewById(R.id.invalid_url);
         invalidUrlMessage.setVisibility(View.GONE);
 
         // hide error message when url is edited
         inputUrl.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {}
+                                          int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start,
@@ -193,91 +306,7 @@ public class RadioStreamManualInputDialog {
                 }
             }
         });
-
-        builder.setView(v);
-        builder.setPositiveButton(android.R.string.ok, null);
-        builder.setNeutralButton(android.R.string.cancel, null);
-
-        final AlertDialog manualInputDialog = builder.create();
-        // set OK button click handler here, so closing of the dialog can be prevented if invalid url was entered
-        manualInputDialog.show();
-        manualInputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String urlString = inputUrl.getText().toString();
-                final String description = inputDescription.getText().toString();
-
-                final URL url = validateUrlInput(urlString);
-                if (url == null) {
-                    showUrlErrorMessage(invalidUrlMessage);
-                    return;
-                }
-
-                boolean networkConnection = Utility.hasNetworkConnection(context);
-                if (!networkConnection) {
-                    invalidUrlMessage.setText(R.string.message_no_data_connection);
-                    invalidUrlMessage.setVisibility(View.VISIBLE);
-                    return;
-                }
-
-                progressSpinner.setVisibility(View.VISIBLE);
-
-                if (PlaylistParser.isPlaylistUrl(url)) {
-                    PlaylistRequestTask.AsyncResponse playListResponseListener = new PlaylistRequestTask.AsyncResponse() {
-                        @Override
-                        public void onPlaylistRequestFinished(PlaylistInfo result) {
-                            progressSpinner.setVisibility(View.GONE);
-
-                            final URL resultStreamUrl = (result != null ? validateUrlInput(result.streamUrl) : null);
-                            if (result != null && result.valid && resultStreamUrl != null) {
-                                String stationName = getStationName(description, result.description, resultStreamUrl);
-                                int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
-                                persistAndDismissDialog(manualInputDialog, listener, stationName, urlString, bitrate);
-                            } else {
-                                showUrlErrorMessage(invalidUrlMessage);
-                            }
-
-                        }
-                    };
-                    new PlaylistRequestTask(playListResponseListener).execute(urlString);
-                } else { // its a plain stream url
-                    HttpStatusCheckTask.AsyncResponse streamCheckResponseListener = new HttpStatusCheckTask.AsyncResponse() {
-                        @Override
-                        public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
-                            progressSpinner.setVisibility(View.GONE);
-
-                            if (checkResult != null && checkResult.isSuccess()) {
-
-                                IcyHeaderInfo icyHeaderInfo = IcyHeaderReader.getHeaderInfos(checkResult.responseHeaders);
-
-                                String name;
-                                if (!description.isEmpty()) {
-                                    name = description;
-                                } else if (icyHeaderInfo != null
-                                        && icyHeaderInfo.getName() != null
-                                        && !icyHeaderInfo.getName().isEmpty()) {
-                                    name = icyHeaderInfo.getName();
-                                } else {
-                                    name = url.getHost();
-                                }
-
-                                int bitrate = 0;
-                                if (icyHeaderInfo != null && icyHeaderInfo.getBitrate() != null) {
-                                    bitrate = icyHeaderInfo.getBitrate().intValue();
-                                }
-
-                                persistAndDismissDialog(manualInputDialog, listener, name, urlString, bitrate);
-                            } else {
-                                showUrlErrorMessage(invalidUrlMessage);
-                            }
-                        }
-                    };
-                    new HttpStatusCheckTask(streamCheckResponseListener).execute(urlString);
-                }
-
-            }
-
-        });
+        return v;
     }
 
     private URL validateUrlInput(String urlString) {
@@ -314,7 +343,6 @@ public class RadioStreamManualInputDialog {
         station.stream = streamUrl;
         station.bitrate = bitrate;
         station.countryCode = ""; // empty string, otherwise invalid json
-        station.isUserDefinedStreamUrl = true;
         return station;
     }
 

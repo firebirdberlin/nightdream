@@ -200,6 +200,7 @@ OR
     <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_failure">Radio stream failure</string>
+    <string name="radio_stream_manual_edit">Edit radio station</string>
     <string name="radio_stream_manual_input_hint">Add a station manually</string>
     <string name="radio_stream_manual_input_url">Stream URL</string>
     <string name="radio_stream_manual_input_description">Station name</string>

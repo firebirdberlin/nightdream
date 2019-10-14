@@ -3,8 +3,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
-import androidx.core.widget.ContentLoadingProgressBar;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,6 +19,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.core.widget.ContentLoadingProgressBar;
+
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.radiostreamapi.CountryRequestTask;
@@ -35,8 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
-        CountryRequestTask.AsyncResponse {
+public class RadioStreamDialog
+        implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse {
 
     private final static String TAG = "RadioStreamDialog";
 
@@ -59,7 +59,9 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
     private final RadioStreamManualInputDialog manualInputDialog = new RadioStreamManualInputDialog();
 
-    public RadioStreamDialog(Context context, RadioStation persistedRadioStation, String preferredCountry) {
+    public RadioStreamDialog(
+            Context context, RadioStation persistedRadioStation, String preferredCountry
+    ) {
         this.context = context;
         this.persistedRadioStation = persistedRadioStation;
         this.preferredCountry = preferredCountry;
@@ -123,6 +125,7 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RadioStation station = stations.get(position);
                 radioStreamDialogListener.onRadioStreamSelected(station);
+
             }
         });
 
@@ -286,11 +289,13 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
 
     private String getDisplayedRadioStationText(RadioStation station, boolean displayCountryCode) {
         String countryCode = (displayCountryCode) ? String.format("%s ", station.countryCode) : "";
-        String streamOffline = (station.isOnline) ? ""
-                : String.format(" - %s",
-                context.getResources().getString(R.string.radio_stream_offline));
+        String streamOffline =
+                (station.isOnline)
+                        ? ""
+                        : String.format(" - %s", context.getResources().getString(R.string.radio_stream_offline));
         return String.format("%s%s (%d kbit/s)%s",
-                countryCode, station.name, station.bitrate, streamOffline);
+                countryCode, station.name, station.bitrate, streamOffline
+        );
     }
 
     private void updateCountrySpinner(List<Country> countries, String preferredCountry) {
@@ -323,38 +328,6 @@ public class RadioStreamDialog implements StationRequestTask.AsyncResponse,
             countrySpinner.setSelection(selectedItemIndex);
         }
 
-    }
-
-    private List<String> getPreferredCountryCodes() {
-
-        List<String> preferredCountryCodes = new ArrayList<>();
-
-        try {
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm != null) {
-                String simCountryCode = tm.getSimCountryIso();
-                if (simCountryCode != null && !simCountryCode.isEmpty()) {
-                    preferredCountryCodes.add(simCountryCode.toUpperCase());
-                }
-                //Log.i(TAG, "iso country code is " + locale);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-
-        String locale = context.getResources().getConfiguration().locale.getCountry();
-        if (locale != null && !preferredCountryCodes.isEmpty() && !preferredCountryCodes.get(0).equals(locale)) {
-            preferredCountryCodes.add(locale);
-        }
-
-        //test: french people living in Canada :D
-        /*
-        preferredCountryCodes.clear();
-        preferredCountryCodes.add("CA");
-        preferredCountryCodes.add("FR");
-        */
-
-        return preferredCountryCodes;
     }
 
     public void clearLastSearchResult() {
