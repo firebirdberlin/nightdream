@@ -35,16 +35,16 @@
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="false"
-        app:key="ambientNoiseDetection"
-        app:summary="@string/ambient_noise_summary"
-        app:title="@string/ambient_noise" />
-
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="false"
         app:key="allow_screen_off"
         app:summary="@string/allow_screen_off_summary"
         app:title="@string/allow_screen_off" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:iconSpaceReserved="false"
+        app:key="ambientNoiseDetection"
+        app:summary="@string/ambient_noise_summary"
+        app:title="@string/ambient_noise" />
 
     <de.firebirdberlin.preference.InlineSeekBarPreference
         app:iconSpaceReserved="false"

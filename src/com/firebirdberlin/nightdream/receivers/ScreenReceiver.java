@@ -115,14 +115,9 @@ public class ScreenReceiver extends BroadcastReceiver {
             public void onSensorChanged(SensorEvent sensorEvent) {
                if( sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
                    deviceIsCovered = (sensorEvent.values[0] == 0);
-                   Log.d(TAG, String.format("proximity: %3.2f", sensorEvent.values[0]));
                    proximitySensorChecked = true;
                } else
                if( sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
-                   Log.d(TAG, String.format("%3.2f %3.2f %3.2f",
-                           sensorEvent.values[0],
-                           sensorEvent.values[1],
-                           sensorEvent.values[2]));
                    float z = sensorEvent.values[2];
                    isScreenUp = Math.abs(z) > 9.f;
                    gravitySensorChecked = true;
@@ -151,7 +146,6 @@ public class ScreenReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         handler.removeCallbacks(checkAndActivateApp);
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-            Log.i(TAG, "ACTION_SCREEN_OFF");
             this.context = context;
 
             isScreenUp = false;
@@ -170,7 +164,6 @@ public class ScreenReceiver extends BroadcastReceiver {
         }
 
         if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-            Log.i(TAG, "ACTION_SCREEN_ON");
             deviceIsCovered = false;
             isScreenUp = false;
             Settings settings = new Settings(context);
@@ -180,7 +173,6 @@ public class ScreenReceiver extends BroadcastReceiver {
 
         switch (intent.getAction()) {
             case Intent.ACTION_TIME_TICK:
-                Log.i(TAG, "time tick");
                 ClockWidgetProvider.updateAllWidgets(context);
                 break;
             case Intent.ACTION_TIME_CHANGED:

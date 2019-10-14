@@ -82,7 +82,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private boolean screenWasOn = false;
     private Context context = null;
     private float last_ambient = 4.0f;
-    private double last_ambient_noise = 32000; // something loud
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
     private LocationUpdateReceiver locationReceiver = null;
@@ -106,14 +105,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
     private GestureDetector mGestureDetector = null;
-    private Runnable setScreenOff = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(setScreenOff);
-            int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
-            setMode(new_mode);
-        }
-    };
+    static long lastNoiseTime = System.currentTimeMillis();
     private Runnable finishApp = new Runnable() {
         @Override
         public void run() {
@@ -265,7 +257,6 @@ public class NightDreamActivity extends BillingHelperActivity
         } else
         if ("start night mode".equals(action)) {
             last_ambient = mySettings.minIlluminance;
-            last_ambient_noise = 32000;
             setMode(0);
             if ( lightSensor == null ) {
                 handler.postDelayed(setScreenOff, 20000);
@@ -560,45 +551,14 @@ public class NightDreamActivity extends BillingHelperActivity
         mode = new_mode;
     }
 
-    private boolean shallKeepScreenOn(int mode) {
-        screenWasOn = screenWasOn || Utility.isScreenOn(this);
-        boolean isCharging = Utility.isCharging(this);
-        long now = Calendar.getInstance().getTimeInMillis();
-
-        Log.d(TAG, "screenWasOn = " + screenWasOn);
-        Log.d(TAG, "mode = " + mode);
-        Log.d(TAG, "isCharging = " + isCharging);
-        Log.d(TAG, "now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS = " +
-                String.valueOf(now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS ));
-
-        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
-            return true;
+    private Runnable setScreenOff = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(setScreenOff);
+            int new_mode = nightDreamUI.determineScreenMode(last_ambient, isNoisy());
+            setMode(new_mode);
         }
-
-        long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
-        if ( // keep screen on
-                now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS // 45 seconds after resume
-                || (0 < nextAlarmTime - now && nextAlarmTime - now < 600000) // 1000 * 60 * 10 = 10 minutes
-                || AlarmService.isRunning
-                || RadioStreamService.isRunning) {
-            Log.d(TAG, "shallKeepScreenOn() true");
-            return true;
-        }
-
-        if (
-                (isCharging || mySettings.isAlwaysOnAllowed()) &&
-                (mode > 0
-                        || (mode == 0 && !mySettings.allow_screen_off)
-                        || ScreenReceiver.shallActivateStandby(context, mySettings))
-                ) {
-            Log.d(TAG, "shallKeepScreenOn() true");
-            return true;
-        }
-
-
-        Log.d(TAG, "shallKeepScreenOn() false");
-        return false;
-    }
+    };
 
     private boolean isLocked() {
         KeyguardManager myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
@@ -610,9 +570,51 @@ public class NightDreamActivity extends BillingHelperActivity
         startService(i);
     }
 
+    private boolean shallKeepScreenOn(int mode) {
+        screenWasOn = screenWasOn || Utility.isScreenOn(this);
+        boolean isCharging = Utility.isCharging(this);
+        long now = Calendar.getInstance().getTimeInMillis();
+
+        Log.d(TAG, "screenWasOn = " + screenWasOn);
+        Log.d(TAG, "mode = " + mode);
+        Log.d(TAG, "isCharging = " + isCharging);
+        Log.d(TAG, "now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS = " +
+                (now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS));
+
+        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
+            return true;
+        }
+
+        long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
+        if ( // keep screen on
+                now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS // 45 seconds after resume
+                || (0 < nextAlarmTime - now && nextAlarmTime - now < 600000) // 1000 * 60 * 10 = 10 minutes
+                || AlarmService.isRunning
+                || RadioStreamService.isRunning) {
+            Log.d(TAG, "shallKeepScreenOn() 1 true");
+            return true;
+        }
+
+        Log.i(TAG, "1 " + (isCharging || mySettings.isAlwaysOnAllowed()));
+        Log.i(TAG, "2 " + ScreenReceiver.shallActivateStandby(context, mySettings));
+        if (
+                (isCharging || mySettings.isAlwaysOnAllowed()) &&
+                (mode > 0
+                        || (mode == 0 && !mySettings.allow_screen_off)
+                        || ScreenReceiver.shallActivateStandby(context, mySettings))
+                ) {
+            Log.d(TAG, "shallKeepScreenOn() 2 true");
+            return true;
+        }
+
+
+        Log.d(TAG, "shallKeepScreenOn() false");
+        return false;
+    }
+
     @Subscribe
     public void onEvent(OnNewLightSensorValue event){
-        Log.i(TAG, String.valueOf(event.value) + " lux, n=" + String.valueOf(event.n));
+        Log.i(TAG, event.value + " lux, n=" + event.n);
         last_ambient = event.value;
         handleBrightnessChange();
     }
@@ -620,20 +622,33 @@ public class NightDreamActivity extends BillingHelperActivity
     @Subscribe
     public void onEvent(OnLightSensorValueTimeout event){
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
-        Log.i(TAG, "Static for 15s: " + String.valueOf(last_ambient) + " lux.");
+        Log.i(TAG, "Static for 15s: " + last_ambient + " lux.");
         handleBrightnessChange();
         handler.postDelayed(checkKeepScreenOn, MINIMUM_APP_RUN_TIME_MILLIS);
     }
 
     @Subscribe
     public void onEvent(OnNewAmbientNoiseValue event) {
-        last_ambient_noise = event.value;
+        double ambient_noise_threshold = (mode == 0) ?
+                mySettings.NOISE_AMPLITUDE_WAKE : mySettings.NOISE_AMPLITUDE_SLEEP;
+        if (event.value > ambient_noise_threshold) {
+            lastNoiseTime = System.currentTimeMillis();
+            Log.i(TAG, "Sound is noisy! " + event.value);
+        }
         handleBrightnessChange();
+    }
+
+    boolean isNoisy() {
+        if (!mySettings.useAmbientNoiseDetection()) {
+            return false;
+        }
+        long now = System.currentTimeMillis();
+        return (now - lastNoiseTime < MINIMUM_APP_RUN_TIME_MILLIS);
     }
 
     private void handleBrightnessChange() {
         if (mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC) {
-            int new_mode = nightDreamUI.determineScreenMode(mode, last_ambient, last_ambient_noise);
+            int new_mode = nightDreamUI.determineScreenMode(last_ambient, isNoisy());
             setMode(new_mode);
         }
     }
@@ -726,7 +741,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 timeout = MINIMUM_APP_RUN_TIME_MILLIS;
             }
 
-            Log.d(TAG, "triggerAlwaysOnTimeout " + String.valueOf((timeout / 1000) + " seconds"));
+            Log.d(TAG, "triggerAlwaysOnTimeout " + (timeout / 1000) + " seconds");
             handler.postDelayed(alwaysOnTimeout, 60000 * mySettings.batteryTimeout);
         }
     }
