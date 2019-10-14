@@ -54,6 +54,7 @@ public class RadioStreamManualInputDialog {
     void registerDialogListener(final Dialog dialog, View v, final RadioStreamDialogListener listener) {
         final EditText inputUrl = v.findViewById(R.id.radio_stream_manual_input_url);
         final EditText inputDescription = v.findViewById(R.id.radio_stream_manual_input_description);
+        final EditText inputSecondsToMute = v.findViewById(R.id.radio_stream_manual_input_seconds_to_mute);
         final ContentLoadingProgressBar progressSpinner = v.findViewById(R.id.radio_stream_manual_input_progress_bar);
         final TextView invalidUrlMessage = v.findViewById(R.id.invalid_url);
 
@@ -68,6 +69,7 @@ public class RadioStreamManualInputDialog {
 
                         final String urlString = inputUrl.getText().toString();
                         final String description = inputDescription.getText().toString();
+                        final int secondsToMute = Integer.valueOf(inputSecondsToMute.getText().toString());
 
                         final URL url = validateUrlInput(urlString);
                         if (url == null) {
@@ -94,7 +96,9 @@ public class RadioStreamManualInputDialog {
                                     if (result != null && result.valid && resultStreamUrl != null) {
                                         String stationName = getStationName(description, result.description, resultStreamUrl);
                                         int bitrate = (result.bitrateHint != null ? result.bitrateHint : 0);
-                                        persistAndDismissDialog((AlertDialog) dialog, listener, stationName, urlString, bitrate);
+                                        persistAndDismissDialog(
+                                                (AlertDialog) dialog, listener, stationName, urlString, bitrate, secondsToMute
+                                        );
                                     } else {
                                         showUrlErrorMessage(invalidUrlMessage);
                                     }
@@ -128,7 +132,9 @@ public class RadioStreamManualInputDialog {
                                             bitrate = icyHeaderInfo.getBitrate();
                                         }
 
-                                        persistAndDismissDialog((AlertDialog) dialog, listener, name, urlString, bitrate);
+                                        persistAndDismissDialog(
+                                                (AlertDialog) dialog, listener, name, urlString, bitrate, secondsToMute
+                                        );
                                     } else {
                                         showUrlErrorMessage(invalidUrlMessage);
                                     }
@@ -153,12 +159,18 @@ public class RadioStreamManualInputDialog {
 
         final EditText inputUrl = v.findViewById(R.id.radio_stream_manual_input_url);
         final EditText inputDescription = v.findViewById(R.id.radio_stream_manual_input_description);
+        final EditText inputSecondsToMute = v.findViewById(R.id.radio_stream_manual_input_seconds_to_mute);
         final ContentLoadingProgressBar progressSpinner = v.findViewById(R.id.radio_stream_manual_input_progress_bar);
 
         //RadioStation persistedRadioStation = getPersistedRadioStation();
         if (persistedRadioStation != null) {
             inputUrl.setText(persistedRadioStation.stream);
             inputDescription.setText(persistedRadioStation.name);
+            if (persistedRadioStation.muteDelayInMillis > 0) {
+                inputSecondsToMute.setText(
+                        String.valueOf((int) (persistedRadioStation.muteDelayInMillis / 1000))
+                );
+            }
         }
 
         // test plain stream url + description
@@ -335,7 +347,7 @@ public class RadioStreamManualInputDialog {
         invalidUrlMessage.setVisibility(View.VISIBLE);
     }
 
-    private RadioStation createRadioStation(String name, String streamUrl, int bitrate) {
+    private RadioStation createRadioStation(String name, String streamUrl, int bitrate, int secondsToMute) {
         RadioStation station = new RadioStation();
         station.isUserDefinedStreamUrl = true;
         station.isOnline = true;
@@ -343,11 +355,15 @@ public class RadioStreamManualInputDialog {
         station.stream = streamUrl;
         station.bitrate = bitrate;
         station.countryCode = ""; // empty string, otherwise invalid json
+        station.muteDelayInMillis = 1000L * secondsToMute;
         return station;
     }
 
-    private void persistAndDismissDialog(final AlertDialog dialog, RadioStreamDialogListener listener, String name, String urlString, int bitrate) {
-        RadioStation station = createRadioStation(name, urlString, bitrate);
+    private void persistAndDismissDialog(
+            final AlertDialog dialog, RadioStreamDialogListener listener, String name,
+            String urlString, int bitrate, int secondsToMute
+    ) {
+        RadioStation station = createRadioStation(name, urlString, bitrate, secondsToMute);
 
         // close dialog
         dialog.dismiss();

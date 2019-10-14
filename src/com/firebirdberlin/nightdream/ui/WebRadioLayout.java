@@ -245,6 +245,12 @@ public class WebRadioLayout extends RelativeLayout {
         if (webRadioButtons != null) {
             webRadioButtons.setCustomColor(accentColor, textColor);
         }
+        if (spinner != null) {
+            Drawable drawable = spinner.getIndeterminateDrawable();
+            if (drawable != null) {
+                drawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+            }
+        }
     }
 
     private void showSleepTimerDialog() {
@@ -382,7 +388,7 @@ public class WebRadioLayout extends RelativeLayout {
     @Override
     public void setClickable(boolean clickable) {
 
-        Log.i(TAG, "setClickable: " + String.valueOf(clickable));
+        Log.i(TAG, "setClickable: " + clickable);
         super.setClickable(clickable);
 
         for (int i = 0; i < getChildCount(); i++) {

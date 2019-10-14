@@ -294,4 +294,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_manual_edit">Sender bearbeiten</string>
     <string name="dialog_message_pending_purchase">Ihr Kauf wird verarbeitet, wurde durch Google Play aber noch nicht bestätigt.</string>
     <string name="dialog_message_already_owned">Sie besitzen dieses Product bereits.</string>
+    <string name="radio_stream_manual_input_seconds_to_mute">Stummschalten beim Start (Sekunden)</string>
 </resources>
