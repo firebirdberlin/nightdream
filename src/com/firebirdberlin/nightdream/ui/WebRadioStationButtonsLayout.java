@@ -275,6 +275,9 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         } else {
             for (int i = 0; i < stations.numAvailableStations(); i++) {
                 RadioStation s = stations.get(i);
+                if (s == null) {
+                    continue;
+                }
                 preferredCountry = s.countryCode;
            }
         }

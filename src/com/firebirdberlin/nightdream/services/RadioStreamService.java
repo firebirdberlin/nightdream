@@ -14,10 +14,11 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.HttpStatusCheckTask;
@@ -61,6 +62,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     static private RadioStation radioStation;
     private static long sleepTimeInMillis = 0L;
     private static String streamURL = "";
+    private static long muteDelayInMillis = 0;
     final private Handler handler = new Handler();
     private long readyForPlaybackSince = 0L;
     private MediaPlayer mMediaPlayer = null;
@@ -325,6 +327,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                 radioStation = stations.get(radioStationIndex);
                 if (radioStation != null) {
                     streamURL = radioStation.stream;
+                    muteDelayInMillis = radioStation.muteDelayInMillis;
                 }
             }
         }
@@ -507,7 +510,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             if (mMediaPlayer != null) {
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
             }
-            handler.post(fadeIn);
+            //handler.post(fadeIn);
+            handler.postDelayed(fadeIn, muteDelayInMillis);
         }
         try {
             mp.start();
