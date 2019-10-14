@@ -278,7 +278,9 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
                 preferredCountry = s.countryCode;
            }
         }
-        RadioStreamDialogFragment.showDialog((AppCompatActivity)getContext(), stationIndex, station, preferredCountry, listener);
+        RadioStreamDialogFragment.showDialog(
+                (AppCompatActivity) getContext(), stationIndex, station, preferredCountry, listener
+        );
     }
 
     private void hideSystemUI() {
