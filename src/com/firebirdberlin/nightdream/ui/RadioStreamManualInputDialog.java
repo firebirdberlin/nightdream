@@ -69,7 +69,8 @@ public class RadioStreamManualInputDialog {
 
                         final String urlString = inputUrl.getText().toString();
                         final String description = inputDescription.getText().toString();
-                        final int secondsToMute = Integer.valueOf(inputSecondsToMute.getText().toString());
+                        final String secondsToMuteString = inputSecondsToMute.getText().toString();
+                        final int secondsToMute = secondsToMuteString.isEmpty() ? 0 : Integer.valueOf(secondsToMuteString);
 
                         final URL url = validateUrlInput(urlString);
                         if (url == null) {
