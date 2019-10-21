@@ -37,6 +37,8 @@ public class OpenWeatherMapApi {
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
     private static String CACHE_FILE_FORECAST = "owm_forecast";
+    private static String CACHE_FILE_DATA = "owm_weather_data";
+    private static long CACHE_VALIDITY_TIME = 1000 * 60 * 15; // 15 mins
 
     private static void storeCacheFile(File cacheFile, String responseText) {
         try {
@@ -67,24 +69,44 @@ public class OpenWeatherMapApi {
         return new String(bytes);
     }
 
-    public static WeatherEntry fetchWeatherData(String cityID, float lat, float lon) {
+    public static WeatherEntry fetchWeatherData(
+            Context context, String cityID, float lat, float lon
+    ) {
         int responseCode = 0;
         String response = "";
         String responseText = "";
 
-        try {
-            URL url = getUrlWeather(cityID, lat, lon);
-            Log.i(TAG, "requesting " + url.toString());
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            response = urlConnection.getResponseMessage();
-            responseCode = urlConnection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                responseText = getResponseText(urlConnection);
+        String cacheFileName =
+                (cityID != null)
+                        ? String.format("%s_%s.txt", CACHE_FILE_DATA, cityID)
+                        : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_DATA, lat, lon);
+        Log.d(TAG, cacheFileName);
+        File cacheFile = new File(context.getCacheDir(), cacheFileName);
+        long now = System.currentTimeMillis();
+        if (cacheFile.exists()) {
+            Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
+            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
+        }
+
+        if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
+            responseText = readFromCacheFile(cacheFile);
+            Log.i(TAG, responseText);
+        } else {
+            try {
+                URL url = getUrlWeather(cityID, lat, lon);
+                Log.i(TAG, "requesting " + url.toString());
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                response = urlConnection.getResponseMessage();
+                responseCode = urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    responseText = getResponseText(urlConnection);
+                }
+                urlConnection.disconnect();
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+                e.printStackTrace();
             }
-            urlConnection.disconnect();
-        } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+            storeCacheFile(cacheFile, responseText);
         }
 
         Log.i(TAG, " >> response " + response);
@@ -99,7 +121,9 @@ public class OpenWeatherMapApi {
         return getWeatherEntryFromJSONObject(json);
     }
 
-    public static List<WeatherEntry> fetchWeatherForecast(Context context, City city) {
+    public static List<WeatherEntry> fetchWeatherForecast(
+            Context context, City city
+    ) {
         int responseCode = 0;
         String response = "";
         String responseText = "";
@@ -120,11 +144,12 @@ public class OpenWeatherMapApi {
         Log.d(TAG, cacheFileName);
         long now = System.currentTimeMillis();
         if (cacheFile.exists()) {
-            Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified() );
-            Log.i(TAG, "new enough: " + String.valueOf(cacheFile.lastModified() > now - 600000));
+            Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
+            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
         }
-        if (cacheFile.exists() && cacheFile.lastModified() > now - 600000 ) {
+        if (cacheFile.exists() && cacheFile.lastModified() > CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
+            Log.i(TAG, "response: " + responseText);
         } else {
             try {
                 URL url = getUrlForecast(cityID, lat, lon);
@@ -136,6 +161,7 @@ public class OpenWeatherMapApi {
                     responseText = getResponseText(urlConnection);
                 }
                 urlConnection.disconnect();
+                storeCacheFile(cacheFile, responseText);
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
                 e.printStackTrace();
@@ -143,12 +169,15 @@ public class OpenWeatherMapApi {
 
             Log.i(TAG, " >> response " + response);
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
+                Log.w(TAG, " >> responseCode " + responseCode);
                 return forecast;
             } else {
                 Log.i(TAG, " >> responseText " + responseText);
             }
-            storeCacheFile(cacheFile, responseText);
+        }
+
+        if (responseText == null || responseText.isEmpty()) {
+            return forecast;
         }
 
         JSONObject json = getJSONObject(responseText);
@@ -156,7 +185,10 @@ public class OpenWeatherMapApi {
         String cityName = getValue(jsonCity, "name", "");
         int cityIDint = getValue(jsonCity, "id", 0);
         JSONArray jsonList = getJSONArray(json, "list");
-        for(int i=0; i< jsonList.length(); i++){
+        if (jsonList == null) {
+            return forecast;
+        }
+        for (int i = 0; i < jsonList.length(); i++) {
             JSONObject jsonEntry = getJSONObject(jsonList, i);
             WeatherEntry entry = getWeatherEntryFromJSONObject(jsonEntry);
             entry.cityID = cityIDint;
@@ -225,7 +257,7 @@ public class OpenWeatherMapApi {
     private static JSONObject getJSONObject(JSONObject json, String name) {
         try {
             return json.getJSONObject(name);
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             return null;
         }
     }
@@ -233,7 +265,7 @@ public class OpenWeatherMapApi {
     private static JSONArray getJSONArray(JSONObject json, String name) {
         try {
             return json.getJSONArray(name);
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             return null;
         }
     }
@@ -313,16 +345,14 @@ public class OpenWeatherMapApi {
             urlConnection.setReadTimeout(READ_TIMEOUT);
             response = urlConnection.getResponseMessage();
             responseCode = urlConnection.getResponseCode();
-            if ( responseCode == HttpURLConnection.HTTP_OK ) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseText = getResponseText(urlConnection.getInputStream());
             }
             urlConnection.disconnect();
-        }
-        catch (SocketTimeoutException e) {
+        } catch (SocketTimeoutException e) {
             Log.e(TAG, "Http Timeout");
             return cities;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, Log.getStackTraceString(e));
             e.printStackTrace();
         }
@@ -346,18 +376,18 @@ public class OpenWeatherMapApi {
     private static URL getUrlFindCity(String query) throws MalformedURLException {
         Uri.Builder builder = getPathBuilder("find");
         String url = builder
-                        .appendQueryParameter("q", query)
-                        .appendQueryParameter("type", "like")
-                        .appendQueryParameter("cnt", "15")
-                        .appendQueryParameter("sort", "population")
-                        .build().toString();
+                .appendQueryParameter("q", query)
+                .appendQueryParameter("type", "like")
+                .appendQueryParameter("cnt", "15")
+                .appendQueryParameter("sort", "population")
+                .build().toString();
         return new URL(url);
     }
 
     private static URL getUrlWeather(String cityId, float lat, float lon) throws MalformedURLException {
         Uri.Builder builder = getPathBuilder("weather");
 
-        if (!cityId.isEmpty()) {
+        if (cityId != null && !cityId.isEmpty()) {
             builder = builder.appendQueryParameter("id", cityId);
         } else {
             builder = builder
@@ -377,7 +407,7 @@ public class OpenWeatherMapApi {
     private static URL getUrlForecast(String cityId, float lat, float lon) throws MalformedURLException {
         Uri.Builder builder = getPathBuilder("forecast");
 
-        if (!cityId.isEmpty()) {
+        if (cityId != null && !cityId.isEmpty()) {
             builder = builder.appendQueryParameter("id", cityId);
         } else {
             builder = builder

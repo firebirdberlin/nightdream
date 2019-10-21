@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
+import android.util.Log;
+
 import androidx.core.app.JobIntentService;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
@@ -47,6 +48,7 @@ public class DownloadWeatherService extends JobIntentService {
             case OPEN_WEATHER_MAP:
             default:
                 entry = OpenWeatherMapApi.fetchWeatherData(
+                        this,
                         cityID,
                         (float) location.getLatitude(),
                         (float) location.getLongitude()
