@@ -77,7 +77,7 @@ public class OpenWeatherMapApi {
         String responseText = "";
 
         String cacheFileName =
-                (cityID != null)
+                (cityID != null && !cityID.isEmpty())
                         ? String.format("%s_%s.txt", CACHE_FILE_DATA, cityID)
                         : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_DATA, lat, lon);
         Log.d(TAG, cacheFileName);
@@ -90,7 +90,6 @@ public class OpenWeatherMapApi {
 
         if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
-            Log.i(TAG, responseText);
         } else {
             try {
                 URL url = getUrlWeather(cityID, lat, lon);
@@ -107,15 +106,14 @@ public class OpenWeatherMapApi {
                 e.printStackTrace();
             }
             storeCacheFile(cacheFile, responseText);
+            Log.i(TAG, " >> response " + response);
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                Log.w(TAG, " >> responseCode " + responseCode);
+                return new WeatherEntry();
+            }
         }
 
-        Log.i(TAG, " >> response " + response);
-        if (responseCode != HttpURLConnection.HTTP_OK) {
-            Log.w(TAG, " >> responseCode " + responseCode);
-            return new WeatherEntry();
-        } else {
-            Log.i(TAG, " >> responseText " + responseText);
-        }
+        Log.i(TAG, " >> responseText " + responseText);
 
         JSONObject json = getJSONObject(responseText);
         return getWeatherEntryFromJSONObject(json);
@@ -162,18 +160,18 @@ public class OpenWeatherMapApi {
                 }
                 urlConnection.disconnect();
                 storeCacheFile(cacheFile, responseText);
+
+                Log.i(TAG, " >> response " + response);
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    Log.w(TAG, " >> responseCode " + responseCode);
+                    return forecast;
+                }
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
                 e.printStackTrace();
             }
 
-            Log.i(TAG, " >> response " + response);
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                Log.w(TAG, " >> responseCode " + responseCode);
-                return forecast;
-            } else {
-                Log.i(TAG, " >> responseText " + responseText);
-            }
+            Log.i(TAG, " >> responseText " + responseText);
         }
 
         if (responseText == null || responseText.isEmpty()) {
