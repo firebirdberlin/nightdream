@@ -145,7 +145,7 @@ public class OpenWeatherMapApi {
             Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
             Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
         }
-        if (cacheFile.exists() && cacheFile.lastModified() > CACHE_VALIDITY_TIME) {
+        if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
             Log.i(TAG, "response: " + responseText);
         } else {
