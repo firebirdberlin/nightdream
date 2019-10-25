@@ -275,7 +275,7 @@ public class Settings {
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         useDeviceLock = settings.getBoolean("useDeviceLock", false);
-        nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "1"));
+        nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "0"));
         useInternalAlarm = settings.getBoolean("useInternalAlarm", true);
         useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
