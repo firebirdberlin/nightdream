@@ -7,7 +7,7 @@
 
     <ListPreference
         app:iconSpaceReserved="false"
-        app:defaultValue="1"
+        app:defaultValue="0"
         app:entries="@array/nightModeActivationValues"
         app:entryValues="@array/nightModeActivationModes"
         app:key="nightModeActivationMode"
