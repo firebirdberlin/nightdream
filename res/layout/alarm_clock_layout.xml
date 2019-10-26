@@ -99,11 +99,30 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <CheckBox
-                    android:id="@+id/checkBoxIsRepeating"
-                    android:layout_width="wrap_content"
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/repeat" />
+                    app:flexDirection="row"
+                    app:flexWrap="nowrap"
+                    app:justifyContent="space_between">
+
+                    <CheckBox
+                        android:id="@+id/checkBoxIsRepeating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/repeat" />
+
+                    <TextView
+                        android:id="@+id/textViewVibrate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_vibration"
+                        android:drawableLeft="@drawable/ic_vibration"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textAppearance="@android:style/TextAppearance.Small" />
+                </com.google.android.flexbox.FlexboxLayout>
 
                 <LinearLayout
                     android:id="@+id/layoutDays"
@@ -204,18 +223,6 @@
                         android:paddingStart="6dp"
                         android:textAppearance="@android:style/TextAppearance.Small" />
 
-                    <TextView
-                        android:id="@+id/textViewVibrate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_vibration"
-                        android:drawableLeft="@drawable/ic_vibration"
-                        android:drawablePadding="4dp"
-                        android:gravity="center"
-                        android:paddingStart="6dp"
-                        android:paddingLeft="6dp"
-                        android:text=""
-                        android:textAppearance="@android:style/TextAppearance.Small" />
                 </LinearLayout>
                 <Button
                     android:id="@+id/button_delete"
