@@ -28,6 +28,7 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
@@ -75,6 +76,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     private IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
+    private VibrationHandler vibrator = null;
 
     private Runnable fadeIn = new Runnable() {
         @Override
@@ -208,6 +210,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate() called.");
+        vibrator = new VibrationHandler(this);
         startForeground();
         Utility.registerEventBus(this);
     }
@@ -451,8 +454,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int usage = (currentStreamType == AudioManager.STREAM_ALARM) ?
-                    AudioAttributes.USAGE_ALARM : AudioAttributes.USAGE_MEDIA;
+            int usage = (currentStreamType == AudioManager.STREAM_ALARM)
+                    ? AudioAttributes.USAGE_ALARM : AudioAttributes.USAGE_MEDIA;
             mMediaPlayer.setAudioAttributes(
                     new AudioAttributes.Builder()
                             .setUsage(usage)
@@ -523,6 +526,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.start() failed", e);
         }
+
+        if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
+            vibrator.startVibration();
+        }
     }
 
     @Override
@@ -539,6 +546,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             }
             mMediaPlayer.release();
             mMediaPlayer = null;
+        }
+        if (vibrator != null) {
+            vibrator.stopVibration();
         }
     }
 

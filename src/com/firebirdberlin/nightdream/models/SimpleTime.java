@@ -32,6 +32,7 @@ public class SimpleTime {
     public int radioStationIndex = -1;
     public String soundUri;
     public Long nextEventAfter = null;
+    public boolean vibrate = false;
 
     public SimpleTime() {
 
@@ -78,6 +79,7 @@ public class SimpleTime {
         this.soundUri = bundle.getString("soundUri");
         this.nextEventAfter = bundle.getLong("nextEventAfter");
         this.radioStationIndex = bundle.getInt("radioStationIndex", -1);
+        this.vibrate = bundle.getBoolean("vibrate", false);
     }
 
     public static SimpleTime getNextFromList(List<SimpleTime> entries) {
@@ -85,7 +87,7 @@ public class SimpleTime {
         return getNextFromList(entries, now);
     }
 
-    protected static SimpleTime getNextFromList(List<SimpleTime> entries, Calendar reference) {
+    static SimpleTime getNextFromList(List<SimpleTime> entries, Calendar reference) {
         TreeMap<Calendar, SimpleTime> map = new TreeMap<>();
         for (SimpleTime t : entries) {
             Calendar time = t.getNextAlarmTime(reference);
@@ -154,6 +156,7 @@ public class SimpleTime {
         bundle.putInt("alarmTimeMinutes", this.toMinutes());
         bundle.putString("soundUri", this.soundUri);
         bundle.putInt("radioStationIndex", this.radioStationIndex);
+        bundle.putBoolean("vibrate", this.vibrate);
         if (this.nextEventAfter != null) {
             bundle.putLong("nextEventAfter", this.nextEventAfter);
         }

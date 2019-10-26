@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -25,6 +26,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.BillingHelperActivity;
@@ -49,6 +52,7 @@ public class AlarmClockLayout extends LinearLayout {
     private TextView timeView = null;
     private TextView textViewSound = null;
     private TextView textViewRadio = null;
+    private TextView textViewVibrate = null;
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
     private LinearLayout layoutDays = null;
@@ -151,6 +155,7 @@ public class AlarmClockLayout extends LinearLayout {
         timeView = findViewById(R.id.timeView);
         textViewSound = findViewById(R.id.textViewSound);
         textViewRadio = findViewById(R.id.textViewRadio);
+        textViewVibrate = findViewById(R.id.textViewVibrate);
         textViewWhen = findViewById(R.id.textViewWhen);
         layoutDays = findViewById(R.id.layoutDays);
         buttonDown = findViewById(R.id.button_down);
@@ -303,6 +308,15 @@ public class AlarmClockLayout extends LinearLayout {
                 }
             }
         });
+
+        textViewVibrate.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alarmClockEntry.vibrate = !alarmClockEntry.vibrate;
+                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                setupVibrationIcon();
+            }
+        });
     }
 
     public void updateAlarmClockEntry(SimpleTime entry) {
@@ -355,9 +369,20 @@ public class AlarmClockLayout extends LinearLayout {
                 displayName = Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
             }
             textViewSound.setText(displayName);
+            setupVibrationIcon();
         }
-
         invalidate();
+    }
+
+    void setupVibrationIcon() {
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_vibration);
+        drawable = DrawableCompat.wrap(drawable);
+        int color = (alarmClockEntry.vibrate)
+                ? ContextCompat.getColor(context, R.color.blue)
+                : ContextCompat.getColor(context, R.color.material_grey);
+        DrawableCompat.setTint(drawable, color);
+        DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+        textViewVibrate.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
     }
 
 }

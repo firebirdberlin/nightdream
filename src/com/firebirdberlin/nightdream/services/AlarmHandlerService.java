@@ -6,8 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
@@ -171,6 +172,7 @@ public class AlarmHandlerService extends IntentService {
         time.isActive = true;
         time.soundUri = (currentAlarm != null) ? currentAlarm.soundUri : null;
         time.radioStationIndex = (currentAlarm != null) ? currentAlarm.radioStationIndex : -1;
+        time.vibrate = (currentAlarm != null) ? currentAlarm.vibrate : false;
         SqliteIntentService.snooze(context, time);
     }
 
