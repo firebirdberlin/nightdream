@@ -48,11 +48,13 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:contentDescription="@string/add_new_alarm"
         android:onClick="onClickAddNewAlarm"
         android:src="@drawable/ic_add_alarm"
         app:backgroundTint="@color/material_light_blue_grey"
+        android:layout_marginBottom="16dp"
         app:rippleColor="@color/material_blue_grey" />
 
 </RelativeLayout>

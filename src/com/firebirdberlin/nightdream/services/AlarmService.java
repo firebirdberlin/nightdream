@@ -14,15 +14,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 
 import java.io.IOException;
 
@@ -34,19 +36,20 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     static public boolean isRunning = false;
     PowerManager.WakeLock wakelock;
-    private PowerManager pm;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private float currentVolume = 0.f;
     private int currentAlarmVolume = -1;
     private Context context;
     private SimpleTime alarmTime = null;
+    VibrationHandler vibrator = null;
 
     @Override
     public void onCreate(){
         startForeground();
         context = this;
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        vibrator = new VibrationHandler(this);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         wakelock.acquire();
 
@@ -141,8 +144,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() called.");
-
-
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -257,9 +258,14 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
 
         mMediaPlayer.start();
+        Log.i(TAG, "vibrate = " + alarmTime.vibrate);
+        if (alarmTime.vibrate) {
+            vibrator.startVibration();
+        }
     }
 
     public void AlarmStop(){
+        vibrator.stopVibration();
         if (mMediaPlayer != null){
             if(mMediaPlayer.isPlaying()) {
                 Log.i(TAG, "AlarmStop()");
@@ -269,6 +275,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             mMediaPlayer = null;
         }
     }
+
 
     public Uri getAlarmToneUri() {
         if (alarmTime != null && alarmTime.soundUri != null) {

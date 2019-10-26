@@ -178,7 +178,8 @@
                     android:animateLayoutChanges="false"
                     android:padding="6dp"
                     android:paddingLeft="0dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingStart="0dp">
 
                     <TextView
                         android:id="@+id/textViewRadio"
@@ -200,8 +201,21 @@
                         android:layout_width="wrap_content"
                         android:paddingLeft="6dp"
                         android:text="Alarm sound"
+                        android:paddingStart="6dp"
                         android:textAppearance="@android:style/TextAppearance.Small" />
 
+                    <TextView
+                        android:id="@+id/textViewVibrate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_vibration"
+                        android:drawableLeft="@drawable/ic_vibration"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:paddingStart="6dp"
+                        android:paddingLeft="6dp"
+                        android:text=""
+                        android:textAppearance="@android:style/TextAppearance.Small" />
                 </LinearLayout>
                 <Button
                     android:id="@+id/button_delete"
