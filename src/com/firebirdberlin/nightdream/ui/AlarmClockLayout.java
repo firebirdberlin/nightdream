@@ -35,6 +35,7 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
@@ -266,7 +267,7 @@ public class AlarmClockLayout extends LinearLayout {
         String stationName = getResources().getString(R.string.radio_station_none);
         if (alarmClockEntry.radioStationIndex > -1) {
 
-            stationName = getResources().getString(R.string.radio_station) + " #" + String.valueOf(alarmClockEntry.radioStationIndex + 1);
+            stationName = getResources().getString(R.string.radio_station) + " #" + (alarmClockEntry.radioStationIndex + 1);
             if (radioStations != null) {
                 RadioStation station = radioStations.get(alarmClockEntry.radioStationIndex);
                 if (station != null) {
@@ -309,6 +310,7 @@ public class AlarmClockLayout extends LinearLayout {
             }
         });
 
+        textViewVibrate.setVisibility(VibrationHandler.hasVibrator(context) ? VISIBLE : GONE);
         textViewVibrate.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

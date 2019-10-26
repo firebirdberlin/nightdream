@@ -12,10 +12,13 @@ public class VibrationHandler {
     Context context = null;
     Vibrator vibrator = null;
 
+    public static boolean hasVibrator(Context context) {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        return vibrator.hasVibrator();
+    }
+
     public VibrationHandler(Context context) {
-
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-
     }
 
     public void startVibration() {
