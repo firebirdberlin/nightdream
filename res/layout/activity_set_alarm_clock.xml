@@ -2,10 +2,12 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="false"
     android:animationCache="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
     android:orientation="vertical">
 
     <ScrollView
@@ -38,11 +40,19 @@
 
     </ScrollView>
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_add_new_alarm"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_new_alarm"
         android:onClick="onClickAddNewAlarm"
-        android:text="@string/add_new_alarm" />
+        android:src="@drawable/ic_add_alarm"
+        app:backgroundTint="@color/material_light_blue_grey"
+        app:rippleColor="@color/material_blue_grey" />
+
 </RelativeLayout>

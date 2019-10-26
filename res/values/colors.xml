@@ -24,6 +24,7 @@
     <color name="material_brown">#795548</color>
     <color name="material_grey">#9E9E9E</color>
     <color name="material_blue_grey">#607D8B</color>
+    <color name="material_light_blue_grey">#9CCAE0</color>
 
     <integer-array name="materialColors">
         <item>@color/material_red</item>
