@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 
 public class NightModeListener extends Service {
+    public static boolean running = false;
     private static String TAG = "NightModeListener";
     private static String ACTION_POWER_DISCONNECTED = "android.intent.action.ACTION_POWER_DISCONNECTED";
     final private Handler handler = new Handler();
@@ -49,6 +50,7 @@ public class NightModeListener extends Service {
 
     @Override
     public void onCreate(){
+        running = true;
         startForeground();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
@@ -123,6 +125,7 @@ public class NightModeListener extends Service {
         if (wakelock.isHeld()){
             wakelock.release();
         }
+        running = false;
     }
 
     private Runnable startRecording = new Runnable() {
