@@ -581,7 +581,11 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG, "now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS = " +
                 (now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS));
 
-        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
+        if (mode > 0 && ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
+            return true;
+        }
+
+        if (mode > 0 && ScreenReceiver.shallActivateStandby(this, mySettings)) {
             return true;
         }
 
@@ -597,12 +601,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         Log.i(TAG, "1 " + (isCharging || mySettings.isAlwaysOnAllowed()));
         Log.i(TAG, "2 " + ScreenReceiver.shallActivateStandby(context, mySettings));
-        if (
-                (isCharging || mySettings.isAlwaysOnAllowed()) &&
-                (mode > 0
-                        || (mode == 0 && !mySettings.allow_screen_off)
-                        || ScreenReceiver.shallActivateStandby(context, mySettings))
-                ) {
+        if ((isCharging || mySettings.isAlwaysOnAllowed()) && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)) {
             Log.d(TAG, "shallKeepScreenOn() 2 true");
             return true;
         }
