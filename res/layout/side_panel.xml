@@ -78,6 +78,16 @@
             android:padding="5dp"
             app:srcCompat="@drawable/ic_sun"
             android:focusable="true" />
+        <ImageView
+            android:id="@+id/torch_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="light"
+            android:onClick="onTorchClick"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_lightbulb"
+            android:focusable="true" />
     </LinearLayout>
 
 </LinearLayout>

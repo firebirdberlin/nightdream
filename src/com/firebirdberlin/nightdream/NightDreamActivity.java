@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -41,6 +42,7 @@ import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScheduledAutoStartReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
+import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
@@ -78,6 +80,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private ImageView weatherIcon;
     private ImageView alarmClockIcon;
     private ImageView radioIcon;
+    private ImageView torchIcon;
     private BottomPanelLayout bottomPanelLayout;
     private boolean screenWasOn = false;
     private Context context = null;
@@ -187,6 +190,19 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
 
+        setupFlashlight();
+    }
+
+    void setupFlashlight() {
+        torchIcon = findViewById(R.id.torch_icon);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (flash == null) {
+                flash = new FlashlightProvider(this);
+            }
+            torchIcon.setVisibility(flash.hasCameraFlash() ? View.VISIBLE : View.GONE);
+        } else {
+            torchIcon.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -267,6 +283,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         if ( AlarmHandlerService.alarmIsRunning() ) {
             nightDreamUI.showAlarmClock();
+            // TODO optionally enable the Flashlight
         }
 
         setupNightMode();
@@ -455,24 +472,24 @@ public class NightDreamActivity extends BillingHelperActivity
         BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
         if (panel == BottomPanelLayout.Panel.WEB_RADIO) {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
-            setRadioIconInactive();
+            setIconInactive(radioIcon);
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
-            setRadioIconActive();
+            setIconActive(radioIcon);
         }
         nightDreamUI.showAlarmClock();
     }
 
-    public void setRadioIconActive() {
+    public void setIconActive(ImageView icon) {
         int accentColor = (mode == 0) ? mySettings.clockColorNight : mySettings.clockColor;
-        radioIcon.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        Utility.setIconSize(this, radioIcon);
+        icon.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        Utility.setIconSize(this, icon);
     }
 
-    public void setRadioIconInactive() {
+    public void setIconInactive(ImageView icon) {
         int textColor = (mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor;
-        radioIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
-        Utility.setIconSize(this, radioIcon);
+        icon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+        Utility.setIconSize(this, icon);
     }
 
     public void onLocationFailure() { }
@@ -531,6 +548,19 @@ public class NightDreamActivity extends BillingHelperActivity
             last_ambient = ( new_mode == 2 ) ? 400.f : mySettings.minIlluminance;
         }
         setMode(new_mode);
+    }
+
+    private FlashlightProvider flash = null;
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onTorchClick(View v) {
+        if (flash == null) return;
+
+        flash.toggleFlashlight();
+        if (flash.isFlashlightOn()) {
+            setIconActive(torchIcon);
+        } else {
+            setIconInactive(torchIcon);
+        }
     }
 
     @Override
