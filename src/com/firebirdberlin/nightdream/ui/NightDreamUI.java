@@ -55,11 +55,11 @@ import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.FileDescriptor;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -96,7 +96,7 @@ public class NightDreamUI {
     private FrameLayout clockLayoutContainer;
     private ClockLayout clockLayout;
     private LinearLayout notificationbar;
-    private LinearLayout sidePanel;
+    private FlexboxLayout sidePanel;
     private BottomPanelLayout bottomPanelLayout;
     private Settings settings;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
@@ -234,7 +234,7 @@ public class NightDreamUI {
         }
     };
     private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
-        int rect[] = new int[2];
+        int[] rect = new int[2];
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
@@ -360,39 +360,6 @@ public class NightDreamUI {
     private Runnable setupSidePanel = new Runnable() {
         @Override
         public void run() {
-            ArrayList<ImageView> children = new ArrayList<>();
-            ArrayList<LinearLayout> layouts = new ArrayList<>();
-            for (int i = 0; i < sidePanel.getChildCount(); i++) {
-                View view = sidePanel.getChildAt(i);
-                if (view instanceof ImageView) {
-                    children.add((ImageView) view);
-                }
-                if (view instanceof LinearLayout) {
-                    layouts.add(((LinearLayout) view));
-                }
-            }
-
-            for (LinearLayout layout : layouts) {
-                for (int i = 0; i < layout.getChildCount(); i++) {
-                    View view = layout.getChildAt(i);
-                    if (view instanceof ImageView) {
-                        children.add((ImageView) view);
-                    }
-                }
-            }
-
-            int panelHeight = sidePanel.getHeight();
-            int totalHeight = 0;
-            for (ImageView v : children) {
-                totalHeight += Utility.getHeightOfView(v);
-            }
-
-            int orientation = (totalHeight >= panelHeight) ?
-                    LinearLayout.HORIZONTAL : LinearLayout.VERTICAL;
-
-            for (LinearLayout layout : layouts) {
-                layout.setOrientation(orientation);
-            }
             if (sidePanel.getX() < 0) {
                 initSidePanel();
             }
@@ -1211,7 +1178,7 @@ public class NightDreamUI {
         if (settings.lastReviewRequestTime != 0L) return;
 
         long firstInstallTime = Utility.getFirstInstallTime(mContext);
-        Log.i(TAG, "First install time: " + String.valueOf(firstInstallTime));
+        Log.i(TAG, "First install time: " + firstInstallTime);
         Calendar install_time = Calendar.getInstance();
         install_time.setTimeInMillis(firstInstallTime);
 

@@ -111,6 +111,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
     <string name="expertPreferences">Experteneinstellungen</string>
+    <string name="flashlight">Taschenlampe</string>
     <string name="forecast">5-Tage-Vorhersage</string>
     <string name="gift_for_donors">Geschenk für Ihre Spende</string>
     <string name="hand_shape_arc">Bogen</string>
