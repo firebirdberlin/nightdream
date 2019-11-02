@@ -46,4 +46,6 @@
         android:textSize="16sp"
         android:visibility="gone"
         android:translationY="0px" />
+
+    <include layout="@layout/notification_bar"/>
 </LinearLayout>

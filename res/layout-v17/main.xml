@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.0"
                 android:clickable="true"
-                android:contentDescription="settings"
+                android:contentDescription="@string/preferences"
                 android:layout_weight="0"
                 android:focusable="true"
                 app:srcCompat="@drawable/ic_menu" />
@@ -58,7 +58,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0">
-            <include layout="@layout/notification_bar" />
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/notificationstatusbar"
+                    android:layout_height="24dp"
+                    android:layout_width="match_parent"
+                    app:flexDirection="row"
+                    app:alignContent="flex_end"
+                    app:justifyContent="flex_end">
+                </com.google.android.flexbox.FlexboxLayout>
             </LinearLayout>
         </LinearLayout>
 

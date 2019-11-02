@@ -160,6 +160,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_radio">Benachrichtigung, die einen aktiven Radiostream anzeigt.</string>
     <string name="notification_channel_desc_services">Diese Benachrichtigung weist auf laufende Hintergrundservices hin.</string>
     <string name="notification_alarm">Berühren, um den Alarm zu beenden.</string>
+    <string name="notification_importance_min">min</string>
+    <string name="notification_importance_low">niedrig</string>
+    <string name="notification_importance_default">default</string>
+    <string name="notification_importance_high">hoch</string>
+    <string name="notification_importance_max">max</string>
+    <string name="notifications">Benachrichtigungen</string>
+    <string name="notificationsInStatusBarTitle">In Statuszeile anzeigen</string>
+    <string name="notificationsInStatusBarSummary">Zeige Benachrichtigungen in der Statuszeile an. Andernfalls werden Benachrichtigungen unter der Uhrzeit dargestellt.</string>
+    <string name="notificationListenerService">Benachrichtigungsservice verwalten</string>
     <string name="numbers">Ziffern</string>
     <string name="numberStyleArabic">Arabisch</string>
     <string name="numberStyleRoman">Römisch</string>
