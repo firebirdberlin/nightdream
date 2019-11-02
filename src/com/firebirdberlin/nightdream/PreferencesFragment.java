@@ -337,6 +337,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setPreferencesFromResource(R.xml.preferences_nightmode, rootKey);
         } else if ("weather".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_weather, rootKey);
+        } else if ("notifications".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_notifications, rootKey);
         } else if ("alarms".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_alarms, rootKey);
         } else if ("about".equals(rootKey)) {
@@ -424,6 +426,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Preference prefFetchWeatherData = findPreference("showWeather");
             prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
             setupWeatherProviderPreference();
+        } else if ("notifications".equals(rootKey)) {
+
         } else if ("about".equals(rootKey)) {
 
             Preference recommendApp = findPreference("recommendApp");

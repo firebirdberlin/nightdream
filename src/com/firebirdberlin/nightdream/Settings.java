@@ -796,4 +796,21 @@ public class Settings {
     private static SharedPreferences getDefaultSharedPreferences(Context context) {
         return context.getSharedPreferences("defaults", Context.MODE_PRIVATE);
     }
+
+    public static boolean useNotificationStatusBar(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showNotificationsInStatusBar", true);
+    }
+
+    public static int getMinNotificationImportance(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return 2;
+        }
+        String val = preferences.getString("minNotificationImportance", "2");
+        return Integer.valueOf(val);
+    }
 }

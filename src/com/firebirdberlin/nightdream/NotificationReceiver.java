@@ -9,26 +9,31 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.flexbox.FlexboxLayout;
+
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
-    private static boolean isDebuggable = true;
-    private LinearLayout notificationBar;
     private int color;
+    private View contentView;
+
+
+    public NotificationReceiver(NightDreamActivity context) {
+        Window window = context.getWindow();
+        contentView = window.getDecorView().findViewById(android.R.id.content);
+    }
 
     public NotificationReceiver(Window window) {
-        View v = window.getDecorView().findViewById(android.R.id.content);
-        notificationBar = v.findViewById(R.id.notificationbar);
+        contentView = window.getDecorView().findViewById(android.R.id.content);
     }
 
     public void setColor(int color) {
@@ -38,9 +43,17 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null) return;
-        if (isDebuggable){
+        if (Utility.isDebuggable(context)){
             Log.d(TAG, "Broadcast received.");
             dumpIntent(intent);
+        }
+
+        FlexboxLayout notificationBar = contentView.findViewById(R.id.notificationbar);
+        FlexboxLayout notificationStatusBar = contentView.findViewById(R.id.notificationstatusbar);
+        FlexboxLayout container = (Settings.useNotificationStatusBar(context)) ?
+                notificationStatusBar : notificationBar;
+        if (container == null) {
+            return;
         }
 
         String action = intent.getStringExtra("action");
@@ -48,6 +61,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         if (action.equals("clear")) {
             notificationBar.removeAllViews();
+            notificationStatusBar.removeAllViews();
             return;
         }
 
@@ -60,18 +74,19 @@ public class NotificationReceiver extends BroadcastReceiver {
             try {
                 icon = resize(context, icon, size);
             } catch (ClassCastException e) {
+                Log.i(TAG, "ClassCastException");
                 // AnimationDrawable cannot be cast to BitmapDrawable
-                icon = null;
+                icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
             }
         }
 
         if (action.equals("added")) {
-            IconView myImage = new IconView(context);
+            AppCompatImageView myImage = new AppCompatImageView(context);
             int padding = Utility.dpToPx(context, 5);
             myImage.setPadding(padding, 0, 0, 0);
             myImage.setImageDrawable(icon);
             myImage.setColorFilter( color, PorterDuff.Mode.SRC_ATOP );
-            notificationBar.addView(myImage);
+            container.addView(myImage);
         }
     }
 
@@ -128,25 +143,4 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
         }
     }
-    private class IconView extends AppCompatImageView {
-
-        private Context context;
-        private String packageName;
-
-        public IconView(Context context) {
-            super(context);
-            this.context = context;
-            init();
-        }
-
-        public IconView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            this.context = context;
-            init();
-        }
-
-        void init() {
-        }
-    }
-
 }

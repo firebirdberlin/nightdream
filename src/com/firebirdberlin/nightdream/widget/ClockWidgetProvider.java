@@ -76,6 +76,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
         clockLayout.setShowDivider(settings.showDivider);
         clockLayout.showDate(showAdditionalLines && settings.showDate);
+        clockLayout.setShowNotifications(false);
 
         WeatherService.start(context, settings.weatherCityID);
 

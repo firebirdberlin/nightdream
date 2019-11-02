@@ -51,10 +51,11 @@
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
         app:title="@string/weather"/>
 
-    <de.firebirdberlin.preference.NotificationListenerServicePreference
+    <Preference
         app:icon="@drawable/ic_menu"
-        app:key="startNotificationService"
-        app:title="@string/buttonAccessibilitySettings" />
+        app:key="notifications"
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+        app:title="@string/notifications"/>
 
     <Preference
         app:icon="@drawable/ic_about"

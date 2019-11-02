@@ -125,6 +125,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.showWeather(settings.showWeather);
+        clockLayout.setShowNotifications(false);
 
         WeatherEntry entry = getWeatherEntry(settings);
         clockLayout.update(entry);

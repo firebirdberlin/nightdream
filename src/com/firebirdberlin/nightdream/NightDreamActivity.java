@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -82,6 +83,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private ImageView radioIcon;
     private ImageView torchIcon;
     private BottomPanelLayout bottomPanelLayout;
+    private FrameLayout clockLayoutContainer;
     private boolean screenWasOn = false;
     private Context context = null;
     private float last_ambient = 4.0f;
@@ -189,6 +191,7 @@ public class NightDreamActivity extends BillingHelperActivity
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
+        clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
 
         setupFlashlight();
     }
@@ -253,13 +256,6 @@ public class NightDreamActivity extends BillingHelperActivity
         locationReceiver = LocationUpdateReceiver.register(this, this);
 
         nReceiver.setColor(mySettings.secondaryColor);
-        // ask for active notifications
-        if (Build.VERSION.SDK_INT >= 18){
-            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-            i.putExtra("command", "list");
-            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
-        }
-
         Intent intent = getIntent();
 
         String action = intent.getAction();
@@ -300,6 +296,20 @@ public class NightDreamActivity extends BillingHelperActivity
         bottomPanelLayout.setActivePanel(activePanel);
         triggerAlwaysOnTimeout();
         showToastIfNotCharging();
+
+        final Context context = this;
+        clockLayoutContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                // ask for active notifications
+                if (Build.VERSION.SDK_INT >= 18){
+
+                    Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                    i.putExtra("command", "list");
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+                }
+            }
+        });
     }
 
     private void showToastIfNotCharging() {
@@ -422,7 +432,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private NotificationReceiver registerNotificationReceiver() {
-        NotificationReceiver receiver = new NotificationReceiver(getWindow());
+        NotificationReceiver receiver = new NotificationReceiver(this);
         IntentFilter filter = new IntentFilter(Config.ACTION_NOTIFICATION_LISTENER);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         return receiver;
@@ -846,5 +856,4 @@ public class NightDreamActivity extends BillingHelperActivity
             }
         }
     }
-
 }

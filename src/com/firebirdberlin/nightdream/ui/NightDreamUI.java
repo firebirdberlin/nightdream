@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
@@ -95,7 +96,7 @@ public class NightDreamUI {
     private LightSensorEventListener lightSensorEventListener = null;
     private FrameLayout clockLayoutContainer;
     private ClockLayout clockLayout;
-    private LinearLayout notificationbar;
+    private FlexboxLayout notificationStatusBar;
     private FlexboxLayout sidePanel;
     private BottomPanelLayout bottomPanelLayout;
     private Settings settings;
@@ -204,7 +205,7 @@ public class NightDreamUI {
             bottomPanelLayout.hide();
             setAlpha(bottomPanelLayout, 0.f, 2000);
             if (mode == 0) {
-                setAlpha(notificationbar, 0.f, 2000);
+                setAlpha(notificationStatusBar, 0.f, 2000);
             }
             hideSidePanel();
         }
@@ -337,7 +338,7 @@ public class NightDreamUI {
         }
     };
      */
-    private Runnable initClockLayout = new Runnable() {
+    public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
             setupClockLayout();
@@ -383,7 +384,7 @@ public class NightDreamUI {
         bottomPanelLayout = rootView.findViewById(R.id.bottomPanel);
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
-        notificationbar = rootView.findViewById(R.id.notificationbar);
+        notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
         menuIcon = rootView.findViewById(R.id.burger_icon);
         nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
         radioIcon = rootView.findViewById(R.id.radio_icon);
@@ -484,7 +485,7 @@ public class NightDreamUI {
         }
     }
 
-    private void setupClockLayout() {
+    public void setupClockLayout() {
 
         if ( !settings.restless_mode ) {
             centerClockLayout();
@@ -577,7 +578,7 @@ public class NightDreamUI {
                 break;
             }
             case Settings.BACKGROUND_GRADIENT: {
-                bgshape = getDrawable(R.drawable.background_gradient);
+                bgshape = ContextCompat.getDrawable(mContext, R.drawable.background_gradient);
                 break;
             }
             case Settings.BACKGROUND_IMAGE: {
@@ -675,19 +676,6 @@ public class NightDreamUI {
         int green = Color.green(color);
         int blue = Color.blue(color);
         return Color.argb(alpha, red, green, blue);
-    }
-
-    private Drawable getDrawable(int resId) {
-        if (Build.VERSION.SDK_INT < 21) {
-            return deprecatedGetDrawable(resId);
-        }
-        return mContext.getResources().getDrawable(resId, null);
-
-    }
-
-    @SuppressWarnings("deprecation")
-    private Drawable deprecatedGetDrawable(int resId) {
-        return mContext.getResources().getDrawable(resId);
     }
 
     private void setupAlarmClock() {
@@ -855,11 +843,11 @@ public class NightDreamUI {
         }
 
         if ( mode == 0 && ! controlsVisible) {
-            setAlpha(notificationbar, 0.0f, millis);
+            setAlpha(notificationStatusBar, 0.0f, millis);
         } else {
             // increase minimum alpha value for the notification bar
             v = to_range(v, 0.6f, 1.f);
-            setAlpha(notificationbar, v, millis);
+            setAlpha(notificationStatusBar, v, millis);
         }
 
         if ( light_value + 0.2f < settings.minIlluminance ) {
@@ -1143,7 +1131,7 @@ public class NightDreamUI {
         bottomPanelLayout.setLocked(on);
         showAlarmClock();
         int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
-        menuIcon.setImageDrawable(getDrawable(resId));
+        menuIcon.setImageDrawable(ContextCompat.getDrawable(mContext, resId));
         if (AlarmHandlerService.alarmIsRunning()) {
             blinkIfLocked();
         }
@@ -1153,7 +1141,7 @@ public class NightDreamUI {
         if (locked) {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
-            setAlpha(notificationbar, 1.f, 250);
+            setAlpha(notificationStatusBar, 1.f, 250);
             setAlpha(batteryIconView, 1.f, 250);
             setAlpha(bottomPanelLayout, 1.f, 250);
             controlsVisible = true;

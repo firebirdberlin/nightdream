@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -14,10 +15,14 @@ import android.widget.LinearLayout;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
+import com.firebirdberlin.nightdream.NotificationReceiver;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.mNotificationListener;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.google.android.flexbox.FlexboxLayout;
 
 public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_DIGITAL = 0;
@@ -35,9 +40,11 @@ public class ClockLayout extends LinearLayout {
     private CustomAnalogClock analog_clock = null;
     private AutoAdjustTextView date = null;
     private WeatherLayout weatherLayout = null;
+    private FlexboxLayout notificationLayout = null;
     private View divider = null;
     private boolean showDivider = true;
     private boolean mirrorText = false;
+    private boolean showNotifications = true;
 
     public ClockLayout(Context context) {
         super(context);
@@ -95,6 +102,7 @@ public class ClockLayout extends LinearLayout {
         weatherLayout = findViewById(R.id.weatherLayout);
         divider = findViewById(R.id.divider);
         analog_clock = findViewById(R.id.analog_clock);
+        notificationLayout = findViewById(R.id.notificationbar);
     }
 
     public void setTypeface(Typeface typeface) {
@@ -173,6 +181,10 @@ public class ClockLayout extends LinearLayout {
         toggleDivider();
     }
 
+    public void setShowNotifications(boolean on) {
+        showNotifications = on;
+    }
+
     private void toggleDivider() {
         if (divider == null) return;
 
@@ -180,9 +192,12 @@ public class ClockLayout extends LinearLayout {
             divider.setVisibility(GONE);
         }
 
-        if (date.getVisibility() != VISIBLE
-                && weatherLayout.getVisibility() != VISIBLE) {
-
+        boolean shallHide = (
+                date.getVisibility() != VISIBLE
+                && weatherLayout.getVisibility() != VISIBLE
+//                && notificationLayout.getVisibility() != VISIBLE
+        );
+        if (shallHide) {
             if (showDivider) {
                 divider.setVisibility(INVISIBLE);
             }
@@ -208,6 +223,13 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void updateLayout(int parentWidth, int parentHeight, Configuration config, boolean displayInWidget){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            notificationLayout.setVisibility(
+                    mNotificationListener.running && showNotifications && !Settings.useNotificationStatusBar(context)
+                            ? VISIBLE : GONE
+            );
+        }
+
         final float minFontSize = 8.f; // in sp
 
         if (layoutId == LAYOUT_ID_DIGITAL) {
@@ -363,7 +385,12 @@ public class ClockLayout extends LinearLayout {
         } else {
             widgetSize = getAnalogWidgetSize(parentWidth, config);
         }
-        setSize(widgetSize, widgetSize);
+
+        int additionalHeight = notificationLayout.getVisibility() == VISIBLE
+                ? Utility.dpToPx(context, 24.f) : 0;
+
+
+        setSize(widgetSize, widgetSize + additionalHeight);
         if (date != null) {
             date.setMaxWidth(widgetSize / 2);
             date.setMaxFontSizesInSp(minFontSize, maxFontSize);
@@ -424,7 +451,12 @@ public class ClockLayout extends LinearLayout {
             weatherLayout.invalidate();
         }
         int additionalHeight = (int) (getHeightOf(date) + getHeightOf(weatherLayout));
+
+        additionalHeight += notificationLayout.getVisibility() == VISIBLE
+                ? Utility.dpToPx(context, 24.f) : 0;
+
         Log.i(TAG, String.format("additionalHeight: %s", additionalHeight));
+
         setSize(widgetSize, widgetSize + additionalHeight);
 
         int measuredHeight = Utility.getHeightOfView(this);

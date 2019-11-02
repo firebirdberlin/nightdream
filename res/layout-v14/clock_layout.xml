@@ -57,13 +57,12 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="2dip"
+        android:layout_height="2dp"
         android:background="#C2C2C2" />
 <!--
     Date
 -->
     <LinearLayout
-        android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -76,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ellipsize="none"
-            android:paddingTop="5sp"
+            android:paddingTop="5dp"
             android:text="Sun, 30. October 2016"
             android:textColor="#C2C2C2"
             android:textStyle="bold"
@@ -94,5 +93,16 @@
             android:layout_gravity="center"
             android:visibility="gone"
             />
+
     </LinearLayout>
+
+<!--
+    Notifications
+-->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp"
+        layout="@layout/notification_bar"/>
+
 </LinearLayout>

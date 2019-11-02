@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<!--
-        Date
--->
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="19">
+        <!--
+                Date
+        -->
         <com.firebirdberlin.nightdream.ui.WeatherLayout
             android:id="@+id/weatherLayout"
             android:layout_width="wrap_content"
@@ -33,16 +38,22 @@
             custom:capitalize="true"
             />
 
-<!--
-        time
--->
-    <com.firebirdberlin.nightdream.CustomAnalogClock
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/analog_clock"
+        <!--
+                time
+        -->
+        <com.firebirdberlin.nightdream.CustomAnalogClock
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/analog_clock"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:padding="0px"
+            />
+    </FrameLayout>
+    <include
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:background="@android:color/transparent"
-        android:padding="0px"
-        />
-</FrameLayout>
+        android:layout_height="24dp"
+        android:layout_weight="1"
+        layout="@layout/notification_bar" />
+</LinearLayout>

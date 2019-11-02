@@ -21,8 +21,10 @@ import java.util.HashSet;
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class mNotificationListener extends NotificationListenerService {
 
+    public static boolean running = false;
     private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlservicereciver;
+    int minNotificationImportance = 2;
 
     @Override
     public void onCreate() {
@@ -32,17 +34,20 @@ public class mNotificationListener extends NotificationListenerService {
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
         LocalBroadcastManager.getInstance(this).registerReceiver(nlservicereciver, filter);
         Log.i(TAG,"**********  Notification listener STARTED");
+        running = true;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        running = false;
         Log.i(TAG,"**********  Notification listener STOPPED");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(nlservicereciver);
     }
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+        minNotificationImportance = Settings.getMinNotificationImportance(this);
 
         Log.i(TAG,"++++ notification posted ++++");
         logNotification(sbn);
@@ -60,9 +65,11 @@ public class mNotificationListener extends NotificationListenerService {
         Notification notification = sbn.getNotification();
         if ( notification == null ) return true;
         //if ( getTitle(sbn) == null ) return true;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return (notification.priority < minNotificationImportance - 3);
+        }
         int importance = getImportance(sbn);
-        if (importance < 2) return true;
-        return ( notification.priority < Notification.PRIORITY_LOW);
+        return (importance < minNotificationImportance);
     }
 
     private void conditionallyStartActivity() {
@@ -93,6 +100,7 @@ public class mNotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
+        minNotificationImportance = Settings.getMinNotificationImportance(this);
         Log.i(TAG,"++++ notification removed ++++");
         logNotification(sbn);
 
@@ -102,6 +110,7 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void listNotifications() {
+        minNotificationImportance = Settings.getMinNotificationImportance(this);
         Log.i(TAG, "listNotifications()");
         clearNotificationUI();
         HashSet<String> groupKeys = new HashSet<>();
@@ -109,7 +118,7 @@ public class mNotificationListener extends NotificationListenerService {
         StatusBarNotification[] notificationList = null;
         try {
             notificationList = mNotificationListener.this.getActiveNotifications();
-        } catch (RuntimeException | OutOfMemoryError e) {
+        } catch (RuntimeException | OutOfMemoryError ignored) {
 
         }
 
@@ -188,7 +197,7 @@ public class mNotificationListener extends NotificationListenerService {
                 return ranking.getImportance();
             }
         }
-        return 2;
+        return 0;
     }
 
     Ranking getRanking(StatusBarNotification sbn) {
