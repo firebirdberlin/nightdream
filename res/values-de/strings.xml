@@ -299,7 +299,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="activateDoNotDisturbSummary">\"Nicht stören\" aktivieren, solange die App aktiv ist.</string>
     <string name="manage_permissions">Berechtigungen</string>
     <string name="decoration_glow_effect">Glüheffekt</string>
-    <string name="weatherProvider">Anbieter für Wetterdate</string>
+    <string name="weatherProvider">Anbieter für Wetterdaten</string>
     <string name="permission_request_autostart">Bitte geben Sie die Berechtigung für den Autostart (Über anderen Apps einblenden).</string>
     <string name="radio_stream_manual_edit">Sender bearbeiten</string>
     <string name="dialog_message_pending_purchase">Ihr Kauf wird verarbeitet, wurde durch Google Play aber noch nicht bestätigt.</string>

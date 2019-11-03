@@ -19,6 +19,7 @@
 
         <ListPreference
             app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true"
             app:defaultValue="0"
             app:entries="@array/clockLayout"
             app:entryValues="@array/clockLayoutValues"

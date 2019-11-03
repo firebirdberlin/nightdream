@@ -32,6 +32,7 @@
         app:dependency="showTemperature"
         app:entries="@array/temperatureUnit"
         app:entryValues="@array/temperatureUnitValues"
+        app:useSimpleSummaryProvider="true"
         app:key="temperatureUnit"
         app:title="@string/temperatureUnit" />
 
@@ -48,6 +49,7 @@
         app:dependency="showWindSpeed"
         app:entries="@array/speedUnit"
         app:entryValues="@array/speedUnitValues"
+        app:useSimpleSummaryProvider="true"
         app:key="speedUnit"
         app:title="@string/speedUnit" />
 
@@ -67,6 +69,7 @@
         app:dependency="showWeather"
         app:defaultValue="0"
         app:entries="@array/weatherProvider"
+        app:useSimpleSummaryProvider="true"
         app:entryValues="@array/weatherProviderValues"
         app:key="weatherProvider"
         app:title="@string/weatherProvider" />

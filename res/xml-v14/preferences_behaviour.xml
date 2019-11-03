@@ -37,6 +37,7 @@
         app:defaultValue="-1"
         app:entries="@array/screenOrientation"
         app:entryValues="@array/screenOrientationValues"
+        app:useSimpleSummaryProvider="true"
         app:key="screenOrientation"
         app:title="@string/screenOrientation" />
 
