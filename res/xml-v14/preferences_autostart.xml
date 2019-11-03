@@ -19,6 +19,7 @@
 
         <de.firebirdberlin.preference.TimeRangePreference
             xmlns:timerange="timerange"
+            app:allowDividerAbove="false"
             app:iconSpaceReserved="false"
             app:defaultValue="0"
             app:dependency="handle_power"
@@ -90,6 +91,7 @@
             app:iconSpaceReserved="false"
             app:defaultValue="4"
             app:entries="@array/batteryTimeout"
+            app:useSimpleSummaryProvider="true"
             app:entryValues="@array/batteryTimeoutValues"
             app:key="batteryTimeout"
             app:title="@string/batteryTimeoutDescription" />
@@ -115,6 +117,7 @@
             app:iconSpaceReserved="false"
             app:defaultValue="false"
             app:key="standbyEnabledWhileDisconnected"
+            app:allowDividerBelow="false"
             app:summary="@string/standbyEnabledWhileDisconnectedSummary"
             app:title="@string/standbyEnabledWhileDisconnectedTitle" />
 
@@ -170,6 +173,7 @@
             app:iconSpaceReserved="false"
             app:defaultValue="false"
             app:key="scheduledAutoStartEnabled"
+            app:allowDividerBelow="false"
             app:summary="@string/scheduledAutoStartEnabledDesc"
             app:title="@string/scheduledAutoStartEnabledTitle" />
 

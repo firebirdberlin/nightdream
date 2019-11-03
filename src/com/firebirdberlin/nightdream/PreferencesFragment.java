@@ -136,8 +136,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         case "clockLayout":
                             Log.d(TAG, String.format("%s = %s", key, sharedPreferences.getString(key, "none")));
                             resetScaleFactor(sharedPreferences);
-                            settings.clockLayout = Integer.parseInt(sharedPreferences.getString("clockLayout", "0"));
-                            setupClockLayoutPreference();
                             break;
                         case "nightModeActivationMode":
                             setupNightModePreferences(sharedPreferences);
@@ -159,10 +157,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             break;
                         case "activateDoNotDisturb":
                             setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");
-                            break;
-                        case "batteryTimeout":
-                            settings.batteryTimeout = Integer.parseInt(sharedPreferences.getString("batteryTimeout", "-1"));
-                            setupBatteryTimeoutPreference();
                             break;
                         case "weatherProvider":
                             setupWeatherProviderPreference();
@@ -394,7 +388,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
-            setupBatteryTimeoutPreference();
         } else if ("appearance".equals(rootKey)) {
             setupBrightnessControls(prefs);
             setupBackgroundImageControls(prefs);
@@ -406,7 +399,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
             setupLightSensorPreferences();
-            setupClockLayoutPreference();
         } else if ("behaviour".equals(rootKey)) {
             initUseDeviceLockPreference();
             setupDoNotDisturbPreference();
@@ -675,38 +667,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             removePreference("activateDoNotDisturb");
         }
     }
-    private void setupClockLayoutPreference() {
-
-        Preference pref = findPreference("clockLayout");
-        if (!isAdded() || pref == null) {
-            return;
-        }
-        String[] valueArray = getResources().getStringArray(R.array.clockLayoutValues);
-        String[] stringArray = getResources().getStringArray(R.array.clockLayout);
-        for (int i=0; i< valueArray.length; i++) {
-            String v = valueArray[i];
-            if (Integer.parseInt(v) == settings.clockLayout) {
-                pref.setSummary(stringArray[i]);
-                return;
-            }
-        }
-    }
-
-    private void setupBatteryTimeoutPreference() {
-        Preference pref = findPreference("batteryTimeout");
-        if (!isAdded() || pref == null) {
-            return;
-        }
-        String[] valueArray = getResources().getStringArray(R.array.batteryTimeoutValues);
-        String[] stringArray = getResources().getStringArray(R.array.batteryTimeout);
-        for (int i=0; i< valueArray.length; i++) {
-            String v = valueArray[i];
-            if (Integer.parseInt(v) == settings.batteryTimeout) {
-                pref.setSummary(stringArray[i]);
-                return;
-            }
-        }
-    }
 
     private void setupWeatherProviderPreference() {
         Preference pref = findPreference("weatherProvider");
@@ -725,17 +685,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             prefAttribution.setIntent(intent);
             prefAttribution.setTitle("Powered by Dark Sky");
             prefAttribution.setSummary("https://darksky.net/poweredby/");
-        }
-
-        String[] valueArray = getResources().getStringArray(R.array.weatherProviderValues);
-        String[] stringArray = getResources().getStringArray(R.array.weatherProvider);
-        for (int i=0; i< valueArray.length; i++) {
-            String v = valueArray[i];
-
-            if (v.equals(settings.getWeatherProviderString())) {
-                pref.setSummary(stringArray[i]);
-                return;
-            }
         }
     }
 
