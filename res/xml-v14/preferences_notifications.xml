@@ -32,7 +32,7 @@
         <ListPreference
             app:useSimpleSummaryProvider="true"
             app:iconSpaceReserved="false"
-            app:defaultValue="2"
+            app:defaultValue="3"
             app:key="minNotificationImportance"
             app:title="@string/notification_lowest_importance"
             android:entryValues="@array/notificationImportanceValues"

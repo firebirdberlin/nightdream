@@ -815,9 +815,9 @@ public class Settings {
     public static int getMinNotificationImportance(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {
-            return 2;
+            return 3;
         }
-        String val = preferences.getString("minNotificationImportance", "2");
+        String val = preferences.getString("minNotificationImportance", "3");
         return Integer.valueOf(val);
     }
 
