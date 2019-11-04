@@ -805,6 +805,13 @@ public class Settings {
         return preferences.getBoolean("showNotificationsInStatusBar", true);
     }
 
+    public static boolean groupSimilarNotifications(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return false;
+        }
+        return preferences.getBoolean("groupSimilarNotifications", false);
+    }
     public static int getMinNotificationImportance(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {
@@ -812,5 +819,20 @@ public class Settings {
         }
         String val = preferences.getString("minNotificationImportance", "2");
         return Integer.valueOf(val);
+    }
+
+    public static void setFlashlightIsOn(Context context, boolean isOn) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean("flashlightIsOn", isOn);
+        edit.apply();
+    }
+
+    public static boolean getFlashlightIsOn(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return false;
+        }
+        return preferences.getBoolean("flashlightIsOn", false);
     }
 }

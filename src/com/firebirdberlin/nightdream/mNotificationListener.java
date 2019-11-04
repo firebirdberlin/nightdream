@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -25,6 +26,8 @@ public class mNotificationListener extends NotificationListenerService {
     private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlservicereciver;
     int minNotificationImportance = 2;
+    boolean groupSimilarNotifications = false;
+    HashMap<String, HashSet<Integer> > iconIdsByPackage = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -48,6 +51,7 @@ public class mNotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
+        groupSimilarNotifications = Settings.groupSimilarNotifications(this);
 
         Log.i(TAG,"++++ notification posted ++++");
         logNotification(sbn);
@@ -59,11 +63,18 @@ public class mNotificationListener extends NotificationListenerService {
             conditionallyStartActivity();
         }
     }
+
     private boolean shallIgnoreNotification(StatusBarNotification sbn) {
 
         if ( ! isClearable(sbn) ) return true;
         Notification notification = sbn.getNotification();
+
         if ( notification == null ) return true;
+
+        if (groupSimilarNotifications && isIconIdinCache(sbn)) {
+            return true;
+        }
+
         //if ( getTitle(sbn) == null ) return true;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return (notification.priority < minNotificationImportance - 3);
@@ -100,17 +111,15 @@ public class mNotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        minNotificationImportance = Settings.getMinNotificationImportance(this);
         Log.i(TAG,"++++ notification removed ++++");
         logNotification(sbn);
-
-        if ( shallIgnoreNotification(sbn) ) return;
 
         listNotifications();
     }
 
     private void listNotifications() {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
+        groupSimilarNotifications = Settings.groupSimilarNotifications(this);
         Log.i(TAG, "listNotifications()");
         clearNotificationUI();
         HashSet<String> groupKeys = new HashSet<>();
@@ -124,6 +133,7 @@ public class mNotificationListener extends NotificationListenerService {
 
         if (notificationList == null) return;
 
+        iconIdsByPackage.clear();
         for (StatusBarNotification sbn : notificationList) {
             Notification notification = sbn.getNotification();
             if (notification == null) continue;
@@ -137,9 +147,12 @@ public class mNotificationListener extends NotificationListenerService {
                     groupKeys.add(key);
                 }
             }
+
             if ( shallIgnoreNotification(sbn)) {
                 continue;
             }
+
+            addIconIdToCache(sbn);
 
             Intent i = getIntentForBroadCast(sbn);
             if (i != null) {
@@ -147,6 +160,28 @@ public class mNotificationListener extends NotificationListenerService {
                 LocalBroadcastManager.getInstance(this).sendBroadcast(i);
             }
         }
+    }
+
+    void addIconIdToCache(StatusBarNotification sbn) {
+        String packageName = sbn.getPackageName();
+        Notification notification = sbn.getNotification();
+        if (notification == null) {
+            return;
+        }
+        HashSet<Integer> ids = iconIdsByPackage.get(packageName);
+        if (ids == null) {
+            ids = new HashSet<>();
+            iconIdsByPackage.put(packageName, ids);
+        }
+        ids.add(getIconId(notification));
+    }
+
+    boolean isIconIdinCache(StatusBarNotification sbn) {
+        String packageName = sbn.getPackageName();
+        HashSet<Integer> iconIds = iconIdsByPackage.get(packageName);
+        Notification notification = sbn.getNotification();
+        int iconID = getIconId(notification);
+        return (iconID > 0 && iconIds != null && iconIds.contains(iconID));
     }
 
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
