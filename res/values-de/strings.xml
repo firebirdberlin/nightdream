@@ -73,6 +73,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="buy_upgrade_title">Pro-Version</string>
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
     <string name="category_handle_power">... und wenn verbunden mit</string>
+    <string name="category_night_mode_display_management">Display Management</string>
     <string name="choose_alarm_sound">Weckton</string>
     <string name="choose_primary_color">Akzentfarbe</string>
     <string name="choose_secondary_color">Textfarbe</string>
@@ -110,7 +111,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Spenden</string>
     <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
-    <string name="expertPreferences">Experteneinstellungen</string>
     <string name="flashlight">Taschenlampe</string>
     <string name="forecast">5-Tage-Vorhersage</string>
     <string name="gift_for_donors">Geschenk für Ihre Spende</string>
@@ -185,12 +185,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
     <string name="preferences">Einstellungen</string>
     <string name="preview">Vorschau</string>
-    <string name="product_name_actions">Always-On Paket</string>
+    <string name="product_name_actions">Zusatzfunktionen</string>
     <string name="product_name_donation">Spende</string>
     <string name="product_name_pro">Vollversion</string>
     <string name="product_name_weather">Wetter- und Design-Paket</string>
     <string name="product_name_webradio">Webradio-Paket</string>
-    <string name="purchaseActions">Always-On Paket kaufen</string>
+    <string name="purchaseActions">Zusatzfunktionen-Paket kaufen</string>
     <string name="purchaseWeatherData">Wetter- und Design-Paket kaufen</string>
     <string name="purchaseWebRadio">Webradio-Paket kaufen</string>
     <string name="radio">Radio</string>

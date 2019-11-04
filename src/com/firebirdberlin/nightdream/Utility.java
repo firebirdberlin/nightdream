@@ -204,6 +204,19 @@ public class Utility {
         }
     }
 
+    public static boolean wasInstalledBefore(Context context, int year, int month, int day) {
+        long firstInstallTime = getFirstInstallTime(context);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis() < firstInstallTime;
+    }
+
     public static long getDaysSinceFirstInstall(Context context) {
         long firstInstall = getFirstInstallTime(context);
         long msDiff = Calendar.getInstance().getTimeInMillis() - firstInstall;

@@ -1,5 +1,5 @@
-<PreferenceScreen
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:icon="@drawable/ic_nightmode"
     app:key="nightmode"
@@ -22,6 +22,8 @@
         app:enabled="false"
         app:key="nightmode_timerange"
         app:title="@string/night_mode_timerange_title"
+        app:allowDividerBelow="true"
+        app:allowDividerAbove="false"
         timerange:end_text="@string/night_mode_timerange_label_end"
         timerange:key_suffix_end="_end"
         timerange:key_suffix_start="_start"
@@ -33,50 +35,64 @@
         app:key="Night.muteRinger"
         app:title="@string/mute_ringer" />
 
-    <SwitchPreferenceCompat
+    <Preference
         app:iconSpaceReserved="false"
-        app:defaultValue="false"
-        app:key="allow_screen_off"
-        app:summary="@string/allow_screen_off_summary"
-        app:title="@string/allow_screen_off" />
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseActions4"
+        app:isPreferenceVisible="false"
+        app:title="@string/purchaseActions" />
 
-    <SwitchPreferenceCompat
-        app:defaultValue="false"
+    <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:key="ambientNoiseDetection"
-        app:summary="@string/ambient_noise_summary"
-        app:title="@string/ambient_noise" />
+        app:layout="@layout/preferences_category"
+        app:key="category_night_mode_display_management"
+        app:title="@string/category_night_mode_display_management">
 
-    <de.firebirdberlin.preference.InlineSeekBarPreference
-        app:iconSpaceReserved="false"
-        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-        app:defaultValue="20"
-        app:dependency="allow_screen_off"
-        app:key="reactivate_on_ambient_light_value"
-        app:summary="@string/reactivate_on_ambient_light_value_summary"
-        app:title="@string/reactivate_on_ambient_light_value"
-        seekbar:interval="1"
-        seekbar:max="30"
-        seekbar:min="5"
-        seekbar:unitsLeft=""
-        seekbar:unitsRight="lux"/>
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="allow_screen_off"
+            app:summary="@string/allow_screen_off_summary"
+            app:title="@string/allow_screen_off" />
 
-    <CheckBoxPreference
-        app:iconSpaceReserved="false"
-        app:defaultValue="false"
-        app:dependency="allow_screen_off"
-        app:key="reactivate_screen_on_noise"
-        app:title="@string/reactivate_screen_on_noise" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="ambientNoiseDetection"
+            app:summary="@string/ambient_noise_summary"
+            app:title="@string/ambient_noise" />
 
-    <de.firebirdberlin.preference.InlineSeekBarPreference
-        app:iconSpaceReserved="false"
-        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-        app:defaultValue="5"
-        app:key="NoiseSensitivity"
-        app:title="@string/noise_sensitivity"
-        seekbar:interval="1"
-        seekbar:max="10"
-        seekbar:min="0"
-        seekbar:unitsLeft=""
-        seekbar:unitsRight=""/>
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:iconSpaceReserved="false"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+            app:defaultValue="20"
+            app:dependency="allow_screen_off"
+            app:key="reactivate_on_ambient_light_value"
+            app:summary="@string/reactivate_on_ambient_light_value_summary"
+            app:title="@string/reactivate_on_ambient_light_value"
+            seekbar:interval="1"
+            seekbar:max="30"
+            seekbar:min="5"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="lux"/>
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:dependency="allow_screen_off"
+            app:key="reactivate_screen_on_noise"
+            app:title="@string/reactivate_screen_on_noise" />
+
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:iconSpaceReserved="false"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+            app:defaultValue="5"
+            app:key="NoiseSensitivity"
+            app:title="@string/noise_sensitivity"
+            seekbar:interval="1"
+            seekbar:max="10"
+            seekbar:min="0"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight=""/>
+    </PreferenceCategory>
 </PreferenceScreen>
