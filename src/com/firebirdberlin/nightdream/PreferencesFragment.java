@@ -278,6 +278,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("scheduled_autostart_screen", isPurchasedActions);
         enablePreference("activateDoNotDisturb", isPurchasedActions);
         enablePreference("useDeviceLock", isPurchasedActions);
+        enablePreference("category_notifications", isPurchasedActions);
+        enablePreference("category_night_mode_display_management",
+                isPurchasedActions
+                        || Utility.wasInstalledBefore(getContext(), 2019, 11, 10)
+        );
 
         if (isPurchasedDonation) {
             hidePreference("donation_category");
@@ -295,9 +300,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (isPurchasedActions) {
             hidePreference("purchaseActions");
             hidePreference("purchaseActions2");
+            hidePreference("purchaseActions3");
+            hidePreference("purchaseActions4");
         } else {
             showPreference("purchaseActions");
             showPreference("purchaseActions2");
+            showPreference("purchaseActions3");
+            showPreference("purchaseActions4");
         }
     }
 
@@ -343,6 +352,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         initPurchasePreference("purchaseActions");
         initPurchasePreference("purchaseActions2");
+        initPurchasePreference("purchaseActions3");
+        initPurchasePreference("purchaseActions4");
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseWeatherData");
         initPurchasePreference("purchaseDesignPackage");
@@ -477,6 +488,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             // main page
             setupDaydreamPreferences();
             setupTranslationRequest();
+            setupNotificationCategory();
         }
 
 
@@ -519,6 +531,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void setupTranslationRequest() {
         if (!Utility.languageIs("de", "en")) {
             showPreference("translations_wanted");
+        }
+    }
+
+    private void setupNotificationCategory() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            hidePreference("notifications");
+        } else {
+            showPreference("notifications");
         }
     }
 
@@ -905,6 +925,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference preference = findPreference(key);
         if (preference != null) {
             preference.setEnabled(on);
+        } else {
+            Log.w(TAG, "WARNING: preference " + key + " not found.");
         }
     }
 
