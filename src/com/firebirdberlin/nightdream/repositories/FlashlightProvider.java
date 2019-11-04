@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.firebirdberlin.nightdream.Settings;
+
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class FlashlightProvider {
@@ -16,10 +18,11 @@ public class FlashlightProvider {
     private static final String TAG = FlashlightProvider.class.getSimpleName();
     private CameraManager camManager;
     private Context context;
-    private boolean isOn = false;
+    private boolean isOn;
 
     public FlashlightProvider(Context context) {
         this.context = context;
+        isOn = Settings.getFlashlightIsOn(context);
     }
 
     public boolean hasCameraFlash() {
@@ -38,6 +41,7 @@ public class FlashlightProvider {
             Log.e(TAG, e.toString());
             return;
         }
+        Settings.setFlashlightIsOn(context, true);
         isOn = true;
     }
 
@@ -52,6 +56,7 @@ public class FlashlightProvider {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        Settings.setFlashlightIsOn(context, false);
         isOn = false;
     }
 
@@ -63,7 +68,8 @@ public class FlashlightProvider {
         }
      }
      public boolean isFlashlightOn() {
-        return isOn;
+        //return isOn;
+        return Settings.getFlashlightIsOn(context);
      }
 }
 

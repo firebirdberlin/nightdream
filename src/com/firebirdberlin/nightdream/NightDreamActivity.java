@@ -58,6 +58,7 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
+import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -192,8 +193,6 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
-
-        setupFlashlight();
     }
 
     void setupFlashlight() {
@@ -203,6 +202,19 @@ public class NightDreamActivity extends BillingHelperActivity
                 flash = new FlashlightProvider(this);
             }
             torchIcon.setVisibility(flash.hasCameraFlash() ? View.VISIBLE : View.GONE);
+            FlexboxLayout sidePanel = findViewById(R.id.side_panel);
+            Log.w(TAG, "Flashlight on ON");
+            sidePanel.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (flash.isFlashlightOn()) {
+                        setIconActive(torchIcon);
+                    } else {
+                        Log.w(TAG, "Flashlight on OFF");
+                        setIconInactive(torchIcon);
+                    }
+                }
+            });
         } else {
             torchIcon.setVisibility(View.GONE);
         }
@@ -283,6 +295,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         setupNightMode();
+        setupFlashlight();
         setupRadioStreamUI();
 
         BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
@@ -566,11 +579,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (flash == null) return;
 
         flash.toggleFlashlight();
-        if (flash.isFlashlightOn()) {
-            setIconActive(torchIcon);
-        } else {
-            setIconInactive(torchIcon);
-        }
+        setupFlashlight();
     }
 
     @Override
@@ -621,7 +630,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG, "now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS = " +
                 (now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS));
 
-        if (mode > 0 && ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
+        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
             return true;
         }
 
@@ -640,7 +649,6 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         Log.i(TAG, "1 " + (isCharging || mySettings.isAlwaysOnAllowed()));
-        Log.i(TAG, "2 " + ScreenReceiver.shallActivateStandby(context, mySettings));
         if ((isCharging || mySettings.isAlwaysOnAllowed()) && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)) {
             Log.d(TAG, "shallKeepScreenOn() 2 true");
             return true;
