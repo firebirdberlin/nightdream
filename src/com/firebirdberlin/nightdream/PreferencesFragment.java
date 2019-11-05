@@ -279,10 +279,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("activateDoNotDisturb", isPurchasedActions);
         enablePreference("useDeviceLock", isPurchasedActions);
         enablePreference("category_notifications", isPurchasedActions);
-        enablePreference("category_night_mode_display_management",
+
+        boolean enableNightMode =
                 isPurchasedActions
-                        || Utility.wasInstalledBefore(getContext(), 2019, 11, 10)
-        );
+                        || Utility.wasInstalledBefore(mContext, 2019, 11, 15);
+        enablePreference("category_night_mode_display_management", enableNightMode);
 
         if (isPurchasedDonation) {
             hidePreference("donation_category");
@@ -789,9 +790,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Log.i(TAG, "setupNightModePreferences " + nightModeActivationMode);
         enablePreference("nightmode_timerange",
                          nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED);
-        // TODO WHY ?
-        enablePreference("ambientNoiseDetection",
-                         nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC);
     }
 
     private void initUseDeviceLockPreference() {
