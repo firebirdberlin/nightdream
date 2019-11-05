@@ -43,6 +43,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
@@ -278,7 +279,7 @@ public class NightDreamUI {
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             if (clockLayoutContainer == null) return false;
             clockLayoutContainer.getLocationOnScreen(rect);
-            if (e1.getY() < rect[1]) {
+            if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
                 Point size = utility.getDisplaySize();
                 float dx = -2.f * (distanceX / size.x);
                 float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
@@ -290,9 +291,6 @@ public class NightDreamUI {
                 brightnessProgress.setVisibility(View.VISIBLE);
 
                 setAlpha(brightnessProgress, 1.f, 0);
-                removeCallbacks(hideBrightnessLevel);
-                removeCallbacks(hideBrightnessView);
-                handler.postDelayed(hideBrightnessLevel, 1000);
 
                 dimScreen(0, last_ambient, value);
                 if (mode != 0) {
@@ -301,6 +299,9 @@ public class NightDreamUI {
                     settings.setNightModeBrightness(value);
                 }
             }
+            removeCallbacks(hideBrightnessLevel);
+            removeCallbacks(hideBrightnessView);
+            handler.postDelayed(hideBrightnessLevel, 1000);
             return false;
         }
     };
@@ -633,7 +634,7 @@ public class NightDreamUI {
 
     private Bitmap loadBackgroundBitmap() throws Exception {
         Point display = utility.getDisplaySize();
-        if (settings.backgroundImageURI != "") {
+        if (!settings.backgroundImageURI.isEmpty()) {
             // version for Android 4.4+ (KitKat)
             Uri uri = Uri.parse(settings.backgroundImageURI);
             ParcelFileDescriptor parcelFileDescriptor =
@@ -653,7 +654,7 @@ public class NightDreamUI {
             parcelFileDescriptor.close();
             return bitmap;
         } else
-        if (settings.backgroundImagePath() != "" ) {
+        if (!settings.backgroundImagePath().isEmpty() ) {
             // deprecated legacy version
             String bgpath = settings.backgroundImagePath();
             final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -716,7 +717,6 @@ public class NightDreamUI {
     }
 
     private void removeCallbacks(Runnable runnable) {
-        if (handler == null) return;
         if (runnable == null) return;
 
         handler.removeCallbacks(runnable);
@@ -894,7 +894,7 @@ public class NightDreamUI {
     }
 
     private void fadeSoftButtons() {
-        if (Build.VERSION.SDK_INT >= 14 && Build.VERSION.SDK_INT < 19){
+        if (Build.VERSION.SDK_INT < 19){
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
         }
