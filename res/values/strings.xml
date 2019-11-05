@@ -174,7 +174,7 @@ OR
     <string name="notification_importance_default">default</string>
     <string name="notification_importance_high">high</string>
     <string name="notification_importance_max">max</string>
-    <string name="notifications">notifications</string>
+    <string name="notifications">Notifications</string>
     <string name="notificationsInStatusBarTitle">Status bar</string>
     <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
     <string name="notificationListenerService">Notification listener service</string>
