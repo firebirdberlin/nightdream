@@ -195,7 +195,7 @@ public class NightDreamActivity extends BillingHelperActivity
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
     }
 
-    void setupFlashlight() {
+    public void setupFlashlight() {
         torchIcon = findViewById(R.id.torch_icon);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (flash == null) {

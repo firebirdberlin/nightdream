@@ -529,6 +529,7 @@ public class NightDreamUI {
         }
 
         updateRadioIconColor(accentColor, textColor);
+        ((NightDreamActivity) mContext).setupFlashlight();
 
         bottomPanelLayout.setCustomColor(accentColor, textColor);
 
