@@ -96,9 +96,9 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             btn.setText(String.valueOf(i + 1));
             btn.setTag(i);
 
-            int widthDP = Utility.pixelsToDp(context, buttonWidthPixels);
-            int heightDP = Utility.pixelsToDp(context, 30);
-            int margin = Utility.pixelsToDp(context, 5);
+            int widthDP = Utility.dpToPx(context, buttonWidthPixels);
+            int heightDP = Utility.dpToPx(context, 30);
+            int margin = Utility.dpToPx(context, 5);
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(widthDP, heightDP);
             lp.setMargins(margin, 2, margin, margin);

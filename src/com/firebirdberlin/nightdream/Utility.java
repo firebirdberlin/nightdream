@@ -263,7 +263,7 @@ public class Utility {
 
     public static int pixelsToDp(Context context, float px) {
         DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, displaymetrics);
+        return (int) (px / displaymetrics.density);
     }
 
     public static int dpToPx(Context context, float dp) {
