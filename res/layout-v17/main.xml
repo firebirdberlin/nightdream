@@ -39,11 +39,13 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
                 <com.firebirdberlin.nightdream.ui.BatteryIconView
                     android:id="@+id/batteryIconView"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:fontFamily="monospace"
@@ -53,16 +55,12 @@
                     android:textColor="#C2C2C2"
                     android:textSize="20sp"
                     android:singleLine="true" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4">
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/notificationstatusbar"
-                    android:layout_height="24dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     app:flexDirection="row"
                     app:alignContent="flex_end"
                     app:justifyContent="flex_end">

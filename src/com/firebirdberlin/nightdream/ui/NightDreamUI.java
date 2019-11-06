@@ -1007,10 +1007,10 @@ public class NightDreamUI {
     }
 
     private boolean batteryViewShallBeVisible() {
-        return (controlsVisible ||
-                (settings.persistentBatteryValueWhileCharging &&
-                 batteryIconView.shallBeVisible())
-               );
+        return (
+                controlsVisible ||
+                        (settings.persistentBatteryValueWhileCharging && batteryIconView.shallBeVisible())
+        );
     }
 
     public void showAlarmClock() {
