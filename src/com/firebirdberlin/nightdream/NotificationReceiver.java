@@ -5,13 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -68,55 +64,23 @@ public class NotificationReceiver extends BroadcastReceiver {
         String packageName = intent.getStringExtra("packageName");
         int iconId = intent.getIntExtra("iconId", -1);
         Drawable icon = getNotificationIcon(context, packageName, iconId);
-        if (icon != null) {
-            int size = getNotificationIconSize(context);
-            Log.i(TAG, String.format("new size is %d", size));
-            try {
-                icon = resize(context, icon, size);
-            } catch (ClassCastException e) {
-                Log.i(TAG, "ClassCastException");
-                // AnimationDrawable cannot be cast to BitmapDrawable
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
-            }
-        }
-
-        if (action.equals("added")) {
-            AppCompatImageView myImage = new AppCompatImageView(context);
+        if (action.equals("added") && icon != null) {
+            AppCompatImageView image = new AppCompatImageView(context);
             int padding = Utility.dpToPx(context, 5);
-            myImage.setPadding(padding, 0, 0, 0);
-            myImage.setImageDrawable(icon);
-            myImage.setColorFilter( color, PorterDuff.Mode.SRC_ATOP );
-            container.addView(myImage);
+            image.setPadding(padding, 0, 0, 0);
+            image.setImageDrawable(icon);
+            image.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+            FlexboxLayout.LayoutParams layoutParams =
+                    new FlexboxLayout.LayoutParams(
+                            FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                            FlexboxLayout.LayoutParams.WRAP_CONTENT
+                    );
+            layoutParams.setFlexShrink(0.25f);
+            layoutParams.setFlexGrow(0.f);
+            layoutParams.setHeight(Utility.dpToPx(context, 24.f));
+            image.setLayoutParams(layoutParams);
+            container.addView(image);
         }
-    }
-
-    private int getNotificationIconSize(Context context) {
-        switch (context.getResources().getDisplayMetrics().densityDpi) {
-            case DisplayMetrics.DENSITY_LOW:
-                return 18;
-            case DisplayMetrics.DENSITY_MEDIUM:
-                return 24;
-            case DisplayMetrics.DENSITY_HIGH:
-                return 36;
-            case DisplayMetrics.DENSITY_XHIGH:
-                return 48;
-            case DisplayMetrics.DENSITY_XXHIGH:
-                return 72;
-            case DisplayMetrics.DENSITY_XXXHIGH:
-            default:
-                return 96;
-        }
-    }
-
-    private Drawable resize(Context context, Drawable image, int size) {
-        Bitmap b = ((BitmapDrawable) image).getBitmap();
-
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, size, size, false);
-
-        DisplayMetrics metrics = context.getApplicationContext().getResources().getDisplayMetrics();
-        bitmapResized.setDensity(metrics.densityDpi);
-
-        return new BitmapDrawable(context.getResources(), bitmapResized);
     }
 
     private Drawable getNotificationIcon(Context context, String packageName, int id) {
