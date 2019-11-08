@@ -46,4 +46,12 @@ public class VibrationHandler {
     public void stopVibration() {
         vibrator.cancel();
     }
+
+    public void startOneShotVibration(long milliseconds) {
+        if (!vibrator.hasVibrator()) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            VibrationEffect effect = VibrationEffect.createOneShot(milliseconds, 128);
+            vibrator.vibrate(effect);
+        }
+    }
 }

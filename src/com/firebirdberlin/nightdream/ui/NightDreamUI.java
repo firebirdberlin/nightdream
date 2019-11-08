@@ -51,6 +51,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.WeatherService;
@@ -408,6 +409,8 @@ public class NightDreamUI {
                 if (locked) {
                     hideSidePanel();
                 }
+                VibrationHandler handler = new VibrationHandler(mContext);
+                handler.startOneShotVibration(50);
                 return true;
             }
         };
