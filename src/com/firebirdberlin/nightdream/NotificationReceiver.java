@@ -78,6 +78,8 @@ public class NotificationReceiver extends BroadcastReceiver {
             layoutParams.setFlexShrink(0.25f);
             layoutParams.setFlexGrow(0.f);
             layoutParams.setHeight(Utility.dpToPx(context, 24.f));
+            layoutParams.setMaxWidth(Utility.dpToPx(context, 24.f));
+            layoutParams.setMaxHeight(Utility.dpToPx(context, 24.f));
             image.setLayoutParams(layoutParams);
             container.addView(image);
         }
