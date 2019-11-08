@@ -3,9 +3,11 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class BottomPanelLayout extends FrameLayout {
 
@@ -23,6 +25,7 @@ public class BottomPanelLayout extends FrameLayout {
     private AlarmClock view = null;
     private UserInteractionObserver userInteractionObserver;
     private boolean locked = false;
+    private boolean showAlarmsPersistently = true;
 
     public BottomPanelLayout(Context context) {
         super(context);
@@ -55,11 +58,29 @@ public class BottomPanelLayout extends FrameLayout {
         }
     }
 
+    public void setShowAlarmsPersistently(boolean enabled) {
+        showAlarmsPersistently = enabled;
+    }
+
     public void hide() {
-        isVisible = false;
-        setClickable(false);
-        if (webRadioLayout != null) {
-            webRadioLayout.hide();
+        if (showAlarmsPersistently) {
+            showAlarmViewIfNoRadioIsPlaying();
+        } else {
+            isVisible = false;
+            setClickable(false);
+            if (webRadioLayout != null) {
+                webRadioLayout.hide();
+            }
+            setAlpha(this, 0.f, 2000);
+        }
+    }
+
+    private void setAlpha(View v, float alpha, int millis) {
+        if (v == null) return;
+
+        float oldValue = v.getAlpha();
+        if (alpha != oldValue) {
+            v.animate().setDuration(millis).alpha(alpha);
         }
     }
 
@@ -145,6 +166,14 @@ public class BottomPanelLayout extends FrameLayout {
 
     private void showAlarmView() {
         if (activePanel == Panel.WEB_RADIO && !AlarmHandlerService.alarmIsRunning()) return;
+        removeAllViews();
+        clearViews();
+        addView(view);
+        invalidate();
+    }
+
+    private void showAlarmViewIfNoRadioIsPlaying() {
+        if (RadioStreamService.isRunning) return;
         removeAllViews();
         clearViews();
         addView(view);

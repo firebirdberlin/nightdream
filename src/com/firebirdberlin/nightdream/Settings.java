@@ -89,6 +89,7 @@ public class Settings {
     public boolean useDeviceLock = false;
     public boolean useInternalAlarm = true;
     public boolean useAlarmSwipeGesture = false;
+    public boolean showAlarmsPersistently = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
     public boolean radioStreamActivateWiFi = false;
@@ -276,8 +277,8 @@ public class Settings {
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         useDeviceLock = settings.getBoolean("useDeviceLock", false);
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "0"));
-        useInternalAlarm = settings.getBoolean("useInternalAlarm", true);
         useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", false);
+        showAlarmsPersistently = settings.getBoolean("showAlarmsPersistently", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
         radioStreamActivateWiFi = settings.getBoolean("radioStreamActivateWiFi", false);
         radioStreamRequireWiFi = settings.getBoolean("radioStreamRequireWiFi", false);
@@ -339,10 +340,7 @@ public class Settings {
     }
 
     public boolean is24HourFormat() {
-        if (timeFormat.startsWith("H")) {
-            return true;
-        }
-        return false;
+        return timeFormat.startsWith("H");
     }
 
     public BatteryValue loadBatteryReference() {

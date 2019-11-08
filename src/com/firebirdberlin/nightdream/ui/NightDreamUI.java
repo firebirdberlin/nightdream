@@ -205,7 +205,6 @@ public class NightDreamUI {
             setAlpha(menuIcon, 0.f, 2000);
 
             bottomPanelLayout.hide();
-            setAlpha(bottomPanelLayout, 0.f, 2000);
             if (mode == 0) {
                 setAlpha(notificationStatusBar, 0.f, 2000);
             }
@@ -444,6 +443,7 @@ public class NightDreamUI {
         initSidePanel();
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
+        bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
         bottomPanelLayout.setup();
         setupScreenAnimation();
         lockUI(this.locked);
@@ -532,7 +532,7 @@ public class NightDreamUI {
             }
         }
 
-        updateRadioIconColor(accentColor, textColor);
+        updateRadioIconColor();
         ((NightDreamActivity) mContext).setupFlashlight();
 
         bottomPanelLayout.setCustomColor(accentColor, textColor);
@@ -550,7 +550,9 @@ public class NightDreamUI {
         }
     }
 
-    private void updateRadioIconColor(final int accentColor, final int textColor) {
+    private void updateRadioIconColor() {
+        int accentColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
+        int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
         final boolean webRadioViewActive = bottomPanelLayout.isWebRadioViewActive();
         final int color = (webRadioViewActive ? accentColor : textColor);
         radioIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
@@ -686,6 +688,7 @@ public class NightDreamUI {
     private void setupAlarmClock() {
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
+        bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
         bottomPanelLayout.setup();
         bottomPanelLayout.show();
     }
@@ -984,6 +987,7 @@ public class NightDreamUI {
     }
 
     private void showSidePanel() {
+        updateRadioIconColor();
         sidePanel.animate().setDuration(250).x(0);
         handler.postDelayed(hideAlarmClock, 20000);
     }
