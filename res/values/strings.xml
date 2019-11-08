@@ -248,6 +248,8 @@ OR
     <string name="screenOrientation">Screen orientation</string>
     <string name="select_alarm_sound">Select alarm sound</string>
     <string name="set_alarm">set alarm</string>
+    <string name="showAlarmsPersistently">Show persistently</string>
+    <string name="showAlarmsPersistentlySummary">Show the next alarm time persistently on the screen.</string>
     <string name="showBatteryWarningSummary">Show a warning at startup when on battery.</string>
     <string name="showBatteryWarningTitle">Battery warning</string>
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
@@ -289,6 +291,7 @@ OR
     <string name="typeface">Typeface</string>
     <string name="uninstall">Uninstall application</string>
     <string name="useAlarmSwipeGesture">Set alarm via swipe gesture</string>
+    <string name="useAlarmSwipeGestureSummary">Allows to set a new alarm with a swipe from the lower left corner.</string>
     <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>
     <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
     <string name="useDeviceLock">Lock device</string>

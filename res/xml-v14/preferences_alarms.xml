@@ -1,35 +1,28 @@
-<PreferenceScreen
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:icon="@drawable/ic_alarm_clock_icon"
     app:key="alarms"
     app:title="@string/alarm">
 
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="true"
-        app:key="useInternalAlarm"
-        app:title="@string/use_internal_alarm"/>
-
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="false"
-        app:dependency="useInternalAlarm"
-        app:key="useAlarmSwipeGesture"
-        app:title="@string/useAlarmSwipeGesture" />
+    <!--
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="useInternalAlarm"
+            app:title="@string/use_internal_alarm"/>
+    -->
 
     <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
         app:iconSpaceReserved="false"
         xmlns:seekbar="http://schemas.android.com/apk/lib/android"
         app:defaultValue="3"
-        app:dependency="useInternalAlarm"
         app:key="alarmVolume"
         app:title="@string/alarmVolume" />
 
     <CheckBoxPreference
         app:iconSpaceReserved="false"
         app:defaultValue="true"
-        app:dependency="useInternalAlarm"
         app:key="alarmFadeIn"
         app:title="@string/alarmFadeIn" />
 
@@ -37,7 +30,6 @@
         app:iconSpaceReserved="false"
         xmlns:seekbar="http://schemas.android.com/apk/lib/android"
         app:defaultValue="5"
-        app:dependency="useInternalAlarm"
         app:key="snoozeTimeInMinutes"
         app:title="@string/snoozeTime"
         seekbar:interval="1"
@@ -45,6 +37,21 @@
         seekbar:min="5"
         seekbar:unitsLeft=""
         seekbar:unitsRight="min"/>
+
+    <SwitchPreferenceCompat
+        android:summary="@string/showAlarmsPersistentlySummary"
+        app:defaultValue="false"
+        app:iconSpaceReserved="false"
+        app:key="showAlarmsPersistently"
+        app:title="@string/showAlarmsPersistently" />
+
+    <SwitchPreferenceCompat
+        android:summary="@string/useAlarmSwipeGestureSummary"
+        app:defaultValue="false"
+        app:iconSpaceReserved="false"
+        app:key="useAlarmSwipeGesture"
+        app:title="@string/useAlarmSwipeGesture" />
+
 
     <PreferenceCategory
         app:layout="@layout/preferences_category"
