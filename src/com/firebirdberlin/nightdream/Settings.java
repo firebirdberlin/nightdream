@@ -791,7 +791,7 @@ public class Settings {
         return preferences.getString("defaultAlarmTone", null);
     }
 
-    private static SharedPreferences getDefaultSharedPreferences(Context context) {
+    public static SharedPreferences getDefaultSharedPreferences(Context context) {
         return context.getSharedPreferences("defaults", Context.MODE_PRIVATE);
     }
 

@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public abstract class BillingHelperActivity
     Map<String, Boolean> purchases = getDefaultPurchaseMap();
     HashMap<String, String> prices = new HashMap<>();
     List<SkuDetails> skuDetails;
+    SharedPreferences preferences;
 
     public boolean isPurchased(String sku) {
         if (Utility.isEmulator()) {
@@ -176,6 +178,13 @@ public abstract class BillingHelperActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferences = Settings.getDefaultSharedPreferences(this);
+        if (preferences != null) { // initialize from cache
+            for (String sku : fullSkuList) {
+                boolean isPurchased = preferences.getBoolean(String.format("purchased_%s", sku), false);
+                purchases.put(sku, isPurchased);
+            }
+        }
     }
 
     @Override
@@ -221,10 +230,21 @@ public abstract class BillingHelperActivity
     }
 
     protected void onItemPurchased(String sku) {
+        setPurchased(sku, true);
         showThankYouDialog();
     }
 
+    void setPurchased(String sku, boolean isPurchased) {
+        if (preferences == null) {
+            return;
+        }
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean(String.format("purchased_%s", sku), isPurchased);
+        edit.apply();
+    }
+
     protected void onItemConsumed(String sku) {
+        setPurchased(sku, false);
     }
 
     @Override
@@ -326,6 +346,13 @@ public abstract class BillingHelperActivity
             // ATTENTION only activate temporarily
             //consumeItem(sku);
         }
+
+        // store in the cache
+        for (String sku : fullSkuList) {
+            boolean isPurchased = purchases.get(sku);
+            setPurchased(sku, isPurchased);
+        }
+
         onPurchasesInitialized();
     }
 

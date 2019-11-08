@@ -252,7 +252,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     void onPurchasesInitialized() {
-        Log.w(TAG, "purchase detected");
         storeWeatherDataPurchase(
                 isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                 isPurchased(BillingHelperActivity.ITEM_DONATION)
@@ -630,7 +629,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
@@ -960,7 +959,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             if (p == preference) {
                 return root;
             }
-            if (PreferenceGroup.class.isInstance(p)) {
+            if (p instanceof PreferenceGroup) {
                 PreferenceGroup parent = getParent((PreferenceGroup)p, preference);
                 if (parent != null) {
                     return parent;
