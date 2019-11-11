@@ -103,27 +103,37 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         }
 
         if (shallAutostart(context, settings)) {
-            final SensorManager mSensorManager = (SensorManager)
-                    context.getSystemService(Context.SENSOR_SERVICE);
-            if (mSensorManager == null) return;
+            final SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            Sensor mProximity = null;
+            if (mSensorManager != null) {
+                mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            }
 
-            Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-            if (mProximity == null) return;
+            if (mProximity == null) {
+                NightDreamActivity.start(context);
+                return;
+            }
 
-            mSensorManager.registerListener(new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent sensorEvent) {
-                    if (sensorEvent.values[0] > 0 ) {
-                        NightDreamActivity.start(context);
-                    }
-                    mSensorManager.unregisterListener(this);
-                }
+            SensorEventListener listener =
+                    new SensorEventListener() {
+                        @Override
+                        public void onSensorChanged(SensorEvent sensorEvent) {
+                            if (sensorEvent.values[0] > 0 ) {
+                                NightDreamActivity.start(context);
+                            }
+                            mSensorManager.unregisterListener(this);
+                        }
 
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int i) {
+                        @Override
+                        public void onAccuracyChanged(Sensor sensor, int i) {
 
-                }
-            }, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+                        }
+                    };
+            try {
+                mSensorManager.registerListener(listener, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+            } catch (IllegalStateException e) {
+                NightDreamActivity.start(context);
+            }
         }
     }
 

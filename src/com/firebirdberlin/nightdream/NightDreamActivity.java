@@ -755,19 +755,23 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void scheduleShutdown(Calendar calendar) {
         if (calendar == null) return;
-        PendingIntent pendingIntent = getShutdownIntent();
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
+        if (alarmManager == null) {
+            return;
+        }
+        PendingIntent pendingIntent = getShutdownIntent();
+        alarmManager.cancel(pendingIntent);
         if (Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+            try {
+                alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+            } catch (SecurityException ignored) {}
         } else {
-            deprecatedSetAlarm(calendar, pendingIntent);
+            deprecatedSetAlarm(alarmManager, calendar, pendingIntent);
         }
     }
 
     @SuppressWarnings("deprecation")
-    private void deprecatedSetAlarm(Calendar calendar, PendingIntent pendingIntent) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    private void deprecatedSetAlarm(AlarmManager alarmManager, Calendar calendar, PendingIntent pendingIntent) {
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
     }
 
