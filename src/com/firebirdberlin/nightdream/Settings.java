@@ -30,8 +30,11 @@ import org.json.JSONException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import static android.text.format.DateFormat.getBestDateTimePattern;
 
@@ -88,6 +91,8 @@ public class Settings {
     public boolean showWindSpeed = false;
     public boolean useDeviceLock = false;
     public boolean useInternalAlarm = true;
+    public boolean stopAlarmOnTap = true;
+    public boolean stopAlarmOnLongPress = false;
     public boolean useAlarmSwipeGesture = false;
     public boolean showAlarmsPersistently = false;
     public boolean isUIlocked = false;
@@ -293,6 +298,19 @@ public class Settings {
 
         typeface = loadTypeface();
         weatherEntry = getWeatherEntry();
+
+        HashSet<String> defaultOptions = new HashSet<>();
+        defaultOptions.addAll(
+                Arrays.asList(
+                        mContext.getResources().getStringArray(R.array.optionsStopAlarmsValuesDefault)
+                )
+        );
+        Set<String> optionsStopAlarms = settings.getStringSet("optionsStopAlarms", defaultOptions);
+        stopAlarmOnTap = optionsStopAlarms.contains("0");
+        stopAlarmOnLongPress = optionsStopAlarms.contains("1");
+        if (!stopAlarmOnTap && !stopAlarmOnLongPress) {
+            stopAlarmOnTap = true;
+        }
     }
 
     public void setShowDivider(boolean on) {
@@ -355,13 +373,16 @@ public class Settings {
     }
 
     public void saveBatteryReference(BatteryValue bv) {
+        if (bv == null) {
+            return;
+        }
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("batteryReferenceTime", bv.time);
         prefEditor.putInt("batteryReferenceMethod", bv.level);
         prefEditor.putInt("batteryReferenceScale", bv.scale);
         prefEditor.putInt("batteryReferenceChargingMethod", bv.chargingMethod);
         prefEditor.putInt("batteryReferenceStatus", bv.status);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public void removeBatteryReference() {

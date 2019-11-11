@@ -58,6 +58,17 @@ public class BottomPanelLayout extends FrameLayout {
         }
     }
 
+    public void setAlarmUseSingleTap(boolean enabled) {
+        if (view != null && view.alarmClockView != null) {
+            view.alarmClockView.setUseSingleTap(enabled);
+        }
+    }
+    public void setAlarmUseLongPress(boolean enabled) {
+        if (view != null && view.alarmClockView != null) {
+            view.alarmClockView.setUseLongPress(enabled);
+        }
+    }
+
     public void setShowAlarmsPersistently(boolean enabled) {
         showAlarmsPersistently = enabled;
     }

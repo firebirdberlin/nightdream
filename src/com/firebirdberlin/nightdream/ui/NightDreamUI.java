@@ -442,8 +442,10 @@ public class NightDreamUI {
 
         initSidePanel();
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
-        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
+        bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
+        bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
+        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
         bottomPanelLayout.setup();
         setupScreenAnimation();
         lockUI(this.locked);
@@ -687,8 +689,10 @@ public class NightDreamUI {
 
     private void setupAlarmClock() {
         bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
-        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
+        bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
+        bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
+        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
         bottomPanelLayout.setup();
         bottomPanelLayout.show();
     }
