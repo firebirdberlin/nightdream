@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="optionsStopAlarmsValues">
+         <item>0</item>
+         <item>1</item>
+     </string-array>
+
+
+    <string-array name="optionsStopAlarms">
+        <item>@string/options_stop_alarms_tap</item>
+        <item>@string/options_stop_alarms_long_press</item>
+     </string-array>
+
+    <string-array name="optionsStopAlarmsValuesDefault">
+        <item>0</item>
+    </string-array>
+</resources>

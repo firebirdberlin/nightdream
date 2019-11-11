@@ -38,19 +38,34 @@
         seekbar:unitsLeft=""
         seekbar:unitsRight="min"/>
 
-    <SwitchPreferenceCompat
-        android:summary="@string/showAlarmsPersistentlySummary"
-        app:defaultValue="false"
-        app:iconSpaceReserved="false"
-        app:key="showAlarmsPersistently"
-        app:title="@string/showAlarmsPersistently" />
+    <PreferenceCategory
+        android:title="@string/behaviour"
+        app:iconSpaceReserved="false">
 
-    <SwitchPreferenceCompat
-        android:summary="@string/useAlarmSwipeGestureSummary"
-        app:defaultValue="false"
-        app:iconSpaceReserved="false"
-        app:key="useAlarmSwipeGesture"
-        app:title="@string/useAlarmSwipeGesture" />
+        <SwitchPreferenceCompat
+            android:summary="@string/showAlarmsPersistentlySummary"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="showAlarmsPersistently"
+            app:title="@string/showAlarmsPersistently" />
+
+        <SwitchPreferenceCompat
+            android:summary="@string/useAlarmSwipeGestureSummary"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="useAlarmSwipeGesture"
+            app:title="@string/useAlarmSwipeGesture" />
+
+        <MultiSelectListPreference
+            android:key="optionsStopAlarms"
+            android:title="@string/options_stop_alarms_title"
+            android:dialogTitle="@string/options_stop_alarms_title"
+            android:entryValues="@array/optionsStopAlarmsValues"
+            android:entries="@array/optionsStopAlarms"
+            android:defaultValue="@array/optionsStopAlarmsValuesDefault"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
 
 
     <PreferenceCategory

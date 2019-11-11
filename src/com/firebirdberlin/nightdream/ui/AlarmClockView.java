@@ -58,6 +58,8 @@ public class AlarmClockView extends View {
     private boolean userChangesAlarmTime = false;
     private boolean FingerDownDeleteAlarm = false;
     private boolean useAlarmSwipeGesture = false;
+    private boolean useSingleTap = true;
+    private boolean useLongPress = false;
     private Context ctx;
     private int customcolor = Color.parseColor("#33B5E5");
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
@@ -99,6 +101,14 @@ public class AlarmClockView extends View {
 
     public void setUseAlarmSwipeGesture(boolean enabled) {
         useAlarmSwipeGesture = enabled;
+    }
+
+    public void setUseSingleTap(boolean useSingleTap) {
+        this.useSingleTap = useSingleTap;
+    }
+
+    public void setUseLongPress(boolean useLongPress) {
+        this.useLongPress = useLongPress;
     }
 
     public void setOnAlarmChangedListener(onAlarmChangeListener listener) {
@@ -170,6 +180,7 @@ public class AlarmClockView extends View {
         return new Point((int) e.getX(), (int) e.getY());
     }
 
+
     public boolean onTouchEvent(MotionEvent e) {
         Log.d(TAG, String.format("onTouchEvent: %d", e.getAction()));
 
@@ -177,12 +188,11 @@ public class AlarmClockView extends View {
         if (!isClickable() || locked ) return false;
 
         if (showRightCorner()) {
-            boolean success = handleAlarmCancelling(e);
+            boolean success =  mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e);
             if (success) return true;
         }
         if (showLeftCorner()) {
-            boolean success = mGestureDetector.onTouchEvent(e) || handleAlarmSetEvents(e);
-            return success;
+            return mGestureDetector.onTouchEvent(e) || handleAlarmSetEvents(e);
         }
         return false;
     }
@@ -251,12 +261,6 @@ public class AlarmClockView extends View {
                 }
                 return false;
             case MotionEvent.ACTION_UP:
-                if (FingerDownDeleteAlarm && isInside) {
-                    FingerDownDeleteAlarm = false;
-                    stopAlarm();
-                    postAlarmTime();
-                    return true;
-                }
                 FingerDownDeleteAlarm = false;
                 invalidate();
                 return false;
@@ -339,7 +343,7 @@ public class AlarmClockView extends View {
     }
 
     private boolean showLeftCorner() {
-        return !locked && useAlarmSwipeGesture && !(isAlarmSet() && time.isRecurring());
+        return FingerDown || (!locked && useAlarmSwipeGesture && !isAlarmSet());
 
     }
 
@@ -466,7 +470,29 @@ public class AlarmClockView extends View {
                 SetAlarmClockActivity.start(getContext());
                 return true;
             }
+
+            if (showRightCorner() && cornerRight.isInside(click)) {
+                if (useSingleTap) {
+                    stopAlarm();
+                    postAlarmTime();
+                }
+                else if (useLongPress) {
+                    String msg = getResources().getString(R.string.message_stop_alarm_long_press);
+                    toast(msg);
+                }
+                return true;
+            }
             return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+            Point click = getClickedPoint(e);
+            if (useLongPress && showRightCorner() && cornerRight.isInside(click) ) {
+                stopAlarm();
+                postAlarmTime();
+            }
         }
     }
 
@@ -479,10 +505,10 @@ public class AlarmClockView extends View {
         boolean activated = false;
         Bitmap icon;
         Bitmap scaledIcon;
-        Position position = Position.LEFT;
+        Position position;
         ColorFilter colorFilter = new PorterDuffColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
 
-        public HotCorner(Position position) {
+        HotCorner(Position position) {
             this.center = new Point();
             this.setRadius(100);
             this.position = position;
@@ -567,7 +593,6 @@ public class AlarmClockView extends View {
     }
     final Handler mHandler = new Handler();
 
-    // Helper for showing tests
     void toast(final CharSequence text) {
         mHandler.post(new Runnable() {
             @Override public void run() {

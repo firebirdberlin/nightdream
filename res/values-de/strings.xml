@@ -138,6 +138,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="message_mobile_data_connection_confirmation">Sie haben eine mobile Datenverbindung. Soll der Radiostream jetzt abgespielt werden?</string>
     <string name="message_mobile_data_connection">Mobile Datenverbindung</string>
     <string name="message_no_data_connection">Keine Datenverbindung</string>
+    <string name="message_stop_alarm_long_press">Lange drücken, um Alarm zu beenden.</string>
     <string name="minBrightness">min. Bildschirmhelligkeit</string>
     <string name="minute">min</string>
     <string name="mute_ringer">lautlos</string>
@@ -176,6 +177,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="numberStyleArabic">Arabisch</string>
     <string name="numberStyleRoman">Römisch</string>
     <string name="numberStyleNone">Keiner</string>
+    <string name="options_stop_alarms_tap">Tippen</string>
+    <string name="options_stop_alarms_title">Geste zum Beenden eines Alarms</string>
+    <string name="options_stop_alarms_long_press">Langes Drücken</string>
     <string name="other_apps">Andere Apps</string>
     <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
     <string name="other_apps_tinytimetracker">Zeiterfassung</string>

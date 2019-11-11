@@ -144,6 +144,7 @@ OR
     <string name="message_mobile_data_connection_confirmation">You are connected to a mobile network. Play the radio stream?</string>
     <string name="message_mobile_data_connection">Mobile data connection</string>
     <string name="message_no_data_connection">No data connection</string>
+    <string name="message_stop_alarm_long_press">Long press to stop the alarm</string>
     <string name="minBrightness">Minimum screen brightness</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Mute ringer</string>
@@ -185,6 +186,9 @@ OR
     <string name="other_apps">Other apps</string>
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="options_stop_alarms_tap">tap</string>
+    <string name="options_stop_alarms_title">Gesture for stopping alarms</string>
+    <string name="options_stop_alarms_long_press">long press</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
     <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
