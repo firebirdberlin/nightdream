@@ -29,8 +29,16 @@ public class BatteryStats {
     }
 
     public BatteryValue getBatteryValue() {
-        final Intent batteryIntent = receivedBatteryIntent != null ?
-                                    receivedBatteryIntent : mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        Intent batteryIntent = null;
+        try {
+            batteryIntent = receivedBatteryIntent != null
+                    ? receivedBatteryIntent
+                    : mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        } catch (IllegalArgumentException ignored) {}
+
+        if (batteryIntent == null) {
+            return null;
+        }
         int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);

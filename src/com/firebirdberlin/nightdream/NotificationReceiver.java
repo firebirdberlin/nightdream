@@ -62,6 +62,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
         String packageName = intent.getStringExtra("packageName");
+        if (packageName == null || packageName.isEmpty()) {
+           return;
+        }
         int iconId = intent.getIntExtra("iconId", -1);
         Drawable icon = getNotificationIcon(context, packageName, iconId);
         if (action.equals("added") && icon != null) {
@@ -87,7 +90,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private Drawable getNotificationIcon(Context context, String packageName, int id) {
         Log.d(TAG, "getNotificationIcon for id = " + id);
-        if (packageName == null || id == -1) return null;
+        if (packageName == null || id == -1) {
+            return null;
+        }
         try {
             Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
             return ContextCompat.getDrawable(remotePackageContext, id);
