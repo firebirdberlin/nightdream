@@ -421,7 +421,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
 
         if (alarmIsRunning) {
-            AlarmService.startAlarm(this, alarmTime);
+            startFallbackAlarm();
         }
 
         Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
@@ -437,11 +437,16 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
 
         if (alarmIsRunning) {
-            AlarmService.startAlarm(this, alarmTime);
+            startFallbackAlarm();
         }
 
         Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
         stopSelf();
+    }
+
+    void startFallbackAlarm() {
+        AlarmService.startAlarm(this, alarmTime);
+        alarmIsRunning = false;
     }
 
     private void playStream() {
@@ -494,7 +499,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             // if the stream stops during the first two minutes there are probably issues connecting
             // to the stream
             stopSelf();
-            AlarmService.startAlarm(this, alarmTime);
+            startFallbackAlarm();
             return true;
         }
         return false;

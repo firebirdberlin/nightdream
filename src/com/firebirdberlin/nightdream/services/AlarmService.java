@@ -223,7 +223,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         mMediaPlayer.setOnBufferingUpdateListener(this);
         mMediaPlayer.setLooping(true);
 
-        boolean result = false;
+        boolean result;
         Uri soundUri = getAlarmToneUri();
         result = setDataSource(soundUri);
         if (! result ) {
@@ -264,7 +264,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     }
 
-    public void AlarmStop(){
+    private void AlarmStop(){
         vibrator.stopVibration();
         if (mMediaPlayer != null){
             if(mMediaPlayer.isPlaying()) {
