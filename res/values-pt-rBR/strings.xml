@@ -175,9 +175,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Habilitado</string>
     <string name="radio_stream">Rádios online</string>
     <string name="radio_stream_failure">Falha na rádio online</string>
+    <string name="radio_stream_manual_input_description">Nome da estação</string>
     <string name="radio_stream_manual_input_hint">Adicione a estação manualmente</string>
     <string name="radio_stream_manual_input_url">URL da transmissão</string>
-    <string name="radio_stream_manual_input_description">Nome da estação</string>
     <string name="radio_stream_music_allowed">Use um serviço de Stream de música</string>
     <string name="radio_stream_no_search_results">Não havia resultados para a busca.</string>
     <string name="radio_stream_offline">Desconectado</string>

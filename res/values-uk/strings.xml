@@ -143,9 +143,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Увімкнено</string>
     <string name="radio_stream">Радіопотоки</string>
     <string name="radio_stream_failure">Помилка радіопотоку</string>
+    <string name="radio_stream_manual_input_description">Назва станції</string>
     <string name="radio_stream_manual_input_hint">Додати станцію вручну</string>
     <string name="radio_stream_manual_input_url">Посилання трансляції</string>
-    <string name="radio_stream_manual_input_description">Назва станції</string>
     <string name="radio_stream_music_allowed">Використовувати музичну трансляцію</string>
     <string name="radio_stream_no_search_results">Нічого не знайдено/Пошук не дав результатів</string>
     <string name="radio_stream_offline">офлайн</string>
