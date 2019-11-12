@@ -189,9 +189,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Włącz</string>
     <string name="radio_stream">Radio stream</string>
     <string name="radio_stream_failure">Błąd strumienia radia</string>
+    <string name="radio_stream_manual_input_description">Nazwa stacji</string>
     <string name="radio_stream_manual_input_hint">Dodaj stację ręcznie</string>
     <string name="radio_stream_manual_input_url">Strumień URL</string>
-    <string name="radio_stream_manual_input_description">Nazwa stacji</string>
     <string name="radio_stream_music_allowed">Użyj nadawanej muzyki</string>
     <string name="radio_stream_no_search_results">Brak rezultatów</string>
     <string name="radio_stream_offline">Offline</string>

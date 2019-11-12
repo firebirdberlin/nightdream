@@ -17,13 +17,16 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">אודות</string>
+    <string name="action_skip">דלג</string>
     <string name="action_snooze">נודניק</string>
     <string name="action_stop">לעצור</string>
+    <string name="activateDoNotDisturb">נא לא להפריע</string>
     <string name="add_new_alarm">הוסף שעון מעורר חדש</string>
     <string name="add_custom_alarm_tone">הוסף צליל שעון מעורר מותאם אישית</string>
     <string name="add_custom_font">הוסף פונט אישי</string>
     <string name="alarm">שעון מעורר</string>
     <string name="alarmFadeIn">צלצול  מתגבר</string>
+    <string name="alarmUpcoming">ההתראה הבאה</string>
     <string name="alarmVolume">ווליום</string>
     <string name="allow_screen_off_summary">כבה מסך במהלך הלילה</string>
     <string name="allow_screen_off">כבה מסך</string>

@@ -121,9 +121,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Povolené</string>
     <string name="radio_stream">Rádiové vysielanie</string>
     <string name="radio_stream_failure">Rádiové vysielanie na prd</string>
+    <string name="radio_stream_manual_input_description">Vlož meno stanice </string>
     <string name="radio_stream_manual_input_hint">Pridať stanicu manuálne</string>
     <string name="radio_stream_manual_input_url">Kanál manuálne vložiť URL</string>
-    <string name="radio_stream_manual_input_description">Vlož meno stanice </string>
     <string name="radio_stream_music_allowed">použi hudobný stream</string>
     <string name="radio_stream_no_search_results">Nič nenájdené</string>
     <string name="radio_stream_offline">Konec. Vyplo sa to</string>

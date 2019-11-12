@@ -12,6 +12,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.DarkSkyApi;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -34,8 +35,12 @@ public class DownloadWeatherService extends JobIntentService {
     protected void onHandleWork(Intent intent) {
         mContext = this;
         Log.i(TAG, "onHandleWork");
+        Utility.logIntent(TAG, "onHandleWork", intent);
         Settings settings = new Settings(this);
         if (! WeatherService.shallUpdateWeatherData(this, settings)) {
+           return;
+        }
+        if (! Utility.hasNetworkConnection(this)) {
             return;
         }
         City city = settings.getCityForWeather();

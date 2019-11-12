@@ -52,6 +52,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Selecteer een afbeelding</string>
     <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
     <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterij voorspelling. Doorgaan?</string>
+    <string name="backgroundServiceDialogMessageWidgets">Verwijder uw widgets handmatig</string>
     <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
@@ -69,6 +70,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Helderheid standaard</string>
     <string name="buttonAccessibilitySettings">Meldingen tonen</string>
     <string name="buy">Kopen</string>
+    <string name="buy_upgrade_error">Oops, ik kon de betaaldienst niet bereiken</string>
     <string name="buy_upgrade_summary">Verkrijg versie met alle opties</string>
     <string name="buy_upgrade_title">Nieuwe versie</string>
     <string name="category_handle_power">... en als je verbonden bent met</string>
@@ -99,6 +101,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits_pull_requests">Codeverzoeken</string>
     <string name="date_format">Datumopmaak</string>
     <string name="delete">Verwijderen</string>
+    <string name="dialog_message_pending_purchase">Je aankoop was nog niet bevestigd door Google Pay</string>
+    <string name="dialog_message_already_owned">Dit item is al gekocht</string>
     <string name="dialog_message_thank_you">Hartelijk bedankt!</string>
     <string name="dialog_title_thank_you">Bedankt</string>
     <string name="digit_emphasize_quarters">Kwartieren benadrukken</string>
@@ -133,6 +137,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="inner_circle_radius">Straal van binnenste cirkel</string>
     <string name="length">Lengte</string>
     <string name="location_time">Plaatselijke tijd</string>
+    <string name="manage_permissions">Beheer permissies</string>
     <string name="maxBrightness">Maximale schermhelderheid</string>
     <string name="maxBrightnessBattery">Maximale schermhelderheid op batterij</string>
     <string name="message_mobile_data_connection_confirmation">Je bent verbonden met een mobiel netwerk. Wil je de radiostream afspelen?</string>
@@ -169,9 +174,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
     <string name="outer_circle_radius">Straal van buitenste cirkel</string>
     <string name="outer_circle_width">Diameter van buitenste cirkel</string>
+    <string name="permission_request_autostart">De machtiging om overlays the tonen (autostart) is niet verleend. Verleend de machtiging a.u.b.</string>
     <string name="persistent_battery_value_while_charging">Permanente batterijstatus</string>
     <string name="persistent_battery_value_while_charging_summary">Batterijstatus permanent tonen tijdens het opladen.</string>
     <string name="position">Positie</string>
+    <string name="preferences">Voorkeuren</string>
     <string name="prev">Vorige</string>
     <string name="preview">Voorbeeld</string>
     <string name="product_name_actions">Altijd aanwezig</string>
@@ -193,9 +200,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Ingeschakeld</string>
     <string name="radio_stream">Radiostreams</string>
     <string name="radio_stream_failure">Probleem met de radiostream</string>
+    <string name="radio_stream_manual_edit">Bewerk radiostation</string>
+    <string name="radio_stream_manual_input_description">Stationsnaam</string>
     <string name="radio_stream_manual_input_hint">Handmatig een station toevoegen</string>
     <string name="radio_stream_manual_input_url">Stream-URL</string>
-    <string name="radio_stream_manual_input_description">Stationsnaam</string>
+    <string name="radio_stream_manual_input_seconds_to_mute">Seconden te dempen voor starten</string>
     <string name="radio_stream_music_allowed">Muziek streamen toegestaan</string>
     <string name="radio_stream_no_search_results">Er zijn geen zoekresultaten.</string>
     <string name="radio_stream_offline">Offline</string>
@@ -276,6 +285,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">Locatie zoeken</string>
     <string name="weather_info_title">Informatie</string>
     <string name="weather">Weer</string>
+    <string name="weatherProvider">Weersdienst leverancier</string>
     <string name="welcome_screen_text1">Welkom bij je nieuwe nachtklok! Deze app toont de huidige tijd tijdens het opladen van je telefoon.</string>
     <string name="welcome_screen_text2">Open de instellingen hier!</string>
     <string name="welcome_screen_text3">Sleep je vinger over het scherm om de helderheid aan te passen. Probeer het nu!</string>

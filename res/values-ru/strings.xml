@@ -193,9 +193,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Включено</string>
     <string name="radio_stream">Потоковое радио</string>
     <string name="radio_stream_failure">Поток неожиданно остановлен</string>
+    <string name="radio_stream_manual_input_description">Название станции</string>
     <string name="radio_stream_manual_input_hint">Добавить станцию вручную</string>
     <string name="radio_stream_manual_input_url">Поток URL</string>
-    <string name="radio_stream_manual_input_description">Название станции</string>
     <string name="radio_stream_music_allowed">Использовать музыкальный поток</string>
     <string name="radio_stream_no_search_results">Поиск не дал результатов</string>
     <string name="radio_stream_offline">Отключено</string>

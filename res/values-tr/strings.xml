@@ -136,9 +136,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Açık</string>
     <string name="radio_stream">Radyo akışları</string>
     <string name="radio_stream_failure">Radyo akış hatası</string>
+    <string name="radio_stream_manual_input_description">Kanal adı</string>
     <string name="radio_stream_manual_input_hint">Kanalı elle ekleyin</string>
     <string name="radio_stream_manual_input_url">Akış adresi</string>
-    <string name="radio_stream_manual_input_description">Kanal adı</string>
     <string name="radio_stream_no_search_results">Arama sonuçsuz</string>
     <string name="radio_stream_offline">Çevrimdışı</string>
     <string name="radio_stream_query_hint">Arama kriteri</string>

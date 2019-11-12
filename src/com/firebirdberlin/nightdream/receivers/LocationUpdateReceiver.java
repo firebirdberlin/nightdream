@@ -16,8 +16,8 @@ public class LocationUpdateReceiver extends BroadcastReceiver {
 
     protected AsyncResponse delegate;
     public interface AsyncResponse {
-        public void onLocationUpdated();
-        public void onLocationFailure();
+        void onLocationUpdated();
+        void onLocationFailure();
     }
 
     public static LocationUpdateReceiver register(Context ctx, AsyncResponse listener) {
@@ -39,10 +39,10 @@ public class LocationUpdateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION_LOCATION_UPDATED)) {
+        if (ACTION_LOCATION_UPDATED.equals(intent.getAction())) {
             delegate.onLocationUpdated();
         } else
-        if (intent.getAction().equals(ACTION_LOCATION_FAILURE)) {
+        if (ACTION_LOCATION_FAILURE.equals(intent.getAction())) {
             delegate.onLocationFailure();
         }
     }
