@@ -38,7 +38,7 @@ public class OpenWeatherMapApi {
     private static int CONNECT_TIMEOUT = 10000;
     private static String CACHE_FILE_FORECAST = "owm_forecast";
     private static String CACHE_FILE_DATA = "owm_weather_data";
-    private static long CACHE_VALIDITY_TIME = 1000 * 60 * 15; // 15 mins
+    private static long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
 
     private static void storeCacheFile(File cacheFile, String responseText) {
         try {

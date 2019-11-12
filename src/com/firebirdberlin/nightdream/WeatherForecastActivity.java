@@ -72,7 +72,11 @@ public class WeatherForecastActivity extends AppCompatActivity
         }
 
         int day = -1;
+        long now = System.currentTimeMillis();
         for (WeatherEntry entry: entries) {
+            if (entry.timestamp * 1000 < now - 600000) {
+                continue;
+            }
             TextView dateView = new TextView(this);
             if (Build.VERSION.SDK_INT >= 23) {
                 dateView.setTextAppearance(android.R.style.TextAppearance_Medium);

@@ -37,6 +37,7 @@ public class DarkSkyApi {
     private static String API_KEY = BuildConfig.API_KEY_DARK_SKY;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
+    private static long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
 
     public static WeatherEntry fetchCurrentWeatherData(Context context, City city, float lat, float lon) {
 
@@ -71,9 +72,9 @@ public class DarkSkyApi {
         long now = System.currentTimeMillis();
         if (cacheFile.exists()) {
             Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified() );
-            Log.i(TAG, "new enough: " + String.valueOf(cacheFile.lastModified() > now - 600000));
+            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
         }
-        if (cacheFile.exists() && cacheFile.lastModified() > now - 600000 ) {
+        if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME ) {
             responseText = readFromCacheFile(cacheFile);
         } else {
 
