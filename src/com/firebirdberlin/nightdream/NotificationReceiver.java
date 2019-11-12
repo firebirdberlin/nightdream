@@ -67,6 +67,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
         int iconId = intent.getIntExtra("iconId", -1);
         Drawable icon = getNotificationIcon(context, packageName, iconId);
+        if (icon == null) {
+            icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
+        }
         if (action.equals("added") && icon != null) {
             AppCompatImageView image = new AppCompatImageView(context);
             int padding = Utility.dpToPx(context, 5);
