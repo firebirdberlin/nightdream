@@ -603,14 +603,14 @@ public class Utility {
     public static void logIntent(String TAG, String msg, Intent data) {
         Log.d(TAG, msg);
         if (data.getAction() != null) {
-            Log.d(TAG, String.format("%s = '%s'", "action", data.getAction()));
+            Log.d(TAG, String.format("> %s = '%s'", "action", data.getAction()));
         }
         Bundle bundle = data.getExtras();
         if (bundle != null) {
             for (String key : bundle.keySet()) {
                 Object value = bundle.get(key);
                 String strValue = (value != null) ? value.toString() : "";
-                Log.d(TAG, String.format("%s = '%s'", key, strValue));
+                Log.d(TAG, String.format("> %s = '%s'", key, strValue));
             }
         }
     }

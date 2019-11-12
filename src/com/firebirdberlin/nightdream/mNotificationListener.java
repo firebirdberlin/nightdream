@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -157,6 +158,7 @@ public class mNotificationListener extends NotificationListenerService {
             Intent i = getIntentForBroadCast(sbn);
             if (i != null) {
                 i.putExtra("action", "added");
+                // Utility.logIntent(TAG, "notification intent", i);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(i);
             }
         }
@@ -212,15 +214,18 @@ public class mNotificationListener extends NotificationListenerService {
 
 
     private int getIconId(Notification notification) {
-        Log.d(TAG, "getIconId()");
-        if (notification == null) return -1;
-        if (Build.VERSION.SDK_INT >= 19) {
-            try {
+        Log.d(TAG, "getIconId(" + notification.toString() + ")");
+        try {
+            if (Build.VERSION.SDK_INT >= 28) {
+                Icon icon = notification.getSmallIcon();
+                return icon.getResId();
+            } else
+            if (Build.VERSION.SDK_INT >= 19) {
                 return notification.extras.getInt(Notification.EXTRA_SMALL_ICON);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return -1;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
         }
         return notification.icon;
     }
@@ -256,7 +261,7 @@ public class mNotificationListener extends NotificationListenerService {
                 + "\t" + title
                 + "\t" + text
                 + "\t" + notification.tickerText
-                + "\t" + String.valueOf(notification.number)
+                + "\t" + notification.number
                 + "\t" + sbn.getPackageName()
                 + "\t" + notification.priority
                 + "\t" + group_key
