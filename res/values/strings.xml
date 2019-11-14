@@ -82,6 +82,7 @@ OR
     <string name="clear">clear</string>
     <string name="clock_hands">Hands</string>
     <string name="clock_layout_analog">analog clock</string>
+    <string name="clock_layout_calendar">calendar</string>
     <string name="clock_layout_digital">digital clock</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_digit_analog">analog clock with digits</string>
