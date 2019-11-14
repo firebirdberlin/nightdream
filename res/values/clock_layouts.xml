@@ -7,6 +7,7 @@
          <item>3</item>
          <item>4</item>
          <item>5</item>
+         <item>6</item>
      </string-array>
 
 
@@ -17,5 +18,6 @@
         <item>@string/clock_layout_modern_analog</item>
         <item>@string/clock_layout_digit_analog</item>
         <item>@string/clock_layout_digital_flip</item>
+        <item>@string/clock_layout_calendar</item>
      </string-array>
 </resources>

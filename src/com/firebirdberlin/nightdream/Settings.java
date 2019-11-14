@@ -330,6 +330,8 @@ public class Settings {
     public int getClockLayoutID(boolean preview) {
         if (preview) {
             return clockLayout;
+        } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR) {
+            return ClockLayout.LAYOUT_ID_CALENDAR;
         } else if (clockLayout == ClockLayout.LAYOUT_ID_DIGITAL_FLIP && !purchasedDonation) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
         } else if (clockLayout >= 2 && !purchasedWeatherData) {
