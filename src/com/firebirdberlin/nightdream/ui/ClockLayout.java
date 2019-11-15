@@ -152,6 +152,7 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setSecondaryColor(color);
         }
+        Utility.colorizeView(notificationLayout, color);
     }
 
     public void setTemperature(boolean on, int unit) {
