@@ -36,4 +36,19 @@
         <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
     </style>
 
+    <style name="TextAppearance.MaterialCalendarWidgetDate" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textSize">9sp</item>
+        <item name="android:textColor">#FFF</item>
+    </style>
+
+    <style name="TextAppearance.MaterialCalendarWidgetWeekDay" parent="TextAppearance.MaterialCalendarWidget.WeekDay">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#FFF</item>
+
+    </style>
+    <style name="TextAppearance.MaterialCalendarWidgetHeader" parent="TextAppearance.MaterialCalendarWidget.Header">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#FFF</item>
+
+    </style>
 </resources>

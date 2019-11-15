@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -111,10 +112,6 @@ public class ClockLayout extends LinearLayout {
 
         if (calendarView != null) {
             calendarView.setTopbarVisible(true);
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MONTH, 0);
-            calendarView.setCurrentDate(cal);
-            calendarView.setSelectedDate(cal);
             calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
             calendarView.setLeftArrowMask(null);
             calendarView.setRightArrowMask(null);
@@ -172,6 +169,7 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setSecondaryColor(color);
         }
+        Utility.colorizeView(calendarView, color, PorterDuff.Mode.MULTIPLY);
         Utility.colorizeView(notificationLayout, color);
     }
 
@@ -254,12 +252,12 @@ public class ClockLayout extends LinearLayout {
 
         final float minFontSize = 8.f; // in sp
 
+        if (clock != null && !displayInWidget) {
+            clock.setSampleText("22:55");
+        }
+
         if (layoutId == LAYOUT_ID_DIGITAL) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            if (clock != null && !displayInWidget) {
-                clock.setSampleText("22:55");
-            }
 
             if (displayInWidget) {
                 setPadding(15, 15, 15, 15);
@@ -310,7 +308,7 @@ public class ClockLayout extends LinearLayout {
                     case Configuration.ORIENTATION_LANDSCAPE:
                         if (clock != null) {
                             clock.setMaxWidth((int) (0.3f * parentWidth));
-                            clock.setMaxFontSizesInSp(minFontSize, (300.f));
+                            clock.setMaxFontSizesInSp(minFontSize, 300.f);
                         }
                         if (date != null) {
                             date.setMaxWidth(parentWidth / 2);
@@ -329,16 +327,18 @@ public class ClockLayout extends LinearLayout {
                     default:
                         if (clock != null) {
                             clock.setMaxWidth((int) (0.6f * parentWidth));
-                            clock.setMaxFontSizesInSp(minFontSize, (300.f));
+                            clock.setMaxFontSizesInSp(minFontSize, 300.f);
                         }
                         if (date != null) {
                             date.setMaxWidth((int) (0.8f * parentWidth));
-                            date.setMaxFontSizesInSp(minFontSize, (25.f));
+                            date.setMaxFontSizesInSp(minFontSize, 25.f);
                         }
                         if (weatherLayout != null) {
                             weatherLayout.setMaxWidth((int) (0.8f * parentWidth));
-                            weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
-                                    Utility.spToPx(context, 25.f));
+                            weatherLayout.setMaxFontSizesInPx(
+                                    Utility.spToPx(context, minFontSize),
+                                    Utility.spToPx(context, 25.f)
+                            );
                             weatherLayout.update();
                         }
                         break;
@@ -346,23 +346,32 @@ public class ClockLayout extends LinearLayout {
             }
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            setMinimumWidth(7 * Utility.dpToPx(context, 20));
             if (clock != null) {
                 clock.setMaxWidth((int) (0.8f * parentWidth));
                 clock.setMaxFontSizesInSp(minFontSize, 60.f);
             }
             if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
-                weatherLayout.setMaxWidth((int) (0.9 * calendarView.getWidth()));
+                weatherLayout.setMaxWidth((int) (0.8 * parentWidth));
                 weatherLayout.setMaxFontSizesInPx(
                         Utility.spToPx(context, 6.f),
                         Utility.spToPx(context, 20.f));
                 weatherLayout.update();
                 weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
             }
-            Calendar cal = calendarView.getSelectedDate().getCalendar();
+
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MONTH, 0);
+            calendarView.setCurrentDate(cal);
+            calendarView.setMinimumWidth((int) (0.9 * parentWidth));
+            calendarView.setSelectedDate(cal);
             cal.setMinimalDaysInFirstWeek(1);
             int numWeeksInMonth = cal.getActualMaximum(Calendar.WEEK_OF_MONTH);
             int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
             calendarView.getLayoutParams().height = height;
+
+            calendarView.setVisibility(displayInWidget ? GONE : VISIBLE);
+            divider.setVisibility(displayInWidget ? GONE : VISIBLE);
 
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
