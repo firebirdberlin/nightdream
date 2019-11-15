@@ -229,8 +229,13 @@ public class ClockLayoutPreviewPreference extends Preference {
         boolean purchasedWeatherData = purchased(BillingHelperActivity.ITEM_WEATHER_DATA);
         Log.i(TAG, "purchasedWeather:" + String.valueOf(purchasedWeatherData));
         int layoutID = settings.getClockLayoutID(true);
-        if (layoutID == ClockLayout.LAYOUT_ID_DIGITAL_FLIP
-                && !purchased(BillingHelperActivity.ITEM_DONATION)) {
+        if (
+                (
+                        layoutID == ClockLayout.LAYOUT_ID_DIGITAL_FLIP
+                                || layoutID == ClockLayout.LAYOUT_ID_CALENDAR
+                )
+                        && !purchased(BillingHelperActivity.ITEM_DONATION)
+        ) {
             textViewPurchaseHint.setText(getContext().getString(R.string.gift_for_donors));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
         }
