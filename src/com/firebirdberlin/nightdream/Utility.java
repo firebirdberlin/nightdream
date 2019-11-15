@@ -13,7 +13,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.MediaMetadataRetriever;
@@ -283,6 +286,20 @@ public class Utility {
             r = (int) Math.floor(value);
         }
         return r;
+    }
+
+    public static void colorizeView(View view, int color) {
+        colorizeView(view, color, PorterDuff.Mode.SRC_ATOP);
+    }
+
+    public static void colorizeView(View view, int color, PorterDuff.Mode mode) {
+        if (view == null) {
+           return;
+        }
+        final Paint colorPaint = new Paint();
+        PorterDuffColorFilter filter = new PorterDuffColorFilter(color, mode);
+        colorPaint.setColorFilter(filter);
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, colorPaint);
     }
 
     public static int getHeightOfView(View contentview) {

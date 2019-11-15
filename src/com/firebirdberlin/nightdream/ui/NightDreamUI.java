@@ -550,6 +550,7 @@ public class NightDreamUI {
             brightnessProgress.setProgressBackgroundTintList(
                     ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
         }
+        Utility.colorizeView(notificationStatusBar, textColor);
     }
 
     private void updateRadioIconColor() {
