@@ -72,7 +72,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="buy_upgrade_summary">Jetzt auf die Pro-Version upgraden!</string>
     <string name="buy_upgrade_title">Pro-Version</string>
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
-    <string name="category_handle_power">... und wenn verbunden mit</string>
+    <string name="category_handle_power">… und wenn verbunden mit</string>
     <string name="category_night_mode_display_management">Display Management</string>
     <string name="choose_alarm_sound">Weckton</string>
     <string name="choose_primary_color">Akzentfarbe</string>
@@ -81,6 +81,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_hands">Zeiger</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_analog">Analoguhr</string>
+    <string name="clock_layout_calendar">Digitaluhr mit Kalender</string>
     <string name="clock_layout_digital">Digitaluhr</string>
     <string name="clock_layout_digital_flip">Retro Flip-Clock</string>
     <string name="clock_layout_elegant_analog">elegante Analoguhr</string>

@@ -62,11 +62,11 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         });
 
         SeekBar glowRadius = child.findViewById(R.id.glowRadius);
-        glowRadius.setProgress(settings.glowRadius);
+        glowRadius.setProgress(settings.getGlowRadius(ClockLayout.LAYOUT_ID_DIGITAL));
         glowRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                settings.glowRadius = progress;
+                //settings.glowRadius = progress;
             }
 
             @Override
@@ -75,7 +75,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                settings.setGlowRadius(progress);
+                settings.setGlowRadius(progress, ClockLayout.LAYOUT_ID_DIGITAL);
                 if (mListener != null) {
                     mListener.onConfigChanged();
                 }
@@ -83,7 +83,9 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         });
         TextView fontButton = child.findViewById(R.id.typeface_preference);
         String fontButtonText = fontButton.getText().toString();
-        fontButtonText = String.format("%s: %s", fontButtonText, settings.fontName);
+        fontButtonText = String.format(
+                "%s: %s", fontButtonText, settings.getFontName(ClockLayout.LAYOUT_ID_DIGITAL)
+        );
         fontButton.setText(fontButtonText);
         fontButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -95,14 +97,14 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 FragmentManager fm = activity.getSupportFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
-                dialog.setSelectedUri(settings.fontUri);
+                dialog.setSelectedUri(settings.getFontUri(ClockLayout.LAYOUT_ID_DIGITAL));
                 dialog.setDefaultFonts("roboto_regular.ttf", "roboto_light.ttf",
                         "roboto_thin.ttf", "7_segment_digital.ttf",
                         "dancingscript_regular.ttf");
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {
-                        settings.setFontUri(uri.toString(), name);
+                        settings.setFontUri(uri.toString(), name, ClockLayout.LAYOUT_ID_DIGITAL);
                         if (mListener != null) {
                             mListener.onConfigChanged();
                         }

@@ -112,7 +112,8 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setTypeface(settings.typeface);
         int color = previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight;
-        clockLayout.setPrimaryColor(color, settings.glowRadius, color);
+        int glowRadius = settings.getGlowRadius(clockLayoutId);
+        clockLayout.setPrimaryColor(color, glowRadius, color);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
@@ -247,7 +248,7 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private void setupPurchaseHint(Settings settings) {
         boolean purchasedWeatherData = purchased(BillingHelperActivity.ITEM_WEATHER_DATA);
-        Log.i(TAG, "purchasedWeather:" + String.valueOf(purchasedWeatherData));
+        Log.i(TAG, "purchasedWeather:" + purchasedWeatherData);
         int layoutID = settings.getClockLayoutID(true);
         if (
                 (
