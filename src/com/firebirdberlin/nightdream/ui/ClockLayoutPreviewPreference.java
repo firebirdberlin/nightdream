@@ -164,6 +164,26 @@ public class ClockLayoutPreviewPreference extends Preference {
             );
             LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             preferencesContainer.addView(prefs, lp);
+        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_CALENDAR) {
+            CustomCalendarClockPreferencesLayout prefs =
+                    new CustomCalendarClockPreferencesLayout(context, settings, getActivity());
+            prefs.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+            prefs.setOnConfigChangedListener(
+                    new CustomCalendarClockPreferencesLayout.OnConfigChangedListener() {
+                        @Override
+                        public void onConfigChanged() {
+                            updateView();
+                        }
+
+                        @Override
+                        public void onPurchaseRequested() {
+                            ((PreferencesActivity) context).showPurchaseDialog();
+                        }
+                    }
+            );
+            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            preferencesContainer.addView(prefs, lp);
+
         } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG2 ||
                 clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG3 ||
                 clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
@@ -276,6 +296,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                 layoutID != ClockLayout.LAYOUT_ID_ANALOG
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_FLIP
+                        && layoutID != ClockLayout.LAYOUT_ID_CALENDAR
         );
     }
 

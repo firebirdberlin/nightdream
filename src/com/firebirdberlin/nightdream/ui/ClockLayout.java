@@ -371,7 +371,7 @@ public class ClockLayout extends LinearLayout {
             calendarView.getLayoutParams().height = height;
 
             calendarView.setVisibility(displayInWidget ? GONE : VISIBLE);
-            divider.setVisibility(displayInWidget ? GONE : VISIBLE);
+           // divider.setVisibility(displayInWidget ? GONE : VISIBLE);
 
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

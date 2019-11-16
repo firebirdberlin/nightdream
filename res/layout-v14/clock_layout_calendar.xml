@@ -4,32 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:scaleX="0.95"
-        android:scaleY="0.95"
-        app:mcv_allowClickDaysOutsideCurrentMonth="false"
-        app:mcv_dateTextAppearance="@style/TextAppearance.MaterialCalendarWidgetDate"
-        app:mcv_headerTextAppearance="@style/TextAppearance.MaterialCalendarWidgetHeader"
-        app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidgetWeekDay"
-        app:mcv_calendarMode="month"
-        app:mcv_showOtherDates="defaults"
-        app:mcv_tileHeight="16sp"
-        />
-    <!--
-        divider
-    -->
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:background="#C2C2C2" />
     <!--
             time
     -->
@@ -77,6 +51,54 @@
             custom:format12Hr="a"
             custom:format24Hr="" />
     </LinearLayout>
+
+
+    <!--
+        divider
+    -->
+<!--
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="#C2C2C2" />
+-->
+
+<!--
+    calendar
+-->
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/calendarView"
+        android:background="@drawable/outline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:scaleX="0.95"
+        android:scaleY="0.95"
+        app:mcv_allowClickDaysOutsideCurrentMonth="false"
+        app:mcv_dateTextAppearance="@style/TextAppearance.MaterialCalendarWidgetDate"
+        app:mcv_headerTextAppearance="@style/TextAppearance.MaterialCalendarWidgetHeader"
+        app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidgetWeekDay"
+        app:mcv_calendarMode="month"
+        app:mcv_showOtherDates="defaults"
+        app:mcv_tileHeight="16sp"
+        />
+
+    <!--
+        divider
+    -->
+<!--
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="#C2C2C2" />
+-->
 
     <com.firebirdberlin.nightdream.ui.WeatherLayout
         android:id="@+id/weatherLayout"
