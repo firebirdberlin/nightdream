@@ -36,9 +36,18 @@ public class NotificationReceiver extends BroadcastReceiver {
         this.color = color;
     }
 
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent == null) return;
+        try {
+            handleOnReceive(context, intent);
+        } catch (NullPointerException e) {
+
+        }
+    }
+
+    private void handleOnReceive(Context context, Intent intent) {
+        if (intent == null || context == null) return;
         if (Utility.isDebuggable(context)){
             Log.d(TAG, "Broadcast received.");
             dumpIntent(intent);
@@ -46,18 +55,17 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         FlexboxLayout notificationBar = contentView.findViewById(R.id.notificationbar);
         FlexboxLayout notificationStatusBar = contentView.findViewById(R.id.notificationstatusbar);
-        FlexboxLayout container = (Settings.useNotificationStatusBar(context)) ?
-                notificationStatusBar : notificationBar;
+        FlexboxLayout container =
+                (Settings.useNotificationStatusBar(context)) ? notificationStatusBar : notificationBar;
         if (container == null) {
             return;
         }
 
         String action = intent.getStringExtra("action");
-        action = (action == null) ? "" : action;
 
-        if (action.equals("clear")) {
-            notificationBar.removeAllViews();
-            notificationStatusBar.removeAllViews();
+        if ("clear".equals(action)) {
+            removeViewsFrom(notificationBar);
+            removeViewsFrom(notificationStatusBar);
             return;
         }
 
@@ -70,7 +78,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (icon == null) {
             icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
         }
-        if (action.equals("added") && icon != null) {
+        if ("added".equals(action) && icon != null) {
             AppCompatImageView image = new AppCompatImageView(context);
             int padding = Utility.dpToPx(context, 5);
             image.setPadding(padding, 0, 0, 0);
@@ -91,6 +99,10 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
     }
 
+    private void removeViewsFrom(FlexboxLayout layout) {
+        if (layout != null) layout.removeAllViews();
+    }
+
     private Drawable getNotificationIcon(Context context, String packageName, int id) {
         Log.d(TAG, "getNotificationIcon for id = " + id);
         if (packageName == null || id == -1) {
@@ -99,9 +111,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         try {
             Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
             return ContextCompat.getDrawable(remotePackageContext, id);
-        } catch (NameNotFoundException e) {
-            return null;
-        } catch (Resources.NotFoundException e) {
+        } catch (NullPointerException | NameNotFoundException | Resources.NotFoundException e) {
             return null;
         }
     }
