@@ -2,7 +2,7 @@
     <item android:gravity="top">
         <shape android:shape="rectangle">
             <size android:height="1dp"/>
-            <solid android:color="#FFFFFF"/>
+            <solid android:color="#C2C2C2" />
         </shape>
     </item>
     <item android:gravity="bottom">
