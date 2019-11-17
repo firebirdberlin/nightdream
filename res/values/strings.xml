@@ -110,9 +110,12 @@ OR
     <string name="digit_emphasize_quarters">Emphasize quarters</string>
     <string name="decoration">Decoration</string>
     <string name="decoration_glow_effect">Glow effect</string>
+    <string name="decoration_style_copper">Copper</string>
+    <string name="decoration_style_gold">Gold</string>
     <string name="decoration_style_none">None</string>
     <string name="decoration_style_minute_hand">Minute hand</string>
     <string name="decoration_style_labels">Numbers</string>
+    <string name="decoration_style_rust">Rust</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
