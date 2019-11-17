@@ -319,12 +319,11 @@ public class Settings {
     }
 
     public int getClockLayoutID(boolean preview) {
+        purchasedWeatherData = true;
         if (preview) {
             return clockLayout;
-        } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR) {
+        } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
             return ClockLayout.LAYOUT_ID_CALENDAR;
-        } else if (clockLayout == ClockLayout.LAYOUT_ID_DIGITAL_FLIP && !purchasedDonation) {
-            return ClockLayout.LAYOUT_ID_DIGITAL;
         } else if (clockLayout >= 2 && !purchasedWeatherData) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
         }
