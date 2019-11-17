@@ -360,18 +360,25 @@ public class ClockLayout extends LinearLayout {
                 weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
             }
 
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MONTH, 0);
-            calendarView.setCurrentDate(cal);
+            Calendar now = Calendar.getInstance();
+            try {
+                Calendar selected = calendarView.getCurrentDate().getCalendar();
+                if (
+                        selected == null
+                                || selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)
+                ) {
+                    calendarView.setCurrentDate(now);
+                    calendarView.setSelectedDate(now);
+                }
+            } catch (NullPointerException ignored) {}
+
             calendarView.setMinimumWidth((int) (0.9 * parentWidth));
-            calendarView.setSelectedDate(cal);
-            cal.setMinimalDaysInFirstWeek(1);
-            int numWeeksInMonth = cal.getActualMaximum(Calendar.WEEK_OF_MONTH);
+            now.setMinimalDaysInFirstWeek(1);
+            int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
             int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
             calendarView.getLayoutParams().height = height;
 
             calendarView.setVisibility(displayInWidget ? GONE : VISIBLE);
-           // divider.setVisibility(displayInWidget ? GONE : VISIBLE);
 
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

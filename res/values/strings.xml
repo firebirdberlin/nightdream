@@ -82,11 +82,11 @@ OR
     <string name="clear">clear</string>
     <string name="clock_hands">Hands</string>
     <string name="clock_layout_analog">analog clock</string>
-    <string name="clock_layout_calendar">calendar</string>
+    <string name="clock_layout_calendar">digital clock with calendar</string>
     <string name="clock_layout_digital">digital clock</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_digit_analog">analog clock with digits</string>
-    <string name="clock_layout_digital_flip">flip digit clock</string>
+    <string name="clock_layout_digital_flip">digital flip clock</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_modern_analog">modern analog clock</string>
     <string name="clock_layout_mirror_text">Mirror text</string>

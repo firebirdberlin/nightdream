@@ -250,20 +250,16 @@ public class ClockLayoutPreviewPreference extends Preference {
         boolean purchasedWeatherData = purchased(BillingHelperActivity.ITEM_WEATHER_DATA);
         Log.i(TAG, "purchasedWeather:" + purchasedWeatherData);
         int layoutID = settings.getClockLayoutID(true);
-        if (
-                (
-                        layoutID == ClockLayout.LAYOUT_ID_DIGITAL_FLIP
-                                || layoutID == ClockLayout.LAYOUT_ID_CALENDAR
-                )
-                        && !purchased(BillingHelperActivity.ITEM_DONATION)
-        ) {
+        if (layoutID == ClockLayout.LAYOUT_ID_CALENDAR
+                        && !purchased(BillingHelperActivity.ITEM_DONATION)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.gift_for_donors));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
-        }
-        else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
+
+        } else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
                 && !purchased(BillingHelperActivity.ITEM_WEATHER_DATA)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.product_name_weather));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
+
         } else {
             textViewPurchaseHint.setVisibility(View.GONE);
         }
@@ -272,8 +268,10 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private boolean purchased(String sku) {
         PreferencesActivity preferencesActivity = (PreferencesActivity) getActivity();
-
-        return preferencesActivity.isPurchased(sku);
+        if (preferencesActivity != null) {
+            return preferencesActivity.isPurchased(sku);
+        }
+        return false;
     }
 
     private AppCompatActivity getActivity() {

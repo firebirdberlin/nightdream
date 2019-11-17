@@ -260,6 +260,16 @@ vi - Phong Nguyen"/>
                 android:data="https://github.com/xenione/tab-digit"
                 />
         </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_material_calendar_view"
+            app:summary="by Prolific Interactive"
+            app:title="Material Calendar View">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/prolificinteractive/material-calendarview"
+                />
+        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>
