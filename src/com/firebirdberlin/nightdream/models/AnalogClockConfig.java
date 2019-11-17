@@ -284,7 +284,7 @@ public class AnalogClockConfig {
         }
     }
     public enum Decoration {
-        NONE(0), MINUTE_HAND(1), LABELS(2);
+        NONE(0), MINUTE_HAND(1), LABELS(2), GOLD(3), COPPER(4), RUST(5);
 
         private final int value;
 

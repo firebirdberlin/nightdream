@@ -270,6 +270,38 @@ vi - Phong Nguyen"/>
                 android:data="https://github.com/prolificinteractive/material-calendarview"
                 />
         </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_texture_gold"
+            app:summary="Background photo created by rawpixel.com - www.freepik.com"
+            app:title="Gold texture">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.freepik.com/free-photos-vectors/background"
+                />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_texture_copper"
+            app:summary="Brett Jordan"
+            app:title="Copper texture">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flickr.com/photos/x1brett/4733377305/in/photostream/"
+                />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_texture_copper"
+            app:summary="SojanJanso"
+            app:title="Rust texture">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.needpix.com/photo/767841/seamless-tileable-texture-rust-rusty-old-fridge-rusted-oxidation-dilapidation"
+                />
+        </Preference>
+
+
     </PreferenceCategory>
 
 </PreferenceScreen>
