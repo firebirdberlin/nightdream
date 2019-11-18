@@ -11,12 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:ellipsize="marquee"
         android:fadingEdge="horizontal"
-        android:paddingBottom="10dp"
+        android:paddingBottom="5dp"
         android:paddingTop="10dp"
         android:singleLine="true"
         android:text="@string/typeface"
@@ -27,9 +26,28 @@
         tools:targetApi="ice_cream_sandwich" />
 
     <TextView
-        android:id="@+id/textViewHandLength"
+        android:id="@+id/decoration_preference"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:focusable="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:text="@string/decoration"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="16sp"
+        tools:targetApi="ice_cream_sandwich" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="@string/decoration_glow_effect"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?android:attr/textColorPrimary"

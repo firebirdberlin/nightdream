@@ -538,8 +538,10 @@ public class NightDreamUI {
         ((NightDreamActivity) mContext).setupFlashlight();
 
         bottomPanelLayout.setCustomColor(accentColor, textColor);
-        int glowRadius = settings.getGlowRadius(settings.getClockLayoutID(false));
-        clockLayout.setPrimaryColor(accentColor, glowRadius, accentColor);
+        int clockLayoutId = settings.getClockLayoutID(false);
+        int glowRadius = settings.getGlowRadius(clockLayoutId);
+        int textureId = settings.getTextureResId(clockLayoutId);
+        clockLayout.setPrimaryColor(accentColor, glowRadius, accentColor, textureId);
         clockLayout.setSecondaryColor(textColor);
 
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();

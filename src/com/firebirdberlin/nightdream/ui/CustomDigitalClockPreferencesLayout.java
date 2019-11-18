@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -46,7 +48,6 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child = inflater.inflate(R.layout.custom_digital_clock_preferences_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-//        child.setBackgroundResource(R.drawable.border);
         addView(child, lp);
 
         Switch switchShowDivider = child.findViewById(R.id.switch_show_divider);
@@ -66,7 +67,6 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         glowRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                //settings.glowRadius = progress;
             }
 
             @Override
@@ -120,6 +120,34 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 dialog.show(fm, "custom fonts");
             }
         });
+
+        final TextView decorationStylePreference = child.findViewById(R.id.decoration_preference);
+
+        String[] textures = context.getResources().getStringArray(R.array.textures);
+        String title = context.getString(R.string.decoration);
+        decorationStylePreference.setText(
+                String.format("%s: %s",
+                        title,
+                        textures[settings.getTextureId(ClockLayout.LAYOUT_ID_DIGITAL)]
+                )
+        );
+        decorationStylePreference.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.decoration)
+                        .setItems(R.array.textures, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                settings.setTextureId(which, ClockLayout.LAYOUT_ID_DIGITAL);
+                                if (mListener != null) {
+                                    mListener.onConfigChanged();
+                                }
+                            }
+                        });
+                builder.show();
+            }
+        });
+
     }
 
     public void setIsPurchased(boolean isPurchased) {
