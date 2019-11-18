@@ -68,12 +68,13 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         Settings settings = new Settings(context);
         int clockLayoutId = settings.getClockLayoutID(false);
         int glowRadius = settings.getGlowRadius(clockLayoutId);
+        int textureId = settings.getTextureResId(clockLayoutId);
 
 
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(clockLayoutId);
         clockLayout.setTypeface(settings.typeface);
-        clockLayout.setPrimaryColor(settings.clockColor, glowRadius, settings.clockColor);
+        clockLayout.setPrimaryColor(settings.clockColor, glowRadius, settings.clockColor, textureId);
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());

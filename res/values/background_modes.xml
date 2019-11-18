@@ -21,6 +21,12 @@
         <item>@string/decoration_style_copper</item>
         <item>@string/decoration_style_rust</item>
     </string-array>
+    <string-array name="textures">
+        <item>@string/decoration_style_none</item>
+        <item>@string/decoration_style_gold</item>
+        <item>@string/decoration_style_copper</item>
+        <item>@string/decoration_style_rust</item>
+    </string-array>
     <string-array name="handShapes">
         <item>@string/hand_shape_bar</item>
         <item>@string/hand_shape_triangle</item>

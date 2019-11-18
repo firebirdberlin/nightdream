@@ -306,6 +306,33 @@ public class Settings {
         prefEditor.apply();
     }
 
+    public void setTextureId(int textureId, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("textureId", clockLayoutId);
+        prefEditor.putInt(key, textureId);
+        prefEditor.apply();
+    }
+
+    public int getTextureId(int clockLayoutId) {
+        String key = getKeyForClockLayout("textureId", clockLayoutId);
+        return settings.getInt(key, 0);
+    }
+
+    public int getTextureResId(int clockLayoutId) {
+        int textureId = getTextureId(clockLayoutId);
+        switch (textureId) {
+            case 0:
+            default:
+                return -1;
+            case 1:
+                return R.drawable.gold;
+            case 2:
+                return R.drawable.copper;
+            case 3:
+                return R.drawable.rust;
+        }
+    }
+
     public void setGlowRadius(int radius, int clockLayoutId) {
         SharedPreferences.Editor prefEditor = settings.edit();
         String key = getKeyForClockLayout("glowRadius", clockLayoutId);

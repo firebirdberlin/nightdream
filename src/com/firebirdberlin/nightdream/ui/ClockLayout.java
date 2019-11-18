@@ -2,8 +2,12 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -13,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
@@ -129,14 +134,20 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    public void setPrimaryColor(int color, int glowRadius, int glowColor) {
+    public void setPrimaryColor(int color, int glowRadius, int glowColor, int textureId) {
         if (clock != null) {
             clock.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock.setTextColor(color);
+            if (textureId > 0) {
+                applyTexture(clock, textureId);
+            }
         }
         if ( clock_ampm != null ) {
-            clock.setShadowLayer(glowRadius, 0, 0, glowColor);
+            clock_ampm.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock_ampm.setTextColor(color);
+            if (textureId > 0) {
+                applyTexture(clock_ampm, textureId);
+            }
         }
         if (analog_clock != null) {
             analog_clock.setPrimaryColor(color);
@@ -149,6 +160,16 @@ public class ClockLayout extends LinearLayout {
         if (calendarView != null) {
             calendarView.setSelectionColor(color);
         }
+    }
+
+    void applyTexture(TextView view, int resId) {
+        if (view == null) {
+            return;
+        }
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
+        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        view.getPaint().setShader(shader);
+        view.setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     public void setSecondaryColor(int color) {
