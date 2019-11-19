@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--
+            time
+    -->
+    <LinearLayout
+        android:id="@+id/time_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:padding="0px">
+
+        <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:ellipsize="middle"
+            android:focusable="true"
+            android:padding="0px"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="#C2C2C2"
+            android:textSize="20sp"
+            android:translationX="0sp"
+            android:translationY="0sp"
+            custom:fontPath="fonts/roboto_thin.ttf"
+            custom:format12Hr="h:mm"
+            custom:format24Hr="HH:mm"
+            />
+
+        <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/clock_ampm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:clickable="true"
+            android:ellipsize="none"
+            android:focusable="true"
+            android:padding="0px"
+            android:singleLine="true"
+            android:textColor="#C2C2C2"
+            android:textSize="20sp"
+            custom:fontPath="fonts/roboto_thin.ttf"
+            custom:format12Hr="a"
+            custom:format24Hr="" />
+    </LinearLayout>
+
+
+    <!--
+        divider
+    -->
+<!--
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="#C2C2C2" />
+-->
+
+<!--
+    calendar
+-->
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/calendarView"
+        android:background="@drawable/outline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:scaleX="0.95"
+        android:scaleY="0.95"
+        app:mcv_allowClickDaysOutsideCurrentMonth="false"
+        app:mcv_dateTextAppearance="@style/TextAppearance.MaterialCalendarWidgetDate"
+        app:mcv_headerTextAppearance="@style/TextAppearance.MaterialCalendarWidgetHeader"
+        app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidgetWeekDay"
+        app:mcv_calendarMode="month"
+        app:mcv_showOtherDates="defaults"
+        app:mcv_tileHeight="16sp"
+        />
+
+    <!--
+        divider
+    -->
+<!--
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:background="#C2C2C2" />
+-->
+
+    <com.firebirdberlin.nightdream.ui.WeatherLayout
+        android:id="@+id/weatherLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <!--
+        Notifications
+    -->
+    <include
+        layout="@layout/notification_bar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>

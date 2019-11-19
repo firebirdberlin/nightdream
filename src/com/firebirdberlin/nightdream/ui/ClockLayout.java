@@ -2,7 +2,12 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -12,10 +17,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
-import com.firebirdberlin.nightdream.NotificationReceiver;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -23,6 +28,9 @@ import com.firebirdberlin.nightdream.mNotificationListener;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+
+import java.util.Calendar;
 
 public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_DIGITAL = 0;
@@ -31,11 +39,13 @@ public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_ANALOG3 = 3;
     public static final int LAYOUT_ID_ANALOG4 = 4;
     public static final int LAYOUT_ID_DIGITAL_FLIP = 5;
+    public static final int LAYOUT_ID_CALENDAR = 6;
     private static final String TAG = "NightDream.ClockLayout";
     private int layoutId = LAYOUT_ID_DIGITAL;
 
     private Context context;
     private AutoAdjustTextView clock = null;
+    private MaterialCalendarView calendarView = null;
     private AutoAdjustTextView clock_ampm = null;
     private CustomAnalogClock analog_clock = null;
     private AutoAdjustTextView date = null;
@@ -66,11 +76,11 @@ public class ClockLayout extends LinearLayout {
         View child;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
-        } else
-        if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
+        } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
-        } else
-        if (layoutId == LAYOUT_ID_ANALOG ){
+        } else if (layoutId == LAYOUT_ID_CALENDAR) {
+            child = inflater.inflate(R.layout.clock_layout_calendar, null);
+        } else if (layoutId == LAYOUT_ID_ANALOG ){
             child = inflater.inflate(R.layout.analog_clock_layout, null);
         } else {
             child = inflater.inflate(R.layout.analog_clock_layout_4, null);
@@ -96,6 +106,7 @@ public class ClockLayout extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         Log.v(TAG, "onFinishInflate");
+        calendarView = findViewById(R.id.calendarView);
         clock = findViewById(R.id.clock);
         clock_ampm = findViewById(R.id.clock_ampm);
         date = findViewById(R.id.date);
@@ -103,6 +114,14 @@ public class ClockLayout extends LinearLayout {
         divider = findViewById(R.id.divider);
         analog_clock = findViewById(R.id.analog_clock);
         notificationLayout = findViewById(R.id.notificationbar);
+
+        if (calendarView != null) {
+            calendarView.setTopbarVisible(true);
+            calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
+            calendarView.setLeftArrowMask(null);
+            calendarView.setRightArrowMask(null);
+            calendarView.setDynamicHeightEnabled(true);
+        }
     }
 
     public void setTypeface(Typeface typeface) {
@@ -115,14 +134,20 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    public void setPrimaryColor(int color, int glowRadius, int glowColor) {
+    public void setPrimaryColor(int color, int glowRadius, int glowColor, int textureId) {
         if (clock != null) {
             clock.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock.setTextColor(color);
+            if (textureId > 0) {
+                applyTexture(clock, textureId);
+            }
         }
         if ( clock_ampm != null ) {
-            clock.setShadowLayer(glowRadius, 0, 0, glowColor);
+            clock_ampm.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock_ampm.setTextColor(color);
+            if (textureId > 0) {
+                applyTexture(clock_ampm, textureId);
+            }
         }
         if (analog_clock != null) {
             analog_clock.setPrimaryColor(color);
@@ -132,6 +157,19 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setPrimaryColor(color);
         }
+        if (calendarView != null) {
+            calendarView.setSelectionColor(color);
+        }
+    }
+
+    void applyTexture(TextView view, int resId) {
+        if (view == null) {
+            return;
+        }
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
+        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        view.getPaint().setShader(shader);
+        view.setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     public void setSecondaryColor(int color) {
@@ -152,6 +190,7 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setSecondaryColor(color);
         }
+        Utility.colorizeView(calendarView, color, PorterDuff.Mode.MULTIPLY);
         Utility.colorizeView(notificationLayout, color);
     }
 
@@ -173,7 +212,9 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void showDate(boolean on) {
-        date.setVisibility( (on) ? View.VISIBLE : View.GONE);
+        if (date != null) {
+            date.setVisibility((on) ? View.VISIBLE : View.GONE);
+        }
         toggleDivider();
     }
 
@@ -194,9 +235,8 @@ public class ClockLayout extends LinearLayout {
         }
 
         boolean shallHide = (
-                date.getVisibility() != VISIBLE
+                date != null && date.getVisibility() != VISIBLE
                 && weatherLayout.getVisibility() != VISIBLE
-//                && notificationLayout.getVisibility() != VISIBLE
         );
         if (shallHide) {
             if (showDivider) {
@@ -233,12 +273,12 @@ public class ClockLayout extends LinearLayout {
 
         final float minFontSize = 8.f; // in sp
 
+        if (clock != null && !displayInWidget) {
+            clock.setSampleText("22:55");
+        }
+
         if (layoutId == LAYOUT_ID_DIGITAL) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            if (clock != null && !displayInWidget) {
-                clock.setSampleText("22:55");
-            }
 
             if (displayInWidget) {
                 setPadding(15, 15, 15, 15);
@@ -289,7 +329,7 @@ public class ClockLayout extends LinearLayout {
                     case Configuration.ORIENTATION_LANDSCAPE:
                         if (clock != null) {
                             clock.setMaxWidth((int) (0.3f * parentWidth));
-                            clock.setMaxFontSizesInSp(minFontSize, (300.f));
+                            clock.setMaxFontSizesInSp(minFontSize, 300.f);
                         }
                         if (date != null) {
                             date.setMaxWidth(parentWidth / 2);
@@ -308,21 +348,59 @@ public class ClockLayout extends LinearLayout {
                     default:
                         if (clock != null) {
                             clock.setMaxWidth((int) (0.6f * parentWidth));
-                            clock.setMaxFontSizesInSp(minFontSize, (300.f));
+                            clock.setMaxFontSizesInSp(minFontSize, 300.f);
                         }
                         if (date != null) {
                             date.setMaxWidth((int) (0.8f * parentWidth));
-                            date.setMaxFontSizesInSp(minFontSize, (25.f));
+                            date.setMaxFontSizesInSp(minFontSize, 25.f);
                         }
                         if (weatherLayout != null) {
                             weatherLayout.setMaxWidth((int) (0.8f * parentWidth));
-                            weatherLayout.setMaxFontSizesInPx(Utility.spToPx(context, minFontSize),
-                                    Utility.spToPx(context, 25.f));
+                            weatherLayout.setMaxFontSizesInPx(
+                                    Utility.spToPx(context, minFontSize),
+                                    Utility.spToPx(context, 25.f)
+                            );
                             weatherLayout.update();
                         }
                         break;
                 }
             }
+        } else if (layoutId == LAYOUT_ID_CALENDAR) {
+            setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            setMinimumWidth(7 * Utility.dpToPx(context, 20));
+            if (clock != null) {
+                clock.setMaxWidth((int) (0.8f * parentWidth));
+                clock.setMaxFontSizesInSp(minFontSize, 60.f);
+            }
+            if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
+                weatherLayout.setMaxWidth((int) (0.8 * parentWidth));
+                weatherLayout.setMaxFontSizesInPx(
+                        Utility.spToPx(context, 6.f),
+                        Utility.spToPx(context, 20.f));
+                weatherLayout.update();
+                weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
+            }
+
+            Calendar now = Calendar.getInstance();
+            try {
+                Calendar selected = calendarView.getCurrentDate().getCalendar();
+                if (
+                        selected == null
+                                || selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)
+                ) {
+                    calendarView.setCurrentDate(now);
+                    calendarView.setSelectedDate(now);
+                }
+            } catch (NullPointerException ignored) {}
+
+            calendarView.setMinimumWidth((int) (0.9 * parentWidth));
+            now.setMinimalDaysInFirstWeek(1);
+            int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
+            int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
+            calendarView.getLayoutParams().height = height;
+
+            calendarView.setVisibility(displayInWidget ? GONE : VISIBLE);
+
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
@@ -492,6 +570,7 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void setDateFormat(String formatString) {
+        if (date == null) return;
         CustomDigitalClock tdate = (CustomDigitalClock) date;
         tdate.setFormat12Hour(formatString);
         tdate.setFormat24Hour(formatString);

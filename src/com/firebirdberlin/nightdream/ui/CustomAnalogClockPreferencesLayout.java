@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -61,11 +60,11 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
 
         View toggleNext = child.findViewById(R.id.toggle_preference_next);
         View togglePrev = child.findViewById(R.id.toggle_preference_prev);
-        final TextView toggleText = (TextView) child.findViewById(R.id.toggle_preference);
-        final LinearLayout labelsLayout = (LinearLayout) child.findViewById(R.id.labels_preference_layout);
-        final LinearLayout handsLayout = (LinearLayout) child.findViewById(R.id.hands_preference_layout);
-        final LinearLayout ticksLayout = (LinearLayout) child.findViewById(R.id.ticks_preference_layout);
-        final LinearLayout decorationLayout = (LinearLayout) child.findViewById(R.id.decoration_preference_layout);
+        final TextView toggleText = child.findViewById(R.id.toggle_preference);
+        final LinearLayout labelsLayout = child.findViewById(R.id.labels_preference_layout);
+        final LinearLayout handsLayout = child.findViewById(R.id.hands_preference_layout);
+        final LinearLayout ticksLayout = child.findViewById(R.id.ticks_preference_layout);
+        final LinearLayout decorationLayout = child.findViewById(R.id.decoration_preference_layout);
 
         final LinearLayout[] layouts = {labelsLayout, handsLayout, ticksLayout, decorationLayout};
 
@@ -152,7 +151,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        SeekBar digitPositionSeekBar = (SeekBar) child.findViewById(R.id.digit_position_preference);
+        SeekBar digitPositionSeekBar = child.findViewById(R.id.digit_position_preference);
         digitPositionSeekBar.setProgress((int) (config.digitPosition * 100));
         digitPositionSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -173,7 +172,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        SeekBar digitSizeSeekBar = (SeekBar) child.findViewById(R.id.digit_size_preference);
+        SeekBar digitSizeSeekBar = child.findViewById(R.id.digit_size_preference);
         digitSizeSeekBar.setProgress((int) (config.fontSize * 100 - 5));
         digitSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -194,7 +193,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        Switch emphasizeQuarters = (Switch) child.findViewById(R.id.switch_emphasize_quarters);
+        Switch emphasizeQuarters = child.findViewById(R.id.switch_emphasize_quarters);
         emphasizeQuarters.setChecked(config.highlightQuarterOfHour);
         emphasizeQuarters.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -206,10 +205,10 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
     }
 
     private void setupLayoutForHands(View child, final AnalogClockConfig config) {
-        final TextView info = (TextView) child.findViewById(R.id.info_text_hands);
+        final TextView info = child.findViewById(R.id.info_text_hands);
         info.setVisibility(INVISIBLE);
 
-        final TextView handShapePreference = (TextView) child.findViewById(R.id.hand_shape_preference);
+        final TextView handShapePreference = child.findViewById(R.id.hand_shape_preference);
         setChoice(handShapePreference, R.array.handShapes, config.handShape.getValue());
         handShapePreference.setOnClickListener(new OnClickListener() {
             @Override
@@ -227,7 +226,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        SeekBar hourHandLength = (SeekBar) child.findViewById(R.id.hour_hand_length);
+        SeekBar hourHandLength = child.findViewById(R.id.hour_hand_length);
         hourHandLength.setProgress((int) (config.handLengthHours * 100));
         hourHandLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -247,7 +246,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 info.setVisibility(INVISIBLE);
             }
         });
-        SeekBar minuteHandLength = (SeekBar) child.findViewById(R.id.minute_hand_length);
+        SeekBar minuteHandLength = child.findViewById(R.id.minute_hand_length);
         minuteHandLength.setProgress((int) (config.handLengthMinutes * 100));
         minuteHandLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -268,7 +267,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        SeekBar hourHandWidth = (SeekBar) child.findViewById(R.id.hour_hand_width);
+        SeekBar hourHandWidth = child.findViewById(R.id.hour_hand_width);
         hourHandWidth.setProgress((int) (config.handWidthHours * 100));
         hourHandWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -288,7 +287,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 info.setVisibility(INVISIBLE);
             }
         });
-        SeekBar minuteHandWidth = (SeekBar) child.findViewById(R.id.minute_hand_width);
+        SeekBar minuteHandWidth = child.findViewById(R.id.minute_hand_width);
         minuteHandWidth.setProgress((int) (config.handWidthMinutes * 100));
         minuteHandWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -313,10 +312,10 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
 
     private void setupLayoutForTicks(View child, final AnalogClockConfig config) {
 
-        final TextView info = (TextView) child.findViewById(R.id.info_text_ticks);
+        final TextView info = child.findViewById(R.id.info_text_ticks);
         info.setVisibility(INVISIBLE);
 
-        final TextView tickStyleHoursPreference = (TextView) child.findViewById(R.id.tick_style_hours_preference);
+        final TextView tickStyleHoursPreference = child.findViewById(R.id.tick_style_hours_preference);
         setChoice(tickStyleHoursPreference, R.array.tickStyles, config.tickStyleHours.getValue());
         tickStyleHoursPreference.setOnClickListener(new OnClickListener() {
             @Override
@@ -333,7 +332,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 builder.show();
             }
         });
-        final TextView tickStyleMinutesPreference = (TextView) child.findViewById(R.id.tick_style_minutes_preference);
+        final TextView tickStyleMinutesPreference = child.findViewById(R.id.tick_style_minutes_preference);
         setChoice(tickStyleMinutesPreference, R.array.tickStyles, config.tickStyleMinutes.getValue());
         tickStyleMinutesPreference.setOnClickListener(new OnClickListener() {
             @Override
@@ -351,7 +350,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        SeekBar minuteTickStart = (SeekBar) child.findViewById(R.id.minute_tick_start);
+        SeekBar minuteTickStart = child.findViewById(R.id.minute_tick_start);
         minuteTickStart.setProgress((int) (config.tickStartMinutes * 100));
         minuteTickStart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -371,7 +370,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 info.setVisibility(INVISIBLE);
             }
         });
-        SeekBar minuteTickLength = (SeekBar) child.findViewById(R.id.minute_tick_length);
+        SeekBar minuteTickLength = child.findViewById(R.id.minute_tick_length);
         minuteTickLength.setProgress((int) (config.tickLengthMinutes * 100));
         minuteTickLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -391,7 +390,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 info.setVisibility(INVISIBLE);
             }
         });
-        SeekBar hourTickStart = (SeekBar) child.findViewById(R.id.hour_tick_start);
+        SeekBar hourTickStart = child.findViewById(R.id.hour_tick_start);
         hourTickStart.setProgress((int) (config.tickStartHours * 100));
         hourTickStart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -411,7 +410,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 info.setVisibility(INVISIBLE);
             }
         });
-        SeekBar hourTickLength = (SeekBar) child.findViewById(R.id.hour_tick_length);
+        SeekBar hourTickLength = child.findViewById(R.id.hour_tick_length);
         hourTickLength.setProgress((int) (config.tickLengthHours * 100));
         hourTickLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -435,10 +434,10 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
 
     private void setupLayoutForDecoration(View child, final AnalogClockConfig config) {
 
-        final TextView info = (TextView) child.findViewById(R.id.info_text_decoration);
+        final TextView info = child.findViewById(R.id.info_text_decoration);
         info.setVisibility(INVISIBLE);
 
-        final TextView decorationStylePreference = (TextView) child.findViewById(R.id.decoration_preference);
+        final TextView decorationStylePreference = child.findViewById(R.id.decoration_preference);
         setChoice(decorationStylePreference, R.array.decorationStyles, config.decoration.getValue());
         decorationStylePreference.setOnClickListener(new OnClickListener() {
             @Override
@@ -456,7 +455,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
-        SeekBar outerCirclePosition = (SeekBar) child.findViewById(R.id.outer_circle_position);
+        SeekBar outerCirclePosition = child.findViewById(R.id.outer_circle_position);
         outerCirclePosition.setProgress((int) (config.outerCircleRadius * 100));
         outerCirclePosition.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -476,7 +475,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 info.setVisibility(INVISIBLE);
             }
         });
-        SeekBar outerCircleWidth = (SeekBar) child.findViewById(R.id.outer_circle_width);
+        SeekBar outerCircleWidth = child.findViewById(R.id.outer_circle_width);
         outerCircleWidth.setProgress((int) (config.outerCircleWidth * 100));
         outerCircleWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -496,7 +495,7 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
                 info.setVisibility(INVISIBLE);
             }
         });
-        SeekBar innerCircleRadius = (SeekBar) child.findViewById(R.id.inner_circle_radius);
+        SeekBar innerCircleRadius = child.findViewById(R.id.inner_circle_radius);
         innerCircleRadius.setProgress((int) (config.innerCircleRadius * 100));
         innerCircleRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

@@ -82,10 +82,11 @@ OR
     <string name="clear">clear</string>
     <string name="clock_hands">Hands</string>
     <string name="clock_layout_analog">analog clock</string>
+    <string name="clock_layout_calendar">digital clock with calendar</string>
     <string name="clock_layout_digital">digital clock</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_digit_analog">analog clock with digits</string>
-    <string name="clock_layout_digital_flip">flip digit clock</string>
+    <string name="clock_layout_digital_flip">digital flip clock</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_modern_analog">modern analog clock</string>
     <string name="clock_layout_mirror_text">Mirror text</string>
@@ -109,9 +110,12 @@ OR
     <string name="digit_emphasize_quarters">Emphasize quarters</string>
     <string name="decoration">Decoration</string>
     <string name="decoration_glow_effect">Glow effect</string>
+    <string name="decoration_style_copper">Copper</string>
+    <string name="decoration_style_gold">Gold</string>
     <string name="decoration_style_none">None</string>
     <string name="decoration_style_minute_hand">Minute hand</string>
     <string name="decoration_style_labels">Numbers</string>
+    <string name="decoration_style_rust">Rust</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>

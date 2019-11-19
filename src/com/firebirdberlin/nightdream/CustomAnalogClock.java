@@ -4,14 +4,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.ComposeShader;
 import android.graphics.LightingColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
@@ -30,7 +35,7 @@ public class CustomAnalogClock extends View {
     /**
      * precalculated sine/cosine values
      */
-    private static final float COSINE_OF_30_DEGREE = (float)Math.cos(Math.PI / 6.0);
+    private static final float COSINE_OF_30_DEGREE = (float) Math.cos(Math.PI / 6.0);
     private static final double[] MINUTE_ANGLES_SINE = new double[60];
     private static final double[] MINUTE_ANGLES_COSINE = new double[60];
     private static final double[] HOUR_ANGLES_SINE = new double[12];
@@ -97,13 +102,13 @@ public class CustomAnalogClock extends View {
     }
 
     @Override
-    public void onAttachedToWindow(){
+    public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setTimeTick();
     }
 
     @Override
-    public void onDetachedFromWindow(){
+    public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (timeReceiver != null) {
             try {
@@ -158,21 +163,29 @@ public class CustomAnalogClock extends View {
 
         drawBackgroundArc(canvas, centerX, centerY, radius, min_angle);
 
+        applyGoldShader(paint, centerX, centerY, radius);
         applyShader(paint, centerX, centerY, radius);
         drawOuterCircle(canvas);
         drawTicks(canvas, centerX, centerY, radius);
         drawHourDigits(canvas, centerX, centerY, radius);
+
         drawHands(canvas, centerX, centerY, radius, hour_angle, min_angle);
     }
 
     private void drawHands(Canvas canvas, float centerX, float centerY, int radius,
                            double hour_angle, double min_angle) {
-        paint.setColorFilter(customColorFilter);
+        if (isTextureDecoration()) {
+            applyPureTexture(paint);
+        }
         paint.setStyle(Paint.Style.FILL);
-        paint.setShader(null);
+        if (! isTextureDecoration() ) {
+            paint.setShader(null);
+        }
         // minute hand
         canvas.save();
-        paint.setColorFilter(customColorFilter);
+        if (! isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
+            paint.setColorFilter(customColorFilter);
+        }
         canvas.rotate((float) radiansToDegrees(min_angle), centerX, centerY);
         drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthMinutes * radius),
                 (int) (config.handWidthMinutes * radius));
@@ -180,7 +193,9 @@ public class CustomAnalogClock extends View {
 
         // hour hand
         canvas.save();
-        paint.setColorFilter(secondaryColorFilter);
+        if (! isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC) ) {
+            paint.setColorFilter(secondaryColorFilter);
+        }
         canvas.rotate((float) radiansToDegrees(hour_angle), centerX, centerY);
         drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthHours * radius),
                 (int) (config.handWidthHours * radius));
@@ -294,6 +309,62 @@ public class CustomAnalogClock extends View {
         int colors[] = {Color.WHITE, accent};
         float positions[] = {0.4f, 1.f};
         Shader shader = new LinearGradient(x1, y1, centerX, centerY, colors, positions, Shader.TileMode.MIRROR);
+        paint.setShader(shader);
+    }
+
+    private boolean isTextureDecoration() {
+        return (
+                config.decoration == AnalogClockConfig.Decoration.GOLD
+                        || config.decoration == AnalogClockConfig.Decoration.COPPER
+                        || config.decoration == AnalogClockConfig.Decoration.RUST
+        );
+    }
+
+    private void applyGoldShader(Paint paint, float centerX, float centerY, int radius) {
+        if (! isTextureDecoration()) return;
+
+        int resID = R.drawable.gold;
+        switch (config.decoration) {
+            case GOLD:
+                resID = R.drawable.gold;
+                break;
+            case COPPER:
+                resID = R.drawable.copper;
+                break;
+            case RUST:
+                resID = R.drawable.rust;
+                break;
+        }
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resID);
+        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        int light = Color.parseColor("#FFFFFF");
+        int dark = Color.parseColor("#BBBBBB");
+        int colors[] = {light, dark, light, dark, light};
+        float positions[] = {0.15f, 0.25f, 0.55f, 0.65f, 0.9f};
+        int x1 = (int) (centerX - radius), y1 = (int) (centerY - radius);
+        int x2 = (int) (centerX + radius), y2 = (int) (centerY + radius);
+        Shader shader2 = new LinearGradient(x1, y1, x2, y2, colors, positions, Shader.TileMode.MIRROR);
+        ComposeShader composed = new ComposeShader(shader, shader2, PorterDuff.Mode.MULTIPLY);
+        paint.setShader(composed);
+    }
+
+    private void applyPureTexture(Paint paint) {
+        if (! isTextureDecoration()) return;
+
+        int resID = R.drawable.gold;
+        switch (config.decoration) {
+            case GOLD:
+                resID = R.drawable.gold;
+                break;
+            case COPPER:
+                resID = R.drawable.copper;
+                break;
+            case RUST:
+                resID = R.drawable.rust;
+                break;
+        }
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resID);
+        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         paint.setShader(shader);
     }
 
