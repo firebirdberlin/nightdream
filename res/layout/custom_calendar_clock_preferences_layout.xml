@@ -38,7 +38,7 @@
         android:paddingTop="5dp"
         android:paddingBottom="10dp"
         android:singleLine="true"
-        android:text="@string/decoration"
+        android:text="@string/style"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"

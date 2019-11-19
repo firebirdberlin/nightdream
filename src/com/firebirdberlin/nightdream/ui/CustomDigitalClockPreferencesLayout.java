@@ -124,7 +124,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         final TextView decorationStylePreference = child.findViewById(R.id.decoration_preference);
 
         String[] textures = context.getResources().getStringArray(R.array.textures);
-        String title = context.getString(R.string.decoration);
+        String title = context.getString(R.string.style);
         decorationStylePreference.setText(
                 String.format("%s: %s",
                         title,
@@ -135,7 +135,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.decoration)
+                builder.setTitle(R.string.style)
                         .setItems(R.array.textures, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.setTextureId(which, ClockLayout.LAYOUT_ID_DIGITAL);
