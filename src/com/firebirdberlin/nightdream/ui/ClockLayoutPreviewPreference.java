@@ -112,7 +112,9 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setTypeface(settings.typeface);
         int color = previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight;
-        clockLayout.setPrimaryColor(color, settings.glowRadius, color);
+        int glowRadius = settings.getGlowRadius(clockLayoutId);
+        int textureId = settings.getTextureResId(clockLayoutId);
+        clockLayout.setPrimaryColor(color, glowRadius, color, textureId);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
@@ -164,6 +166,26 @@ public class ClockLayoutPreviewPreference extends Preference {
             );
             LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             preferencesContainer.addView(prefs, lp);
+        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_CALENDAR) {
+            CustomCalendarClockPreferencesLayout prefs =
+                    new CustomCalendarClockPreferencesLayout(context, settings, getActivity());
+            prefs.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+            prefs.setOnConfigChangedListener(
+                    new CustomCalendarClockPreferencesLayout.OnConfigChangedListener() {
+                        @Override
+                        public void onConfigChanged() {
+                            updateView();
+                        }
+
+                        @Override
+                        public void onPurchaseRequested() {
+                            ((PreferencesActivity) context).showPurchaseDialog();
+                        }
+                    }
+            );
+            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            preferencesContainer.addView(prefs, lp);
+
         } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG2 ||
                 clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG3 ||
                 clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
@@ -227,17 +249,18 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private void setupPurchaseHint(Settings settings) {
         boolean purchasedWeatherData = purchased(BillingHelperActivity.ITEM_WEATHER_DATA);
-        Log.i(TAG, "purchasedWeather:" + String.valueOf(purchasedWeatherData));
+        Log.i(TAG, "purchasedWeather:" + purchasedWeatherData);
         int layoutID = settings.getClockLayoutID(true);
-        if (layoutID == ClockLayout.LAYOUT_ID_DIGITAL_FLIP
-                && !purchased(BillingHelperActivity.ITEM_DONATION)) {
+        if (layoutID == ClockLayout.LAYOUT_ID_CALENDAR
+                        && !purchased(BillingHelperActivity.ITEM_DONATION)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.gift_for_donors));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
-        }
-        else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
+
+        } else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
                 && !purchased(BillingHelperActivity.ITEM_WEATHER_DATA)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.product_name_weather));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
+
         } else {
             textViewPurchaseHint.setVisibility(View.GONE);
         }
@@ -246,8 +269,10 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private boolean purchased(String sku) {
         PreferencesActivity preferencesActivity = (PreferencesActivity) getActivity();
-
-        return preferencesActivity.isPurchased(sku);
+        if (preferencesActivity != null) {
+            return preferencesActivity.isPurchased(sku);
+        }
+        return false;
     }
 
     private AppCompatActivity getActivity() {
@@ -271,6 +296,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                 layoutID != ClockLayout.LAYOUT_ID_ANALOG
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_FLIP
+                        && layoutID != ClockLayout.LAYOUT_ID_CALENDAR
         );
     }
 

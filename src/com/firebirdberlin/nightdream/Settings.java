@@ -118,7 +118,6 @@ public class Settings {
     int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
-    public int glowRadius = 0;
     public int nightModeActivationMode;
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
@@ -144,8 +143,6 @@ public class Settings {
     public long snoozeTimeInMillis = 300000; // 5 min
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
-    public String fontUri = "";
-    public String fontName = "";
     public String backgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
@@ -183,20 +180,10 @@ public class Settings {
 
     }
 
-    private String getFontUri() {
-        String fontUri = settings.getString("fontUri", "file:///android_asset/fonts/7_segment_digital.ttf");
-        if ("file:///android_asset/fonts/7segment.ttf".equals(fontUri)) {
-            return "file:///android_asset/fonts/7_segment_digital.ttf";
-        }
-        return fontUri;
-    }
-
     public void reload() {
         AlarmToneUri = settings.getString("AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
         AlarmToneName = settings.getString("AlarmToneName", "");
-        fontUri = getFontUri();
-        fontName = settings.getString("fontName", "7-Segment Digital Font");
         activateDoNotDisturb = settings.getBoolean("activateDoNotDisturb", false);
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
@@ -235,7 +222,6 @@ public class Settings {
         final String defaultColorString = "#33B5E5";
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
-        glowRadius = settings.getInt("glowRadius", 0);
         clockLayout = Integer.parseInt(settings.getString("clockLayout", "0"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
         location_lat = settings.getFloat("location_lat", 0.f);
@@ -320,18 +306,51 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public void setGlowRadius(int radius) {
-        glowRadius = radius;
+    public void setTextureId(int textureId, int clockLayoutId) {
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putInt("glowRadius", radius);
+        String key = getKeyForClockLayout("textureId", clockLayoutId);
+        prefEditor.putInt(key, textureId);
         prefEditor.apply();
     }
 
+    public int getTextureId(int clockLayoutId) {
+        String key = getKeyForClockLayout("textureId", clockLayoutId);
+        return settings.getInt(key, 0);
+    }
+
+    public int getTextureResId(int clockLayoutId) {
+        int textureId = getTextureId(clockLayoutId);
+        switch (textureId) {
+            case 0:
+            default:
+                return -1;
+            case 1:
+                return R.drawable.gold;
+            case 2:
+                return R.drawable.copper;
+            case 3:
+                return R.drawable.rust;
+        }
+    }
+
+    public void setGlowRadius(int radius, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("glowRadius", clockLayoutId);
+        prefEditor.putInt(key, radius);
+        prefEditor.apply();
+    }
+
+    public int getGlowRadius(int clockLayoutId) {
+        String key = getKeyForClockLayout("glowRadius", clockLayoutId);
+        return settings.getInt(key, 0);
+    }
+
     public int getClockLayoutID(boolean preview) {
+        purchasedWeatherData = true;
         if (preview) {
             return clockLayout;
-        } else if (clockLayout == ClockLayout.LAYOUT_ID_DIGITAL_FLIP && !purchasedDonation) {
-            return ClockLayout.LAYOUT_ID_DIGITAL;
+        } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
+            return ClockLayout.LAYOUT_ID_CALENDAR;
         } else if (clockLayout >= 2 && !purchasedWeatherData) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
         }
@@ -419,14 +438,14 @@ public class Settings {
             String path = mapIntToTypefacePath(typeface);
             if (path != null) {
                 String name = path.substring(6);
-                setFontUri(ASSET_PATH + path, name);
+                setFontUri(ASSET_PATH + path, name, clockLayout);
                 SharedPreferences.Editor prefEditor = settings.edit();
                 prefEditor.remove("typeface");
-                prefEditor.commit();
+                prefEditor.apply();
                 return FontCache.get(mContext, path);
             }
         }
-        String path = getFontUri();
+        String path = getFontUri(clockLayout);
         return FontCache.get(mContext, path);
     }
 
@@ -453,18 +472,48 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public void setFontUri(String uriString, String name) {
+    public void setFontUri(String uriString, String name, int clockLayoutId) {
         SharedPreferences.Editor prefEditor = settings.edit();
-        fontUri = uriString;
-        fontName = name;
+        String keyFontUri = getKeyForClockLayout("fontUri", clockLayoutId);
+        String keyFontName = getKeyForClockLayout("fontName", clockLayoutId);
         if (uriString != null) {
-            prefEditor.putString("fontUri", uriString);
-            prefEditor.putString("fontName", name);
+            prefEditor.putString(keyFontUri, uriString);
+            prefEditor.putString(keyFontName, name);
         } else {
-            prefEditor.remove("fontUri");
-            prefEditor.remove("fontName");
+            prefEditor.remove(keyFontUri);
+            prefEditor.remove(keyFontName);
         }
-        prefEditor.commit();
+        prefEditor.apply();
+    }
+
+    public String getFontUri(int clockLayoutId) {
+        String key = getKeyForClockLayout("fontUri", clockLayoutId);
+        String def = "file:///android_asset/fonts/7_segment_digital.ttf";
+        if ("fontUri:6".equals(key)) {
+            def = "file:///android_asset/fonts/roboto_thin.ttf";
+        }
+        String fontUri = settings.getString(key, def);
+        if ("file:///android_asset/fonts/7segment.ttf".equals(fontUri)) {
+            return "file:///android_asset/fonts/7_segment_digital.ttf";
+        }
+        return fontUri;
+    }
+
+    public String getFontName(int clockLayoutId) {
+        String key = getKeyForClockLayout("fontName", clockLayoutId);
+        mContext.getString(R.string.typeface_7_segment);
+        String def = mContext.getString(R.string.typeface_7_segment);
+        if ("fontUri:6".equals(key)) {
+            def = mContext.getString(R.string.typeface_roboto_thin);
+        }
+        return settings.getString(key, def);
+    }
+
+    private String getKeyForClockLayout(String key, int clockLayoutId) {
+        if (clockLayoutId == ClockLayout.LAYOUT_ID_DIGITAL) {
+            return key;
+        }
+        return String.format("%s:%d", key, clockLayoutId);
     }
 
     public void setBrightnessOffset(float value){

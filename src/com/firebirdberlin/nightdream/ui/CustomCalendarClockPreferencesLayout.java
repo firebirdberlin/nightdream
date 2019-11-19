@@ -6,10 +6,8 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -21,14 +19,14 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 
 
-public class CustomDigitalClockPreferencesLayout extends LinearLayout {
+public class CustomCalendarClockPreferencesLayout extends LinearLayout {
 
     private OnConfigChangedListener mListener = null;
     private Settings settings = null;
     private boolean isPurchased = false;
     AppCompatActivity activity = null;
 
-    public CustomDigitalClockPreferencesLayout(
+    public CustomCalendarClockPreferencesLayout(
             Context context, Settings settings, AppCompatActivity activity
     ) {
         super(context);
@@ -37,7 +35,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         init(context);
     }
 
-    public CustomDigitalClockPreferencesLayout(Context context, @Nullable AttributeSet attrs) {
+    public CustomCalendarClockPreferencesLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
@@ -46,27 +44,17 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.custom_digital_clock_preferences_layout, null);
+        View child = inflater.inflate(R.layout.custom_calendar_clock_preferences_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//        child.setBackgroundResource(R.drawable.border);
         addView(child, lp);
 
-        Switch switchShowDivider = child.findViewById(R.id.switch_show_divider);
-        switchShowDivider.setChecked(settings.showDivider);
-        switchShowDivider.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                settings.setShowDivider(isChecked);
-                if (mListener != null) {
-                    mListener.onConfigChanged();
-                }
-            }
-        });
-
         SeekBar glowRadius = child.findViewById(R.id.glowRadius);
-        glowRadius.setProgress(settings.getGlowRadius(ClockLayout.LAYOUT_ID_DIGITAL));
+        glowRadius.setProgress(settings.getGlowRadius(ClockLayout.LAYOUT_ID_CALENDAR));
         glowRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                //settings.glowRadius = progress;
             }
 
             @Override
@@ -75,7 +63,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                settings.setGlowRadius(progress, ClockLayout.LAYOUT_ID_DIGITAL);
+                settings.setGlowRadius(progress, ClockLayout.LAYOUT_ID_CALENDAR);
                 if (mListener != null) {
                     mListener.onConfigChanged();
                 }
@@ -84,7 +72,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         TextView fontButton = child.findViewById(R.id.typeface_preference);
         String fontButtonText = fontButton.getText().toString();
         fontButtonText = String.format(
-                "%s: %s", fontButtonText, settings.getFontName(ClockLayout.LAYOUT_ID_DIGITAL)
+                "%s: %s", fontButtonText, settings.getFontName(ClockLayout.LAYOUT_ID_CALENDAR)
         );
         fontButton.setText(fontButtonText);
         fontButton.setOnClickListener(new OnClickListener() {
@@ -97,14 +85,14 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 FragmentManager fm = activity.getSupportFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
-                dialog.setSelectedUri(settings.getFontUri(ClockLayout.LAYOUT_ID_DIGITAL));
+                dialog.setSelectedUri(settings.getFontUri(ClockLayout.LAYOUT_ID_CALENDAR));
                 dialog.setDefaultFonts("roboto_regular.ttf", "roboto_light.ttf",
                         "roboto_thin.ttf", "7_segment_digital.ttf",
                         "dancingscript_regular.ttf");
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {
-                        settings.setFontUri(uri.toString(), name, ClockLayout.LAYOUT_ID_DIGITAL);
+                        settings.setFontUri(uri.toString(), name, ClockLayout.LAYOUT_ID_CALENDAR);
                         if (mListener != null) {
                             mListener.onConfigChanged();
                         }
@@ -128,7 +116,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         decorationStylePreference.setText(
                 String.format("%s: %s",
                         title,
-                        textures[settings.getTextureId(ClockLayout.LAYOUT_ID_DIGITAL)]
+                        textures[settings.getTextureId(ClockLayout.LAYOUT_ID_CALENDAR)]
                 )
         );
         decorationStylePreference.setOnClickListener(new OnClickListener() {
@@ -138,7 +126,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 builder.setTitle(R.string.style)
                         .setItems(R.array.textures, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                settings.setTextureId(which, ClockLayout.LAYOUT_ID_DIGITAL);
+                                settings.setTextureId(which, ClockLayout.LAYOUT_ID_CALENDAR);
                                 if (mListener != null) {
                                     mListener.onConfigChanged();
                                 }

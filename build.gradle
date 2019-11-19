@@ -35,6 +35,7 @@ dependencies {
     implementation project(':externals:android-preferences')
     implementation project(':externals:tab-digit:digit')
     implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
 }
 
 def getApiKeyOWM() {

@@ -111,7 +111,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Donar</string>
     <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
     <string name="doubleTapToFinishTitle">Doble clic para salir</string>
-    <string name="expertPreferences">Preferencias de experto</string>
     <string name="gift_for_donors">Obsequio para donantes</string>
     <string name="forecast">Previsión para 5 días</string>
     <string name="hand_shape_arc">Arco</string>
@@ -193,9 +192,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Activado</string>
     <string name="radio_stream">Emisoras de radio</string>
     <string name="radio_stream_failure">Fallo de emisión</string>
+    <string name="radio_stream_manual_input_description">Nombre de la estación de radio</string>
     <string name="radio_stream_manual_input_hint">Añadir estación de radio (modo manual)</string>
     <string name="radio_stream_manual_input_url">URL de la secuencia</string>
-    <string name="radio_stream_manual_input_description">Nombre de la estación de radio</string>
     <string name="radio_stream_music_allowed">Utilizar la transmisión de música</string>
     <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
     <string name="radio_stream_offline">Emisora fuera de línea</string>

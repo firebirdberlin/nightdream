@@ -111,8 +111,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Faire un don</string>
     <string name="doubleTapToFinishSummary">Fermer l\'application en double cliquant</string>
     <string name="doubleTapToFinishTitle">Double taper pour fermer</string>
-    <string name="expertPreferences">Options avancées</string>
     <string name="gift_for_donors">Cadeau pour votre don</string>
+    <string name="flashlight">lampe de poche</string>
     <string name="forecast">Prévisions météo sur 5 jours</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Barre</string>
@@ -133,11 +133,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="inner_circle_radius">Rayon cercle intérieur</string>
     <string name="length">Hauteur</string>
     <string name="location_time">Localisation déterminée à:</string>
+    <string name="manage_permissions">gestion permission</string>
     <string name="maxBrightness">Luminosité maximale</string>
     <string name="maxBrightnessBattery">Luminosité maximale sur batterie</string>
     <string name="message_mobile_data_connection_confirmation">Vous êtes connecté aux données mobiles. Allumer la radio ?</string>
     <string name="message_mobile_data_connection">Pas de connexion aux données mobiles</string>
     <string name="message_no_data_connection">Pas de connexion aux données</string>
+    <string name="message_stop_alarm_long_press">pression soutenue pour arrêté</string>
     <string name="minBrightness">Luminosité mimimale</string>
     <string name="minute"> min</string>
     <string name="mute_ringer">Mettre la sourdine</string>
@@ -160,6 +162,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_radio">Notifications s\'affichant lorsqu\'une radio web joue</string>
     <string name="notification_channel_desc_services">Notification indiquant un service est actif</string>
     <string name="notification_alarm">Cliquer pour arrêter l\'alarme</string>
+    <string name="notification_grouping_title">assembler les avis similaires</string>
+    <string name="notification_importance_min">min.</string>
+    <string name="notification_importance_low">faible</string>
+    <string name="notification_importance_default">par défaut</string>
+    <string name="notification_importance_high">haute</string>
+    <string name="notification_importance_max">max.</string>
     <string name="numbers">Nombre</string>
     <string name="numberStyleArabic">Arabe</string>
     <string name="numberStyleRoman">Romain</string>
@@ -193,9 +201,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Activé</string>
     <string name="radio_stream">Flux radio</string>
     <string name="radio_stream_failure">Echec de la connexion radio</string>
+    <string name="radio_stream_manual_input_description">Nom de la station</string>
     <string name="radio_stream_manual_input_hint">Ajouter manuellement une station de radio</string>
     <string name="radio_stream_manual_input_url">Adresse URL du flux</string>
-    <string name="radio_stream_manual_input_description">Nom de la station</string>
     <string name="radio_stream_music_allowed">Utiliser flux musique</string>
     <string name="radio_stream_no_search_results">Aucun résultat de recherche</string>
     <string name="radio_stream_offline">Hors ligne</string>
