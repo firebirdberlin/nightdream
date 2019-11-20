@@ -110,7 +110,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Wspomóż</string>
     <string name="doubleTapToFinishSummary">Zakończ działanie aplikacji przez podwójnie puknięcie w ekran.</string>
     <string name="doubleTapToFinishTitle">Podwójnie puknij w ekrany, aby zakończyć.</string>
-    <string name="expertPreferences">Ustawienia experta</string>
     <string name="forecast">Prognoza pogody na 5 dni</string>
     <string name="hand_shape_arc">Łuk</string>
     <string name="hand_shape_bar">Pasek</string>

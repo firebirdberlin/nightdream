@@ -115,7 +115,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Doneren</string>
     <string name="doubleTapToFinishSummary">Dubbeltik op het scherm om de app te sluiten.</string>
     <string name="doubleTapToFinishTitle">Dubbeltikken om te sluiten</string>
-    <string name="expertPreferences">Geavanceerde instellingen</string>
     <string name="gift_for_donors">Donatie</string>
     <string name="forecast">Weersvoorspelling voor vijf dagen</string>
     <string name="hand_shape_arc">Boog</string>

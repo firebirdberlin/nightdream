@@ -82,6 +82,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clear">Очистить</string>
     <string name="clock_hands">Стрелки</string>
     <string name="clock_layout_analog">Аналоговые часы</string>
+    <string name="clock_layout_calendar">Цифровые часы с календарём</string>
     <string name="clock_layout_digital">Цифровые часы</string>
     <string name="clock_layout_elegant_analog">Элегантные аналоговые часы</string>
     <string name="clock_layout_digit_analog">Аналоговые часы с цифрами</string>
@@ -109,9 +110,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="digit_emphasize_quarters">Подчеркнуть четверть</string>
     <string name="decoration">Внешнее оформление</string>
     <string name="decoration_glow_effect">Эффект свечения</string>
+    <string name="decoration_style_copper">Медь</string>
+    <string name="decoration_style_gold">Золото</string>
     <string name="decoration_style_none">Без оформления</string>
     <string name="decoration_style_minute_hand">Минутная стрелка</string>
     <string name="decoration_style_labels">Цифры</string>
+    <string name="decoration_style_rust">Ржавчина</string>
     <string name="donate_bitcoin">Пожертвовать биткоины</string>
     <string name="donate">Поддержать</string>
     <string name="doubleTapToFinishSummary">Завершить работу приложения двойным касанием по экрану</string>

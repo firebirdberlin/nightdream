@@ -75,7 +75,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Δώρισε</string>
     <string name="doubleTapToFinishSummary">Διπλό άγγιγμα για τερματισμό της εφαρμογής</string>
     <string name="doubleTapToFinishTitle">Διπλό άγγιγμα για τερματισμό</string>
-    <string name="expertPreferences">Ειδικές επιλογές</string>
     <string name="forecast">Πρόβλεψη καιρού 5 ημερών</string>
     <string name="handle_power_ac">Συνδεμένο με φωτιστή</string>
     <string name="handle_power">Αυτόματο ξεκίνημα</string>
@@ -123,9 +122,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Ενεργό</string>
     <string name="radio_stream">Ροές</string>
     <string name="radio_stream_failure">Σφάλμα ροής</string>
+    <string name="radio_stream_manual_input_description">Όνομα σταθμού</string>
     <string name="radio_stream_manual_input_hint">Πρόσθεση σταθμού χειροκίνητα</string>
     <string name="radio_stream_manual_input_url">URL ροής</string>
-    <string name="radio_stream_manual_input_description">Όνομα σταθμού</string>
     <string name="radio_stream_no_search_results">Σφάλμα δεν βρέθηκαν αποτελέσματα</string>
     <string name="radio_stream_offline">Ανενεργό</string>
     <string name="radio_stream_query_hint">Λέξη προς αναζήτηση</string>
