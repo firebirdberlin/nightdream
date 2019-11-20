@@ -53,11 +53,11 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_set_alarm_clock);
         setTheme(R.style.AlarmClockActivityTheme);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         scrollView = findViewById(R.id.scroll_view);
         // https://www.youtube.com/watch?v=55wLsaWpQ4g
