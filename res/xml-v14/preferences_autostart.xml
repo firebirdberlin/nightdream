@@ -17,7 +17,7 @@
         app:dependency="handle_power"
         app:title="@string/category_handle_power_autostart_time">
 
-        <de.firebirdberlin.preference.TimeRangePreference
+        <com.firebirdberlin.nightdream.TimeRangePreference
             xmlns:timerange="timerange"
             app:allowDividerAbove="false"
             app:iconSpaceReserved="false"
@@ -121,7 +121,7 @@
             app:summary="@string/standbyEnabledWhileDisconnectedSummary"
             app:title="@string/standbyEnabledWhileDisconnectedTitle" />
 
-        <de.firebirdberlin.preference.TimeRangePreference
+        <com.firebirdberlin.nightdream.TimeRangePreference
             app:iconSpaceReserved="false"
             xmlns:timerange="timerange"
             app:defaultValue="0"
@@ -177,7 +177,7 @@
             app:summary="@string/scheduledAutoStartEnabledDesc"
             app:title="@string/scheduledAutoStartEnabledTitle" />
 
-        <de.firebirdberlin.preference.TimeRangePreference
+        <com.firebirdberlin.nightdream.TimeRangePreference
             app:iconSpaceReserved="false"
             xmlns:timerange="timerange"
             app:defaultValue="0"

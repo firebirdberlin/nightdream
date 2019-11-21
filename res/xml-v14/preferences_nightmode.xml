@@ -15,9 +15,9 @@
         app:summary="%s"
         app:title="@string/night_mode_activation_mode" />
 
-    <de.firebirdberlin.preference.TimeRangePreference
-        app:iconSpaceReserved="false"
+    <com.firebirdberlin.nightdream.TimeRangePreference
         xmlns:timerange="timerange"
+        app:iconSpaceReserved="false"
         app:defaultValue="0"
         app:enabled="false"
         app:key="nightmode_timerange"

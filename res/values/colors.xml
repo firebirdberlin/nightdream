@@ -3,6 +3,7 @@
     <color name="custom_red">#a30000</color>
     <color name="blue">#3498db</color>
     <color name="grey">#212121</color>
+    <color name="grey_bg">#3A3A3A</color>
     <color name="black">#000000</color>
 
     <color name="material_red">#F44336</color>

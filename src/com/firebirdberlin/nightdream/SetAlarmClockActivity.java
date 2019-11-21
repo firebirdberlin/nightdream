@@ -152,7 +152,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private void showTimePicker(int hour, int min, final Long entry_id) {
         final Context context = this;
         TimePickerDialog mTimePicker = new TimePickerDialog(
-                context,
+                context, R.style.DialogTheme,
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
