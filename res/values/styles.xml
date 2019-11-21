@@ -34,6 +34,7 @@
     <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/blue</item>
         <item name="android:textColorPrimary">@color/primary_text_color_selector</item>
+        <item name="android:windowBackground">@color/grey_bg</item>
     </style>
 
     <style name="TextAppearance.MaterialCalendarWidgetDate" parent="TextAppearance.MaterialCalendarWidget.Date">
