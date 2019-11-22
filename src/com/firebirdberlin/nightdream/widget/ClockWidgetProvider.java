@@ -102,8 +102,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             shape.setCornerRadius(30);
             shape.setGradientType(GradientDrawable.LINEAR_GRADIENT);
             int[] colors = {
-                    Color.parseColor("#11000000"),
-                    Color.parseColor("#AA000000")
+                    Color.parseColor("#33000000"),
+                    Color.parseColor("#BB000000")
             };
             shape.setColors(colors);
             clockLayout.setBackground(shape);

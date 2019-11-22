@@ -281,50 +281,8 @@ public class ClockLayout extends LinearLayout {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
             if (displayInWidget) {
-                setPadding(15, 15, 15, 15);
-                //ignore orientation, 100% width, so it fills whole space of the widget area
-                if (clock != null) {
-                    clock.setPadding(0, 0, 0, 0);
-                    clock.setMaxWidth((int) (0.8 * parentWidth));
-                    clock.setMaxHeight((int) (0.35 * parentHeight));
-                    clock.setMaxFontSizesInSp(6.f, 300.f);
-                    clock.invalidate(); // must invalidate to get correct getHeightOfView below
-                }
-                if (date != null && date.getVisibility() == VISIBLE) {
-                    date.setMaxWidth((int) (0.9 * parentWidth));
-                    date.setMaxHeight(parentHeight / 5);
-                    date.setMaxFontSizesInSp(6.f, 20.f);
-                    date.invalidate(); // must invalidate to get correct getHeightOfView below
-                }
-                if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
-                    weatherLayout.setMaxWidth((int) (0.9 * parentWidth));
-                    weatherLayout.setMaxFontSizesInPx(
-                            Utility.spToPx(context, 6.f),
-                            Utility.spToPx(context, 20.f));
-                    weatherLayout.update();
-                    weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
-                }
-
-                int measuredHeight = Utility.getHeightOfView(this);
-                Log.i(TAG, "### measuredHeight=" + measuredHeight + ", parentHeight=" + parentHeight);
-
-                if (measuredHeight > parentHeight) {
-                    Log.i(TAG, "### measuredHeight > parentHeight");
-                    // shrink clock width so that its height fits the widget height
-                    if (clock != null) {
-                        clock.setMaxHeight(parentHeight / 4);
-                    }
-                    if (date != null) {
-                        date.setMaxHeight(parentHeight / 6);
-                    }
-                    if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
-                        weatherLayout.setMaxWidth((int) (0.7 * parentWidth));
-                        weatherLayout.update();
-                    }
-                }
-
+                updateDigitalClockInWidget(parentWidth, parentHeight);
             } else {
-
                 switch (config.orientation) {
                     case Configuration.ORIENTATION_LANDSCAPE:
                         if (clock != null) {
@@ -368,37 +326,43 @@ public class ClockLayout extends LinearLayout {
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             setMinimumWidth(7 * Utility.dpToPx(context, 20));
-            if (clock != null) {
-                clock.setMaxWidth((int) (0.8f * parentWidth));
-                clock.setMaxFontSizesInSp(minFontSize, 60.f);
-            }
-            if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
-                weatherLayout.setMaxWidth((int) (0.8 * parentWidth));
-                weatherLayout.setMaxFontSizesInPx(
-                        Utility.spToPx(context, 6.f),
-                        Utility.spToPx(context, 20.f));
-                weatherLayout.update();
-                weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
-            }
-
-            Calendar now = Calendar.getInstance();
-            try {
-                Calendar selected = calendarView.getCurrentDate().getCalendar();
-                if (
-                        selected == null
-                                || selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)
-                ) {
-                    calendarView.setCurrentDate(now);
-                    calendarView.setSelectedDate(now);
+            if (displayInWidget) {
+                updateDigitalClockInWidget(parentWidth, parentHeight);
+            } else {
+                float sizeFactor = 0.8f;
+                if (clock != null) {
+                    clock.setMaxWidth((int) (sizeFactor * parentWidth));
+                    clock.setMaxFontSizesInSp(minFontSize, 60.f);
                 }
-            } catch (NullPointerException ignored) {}
+                if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
+                    weatherLayout.setMaxWidth((int) (sizeFactor * parentWidth));
+                    weatherLayout.setMaxFontSizesInPx(
+                            Utility.spToPx(context, 6.f),
+                            Utility.spToPx(context, 20.f));
+                    weatherLayout.update();
+                    weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
+                }
 
-            calendarView.setMinimumWidth((int) (0.9 * parentWidth));
-            now.setMinimalDaysInFirstWeek(1);
-            int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
-            int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
-            calendarView.getLayoutParams().height = height;
+                Calendar now = Calendar.getInstance();
+                try {
+                    Calendar selected = calendarView.getCurrentDate().getCalendar();
+                    if (
+                            selected == null
+                                    || selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)
+                    ) {
+                        calendarView.setCurrentDate(now);
+                        calendarView.setSelectedDate(now);
+                    }
+                } catch (NullPointerException ignored) {
+                }
 
+                calendarView.setMinimumWidth((int) (0.9 * parentWidth));
+                now.setMinimalDaysInFirstWeek(1);
+                int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
+                int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
+                calendarView.getLayoutParams().height = height;
+            }
+            // calendar is hidden
             calendarView.setVisibility(displayInWidget ? GONE : VISIBLE);
 
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
@@ -422,6 +386,50 @@ public class ClockLayout extends LinearLayout {
         }
         if (clock != null ) {
             clock.invalidate();
+        }
+    }
+
+    void updateDigitalClockInWidget(int parentWidth, int parentHeight) {
+        setPadding(15, 15, 15, 15);
+        //ignore orientation, 100% width, so it fills whole space of the widget area
+        if (clock != null) {
+            clock.setPadding(0, 0, 0, 0);
+            clock.setMaxWidth((int) (0.8 * parentWidth));
+            clock.setMaxHeight((int) (0.35 * parentHeight));
+            clock.setMaxFontSizesInSp(6.f, 300.f);
+            clock.invalidate(); // must invalidate to get correct getHeightOfView below
+        }
+        if (date != null && date.getVisibility() == VISIBLE) {
+            date.setMaxWidth((int) (0.9 * parentWidth));
+            date.setMaxHeight(parentHeight / 5);
+            date.setMaxFontSizesInSp(6.f, 20.f);
+            date.invalidate(); // must invalidate to get correct getHeightOfView below
+        }
+        if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
+            weatherLayout.setMaxWidth((int) (0.9 * parentWidth));
+            weatherLayout.setMaxFontSizesInPx(
+                    Utility.spToPx(context, 6.f),
+                    Utility.spToPx(context, 20.f));
+            weatherLayout.update();
+            weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
+        }
+
+        int measuredHeight = Utility.getHeightOfView(this);
+        Log.i(TAG, "### measuredHeight=" + measuredHeight + ", parentHeight=" + parentHeight);
+
+        if (measuredHeight > parentHeight) {
+            Log.i(TAG, "### measuredHeight > parentHeight");
+            // shrink clock width so that its height fits the widget height
+            if (clock != null) {
+                clock.setMaxHeight(parentHeight / 4);
+            }
+            if (date != null) {
+                date.setMaxHeight(parentHeight / 6);
+            }
+            if (weatherLayout != null && weatherLayout.getVisibility() == VISIBLE) {
+                weatherLayout.setMaxWidth((int) (0.7 * parentWidth));
+                weatherLayout.update();
+            }
         }
     }
 
