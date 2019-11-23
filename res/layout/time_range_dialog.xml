@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:layout_margin="4dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+        <TextView
+            android:id="@+id/date_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/timerange_label_start"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TimePicker
+            android:id="@+id/start"
+            android:timePickerMode="spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+        <TextView
+            android:id="@+id/date_end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/timerange_label_end"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TimePicker
+            android:id="@+id/end"
+            android:timePickerMode="spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</LinearLayout>
