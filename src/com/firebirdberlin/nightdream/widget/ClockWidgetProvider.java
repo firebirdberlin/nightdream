@@ -82,7 +82,10 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.showDate(showAdditionalLines && settings.showDate);
         clockLayout.setShowNotifications(false);
 
-        WeatherService.start(context, settings.weatherCityID);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // from Android 5 onwards we have WeatherUpdateJobService running
+            WeatherService.start(context, settings.weatherCityID);
+        }
 
         // update weather date if not outdated
         if (settings.weatherEntry != null

@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import java.text.DateFormat;
+
 public class TimeRangePickerDialogFragment extends DialogFragment {
 
     private TimePicker pickerStart = null;
@@ -45,6 +47,9 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         pickerStart = v.findViewById ( R.id.start );
         pickerEnd = v.findViewById ( R.id.end );
 
+        boolean is24Hour = Utility.is24HourFormat(getContext());
+        pickerStart.setIs24HourView(is24Hour);
+        pickerEnd.setIs24HourView(is24Hour);
         if ( Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             pickerStart.setCurrentHour(hourStart);
             pickerStart.setCurrentMinute(minuteStart);
