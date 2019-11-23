@@ -119,9 +119,7 @@ public class TimeRangePreference
 
     @Override
     public void onClick() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-           showTimeRangePickerDialog();
-        }
+        showTimeRangePickerDialog();
     }
 
     private void showTimeRangePickerDialog() {
