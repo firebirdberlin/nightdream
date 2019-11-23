@@ -1,16 +1,14 @@
 package com.firebirdberlin.nightdream;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.widget.TimePicker;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
@@ -18,7 +16,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class TimeRangePreference extends Preference {
+public class TimeRangePreference
+        extends Preference
+        implements TimeRangePickerDialogFragment.Result {
+
     private static final String TIMERANGE = "timerange";
 
     class SimpleTime {
@@ -39,11 +40,11 @@ public class TimeRangePreference extends Preference {
             this.min = minutes % 60;
         }
 
-        public int toMinutes() {
+        int toMinutes() {
             return this.hour * 60 + this.min;
         }
 
-        public long getMillis() {
+        long getMillis() {
             return getCalendar().getTimeInMillis();
         }
 
@@ -63,9 +64,7 @@ public class TimeRangePreference extends Preference {
         }
     }
 
-    private Context mContext = null;
-    private String label_end_text = "";
-    private String label_start_text = "";
+    private Context mContext;
     private SimpleTime startTime;
     private SimpleTime endTime;
     private String keyStart;
@@ -93,24 +92,6 @@ public class TimeRangePreference extends Preference {
     }
 
     private void setValuesFromXml(AttributeSet attrs) {
-        Resources res = mContext.getResources();
-        String packageName = mContext.getPackageName();
-        String res_label_start_text = getAttributeStringValue(attrs, TIMERANGE, "start_text", "start time");
-        String res_label_end_text = getAttributeStringValue(attrs, TIMERANGE, "end_text", "end time");
-        int identifierStart = res.getIdentifier(res_label_start_text, null, packageName);
-        int identifierEnd = res.getIdentifier(res_label_end_text, null, packageName);
-        if (identifierStart != 0 ) {
-            label_start_text = res.getString(identifierStart);
-        } else {
-            label_start_text = "";
-        }
-
-        if (identifierEnd != 0 ) {
-            label_end_text = res.getString(identifierEnd);
-        } else {
-            label_end_text = "";
-        }
-
         String key_suffix_start = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_start", "_start");
         String key_suffix_end = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_end", "_end");
 
@@ -138,56 +119,27 @@ public class TimeRangePreference extends Preference {
 
     @Override
     public void onClick() {
-        TimePickerDialog mTimePicker = new TimePickerDialog(
-                mContext, R.style.DialogTheme,
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        // Bug Android 4.1: Dialog is submitted twice
-                        // >> ignore second call to this method.
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-                                && !timePicker.isShown()) return;
-
-                        updateTime(startTime, selectedHour, selectedMinute);
-                        showDialogEndTime();
-                    }
-                },
-                startTime.hour, startTime.min, DateFormat.is24HourFormat(mContext)
-        );
-        setDialogTitle(mTimePicker, label_start_text);
-        mTimePicker.show();
-    }
-
-    public void showDialogEndTime() {
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(
-                mContext, R.style.DialogTheme,
-                new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                // Bug Android 4.1: Dialog is submitted twice
-                // >> ignore second call to this method.
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-                        && !timePicker.isShown()) return;
-                updateTime(endTime, selectedHour, selectedMinute);
-            }
-        }, endTime.hour, endTime.min, DateFormat.is24HourFormat(mContext));
-        setDialogTitle(mTimePicker, label_end_text);
-        mTimePicker.show();
-    }
-
-    private void setDialogTitle(TimePickerDialog dialog, String title) {
-        /* Due to a bug in the TimePicker view we set the title to an empty string
-         * if the screen orientation is landscape
-         * https://code.google.com/p/android/issues/detail?id=201766
-         */
-        int orientation = mContext.getResources().getConfiguration().orientation;
-        if (Build.VERSION.SDK_INT > 19
-                && orientation == Configuration.ORIENTATION_LANDSCAPE ) {
-            dialog.setTitle("");
-        } else {
-            dialog.setTitle(title);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+           showTimeRangePickerDialog();
         }
+    }
+
+    private void showTimeRangePickerDialog() {
+        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
+        TimeRangePickerDialogFragment dialog = new TimeRangePickerDialogFragment(this);
+        dialog.show(fm, "time_range_picker");
+        if (startTime != null) {
+            dialog.setStartTime(startTime.hour, startTime.min);
+        }
+        if (endTime != null) {
+            dialog.setEndTime(endTime.hour, endTime.min);
+        }
+    }
+
+    @Override
+    public void onTimeRangeSet(int hourStart, int minuteStart, int hourEnd, int minuteEnd) {
+        updateTime(startTime, hourStart, minuteStart);
+        updateTime(endTime, hourEnd, minuteEnd);
     }
 
     private void updateTime(SimpleTime time, int hour, int min) {

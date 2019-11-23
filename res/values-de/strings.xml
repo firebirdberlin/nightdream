@@ -274,6 +274,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_none">Keiner</string>
     <string name="ticks">Marker</string>
     <string name="timeFormat">Zeitformat</string>
+    <string name="timerange_label_end">Endzeit</string>
+    <string name="timerange_label_start">Anfangszeit</string>
     <string name="titlePrivacyPolicy">Datenschutzerklärung</string>
     <string name="today">heute</string>
     <string name="tomorrow">morgen</string>
