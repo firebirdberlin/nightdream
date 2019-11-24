@@ -136,18 +136,12 @@ public class ClockLayout extends LinearLayout {
 
     public void setPrimaryColor(int color, int glowRadius, int glowColor, int textureId) {
         if (clock != null) {
-            clock.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock.setTextColor(color);
-            if (textureId > 0) {
-                applyTexture(clock, textureId);
-            }
+            applyTexture(clock, glowRadius, glowColor, textureId);
         }
         if ( clock_ampm != null ) {
-            clock_ampm.setShadowLayer(glowRadius, 0, 0, glowColor);
             clock_ampm.setTextColor(color);
-            if (textureId > 0) {
-                applyTexture(clock_ampm, textureId);
-            }
+            applyTexture(clock_ampm, glowRadius, glowColor, textureId);
         }
         if (analog_clock != null) {
             analog_clock.setPrimaryColor(color);
@@ -162,14 +156,17 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    void applyTexture(TextView view, int resId) {
+    void applyTexture(TextView view, int glowRadius, int glowColor, int resId) {
         if (view == null) {
             return;
         }
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
-        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-        view.getPaint().setShader(shader);
-        view.setLayerType(LAYER_TYPE_HARDWARE, null);
+        clock.setShadowLayer(glowRadius, 0, 0, glowColor);
+        if (resId > 0) {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
+            BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+            view.getPaint().setShader(shader);
+        }
+        view.setLayerType((glowRadius > 24) ? LAYER_TYPE_SOFTWARE : LAYER_TYPE_HARDWARE, null);
     }
 
     public void setSecondaryColor(int color) {
