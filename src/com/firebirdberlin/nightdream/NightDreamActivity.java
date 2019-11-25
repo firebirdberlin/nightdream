@@ -610,13 +610,16 @@ public class NightDreamActivity extends BillingHelperActivity
     };
 
     private boolean isLocked() {
-        KeyguardManager myKM = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        return myKM.inKeyguardRestrictedInputMode();
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        if (keyguardManager == null) {
+            return false;
+        }
+        return keyguardManager.inKeyguardRestrictedInputMode();
     }
 
     private void startBackgroundListener() {
         Intent i = new Intent(this, NightModeListener.class);
-        startService(i);
+        Utility.startForegroundService(this, i);
     }
 
     private boolean shallKeepScreenOn(int mode) {

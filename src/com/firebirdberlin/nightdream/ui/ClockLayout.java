@@ -260,10 +260,17 @@ public class ClockLayout extends LinearLayout {
         updateLayout(parentWidth, parentHeight, config, true);
     }
 
-    private void updateLayout(int parentWidth, int parentHeight, Configuration config, boolean displayInWidget){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+    private void updateLayout(
+            int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
+    ){
+        if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
+                        && notificationLayout != null
+        ) {
             notificationLayout.setVisibility(
-                    mNotificationListener.running && showNotifications && !Settings.useNotificationStatusBar(context)
+                    mNotificationListener.running
+                            && showNotifications
+                            && !Settings.useNotificationStatusBar(context)
                             ? VISIBLE : GONE
             );
         }
@@ -325,6 +332,10 @@ public class ClockLayout extends LinearLayout {
             setMinimumWidth(7 * Utility.dpToPx(context, 20));
             if (displayInWidget) {
                 updateDigitalClockInWidget(parentWidth, parentHeight);
+                if (calendarView != null) {
+                    // TODO unhide the calendarview
+                    calendarView.setVisibility(GONE);
+                }
             } else {
                 float sizeFactor = 0.8f;
                 if (clock != null) {
@@ -340,27 +351,27 @@ public class ClockLayout extends LinearLayout {
                     weatherLayout.invalidate(); // must invalidate to get correct getHeightOfView below
                 }
 
-                Calendar now = Calendar.getInstance();
-                try {
-                    Calendar selected = calendarView.getCurrentDate().getCalendar();
-                    if (
-                            selected == null
-                                    || selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)
-                    ) {
-                        calendarView.setCurrentDate(now);
-                        calendarView.setSelectedDate(now);
+                if (calendarView != null) {
+                    Calendar now = Calendar.getInstance();
+                    try {
+                        Calendar selected = calendarView.getCurrentDate().getCalendar();
+                        if (
+                                selected == null
+                                        || selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)
+                        ) {
+                            calendarView.setCurrentDate(now);
+                            calendarView.setSelectedDate(now);
+                        }
+                    } catch (NullPointerException ignored) {
                     }
-                } catch (NullPointerException ignored) {
-                }
 
-                calendarView.setMinimumWidth((int) (0.9 * parentWidth));
-                now.setMinimalDaysInFirstWeek(1);
-                int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
-                int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
-                calendarView.getLayoutParams().height = height;
+                    calendarView.setMinimumWidth((int) (0.9 * parentWidth));
+                    now.setMinimalDaysInFirstWeek(1);
+                    int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
+                    int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
+                    calendarView.getLayoutParams().height = height;
+                }
             }
-            // calendar is hidden
-            calendarView.setVisibility(displayInWidget ? GONE : VISIBLE);
 
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
