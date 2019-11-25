@@ -3,14 +3,17 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceViewHolder;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -101,6 +104,24 @@ public class TimeRangePreference
         keyStartInMinutes = getKey() + key_suffix_start + "_minutes";
         keyEndInMinutes = getKey() + key_suffix_end + "_minutes";
         setIconSpaceReserved(false);
+    }
+
+    @Override
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        // on android <= 6 there is still some icon space reserved. We need to manually hide
+        // this space.
+        View view = holder.itemView;
+        if(view instanceof ViewGroup){
+            ViewGroup vg = (ViewGroup) view;
+            View currView;
+            for(int i = 0; i< vg.getChildCount(); i++){
+                currView = vg.getChildAt(i);
+                if (currView instanceof LinearLayout) {
+                    currView.setVisibility(View.GONE);
+                }
+            }
+        }
     }
 
     @Override
