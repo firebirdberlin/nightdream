@@ -203,14 +203,14 @@ public class NightDreamActivity extends BillingHelperActivity
             }
             torchIcon.setVisibility(flash.hasCameraFlash() ? View.VISIBLE : View.GONE);
             FlexboxLayout sidePanel = findViewById(R.id.side_panel);
-            Log.w(TAG, "Flashlight on ON");
             sidePanel.post(new Runnable() {
                 @Override
                 public void run() {
                     if (flash.isFlashlightOn()) {
+                        Log.w(TAG, "Flashlight is ON");
                         setIconActive(torchIcon);
                     } else {
-                        Log.w(TAG, "Flashlight on OFF");
+                        Log.w(TAG, "Flashlight is OFF");
                         setIconInactive(torchIcon);
                     }
                 }

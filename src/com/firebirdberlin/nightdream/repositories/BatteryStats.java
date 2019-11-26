@@ -12,29 +12,36 @@ import com.firebirdberlin.nightdream.models.DockState;
 public class BatteryStats {
     private final Context mContext;
     private final Intent receivedBatteryIntent;
-    public BatteryValue reference = null;
+    public BatteryValue reference;
 
-    /** use this to retrieve battery values using a sticky intent ACTION_BATTERY_CHANGED  */
-    public BatteryStats(Context context){
+    /**
+     * use this to retrieve battery values using a sticky intent ACTION_BATTERY_CHANGED
+     */
+    public BatteryStats(Context context) {
         this.mContext = context;
         this.receivedBatteryIntent = null;
         reference = getBatteryValue();
     }
 
-    /** use this to retrieve battery values from a real ACTION_BATTERY_CHANGED receiver */
-    public BatteryStats(Context context, Intent receivedBatteryIntent){
+    /**
+     * use this to retrieve battery values from a real ACTION_BATTERY_CHANGED receiver
+     */
+    public BatteryStats(Context context, Intent receivedBatteryIntent) {
         this.mContext = context;
         this.receivedBatteryIntent = receivedBatteryIntent;
         reference = getBatteryValue();
     }
 
     public BatteryValue getBatteryValue() {
-        Intent batteryIntent = null;
-        try {
-            batteryIntent = receivedBatteryIntent != null
-                    ? receivedBatteryIntent
-                    : mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        } catch (IllegalArgumentException ignored) {}
+        Intent batteryIntent = receivedBatteryIntent;
+        if (batteryIntent == null) {
+            try {
+                batteryIntent = mContext.registerReceiver(
+                        null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                );
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
 
         if (batteryIntent == null) {
             return null;
@@ -52,8 +59,13 @@ public class BatteryStats {
     }
 
     public DockState getDockState() {
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_DOCK_EVENT);
-        Intent dockStatus = mContext.registerReceiver(null, ifilter);
+        Intent dockStatus = null;
+        try {
+            dockStatus = mContext.registerReceiver(
+                    null, new IntentFilter(Intent.ACTION_DOCK_EVENT)
+            );
+        } catch (IllegalArgumentException ignored) {
+        }
 
         if (dockStatus == null) {
             return new DockState(true, false, false);
@@ -76,12 +88,9 @@ public class BatteryStats {
     }
 
     private boolean isDockedDesk(int dockState) {
-        if (Build.VERSION.SDK_INT >= 11){
-            return (dockState == Intent.EXTRA_DOCK_STATE_DESK ||
-                    dockState == Intent.EXTRA_DOCK_STATE_LE_DESK ||
-                    dockState == Intent.EXTRA_DOCK_STATE_HE_DESK);
-        }
-        return (dockState == Intent.EXTRA_DOCK_STATE_DESK);
+        return (dockState == Intent.EXTRA_DOCK_STATE_DESK ||
+                dockState == Intent.EXTRA_DOCK_STATE_LE_DESK ||
+                dockState == Intent.EXTRA_DOCK_STATE_HE_DESK);
     }
 
     private boolean isCharging(int status) {
@@ -98,7 +107,7 @@ public class BatteryStats {
     }
 
     private boolean isChargingWireless(int chargingMethod) {
-        if (Build.VERSION.SDK_INT >= 17){
+        if (Build.VERSION.SDK_INT >= 17) {
             return (chargingMethod == BatteryManager.BATTERY_PLUGGED_WIRELESS);
         }
         return false;
