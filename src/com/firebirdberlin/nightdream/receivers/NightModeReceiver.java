@@ -1,8 +1,5 @@
 package com.firebirdberlin.nightdream.receivers;
 
-import java.util.Calendar;
-import java.lang.IllegalArgumentException;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -14,24 +11,14 @@ import android.os.Build;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.models.TimeRange;
 
+import java.util.Calendar;
+
 public class NightModeReceiver extends BroadcastReceiver {
     private static int PENDING_INTENT_SWITCH_MODES = 2;
-
-    public interface Event {
-        public void onSwitchNightMode();
-    }
-
-    private Event delegate = null;
+    private Event delegate;
 
     public NightModeReceiver(Event listener) {
         this.delegate = listener;
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (Config.ACTION_SWITCH_NIGHT_MODE.equals(intent.getAction())) {
-            delegate.onSwitchNightMode();
-        }
     }
 
     public static NightModeReceiver register(Context ctx, Event event) {
@@ -44,15 +31,13 @@ public class NightModeReceiver extends BroadcastReceiver {
     public static void unregister(Context ctx, BroadcastReceiver receiver) {
         try {
             ctx.unregisterReceiver(receiver);
-        } catch ( IllegalArgumentException e ) {
-
+        } catch (IllegalArgumentException ignored) {
         }
     }
 
     public static void schedule(Context context, TimeRange timerange) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent = getSwitchNightModeIntent(context);
-        alarmManager.cancel(pendingIntent);
 
         Calendar time = timerange.getNextEvent();
         if (Build.VERSION.SDK_INT >= 19) {
@@ -64,19 +49,35 @@ public class NightModeReceiver extends BroadcastReceiver {
 
     public static void cancel(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = getSwitchNightModeIntent(context);
+        PendingIntent pendingIntent = getSwitchNightModeIntentForCancel(context);
         alarmManager.cancel(pendingIntent);
     }
 
     private static PendingIntent getSwitchNightModeIntent(Context context) {
         Intent intent = new Intent(Config.ACTION_SWITCH_NIGHT_MODE);
-        return PendingIntent.getBroadcast(context, PENDING_INTENT_SWITCH_MODES, intent, 0);
+        return PendingIntent.getBroadcast(context, PENDING_INTENT_SWITCH_MODES, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    private static PendingIntent getSwitchNightModeIntentForCancel(Context context) {
+        Intent intent = new Intent(Config.ACTION_SWITCH_NIGHT_MODE);
+        return PendingIntent.getBroadcast(context, PENDING_INTENT_SWITCH_MODES, intent, 0);
+    }
 
     @SuppressWarnings("deprecation")
     private static void deprecatedSetAlarm(Context context, Calendar calendar, PendingIntent pendingIntent) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (Config.ACTION_SWITCH_NIGHT_MODE.equals(intent.getAction())) {
+            delegate.onSwitchNightMode();
+        }
+    }
+
+
+    public interface Event {
+        void onSwitchNightMode();
     }
 }

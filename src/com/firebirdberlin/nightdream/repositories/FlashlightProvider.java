@@ -19,24 +19,28 @@ public class FlashlightProvider {
     private CameraManager camManager;
     private Context context;
     private boolean isOn;
+    private String cameraId;
 
     public FlashlightProvider(Context context) {
         this.context = context;
         isOn = Settings.getFlashlightIsOn(context);
+        camManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        cameraId = getCameraId();
     }
 
     public boolean hasCameraFlash() {
-        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+        return (
+                context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
+                        && cameraId != null
+        );
     }
 
     private void turnFlashlightOn() {
+        if (cameraId == null) {
+            return;
+        }
         try {
-            camManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-            String cameraId; // Usually front camera is at 0 position.
-            if (camManager != null) {
-                cameraId = camManager.getCameraIdList()[0];
-                camManager.setTorchMode(cameraId, true);
-            }
+            camManager.setTorchMode(cameraId, true);
         } catch (CameraAccessException e) {
             Log.e(TAG, e.toString());
             return;
@@ -46,13 +50,12 @@ public class FlashlightProvider {
     }
 
     private void turnFlashlightOff() {
+        if (cameraId == null) {
+            return;
+        }
+
         try {
-            String cameraId;
-            camManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-            if (camManager != null) {
-                cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
-                camManager.setTorchMode(cameraId, false);
-            }
+            camManager.setTorchMode(cameraId, false);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -60,17 +63,28 @@ public class FlashlightProvider {
         isOn = false;
     }
 
-     public void toggleFlashlight() {
+    public void toggleFlashlight() {
         if (isOn) {
             turnFlashlightOff();
         } else {
             turnFlashlightOn();
         }
-     }
-     public boolean isFlashlightOn() {
+    }
+
+    public boolean isFlashlightOn() {
         //return isOn;
         return Settings.getFlashlightIsOn(context);
-     }
+    }
+
+    private String getCameraId() {
+        String camId = null;
+        try {
+            camId = camManager.getCameraIdList()[0];
+        } catch (CameraAccessException | ArrayIndexOutOfBoundsException e) {
+            Log.e(TAG, e.toString());
+        }
+        return camId;
+    }
 }
 
 
