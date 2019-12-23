@@ -633,8 +633,10 @@ public class NightDreamUI {
                 return new BitmapDrawable(mContext.getResources(), bgimage);
             }
         } catch (OutOfMemoryError e){
-            Toast.makeText(mContext, "Out of memory. Please, try to scale down your image.",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(
+                    mContext, "Out of memory. Please, try to scale down your image.",
+                    Toast.LENGTH_LONG
+            ).show();
         } catch (Exception e) {
             //pass
         }

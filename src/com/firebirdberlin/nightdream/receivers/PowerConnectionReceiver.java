@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -45,8 +47,8 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         }
     }
 
-    public static boolean shallAutostart(Context context, Settings settings) {
-        if (!settings.handle_power) return false;
+    public static boolean shallAutostart(@NonNull Context context, @NonNull Settings settings) {
+        if (context == null || settings == null || !settings.handle_power) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         Calendar now = new GregorianCalendar();
