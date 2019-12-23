@@ -160,11 +160,15 @@ public class ClockLayout extends LinearLayout {
         if (view == null) {
             return;
         }
-        clock.setShadowLayer(glowRadius, 0, 0, glowColor);
-        if (resId > 0) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
-            BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-            view.getPaint().setShader(shader);
+        try {
+            clock.setShadowLayer(glowRadius, 0, 0, glowColor);
+            if (resId > 0) {
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
+                BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+                view.getPaint().setShader(shader);
+            }
+        } catch (OutOfMemoryError e) {
+            view.getPaint().setShader(null);
         }
         //view.setLayerType((glowRadius > 24) ? LAYER_TYPE_SOFTWARE : LAYER_TYPE_HARDWARE, null);
         view.setLayerType(LAYER_TYPE_SOFTWARE, null);
