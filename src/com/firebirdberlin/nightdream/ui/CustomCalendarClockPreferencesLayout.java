@@ -86,9 +86,11 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
                 dialog.setSelectedUri(settings.getFontUri(ClockLayout.LAYOUT_ID_CALENDAR));
-                dialog.setDefaultFonts("roboto_regular.ttf", "roboto_light.ttf",
-                        "roboto_thin.ttf", "7_segment_digital.ttf",
-                        "dancingscript_regular.ttf");
+                dialog.setDefaultFonts(
+                        "roboto_regular.ttf", "roboto_light.ttf",
+                        "roboto_thin.ttf", "7_segment_digital.ttf", "dseg14classic.ttf",
+                        "dancingscript_regular.ttf"
+                );
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {

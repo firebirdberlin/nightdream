@@ -241,6 +241,16 @@ vi - Phong Nguyen"/>
 
         <Preference
             app:iconSpaceReserved="false"
+            app:key="about_14segment"
+            app:summary="by Keshikan"
+            app:title="14-Segment Digital Font">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.keshikan.net/fonts-e.html"/>
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
             app:key="about_dancing_script"
             app:summary="by Pablo Impallari"
             app:title="Dancing Script Regular Font">

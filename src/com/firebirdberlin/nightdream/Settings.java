@@ -85,7 +85,7 @@ public class Settings {
     public boolean restless_mode = true;
     boolean showBatteryWarning = true;
     public boolean showDate = true;
-    public boolean showDivider = true;
+    public boolean showDivider = false;
     public boolean showWeather = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
@@ -253,7 +253,7 @@ public class Settings {
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
-        showDivider = settings.getBoolean("showDivider", true);
+        showDivider = settings.getBoolean("showDivider", false);
         showWeather = settings.getBoolean("showWeather", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
@@ -434,7 +434,7 @@ public class Settings {
         final String ASSET_PATH = "file:///android_asset/";
         if (settings.contains("typeface")) {
 
-            int typeface = Integer.parseInt(settings.getString("typeface", "6"));
+            int typeface = Integer.parseInt(settings.getString("typeface", "8"));
             String path = mapIntToTypefacePath(typeface);
             if (path != null) {
                 String name = path.substring(6);
@@ -461,6 +461,8 @@ public class Settings {
                 return "fonts/7_segment_digital.ttf";
             case 7:
                 return "fonts/dancingscript_regular.ttf";
+            case 8:
+                return "fonts/dseg14classic.ttf";
             default: return null;
         }
     }
@@ -488,7 +490,7 @@ public class Settings {
 
     public String getFontUri(int clockLayoutId) {
         String key = getKeyForClockLayout("fontUri", clockLayoutId);
-        String def = "file:///android_asset/fonts/7_segment_digital.ttf";
+        String def = "file:///android_asset/fonts/dseg14classic.ttf";
         if ("fontUri:6".equals(key)) {
             def = "file:///android_asset/fonts/roboto_thin.ttf";
         }
@@ -501,8 +503,7 @@ public class Settings {
 
     public String getFontName(int clockLayoutId) {
         String key = getKeyForClockLayout("fontName", clockLayoutId);
-        mContext.getString(R.string.typeface_7_segment);
-        String def = mContext.getString(R.string.typeface_7_segment);
+        String def = mContext.getString(R.string.typeface_14_segment);
         if ("fontUri:6".equals(key)) {
             def = mContext.getString(R.string.typeface_roboto_thin);
         }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
      <string-array name="typeFaceValues">
-          <item>1</item>
-          <item>2</item>
-          <item>4</item>
-          <item>6</item>
+         <item>1</item>
+         <item>2</item>
+         <item>4</item>
+         <item>6</item>
+         <item>8</item>
          <item>7</item>
      </string-array>
 
@@ -14,6 +15,7 @@
         <item>@string/typeface_roboto_light</item>
         <item>@string/typeface_roboto_thin</item>
         <item>@string/typeface_7_segment</item>
+        <item>@string/typeface_14_segment</item>
         <item>@string/typeface_dancing_script</item>
     </string-array>
 </resources>
