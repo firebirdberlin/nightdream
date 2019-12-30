@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+    <string name="about">Om</string>
+    <string name="action_skip">Fortryd</string>
+    <string name="action_snooze">Snooze</string>
+    <string name="action_stop">Stop</string>
+    <string name="activateDoNotDisturb">Forstyr ikke</string>
+    <string name="activateDoNotDisturbSummary">Aktiver Forstyr ikke når appen er aktiv</string>
+    <string name="add_new_alarm">Sæt ny alarm</string>
+    <string name="add_custom_alarm_tone">Tilføj alarm tone</string>
+    <string name="add_custom_font">Tilføj skrifttype</string>
+    <string name="alarm">Alarm</string>
+    <string name="alarmFadeIn">Forøg lydstyrke</string>
+    <string name="alarmUpcoming">Kommende alarm</string>
+    <string name="alarmStartDate">Næste alarm</string>
+    <string name="alarmStartsFrom">fra</string>
+    <string name="alarmVolume">Volume</string>
+    <string name="allow_screen_off_summary">Sluk skærmen om natten</string>
+    <string name="allow_screen_off">Tænd skærm</string>
+    <string name="always_on">Altid tændt</string>
+    <string name="alwaysOnBatteryLevel">Batteri niveau øverst</string>
+    <string name="ambient_noise"> Detektion af omgivelsesstøj</string>
+    <string name="ambient_noise_summary">Skal omgivelsesstøj forhindre aktivering af Night mode</string>
+    <string name="appearance">Udseende</string>
+    <string name="app_name">Night Clock</string>
+    <string name="auto_brightness">Auto lysstyrke</string>
+    <string name="autostartForNotificationsSummary">Aktiver app når der er ny notifikation</string>
+    <string name="autostartForNotificationsTitle">Notifikation</string>
+    <string name="autostart_message_disabled">Deaktiver screensavers (Daydream) for at kunne aktivere autostart funktionerne</string>
+    <string name="autostart_timerange_label_end">Slut tid</string>
+    <string name="autostart_timerange_label_start">Start tid</string>
+    <string name="background">Baggrund</string>
+    <string name="background_black">Tilbage</string>
+    <string name="background_gradient">Gradient</string>
+    <string name="background_image">Billede</string>
+    <string name="background_image_select">Vælg et billede</string>
+    <string name="backgroundServiceDialogTitle">Stop baggrunds service</string>
+    <string name="backgroundServiceDialogMessage"> Hvis du stopper baggrundstjenesten, deaktiveres autostart og standbytilstand samt batteri-forudsigelse. Widgets kan ikke opdateres mere. Fortsæt?</string>
+    <string name="backgroundServiceDialogMessageWidgets">Fjern venligst dine widgets manuelt</string>
+    <string name="backgroundServiceNotificationText">Baggrund service kører</string>
+    <string name="backgroundServiceNotificationTextLocation">Lokations opdatering pågår</string>
+    <string name="backgroundServiceNotificationTextNightMode">Night mode service kører</string>
+    <string name="batteryTimeoutDescription">Ved batteritimeout</string>
+    <string name="batteryTimeoutNever">Aldrig</string>
+    <string name="batteryTimeout1min">1 min</string>
+    <string name="batteryTimeout2min">2 min</string>
+    <string name="batteryTimeout5min">5 min</string>
+    <string name="batteryTimeout10min">10 min</string>
+    <string name="batteryTimeout15min">15 min</string>
+    <string name="batteryTimeout30min">30 min</string>
+    <string name="behaviour">Opførsel</string>
+    <string name="brightness">Lysstyrke</string>
+    <string name="brightness_night_mode">Lysstyyrke i Night mode</string>
+    <string name="brightness_offset">Lysstyrke offset</string>
+    <string name="buttonAccessibilitySettings">Vis beskeder</string>
+    <string name="buy">Køb</string>
+    <string name="buy_upgrade_error"> Ups, jeg kunne ikke få adgang til faktureringstjenestern</string>
+    <string name="buy_upgrade_summary">Opgrader til professional version nu</string>
+    <string name="buy_upgrade_title">Opgrader</string>
+    <string name="category_handle_power">-- og når forbundet til</string>
+    <string name="category_handle_power_autostart_time">Start i tidsrummet</string>
+    <string name="category_night_mode_display_management">Vis indstillinger</string>
+    <string name="choose_alarm_sound">Alarm tone</string>
+    <string name="choose_primary_color"> Accentfarve</string>
+    <string name="choose_secondary_color">Tekstfarve</string>
+    <string name="clear">fjern</string>
+    <string name="clock_hands">Visere</string>
+    <string name="clock_layout_analog">Analogt ur</string>
+    <string name="clock_layout_calendar">Digitalt ur med kalender</string>
+    <string name="clock_layout_digital">Digitalt ur</string>
+    <string name="clock_layout_elegant_analog">elegant analogt ur</string>
+    <string name="clock_layout_digit_analog">analogt ur med cifre</string>
+    <string name="clock_layout_digital_flip">digitalt flip-ur</string>
+    <string name="clock_layout">Udseende</string>
+    <string name="clock_layout_modern_analog">moderne analogt ur</string>
+    <string name="clock_layout_mirror_text">Spejlvend tekst</string>
+    <string name="colors">Farver</string>
+    <string name="confirm_reset_question">Vil du virkelig nulstille indstillingerne?</string>
+    <string name="confirm_reset_question_layout"> Vil du virkelig nulstille dette layout til standardindstillinger?</string>
+    <string name="confirm_reset">Nulstil</string>
+    <string name="contribute">Bidrag</string>
+    <string name="contribute_beta_channel">Få beta verioner</string>
+    <string name="contribute_source_code">Kildekode</string>
+    <string name="contribute_translation">Oversættelse</string>
+    <string name="country">Land</string>
+    <string name="credits">Credits</string>
+    <string name="credits_pull_requests">Træk anmodninger</string>
+    <string name="date_format">Dato format</string>
+    <string name="delete">slet</string>
+    <string name="dialog_message_pending_purchase">Dit køb blev ikke godkendt af Google Play</string>
+    <string name="dialog_message_already_owned">Varen er allerede købt</string>
+    <string name="dialog_message_thank_you">Mange tak</string>
+    <string name="dialog_title_thank_you">Tak</string>
+    <string name="digit_emphasize_quarters">Fremhæv kvarterer</string>
+    <string name="decoration">Udsmykning</string>
+    <string name="decoration_glow_effect">Glow effekt</string>
+    <string name="decoration_style_copper">Kobber</string>
+    <string name="decoration_style_gold">Guld</string>
+    <string name="decoration_style_none">Ingen</string>
+    <string name="decoration_style_minute_hand">Minutviser</string>
+    <string name="decoration_style_labels">Numre</string>
+    <string name="decoration_style_rust">Rustent</string>
+    <string name="donate_bitcoin">Bitcoin</string>
+    <string name="donate">Donér</string>
+    <string name="doubleTapToFinishSummary">Luk appen ved at dobbelt tappe på skræmen</string>
+    <string name="doubleTapToFinishTitle">Dobbelt tap for af afslutte</string>
+    <string name="gift_for_donors">Gave som tak for donationen</string>
+    <string name="flashlight">Blitz</string>
+    <string name="forecast">5 dages vejrudsigt</string>
+    <string name="hand_shape_arc">Bue</string>
+    <string name="hand_shape_bar">Bar</string>
+    <string name="hand_shape_triangle">Trekant</string>
+    <string name="handle_auto_stop">Stop automatisk</string>
+    <string name="handle_power_ac">Ac</string>
+    <string name="handle_power">Autostart</string>
+    <string name="handle_power_car">bil ur</string>
+    <string name="handle_power_desk">bord ur</string>
+    <string name="handle_power_disconnection">når frakoblet</string>
+    <string name="handle_power_disconnection_summary">Slut applikationen når strømforsyning fjernes</string>
+    <string name="handle_power_disconnection_at_time_range_end">ved slutningen af ​​tidsintervallet for autostart</string>
+    <string name="handle_power_usb">USB</string>
+    <string name="handle_power_wireless">trådløs oplader</string>
+    <string name="hide_background_image_in_night_mode">Skjul</string>
+    <string name="hide_background_image_in_night_mode_summary">Skjul baggrunds billedet i Night mode</string>
+    <string name="hour">t</string>
+    <string name="inner_circle_radius">indre cirkel radius</string>
+    <string name="length">Længde</string>
+    <string name="location_time">lokal tid</string>
+    <string name="manage_permissions">Administrer godkendelser</string>
+    <string name="maxBrightness">Maksimal lysstyrke</string>
+    <string name="maxBrightnessBattery">Maksimal lysstyrke når på batteri</string>
+    <string name="message_mobile_data_connection_confirmation">Du er tilsluttet et mobilt netværk. Afspil radio?</string>
+    <string name="message_mobile_data_connection">Mobil data forbindelse</string>
+    <string name="message_no_data_connection">Ingen data forbindelse</string>
+    <string name="message_stop_alarm_long_press">Langt tryk for at stoppe alarmen</string>
+    <string name="minBrightness">Mindste lysstyrke</string>
+    <string name="minute">min</string>
+    <string name="mute_ringer">Mute</string>
+    <string name="next">næste</string>
+    <string name="night_mode_activation_auto">automatisk</string>
+    <string name="night_mode_activation_manual">manuel</string>
+    <string name="night_mode_activation_mode">Aktiverings mode</string>
+    <string name="night_mode_activation_scheduled">planlæg</string>
+    <string name="night_mode">Night mode</string>
+    <string name="night_mode_timerange_label_end">Slut tidspunkt</string>
+    <string name="night_mode_timerange_label_start">Start tidspunkt</string>
+    <string name="night_mode_timerange_title">Natte tid</string>
+    <string name="noise_sensitivity">Mikrofon følsomhed</string>
+    <string name="notification_channel_name_alarms">Alarmer</string>
+    <string name="notification_channel_name_devmsg">Beskder</string>
+    <string name="notification_channel_name_radio">Radio</string>
+    <string name="notification_channel_name_services">Services</string>
+    <string name="notification_channel_desc_alarms">Vis beskeder ved alarm</string>
+    <string name="notification_channel_desc_devmsg">Beskeder om appen</string>
+    <string name="notification_channel_desc_radio">Vis beskeder når der afspilles web radio</string>
+    <string name="notification_channel_desc_services">Meddelelse om kørende tjenester</string>
+    <string name="notification_alarm">Klik for at stoppe alarm</string>
+    <string name="notification_grouping_title">Gruppér ens meddelelser</string>
+    <string name="notification_grouping_summary"> Gruppér meddelelser fra de samme apps, der viser det samme ikon.</string>
+    <string name="notification_lowest_importance">vigtighed er højere eller lig</string>
+    <string name="notification_importance_min">minimal</string>
+    <string name="notification_importance_low">lav</string>
+    <string name="notification_importance_default">normal</string>
+    <string name="notification_importance_high">høj</string>
+    <string name="notification_importance_max">maksimal</string>
+    <string name="notifications">Beskeder</string>
+    <string name="notificationsInStatusBarTitle">Status bar</string>
+    <string name="notificationsInStatusBarSummary">Vi beskeder i Status baren hvis den er aktiveret, ellers tilføj en ekstra række</string>
+    <string name="notificationListenerService">Besked \'lytte service\'</string>
+    <string name="numbers">Tal</string>
+    <string name="numberStyleArabic">Arabisk</string>
+    <string name="numberStyleRoman">Romansk</string>
+    <string name="numberStyleNone">Ingen</string>
+    <string name="other_apps">Andre apps</string>
+    <string name="other_apps_tinytimetracker_summary">Spor din daglige arbejdstid.</string>
+    <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="options_stop_alarms_tap">tap</string>
+    <string name="options_stop_alarms_title">Gestus for at stoppe alarm</string>
+    <string name="options_stop_alarms_long_press">langt tryk</string>
+    <string name="outer_circle_radius">Ydre cirkel radius</string>
+    <string name="outer_circle_width">Ydre cirkel bredde</string>
+    <string name="permission_request_autostart"> Tilladelsen til at vise overlays (autostart) er ikke tildelt. Giv denne tilladelse!</string>
+</resources>

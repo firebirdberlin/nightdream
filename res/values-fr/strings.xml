@@ -69,6 +69,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Compensation de la luminosité</string>
     <string name="buttonAccessibilitySettings">Afficher les notifications</string>
     <string name="buy">Acheter</string>
+    <string name="buy_upgrade_error">Erreur lors de la facturation</string>
     <string name="buy_upgrade_summary">Passez à la version pro maintenant</string>
     <string name="buy_upgrade_title">Mise à niveau</string>
     <string name="category_handle_power">...et lorsque connecté à</string>
@@ -79,6 +80,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clear">Effacer</string>
     <string name="clock_hands">Aiguilles</string>
     <string name="clock_layout_analog">Analogique</string>
+    <string name="clock_layout_calendar">Horloge digitale avec calendrier</string>
     <string name="clock_layout_digital">Numérique</string>
     <string name="clock_layout_elegant_analog">Visuel horloge analogique élégante</string>
     <string name="clock_layout_digit_analog">Horloge analogique digitale</string>
@@ -99,14 +101,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits_pull_requests">Tirer</string>
     <string name="date_format">Format de la date</string>
     <string name="delete">Effacer</string>
+    <string name="dialog_message_pending_purchase">Votre achat n\'a pas encore été confirmé par Google Play</string>
     <string name="dialog_message_thank_you">Merci beaucoup!</string>
     <string name="dialog_title_thank_you">Merci</string>
     <string name="digit_emphasize_quarters">Mettre l\'accent sur les quarts</string>
     <string name="decoration">Décoration</string>
     <string name="decoration_glow_effect">Effet néon</string>
+    <string name="decoration_style_copper">Cuivre</string>
+    <string name="decoration_style_gold">Or</string>
     <string name="decoration_style_none">Pas de décoration</string>
     <string name="decoration_style_minute_hand">Décoration de la trotteuse</string>
     <string name="decoration_style_labels">Décoration des nombres</string>
+    <string name="decoration_style_rust">Rouille</string>
     <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Faire un don</string>
     <string name="doubleTapToFinishSummary">Fermer l\'application en double cliquant</string>
@@ -168,6 +174,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_importance_default">par défaut</string>
     <string name="notification_importance_high">haute</string>
     <string name="notification_importance_max">max.</string>
+    <string name="notifications">Notifications</string>
+    <string name="notificationsInStatusBarTitle">Barre de statut</string>
     <string name="numbers">Nombre</string>
     <string name="numberStyleArabic">Arabe</string>
     <string name="numberStyleRoman">Romain</string>
@@ -175,11 +183,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps">Autres applications</string>
     <string name="other_apps_tinytimetracker_summary">Suivre votre temps de travail quotidien.</string>
     <string name="other_apps_tinytimetracker"> TinyTimeTracker</string>
+    <string name="options_stop_alarms_long_press">Appui long</string>
     <string name="outer_circle_radius">Rayon cercle extérieur</string>
     <string name="outer_circle_width">Épaisseur cercle extérieur</string>
     <string name="persistent_battery_value_while_charging">État de la batterie en permanence</string>
     <string name="persistent_battery_value_while_charging_summary">Afficher l\'état de la batterie en permanence lors de la charge.</string>
     <string name="position">Position</string>
+    <string name="preferences">Préférences</string>
     <string name="prev">Précédent</string>
     <string name="preview">Aperçu</string>
     <string name="product_name_actions">Package Toujours actif</string>

@@ -74,7 +74,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Donar</string>
     <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
     <string name="doubleTapToFinishTitle">Doble pulsación para finalizar</string>
-    <string name="expertPreferences">Preferencias avanzadas</string>
     <string name="forecast">Prediccion de 5 dias</string>
     <string name="handle_power_ac">Corriente alterna</string>
     <string name="handle_power">Inicio automático</string>
@@ -122,8 +121,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">Activado</string>
     <string name="radio_stream">Emisoras de radio</string>
     <string name="radio_stream_failure">Falla de stream de radio</string>
-    <string name="radio_stream_manual_input_hint">Agregar una emisora manualmente</string>
     <string name="radio_stream_manual_input_description">Nombre de la emisora</string>
+    <string name="radio_stream_manual_input_hint">Agregar una emisora manualmente</string>
     <string name="radio_stream_no_search_results">No se encontraron resultados en tu búsqueda.</string>
     <string name="radio_stream_offline">Fuera de linea</string>
     <string name="radio_stream_query_hint">Cadena de búsqueda</string>
