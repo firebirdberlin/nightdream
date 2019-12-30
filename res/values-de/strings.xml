@@ -281,6 +281,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">heute</string>
     <string name="tomorrow">morgen</string>
     <string name="translations">Übersetzungen</string>
+    <string name="typeface_14_segment">14-Segment LED</string>
     <string name="typeface_7_segment">7-Segment LED</string>
     <string name="typeface_roboto_condensed">Roboto Condensed</string>
     <string name="typeface_roboto_light">Roboto Light</string>
