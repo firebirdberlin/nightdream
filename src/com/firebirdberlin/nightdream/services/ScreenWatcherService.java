@@ -132,6 +132,8 @@ public class ScreenWatcherService extends Service {
                 || settings.standbyEnabledWhileDisconnected
                 || ClockWidgetProvider.hasWidgets(context)) {
             ScreenWatcherService.start(context);
+        } else {
+            ScreenWatcherService.stop(context);
         }
     }
 

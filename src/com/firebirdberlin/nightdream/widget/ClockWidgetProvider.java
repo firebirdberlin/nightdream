@@ -180,11 +180,13 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         // when last instance was removed
         super.onDisabled(context);
         Log.i(TAG, "onDisabled");
+        ScreenWatcherService.conditionallyStart(context);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
+        ScreenWatcherService.conditionallyStart(context);
 
         for (int widgetId : appWidgetIds) {
             // API 16 and up only
