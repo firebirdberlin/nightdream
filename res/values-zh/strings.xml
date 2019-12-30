@@ -74,7 +74,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">贊助</string>
     <string name="doubleTapToFinishSummary">雙擊螢幕以完成應用程式</string>
     <string name="doubleTapToFinishTitle">雙擊以完成</string>
-    <string name="expertPreferences">進階設定</string>
     <string name="forecast">5日天氣預報</string>
     <string name="handle_power_ac">AC電源</string>
     <string name="handle_power">自動開啟</string>
@@ -122,9 +121,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_enabled">已啟用</string>
     <string name="radio_stream">串流廣播</string>
     <string name="radio_stream_failure">串流廣播失敗</string>
+    <string name="radio_stream_manual_input_description">電台名稱</string>
     <string name="radio_stream_manual_input_hint">手動加入電台</string>
     <string name="radio_stream_manual_input_url">串流URL</string>
-    <string name="radio_stream_manual_input_description">電台名稱</string>
     <string name="radio_stream_no_search_results">無可用的搜尋結果。</string>
     <string name="radio_stream_offline">已離線</string>
     <string name="radio_stream_query_hint">搜尋字組</string>

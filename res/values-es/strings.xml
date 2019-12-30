@@ -79,6 +79,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clear">borrar</string>
     <string name="clock_hands">Agujas del reloj</string>
     <string name="clock_layout_analog">Analógico</string>
+    <string name="clock_layout_calendar">Reloj digital &amp; Calendario</string>
     <string name="clock_layout_digital">Digital</string>
     <string name="clock_layout_elegant_analog">Relog analógico elegante</string>
     <string name="clock_layout_digit_analog">Reloj analógico con números</string>
@@ -112,6 +113,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
     <string name="doubleTapToFinishTitle">Doble clic para salir</string>
     <string name="gift_for_donors">Obsequio para donantes</string>
+    <string name="flashlight">Linterna</string>
     <string name="forecast">Previsión para 5 días</string>
     <string name="hand_shape_arc">Arco</string>
     <string name="hand_shape_bar">Barra</string>
@@ -159,6 +161,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_radio">Mostrar notificaciones durante la reproducción de radio vía web</string>
     <string name="notification_channel_desc_services">Notificar servicios en ejecución</string>
     <string name="notification_alarm">Hacer clic para detener la alama.</string>
+    <string name="notifications">Notificaciones</string>
     <string name="numbers">Números</string>
     <string name="numberStyleArabic">Arábigos</string>
     <string name="numberStyleRoman">Romanos</string>
