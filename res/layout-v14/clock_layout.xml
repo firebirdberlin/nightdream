@@ -38,7 +38,7 @@
             android:id="@+id/clock_ampm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
+            android:layout_gravity="center"
             android:clickable="true"
             android:ellipsize="none"
             android:focusable="true"

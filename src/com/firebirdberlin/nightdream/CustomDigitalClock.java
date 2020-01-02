@@ -11,7 +11,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
@@ -70,6 +72,14 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             mCalendar = Calendar.getInstance();
         }
         mCalendar.setTimeInMillis(System.currentTimeMillis());
+
+        if ("a".equals(mFormat)) {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+            if (params != null) {
+                int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
+                params.gravity = (hour < 12) ? Gravity.BOTTOM : Gravity.TOP;
+            }
+        }
 
         String text = simpleDateFormat.format(mCalendar.getTime());
         if (text != getText() ) {
