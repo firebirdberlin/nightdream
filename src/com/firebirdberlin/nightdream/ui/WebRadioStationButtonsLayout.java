@@ -84,8 +84,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         settings = new Settings(context);
         stations = settings.getFavoriteRadioStations();
 
-        Utility utility = new Utility(getContext());
-        Point displaySize = utility.getDisplaySize();
+        Point displaySize = Utility.getDisplaySize(context);
         showSmallButtons = (displaySize.x <= 480);
         final int buttonWidthPixels = (showSmallButtons ? 35 : 40);
 

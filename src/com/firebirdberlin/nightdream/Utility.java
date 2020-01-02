@@ -348,25 +348,21 @@ public class Utility {
         }
     }
 
-    public Point getDisplaySize() {
+    public static Point getDisplaySize(Context context) {
         Point size = new Point();
         if (Build.VERSION.SDK_INT < 17) {
             DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(metrics);
             size.x = metrics.widthPixels;
             size.y = metrics.heightPixels;
         } else {
-            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             Display display = wm.getDefaultDisplay();
             display.getSize(size);
         }
 
         return size;
-    }
-
-    public boolean isDebuggable() {
-        return (0 != (mContext.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE));
     }
 
     public int getStatusBarHeight() {
