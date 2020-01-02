@@ -271,12 +271,15 @@ public class NightDreamActivity extends BillingHelperActivity
         Intent intent = getIntent();
 
         String action = intent.getAction();
+        intent.setAction(null);
         if (Config.ACTION_STOP_BACKGROUND_SERVICE.equals(action)) {
             showStopBackgroundServicesDialog();
             intent.setAction(null);
         } else
         if ("start standby mode".equals(action)) {
-            nightDreamUI.setLocked(true);
+            if (mySettings.alwaysOnStartWithLockedUI) {
+                nightDreamUI.setLocked(true);
+            }
             setMode(mode);
         } else
         if ("start night mode".equals(action)) {

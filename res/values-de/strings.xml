@@ -33,6 +33,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off_summary">Der Bildschirm darf sich während der Nacht abschalten.</string>
     <string name="always_on">Always on</string>
     <string name="alwaysOnBatteryLevel">Akkustand ist über</string>
+    <string name="alwaysOnStartWithLockedUI">Gegen Berührungen sperren</string>
+    <string name="alwaysOnStartWithLockedUIDesc">Beim automatischen Start die App gegen Berührungen sperren. Ein langer Druck auf das Schloss-Symbol entsperrt die App wieder.</string>
     <string name="ambient_noise_summary">Verhindert das Abschalten bei Umgebungsgeräuschen.</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
     <string name="appearance">Aussehen</string>

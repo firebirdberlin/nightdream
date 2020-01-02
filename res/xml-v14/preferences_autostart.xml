@@ -159,6 +159,14 @@
             app:key="autostartForNotifications"
             app:summary="@string/autostartForNotificationsSummary"
             app:title="@string/autostartForNotificationsTitle" />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="alwaysOnStartWithLockedUI"
+            app:title="@string/alwaysOnStartWithLockedUI"
+            app:summary="@string/alwaysOnStartWithLockedUIDesc"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory

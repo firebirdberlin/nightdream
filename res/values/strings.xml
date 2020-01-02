@@ -35,6 +35,8 @@ OR
     <string name="allow_screen_off">Turn screen off</string>
     <string name="always_on">Always on</string>
     <string name="alwaysOnBatteryLevel">Battery level is above</string>
+    <string name="alwaysOnStartWithLockedUI">Lock user interface</string>
+    <string name="alwaysOnStartWithLockedUIDesc">When starting the app automatically lock the user interface. Long press the lock icon to unlock.</string>
     <string name="ambient_noise">Ambient noise detection</string>
     <string name="ambient_noise_summary">Shall ambient noise prevent the night mode to be activated?</string>
     <string name="appearance">Appearance</string>
