@@ -161,7 +161,7 @@ public class ClockLayout extends LinearLayout {
             return;
         }
         try {
-            clock.setShadowLayer(glowRadius, 0, 0, glowColor);
+            view.setShadowLayer(glowRadius, 0, 0, glowColor);
             if (resId > 0) {
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
                 BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
@@ -411,6 +411,13 @@ public class ClockLayout extends LinearLayout {
             clock.setMaxHeight((int) (0.35 * parentHeight));
             clock.setMaxFontSizesInSp(6.f, 300.f);
             clock.invalidate(); // must invalidate to get correct getHeightOfView below
+        }
+        if (clock_ampm != null) {
+            clock_ampm.setPadding(0, 0, 0, 0);
+            clock_ampm.setMaxWidth((int) (0.1 * parentWidth));
+            clock_ampm.setMaxHeight((int) (0.35 * parentHeight));
+            clock_ampm.setMaxFontSizesInSp(6.f, 30.f);
+            clock_ampm.invalidate(); // must invalidate to get correct getHeightOfView below
         }
         if (date != null && date.getVisibility() == VISIBLE) {
             date.setMaxWidth((int) (0.9 * parentWidth));
