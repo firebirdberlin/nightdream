@@ -44,7 +44,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Συμπεριφορά </string>
     <string name="brightness">Φωτεινότητα</string>
     <string name="brightness_offset">Αντιστάθμιση φωτεινότητας</string>
-    <string name="buttonAccessibilitySettings">Εμφάνιση ειδοποιήσεων</string>
     <string name="buy">Αγοράστε την εφαρμογή</string>
     <string name="category_handle_power">Και όταν είναι συνδεδεμένο με</string>
     <string name="category_handle_power_autostart_time">Ξεκινήσε εντός του χρονικού διαστήματος</string>
@@ -71,7 +70,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Διαγραφή</string>
     <string name="dialog_message_thank_you">Σας ευχαριστώ πάρα πολύ </string>
     <string name="dialog_title_thank_you">Ευχαριστώ </string>
-    <string name="donate_bitcoin">Βιτcoin</string>
     <string name="donate">Δώρισε</string>
     <string name="doubleTapToFinishSummary">Διπλό άγγιγμα για τερματισμό της εφαρμογής</string>
     <string name="doubleTapToFinishTitle">Διπλό άγγιγμα για τερματισμό</string>
@@ -105,7 +103,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Ώρα έναρξης</string>
     <string name="night_mode_timerange_title">Νυχτερινή ώρα</string>
     <string name="noise_sensitivity">Ευαισθησία μικροφώνου</string>
-    <string name="notification_alarm">Πατήστε για τερματισμό ξυπνητηριού</string>
     <string name="other_apps">Άλλες εφαρμογές</string>
     <string name="other_apps_tinytimetracker_summary">Παρακολούθηση καθημερινής ώρας εργασίας</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -117,9 +114,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_weather">Πακέτο σχεδίασης καιρού</string>
     <string name="product_name_webradio">Πακέτο ιντερνετικού ράδιου</string>
     <string name="purchaseWeatherData">Αγορά άδειας</string>
-    <string name="purchaseWebRadio">Αγορά άδειας</string>
     <string name="radio">Ράδιο</string>
-    <string name="radio_stream_enabled">Ενεργό</string>
     <string name="radio_stream">Ροές</string>
     <string name="radio_stream_failure">Σφάλμα ροής</string>
     <string name="radio_stream_manual_input_description">Όνομα σταθμού</string>
@@ -147,10 +142,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Οριζόντια αντίθετη</string>
     <string name="screen_orientation_reverse_portrait">Κάθετη αντίθετη</string>
     <string name="screenOrientation">Περιστροφή οθόνης</string>
-    <string name="select_alarm_sound">Επιλογή ήχου</string>
     <string name="set_alarm">Ορισμός ξυπνητηριού</string>
-    <string name="showcase_text_screen_lock">Η οθόνη είναι κλειδωμένη. Πατήστε παρατεταμένα το εικονίδιο για ξεκλείδωμα</string>
-    <string name="showcase_title_screen_lock">Κλείδωμα οθόνης</string>
     <string name="show_date">Εμφάνιση Ημερομηνίας</string>
     <string name="show_temperature">Εμφάνιση θερμοκρασίας</string>
     <string name="show_weather">Εμφάνιση καιρού στην τοποθεσία σας</string>
@@ -160,18 +152,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">Μονάδα μέτρησης ανέμου</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Προσοχή Αυτό θα αδειάσει γρήγορα την μπαταρία σας</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Αναμονή όταν αποφορτίζει</string>
-    <string name="standbyNotificationText">Η αναμονή είναι ενεργή</string>
     <string name="temperatureUnit">Μονάδα θερμοκρασίας</string>
     <string name="timeFormat">Μορφή ώρας</string>
     <string name="titlePrivacyPolicy">Πολιτική απορρήτου</string>
     <string name="today">Σήμερα </string>
     <string name="tomorrow">Αύριο</string>
     <string name="translations">Μεταφράσεις</string>
-    <string name="typeface_7_segment">Led χωρισμένο στα 7</string>
-    <string name="typeface_dancing_script">Dancing Script Regular</string>
-    <string name="typeface_roboto_condensed">Roboto condensed</string>
-    <string name="typeface_roboto_light">Roboto light</string>
-    <string name="typeface_roboto_medium">Roboto medium</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
@@ -180,18 +166,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Για να γίνει απεγκατάσταση παρακαλούμε απενεργοποιήστε τα δικαιώματα διαχειριστή συσκευής για την συγκεκριμένη εφαρμογή</string>
     <string name="useDeviceLockExplanation">Για να γίνει απεγκατάσταση πρέπει να απενεργοποιηθεί το δικαίωμα για το κλειδωμα της συσκευής </string>
     <string name="useDeviceLock">Κλείδωμα συσκευής</string>
-    <string name="use_internal_alarm">Γρήγορα ξυπνητήρια</string>
     <string name="weather_calculation_time">Χρόνος υπολογισμού καιρού</string>
-    <string name="weather_city_id_summary">Αφήστε κενό για αυτόματη εύρεση τοποθεσίας</string>
     <string name="weather_city_id_title">Αναζήτηση τοποθεσίας</string>
     <string name="weather_info_title">Πληροφορίες</string>
     <string name="weather">Καιρός</string>
-    <string name="welcome_screen_text1">Καλός ορίσατε στην νέα μας εφαρμογή! Αυτή η εφαρμογή σας επιτρέπει να βλέπετε την ώρα και τον καιρό όσο το κινητό σας φωρτιζει</string>
-    <string name="welcome_screen_text2">Επιλογές</string>
-    <string name="welcome_screen_text3">Ολίσθηση για έλεγχο φωτεινότητας</string>
-    <string name="welcome_screen_text4">Αλλάξτε μέγεθος στο ρολόι όπως κάνετε ζουμ (με τα δύο δάχτυλα)</string>
-    <string name="welcome_screen_title1">Νυχτερινό ρολόι</string>
-    <string name="welcome_screen_title2">Επιλογές</string>
-    <string name="welcome_screen_title3">Φωτεινότητα οθόνης</string>
-    <string name="welcome_screen_title4">Μέγεθος ρολογιού</string>
 </resources>

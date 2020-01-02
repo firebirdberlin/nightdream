@@ -52,7 +52,6 @@ OR
     <string name="background_image_select">Select an image</string>
     <string name="backgroundServiceDialogTitle">Stop background service</string>
     <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode as well as the battery prediction. Widgets cannot be updated any more. Proceed?</string>
-    <string name="backgroundServiceDialogMessageWidgets">Please remove your widgets manually!</string>
     <string name="backgroundServiceDialogMessageWidget">Cannot stop the background service while a widget is active. Please remove widgets and try again.</string>
     <string name="backgroundServiceNotificationText">Background service is running.</string>
     <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
@@ -69,11 +68,8 @@ OR
     <string name="brightness">Brightness</string>
     <string name="brightness_night_mode">Brightness in night mode</string>
     <string name="brightness_offset">Brightness offset</string>
-    <string name="buttonAccessibilitySettings">Show notifications</string>
     <string name="buy">Buy</string>
-    <string name="buy_upgrade_error">Ooops, I couldn\'t access the billing services.</string>
     <string name="buy_upgrade_summary">Upgrade to the professional version now.</string>
-    <string name="buy_upgrade_title">Upgrade</string>
     <string name="category_handle_power">… and when connected to</string>
     <string name="category_handle_power_autostart_time">Start within the time range</string>
     <string name="category_night_mode_display_management">Display management</string>
@@ -117,7 +113,6 @@ OR
     <string name="decoration_style_minute_hand">Minute hand</string>
     <string name="decoration_style_labels">Numbers</string>
     <string name="decoration_style_rust">Rust</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
@@ -171,7 +166,6 @@ OR
     <string name="notification_channel_desc_devmsg">Messages concerning the app</string>
     <string name="notification_channel_desc_radio">Notification showing up while web radio is playing</string>
     <string name="notification_channel_desc_services">Notification indicating running services</string>
-    <string name="notification_alarm">Click to stop the alarm.</string>
     <string name="notification_grouping_title">Group similar notifications</string>
     <string name="notification_grouping_summary">Group notifications from the same apps showing the same icon.</string>
     <string name="notification_lowest_importance">Importance is higher or equal than</string>
@@ -199,7 +193,6 @@ OR
     <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
-    <string name="position">Position</string>
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
@@ -210,7 +203,6 @@ OR
     <string name="product_name_webradio">Web radio package</string>
     <string name="purchaseActions">Buy a license</string>
     <string name="purchaseWeatherData">Buy a license</string>
-    <string name="purchaseWebRadio">Buy a license</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Radio station</string>
     <string name="radio_station_dialog_title">Select a radio station</string>
@@ -219,7 +211,6 @@ OR
     <string name="radio_stream_activate_wifi_desc">If on, WiFi will be activated a few minutes before the stream starts to play.</string>
     <string name="radio_stream_require_wifi">require WiFi connection</string>
     <string name="radio_stream_require_wifi_desc">If on, alarms will play web radio streams only with an established WiFi connection.</string>
-    <string name="radio_stream_enabled">Enabled</string>
     <string name="radio_stream">Radio streams</string>
     <string name="radio_stream_failure">Radio stream failure</string>
     <string name="radio_stream_manual_edit">Edit radio station</string>
@@ -255,15 +246,12 @@ OR
     <string name="screen_orientation_reverse_landscape">reverse landscape</string>
     <string name="screen_orientation_reverse_portrait">reverse portrait</string>
     <string name="screenOrientation">Screen orientation</string>
-    <string name="select_alarm_sound">Select alarm sound</string>
     <string name="set_alarm">set alarm</string>
     <string name="showAlarmsPersistently">Show persistently</string>
     <string name="showAlarmsPersistentlySummary">Show the next alarm time persistently on the screen.</string>
     <string name="showBatteryWarningSummary">Show a warning at startup when on battery.</string>
     <string name="showBatteryWarningTitle">Battery warning</string>
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
-    <string name="showcase_text_screen_lock">The screen is currently locked. Long press the icon to unlock !</string>
-    <string name="showcase_title_screen_lock">Screen lock</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
     <string name="show_temperature">Show temperature</string>
@@ -276,7 +264,6 @@ OR
     <string name="standbyEnabledWhileDisconnectedSummary">This feature quickly drains your battery!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">within the time range</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
-    <string name="standbyNotificationText">Standby service is running.</string>
     <string name="style">Style</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="tick_style_hours">Hour tick style</string>
@@ -293,11 +280,6 @@ OR
     <string name="tomorrow">tomorrow</string>
     <string name="translations">Translations</string>
     <string name="typeface_14_segment">14-segment LED</string>
-    <string name="typeface_7_segment">7-segment LED</string>
-    <string name="typeface_dancing_script">Dancing Script Regular</string>
-    <string name="typeface_roboto_condensed">Roboto condensed</string>
-    <string name="typeface_roboto_light">Roboto light</string>
-    <string name="typeface_roboto_medium">Roboto medium</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
@@ -307,20 +289,10 @@ OR
     <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>
     <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
     <string name="useDeviceLock">Lock device</string>
-    <string name="use_internal_alarm">Quick alarms</string>
     <string name="weather_calculation_time">weather calculation time</string>
-    <string name="weather_city_id_summary">Leave empty for an automatic detection of the location.</string>
     <string name="weather_city_id_title">Search location</string>
     <string name="weather_info_title">Information</string>
     <string name="weather">Weather</string>
     <string name="weatherProvider">Weather Provider</string>
-    <string name="welcome_screen_text1">Welcome to your new night clock ! This app shows the current time while charging your mobile.</string>
-    <string name="welcome_screen_text2">Open the preferences here !</string>
-    <string name="welcome_screen_text3">Click and slide for changing the screen brightness. Try it now !</string>
-    <string name="welcome_screen_text4">Resize the clock using a two-finger zoom.</string>
-    <string name="welcome_screen_title1">Night Clock</string>
-    <string name="welcome_screen_title2">Preferences</string>
-    <string name="welcome_screen_title3">Screen brightness</string>
-    <string name="welcome_screen_title4">Clock size</string>
     <string name="width">Width</string>
 </resources>

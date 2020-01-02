@@ -52,7 +52,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Выбор изображения</string>
     <string name="backgroundServiceDialogTitle">Прекращение работы в фоне</string>
     <string name="backgroundServiceDialogMessage">Прекращение работу в фоне  приведет к отключению автозапуска и режима ожидания. Продолжить?</string>
-    <string name="backgroundServiceDialogMessageWidgets">Пожалуйста, удалите ваши виджеты вручную!</string>
     <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
     <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
     <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
@@ -68,11 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Яркость</string>
     <string name="brightness_night_mode">Яркость в ночном режиме</string>
     <string name="brightness_offset">Предел яркости</string>
-    <string name="buttonAccessibilitySettings">Показывать уведомления</string>
     <string name="buy">Купить</string>
-    <string name="buy_upgrade_error">Ой, я не смог получить доступ к сервисам биллинга.</string>
     <string name="buy_upgrade_summary">Обновите до профессиональной версии сейчас.</string>
-    <string name="buy_upgrade_title">Обновить</string>
     <string name="category_handle_power">... и когда подключен к</string>
     <string name="category_handle_power_autostart_time">Запуск в промежуток времени</string>
     <string name="category_night_mode_display_management">Управление экраном</string>
@@ -116,7 +112,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Минутная стрелка</string>
     <string name="decoration_style_labels">Цифры</string>
     <string name="decoration_style_rust">Ржавчина</string>
-    <string name="donate_bitcoin">Пожертвовать биткоины</string>
     <string name="donate">Поддержать</string>
     <string name="doubleTapToFinishSummary">Завершить работу приложения двойным касанием по экрану</string>
     <string name="doubleTapToFinishTitle">Для завершения, дважды коснитесь экрана</string>
@@ -170,7 +165,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Сообщения, касающиеся приложения</string>
     <string name="notification_channel_desc_radio">Уведомление о работающем интернет радио</string>
     <string name="notification_channel_desc_services">Уведомление запущенных сервисов</string>
-    <string name="notification_alarm">Нажмите для остановки будильника</string>
     <string name="notification_grouping_title">Группировать похожие уведомления</string>
     <string name="notification_grouping_summary">Групповые уведомления из одних и тех же приложений, показывающие один и тот же значок.</string>
     <string name="notification_lowest_importance">Важность выше или равна</string>
@@ -198,7 +192,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_autostart">Разрешение на отображение оверлеев (автозапуск) не предоставлено. Пожалуйста, предоставьте это разрешение!</string>
     <string name="persistent_battery_value_while_charging">Всегда отображать заряд</string>
     <string name="persistent_battery_value_while_charging_summary">Показывать статус батареи во время зарядки</string>
-    <string name="position">Позиция</string>
     <string name="preferences">Предпочтения</string>
     <string name="prev">Предыдущее</string>
     <string name="preview">Предосмотр</string>
@@ -209,7 +202,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_webradio">Пакет веб-радио</string>
     <string name="purchaseActions">Купить лицензию</string>
     <string name="purchaseWeatherData">Купить лицензию</string>
-    <string name="purchaseWebRadio">Купить лицензию</string>
     <string name="radio">Радио</string>
     <string name="radio_station">Радио станция</string>
     <string name="radio_station_dialog_title">Выберите радио станцию</string>
@@ -218,7 +210,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi_desc">Когда Включено, будет активирован Вай-фай за несколько минут до начала проигрывания интернет радио</string>
     <string name="radio_stream_require_wifi">требуется подключение к WiFi</string>
     <string name="radio_stream_require_wifi_desc">Если включено, будильники будут воспроизводить веб-радиопотоки только при установленном соединении WiFi.</string>
-    <string name="radio_stream_enabled">Включено</string>
     <string name="radio_stream">Потоковое радио</string>
     <string name="radio_stream_failure">Поток неожиданно остановлен</string>
     <string name="radio_stream_manual_edit">Изменить радио-станцию</string>
@@ -254,15 +245,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">перевёрнутый ландшафт</string>
     <string name="screen_orientation_reverse_portrait">перевёрнутый портрет</string>
     <string name="screenOrientation">Ориентация экрана</string>
-    <string name="select_alarm_sound">Выбрать мелодию будильника</string>
     <string name="set_alarm">Уст. будильник</string>
     <string name="showAlarmsPersistently">Постоянно показывать</string>
     <string name="showAlarmsPersistentlySummary">Показывать время следующего будильника постоянно на экране.</string>
     <string name="showBatteryWarningSummary">Предупреждать о работе от батареи</string>
     <string name="showBatteryWarningTitle">Предупреждение о батарее</string>
     <string name="showBatteryWarningMessage">Внимание: Источник внешнего питания отключен!</string>
-    <string name="showcase_text_screen_lock">Экран заблокирован. Длительное нажатие на иконку для разблокирования</string>
-    <string name="showcase_title_screen_lock">Экран заблокирован</string>
     <string name="show_date">Показывать дату</string>
     <string name="show_divider">Отображать разделитель</string>
     <string name="show_temperature">Показывать температуру</string>
@@ -275,7 +263,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">Это ускорит разряд АКБ!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">В промежутке времени</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Режим ожидания при разрядке.</string>
-    <string name="standbyNotificationText">Режим ожидания запущен.</string>
     <string name="style">Стиль</string>
     <string name="temperatureUnit">Ед. температуры</string>
     <string name="tick_style_hours">Стиль часовых делений</string>
@@ -289,11 +276,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translations">Переводы</string>
-    <string name="typeface_7_segment">7-ми сегментый LED</string>
-    <string name="typeface_dancing_script">Dancing Script Regular</string>
-    <string name="typeface_roboto_condensed">Roboto condensed</string>
-    <string name="typeface_roboto_light">Roboto light</string>
-    <string name="typeface_roboto_medium">Roboto medium</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Шрифт</string>
@@ -303,20 +285,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Функция блокировки экрана требует разрешения администратора устройства. Чтобы удалить приложение, отключите эту функцию.</string>
     <string name="useDeviceLockExplanation">Заблокируйте устройство, пока приложение активно. Чтобы удалить приложение, отмените это разрешение.</string>
     <string name="useDeviceLock">Заблокировать устройство</string>
-    <string name="use_internal_alarm">Быстрый будильник</string>
     <string name="weather_calculation_time">время подсчёта погоды</string>
-    <string name="weather_city_id_summary">Оставьте пустым для автоопределения местоположения</string>
     <string name="weather_city_id_title">Поиск местоположения</string>
     <string name="weather_info_title">Информация</string>
     <string name="weather">Погода</string>
     <string name="weatherProvider">Провайдер погоды</string>
-    <string name="welcome_screen_text1">Представляем вам новые ночные часы! Это приложение показывает текущее время при зарядке устройства.</string>
-    <string name="welcome_screen_text2">Откройте настройки здесь!</string>
-    <string name="welcome_screen_text3">Нажмите и проведите пальцем для изменения яркости экрана. Попробуйте сейчас!</string>
-    <string name="welcome_screen_text4">Измените размер часов "щипком" двух пальцев</string>
-    <string name="welcome_screen_title1">Ночные часы</string>
-    <string name="welcome_screen_title2">Предпочтения</string>
-    <string name="welcome_screen_title3">Яркость экрана</string>
-    <string name="welcome_screen_title4">Размер часов</string>
     <string name="width">Ширина</string>
 </resources>

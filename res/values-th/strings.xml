@@ -36,7 +36,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">การแสดง</string>
     <string name="brightness">ความสว่าง</string>
     <string name="brightness_offset">ปรับชดเชยความสว่าง</string>
-    <string name="buttonAccessibilitySettings">แสดงการแจ้งเตือน</string>
     <string name="category_handle_power">เมื่อเชื่อมต่อกับ</string>
     <string name="category_handle_power_autostart_time">เริ่มในช่วงเวลาต่อไปนี้</string>
     <string name="choose_alarm_sound">เสียงนาฬิกาปลุก</string>

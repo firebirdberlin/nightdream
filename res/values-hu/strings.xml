@@ -43,7 +43,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Viselkedés</string>
     <string name="brightness">Fényerő</string>
     <string name="brightness_offset">Fényerő kiegyenlítése</string>
-    <string name="buttonAccessibilitySettings">Értesítések mutatása</string>
     <string name="buy">Vásárlás.</string>
     <string name="category_handle_power">... és amikor csatlakoztatva a(z)</string>
     <string name="category_handle_power_autostart_time">Indítás az adott időtartományban</string>
@@ -70,7 +69,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Törlés</string>
     <string name="dialog_message_thank_you">Nagyon szépen köszönöm!</string>
     <string name="dialog_title_thank_you">Köszi</string>
-    <string name="donate_bitcoin">Bitérme</string>
     <string name="donate">Adomány</string>
     <string name="doubleTapToFinishSummary">Bezárja az alkalmazást a képernyő kettős megérintésével.</string>
     <string name="doubleTapToFinishTitle">Koppintson duplán a befejezéshez</string>
@@ -104,7 +102,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Kezdő időpont</string>
     <string name="night_mode_timerange_title">Éjjel</string>
     <string name="noise_sensitivity">Mikrofon érzékenység</string>
-    <string name="notification_alarm">Kattints, az ébresztő leállításához.</string>
     <string name="other_apps">További alkalmazások</string>
     <string name="other_apps_tinytimetracker_summary">Kövesd nyomon a napi munkaidődet.</string>
     <string name="other_apps_tinytimetracker">ApróIdőNyomonkövető</string>
@@ -116,9 +113,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_weather">Időjárás és design csomag</string>
     <string name="product_name_webradio">Webes rádiócsomag</string>
     <string name="purchaseWeatherData">Engedély vásárlása</string>
-    <string name="purchaseWebRadio">Engedély vásárlása</string>
     <string name="radio">Rádió</string>
-    <string name="radio_stream_enabled">Engedélyezett</string>
     <string name="radio_stream">Rádióadások</string>
     <string name="radio_stream_failure">Rádiósugárzás hiba</string>
     <string name="radio_stream_manual_input_description">Állomás neve</string>
@@ -147,10 +142,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Fordított tájkép</string>
     <string name="screen_orientation_reverse_portrait">Fordított portré</string>
     <string name="screenOrientation">Képernyő tájolása</string>
-    <string name="select_alarm_sound">Ébresztő hang kiválasztása</string>
     <string name="set_alarm">Ébresztő beállítása</string>
-    <string name="showcase_text_screen_lock">A képernyő jelenleg zárva van. Hosszan nyomja meg az ikont a feloldáshoz!</string>
-    <string name="showcase_title_screen_lock">Képernyőzár</string>
     <string name="show_date">Mutassa a dátumot</string>
     <string name="show_temperature">Mutassa a hőmérsékletet</string>
     <string name="show_weather">Mutassa a helyi időjárást</string>
@@ -160,18 +152,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">Szélerősség mértékegysége</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Ez a funkció gyorsan lemeríti az akkumulátort!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Készenléti üzemmód kisütés közben</string>
-    <string name="standbyNotificationText">A készenléti szolgáltatás fut.</string>
     <string name="temperatureUnit">Hőmérséklet egysége</string>
     <string name="timeFormat">Idő formátum</string>
     <string name="titlePrivacyPolicy">Adatvédelmi irányelvek</string>
     <string name="today">Ma</string>
     <string name="tomorrow">Holnap</string>
     <string name="translations">Fordítások</string>
-    <string name="typeface_7_segment">7-szegmenses LED</string>
-    <string name="typeface_dancing_script">Dancing Script normál</string>
-    <string name="typeface_roboto_condensed">Roboto sűrített</string>
-    <string name="typeface_roboto_light">Roboto világos</string>
-    <string name="typeface_roboto_medium">Roboto közepes</string>
     <string name="typeface_roboto_regular">Roboto szabályos</string>
     <string name="typeface_roboto_thin">Roboto vékony</string>
     <string name="typeface">Betűkészlet</string>
@@ -180,18 +166,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">A képernyőzár funkciónak szüksége van az eszköz rendszergazdájának engedélyére. Az alkalmazás eltávolításához kérjük, kapcsolja ki ezt a funkciót.</string>
     <string name="useDeviceLockExplanation">Zárja le az eszközt, amíg az alkalmazás aktív. Az alkalmazás eltávolításához kérjük, vonja vissza ezt az engedélyt.</string>
     <string name="useDeviceLock">Lezárja a készüléket</string>
-    <string name="use_internal_alarm">Gyors riasztás</string>
     <string name="weather_calculation_time">Időjárás számítási idő</string>
-    <string name="weather_city_id_summary">Nyissa meg az időjárási térképet. Hagyja üresen az automatikus helyzet felismeréshez.</string>
     <string name="weather_city_id_title">Város azonosítója</string>
     <string name="weather_info_title">Információ</string>
     <string name="weather">Időjárás</string>
-    <string name="welcome_screen_text1">Üdvözli az Ön új éjszakai órája. Ez az alkalmazás megmutatja az aktuális időt mialatt tölti a telefont.</string>
-    <string name="welcome_screen_text2">Nyissa meg a preferenciákat itt!</string>
-    <string name="welcome_screen_text3">Kattintson és csúsztassa a kijelző fényerejének változtatásához. Próbálja ki most!</string>
-    <string name="welcome_screen_text4">Óra átméretezése kétujjas zoom  használatával</string>
-    <string name="welcome_screen_title1">Éjszakai óra</string>
-    <string name="welcome_screen_title2">Preferenciák</string>
-    <string name="welcome_screen_title3">Kijelző fényereje</string>
-    <string name="welcome_screen_title4">Óra mérete</string>
 </resources>

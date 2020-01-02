@@ -52,7 +52,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Vyber obrázek</string>
     <string name="backgroundServiceDialogTitle">Zastavit službu na pozadí</string>
     <string name="backgroundServiceDialogMessage">Zastavení služby na pozadí zakáže automatické spouštění, stand-by režim a odhady výdrže na baterii. Widgety nebudou nadále aktualizovány. Pokračovat?</string>
-    <string name="backgroundServiceDialogMessageWidgets">Prosím odeberte widgety ručně.</string>
     <string name="backgroundServiceNotificationText">Služba na pozadí běží.</string>
     <string name="backgroundServiceNotificationTextLocation">Probíhá aktualizace polohy.</string>
     <string name="backgroundServiceNotificationTextNightMode">Služba nočního režimu běží.</string>
@@ -68,11 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Jas</string>
     <string name="brightness_night_mode">Jas v nočním režimu</string>
     <string name="brightness_offset">Úprava jasu</string>
-    <string name="buttonAccessibilitySettings">Zobrazovat oznámení</string>
     <string name="buy">koupit</string>
-    <string name="buy_upgrade_error">Jejda, nepodařilo se kontaktovat nákupní služby.</string>
     <string name="buy_upgrade_summary">Upgradovat na profesionální verzi.</string>
-    <string name="buy_upgrade_title">Upgradovat</string>
     <string name="category_handle_power">... a pokud je připojeno k</string>
     <string name="category_handle_power_autostart_time">Spusť v časovém rozsahu</string>
     <string name="category_night_mode_display_management">Správa displaye</string>
@@ -116,7 +112,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Minutová ručička</string>
     <string name="decoration_style_labels">Čísla</string>
     <string name="decoration_style_rust">Rezavá</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Darovat</string>
     <string name="doubleTapToFinishSummary">Ukončit aplikaci dvojitým kliknutím</string>
     <string name="doubleTapToFinishTitle">Pokliknutím dokončíte</string>
@@ -170,7 +165,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Zprávy o aplikaci</string>
     <string name="notification_channel_desc_radio">Oznámení zobrazené při přehrávání internetového rádia</string>
     <string name="notification_channel_desc_services">Oznámení o běžící službě</string>
-    <string name="notification_alarm">Kliknout pro zastavení budíku.</string>
     <string name="notification_grouping_title">Seskupit podobná oznámení</string>
     <string name="notification_grouping_summary">Seskupit oznámení od stejné aplikace se stejnou ikkonou.</string>
     <string name="notification_lowest_importance">Důležitost je stejná nebo vyšší než</string>
@@ -199,14 +193,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging_summary">Neustále zobrazovat stav baterie během nabíjení.</string>
     <string name="preview">Náhled</string>
     <string name="purchaseWeatherData">Koupit licenci</string>
-    <string name="purchaseWebRadio">Koupit licenci</string>
     <string name="radio">Rádio</string>
     <string name="radio_station">Rozhlasová stanice.</string>
     <string name="radio_station_dialog_title">Vybrat rozhlasovou stanici.</string>
     <string name="radio_station_none">Žádná rozhlasová stanice.</string>
     <string name="radio_stream_activate_wifi">Zapnout WiFi.</string>
     <string name="radio_stream_require_wifi">Požadované WiFi připojení.</string>
-    <string name="radio_stream_enabled">Povoleno</string>
     <string name="radio_stream">Radiová vysílání</string>
     <string name="radio_stream_failure">Selhání příjmu rádia</string>
     <string name="radio_stream_no_search_results">Nic nenalezeno.</string>
@@ -231,12 +223,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">obráceně na šířku</string>
     <string name="screen_orientation_reverse_portrait">obráceně na výšku</string>
     <string name="screenOrientation">Orientace obrazovky</string>
-    <string name="select_alarm_sound">Vyber zvuk budíku</string>
     <string name="set_alarm">nastavit budík</string>
     <string name="showBatteryWarningTitle">Varování: baterie.</string>
     <string name="showBatteryWarningMessage">Varování: není připojen zdroj.</string>
-    <string name="showcase_text_screen_lock">Obrazovka je aktuálně uzamčena. Stlačte dlouze pro odemknutí!</string>
-    <string name="showcase_title_screen_lock">Zámek obrazovky</string>
     <string name="show_date">Zobrazit datum</string>
     <string name="show_divider">Rozdělit linkou</string>
     <string name="show_temperature">Zobrazit teplotu</string>
@@ -247,7 +236,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">Jednotky pro rychlost větru</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Tato funkce má velkou spostřebu!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Pohotovostní režim při vybíjení.</string>
-    <string name="standbyNotificationText">Pohotovostní služba je spuštěna.</string>
     <string name="style">Styl</string>
     <string name="temperatureUnit">Jednotky pro teplotu</string>
     <string name="timeFormat">Formát času</string>
@@ -255,10 +243,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">Dnes</string>
     <string name="tomorrow">Zítra</string>
     <string name="translations">Překlady</string>
-    <string name="typeface_7_segment">7 segmentový LED</string>
-    <string name="typeface_roboto_condensed">Roboto zhuštěný</string>
-    <string name="typeface_roboto_light">Roboto lehký</string>
-    <string name="typeface_roboto_medium">Roboto střední</string>
     <string name="typeface_roboto_regular">Roboto normální</string>
     <string name="typeface_roboto_thin">Roboto tenké</string>
     <string name="typeface">Písmo</string>
@@ -268,20 +252,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Zamykání obrazovky vyžaduje práva administrátora. Zrušte toto nastavení, abyste mohli odinstalovat aplikaci.</string>
     <string name="useDeviceLockExplanation">Zamknout zařízení, zatímco je aplikace aktivní. Zrušte toto nastavení, abyste mohli odinstalovat.</string>
     <string name="useDeviceLock">Zamknout zařízení</string>
-    <string name="use_internal_alarm">Rychlý budík</string>
     <string name="weather_calculation_time">čas předpovědi počasí</string>
-    <string name="weather_city_id_summary">Ponechte prázdné pro automatické vyhledání lokality.</string>
     <string name="weather_city_id_title">Vyhledat lokalitu</string>
     <string name="weather_info_title">Informace</string>
     <string name="weather">Počasí</string>
     <string name="weatherProvider">Zdroj počasí</string>
-    <string name="welcome_screen_text1">Vítejte v aplikaci pro zobrazení hodin v noci. Aktuální čas se zobrazuje při nabíjení vašeho mobilního zařízení.</string>
-    <string name="welcome_screen_text2">Změna nastavení zde !</string>
-    <string name="welcome_screen_text3">Kliknou a táhnout pro změnu jasu. Vyzkoušejte hned !</string>
-    <string name="welcome_screen_text4">Velikost hodin lze změnit pomocí dvou prstů.</string>
-    <string name="welcome_screen_title1">Noční hodiny</string>
-    <string name="welcome_screen_title2">Nastavení</string>
-    <string name="welcome_screen_title3">Jas obrazovky</string>
-    <string name="welcome_screen_title4">Velikost hodin</string>
     <string name="width">Šířka</string>
 </resources>

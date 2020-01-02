@@ -52,7 +52,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Selecteer een afbeelding</string>
     <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
     <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterijvoorspelling. Doorgaan?</string>
-    <string name="backgroundServiceDialogMessageWidgets">Verwijder je widgets handmatig</string>
     <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
@@ -68,11 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Helderheid</string>
     <string name="brightness_night_mode">Helderheid nachtmodus</string>
     <string name="brightness_offset">Helderheid standaard</string>
-    <string name="buttonAccessibilitySettings">Meldingen tonen</string>
     <string name="buy">Kopen</string>
-    <string name="buy_upgrade_error">Oeps, ik kon de betaaldienst niet bereiken</string>
     <string name="buy_upgrade_summary">Verkrijg versie met alle opties</string>
-    <string name="buy_upgrade_title">Nieuwe versie</string>
     <string name="category_handle_power">... en als je verbonden bent met</string>
     <string name="category_handle_power_autostart_time">Starten binnen tijdsbereik</string>
     <string name="category_night_mode_display_management">Scherminstellingen</string>
@@ -116,7 +112,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Minuutwijzer</string>
     <string name="decoration_style_labels">Cijfers</string>
     <string name="decoration_style_rust">Roest</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Doneren</string>
     <string name="doubleTapToFinishSummary">Dubbeltik op het scherm om de app te sluiten.</string>
     <string name="doubleTapToFinishTitle">Dubbeltikken om te sluiten</string>
@@ -170,7 +165,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Berichten over deze app</string>
     <string name="notification_channel_desc_radio">Notificatie weergave tijdens afspelen van web radio</string>
     <string name="notification_channel_desc_services">Notificatie weergave voor lopende diensten</string>
-    <string name="notification_alarm">Druk om alarm te stoppen.</string>
     <string name="notification_grouping_title">Groepeer identieke notificaties</string>
     <string name="notification_grouping_summary">Groepeer notificaties van dezelfde applicaties die dezelfde icoon tonen.</string>
     <string name="notification_lowest_importance">Belangrijk is hoger of gelijk aan</string>
@@ -198,7 +192,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_autostart">De machtiging om overlays the tonen (autostart) is niet verleend. Verleen deze machtiging a.u.b.</string>
     <string name="persistent_battery_value_while_charging">Permanente batterijstatus</string>
     <string name="persistent_battery_value_while_charging_summary">Batterijstatus permanent tonen tijdens het opladen.</string>
-    <string name="position">Positie</string>
     <string name="preferences">Voorkeuren</string>
     <string name="prev">vorige</string>
     <string name="preview">Voorbeeld</string>
@@ -209,7 +202,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_webradio">Internetradiopakket</string>
     <string name="purchaseActions">Koop een licentie</string>
     <string name="purchaseWeatherData">Koop een licentie</string>
-    <string name="purchaseWebRadio">Koop een licentie</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Radiostation</string>
     <string name="radio_station_dialog_title">Selecteer een radiostation</string>
@@ -218,7 +210,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi_desc">Indien aan: Wi-Fi wordt enkele minuten voor het starten van de radiostream ingeschakeld.</string>
     <string name="radio_stream_require_wifi">Wi-Fi-verbinding nodig</string>
     <string name="radio_stream_require_wifi_desc">Indien aan: alarm zal streams van internetradio\'s alleen afspelen als er Wi-Fi-verbinding is</string>
-    <string name="radio_stream_enabled">Ingeschakeld</string>
     <string name="radio_stream">Radiostreams</string>
     <string name="radio_stream_failure">Probleem met de radiostream</string>
     <string name="radio_stream_manual_edit">Bewerk radiostation</string>
@@ -254,15 +245,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">omgekeerd landschap</string>
     <string name="screen_orientation_reverse_portrait">omgekeerd portret</string>
     <string name="screenOrientation">Schermoriëntatie</string>
-    <string name="select_alarm_sound">Kies alarmgeluid</string>
     <string name="set_alarm">alarm instellen</string>
     <string name="showAlarmsPersistently">Aanhoudend tonen</string>
     <string name="showAlarmsPersistentlySummary">Toon het volgende alarm aanhoudend op het scherm</string>
     <string name="showBatteryWarningSummary">Laat een waarschuwing zien bij opstarten als batterij gebruikt wordt.</string>
     <string name="showBatteryWarningTitle">Batterijwaarschuwing</string>
     <string name="showBatteryWarningMessage">Let op: Geen voeding aangesloten!</string>
-    <string name="showcase_text_screen_lock">Het scherm is vergrendeld. Houd het pictogram lang ingedrukt om te ontgrendelen.</string>
-    <string name="showcase_title_screen_lock">Schermvergrendeling</string>
     <string name="show_date">Datum tonen</string>
     <string name="show_divider">Scheidingslijn tonen</string>
     <string name="show_temperature">Temperatuur tonen</string>
@@ -275,7 +263,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">Deze optie zorgt ervoor dat je batterij snel leegloopt!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">binnen tijdsbereik</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby-modus tijdens ontladen</string>
-    <string name="standbyNotificationText">Standby-dienst is geactiveerd</string>
     <string name="style">Stijl</string>
     <string name="temperatureUnit">Temperatuureenheid</string>
     <string name="tick_style_hours">Stijl van uurstreep</string>
@@ -289,11 +276,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">vandaag</string>
     <string name="tomorrow">morgen</string>
     <string name="translations">Vertalingen</string>
-    <string name="typeface_7_segment">7-segment LED</string>
-    <string name="typeface_dancing_script">Dancing Script Regular</string>
-    <string name="typeface_roboto_condensed">Roboto condensed</string>
-    <string name="typeface_roboto_light">Roboto light</string>
-    <string name="typeface_roboto_medium">Roboto medium</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Lettertype</string>
@@ -303,20 +285,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">De vergrendel-optie heeft administrator-machtigingen nodig. Schakel deze optie uit voordat je de app verwijdert.</string>
     <string name="useDeviceLockExplanation">Apparaat vergrendelen terwijl de app draait. Trek deze machtiging in voordat je de app verwijdert.</string>
     <string name="useDeviceLock">Apparaat vergrendelen</string>
-    <string name="use_internal_alarm">Snelle alarmen</string>
     <string name="weather_calculation_time">Weerberekeningstijd</string>
-    <string name="weather_city_id_summary">Laat leeg voor automatische locatiebepaling.</string>
     <string name="weather_city_id_title">Locatie zoeken</string>
     <string name="weather_info_title">Informatie</string>
     <string name="weather">Weer</string>
     <string name="weatherProvider">Weersdienst leverancier</string>
-    <string name="welcome_screen_text1">Welkom bij je nieuwe nachtklok! Deze app toont de huidige tijd tijdens het opladen van je telefoon.</string>
-    <string name="welcome_screen_text2">Open de voorkeuren hier!</string>
-    <string name="welcome_screen_text3">Sleep je vinger over het scherm om de helderheid aan te passen. Probeer het nu!</string>
-    <string name="welcome_screen_text4">Wijzig de klokgrootte door met twee vingers in te zoomen.</string>
-    <string name="welcome_screen_title1">Nachtklok</string>
-    <string name="welcome_screen_title2">Voorkeuren</string>
-    <string name="welcome_screen_title3">Schermhelderheid</string>
-    <string name="welcome_screen_title4">Klokgrootte</string>
     <string name="width">Breedte</string>
 </resources>

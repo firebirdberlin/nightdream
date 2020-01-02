@@ -40,7 +40,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Hành động</string>
     <string name="brightness">Độ sáng</string>
     <string name="brightness_offset">Độ sáng offset</string>
-    <string name="buttonAccessibilitySettings">Hiển thị thông báo</string>
     <string name="buy">Mua</string>
     <string name="category_handle_power">... và rồi kết nối tới</string>
     <string name="category_handle_power_autostart_time">Bắt đầu trong khoảng thời gian</string>
@@ -67,11 +66,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">xoá</string>
     <string name="dialog_message_thank_you">Cám ơn bạn rất nhiều!</string>
     <string name="dialog_title_thank_you">Cám ơn</string>
-    <string name="donate_bitcoin">Tiền ảo Bitcoin</string>
     <string name="donate">Hổ trợ</string>
     <string name="doubleTapToFinishSummary">Hoàn tất ứng dụng bằng cách nhấn đúp vào màn hình.</string>
     <string name="doubleTapToFinishTitle">Nhấn đúp để kết thúc</string>
-    <string name="expertPreferences">Chuyên gia yêu thích</string>
     <string name="forecast">Dự báo thời tiết 5 ngày</string>
     <string name="handle_power_ac">Nguồn AC</string>
     <string name="handle_power">Tự khởi động</string>
@@ -102,7 +99,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Thời gian bắt đầu</string>
     <string name="night_mode_timerange_title">Ban đêm</string>
     <string name="noise_sensitivity">Độ nhạy micro</string>
-    <string name="notification_alarm">Nhấp để dừng báo thức.</string>
     <string name="other_apps">Ứng dụng khác</string>
     <string name="other_apps_tinytimetracker_summary">Theo dõi thời gian làm việc hàng ngày của bạn.</string>
     <string name="other_apps_tinytimetracker">Thời gian theo dõi nhỏ nhất</string>
@@ -114,9 +110,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_weather">Gói giao diện và thời tiết</string>
     <string name="product_name_webradio">Gói radio net</string>
     <string name="purchaseWeatherData">Mua bản quyền</string>
-    <string name="purchaseWebRadio">Mua bản quyền</string>
     <string name="radio">Radio</string>
-    <string name="radio_stream_enabled">Bật</string>
     <string name="radio_stream">luồng phát thanh</string>
     <string name="radio_stream_failure">Lỗi luồng phát thanh</string>
     <string name="radio_stream_manual_input_hint">Cài đặt kênh bằng tay</string>
@@ -144,10 +138,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Hướng ngang 180°</string>
     <string name="screen_orientation_reverse_portrait">Hướng dọc 180°</string>
     <string name="screenOrientation">Định hướng màn hình</string>
-    <string name="select_alarm_sound">Chọn âm thanh báo thức</string>
     <string name="set_alarm">Cài đặt báo thức</string>
-    <string name="showcase_text_screen_lock">Màn hình hiện đang bị khóa. Nhấn và giữ biểu tượng để mở khóa!</string>
-    <string name="showcase_title_screen_lock">Màn hình khóa</string>
     <string name="show_date">Hiển thị ngày</string>
     <string name="show_temperature">Hiển thị nhiệt độ</string>
     <string name="show_weather">Hiển thị thời tiết địa phương</string>

@@ -67,10 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Jasność</string>
     <string name="brightness_night_mode">Jasność w trybie nocnym</string>
     <string name="brightness_offset">Intensywność świecenia</string>
-    <string name="buttonAccessibilitySettings">Dostęp do powiadomień</string>
     <string name="buy">Kup</string>
     <string name="buy_upgrade_summary">Ulepsz do wersji pro</string>
-    <string name="buy_upgrade_title">Ulepsz</string>
     <string name="category_handle_power">.... i kiedy podłączony do</string>
     <string name="category_handle_power_autostart_time">Rozpocznij w przedziale czasowym</string>
     <string name="choose_alarm_sound">Dzwięk alarmu</string>
@@ -106,7 +104,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_none">Nic</string>
     <string name="decoration_style_minute_hand">Wskazówka minut</string>
     <string name="decoration_style_labels">Liczby</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Wspomóż</string>
     <string name="doubleTapToFinishSummary">Zakończ działanie aplikacji przez podwójnie puknięcie w ekran.</string>
     <string name="doubleTapToFinishTitle">Podwójnie puknij w ekrany, aby zakończyć.</string>
@@ -156,7 +153,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Wiadomości dotyczące aplikacji</string>
     <string name="notification_channel_desc_radio">Powiadomienia pojawiają się podczas wlaczonego radia</string>
     <string name="notification_channel_desc_services">Powiadomienia dotyczące aktywnych usług</string>
-    <string name="notification_alarm">Kliknij, aby zatrzymać alarm</string>
     <string name="numbers">Liczby</string>
     <string name="numberStyleArabic">Arabskie</string>
     <string name="numberStyleRoman">Rzymskie</string>
@@ -168,7 +164,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_width">Szerokość zewnętrznego koła</string>
     <string name="persistent_battery_value_while_charging">Status baterii</string>
     <string name="persistent_battery_value_while_charging_summary">Pokazuj status baterii cały czas podczas ładowania</string>
-    <string name="position">Pozycja</string>
     <string name="prev">Poprzedni</string>
     <string name="preview">Podgląd</string>
     <string name="product_name_actions">Zawsze na opakowaniu</string>
@@ -178,14 +173,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_webradio">Radio internetowe</string>
     <string name="purchaseActions">Kup licencję!</string>
     <string name="purchaseWeatherData">Kup licencje na pogode</string>
-    <string name="purchaseWebRadio">Kup licencje na webradio</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Stacja radiowa</string>
     <string name="radio_station_dialog_title">Wybierz stację radiową</string>
     <string name="radio_station_none">Bez stacji radiowej</string>
     <string name="radio_stream_activate_wifi">Wifi</string>
     <string name="radio_stream_activate_wifi_desc">Jeżeli uruchomione, Wifi uruchomi się kilka minut przed rozpoczęciem nadawania</string>
-    <string name="radio_stream_enabled">Włącz</string>
     <string name="radio_stream">Radio stream</string>
     <string name="radio_stream_failure">Błąd strumienia radia</string>
     <string name="radio_stream_manual_input_description">Nazwa stacji</string>
@@ -215,13 +208,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Orientacja ekranu pionowa odwrócona</string>
     <string name="screen_orientation_reverse_portrait">Orientacja ekranu pozioma odwrócona</string>
     <string name="screenOrientation">Orientacja ekranu</string>
-    <string name="select_alarm_sound">Wybierz dźwięk alarmu</string>
     <string name="set_alarm">Ustaw zegar</string>
     <string name="showBatteryWarningSummary">Pokaż powiadomienie podczas uruchamiania, gdy telefon nie jest w trakcie ładowania</string>
     <string name="showBatteryWarningTitle">Ostrzeżenie o zużyciu baterii</string>
     <string name="showBatteryWarningMessage">Uwaga: brak źródła zasilania!</string>
-    <string name="showcase_text_screen_lock">Ekran jest zablokowany. Przytrzymaj ikone długo żeby odblokować.</string>
-    <string name="showcase_title_screen_lock">Ekran zablokowany</string>
     <string name="show_date">Pokaż date</string>
     <string name="show_divider">Pokaż podział</string>
     <string name="show_temperature">Teperatura</string>
@@ -234,7 +224,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">To ustawienie zwiększa zużycie baterii.</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">W okresie</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Tryb czuwania kiedy jest ładowanie</string>
-    <string name="standbyNotificationText">Tryb czuwania aktywny.</string>
     <string name="style">Styl</string>
     <string name="temperatureUnit">Jednostka temperatury</string>
     <string name="tick_style_hours">Styl wskazówki godzin</string>
@@ -248,11 +237,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">Dzisiaj</string>
     <string name="tomorrow">Jutro</string>
     <string name="translations">Tłumaczenia</string>
-    <string name="typeface_7_segment">7 segment LED</string>
-    <string name="typeface_dancing_script">Dancing Script Regular</string>
-    <string name="typeface_roboto_condensed">Robot</string>
-    <string name="typeface_roboto_light">Robot light</string>
-    <string name="typeface_roboto_medium">Robot medium</string>
     <string name="typeface_roboto_regular">Robot regular</string>
     <string name="typeface_roboto_thin">Robot thin</string>
     <string name="typeface">Typ czcionki</string>
@@ -261,19 +245,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Zablokowanie ekranu potrzebuje uprawnienia administatora urządzenia Prosze wyłącz ta funkcje przed odinstalowaniem tej aplikacji.</string>
     <string name="useDeviceLockExplanation">Zablokuj urządzenie kiedy Nocny Zegar jest aktywny. Przed odinstalowaniem tej aplikacji proszę odznacz to ustawienie</string>
     <string name="useDeviceLock">Zablokuj urządzenie</string>
-    <string name="use_internal_alarm">Szybkie alarmy</string>
     <string name="weather_calculation_time">Częstotliwość odswieżania pogody</string>
-    <string name="weather_city_id_summary">Zostaw puste dla automatycznej lokalizacji</string>
     <string name="weather_city_id_title">Znajdź lokalizację</string>
     <string name="weather_info_title">Informacje</string>
     <string name="weather">Pogoda</string>
-    <string name="welcome_screen_text1">Witaj w nowym zegarze nocnym. Ta aplikacja pokazuje godzinę  w czasie ładowania telefonu.</string>
-    <string name="welcome_screen_text2">Otwórz ustawienia tu!</string>
-    <string name="welcome_screen_text3">Klik i przeciągnij aby zmienic jasność ekranu. Sprawdź teraz !</string>
-    <string name="welcome_screen_text4">Aby zmienić wielkośc zegara użyj dwóch palców</string>
-    <string name="welcome_screen_title1">Nocny zegar</string>
-    <string name="welcome_screen_title2">Ustawienia</string>
-    <string name="welcome_screen_title3">Jasność ekranu</string>
-    <string name="welcome_screen_title4">Wielkość zegara</string>
     <string name="width">Szerokość</string>
 </resources>

@@ -51,9 +51,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Beteende</string>
     <string name="brightness">Ljusstyrka</string>
     <string name="brightness_offset">Förskjuten ljusstyrka</string>
-    <string name="buttonAccessibilitySettings">Visa notifikationer</string>
     <string name="buy">Köp</string>
-    <string name="buy_upgrade_title">Uppgradera</string>
     <string name="category_handle_power">...och när enheten är ansluten till</string>
     <string name="category_handle_power_autostart_time">Starta inom tidsram</string>
     <string name="choose_alarm_sound">Alarmsignal</string>
@@ -79,11 +77,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Tack</string>
     <string name="decoration">Dekoration</string>
     <string name="decoration_style_none">Ingen</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donera</string>
     <string name="doubleTapToFinishSummary">Slutför appen genom att dubbelklicka på skärmen</string>
     <string name="doubleTapToFinishTitle">Dubbelklicka för att slutföra</string>
-    <string name="expertPreferences">Expertinställningar</string>
     <string name="forecast">5-dagars väderprognos</string>
     <string name="handle_power_ac">Strömkälla</string>
     <string name="handle_power">Autostart</string>
@@ -115,7 +111,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_title">Nattetid</string>
     <string name="noise_sensitivity">Mikrofonens känslighet</string>
     <string name="notification_channel_name_devmsg">Meddelanden</string>
-    <string name="notification_alarm">Tryck för att stoppa alarm.</string>
     <string name="other_apps">Andra appar</string>
     <string name="other_apps_tinytimetracker_summary">Följ din dagliga arbetstid.</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -124,9 +119,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="prev">Föregående</string>
     <string name="preview">Förhandsgranskning</string>
     <string name="purchaseWeatherData">Köp en licens</string>
-    <string name="purchaseWebRadio">Köp en licens</string>
     <string name="radio">Radio</string>
-    <string name="radio_stream_enabled">Aktiverad</string>
     <string name="radio_stream">Radiostreamar</string>
     <string name="radio_stream_failure">Felaktig radiostream</string>
     <string name="radio_stream_no_search_results">Hittade inga sökresultat.</string>
@@ -150,10 +143,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">omvänt landskap</string>
     <string name="screen_orientation_reverse_portrait">omvänt porträtt</string>
     <string name="screenOrientation">Skärmrotation</string>
-    <string name="select_alarm_sound">Välj alarmljud</string>
     <string name="set_alarm">ställ alarm</string>
-    <string name="showcase_text_screen_lock">Skärmen är låst. Håll nere ikonen för att låsa upp!</string>
-    <string name="showcase_title_screen_lock">Skärmlås</string>
     <string name="show_date">Visa datum</string>
     <string name="show_temperature">Visa temperatur</string>
     <string name="show_weather">Visa lokalt väder</string>
@@ -162,15 +152,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">Enhet för vindhastighet</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Denna funktion förbrukar mycket batteritid!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Vänteläge vid urladdning.</string>
-    <string name="standbyNotificationText">Våntelägestjänsten körs.</string>
     <string name="temperatureUnit">Temperaturenhet</string>
     <string name="timeFormat">Tidsformat</string>
     <string name="titlePrivacyPolicy">Integritetspolicy</string>
     <string name="translations">Översättning</string>
-    <string name="typeface_7_segment">7-segments LED</string>
-    <string name="typeface_roboto_condensed">Roboto kompakt</string>
-    <string name="typeface_roboto_light">Roboto mild</string>
-    <string name="typeface_roboto_medium">Roboto medium</string>
     <string name="typeface_roboto_regular">Roboto normal</string>
     <string name="typeface_roboto_thin">Roboto tunn</string>
     <string name="typeface">Typsnitt</string>
@@ -178,18 +163,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Funktionen för skärmlås kräver tillstånd för enhetsadministration. Deaktivera tillstånd för att kunna avinstallera appen.</string>
     <string name="useDeviceLockExplanation">Lås enheten när appen är aktiverad. För att kunna avinstallera appen, deaktivera tillståndet.</string>
     <string name="useDeviceLock">Lås enhet</string>
-    <string name="use_internal_alarm">Snabbalarm</string>
     <string name="weather_calculation_time">Väderberäkningstid</string>
-    <string name="weather_city_id_summary">Lämna blankt för att hitta plays automatiskt.</string>
     <string name="weather_city_id_title">Sökningsplats</string>
     <string name="weather_info_title">Information</string>
     <string name="weather">Väder</string>
-    <string name="welcome_screen_text1">Välkommen till din nya nattklocksapp! Den här appen visar aktuell tid när din enhet laddas.</string>
-    <string name="welcome_screen_text2">Öppna inställningar här!</string>
-    <string name="welcome_screen_text3">Tryck och svep för att ändra skärmens ljusstyrka. Testa nu!</string>
-    <string name="welcome_screen_text4">Ändra storlek genom att nypa med fingrarna.</string>
-    <string name="welcome_screen_title1">Nattklocka</string>
-    <string name="welcome_screen_title2">Inställningar</string>
-    <string name="welcome_screen_title3">Skärmens ljusstyrka</string>
-    <string name="welcome_screen_title4">Klockans storlek</string>
 </resources>
