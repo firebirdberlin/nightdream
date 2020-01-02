@@ -132,8 +132,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         WeatherEntry entry = getWeatherEntry(settings);
         clockLayout.update(entry);
 
-        Utility utility = new Utility(getContext());
-        Point size = utility.getDisplaySize();
+        Point size = Utility.getDisplaySize(getContext());
         Configuration config = context.getResources().getConfiguration();
         clockLayout.updateLayout(
             size.x - preferenceView.getPaddingLeft() - preferenceView.getPaddingRight(),

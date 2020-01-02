@@ -126,7 +126,6 @@ public class NightDreamUI {
     private ProgressBar brightnessProgress;
     private BatteryIconView batteryIconView;
 
-    private Utility utility;
     private Window window;
     private mAudioManager AudioManage;
     private ScaleGestureDetector mScaleDetector;
@@ -277,10 +276,14 @@ public class NightDreamUI {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (clockLayoutContainer == null) return false;
+            if (
+                    clockLayoutContainer == null || mContext == null || settings == null
+                            || brightnessProgress == null
+            ) return false;
+
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
-                Point size = utility.getDisplaySize();
+                Point size = Utility.getDisplaySize(mContext);
                 float dx = -2.f * (distanceX / size.x);
                 float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
                 value += dx;
@@ -420,12 +423,11 @@ public class NightDreamUI {
         menuIcon.setScaleY(.8f);
         clockLayout.setScaleFactor(.1f);
 
-        utility = new Utility(context);
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
         checkForReviewRequest();
-        isDebuggable = utility.isDebuggable();
+        isDebuggable = Utility.isDebuggable(context);
     }
 
     public void onStart() {
@@ -608,7 +610,7 @@ public class NightDreamUI {
 
     private Drawable loadBackGroundImage() {
         try{
-            Point display = utility.getDisplaySize();
+            Point display = Utility.getDisplaySize(mContext);
 
             Bitmap bgimage = loadBackgroundBitmap();
             if (bgimage != null) {
@@ -645,7 +647,7 @@ public class NightDreamUI {
     }
 
     private Bitmap loadBackgroundBitmap() throws Exception {
-        Point display = utility.getDisplaySize();
+        Point display = Utility.getDisplaySize(mContext);
         if (!settings.backgroundImageURI.isEmpty()) {
             // version for Android 4.4+ (KitKat)
             Uri uri = Uri.parse(settings.backgroundImageURI);

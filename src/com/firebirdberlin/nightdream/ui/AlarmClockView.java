@@ -270,7 +270,7 @@ public class AlarmClockView extends View {
 
     private void XYtotime(float x, float y) {
         int w = getWidth() - 2 * touch_zone_radius;
-        int h = new Utility(ctx).getDisplaySize().y - 2 * touch_zone_radius;
+        int h = Utility.getDisplaySize(ctx).y - 2 * touch_zone_radius;
 
         final boolean movingDown = (lastMoveEventY != null && y > lastMoveEventY);
 
