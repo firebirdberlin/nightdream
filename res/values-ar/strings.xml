@@ -52,7 +52,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">إختر صورة</string>
     <string name="backgroundServiceDialogTitle">وقف خدمة الخلفية</string>
     <string name="backgroundServiceDialogMessage">سيؤدي إيقاف خدمة الخلفية إلى تعطيل وضع التشغيل التلقائي ووضع الاستعداد وكذلك التنبؤ بالبطارية.  لا يمكن تحديث الحاجيات بعد الآن.  تقدم؟</string>
-    <string name="backgroundServiceDialogMessageWidgets">يرجى إزالة الحاجيات الخاصة بك يدوياً</string>
     <string name="backgroundServiceNotificationText">خدمة الخلفية قيد التشغيل</string>
     <string name="backgroundServiceNotificationTextLocation">تحديث الموقع قيد التقدم</string>
     <string name="backgroundServiceNotificationTextNightMode">خدمة الوضع الليلي قيد التشغيل</string>
@@ -68,11 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">سطوع</string>
     <string name="brightness_night_mode">السطوع في الوضع الليلي</string>
     <string name="brightness_offset">تعويض السطوع</string>
-    <string name="buttonAccessibilitySettings">إظهار الإشعارات</string>
     <string name="buy">إشتري</string>
-    <string name="buy_upgrade_error">عفوًا ، لم أستطع الوصول إلى خدمات الفوترة</string>
     <string name="buy_upgrade_summary">الترقية إلى الإصدار المحترف الآن</string>
-    <string name="buy_upgrade_title">ترقية</string>
     <string name="category_handle_power">وعند الاتصال بـ ...</string>
     <string name="category_handle_power_autostart_time">إبدأ ضمن النطاق الزمني</string>
     <string name="category_night_mode_display_management">إدارة العرض</string>
@@ -116,7 +112,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">عقرب الدقائق</string>
     <string name="decoration_style_labels">أرقام</string>
     <string name="decoration_style_rust">صدأ</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">تبرع</string>
     <string name="doubleTapToFinishSummary">إنهاء التطبيق عن طريق النقر المزدوج على الشاشة</string>
     <string name="doubleTapToFinishTitle">اضغط مرتين لإنهاء</string>
@@ -170,7 +165,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">رسائل متعلقة بالتطبيق</string>
     <string name="notification_channel_desc_radio">ظهور الإشعارات أثناء تشغيل الراديو</string>
     <string name="notification_channel_desc_services">خدمات تشغيل إشارات الإشعارات</string>
-    <string name="notification_alarm">إضغط لإيقاف المنبه</string>
     <string name="notification_grouping_title">مجموعة إشعارات متشابهة</string>
     <string name="notification_grouping_summary">مجموعة إشعارات من نفس التطبيق تظهر في نفس الأيقونة</string>
     <string name="notification_lowest_importance">الأهمية أعاي أو مساوية لـ</string>
@@ -198,7 +192,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_autostart">لم يتم منح إذن لإظهار التراكبات (التشغيل التلقائي).  يرجى منح هذا الإذن!</string>
     <string name="persistent_battery_value_while_charging">حالات البطارية المستمرة</string>
     <string name="persistent_battery_value_while_charging_summary">إظهار حالة البطارية بشكل دائم أثناء الشحن</string>
-    <string name="position">الوضع</string>
     <string name="preferences">تفضيلات</string>
     <string name="prev">السابق</string>
     <string name="preview">العرض</string>
@@ -209,7 +202,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_webradio">حزمة شبكة الراديو</string>
     <string name="purchaseActions">شراء ترخيص</string>
     <string name="purchaseWeatherData">اشتري ترخيص</string>
-    <string name="purchaseWebRadio">اشتري ترخيص</string>
     <string name="radio">راديو</string>
     <string name="radio_station">محطة الراديو</string>
     <string name="radio_station_dialog_title">إختار محطة الراديو</string>
@@ -218,7 +210,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi_desc">في حالة التسغيل. سيتم تفعيل الواي فاي قبل دقائق من بدء البث</string>
     <string name="radio_stream_require_wifi">تحتاج إتصال واي فاي</string>
     <string name="radio_stream_require_wifi_desc">في حالة التشغيل، ستقوم الإنذارات بتشغيل موجات راديو الإنترنت فقط من خلال اتصال واي فاي ثابت</string>
-    <string name="radio_stream_enabled">تمكين</string>
     <string name="radio_stream">موجات الراديو</string>
     <string name="radio_stream_failure">فشل موجة الراديو</string>
     <string name="radio_stream_manual_edit">تعديل محطة الراديو</string>
@@ -254,15 +245,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">مشهد طبيعي عكسي</string>
     <string name="screen_orientation_reverse_portrait">صورة عكسية</string>
     <string name="screenOrientation">تدوير الشاشة</string>
-    <string name="select_alarm_sound">إختر صوت المنبه</string>
     <string name="set_alarm">ضبط المنبه</string>
     <string name="showAlarmsPersistently">إظهار بإستمرار</string>
     <string name="showAlarmsPersistentlySummary">عرض وقت التنبيه التالي بإستمرار علي الشاشة</string>
     <string name="showBatteryWarningSummary">إظهار التنبيه عند بدء التشغيل عاي البطارية</string>
     <string name="showBatteryWarningTitle">تحذير البطارية</string>
     <string name="showBatteryWarningMessage">إنتباه !! لا يوجد مصد طاقة متصل!</string>
-    <string name="showcase_text_screen_lock">الشاشة بالفعل مغلفة. ضغطة مطولة علي الأيقونة للفتح!</string>
-    <string name="showcase_title_screen_lock">قفل الشاشة</string>
     <string name="show_date">إظهار التاريخ</string>
     <string name="show_divider">إظهار الفاصل</string>
     <string name="show_temperature">درجة الحرارة</string>
@@ -275,7 +263,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">هذه الميزة تستنزف البطارية بسرعة!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">ضمن النطاق الزمني</string>
     <string name="standbyEnabledWhileDisconnectedTitle">وضع الاستعداد أثناء التفريغ</string>
-    <string name="standbyNotificationText">خدمة الاستعداد قيد التشغيل</string>
     <string name="style">الأسلوب</string>
     <string name="temperatureUnit">وحدة درجة الحرارة</string>
     <string name="tick_style_hours">أسلوب التكة بالساعة</string>
@@ -289,11 +276,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">اليوم</string>
     <string name="tomorrow">غداً</string>
     <string name="translations">الترجمات</string>
-    <string name="typeface_7_segment">7-قطع LED</string>
-    <string name="typeface_dancing_script">الراقص النصي العادي</string>
-    <string name="typeface_roboto_condensed">روبوتو مكثف</string>
-    <string name="typeface_roboto_light">روبوتو خفيف</string>
-    <string name="typeface_roboto_medium">روبوتو وسط</string>
     <string name="typeface_roboto_regular">روبوتو معتاد</string>
     <string name="typeface_roboto_thin">روبوتو رفيع</string>
     <string name="typeface">نوع الخط</string>
@@ -303,20 +285,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">تحتاج ميزة قفل الشاشة إلى إذن مسؤول الجهاز.  لإلغاء تثبيت التطبيق ، يرجى تعطيل هذه الميزة</string>
     <string name="useDeviceLockExplanation">قم بإغلاق الجهاز أثناء تنشيط التطبيق.  لإلغاء تثبيت التطبيق ، يرجى إلغاء هذا الإذن</string>
     <string name="useDeviceLock">قفل الجهاز</string>
-    <string name="use_internal_alarm">منبه سريع</string>
     <string name="weather_calculation_time">وقت حساب الطقس</string>
-    <string name="weather_city_id_summary">أتركه فارغاً لإكتشاف الموقع تلقائياً</string>
     <string name="weather_city_id_title">بحث الموقع</string>
     <string name="weather_info_title">معلومات</string>
     <string name="weather">الطقس</string>
     <string name="weatherProvider">مزود الطقس</string>
-    <string name="welcome_screen_text1">مرحباً في ساعتك الليلية الجديدة ! هذا التطبيق يظهر التوقيت الحالي وانت تشحن هاتفك</string>
-    <string name="welcome_screen_text2">افتح التفضيلات هنا !</string>
-    <string name="welcome_screen_text3">إضغط ثم حرك لتغيير سطوع الشاشة. جرب الآن !</string>
-    <string name="welcome_screen_text4">غير حجم الساعة بحركة زووم الأصبعين</string>
-    <string name="welcome_screen_title1">الساعة الليلية</string>
-    <string name="welcome_screen_title2">التفضيلات</string>
-    <string name="welcome_screen_title3">سطوع الشاشة</string>
-    <string name="welcome_screen_title4">حجم الساعة</string>
     <string name="width">عرض</string>
 </resources>

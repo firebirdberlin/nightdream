@@ -39,7 +39,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">انتخاب تصویر</string>
     <string name="behaviour">رفتار</string>
     <string name="brightness">روشنایی</string>
-    <string name="buttonAccessibilitySettings">نمایش هشدارها</string>
     <string name="category_handle_power">...و هنگامی که متصل میشود</string>
     <string name="category_handle_power_autostart_time">آغاز میان دوره زمانی:</string>
     <string name="choose_alarm_sound">زنگ هشدار</string>
@@ -59,11 +58,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="date_format">شکل تاریخ</string>
     <string name="dialog_message_thank_you">سپاس فراوان از شما</string>
     <string name="dialog_title_thank_you">سپاس</string>
-    <string name="donate_bitcoin">بیت کوین</string>
     <string name="donate">کمک کردن</string>
     <string name="doubleTapToFinishSummary">با دو ضربه روی صفحه برنامه را خاتمه دهید</string>
     <string name="doubleTapToFinishTitle">دو ضربه بزنید تا تمام شود</string>
-    <string name="expertPreferences">تنظیمات حرفه ای</string>
     <string name="handle_power_ac">شارژ</string>
     <string name="handle_power">شروع خودکار</string>
     <string name="handle_power_car">ساعت ماشین</string>
@@ -92,7 +89,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">زمان شروع</string>
     <string name="night_mode_timerange_title">زمان شبانگاهی</string>
     <string name="noise_sensitivity">حساسیت میکروفون</string>
-    <string name="notification_alarm">برای توقف هشدار کلیک کن.</string>
     <string name="other_apps">برنامه های دیگر</string>
     <string name="other_apps_tinytimetracker_summary">زمان فعالیت روزانه ی خود را پیگیری کن.</string>
     <string name="other_apps_tinytimetracker">پیگیری کننده ی زمان کوچک</string>
@@ -100,9 +96,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging_summary">وضعیت باطری را طی شارژ کردن به طور مداوم نشان بده</string>
     <string name="preview">پیش نمایش</string>
     <string name="purchaseWeatherData">خرید اشتراک</string>
-    <string name="purchaseWebRadio">خرید اشتراک</string>
     <string name="radio">رادیو</string>
-    <string name="radio_stream_enabled">فعال</string>
     <string name="radio_stream_no_search_results">نتیجه ای برای جستجو وجود نداشت.</string>
     <string name="radio_stream_offline">افلاین</string>
     <string name="radio_stream_search">جستوجو</string>
@@ -115,23 +109,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="restless_mode">ساعت را در اطراف حرکت دهید</string>
     <string name="review_request">لطفا به این برنامه امتیاز دهید.ممنون ! </string>
     <string name="screen_orientation_automatic">اتوماتیک</string>
-    <string name="select_alarm_sound">انتخاب صدای آلارم</string>
     <string name="set_alarm">انتخاب آلارم</string>
-    <string name="showcase_title_screen_lock">قفل صفحه</string>
     <string name="show_date">نمایش تاریخ</string>
     <string name="show_temperature">نمایش دما</string>
     <string name="show_weather">نمایش آب و هوای محلی</string>
     <string name="show_wind_speed">نمایش سرعت باد</string>
     <string name="snoozeTime">زمان تعویق</string>
     <string name="standbyEnabledWhileDisconnectedSummary">این ویژگی به سرعت باطری را تخلیه میکند</string>
-    <string name="standbyNotificationText">حالت انتظار فعال است</string>
     <string name="timeFormat">نحوه نمایش ساعت</string>
     <string name="uninstall">حذف نرم افزار</string>
-    <string name="use_internal_alarm">آلارم کوتاه</string>
     <string name="weather_city_id_title">جستوجوی موقعیت</string>
     <string name="weather_info_title">اطلاعات</string>
     <string name="weather">آب و هوا</string>
-    <string name="welcome_screen_title1">ساعت حالت شب</string>
-    <string name="welcome_screen_title3">روشنایی تصویر</string>
-    <string name="welcome_screen_title4">اندازه ساعت</string>
 </resources>

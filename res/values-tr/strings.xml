@@ -50,7 +50,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Çalışma ayarları</string>
     <string name="brightness">Parlaklık</string>
     <string name="brightness_offset">Parlaklık adımları</string>
-    <string name="buttonAccessibilitySettings">Bildirimleri göster</string>
     <string name="buy">Satın al</string>
     <string name="category_handle_power">... bağlandığında</string>
     <string name="category_handle_power_autostart_time">Belirtilen zaman aralığında çalış</string>
@@ -83,7 +82,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_none">Hiçbiri</string>
     <string name="decoration_style_minute_hand">Yelkovan</string>
     <string name="decoration_style_labels">Rakamlar</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Bağış yapmak</string>
     <string name="doubleTapToFinishSummary">Uygulamadan çıkmak için ekrana çift tıkla</string>
     <string name="doubleTapToFinishTitle">Bitirmek için çift tıkla</string>
@@ -119,7 +117,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Başlama saati</string>
     <string name="night_mode_timerange_title">Gece zamanı</string>
     <string name="noise_sensitivity">Mikrofon hassasiyeti</string>
-    <string name="notification_alarm">Alarmı durdurmak için tıkla</string>
     <string name="numbers">Rakamlar</string>
     <string name="numberStyleArabic">Arap</string>
     <string name="numberStyleRoman">Roma</string>
@@ -129,7 +126,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps_tinytimetracker">MiniZamanTakibi</string>
     <string name="persistent_battery_value_while_charging">Pil durumu</string>
     <string name="persistent_battery_value_while_charging_summary">Şarj esnasında pil durumunu göster</string>
-    <string name="position">Konum</string>
     <string name="prev">Önceki</string>
     <string name="preview">Önizleme</string>
     <string name="product_name_donation">Bağış yap</string>
@@ -137,9 +133,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_weather">Hava durumu eklentisi</string>
     <string name="product_name_webradio">Internet radyo eklentisi</string>
     <string name="purchaseWeatherData">Lisans satın al</string>
-    <string name="purchaseWebRadio">Lisans satın al</string>
     <string name="radio">Radyo</string>
-    <string name="radio_stream_enabled">Açık</string>
     <string name="radio_stream">Radyo akışları</string>
     <string name="radio_stream_failure">Radyo akış hatası</string>
     <string name="radio_stream_manual_input_description">Kanal adı</string>
@@ -167,10 +161,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Yatay ters</string>
     <string name="screen_orientation_reverse_portrait">Dikey ters</string>
     <string name="screenOrientation">Ekran yönlendirme</string>
-    <string name="select_alarm_sound">Alarm sesi</string>
     <string name="set_alarm">Alarm kur</string>
-    <string name="showcase_text_screen_lock">Ekran kilitli. Ekran kilidini acmak için Simgeye basılı tutun!</string>
-    <string name="showcase_title_screen_lock">Ekran kilidi</string>
     <string name="show_date">Tarihi göster</string>
     <string name="show_divider">Sperarörü göster</string>
     <string name="show_temperature">Sıcaklığı göster</string>
@@ -181,7 +172,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">Rüzgar hızı birimi</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Bu özellik pilinizin hızlı bir şekilde boşalmasına sebep olur!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Pil boşalırken bekleme modu.</string>
-    <string name="standbyNotificationText">Bekleme servisi çalışıyor</string>
     <string name="style">Tip</string>
     <string name="temperatureUnit">Sıcaklık birimi</string>
     <string name="tick_style_hours">Kalın saat tipi</string>
@@ -191,10 +181,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">Bugün</string>
     <string name="tomorrow">Yarın</string>
     <string name="translations">Tercümeler</string>
-    <string name="typeface_7_segment">Dijital gösterge</string>
-    <string name="typeface_roboto_condensed">Roboto sıkışık</string>
-    <string name="typeface_roboto_light">Roboto hafif</string>
-    <string name="typeface_roboto_medium">Roboto orta</string>
     <string name="typeface_roboto_regular">Roboto normal</string>
     <string name="typeface_roboto_thin">Roboto ince</string>
     <string name="typeface">Saatfontu</string>
@@ -202,18 +188,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Ekran kilit özelliği için yönetici izni gerekmektedir. Uygulamayı kaldırmadan önce bu özelliği devre dışı bırakmanız gerekmektedir.</string>
     <string name="useDeviceLockExplanation">Uygulama aktifken cihazı kilitle. Uygulamayı kaldırabilmek için bu izni kaldırmanız gerekllidir</string>
     <string name="useDeviceLock">Cihazı kilitle</string>
-    <string name="use_internal_alarm">Hızlı alarmlar</string>
     <string name="weather_calculation_time">Hava durumu hesaplama zamanı</string>
-    <string name="weather_city_id_summary">Otomatik Bölge tespiti için boş bırak</string>
     <string name="weather_city_id_title">Bölge ara</string>
     <string name="weather_info_title">Bilgi</string>
     <string name="weather">Hava</string>
-    <string name="welcome_screen_text1">Gece saati uygulamasına hoş geldiniz ! Bu uygulama, mobil cihazınızı şarj ederken geçerli saati gösterir.</string>
-    <string name="welcome_screen_text2">Seçenekleri buradan açın !</string>
-    <string name="welcome_screen_text3">Ekran parlaklığını ayarlamak için tıkla ve kaydır. Şimdi deneyin !</string>
-    <string name="welcome_screen_text4">İki parmağınızı kullanarak saatin boyutunu değiştirin</string>
-    <string name="welcome_screen_title1">Gece Saati</string>
-    <string name="welcome_screen_title2">Seçenekler</string>
-    <string name="welcome_screen_title3">Ekran parlaklığı</string>
-    <string name="welcome_screen_title4">Saat boyutu</string>
 </resources>

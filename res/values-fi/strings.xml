@@ -62,7 +62,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">kirkkaus</string>
     <string name="brightness_night_mode">Kirkkaus yö asetuksella</string>
     <string name="brightness_offset">Kirkkauden korjaus</string>
-    <string name="buttonAccessibilitySettings">Näytä ilmoitukset</string>
     <string name="buy">Osta</string>
     <string name="category_handle_power">kun on kytkettynä</string>
     <string name="category_handle_power_autostart_time">aloita aikavälillä</string>
@@ -93,11 +92,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_message_thank_you">Kiitos paljon!</string>
     <string name="dialog_title_thank_you">Kiitos</string>
     <string name="digit_emphasize_quarters">Korosta neljännestunnit</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Lahjoita</string>
     <string name="doubleTapToFinishSummary">Lopeta sovellus tuplaklikkaamalla näyttöä</string>
     <string name="doubleTapToFinishTitle">Lopeta tuplaklikkaamalla</string>
-    <string name="expertPreferences">eksperttiasetukset</string>
     <string name="forecast">5 päivän sääennuste</string>
     <string name="handle_power_ac">lataus</string>
     <string name="handle_power">automaattinen käynnistys</string>
@@ -134,24 +131,20 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_name_devmsg">Viestit</string>
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Palvelut</string>
-    <string name="notification_alarm">Lopeta herätys klikkaamalla</string>
     <string name="numbers">Numerot</string>
     <string name="other_apps">muut sovellukset</string>
     <string name="other_apps_tinytimetracker_summary">Seuraa päivittäistä työaikaasi</string>
     <string name="persistent_battery_value_while_charging">Pakota akun tilavarauksen näyttö</string>
     <string name="persistent_battery_value_while_charging_summary">Pakota akun tilavarauksen näyttö kun latauksessa</string>
-    <string name="position">Sijainti</string>
     <string name="prev">Edellinen</string>
     <string name="preview">Esikatselu</string>
     <string name="product_name_donation">Lahjoitus</string>
     <string name="product_name_pro">Täysi versio</string>
     <string name="purchaseActions">Osta lisenssi</string>
     <string name="purchaseWeatherData">Osta lisenssi</string>
-    <string name="purchaseWebRadio">Osta lisenssi</string>
     <string name="radio">Radio</string>
     <string name="radio_station_dialog_title">Valitse radio kanava</string>
     <string name="radio_station_none">Ei radio kanavaa</string>
     <string name="radio_stream_activate_wifi">WiFi</string>
-    <string name="radio_stream_enabled">Käynnissä</string>
     <string name="review_request">Kiitos kun arvostelet tämän sovelluksen!</string>
 </resources>

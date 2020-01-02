@@ -38,7 +38,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Ponašanje</string>
     <string name="brightness">Svjetlina</string>
     <string name="brightness_offset">Ofset svjetline</string>
-    <string name="buttonAccessibilitySettings">Pristup obavijestima</string>
     <string name="category_handle_power">... i kada si spojen na</string>
     <string name="category_handle_power_autostart_time">Započni u vremenskom razdoblju</string>
     <string name="choose_alarm_sound">Zvuk alarma</string>
@@ -58,7 +57,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Obriši</string>
     <string name="dialog_message_thank_you">Puno ti hvala!</string>
     <string name="dialog_title_thank_you">Hvala</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Doniraj</string>
     <string name="doubleTapToFinishSummary">Zatvori aplikaciju dvostrukim kuhanjem po zaslonu</string>
     <string name="handle_power_ac">Punjenje</string>
@@ -74,14 +72,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="mute_ringer">Utišaj budilicu</string>
     <string name="night_mode">Noćni način rada</string>
     <string name="noise_sensitivity">Osjetljivost mikrofona</string>
-    <string name="notification_alarm">Klikni za zaustavljanje alarma.</string>
     <string name="other_apps">Druge aplikacije</string>
     <string name="other_apps_tinytimetracker_summary">Prati svoje dnevno radno vrijeme.</string>
     <string name="other_apps_tinytimetracker">Mini zapisnik vremena</string>
     <string name="preview">Pregled</string>
     <string name="purchaseWeatherData">Kupi licencu</string>
-    <string name="purchaseWebRadio">Kupi licencu</string>
-    <string name="radio_stream_enabled">Omogućeno</string>
     <string name="radio_stream">Radio streamovi</string>
     <string name="radio_stream_no_search_results">Nema rezultata pretraživanja.</string>
     <string name="radio_stream_query_hint">Niz za pretraživanje</string>
@@ -96,7 +91,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="review_request">Ocijeni ovu aplikaciju. Hvala!</string>
     <string name="screen_orientation_reverse_landscape">Hrvatska</string>
     <string name="screenOrientation">Orijentacija zaslona</string>
-    <string name="select_alarm_sound">Odaberi zvuk alarma</string>
     <string name="set_alarm">postavi alarm</string>
     <string name="show_date">Prikaži datum</string>
     <string name="show_temperature">Temperatura</string>
@@ -105,25 +99,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">Jedinica mjere za brzinu vjetra</string>
     <string name="temperatureUnit">Jedinica mjere za temperaturu</string>
     <string name="translations">Prijevodi</string>
-    <string name="typeface_7_segment">7 segmentni LED prikaz</string>
-    <string name="typeface_roboto_condensed">Roboto stisnuti</string>
-    <string name="typeface_roboto_light">Roboto lagani</string>
-    <string name="typeface_roboto_medium">Roboto srednji</string>
     <string name="typeface_roboto_regular">Roboto obični</string>
     <string name="typeface_roboto_thin">Roboto tanki</string>
     <string name="typeface">Vrsta fonta</string>
-    <string name="use_internal_alarm">Brzi alarmi</string>
     <string name="weather_calculation_time">zadnje ažuriranje:</string>
-    <string name="weather_city_id_summary">OpenWeatherMap City ID. Ostavite prazno za automatsku detekciju lokacije.</string>
     <string name="weather_city_id_title">ID grada</string>
     <string name="weather_info_title">Informacije</string>
     <string name="weather">Vrijeme</string>
-    <string name="welcome_screen_text1">Dobrodošli u novi noćni sat! Ova aplikacija prikazuje točno vrijeme dok se Vaš mobilni uređaj puni.</string>
-    <string name="welcome_screen_text2">Otvorite postavke ovdje!</string>
-    <string name="welcome_screen_text3">Klikni i povuci za promjenu razine osvjetljenja zaslona. Isprobajte sada!</string>
-    <string name="welcome_screen_text4">Promijeni veličinu koristeći zumiranje s dva prsta.</string>
-    <string name="welcome_screen_title1">Noćni sat</string>
-    <string name="welcome_screen_title2">Postavke</string>
-    <string name="welcome_screen_title3">Osvjetljenje zaslona</string>
-    <string name="welcome_screen_title4">Veličina sata</string>
 </resources>

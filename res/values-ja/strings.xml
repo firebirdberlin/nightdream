@@ -49,7 +49,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">輝度</string>
     <string name="brightness_night_mode">明るさナイトモード</string>
     <string name="brightness_offset">明るさオフセット</string>
-    <string name="buttonAccessibilitySettings">通知を表示する</string>
     <string name="buy">購入する</string>
     <string name="buy_upgrade_summary">プロフェッショナルバージョンを購入する</string>
     <string name="category_handle_power">充電方法</string>
@@ -81,7 +80,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">ありがとう</string>
     <string name="decoration">装飾</string>
     <string name="decoration_style_none">装飾なし</string>
-    <string name="donate_bitcoin">ビットコイン</string>
     <string name="donate">寄付する</string>
     <string name="doubleTapToFinishSummary">終了させるには画面をダブルタップします</string>
     <string name="doubleTapToFinishTitle">ダブルタップで終了</string>
@@ -115,20 +113,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">開始時間</string>
     <string name="night_mode_timerange_title">夜間を設定</string>
     <string name="noise_sensitivity">マイク感度</string>
-    <string name="notification_alarm">クリックするとアラームが停止します</string>
     <string name="numbers">数字</string>
     <string name="other_apps">他のアプリ</string>
     <string name="other_apps_tinytimetracker_summary">毎日の勤務時間を記録します</string>
     <string name="other_apps_tinytimetracker">Work Time Tracker</string>
     <string name="persistent_battery_value_while_charging">充電時のバッテリ状態</string>
     <string name="persistent_battery_value_while_charging_summary">充電中にバッテリの状態を常に表示します。</string>
-    <string name="position">配置</string>
     <string name="prev">前へ</string>
     <string name="preview">プレビュー</string>
     <string name="product_name_pro">フルバージョン</string>
     <string name="purchaseActions">ライセンスを購入する</string>
     <string name="purchaseWeatherData">天気予報のライセンスを購入する</string>
-    <string name="purchaseWebRadio">Webラジオのライセンスを購入する</string>
     <string name="radio">ラジオ</string>
     <string name="radio_station">ラジオ局</string>
     <string name="radio_station_dialog_title">ラジオ局名</string>
@@ -136,7 +131,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi">Wi-Fi</string>
     <string name="radio_stream_activate_wifi_desc">ストリーム再生のために、数分前にWiFiをオンにする</string>
     <string name="radio_stream_require_wifi">WiFi接続が必要</string>
-    <string name="radio_stream_enabled">有効</string>
     <string name="radio_stream">ラジオストリーム</string>
     <string name="radio_stream_failure">ラジオのストリーミングに失敗</string>
     <string name="radio_stream_manual_input_description">ラジオ局名</string>
@@ -165,11 +159,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">逆横置</string>
     <string name="screen_orientation_reverse_portrait">逆縦置</string>
     <string name="screenOrientation">画面の向き</string>
-    <string name="select_alarm_sound">アラーム音を選択</string>
     <string name="set_alarm">アラームセット</string>
     <string name="showBatteryWarningSummary">電池使用時に作動した場合警告が出ます</string>
     <string name="showBatteryWarningTitle">電池使用時の警告</string>
-    <string name="showcase_title_screen_lock">スクリーンロック</string>
     <string name="show_date">日付を表示する</string>
     <string name="show_divider">分割線を表示する</string>
     <string name="show_temperature">温度を表示する</string>
@@ -185,10 +177,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>
     <string name="translations">翻訳</string>
-    <string name="typeface_7_segment">7セグメントLEDフォント</string>
-    <string name="typeface_roboto_condensed">ロボット極太</string>
-    <string name="typeface_roboto_light">ロボット細字</string>
-    <string name="typeface_roboto_medium">ロボット中字</string>
     <string name="typeface_roboto_regular">ロボット普通</string>
     <string name="typeface_roboto_thin">ロボット極細</string>
     <string name="typeface">書体</string>
@@ -196,19 +184,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useAlarmSwipeGesture">スワイプしてアラームをセットする</string>
     <string name="useDeviceLockDescription">画面機能にはデバイス管理者権限が必要です。アプリをアンインストールするには、この機能を無効にしてください。</string>
     <string name="useDeviceLock">ロック解除</string>
-    <string name="use_internal_alarm">このアプリのアラーム</string>
     <string name="weather_calculation_time">天気予報時​​間</string>
-    <string name="weather_city_id_summary">場所を自動的に検出するために空のままにする</string>
     <string name="weather_city_id_title">場所を検索</string>
     <string name="weather_info_title">情報</string>
     <string name="weather">天気</string>
-    <string name="welcome_screen_text1">新しい夜の時計へようこそ！このアプリは携帯電話が充電している間、時刻を表示します</string>
-    <string name="welcome_screen_text2">ここで環境設定を開きます！</string>
-    <string name="welcome_screen_text3">画面の明るさを変更するには、クリックしてスライドします。やってみよう ！</string>
-    <string name="welcome_screen_text4">2フィンガーズームを使用してクロックのサイズを変更する</string>
-    <string name="welcome_screen_title1">夜の時計</string>
-    <string name="welcome_screen_title2">設定</string>
-    <string name="welcome_screen_title3">画面の明るさ</string>
-    <string name="welcome_screen_title4">時計のサイズ</string>
     <string name="width">幅</string>
 </resources>

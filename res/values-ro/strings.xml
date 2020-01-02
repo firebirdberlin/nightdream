@@ -43,7 +43,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Comportament</string>
     <string name="brightness">Iluminare</string>
     <string name="brightness_offset">Limita de iluminare</string>
-    <string name="buttonAccessibilitySettings">Începe ascultarea notificărilor</string>
     <string name="buy">Cumpara</string>
     <string name="category_handle_power">... Și când este conectat la</string>
     <string name="category_handle_power_autostart_time">Începe în intervalul de timp</string>
@@ -69,7 +68,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Sterge</string>
     <string name="dialog_message_thank_you">Mulțumesc frumos</string>
     <string name="dialog_title_thank_you">Mulțumesc</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Doneză</string>
     <string name="handle_power_ac">AC</string>
     <string name="handle_power">Pornire automată</string>
@@ -91,7 +89,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_activation_mode">Modul Activare</string>
     <string name="night_mode">Mod noapte</string>
     <string name="noise_sensitivity">Sensibilitate microfon</string>
-    <string name="notification_alarm">Apasă pentru a oprire alarmă</string>
     <string name="other_apps">Alte aplicații</string>
     <string name="other_apps_tinytimetracker_summary">Înregistrează timpul de lucru zilnic</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -99,8 +96,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging_summary">Afişare status baterie permanent în timpul încărcării</string>
     <string name="preview">Previzualizare</string>
     <string name="purchaseWeatherData">Cumpărare licență</string>
-    <string name="purchaseWebRadio">Cumpăra o licență</string>
-    <string name="radio_stream_enabled">Activat</string>
     <string name="radio_stream">Canale radio</string>
     <string name="radio_stream_no_search_results">Nu s-au găsit înregistrări</string>
     <string name="radio_stream_query_hint">Cauta cuvant</string>
@@ -120,9 +115,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Mod Oglinda</string>
     <string name="screen_orientation_reverse_portrait">Portret inversat</string>
     <string name="screenOrientation">Orientarea ecranului</string>
-    <string name="select_alarm_sound">Alege sunet de alarma</string>
     <string name="set_alarm">Setează alarma</string>
-    <string name="showcase_title_screen_lock">Blocare ecran</string>
     <string name="show_date">Arata data</string>
     <string name="show_temperature">Temperatura</string>
     <string name="show_weather">Arata vremea locala</string>
@@ -131,24 +124,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="temperatureUnit">Unitate temperatura</string>
     <string name="titlePrivacyPolicy">Licenta Politica</string>
     <string name="translations">Traduceri</string>
-    <string name="typeface_7_segment">LED 7-segmente</string>
-    <string name="typeface_roboto_condensed">Roboto condensat</string>
-    <string name="typeface_roboto_light">Roboto subțire</string>
-    <string name="typeface_roboto_medium">Roboto mediu</string>
     <string name="typeface_roboto_regular">Roboto normal</string>
     <string name="typeface_roboto_thin">Roboto foarte subțire</string>
     <string name="typeface">Fonturi</string>
-    <string name="use_internal_alarm">Alarme rapide</string>
     <string name="weather_calculation_time">Timpul de calcul al vremii</string>
     <string name="weather_city_id_title">Cauta Locatie</string>
     <string name="weather_info_title">Informatii</string>
     <string name="weather">Vremea</string>
-    <string name="welcome_screen_text1">Bine ai venit în aplicația ceas de noapte. Aceasta aplicație îți arată ora în timp ce telefonul mobil se încarcă</string>
-    <string name="welcome_screen_text2">Deschide setările</string>
-    <string name="welcome_screen_text3">Apasă și slide pentru a schimba iluminarea. Încearcă acum!</string>
-    <string name="welcome_screen_text4">Mărește/micsoreaza ceasul cu ajutorul zoom-ului cu 2 degete.</string>
-    <string name="welcome_screen_title1">Ceas de noapte</string>
-    <string name="welcome_screen_title2">Setări</string>
-    <string name="welcome_screen_title3">Iluminare ecran</string>
-    <string name="welcome_screen_title4">Dimensiune ceas</string>
 </resources>

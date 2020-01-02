@@ -52,7 +52,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Vælg et billede</string>
     <string name="backgroundServiceDialogTitle">Stop baggrunds service</string>
     <string name="backgroundServiceDialogMessage"> Hvis du stopper baggrundstjenesten, deaktiveres autostart og standbytilstand samt batteri-forudsigelse. Widgets kan ikke opdateres mere. Fortsæt?</string>
-    <string name="backgroundServiceDialogMessageWidgets">Fjern venligst dine widgets manuelt</string>
     <string name="backgroundServiceNotificationText">Baggrund service kører</string>
     <string name="backgroundServiceNotificationTextLocation">Lokations opdatering pågår</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service kører</string>
@@ -68,11 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Lysstyrke</string>
     <string name="brightness_night_mode">Lysstyyrke i Night mode</string>
     <string name="brightness_offset">Lysstyrke offset</string>
-    <string name="buttonAccessibilitySettings">Vis beskeder</string>
     <string name="buy">Køb</string>
-    <string name="buy_upgrade_error"> Ups, jeg kunne ikke få adgang til faktureringstjenestern</string>
     <string name="buy_upgrade_summary">Opgrader til professional version nu</string>
-    <string name="buy_upgrade_title">Opgrader</string>
     <string name="category_handle_power">-- og når forbundet til</string>
     <string name="category_handle_power_autostart_time">Start i tidsrummet</string>
     <string name="category_night_mode_display_management">Vis indstillinger</string>
@@ -116,7 +112,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Minutviser</string>
     <string name="decoration_style_labels">Numre</string>
     <string name="decoration_style_rust">Rustent</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donér</string>
     <string name="doubleTapToFinishSummary">Luk appen ved at dobbelt tappe på skræmen</string>
     <string name="doubleTapToFinishTitle">Dobbelt tap for af afslutte</string>
@@ -170,7 +165,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Beskeder om appen</string>
     <string name="notification_channel_desc_radio">Vis beskeder når der afspilles web radio</string>
     <string name="notification_channel_desc_services">Meddelelse om kørende tjenester</string>
-    <string name="notification_alarm">Klik for at stoppe alarm</string>
     <string name="notification_grouping_title">Gruppér ens meddelelser</string>
     <string name="notification_grouping_summary"> Gruppér meddelelser fra de samme apps, der viser det samme ikon.</string>
     <string name="notification_lowest_importance">vigtighed er højere eller lig</string>

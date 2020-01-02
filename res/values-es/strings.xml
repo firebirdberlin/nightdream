@@ -67,10 +67,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Brillo</string>
     <string name="brightness_night_mode">Brillo en modo nocturno</string>
     <string name="brightness_offset">Brillo mínimo</string>
-    <string name="buttonAccessibilitySettings">Mostrar notificaciones</string>
     <string name="buy">Comprar</string>
     <string name="buy_upgrade_summary">Actualiza a la versión profesional ahora</string>
-    <string name="buy_upgrade_title">Actualizar</string>
     <string name="category_handle_power">... y cuando está conectado a</string>
     <string name="category_handle_power_autostart_time">Comenzar dentro del intervalo de tiempo</string>
     <string name="choose_alarm_sound">Sonido de alarma</string>
@@ -108,7 +106,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_none">Ninguno</string>
     <string name="decoration_style_minute_hand">Minutero</string>
     <string name="decoration_style_labels">Números</string>
-    <string name="donate_bitcoin">Bitcoin</string>
     <string name="donate">Donar</string>
     <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
     <string name="doubleTapToFinishTitle">Doble clic para salir</string>
@@ -160,7 +157,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Mensajes de la aplicación</string>
     <string name="notification_channel_desc_radio">Mostrar notificaciones durante la reproducción de radio vía web</string>
     <string name="notification_channel_desc_services">Notificar servicios en ejecución</string>
-    <string name="notification_alarm">Hacer clic para detener la alama.</string>
     <string name="notifications">Notificaciones</string>
     <string name="numbers">Números</string>
     <string name="numberStyleArabic">Arábigos</string>
@@ -173,7 +169,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_width">Grosor del círculo externo</string>
     <string name="persistent_battery_value_while_charging">Estado de batería permanente</string>
     <string name="persistent_battery_value_while_charging_summary">Mostrar siempre el estado de batería durante la carga.</string>
-    <string name="position">Posición</string>
     <string name="prev">anterior</string>
     <string name="preview">Vista previa</string>
     <string name="product_name_actions">Paquete "siempre encendido"</string>
@@ -183,7 +178,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_webradio">Paquete de radio web</string>
     <string name="purchaseActions">Comprar una licencia</string>
     <string name="purchaseWeatherData">Compra una licencia</string>
-    <string name="purchaseWebRadio">Compra una licencia</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Estación de radio</string>
     <string name="radio_station_dialog_title">Seleccione una estación de radio</string>
@@ -192,7 +186,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi_desc">El Wifi se activará unos minutos antes de comience a reproducirse la transmisión</string>
     <string name="radio_stream_require_wifi">La radio por streaming requiere WiFi</string>
     <string name="radio_stream_require_wifi_desc">Si está seleccionado, la alarma reproducirá la radio web sólo si hay una conexión WiFi activa</string>
-    <string name="radio_stream_enabled">Activado</string>
     <string name="radio_stream">Emisoras de radio</string>
     <string name="radio_stream_failure">Fallo de emisión</string>
     <string name="radio_stream_manual_input_description">Nombre de la estación de radio</string>
@@ -226,13 +219,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">apaisado invertido</string>
     <string name="screen_orientation_reverse_portrait">vertical invertido</string>
     <string name="screenOrientation">Orientación de la pantalla</string>
-    <string name="select_alarm_sound">Selecciona sonido de la alarma</string>
     <string name="set_alarm">Ajustar alarma</string>
     <string name="showBatteryWarningSummary">Mostrar una advertencia al inicio cuando está en la batería.</string>
     <string name="showBatteryWarningTitle">Advertencia de la batería</string>
     <string name="showBatteryWarningMessage">Atención: ¡Ninguna fuente de alimentación está conectada!</string>
-    <string name="showcase_text_screen_lock">La pantalla está bloqueada actualmente. ¡Haz una pulsación larga en el icono para desbloquear!</string>
-    <string name="showcase_title_screen_lock">Bloqueo de pantalla</string>
     <string name="show_date">Mostrar fecha</string>
     <string name="show_divider">Mostrar línea divisoria</string>
     <string name="show_temperature">Mostrar Temperatura</string>
@@ -245,7 +235,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">¡Esta característica puede bajar tu batería rápidamente!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">dentro del rango horario</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Entrar en modo de espera mientras se descarga</string>
-    <string name="standbyNotificationText">Modo de Espera de servicio esta activo</string>
     <string name="style">Estilo</string>
     <string name="temperatureUnit">Unidad de temperatura</string>
     <string name="tick_style_hours">Estilo marcadores de hora</string>
@@ -259,11 +248,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="today">hoy</string>
     <string name="tomorrow">mañana</string>
     <string name="translations">Traducciones</string>
-    <string name="typeface_7_segment">LED de 7 segmentos</string>
-    <string name="typeface_dancing_script">Dancing Script normal</string>
-    <string name="typeface_roboto_condensed">Roboto condensada</string>
-    <string name="typeface_roboto_light">Roboto ligera</string>
-    <string name="typeface_roboto_medium">Roboto medio</string>
     <string name="typeface_roboto_regular">Roboto normal</string>
     <string name="typeface_roboto_thin">Roboto delgada</string>
     <string name="typeface">Tipo de letra</string>
@@ -272,19 +256,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">La opción Bloquear Pantalla requiere permisos de administrador. Deshabilitar en caso de querer desinstalar la aplicación.</string>
     <string name="useDeviceLockExplanation">Bloquear el dispositivo mientras la aplicación está en uso. Deshabilitar en caso de querer desinstalar la aplicación.</string>
     <string name="useDeviceLock">Bloquear dispositivo</string>
-    <string name="use_internal_alarm">Alarmas rapidas</string>
     <string name="weather_calculation_time">hora de pronóstico del tiempo</string>
-    <string name="weather_city_id_summary">Dejar vacío para una detección automática de la ubicación.</string>
     <string name="weather_city_id_title">Ubicación de búsqueda</string>
     <string name="weather_info_title">Información</string>
     <string name="weather">Clima</string>
-    <string name="welcome_screen_text1">¡Bienvenido a nuestro nuevo reloj nocturno! Esta aplicación muestra la hora real mientras cargas tu dispositivo.</string>
-    <string name="welcome_screen_text2">¡Accede un las preferencias aquí!</string>
-    <string name="welcome_screen_text3">Selecciona y desliza para cambiar el brillo de la pantalla.¡Pruébalo ahora!</string>
-    <string name="welcome_screen_text4">Cambia el tamaño del reloj con zoom de dos dedos.</string>
-    <string name="welcome_screen_title1">Reloj Nocturno</string>
-    <string name="welcome_screen_title2">Preferencias</string>
-    <string name="welcome_screen_title3">Brillo de pantalla</string>
-    <string name="welcome_screen_title4">Tamaño del reloj</string>
     <string name="width">Grosor</string>
 </resources>

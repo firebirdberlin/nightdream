@@ -43,7 +43,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">動作</string>
     <string name="brightness">螢幕亮度</string>
     <string name="brightness_offset">螢幕亮度偏移</string>
-    <string name="buttonAccessibilitySettings">顯示通知</string>
     <string name="buy">購買</string>
     <string name="category_handle_power">連接以下時自動開啟</string>
     <string name="category_handle_power_autostart_time">在設定範圍內開始</string>
@@ -70,7 +69,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">刪除</string>
     <string name="dialog_message_thank_you">十分感謝！</string>
     <string name="dialog_title_thank_you">謝謝</string>
-    <string name="donate_bitcoin">比特幣</string>
     <string name="donate">贊助</string>
     <string name="doubleTapToFinishSummary">雙擊螢幕以完成應用程式</string>
     <string name="doubleTapToFinishTitle">雙擊以完成</string>
@@ -104,7 +102,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">開始時間</string>
     <string name="night_mode_timerange_title">夜間時間</string>
     <string name="noise_sensitivity">麥克風靈敏感</string>
-    <string name="notification_alarm">輕觸以停止鬧鐘</string>
     <string name="other_apps">其他應用</string>
     <string name="other_apps_tinytimetracker_summary">追蹤你的日常工作時間。</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -116,9 +113,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_weather">天氣與設計組件</string>
     <string name="product_name_webradio">網路收音機組件</string>
     <string name="purchaseWeatherData">購買授權</string>
-    <string name="purchaseWebRadio">購買授權</string>
     <string name="radio">收音機</string>
-    <string name="radio_stream_enabled">已啟用</string>
     <string name="radio_stream">串流廣播</string>
     <string name="radio_stream_failure">串流廣播失敗</string>
     <string name="radio_stream_manual_input_description">電台名稱</string>
@@ -146,10 +141,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">橫向反轉</string>
     <string name="screen_orientation_reverse_portrait">直向反轉</string>
     <string name="screenOrientation">螢幕方向</string>
-    <string name="select_alarm_sound">選擇鬧鐘聲音</string>
     <string name="set_alarm">設定鬧鐘</string>
-    <string name="showcase_text_screen_lock">螢幕已鎖定，長按圖示以解鎖。</string>
-    <string name="showcase_title_screen_lock">螢幕鎖定</string>
     <string name="show_date">顯示日期</string>
     <string name="show_temperature">顯示溫度</string>
     <string name="show_weather">顯示本地天氣</string>
@@ -159,18 +151,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">風速單位</string>
     <string name="standbyEnabledWhileDisconnectedSummary">此功能將會加快電力消耗！</string>
     <string name="standbyEnabledWhileDisconnectedTitle">使用電池期間執行待命模式</string>
-    <string name="standbyNotificationText">待命模式執行中。</string>
     <string name="temperatureUnit">溫度單位</string>
     <string name="timeFormat">時間格式</string>
     <string name="titlePrivacyPolicy">私隱政策</string>
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>
     <string name="translations">翻譯</string>
-    <string name="typeface_7_segment">7-segment LED</string>
-    <string name="typeface_dancing_script">Dancing Script Regular</string>
-    <string name="typeface_roboto_condensed">Roboto condensed</string>
-    <string name="typeface_roboto_light">Roboto light</string>
-    <string name="typeface_roboto_medium">Roboto medium</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">字型</string>
@@ -179,18 +165,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">螢幕鎖定功能需要裝置管理員權限，請先停用功能再解除安裝。</string>
     <string name="useDeviceLockExplanation">應用程式正在執行，請先取消所有權限再進行解除安裝。</string>
     <string name="useDeviceLock">鎖定裝置</string>
-    <string name="use_internal_alarm">快速鬧鐘</string>
     <string name="weather_calculation_time">天氣計算時間</string>
-    <string name="weather_city_id_summary">故意留空以便自動偵查位置</string>
     <string name="weather_city_id_title">搜尋地區</string>
     <string name="weather_info_title">資訊</string>
     <string name="weather">天氣</string>
-    <string name="welcome_screen_text1">歡迎使用你的新夜間時鐘</string>
-    <string name="welcome_screen_text2">按此開啟偏好設定</string>
-    <string name="welcome_screen_text3">輕觸並滑動以更改螢幕亮度，試試看！</string>
-    <string name="welcome_screen_text4">使用雙指以調整時鐘大小</string>
-    <string name="welcome_screen_title1">夜鐘</string>
-    <string name="welcome_screen_title2">偏好設定</string>
-    <string name="welcome_screen_title3">螢幕亮度</string>
-    <string name="welcome_screen_title4">時鐘大小</string>
 </resources>
