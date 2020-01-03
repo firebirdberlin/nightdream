@@ -271,7 +271,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Intent intent = getIntent();
 
         String action = intent.getAction();
-        intent.setAction(null);
         if (Config.ACTION_STOP_BACKGROUND_SERVICE.equals(action)) {
             showStopBackgroundServicesDialog();
             intent.setAction(null);
