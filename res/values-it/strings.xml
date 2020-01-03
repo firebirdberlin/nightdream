@@ -52,6 +52,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Seleziona una immagine</string>
     <string name="backgroundServiceDialogTitle">Ferma servizio in background</string>
     <string name="backgroundServiceDialogMessage">L\'interruzione del servizio in background disabiliterà la modalità di avvio automatico e standby, nonché la previsione della batteria. Procedere ?</string>
+    <string name="backgroundServiceDialogMessageWidget">Impossibile fermare il servizio in background finché un widget è attivo nella home. Rimuovi i widget e riprova.</string>
     <string name="backgroundServiceNotificationText">Il servizio in backgroud è attivo</string>
     <string name="backgroundServiceNotificationTextLocation">Aggiornamento localizzazione in avanzamento</string>
     <string name="backgroundServiceNotificationTextNightMode">La modalità notturna è attiva</string>
@@ -272,10 +273,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_none">Nessuno</string>
     <string name="ticks">Spunte</string>
     <string name="timeFormat">Formato ora</string>
+    <string name="timerange_label_end">Orario di fine</string>
+    <string name="timerange_label_start">Orario di inizio</string>
     <string name="titlePrivacyPolicy">Regolamento sulla privacy</string>
     <string name="today">Oggi</string>
     <string name="tomorrow">Domani</string>
     <string name="translations">Traduzione</string>
+    <string name="typeface_14_segment">14-segment LED</string>
     <string name="typeface_roboto_regular">Roboto regolare</string>
     <string name="typeface_roboto_thin">Roboto leggero</string>
     <string name="typeface">carattere tipografico</string>
