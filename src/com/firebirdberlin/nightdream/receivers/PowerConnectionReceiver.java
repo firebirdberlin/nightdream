@@ -52,6 +52,9 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         Calendar now = new GregorianCalendar();
+        Log.d(TAG, "autostart ?");
+        if (!settings.autostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
+        Log.d(TAG, "autostart : YES");
         Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
         Calendar end = new SimpleTime(settings.autostartTimeRangeEndInMinutes).getCalendar();
         boolean shall_auto_start = true;
