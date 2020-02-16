@@ -212,6 +212,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="reset_to_defaults">Redefinir para valores padrão</string>
     <string name="restless_mode">Mover o relógio pela tela</string>
     <string name="review_request">Por favor avalie esta aplicação. Obrigado!</string>
+    <string name="scheduledAutoStartChargerRequired">Apenas quando estiver carregando</string>
     <string name="screen_orientation_automatic">automático</string>
     <string name="screen_orientation_landscape">paisagem</string>
     <string name="screen_orientation_portrait">retrato</string>
@@ -231,6 +232,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speedUnit">Unidade de velocidade do vento</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Este recurso rapidamente drena sua bateria!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Modo de Espera durante a descarga.</string>
+    <string name="style">Estilo</string>
     <string name="temperatureUnit">Unidade de temperatura</string>
     <string name="timeFormat">Formato da hora</string>
     <string name="titlePrivacyPolicy">Política de privacidade</string>

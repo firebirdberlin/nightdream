@@ -76,7 +76,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Barva času</string>
     <string name="choose_secondary_color">Barva textu</string>
     <string name="clear">vyčistit</string>
-    <string name="clock_hands">ruce</string>
+    <string name="clock_hands">ručičkové</string>
     <string name="clock_layout_analog">analogové</string>
     <string name="clock_layout_calendar">digitální s kalendářem</string>
     <string name="clock_layout_digital">digitální</string>

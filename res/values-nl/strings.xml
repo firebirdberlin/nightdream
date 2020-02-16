@@ -35,6 +35,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">Scherm uitzetten</string>
     <string name="always_on">Altijd aan</string>
     <string name="alwaysOnBatteryLevel">Batterijniveau is hoger dan</string>
+    <string name="alwaysOnStartWithLockedUI">Vergrendel de gebruikers interface</string>
+    <string name="alwaysOnStartWithLockedUIDesc">Als de applicatie start wordt de user interface automatisch vastgezet. Houd de close button langer ingedrukt om te ontgrendelen.</string>
     <string name="ambient_noise">Omgevingsgeluidsensor</string>
     <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmodus onderdrukken?</string>
     <string name="appearance">Uiterlijk</string>
@@ -52,6 +54,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Selecteer een afbeelding</string>
     <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
     <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterijvoorspelling. Doorgaan?</string>
+    <string name="backgroundServiceDialogMessageWidget">Achtergrondservice kan niet worden gestopt als een widget actief is. Verwijder de widget en probeer opnieuw.</string>
     <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
@@ -79,7 +82,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_hands">Wijzers</string>
     <string name="clock_layout_analog">analoge klok</string>
     <string name="clock_layout_calendar">digitale klok met kalender</string>
-    <string name="clock_layout_digital">digitale kol</string>
+    <string name="clock_layout_digital">digitale klok</string>
     <string name="clock_layout_elegant_analog">elegante analoge klok</string>
     <string name="clock_layout_digit_analog">analoge klok met cijfers</string>
     <string name="clock_layout_digital_flip">flip klok</string>
@@ -272,10 +275,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_none">Geen</string>
     <string name="ticks">Streepjes</string>
     <string name="timeFormat">Tijdopmaak</string>
+    <string name="timerange_label_end">Eindtijd</string>
+    <string name="timerange_label_start">Starttijd</string>
     <string name="titlePrivacyPolicy">Privacybeleid</string>
     <string name="today">vandaag</string>
     <string name="tomorrow">morgen</string>
     <string name="translations">Vertalingen</string>
+    <string name="typeface_14_segment">14-segment LED</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Lettertype</string>

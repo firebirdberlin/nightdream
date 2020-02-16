@@ -35,6 +35,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">Выключить экран</string>
     <string name="always_on">Всегда выключено</string>
     <string name="alwaysOnBatteryLevel">Уровень заряда АКБ более</string>
+    <string name="alwaysOnStartWithLockedUI">Заблокировать пользовательский интерфейс</string>
+    <string name="alwaysOnStartWithLockedUIDesc">При запуске приложение автоматически блокирует пользовательский интерфейс. Длительное нажатие на значок блокировки разблокирует опцию.</string>
     <string name="ambient_noise">Определение шума</string>
     <string name="ambient_noise_summary">Должен ли внешний шум предотвращать переход в ночной режим?</string>
     <string name="appearance">Внешний вид</string>
@@ -52,6 +54,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Выбор изображения</string>
     <string name="backgroundServiceDialogTitle">Прекращение работы в фоне</string>
     <string name="backgroundServiceDialogMessage">Прекращение работу в фоне  приведет к отключению автозапуска и режима ожидания. Продолжить?</string>
+    <string name="backgroundServiceDialogMessageWidget">Остановить фоновую службу невозможно, если виджет активен. Пожалуйста, удалите виджет и попробуйте снова.</string>
     <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
     <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
     <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
@@ -272,10 +275,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_none">Ничего</string>
     <string name="ticks">Стрелки</string>
     <string name="timeFormat">Формат времени</string>
+    <string name="timerange_label_end">Время окончания</string>
+    <string name="timerange_label_start">Время начала</string>
     <string name="titlePrivacyPolicy">Политика конфиденциальности</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translations">Переводы</string>
+    <string name="typeface_14_segment">14-сегментный LED</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Шрифт</string>
