@@ -188,6 +188,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_width">Dicke des äußeren Kreises</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
+    <string name="power_source">Stromquelle</string>
     <string name="preferences">Einstellungen</string>
     <string name="preview">Vorschau</string>
     <string name="product_name_actions">Zusatzfunktionen</string>
@@ -285,6 +286,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">Standort suchen</string>
     <string name="weather_info_title">Informationen</string>
     <string name="weather">Wetter</string>
+    <string name="weekdays">Wochentage</string>
     <string name="width">Breite</string>
     <string name="prev">vorheriges</string>
     <string name="activateDoNotDisturb">\"Nicht stören\" aktivieren</string>

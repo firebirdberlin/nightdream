@@ -10,64 +10,37 @@
         app:key="handle_power"
         app:title="@string/handle_power" />
 
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
-        app:key="category_handle_power_autostart_time"
-        app:dependency="handle_power"
-        app:title="@string/category_handle_power_autostart_time">
 
-        <com.firebirdberlin.nightdream.TimeRangePreference
+    <com.firebirdberlin.nightdream.WeekDaySelectionPreference
+        app:key="autostartWeekdays"
+        app:title="@string/weekdays"
+        app:dependency="handle_power"
+        app:dialogTitle="@string/weekdays"
+        app:iconSpaceReserved="false"/>
+
+    <com.firebirdberlin.nightdream.TimeRangePreference
             xmlns:timerange="timerange"
             app:allowDividerAbove="false"
             app:iconSpaceReserved="false"
             app:defaultValue="0"
             app:dependency="handle_power"
             app:key="autostart_time_range"
+            app:title="@string/category_handle_power_autostart_time"
             timerange:end_text="@string/autostart_timerange_label_end"
             timerange:key_suffix_end="_end"
             timerange:key_suffix_start="_start"
             timerange:start_text="@string/autostart_timerange_label_start" />
-    </PreferenceCategory>
 
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
-        app:key="category_handle_power"
-        app:dependency="handle_power"
-        app:title="@string/category_handle_power">
+        <MultiSelectListPreference
+            app:key="optionsPowerSource"
+            app:title="@string/power_source"
+            app:dependency="handle_power"
+            app:dialogTitle="@string/power_source"
+            app:entryValues="@array/optionsPowerSourceValues"
+            app:entries="@array/optionsPowerSource"
+            app:defaultValue="@array/optionsPowerSourceDefault"
+            app:iconSpaceReserved="false"/>
 
-        <CheckBoxPreference
-            app:iconSpaceReserved="false"
-            app:defaultValue="true"
-            app:key="handle_power_ac"
-            app:title="@string/handle_power_ac" />
-
-        <CheckBoxPreference
-            app:iconSpaceReserved="false"
-            app:defaultValue="false"
-            app:key="handle_power_usb"
-            app:title="@string/handle_power_usb" />
-
-        <CheckBoxPreference
-            app:iconSpaceReserved="false"
-            app:defaultValue="false"
-            app:key="handle_power_wireless"
-            app:title="@string/handle_power_wireless" />
-
-        <CheckBoxPreference
-            app:iconSpaceReserved="false"
-            app:defaultValue="true"
-            app:key="handle_power_desk"
-            app:title="@string/handle_power_desk" />
-
-        <CheckBoxPreference
-            app:iconSpaceReserved="false"
-            app:defaultValue="false"
-            app:key="handle_power_car"
-            app:title="@string/handle_power_car" />
-
-    </PreferenceCategory>
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
@@ -120,6 +93,14 @@
             app:allowDividerBelow="false"
             app:summary="@string/standbyEnabledWhileDisconnectedSummary"
             app:title="@string/standbyEnabledWhileDisconnectedTitle" />
+
+        <com.firebirdberlin.nightdream.WeekDaySelectionPreference
+            app:key="always_on_weekdays"
+            app:title="@string/weekdays"
+            app:dependency="standbyEnabledWhileDisconnected"
+            app:allowDividerBelow="false"
+            app:dialogTitle="@string/weekdays"
+            app:iconSpaceReserved="false"/>
 
         <com.firebirdberlin.nightdream.TimeRangePreference
             app:iconSpaceReserved="false"
@@ -184,6 +165,14 @@
             app:allowDividerBelow="false"
             app:summary="@string/scheduledAutoStartEnabledDesc"
             app:title="@string/scheduledAutoStartEnabledTitle" />
+
+        <com.firebirdberlin.nightdream.WeekDaySelectionPreference
+            app:key="scheduledAutoStartWeekdays"
+            app:title="@string/weekdays"
+            app:dependency="scheduledAutoStartEnabled"
+            app:allowDividerBelow="false"
+            app:dialogTitle="@string/weekdays"
+            app:iconSpaceReserved="false"/>
 
         <com.firebirdberlin.nightdream.TimeRangePreference
             app:iconSpaceReserved="false"

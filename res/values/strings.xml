@@ -195,6 +195,7 @@ OR
     <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
+    <string name="power_source">power source</string>
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
@@ -296,5 +297,6 @@ OR
     <string name="weather_info_title">Information</string>
     <string name="weather">Weather</string>
     <string name="weatherProvider">Weather Provider</string>
+    <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

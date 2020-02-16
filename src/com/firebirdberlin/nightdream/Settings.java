@@ -150,6 +150,9 @@ public class Settings {
     public String timeFormat;
     public WeatherEntry weatherEntry;
     public String weatherCityID;
+    public Set<Integer> autostartWeekdays;
+    public Set<Integer> alwaysOnWeekdays;
+    public Set<Integer> scheduledAutostartWeekdays;
     public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
@@ -160,6 +163,7 @@ public class Settings {
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
+
 
     public Settings(Context context){
         this.mContext = context;
@@ -183,7 +187,8 @@ public class Settings {
 
     public void reload() {
         AlarmToneUri = settings.getString("AlarmToneUri",
-                android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
+                android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString()
+        );
         AlarmToneName = settings.getString("AlarmToneName", "");
         activateDoNotDisturb = settings.getBoolean("activateDoNotDisturb", false);
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
@@ -211,11 +216,6 @@ public class Settings {
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_disconnection_at_time_range_end =
                 settings.getBoolean("handle_power_disconnection_at_time_range_end", true);
-        handle_power_desk = settings.getBoolean("handle_power_desk", false);
-        handle_power_car = settings.getBoolean("handle_power_car", false);
-        handle_power_ac = settings.getBoolean("handle_power_ac", false);
-        handle_power_usb = settings.getBoolean("handle_power_usb", false);
-        handle_power_wireless = settings.getBoolean("handle_power_wireless", false);
         hideBackgroundImage = settings.getBoolean("hideBackgroundImage", true);
         scheduledAutoStartEnabled = settings.getBoolean("scheduledAutoStartEnabled", false);
         scheduledAutoStartChargerRequired = settings.getBoolean("scheduledAutoStartChargerRequired", true);
@@ -299,6 +299,77 @@ public class Settings {
         if (!stopAlarmOnTap && !stopAlarmOnLongPress) {
             stopAlarmOnTap = true;
         }
+        setPowerSourceOptions();
+        Set<String> defaultWeekdays = new HashSet<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
+        Set<String> autostartWeekdaysStrings = settings.getStringSet("autostartWeekdays", defaultWeekdays);
+        autostartWeekdays = new HashSet<>();
+        for (String weekday : autostartWeekdaysStrings) {
+            autostartWeekdays.add(Integer.valueOf(weekday));
+        }
+        Set<String> alwaysOnWeekdaysStrings = settings.getStringSet("always_on_weekdays", defaultWeekdays);
+        alwaysOnWeekdays = new HashSet<>();
+        for (String weekday : alwaysOnWeekdaysStrings) {
+            alwaysOnWeekdays.add(Integer.valueOf(weekday));
+        }
+        Set<String> scheduledAutostartWeekdaysStrings = settings.getStringSet("scheduledAutoStartWeekdays", defaultWeekdays);
+        scheduledAutostartWeekdays = new HashSet<>();
+        for (String weekday : scheduledAutostartWeekdaysStrings) {
+            scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
+        }
+    }
+
+    private void setPowerSourceOptions() {
+
+        SharedPreferences.Editor edit = settings.edit();
+        HashSet<String> defaultOptions = new HashSet<>();
+        defaultOptions.addAll(
+                Arrays.asList(
+                        mContext.getResources().getStringArray(R.array.optionsPowerSource)
+                )
+        );
+
+        if (preferencesContain(
+                "handle_power_ac",
+                "handle_power_usb",
+                "handle_power_wireless",
+                "handle_power_desk",
+                "handle_power_car"
+        )) {
+            boolean handle;
+            handle = settings.getBoolean("handle_power_ac", false);
+            if (handle) defaultOptions.add("0"); else defaultOptions.remove("0");
+            handle = settings.getBoolean("handle_power_usb", false);
+            if (handle) defaultOptions.add("1"); else defaultOptions.remove("1");
+            handle = settings.getBoolean("handle_power_wireless", false);
+            if (handle) defaultOptions.add("2"); else defaultOptions.remove("2");
+            handle = settings.getBoolean("handle_power_desk", false);
+            if (handle) defaultOptions.add("3"); else defaultOptions.remove("3");
+            handle = settings.getBoolean("handle_power_car", false);
+            if (handle) defaultOptions.add("4"); else defaultOptions.remove("4");
+            edit.putStringSet("optionsPowerSource", defaultOptions);
+            edit.remove("handle_power_ac");
+            edit.remove("handle_power_usb");
+            edit.remove("handle_power_wireless");
+            edit.remove("handle_power_desk");
+            edit.remove("handle_power_car");
+            edit.apply();
+        }
+
+        Set<String> optionsPowerSource = settings.getStringSet("optionsPowerSource", defaultOptions);
+        handle_power_ac = optionsPowerSource.contains("0");
+        handle_power_usb = optionsPowerSource.contains("1");
+        handle_power_wireless = optionsPowerSource.contains("2");
+        handle_power_desk = optionsPowerSource.contains("3");
+        handle_power_car = optionsPowerSource.contains("4");
+    }
+
+    private boolean preferencesContain(String... keys) {
+        for (String key: keys) {
+            if (settings.contains(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setShowDivider(boolean on) {

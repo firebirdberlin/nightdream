@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string-array name="optionsPowerSourceValues">
+         <item>0</item>
+         <item>1</item>
+         <item>2</item>
+         <item>3</item>
+         <item>4</item>
+     </string-array>
+
+
+    <string-array name="optionsPowerSource">
+        <item>@string/handle_power_ac</item>
+        <item>@string/handle_power_usb</item>
+        <item>@string/handle_power_wireless</item>
+        <item>@string/handle_power_desk</item>
+        <item>@string/handle_power_car</item>
+     </string-array>
+
+    <string-array name="optionsPowerSourceDefault">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+</resources>

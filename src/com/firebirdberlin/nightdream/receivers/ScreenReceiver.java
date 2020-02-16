@@ -89,6 +89,8 @@ public class ScreenReceiver extends BroadcastReceiver {
                 (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)) {
 
             Calendar now = Calendar.getInstance();
+            if (!settings.alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
+
             Calendar start = new SimpleTime(settings.alwaysOnTimeRangeStartInMinutes).getCalendar();
             Calendar end = new SimpleTime(settings.alwaysOnTimeRangeEndInMinutes).getCalendar();
             boolean shall_auto_start = true;

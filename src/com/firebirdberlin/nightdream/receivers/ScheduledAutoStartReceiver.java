@@ -50,6 +50,7 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         if (Utility.isConfiguredAsDaydream(context)) return false;
 
         Calendar now = new GregorianCalendar();
+        if (!settings.scheduledAutostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
         Calendar start = new SimpleTime(settings.scheduledAutoStartTimeRangeStartInMinutes).getCalendar();
         Calendar end = new SimpleTime(settings.scheduledAutoStartTimeRangeEndInMinutes).getCalendar();
         boolean shall_auto_start = true;
