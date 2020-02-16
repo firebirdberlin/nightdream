@@ -35,6 +35,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">Spegni lo schermo</string>
     <string name="always_on">Sempre acceso</string>
     <string name="alwaysOnBatteryLevel">Livello batteria sopra</string>
+    <string name="alwaysOnStartWithLockedUI">Blocca interfaccia utente </string>
+    <string name="alwaysOnStartWithLockedUIDesc">Quando parte l\'app automaticamente, blocca l\'interfaccia utente. Premi a lungo il lucchetto per sbloccare</string>
     <string name="ambient_noise">Rilevamento del rumore ambientale</string>
     <string name="ambient_noise_summary">Il rumore ambientale deve prevenire l\'attivazione della modalità notte?</string>
     <string name="appearance">Aspetto</string>
