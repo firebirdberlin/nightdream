@@ -195,6 +195,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_autostart">De machtiging om overlays the tonen (autostart) is niet verleend. Verleen deze machtiging a.u.b.</string>
     <string name="persistent_battery_value_while_charging">Permanente batterijstatus</string>
     <string name="persistent_battery_value_while_charging_summary">Batterijstatus permanent tonen tijdens het opladen.</string>
+    <string name="power_source">Energiebron</string>
     <string name="preferences">Voorkeuren</string>
     <string name="prev">vorige</string>
     <string name="preview">Voorbeeld</string>
@@ -296,5 +297,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Informatie</string>
     <string name="weather">Weer</string>
     <string name="weatherProvider">Weersdienst leverancier</string>
+    <string name="weekdays">Dagen van de week</string>
     <string name="width">Breedte</string>
 </resources>
