@@ -34,4 +34,6 @@ public class Config {
     public final static int JOB_ID_SQLITE_SERVICE= 2003;
     public final static int JOB_ID_UPDATE_LOCATION = 2004;
     public final static int JOB_ID_UPDATE_WEATHER = 2005;
+
+    public final static String backgroundImageCacheFilename = "bgimage.png";
 }

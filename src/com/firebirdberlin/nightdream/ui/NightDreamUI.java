@@ -62,7 +62,9 @@ import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -609,7 +611,14 @@ public class NightDreamUI {
     }
 
     private Drawable loadBackGroundImage() {
-        try{
+        try {
+            File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
+            if (cacheFile.exists()) {
+                Bitmap bgimage = BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
+                Log.d(TAG, "loading image from cache");
+                return new BitmapDrawable(mContext.getResources(), bgimage);
+            }
+
             Point display = Utility.getDisplaySize(mContext);
 
             Bitmap bgimage = loadBackgroundBitmap();
@@ -632,6 +641,11 @@ public class NightDreamUI {
                 if (scaling_needed) {
                     bgimage = Bitmap.createScaledBitmap(bgimage, nw, nh, false);
                 }
+                FileOutputStream out = new FileOutputStream(cacheFile);
+                bgimage.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+                Log.d(TAG, "writing image to cache");
                 return new BitmapDrawable(mContext.getResources(), bgimage);
             }
         } catch (OutOfMemoryError e){
@@ -642,7 +656,6 @@ public class NightDreamUI {
         } catch (Exception e) {
             //pass
         }
-
         return new ColorDrawable(Color.BLACK);
     }
 
@@ -662,7 +675,7 @@ public class NightDreamUI {
             // Calculate inSampleSize
             options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
 
-                // Decode bitmap with inSampleSize set
+            // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
             Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
             parcelFileDescriptor.close();
