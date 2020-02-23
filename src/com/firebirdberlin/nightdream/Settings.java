@@ -28,6 +28,7 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -638,17 +639,26 @@ public class Settings {
     }
 
     public void setBackgroundImage(String uri) {
+        clearBackgroundImageCache();
         bgpath = uri;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putString("BackgroundImage", uri);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public void setBackgroundImageURI(String uri) {
+        clearBackgroundImageCache();
         backgroundImageURI = uri;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putString("backgroundImageURI", uri);
-        prefEditor.commit();
+        prefEditor.apply();
+    }
+
+    private void clearBackgroundImageCache() {
+        File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
+        if (cacheFile.exists()) {
+            cacheFile.delete();
+        }
     }
 
     public void setLastReviewRequestTime(long reviewRequestTime) {
