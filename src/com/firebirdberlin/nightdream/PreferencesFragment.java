@@ -359,13 +359,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseWeatherData");
         initPurchasePreference("purchaseDesignPackage");
-
-        if ("appearance".equals(rootKey)) {
-            if (!Utility.isLowRamDevice(mContext)) {
-                showPreference("preference_category_background");
-            }
-        }
-
     }
 
     @Override
@@ -786,6 +779,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupBackgroundImageControls(SharedPreferences prefs) {
+        if (!Utility.isLowRamDevice(mContext)) {
+            showPreference("preference_category_background");
+        }
         String selection = prefs.getString("backgroundMode", "1");
         boolean on = selection.equals("3");
 
@@ -991,6 +987,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (!isAdded()) {
             return;
         }
+
+        if (! (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext))) {
+            showPreference("autostart");
+        }
+
         enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
         Preference pref = findPreference("autostart");
         if (pref == null) {

@@ -18,6 +18,7 @@
     <Preference
         app:icon="@drawable/ic_power"
         app:key="autostart"
+        app:isPreferenceVisible="false"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
         app:title="@string/handle_power"/>
 

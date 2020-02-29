@@ -48,6 +48,7 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
     public static boolean shallAutostart(Context context, Settings settings) {
         if (!settings.scheduledAutoStartEnabled) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
+        if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
         Calendar now = new GregorianCalendar();
         if (!settings.scheduledAutostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;

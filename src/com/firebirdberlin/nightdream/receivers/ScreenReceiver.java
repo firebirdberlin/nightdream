@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
@@ -74,6 +75,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 
     public static boolean shallActivateStandby(final Context context, Settings settings) {
         if (Utility.isConfiguredAsDaydream(context)) return false;
+        if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
         if (NightModeListener.running) return false;
 
         BatteryStats battery = new BatteryStats(context);
