@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
@@ -357,6 +359,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseWeatherData");
         initPurchasePreference("purchaseDesignPackage");
+
+        if ("appearance".equals(rootKey)) {
+            if (!Utility.isLowRamDevice(mContext)) {
+                showPreference("preference_category_background");
+            }
+        }
+
     }
 
     @Override
