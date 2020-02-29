@@ -50,6 +50,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     public static boolean shallAutostart(@NonNull Context context, @NonNull Settings settings) {
         if (context == null || settings == null || !settings.handle_power) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
+        if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
         Calendar now = new GregorianCalendar();
         Log.d(TAG, "autostart ?");
