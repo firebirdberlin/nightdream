@@ -588,18 +588,20 @@ public class NightDreamUI {
     private void setupBackgroundImage() {
         bgblack = new ColorDrawable(Color.BLACK);
         bgshape = bgblack;
-        switch (settings.background_mode){
-            case Settings.BACKGROUND_BLACK: {
-                bgshape = bgblack;
-                break;
-            }
-            case Settings.BACKGROUND_GRADIENT: {
-                bgshape = ContextCompat.getDrawable(mContext, R.drawable.background_gradient);
-                break;
-            }
-            case Settings.BACKGROUND_IMAGE: {
-                bgshape = loadBackGroundImage();
-                break;
+        if (!Utility.isLowRamDevice(mContext)) {
+            switch (settings.background_mode){
+                case Settings.BACKGROUND_BLACK: {
+                    bgshape = bgblack;
+                    break;
+                }
+                case Settings.BACKGROUND_GRADIENT: {
+                    bgshape = ContextCompat.getDrawable(mContext, R.drawable.background_gradient);
+                    break;
+                }
+                case Settings.BACKGROUND_IMAGE: {
+                    bgshape = loadBackGroundImage();
+                    break;
+                }
             }
         }
 
