@@ -833,6 +833,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private boolean isAutostartActivated(SharedPreferences sharedPreferences) {
+        if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) return false;
+
         return (
                 sharedPreferences.getBoolean("handle_power", false)
                         || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false)

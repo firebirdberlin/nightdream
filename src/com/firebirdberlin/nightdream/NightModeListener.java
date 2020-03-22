@@ -71,7 +71,7 @@ public class NightModeListener extends Service {
     private void conditionallyActivateDoNotDisturb(boolean on) {
         if ( ! activateDnD ) return;
         mAudioManager audioManage = new mAudioManager(this);
-        audioManage.activateDnDMode(on);
+        audioManage.activateDnDMode(on, true);
     }
 
     @Override
