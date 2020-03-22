@@ -249,7 +249,7 @@ public class NightDreamActivity extends BillingHelperActivity
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
         if ( mySettings.activateDoNotDisturb ) {
-            AudioManage.activateDnDMode(true);
+            AudioManage.activateDnDMode(true, mySettings.activateDoNotDisturbAllowPriority);
         }
         ScreenWatcherService.conditionallyStart(this, mySettings);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -396,7 +396,7 @@ public class NightDreamActivity extends BillingHelperActivity
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if ( mySettings.activateDoNotDisturb ) {
-            AudioManage.activateDnDMode(false);
+            AudioManage.activateDnDMode(false, mySettings.activateDoNotDisturbAllowPriority);
         }
         if (mySettings.allow_screen_off && mode == 0
                 && screenWasOn && !Utility.isScreenOn(this) ){ // screen off in night mode

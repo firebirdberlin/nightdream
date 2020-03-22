@@ -64,9 +64,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        app:key="preference_category_background"
         app:iconSpaceReserved="false"
         app:layout="@layout/preferences_category"
-        app:title="@string/background">
+        app:title="@string/background"
+        app:isPreferenceVisible="false">
 
         <ListPreference
             app:iconSpaceReserved="false"
