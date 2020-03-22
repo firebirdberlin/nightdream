@@ -62,6 +62,14 @@
         app:summary="@string/activateDoNotDisturbSummary"
         app:title="@string/activateDoNotDisturb" />
 
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:dependency="activateDoNotDisturb"
+        app:key="activateDoNotDisturbAllowPriorityCalls"
+        app:title="@string/activateDoNotDisturbAllowPriority" />
+        />
+
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="false"

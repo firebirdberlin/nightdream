@@ -71,19 +71,21 @@ public class mAudioManager{
         audiomanage.setRingerMode(currentRingerMode);
     }
 
-    public void activateDnDMode(boolean enabled) {
+    void activateDnDMode(boolean enabled, boolean allowPriority) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return;
         }
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (notificationManager != null &&
-                notificationManager.isNotificationPolicyAccessGranted()) {
+        if (
+                notificationManager != null
+                        && notificationManager.isNotificationPolicyAccessGranted()
+        ) {
+            int dndmode = allowPriority ? NotificationManager.INTERRUPTION_FILTER_PRIORITY
+                                        : NotificationManager.INTERRUPTION_FILTER_ALARMS;
             notificationManager.setInterruptionFilter(
-                    enabled ?
-                            NotificationManager.INTERRUPTION_FILTER_ALARMS :
-                            NotificationManager.INTERRUPTION_FILTER_ALL
+                    enabled ? dndmode : NotificationManager.INTERRUPTION_FILTER_ALL
             );
         }
     }

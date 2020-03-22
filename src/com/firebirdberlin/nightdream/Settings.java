@@ -64,6 +64,7 @@ public class Settings {
     private final static String TAG = "NightDream.Settings";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
     public boolean activateDoNotDisturb = false;
+    public boolean activateDoNotDisturbAllowPriority = true;
     public boolean alwaysOnStartWithLockedUI = false;
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
@@ -192,6 +193,7 @@ public class Settings {
         );
         AlarmToneName = settings.getString("AlarmToneName", "");
         activateDoNotDisturb = settings.getBoolean("activateDoNotDisturb", false);
+        activateDoNotDisturbAllowPriority = settings.getBoolean("activateDoNotDisturbAllowPriority", true);
         allow_screen_off = settings.getBoolean("allow_screen_off", false);
         alwaysOnStartWithLockedUI = settings.getBoolean("alwaysOnStartWithLockedUI", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
