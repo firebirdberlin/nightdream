@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -42,6 +43,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityManagerCompat;
 import androidx.core.app.NotificationCompat;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,11 +67,11 @@ import static android.content.Context.POWER_SERVICE;
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
-    private static String TAG ="NightDreamActivity";
+    private static String TAG = "NightDreamActivity";
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     private Context mContext;
 
-    public Utility(Context context){
+    public Utility(Context context) {
         this.mContext = context;
         getSystemBrightnessMode();
     }
@@ -105,7 +107,7 @@ public class Utility {
         return sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
     }
 
-    public static boolean isDebuggable(Context context){
+    public static boolean isDebuggable(Context context) {
         return (context != null &&
                 0 != (context.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE));
     }
@@ -144,12 +146,12 @@ public class Utility {
         return inSampleSize;
     }
 
-    public static int getScreenOffTimeout(Context context){
+    public static int getScreenOffTimeout(Context context) {
         return System.getInt(context.getContentResolver(), System.SCREEN_OFF_TIMEOUT, -1);
     }
 
     public static boolean isDaydreamEnabled(final Context c) {
-        if(Build.VERSION.SDK_INT < 17) return false;
+        if (Build.VERSION.SDK_INT < 17) return false;
         return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1);
     }
 
@@ -180,7 +182,7 @@ public class Utility {
     }
 
     public static boolean isConfiguredAsDaydream(final Context c) {
-        if(Build.VERSION.SDK_INT < 17) return false;
+        if (Build.VERSION.SDK_INT < 17) return false;
         if (1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1)) {
             String classname = getSelectedDaydreamClassName(c);
             Log.i(TAG, "Daydream is active " + classname);
@@ -189,19 +191,19 @@ public class Utility {
         return false;
     }
 
-    static public void toggleComponentState(Context context, Class component, boolean on){
+    static public void toggleComponentState(Context context, Class component, boolean on) {
         ComponentName receiver = new ComponentName(context, component);
         PackageManager pm = context.getPackageManager();
         int new_state = (on) ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                            : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
         pm.setComponentEnabledSetting(receiver, new_state, PackageManager.DONT_KILL_APP);
     }
 
     public static long getFirstInstallTime(Context context) {
         try {
             return context.getPackageManager()
-                          .getPackageInfo(context.getPackageName(), 0)
-                          .firstInstallTime;
+                    .getPackageInfo(context.getPackageName(), 0)
+                    .firstInstallTime;
         } catch (NameNotFoundException e) {
             return 0L;
         }
@@ -228,21 +230,21 @@ public class Utility {
 
     public static boolean hasNetworkConnection(Context context) {
         ConnectivityManager cm =
-            (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return ( activeNetwork != null && activeNetwork.isConnectedOrConnecting());
+        return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
     }
 
     public static boolean hasFastNetworkConnection(Context context) {
         ConnectivityManager cm =
-            (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
-        return ( hasNetworkConnection(context) &&
-                ( activeNetwork.getType() == ConnectivityManager.TYPE_WIFI ||
-                  activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET));
+        return (hasNetworkConnection(context) &&
+                (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI ||
+                        activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET));
     }
 
     public static void turnScreenOn(Context c) {
@@ -259,6 +261,7 @@ public class Utility {
             e.printStackTrace();
         }
     }
+
     public static boolean isScreenLocked(Context context) {
         KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         return myKM.inKeyguardRestrictedInputMode();
@@ -294,7 +297,7 @@ public class Utility {
 
     public static void colorizeView(View view, int color, PorterDuff.Mode mode) {
         if (view == null) {
-           return;
+            return;
         }
         final Paint colorPaint = new Paint();
         PorterDuffColorFilter filter = new PorterDuffColorFilter(color, mode);
@@ -396,6 +399,7 @@ public class Utility {
     }
 
     private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
     public static void logToFile(Context context, String logFileName, String text) {
 
         // allow logging only in debug mode
@@ -433,7 +437,7 @@ public class Utility {
 
     public static boolean isScreenOn(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        if (Build.VERSION.SDK_INT <= 19){
+        if (Build.VERSION.SDK_INT <= 19) {
             return deprecatedIsScreenOn(pm);
         }
         return pm.isInteractive();
@@ -505,7 +509,7 @@ public class Utility {
 
     public static void registerEventBus(Object subscriber) {
         EventBus bus = EventBus.getDefault();
-        if (! bus.isRegistered(subscriber)) {
+        if (!bus.isRegistered(subscriber)) {
             bus.register(subscriber);
         }
     }
@@ -648,5 +652,10 @@ public class Utility {
     public static int getContrastColor(int color) {
         double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
         return y >= 128 ? Color.BLACK : Color.WHITE;
+    }
+
+    public static boolean isLowRamDevice(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        return (ActivityManagerCompat.isLowRamDevice(activityManager));
     }
 }

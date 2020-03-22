@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
@@ -777,6 +779,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupBackgroundImageControls(SharedPreferences prefs) {
+        if (!Utility.isLowRamDevice(mContext)) {
+            showPreference("preference_category_background");
+        }
         String selection = prefs.getString("backgroundMode", "1");
         boolean on = selection.equals("3");
 
@@ -828,6 +833,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private boolean isAutostartActivated(SharedPreferences sharedPreferences) {
+        if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) return false;
+
         return (
                 sharedPreferences.getBoolean("handle_power", false)
                         || sharedPreferences.getBoolean("standbyEnabledWhileDisconnected", false)
@@ -982,6 +989,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (!isAdded()) {
             return;
         }
+
+        if (! (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext))) {
+            showPreference("autostart");
+        }
+
         enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
         Preference pref = findPreference("autostart");
         if (pref == null) {
