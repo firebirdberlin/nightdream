@@ -12,14 +12,17 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -45,21 +48,25 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityManagerCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.palette.graphics.Palette;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.POWER_SERVICE;
@@ -657,5 +664,85 @@ public class Utility {
     public static boolean isLowRamDevice(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         return (ActivityManagerCompat.isLowRamDevice(activityManager));
+    }
+
+    public static ArrayList<File> listFiles(File path) {
+        FileFilter fileFilter = new FileFilter() {
+            @Override
+            public boolean accept(File path) {
+                if (path.isDirectory() && !path.getName().startsWith(".")) return true;
+                return path.isFile() && path.getName().toLowerCase().endsWith(".jpg");
+            }
+        };
+        Stack<File> dirs = new Stack<>();
+        if (path.isDirectory()) dirs.push(path);
+        ArrayList<File> results = new ArrayList<>();
+        while (dirs.size() > 0) {
+            File dir = dirs.pop();
+            File[] files = dir.listFiles(fileFilter);
+            for(File file: files) {
+                if (file.isDirectory() && !file.getName().startsWith(".")) {
+                    dirs.push(file);
+                } else if (file.isFile()) {
+                    results.add(file);
+                }
+            }
+        }
+        return results;
+    }
+
+    public static int getCameraPhotoOrientation(File imageFile){
+        int rotate = 0;
+        try {
+            //context.getContentResolver().notifyChange(imageUri, null);
+
+            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+
+            Log.i("RotateImage", "Exif orientation: " + orientation);
+            Log.i("RotateImage", "Rotate value: " + rotate);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return rotate;
+    }
+
+    public static Bitmap rotateBitmap(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public static int getDominantColor(Bitmap bitmap) {
+        if (bitmap == null) return -1;
+        Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
+        final int color = newBitmap.getPixel(0, 0);
+        newBitmap.recycle();
+        return color;
+    }
+
+    public static int getDominantColorFromPalette(Bitmap bitmap) {
+        Palette p = Palette.from(bitmap).generate();
+        return p.getDominantColor(Color.RED);
+    }
+
+    public static int getVibrantColorFromPalette(Bitmap bitmap, int defaultColor) {
+        Palette p = Palette.from(bitmap).generate();
+        return p.getVibrantColor(defaultColor);
+        //return p.getLightVibrantColor(Color.RED);
+        //return p.getLightMutedColor(Color.RED);
     }
 }

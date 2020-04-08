@@ -50,6 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background">Hintergrund</string>
     <string name="background_image">Bild</string>
     <string name="background_image_select">Bild auswählen</string>
+    <string name="background_slideshow">Diashow</string>
     <string name="backgroundServiceDialogTitle">Hintergrundservice beenden</string>
     <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart, Standby-Modus und die Vorhersage der Akkuladezeit ausgeschaltet. Widgets können nicht mehr aktualisiert werden. Fortfahren ?</string>
     <string name="backgroundServiceDialogMessageWidget">Der Hintergrundservice kann nicht beendet werden solange ein Widget aktiviert ist. Bitte entfernden Sie das Widget und versuchen Sie es noch einmal.</string>

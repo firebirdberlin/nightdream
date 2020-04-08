@@ -58,6 +58,7 @@ public class Settings {
     public final static int BACKGROUND_BLACK = 1;
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
+    public final static int BACKGROUND_SLIDESHOW = 4;
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
