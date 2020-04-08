@@ -53,6 +53,7 @@ OR
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
+    <string name="background_slideshow">Slide show</string>
     <string name="backgroundServiceDialogTitle">Stop background service</string>
     <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode as well as the battery prediction. Widgets cannot be updated any more. Proceed?</string>
     <string name="backgroundServiceDialogMessageWidget">Cannot stop the background service while a widget is active. Please remove widgets and try again.</string>
