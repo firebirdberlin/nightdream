@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.1'
     }
 }
 
@@ -36,6 +36,7 @@ dependencies {
     implementation project(':externals:tab-digit:digit')
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+    implementation 'androidx.palette:palette:1.0.0'
 }
 
 def getApiKeyOWM() {
