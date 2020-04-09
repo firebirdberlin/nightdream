@@ -119,6 +119,7 @@ public class Settings {
     public float scaleClockLandscape = -1.f;
     public int alarmVolume = 3;
     public int background_mode = 1;
+    public boolean background_mode_auto_color = true;
     int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
@@ -216,6 +217,7 @@ public class Settings {
         scheduledAutoStartTimeRangeEndInMinutes = settings.getInt("scheduledAutoStartTimeRange_end_minutes", -1);
         scheduledAutoStartTimeRangeStartInMinutes = settings.getInt("scheduledAutoStartTimeRange_start_minutes", -1);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
+        background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_disconnection_at_time_range_end =
