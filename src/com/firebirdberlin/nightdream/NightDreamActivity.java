@@ -506,13 +506,13 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void setIconActive(ImageView icon) {
-        int accentColor = (mode == 0) ? mySettings.clockColorNight : mySettings.clockColor;
+        int accentColor = nightDreamUI.getAccentColor();
         icon.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
         Utility.setIconSize(this, icon);
     }
 
     public void setIconInactive(ImageView icon) {
-        int textColor = (mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor;
+        int textColor = nightDreamUI.getSecondaryColor();
         icon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
         Utility.setIconSize(this, icon);
     }

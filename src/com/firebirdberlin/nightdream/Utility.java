@@ -22,7 +22,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -48,12 +47,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityManagerCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.exifinterface.media.ExifInterface;
 import androidx.palette.graphics.Palette;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -691,32 +692,46 @@ public class Utility {
         return results;
     }
 
-    public static int getCameraPhotoOrientation(File imageFile){
-        int rotate = 0;
+    public static int getCameraPhotoOrientation(File imageFile) {
         try {
-            //context.getContentResolver().notifyChange(imageUri, null);
-
-            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
-            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    rotate = 270;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    rotate = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    rotate = 90;
-                    break;
-            }
-
-            Log.i("RotateImage", "Exif orientation: " + orientation);
-            Log.i("RotateImage", "Rotate value: " + rotate);
+        ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+        return getCameraPhotoOrientation(exif);
         } catch (IOException e) {
             e.printStackTrace();
-            return 0;
         }
+        return 0;
+    }
+
+    public static int getCameraPhotoOrientation(FileDescriptor fileDescriptor) {
+        try {
+            ExifInterface exif = new ExifInterface(fileDescriptor);
+            return getCameraPhotoOrientation(exif);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private static int getCameraPhotoOrientation(ExifInterface exif){
+        int rotate = 0;
+        //context.getContentResolver().notifyChange(imageUri, null);
+
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotate = 270;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotate = 180;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotate = 90;
+                break;
+        }
+
+        Log.i("RotateImage", "Exif orientation: " + orientation);
+        Log.i("RotateImage", "Rotate value: " + rotate);
         return rotate;
     }
 

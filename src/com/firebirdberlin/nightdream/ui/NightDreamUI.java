@@ -449,6 +449,7 @@ public class NightDreamUI {
         Log.d(TAG, "onResume()");
         hideSystemUI();
         settings.reload();
+        vibrantColor = 0;
         this.locked = settings.isUIlocked;
 
         setScreenOrientation(settings.screenOrientation);
@@ -530,7 +531,7 @@ public class NightDreamUI {
         setNightModeIcon();
 
         int accentColor = getAccentColor();
-        int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
+        int textColor = getSecondaryColor();
 
         batteryIconView.setColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
@@ -570,16 +571,20 @@ public class NightDreamUI {
 
     private void updateRadioIconColor() {
         int accentColor = getAccentColor();
-        int textColor = (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
+        int textColor = getSecondaryColor();
         final boolean webRadioViewActive = bottomPanelLayout.isWebRadioViewActive();
         final int color = (webRadioViewActive ? accentColor : textColor);
         radioIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         Utility.setIconSize(mContext, radioIcon);
     }
 
-    int getAccentColor() {
+    public int getAccentColor() {
         if (vibrantColor != 0) return vibrantColor;
         return (mode == 0) ? settings.clockColorNight : settings.clockColor;
+    }
+
+    public int getSecondaryColor() {
+        return (mode == 0) ? settings.secondaryColorNight : settings.secondaryColor;
     }
 
     private void colorizeImageView(View view, int color) {
@@ -652,12 +657,8 @@ public class NightDreamUI {
 
         int index = new Random().nextInt(files.size());
         File file = files.get(index);
-        Bitmap bitmap = loadImageFromPath(file.getAbsolutePath());
+        Bitmap bitmap = loadImageFromPath(file);
         bitmap = rescaleBackgroundImage(bitmap);
-        int rotation = Utility.getCameraPhotoOrientation(file);
-        if (rotation != 0) {
-            bitmap = Utility.rotateBitmap(bitmap, rotation);
-        }
         writeBackgroundImageToCache(bitmap);
         setDominantColorFromBitmap(bitmap);
         if (bitmap != null) {
@@ -710,17 +711,25 @@ public class NightDreamUI {
             options.inJustDecodeBounds = false;
             Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
             parcelFileDescriptor.close();
+
+            int rotation = Utility.getCameraPhotoOrientation(fileDescriptor);
+            if (rotation != 0) {
+                bitmap = Utility.rotateBitmap(bitmap, rotation);
+            }
+
             return bitmap;
         } else
         if (!settings.backgroundImagePath().isEmpty() ) {
             // deprecated legacy version
             String bgpath = settings.backgroundImagePath();
-            return loadImageFromPath(bgpath);
+            File file = new File(bgpath);
+            return loadImageFromPath(file);
         }
         return null;
     }
 
-    private Bitmap loadImageFromPath(String path) {
+    private Bitmap loadImageFromPath(File file) {
+        String path = file.getAbsolutePath();
         Point display = Utility.getDisplaySize(mContext);
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -731,7 +740,13 @@ public class NightDreamUI {
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
-        return (BitmapFactory.decodeFile(path, options));
+        Bitmap bitmap = (BitmapFactory.decodeFile(path, options));
+
+        int rotation = Utility.getCameraPhotoOrientation(file);
+        if (rotation != 0) {
+            bitmap = Utility.rotateBitmap(bitmap, rotation);
+        }
+        return bitmap;
     }
 
     private Bitmap rescaleBackgroundImage(Bitmap bgimage) {
@@ -771,12 +786,9 @@ public class NightDreamUI {
     }
 
     private void setDominantColorFromBitmap(Bitmap bitmap) {
-        //int color = Utility.getDominantColor(bitmap);
+        if (!settings.background_mode_auto_color) return;
         int defaultColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int color = Utility.getVibrantColorFromPalette(bitmap, defaultColor);
-        Log.i("getDominantColor", String.valueOf(color));
-        //int color = Color.RED;
-        //color = Utility.getContrastColor(color);
         vibrantColor = color;
         setColor();
     }

@@ -76,19 +76,32 @@
             app:entries="@array/backgroundModes"
             app:entryValues="@array/backgroundModeValues"
             app:key="backgroundMode"
-            app:title="@string/background" />
+            app:title="@string/background"
+            app:useSimpleSummaryProvider="true"/>
 
         <Preference
             app:iconSpaceReserved="false"
             app:key="chooseBackgroundImage"
-            app:title="@string/background_image"/>
+            app:title="@string/background_image_select"
+            app:isPreferenceVisible="false"/>
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="autoAccentColor"
+            app:title="@string/background_auto_accent_color"
+            app:summary="@string/background_auto_accent_summary"
+            app:isPreferenceVisible="false"
+            />
 
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             app:defaultValue="true"
             app:key="hideBackgroundImage"
             app:summary="@string/hide_background_image_in_night_mode_summary"
-            app:title="@string/hide_background_image_in_night_mode" />
+            app:title="@string/hide_background_image_in_night_mode"
+            app:isPreferenceVisible="false"
+            />
 
     </PreferenceCategory>
 

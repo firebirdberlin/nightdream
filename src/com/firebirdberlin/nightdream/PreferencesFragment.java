@@ -783,10 +783,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             showPreference("preference_category_background");
         }
         String selection = prefs.getString("backgroundMode", "1");
-        boolean on = selection.equals("3");
 
-        enablePreference("chooseBackgroundImage", on);
-        enablePreference("hideBackgroundImage", on);
+        showPreference("chooseBackgroundImage", selection.equals("3"));
+        boolean on = selection.equals("3") || selection.equals(("4"));
+        showPreference("hideBackgroundImage", on);
+        showPreference("autoAccentColor", on);
     }
 
     private void setupNightModePreferences(SharedPreferences prefs) {
@@ -931,6 +932,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             preference.setEnabled(on);
         } else {
             Log.w(TAG, "WARNING: preference " + key + " not found.");
+        }
+    }
+
+    private void showPreference(String key, boolean visible) {
+        Preference preference = findPreference(key);
+        if (preference != null) {
+            preference.setVisible(visible);
         }
     }
 
