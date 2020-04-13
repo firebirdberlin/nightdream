@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -196,7 +197,7 @@ public class NightDreamUI {
             updateWeatherData();
 
             // reload background image
-            if (settings.background_mode == Settings.BACKGROUND_SLIDESHOW) {
+            if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
                 setupBackgroundImage();
             }
 
@@ -579,7 +580,7 @@ public class NightDreamUI {
     }
 
     public int getAccentColor() {
-        if (vibrantColor != 0) return vibrantColor;
+        if (vibrantColor != 0 && mode != 0) return vibrantColor;
         return (mode == 0) ? settings.clockColorNight : settings.clockColor;
     }
 
@@ -605,10 +606,11 @@ public class NightDreamUI {
     }
 
     private void setupBackgroundImage() {
+        if (mode == 0) return;
         bgblack = new ColorDrawable(Color.BLACK);
         bgshape = bgblack;
         if (!Utility.isLowRamDevice(mContext)) {
-            switch (settings.background_mode){
+            switch (settings.getBackgroundMode()){
                 case Settings.BACKGROUND_BLACK: {
                     bgshape = bgblack;
                     break;
@@ -636,10 +638,13 @@ public class NightDreamUI {
     }
 
     private Drawable loadBackgroundSlideshowImage() {
+        if (! settings.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            return new ColorDrawable(Color.BLACK);
+        }
+
         File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
 
         long now = System.currentTimeMillis();
-        long TEN_MINUTES = 600000;
         long ONE_MINUTE = 60000;
         if (cacheFile.exists() && now - cacheFile.lastModified() < ONE_MINUTE) {
             Drawable cached = loadBackgroundImageFromCache();
@@ -649,9 +654,7 @@ public class NightDreamUI {
         }
 
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
-        //File[] files = path.listFiles();
-        ArrayList<File> files = Utility.listFiles(path);
-        Log.i(TAG, " num files: " + files.size());
+        ArrayList<File> files = Utility.listFiles(path, ".jpg");
 
         if (files.isEmpty()) return new ColorDrawable(Color.BLACK);
 
@@ -956,9 +959,10 @@ public class NightDreamUI {
 
         float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.05f);
         v = to_range(v, minBrightness, 1.f);
+        int backgroundMode = settings.getBackgroundMode();
         if (
-                settings.background_mode == Settings.BACKGROUND_IMAGE
-                        || settings.background_mode == Settings.BACKGROUND_SLIDESHOW
+                backgroundMode == Settings.BACKGROUND_IMAGE
+                        || backgroundMode == Settings.BACKGROUND_SLIDESHOW
         ) {
             v = to_range(v, 0.5f, 1.f);
         }
