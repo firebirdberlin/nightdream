@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.1'
     }
 }
 
@@ -27,7 +27,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.android:flexbox:1.1.1'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.android.billingclient:billing:2.0.3'
+    implementation 'com.android.billingclient:billing:2.2.0'
 
     // implementation 'uk.co.samuelwall:material-tap-target-prompt:3.0.0'
     // implementation project(':externals:ShowcaseView:library')
@@ -36,6 +36,8 @@ dependencies {
     implementation project(':externals:tab-digit:digit')
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'androidx.exifinterface:exifinterface:1.2.0'
 }
 
 def getApiKeyOWM() {

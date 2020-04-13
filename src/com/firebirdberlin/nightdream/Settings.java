@@ -58,6 +58,7 @@ public class Settings {
     public final static int BACKGROUND_BLACK = 1;
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
+    public final static int BACKGROUND_SLIDESHOW = 4;
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
@@ -117,7 +118,8 @@ public class Settings {
     public float scaleClockPortrait = -1.f;
     public float scaleClockLandscape = -1.f;
     public int alarmVolume = 3;
-    public int background_mode = 1;
+    private int background_mode = 1;
+    public boolean background_mode_auto_color = true;
     int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
@@ -165,7 +167,6 @@ public class Settings {
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
-
 
     public Settings(Context context){
         this.mContext = context;
@@ -215,6 +216,7 @@ public class Settings {
         scheduledAutoStartTimeRangeEndInMinutes = settings.getInt("scheduledAutoStartTimeRange_end_minutes", -1);
         scheduledAutoStartTimeRangeStartInMinutes = settings.getInt("scheduledAutoStartTimeRange_start_minutes", -1);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
+        background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_disconnection_at_time_range_end =
@@ -422,7 +424,6 @@ public class Settings {
     }
 
     public int getClockLayoutID(boolean preview) {
-        purchasedWeatherData = true;
         if (preview) {
             return clockLayout;
         } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
@@ -432,6 +433,17 @@ public class Settings {
         }
 
         return clockLayout;
+    }
+
+    public int getBackgroundMode() {
+        if (Utility.isLowRamDevice(mContext)) {
+            return BACKGROUND_BLACK;
+        } else
+        if (background_mode != BACKGROUND_SLIDESHOW || purchasedWeatherData) {
+            return background_mode;
+        }
+
+        return BACKGROUND_BLACK;
     }
 
     public String getTimeFormat() {
@@ -656,7 +668,7 @@ public class Settings {
         prefEditor.apply();
     }
 
-    private void clearBackgroundImageCache() {
+    public void clearBackgroundImageCache() {
         File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
         if (cacheFile.exists()) {
             cacheFile.delete();
