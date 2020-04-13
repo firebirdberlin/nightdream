@@ -792,7 +792,11 @@ public class NightDreamUI {
         if (!settings.background_mode_auto_color) return;
         int defaultColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int color = Utility.getVibrantColorFromPalette(bitmap, defaultColor);
-        vibrantColor = color;
+        if (color != defaultColor) {
+            vibrantColor = color;
+        } else {
+            vibrantColor = 0;
+        }
         setColor();
     }
 
