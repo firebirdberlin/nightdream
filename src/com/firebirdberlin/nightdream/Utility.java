@@ -764,4 +764,13 @@ public class Utility {
         //return p.getLightVibrantColor(Color.RED);
         //return p.getLightMutedColor(Color.RED);
     }
+
+    public static int getVibrantContrastColorFromPalette(Bitmap bitmap, int defaultColor) {
+        Palette p = Palette.from(bitmap).generate();
+        Palette.Swatch swatch = p.getVibrantSwatch();
+        if (swatch == null) {
+            return defaultColor;
+        }
+        return swatch.getBodyTextColor();
+    }
 }

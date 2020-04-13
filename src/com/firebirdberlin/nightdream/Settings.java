@@ -168,7 +168,6 @@ public class Settings {
     private boolean ambientNoiseDetection;
     private String bgpath = "";
 
-
     public Settings(Context context){
         this.mContext = context;
         settings = context.getSharedPreferences(PREFS_KEY, 0);
