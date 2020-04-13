@@ -667,12 +667,16 @@ public class Utility {
         return (ActivityManagerCompat.isLowRamDevice(activityManager));
     }
 
-    public static ArrayList<File> listFiles(File path) {
+    public static ArrayList<File> listFiles(File path, final String fileEnding) {
         FileFilter fileFilter = new FileFilter() {
             @Override
             public boolean accept(File path) {
                 if (path.isDirectory() && !path.getName().startsWith(".")) return true;
-                return path.isFile() && path.getName().toLowerCase().endsWith(".jpg");
+                if (fileEnding != null) {
+                    return path.isFile() && path.getName().toLowerCase().endsWith(fileEnding);
+                } else {
+                    return path.isFile();
+                }
             }
         };
         Stack<File> dirs = new Stack<>();

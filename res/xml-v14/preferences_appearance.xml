@@ -81,6 +81,13 @@
 
         <Preference
             app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_googleplay"
+            app:key="purchaseDesignPackageBackground"
+            app:isPreferenceVisible="false"
+            app:title="@string/purchaseWeatherData" />
+
+        <Preference
+            app:iconSpaceReserved="false"
             app:key="chooseBackgroundImage"
             app:title="@string/background_image_select"
             app:isPreferenceVisible="false"/>
