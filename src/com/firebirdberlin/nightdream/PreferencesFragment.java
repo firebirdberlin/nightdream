@@ -133,6 +133,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             settings.setNightModeBrightness(value1 / 100.f);
                             break;
                         case "backgroundMode":
+                            String selection = sharedPreferences.getString("backgroundMode", "1");
+                            if (isAdded() && ("3".equals(selection) || "4".equals(selection))) {
+                                settings.clearBackgroundImageCache();
+                                checkReadExternalStoragePermission();
+                            }
+
                             setupBackgroundImageControls(sharedPreferences);
                             break;
                         case "clockLayout":
@@ -286,30 +292,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         || Utility.wasInstalledBefore(mContext, 2019, 11, 15);
         enablePreference("category_night_mode_display_management", enableNightMode);
 
-        if (isPurchasedDonation) {
-            hidePreference("donation_category");
-        } else {
-            showPreference("donation_category");
-        }
-        if (isPurchasedWeather) {
-            hidePreference("purchaseWeatherData");
-            hidePreference("purchaseDesignPackage");
-        } else {
-            showPreference("purchaseWeatherData");
-            showPreference("purchaseDesignPackage");
-        }
+        showPreference("donation_category", !isPurchasedDonation);
+        showPreference("purchaseWeatherData", !isPurchasedWeather);
+        showPreference("purchaseDesignPackage", !isPurchasedWeather);
 
-        if (isPurchasedActions) {
-            hidePreference("purchaseActions");
-            hidePreference("purchaseActions2");
-            hidePreference("purchaseActions3");
-            hidePreference("purchaseActions4");
-        } else {
-            showPreference("purchaseActions");
-            showPreference("purchaseActions2");
-            showPreference("purchaseActions3");
-            showPreference("purchaseActions4");
-        }
+        showPreference("purchaseActions", !isPurchasedActions);
+        showPreference("purchaseActions2", !isPurchasedActions);
+        showPreference("purchaseActions3", !isPurchasedActions);
+        showPreference("purchaseActions4", !isPurchasedActions);
     }
 
     private void showPurchaseDialog() {
@@ -602,6 +592,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         selectBackgroundImage();
     }
 
+    private boolean checkReadExternalStoragePermission() {
+        if ( ! hasPermissionReadExternalStorage() ) {
+            requestPermissions(
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0
+            );
+            return false;
+        }
+        return true;
+    }
+
     private void selectBackgroundImage() {
         if (Build.VERSION.SDK_INT < 19 ) {
             Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -726,6 +726,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         removePreference("maxBrightnessBattery");
         removePreference("nightModeBrightnessInt");
+        removePreference("maxBrightness");
+        removePreference("minBrightness");
         if (on) {
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
@@ -751,8 +753,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             category.addPreference(prefMinBrightness);
             category.addPreference(prefMaxBrightness);
         } else {
-            removePreference("maxBrightness");
-            removePreference("minBrightness");
+//            removePreference("maxBrightness");
+//            removePreference("minBrightness");
 
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
@@ -783,10 +785,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             showPreference("preference_category_background");
         }
         String selection = prefs.getString("backgroundMode", "1");
-        boolean on = selection.equals("3");
 
-        enablePreference("chooseBackgroundImage", on);
-        enablePreference("hideBackgroundImage", on);
+        showPreference("chooseBackgroundImage", selection.equals("3"));
+        boolean on = selection.equals("3") || selection.equals(("4"));
+        showPreference("hideBackgroundImage", on);
+        showPreference("autoAccentColor", on);
+
+        boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
+        showPreference("purchaseDesignPackageBackground", selection.equals("4") && !isPurchasedWeather);
     }
 
     private void setupNightModePreferences(SharedPreferences prefs) {
@@ -931,6 +937,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             preference.setEnabled(on);
         } else {
             Log.w(TAG, "WARNING: preference " + key + " not found.");
+        }
+    }
+
+    private void showPreference(String key, boolean visible) {
+        Preference preference = findPreference(key);
+        if (preference != null) {
+            preference.setVisible(visible);
         }
     }
 
