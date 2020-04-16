@@ -415,7 +415,7 @@ public class Utility {
             return;
         }
 
-        String filePath = context.getFilesDir().getPath().toString() + "/" + logFileName;
+        String filePath = context.getFilesDir().getPath() + "/" + logFileName;
         Log.d(TAG, "log file location: " + filePath);
         File logFile = new File(filePath);
         if (!logFile.exists()) {
@@ -756,6 +756,14 @@ public class Utility {
     public static int getDominantColorFromPalette(Bitmap bitmap) {
         Palette p = Palette.from(bitmap).generate();
         return p.getDominantColor(Color.RED);
+    }
+
+    public static int getDarkVibrantColorFromPalette(Bitmap bitmap, int defaultColor) {
+        Palette p = Palette.from(bitmap).generate();
+        return p.getDarkMutedColor(defaultColor);
+        //return p.getDarkVibrantColor(defaultColor);
+        //return p.getLightVibrantColor(Color.RED);
+        //return p.getLightMutedColor(Color.RED);
     }
 
     public static int getVibrantColorFromPalette(Bitmap bitmap, int defaultColor) {

@@ -109,6 +109,7 @@ public class NightDreamUI {
     private BottomPanelLayout bottomPanelLayout;
     private Settings settings;
     private int vibrantColor = 0;
+    private int vibrantColorDark = 0;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
@@ -451,6 +452,7 @@ public class NightDreamUI {
         hideSystemUI();
         settings.reload();
         vibrantColor = 0;
+        vibrantColorDark = 0;
         this.locked = settings.isUIlocked;
 
         setScreenOrientation(settings.screenOrientation);
@@ -633,7 +635,64 @@ public class NightDreamUI {
         if ( settings.hideBackgroundImage && mode == 0 ) {
             background_image.setImageDrawable(bgblack);
         } else {
+            /*
+            BitmapDrawable bmp = (BitmapDrawable) bgshape;
+            bmp.setGravity(Gravity.CENTER);
+            DisplayMetrics displaymetrics = mContext.getResources().getDisplayMetrics();
+            bmp.setTargetDensity(displaymetrics);
+            bmp.setTileModeX(Shader.TileMode.MIRROR);
+            bmp.setTileModeY(Shader.TileMode.MIRROR);
+            clockLayoutContainer.setBackground(bmp);
+             */
             background_image.setImageDrawable(bgshape);
+            background_image.setScaleX(1);
+            background_image.setScaleY(1);
+            background_image.setTranslationX(0);
+            background_image.setTranslationY(0);
+            background_image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            background_image.getLayoutParams().height = LayoutParams.MATCH_PARENT;
+            background_image.getLayoutParams().width = LayoutParams.MATCH_PARENT;
+            background_image.setAdjustViewBounds(true);
+            background_image.setBackgroundColor(vibrantColorDark);
+
+            int w = bgshape.getIntrinsicWidth();
+            float scaleX = background_image.getWidth() / (float) w;
+            float diffX = background_image.getWidth() - w;
+            background_image.setScaleX(scaleX);
+            background_image.setScaleY(scaleX);
+            Random random = new Random();
+            float rand = (random.nextFloat() - 0.5f) * diffX;
+            background_image.setTranslationX(0);
+            background_image.setTranslationY(rand);
+            background_image.animate()
+                    .scaleX(1).scaleY(1)
+                    .translationXBy(rand)
+                    .translationY(0)
+                    .setDuration(30000);
+            boolean magic = false;
+            if (magic) {
+                background_image.setBackgroundColor(mContext.getResources().getColor(R.color.custom_red));
+                background_image.getLayoutParams().height = LayoutParams.MATCH_PARENT;
+                background_image.getLayoutParams().width = LayoutParams.WRAP_CONTENT;
+                background_image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                background_image.setAdjustViewBounds(true);
+
+                Log.i(TAG, "size: " + background_image.getWidth() + " x " + background_image.getHeight());
+
+                Point size = Utility.getDisplaySize(mContext);
+                Log.i(TAG, "point: " + size.x + " x " + size.y);
+
+                background_image.setTranslationX(-0.25f * background_image.getWidth());
+                float scaleX1 = (float) size.x / background_image.getWidth();
+                float scaleY = (float) size.y / background_image.getHeight();
+                background_image.animate()
+                        .scaleX(scaleX1).scaleY(scaleX1)
+                        .translationXBy(0.25f * background_image.getWidth())
+                        .translationYBy(0.25f * background_image.getHeight())
+                        .setDuration(10000);
+
+                Log.i(TAG, scaleX1 + " x " + scaleY);
+            }
         }
     }
 
@@ -647,7 +706,7 @@ public class NightDreamUI {
         long now = System.currentTimeMillis();
         long ONE_MINUTE = 60000;
         if (cacheFile.exists() && now - cacheFile.lastModified() < ONE_MINUTE) {
-            Drawable cached = loadBackgroundImageFromCache();
+            BitmapDrawable cached = loadBackgroundImageFromCache();
             if (cached != null) {
                 return cached;
             }
@@ -792,6 +851,8 @@ public class NightDreamUI {
         if (!settings.background_mode_auto_color) return;
         int defaultColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int color = Utility.getVibrantColorFromPalette(bitmap, defaultColor);
+        vibrantColorDark = Utility.getDarkVibrantColorFromPalette(bitmap, Color.BLACK);
+
         if (color != defaultColor) {
             vibrantColor = color;
         } else {
