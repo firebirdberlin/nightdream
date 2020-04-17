@@ -644,54 +644,35 @@ public class NightDreamUI {
             bmp.setTileModeY(Shader.TileMode.MIRROR);
             clockLayoutContainer.setBackground(bmp);
              */
-            background_image.setImageDrawable(bgshape);
+            switch (settings.slideshowStyle) {
+                case Settings.SLIDESHOW_STYLE_CROPPED:
+                    background_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    break;
+                case Settings.SLIDESHOW_STYLE_CENTER:
+                case Settings.SLIDESHOW_STYLE_ANIMATED:
+                    background_image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            }
             background_image.setScaleX(1);
             background_image.setScaleY(1);
             background_image.setTranslationX(0);
             background_image.setTranslationY(0);
-            background_image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            background_image.getLayoutParams().height = LayoutParams.MATCH_PARENT;
-            background_image.getLayoutParams().width = LayoutParams.MATCH_PARENT;
-            background_image.setAdjustViewBounds(true);
-            background_image.setBackgroundColor(vibrantColorDark);
+            background_image.setImageDrawable(bgshape);
 
-            int w = bgshape.getIntrinsicWidth();
-            float scaleX = background_image.getWidth() / (float) w;
-            float diffX = background_image.getWidth() - w;
-            background_image.setScaleX(scaleX);
-            background_image.setScaleY(scaleX);
-            Random random = new Random();
-            float rand = (random.nextFloat() - 0.5f) * diffX;
-            background_image.setTranslationX(0);
-            background_image.setTranslationY(rand);
-            background_image.animate()
-                    .scaleX(1).scaleY(1)
-                    .translationXBy(rand)
-                    .translationY(0)
-                    .setDuration(30000);
-            boolean magic = false;
-            if (magic) {
-                background_image.setBackgroundColor(mContext.getResources().getColor(R.color.custom_red));
-                background_image.getLayoutParams().height = LayoutParams.MATCH_PARENT;
-                background_image.getLayoutParams().width = LayoutParams.WRAP_CONTENT;
-                background_image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                background_image.setAdjustViewBounds(true);
-
-                Log.i(TAG, "size: " + background_image.getWidth() + " x " + background_image.getHeight());
-
-                Point size = Utility.getDisplaySize(mContext);
-                Log.i(TAG, "point: " + size.x + " x " + size.y);
-
-                background_image.setTranslationX(-0.25f * background_image.getWidth());
-                float scaleX1 = (float) size.x / background_image.getWidth();
-                float scaleY = (float) size.y / background_image.getHeight();
+            if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_ANIMATED) {
+                int w = bgshape.getIntrinsicWidth();
+                float scaleX = background_image.getWidth() / (float) w;
+                float diffX = background_image.getWidth() - w;
+                background_image.setScaleX(scaleX);
+                background_image.setScaleY(scaleX);
+                Random random = new Random();
+                float rand = (random.nextFloat() - 0.5f) * diffX;
+                background_image.setTranslationX(0);
+                background_image.setTranslationY(rand);
                 background_image.animate()
-                        .scaleX(scaleX1).scaleY(scaleX1)
-                        .translationXBy(0.25f * background_image.getWidth())
-                        .translationYBy(0.25f * background_image.getHeight())
-                        .setDuration(10000);
-
-                Log.i(TAG, scaleX1 + " x " + scaleY);
+                        .scaleX(1).scaleY(1)
+                        .translationXBy(rand)
+                        .translationY(0)
+                        .setDuration(30000);
             }
         }
     }
@@ -859,6 +840,7 @@ public class NightDreamUI {
             vibrantColor = 0;
         }
         setColor();
+        background_image.setBackgroundColor(vibrantColorDark);
     }
 
     private void writeBackgroundImageToCache(Bitmap bgimage) {
