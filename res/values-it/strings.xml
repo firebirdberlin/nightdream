@@ -195,6 +195,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_autostart">L\'autorizzazione per la visualizzazione di overlay (avvio automatico) non è concessa. Per favore, concedi questo permesso!</string>
     <string name="persistent_battery_value_while_charging">Livello batteria persistente</string>
     <string name="persistent_battery_value_while_charging_summary">Mostra lo stato della batteria durante il caricamento</string>
+    <string name="power_source">alimentazione</string>
     <string name="preferences">Preferenze</string>
     <string name="prev">Precedente</string>
     <string name="preview">Anteprima</string>
@@ -296,5 +297,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Informazioni</string>
     <string name="weather">Meteo</string>
     <string name="weatherProvider">Fornitore servizi meteo</string>
+    <string name="weekdays">Giorni della settimana</string>
     <string name="width">Larghezza</string>
 </resources>

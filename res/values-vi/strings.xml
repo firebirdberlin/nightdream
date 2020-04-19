@@ -113,9 +113,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio">Radio</string>
     <string name="radio_stream">luồng phát thanh</string>
     <string name="radio_stream_failure">Lỗi luồng phát thanh</string>
+    <string name="radio_stream_manual_input_description">Tên kênh</string>
     <string name="radio_stream_manual_input_hint">Cài đặt kênh bằng tay</string>
     <string name="radio_stream_manual_input_url">Địa chỉ net</string>
-    <string name="radio_stream_manual_input_description">Tên kênh</string>
     <string name="radio_stream_no_search_results">Không có kết quả tìm kiếm.</string>
     <string name="radio_stream_offline">offline</string>
     <string name="radio_stream_query_hint">Chuỗi tìm kiếm</string>

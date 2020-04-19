@@ -92,6 +92,15 @@
             app:title="@string/background_image_select"
             app:isPreferenceVisible="false"/>
 
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/slideshowStyles"
+            app:entryValues="@array/slideshowStyleValues"
+            app:iconSpaceReserved="false"
+            app:key="slideshowStyle"
+            app:title="@string/slideshow_style"
+            app:useSimpleSummaryProvider="true" />
+
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             app:defaultValue="true"

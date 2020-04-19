@@ -59,6 +59,11 @@ public class Settings {
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
     public final static int BACKGROUND_SLIDESHOW = 4;
+
+    public final static int SLIDESHOW_STYLE_CROPPED = 1;
+    public final static int SLIDESHOW_STYLE_CENTER = 2;
+    public final static int SLIDESHOW_STYLE_ANIMATED = 3;
+
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
@@ -119,6 +124,7 @@ public class Settings {
     public float scaleClockLandscape = -1.f;
     public int alarmVolume = 3;
     private int background_mode = 1;
+    public int slideshowStyle = 1;
     public boolean background_mode_auto_color = true;
     int batteryTimeout = -1;
     public int clockColor;
@@ -216,6 +222,7 @@ public class Settings {
         scheduledAutoStartTimeRangeEndInMinutes = settings.getInt("scheduledAutoStartTimeRange_end_minutes", -1);
         scheduledAutoStartTimeRangeStartInMinutes = settings.getInt("scheduledAutoStartTimeRange_start_minutes", -1);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
+        slideshowStyle = Integer.parseInt(settings.getString("slideshowStyle", "1"));
         background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);

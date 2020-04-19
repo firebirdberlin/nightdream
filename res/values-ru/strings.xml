@@ -195,6 +195,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_autostart">Разрешение на отображение оверлеев (автозапуск) не предоставлено. Пожалуйста, предоставьте это разрешение!</string>
     <string name="persistent_battery_value_while_charging">Всегда отображать заряд</string>
     <string name="persistent_battery_value_while_charging_summary">Показывать статус батареи во время зарядки</string>
+    <string name="power_source">источник пита</string>
     <string name="preferences">Предпочтения</string>
     <string name="prev">Предыдущее</string>
     <string name="preview">Предосмотр</string>
@@ -296,5 +297,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Информация</string>
     <string name="weather">Погода</string>
     <string name="weatherProvider">Провайдер погоды</string>
+    <string name="weekdays">будние дни</string>
     <string name="width">Ширина</string>
 </resources>

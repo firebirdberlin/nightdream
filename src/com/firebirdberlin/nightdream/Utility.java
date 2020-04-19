@@ -415,7 +415,7 @@ public class Utility {
             return;
         }
 
-        String filePath = context.getFilesDir().getPath().toString() + "/" + logFileName;
+        String filePath = context.getFilesDir().getPath() + "/" + logFileName;
         Log.d(TAG, "log file location: " + filePath);
         File logFile = new File(filePath);
         if (!logFile.exists()) {
@@ -758,6 +758,14 @@ public class Utility {
         return p.getDominantColor(Color.RED);
     }
 
+    public static int getDarkMutedColorFromPalette(Bitmap bitmap, int defaultColor) {
+        Palette p = Palette.from(bitmap).generate();
+        return p.getDarkMutedColor(defaultColor);
+        //return p.getDarkVibrantColor(defaultColor);
+        //return p.getLightVibrantColor(Color.RED);
+        //return p.getLightMutedColor(Color.RED);
+    }
+
     public static int getVibrantColorFromPalette(Bitmap bitmap, int defaultColor) {
         Palette p = Palette.from(bitmap).generate();
         return p.getVibrantColor(defaultColor);
@@ -765,12 +773,15 @@ public class Utility {
         //return p.getLightMutedColor(Color.RED);
     }
 
-    public static int getVibrantContrastColorFromPalette(Bitmap bitmap, int defaultColor) {
-        Palette p = Palette.from(bitmap).generate();
-        Palette.Swatch swatch = p.getVibrantSwatch();
-        if (swatch == null) {
-            return defaultColor;
-        }
-        return swatch.getBodyTextColor();
+
+    public static int getScreenOrientation(Context context) {
+        /*
+        returns
+            Configuration.ORIENTATION_LANDSCAPE,
+            Configuration.ORIENTATION_PORTRAIT,
+            Configuration.ORIENTATION_UNDEFINED,
+        */
+        return context.getResources().getConfiguration().orientation;
+
     }
 }
