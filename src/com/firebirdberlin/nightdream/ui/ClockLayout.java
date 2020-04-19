@@ -360,10 +360,7 @@ public class ClockLayout extends LinearLayout {
                     Calendar now = Calendar.getInstance();
                     try {
                         Calendar selected = calendarView.getCurrentDate().getCalendar();
-                        if (
-                                selected == null
-                                        || selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)
-                        ) {
+                        if (selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
                             calendarView.setCurrentDate(now);
                             calendarView.setSelectedDate(now);
                         }

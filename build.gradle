@@ -12,6 +12,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -35,7 +36,7 @@ dependencies {
     implementation project(':externals:android-preferences')
     implementation project(':externals:tab-digit:digit')
     implementation fileTree(include: '*.jar', dir: 'libs')
-    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+    implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
 }
