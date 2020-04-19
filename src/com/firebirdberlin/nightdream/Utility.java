@@ -758,7 +758,7 @@ public class Utility {
         return p.getDominantColor(Color.RED);
     }
 
-    public static int getDarkVibrantColorFromPalette(Bitmap bitmap, int defaultColor) {
+    public static int getDarkMutedColorFromPalette(Bitmap bitmap, int defaultColor) {
         Palette p = Palette.from(bitmap).generate();
         return p.getDarkMutedColor(defaultColor);
         //return p.getDarkVibrantColor(defaultColor);
@@ -773,12 +773,15 @@ public class Utility {
         //return p.getLightMutedColor(Color.RED);
     }
 
-    public static int getVibrantContrastColorFromPalette(Bitmap bitmap, int defaultColor) {
-        Palette p = Palette.from(bitmap).generate();
-        Palette.Swatch swatch = p.getVibrantSwatch();
-        if (swatch == null) {
-            return defaultColor;
-        }
-        return swatch.getBodyTextColor();
+
+    public static int getScreenOrientation(Context context) {
+        /*
+        returns
+            Configuration.ORIENTATION_LANDSCAPE,
+            Configuration.ORIENTATION_PORTRAIT,
+            Configuration.ORIENTATION_UNDEFINED,
+        */
+        return context.getResources().getConfiguration().orientation;
+
     }
 }

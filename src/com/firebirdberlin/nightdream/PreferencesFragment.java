@@ -751,9 +751,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             category.addPreference(prefMinBrightness);
             category.addPreference(prefMaxBrightness);
         } else {
-//            removePreference("maxBrightness");
-//            removePreference("minBrightness");
-
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("nightModeBrightnessInt", (int) (100 * nightModeBrightness));
