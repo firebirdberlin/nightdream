@@ -297,6 +297,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="width">Breite</string>
     <string name="prev">vorheriges</string>
     <string name="activateDoNotDisturb">\"Nicht stören\" aktivieren</string>
+    <string name="activateDoNotDisturbAllowPriority">wichtige Meldungen zulassen</string>
     <string name="activateDoNotDisturbSummary">\"Nicht stören\" aktivieren, solange die App aktiv ist.</string>
     <string name="manage_permissions">Berechtigungen</string>
     <string name="decoration_glow_effect">Glüheffekt</string>

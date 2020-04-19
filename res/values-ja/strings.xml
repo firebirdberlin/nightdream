@@ -21,6 +21,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_snooze">スヌーズ</string>
     <string name="action_stop">ストップ</string>
     <string name="activateDoNotDisturb">起こさないでください</string>
+    <string name="activateDoNotDisturbSummary">アプリを起動している間は起こさないでモードを使用する</string>
     <string name="add_new_alarm">新しいアラーム</string>
     <string name="add_custom_alarm_tone">カスタムアラーム音の追加</string>
     <string name="add_custom_font">カスタムフォント・カスタムフェイスの追加</string>
@@ -36,6 +37,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="appearance">外観</string>
     <string name="app_name">夜の時計</string>
     <string name="auto_brightness">明るさ自動</string>
+    <string name="autostartForNotificationsTitle">通知</string>
     <string name="autostart_message_disabled">作動時のオプションを設定するには、一旦スクリーンセーバーから外してください</string>
     <string name="autostart_timerange_label_end">終了時間</string>
     <string name="autostart_timerange_label_start">開始時間</string>
@@ -45,6 +47,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">画像</string>
     <string name="background_image_select">画像を選択</string>
     <string name="backgroundServiceDialogTitle">バックグラウンドサービスを停止する</string>
+    <string name="backgroundServiceDialogMessageWidget">ウィジェット起動時はバックグラウンド動作を停止できません。ウィジェットを削除して、再度お試しください。</string>
+    <string name="backgroundServiceNotificationTextLocation">現在地のアップデート中です。</string>
+    <string name="backgroundServiceNotificationTextNightMode">ナイトモード起動中です。</string>
+    <string name="batteryTimeout1min">1分</string>
+    <string name="batteryTimeout2min">2分</string>
+    <string name="batteryTimeout5min">5分</string>
+    <string name="batteryTimeout10min">10分</string>
+    <string name="batteryTimeout15min">15分</string>
+    <string name="batteryTimeout30min">30分</string>
     <string name="behaviour">動作</string>
     <string name="brightness">輝度</string>
     <string name="brightness_night_mode">明るさナイトモード</string>
@@ -53,11 +64,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="buy_upgrade_summary">プロフェッショナルバージョンを購入する</string>
     <string name="category_handle_power">充電方法</string>
     <string name="category_handle_power_autostart_time">アプリを作動させたい時間</string>
+    <string name="category_night_mode_display_management">画面管理</string>
     <string name="choose_alarm_sound">アラーム音</string>
     <string name="choose_primary_color">アクセントの色</string>
     <string name="choose_secondary_color">テキストの色</string>
     <string name="clear">クリア</string>
     <string name="clock_layout_analog">アナログ</string>
+    <string name="clock_layout_calendar">カレンダー付きデジタル時計</string>
     <string name="clock_layout_digital">デジタル</string>
     <string name="clock_layout_digital_flip">フリップするデジタル表示</string>
     <string name="clock_layout">配置</string>
@@ -76,6 +89,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits_pull_requests">プルリクエスト</string>
     <string name="date_format">日付形式</string>
     <string name="delete">削除</string>
+    <string name="dialog_message_pending_purchase">あなたの購入はまだGoogleに承認されていません。</string>
+    <string name="dialog_message_already_owned">このアイテムは既に購入済です。</string>
     <string name="dialog_message_thank_you">どうもありがとう！</string>
     <string name="dialog_title_thank_you">ありがとう</string>
     <string name="decoration">装飾</string>
@@ -83,6 +98,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">寄付する</string>
     <string name="doubleTapToFinishSummary">終了させるには画面をダブルタップします</string>
     <string name="doubleTapToFinishTitle">ダブルタップで終了</string>
+    <string name="forecast">5日天気予報</string>
     <string name="handle_power_ac">AC電源</string>
     <string name="handle_power">自動スタート</string>
     <string name="handle_power_car">カードック</string>
@@ -100,6 +116,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="message_mobile_data_connection_confirmation">あなたはモバイルネットワークに接続しています。ラジオストリームを再生しますか？</string>
     <string name="message_mobile_data_connection">モバイルデータ接続</string>
     <string name="message_no_data_connection">データ接続なし</string>
+    <string name="message_stop_alarm_long_press">長押しでアラーム停止</string>
     <string name="minBrightness">最も暗い時</string>
     <string name="minute">分</string>
     <string name="mute_ringer">無着信音</string>
@@ -113,6 +130,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">開始時間</string>
     <string name="night_mode_timerange_title">夜間を設定</string>
     <string name="noise_sensitivity">マイク感度</string>
+    <string name="notification_channel_name_alarms">アラーム</string>
+    <string name="notification_channel_name_radio">ラジオ</string>
+    <string name="notification_channel_desc_alarms">アラーム中も通知を表示する</string>
+    <string name="notification_channel_desc_devmsg">アプリに関するメッセージ</string>
     <string name="numbers">数字</string>
     <string name="other_apps">他のアプリ</string>
     <string name="other_apps_tinytimetracker_summary">毎日の勤務時間を記録します</string>

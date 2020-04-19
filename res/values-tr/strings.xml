@@ -46,6 +46,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">Resim</string>
     <string name="background_image_select">Resim seç</string>
     <string name="backgroundServiceDialogTitle">Arkaplan servislerini durdur</string>
+    <string name="backgroundServiceDialogMessage">Arkaplan servis mesajı</string>
     <string name="batteryTimeoutNever">Asla</string>
     <string name="behaviour">Çalışma ayarları</string>
     <string name="brightness">Parlaklık</string>
