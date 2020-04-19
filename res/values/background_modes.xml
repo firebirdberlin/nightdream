@@ -7,12 +7,23 @@
          <item>4</item>
      </string-array>
 
-
     <string-array name="backgroundModes">
         <item>@string/background_black</item>
         <item>@string/background_gradient</item>
         <item>@string/background_image</item>
         <item>@string/background_slideshow</item>
+    </string-array>
+
+    <string-array name="slideshowStyleValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="slideshowStyles">
+        <item>@string/slideshow_center_crop</item>
+        <item>@string/slideshow_center_inside</item>
+        <item>@string/slideshow_center_animated</item>
     </string-array>
 
     <string-array name="decorationStyles">
@@ -23,22 +34,26 @@
         <item>@string/decoration_style_copper</item>
         <item>@string/decoration_style_rust</item>
     </string-array>
+
     <string-array name="textures">
         <item>@string/decoration_style_none</item>
         <item>@string/decoration_style_gold</item>
         <item>@string/decoration_style_copper</item>
         <item>@string/decoration_style_rust</item>
     </string-array>
+
     <string-array name="handShapes">
         <item>@string/hand_shape_bar</item>
         <item>@string/hand_shape_triangle</item>
         <item>@string/hand_shape_arc</item>
     </string-array>
+
     <string-array name="numberStyles">
         <item>@string/numberStyleNone</item>
         <item>@string/numberStyleArabic</item>
         <item>@string/numberStyleRoman</item>
     </string-array>
+
     <string-array name="tickStyles">
         <item>@string/tick_style_none</item>
         <item>@string/tick_style_dash</item>

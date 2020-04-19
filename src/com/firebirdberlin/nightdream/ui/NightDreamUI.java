@@ -94,6 +94,7 @@ public class NightDreamUI {
     private boolean controlsVisible = false;
     private Context mContext;
 
+    private FrameLayout mainFrame;
     private Drawable bgshape;
     private Drawable bgblack;
     private AlarmClock alarmClock;
@@ -109,6 +110,8 @@ public class NightDreamUI {
     private BottomPanelLayout bottomPanelLayout;
     private Settings settings;
     private int vibrantColor = 0;
+    private int vibrantColorDark = 0;
+    private long lastAnimationTime = 0L;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
@@ -392,6 +395,7 @@ public class NightDreamUI {
 
         this.window = window;
         View rootView = window.getDecorView().findViewById(android.R.id.content);
+        mainFrame = rootView.findViewById(R.id.main_frame);
         background_image = rootView.findViewById(R.id.background_view);
         brightnessProgress = rootView.findViewById(R.id.brightness_progress);
         batteryIconView = rootView.findViewById(R.id.batteryIconView);
@@ -451,6 +455,7 @@ public class NightDreamUI {
         hideSystemUI();
         settings.reload();
         vibrantColor = 0;
+        vibrantColorDark = 0;
         this.locked = settings.isUIlocked;
 
         setScreenOrientation(settings.screenOrientation);
@@ -633,7 +638,25 @@ public class NightDreamUI {
         if ( settings.hideBackgroundImage && mode == 0 ) {
             background_image.setImageDrawable(bgblack);
         } else {
+            switch (settings.slideshowStyle) {
+                case Settings.SLIDESHOW_STYLE_CROPPED:
+                    background_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    break;
+                case Settings.SLIDESHOW_STYLE_CENTER:
+                case Settings.SLIDESHOW_STYLE_ANIMATED:
+                    background_image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            }
             background_image.setImageDrawable(bgshape);
+            if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_ANIMATED) {
+                setupSlideshowAnimation();
+            } else if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                setupSlideShowCenterInside();
+            } else {
+                background_image.setScaleX(1);
+                background_image.setScaleY(1);
+                background_image.setTranslationX(0);
+                background_image.setTranslationY(0);
+            }
         }
     }
 
@@ -647,7 +670,7 @@ public class NightDreamUI {
         long now = System.currentTimeMillis();
         long ONE_MINUTE = 60000;
         if (cacheFile.exists() && now - cacheFile.lastModified() < ONE_MINUTE) {
-            Drawable cached = loadBackgroundImageFromCache();
+            BitmapDrawable cached = loadBackgroundImageFromCache();
             if (cached != null) {
                 return cached;
             }
@@ -668,6 +691,92 @@ public class NightDreamUI {
             return new BitmapDrawable(mContext.getResources(), bitmap);
         }
         return new ColorDrawable(Color.BLACK);
+    }
+
+    private void setupSlideShowCenterInside() {
+        if (settings.slideshowStyle != Settings.SLIDESHOW_STYLE_CENTER) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (now - lastAnimationTime < 60000) {
+            return;
+        }
+        lastAnimationTime = now;
+        float diff;
+        int orientation = Utility.getScreenOrientation(mContext);
+        switch (orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+            default:
+                int w = bgshape.getIntrinsicWidth();
+                diff = background_image.getWidth() - w;
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                int h = bgshape.getIntrinsicHeight();
+                diff = background_image.getHeight() - h;
+                break;
+        }
+
+        background_image.setScaleX(1.f);
+        background_image.setScaleY(1.f);
+        Random random = new Random();
+        float rand = (random.nextFloat() - 0.5f) * diff;
+        switch (orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+            default:
+                background_image.setTranslationX(rand);
+                background_image.setTranslationY(0);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                background_image.setTranslationX(0);
+                background_image.setTranslationY(rand);
+                break;
+        }
+
+    }
+
+    private void setupSlideshowAnimation() {
+        if (settings.slideshowStyle != Settings.SLIDESHOW_STYLE_ANIMATED) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (now - lastAnimationTime < 60000) {
+            return;
+        }
+        lastAnimationTime = now;
+        float scale;
+        float diff;
+        int orientation = Utility.getScreenOrientation(mContext);
+        switch (orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+            default:
+                int w = bgshape.getIntrinsicWidth();
+                scale = 1.1f * background_image.getWidth() / (float) w;
+                diff = background_image.getWidth() - w;
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                int h = bgshape.getIntrinsicHeight();
+                scale = 1.1f * background_image.getHeight() / (float) h;
+                diff = background_image.getHeight() - h;
+                break;
+        }
+
+        background_image.setScaleX(scale);
+        background_image.setScaleY(scale);
+        Random random = new Random();
+        float rand = (random.nextFloat() - 0.5f) * diff;
+        switch (orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+            default:
+                background_image.setTranslationX(0);
+                background_image.setTranslationY(rand);
+                background_image.animate().scaleX(1).scaleY(1).translationXBy(rand).translationY(0).setDuration(30000);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                background_image.setTranslationX(rand);
+                background_image.setTranslationY(0);
+                background_image.animate().scaleX(1).scaleY(1).translationYBy(rand).translationX(0).setDuration(30000);
+                break;
+        }
     }
 
     private Drawable loadBackgroundImage() {
@@ -792,12 +901,15 @@ public class NightDreamUI {
         if (!settings.background_mode_auto_color) return;
         int defaultColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int color = Utility.getVibrantColorFromPalette(bitmap, defaultColor);
+        vibrantColorDark = Utility.getDarkMutedColorFromPalette(bitmap, Color.BLACK);
+
         if (color != defaultColor) {
             vibrantColor = color;
         } else {
             vibrantColor = 0;
         }
         setColor();
+        mainFrame.setBackgroundColor(vibrantColorDark);
     }
 
     private void writeBackgroundImageToCache(Bitmap bgimage) {

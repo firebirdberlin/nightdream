@@ -17,7 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Acerca de</string>
-    <string name="action_skip">Omitir</string>
+    <string name="action_skip">Olan</string>
     <string name="action_snooze">Aplazar</string>
     <string name="action_stop">Parar</string>
     <string name="activateDoNotDisturb">activar modo no molestar</string>
@@ -26,7 +26,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_alarm_tone">Añadir un tono de alarma particular</string>
     <string name="add_custom_font">Añadir nueva fuente</string>
     <string name="alarm">Alarma</string>
-    <string name="alarmFadeIn">Incrementar volumen progresivamente</string>
+    <string name="alarmFadeIn">Antiormósito progresivamente</string>
     <string name="alarmUpcoming">Próxima alarma</string>
     <string name="alarmStartDate">Siguiente alarma</string>
     <string name="alarmStartsFrom">desde</string>
@@ -36,14 +36,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="always_on">Siempre encendido</string>
     <string name="alwaysOnBatteryLevel">Nivel de la batería está por encima</string>
     <string name="ambient_noise">Detección de sonidos ambientales</string>
-    <string name="ambient_noise_summary">¿Debería el ruido ambiental impedir la activación del modo nocturno?</string>
+    <string name="ambient_noise_summary">¿Debería el ruido ambiental la activación del modo nocturno?</string>
     <string name="appearance">Apariencia</string>
     <string name="app_name">Reloj nocturno</string>
     <string name="auto_brightness">Brillo automático</string>
     <string name="autostartForNotificationsSummary">Activar la aplicación cuando se muestran nuevas notificaciones.</string>
     <string name="autostartForNotificationsTitle">Notificaciones</string>
     <string name="autostart_message_disabled">Desactive el protector de pantalla para activar las opciones de autoinicio</string>
-    <string name="autostart_timerange_label_end">Hora de finalizacion</string>
+    <string name="autostart_timerange_label_end">Hora de finalización</string>
     <string name="autostart_timerange_label_start">Hora de inicio</string>
     <string name="background">Fondo de pantalla</string>
     <string name="background_black">Negro</string>
@@ -198,24 +198,24 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_search">Buscar</string>
     <string name="radio_stream_unreachable_url">La URL no está disponible.</string>
     <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
-    <string name="reactivate_on_ambient_light_value_summary">La pantalla se reactivará si el límite de la iluminación es excedido.</string>
+    <string name="reactivate_on_ambient_light_value_summary">La pantalla se reexcita si el límite de la iluminación es excela.</string>
     <string name="reactivate_screen_on_noise">Despertar en ambiente ruidoso</string>
     <string name="recommend_app_desc">Elige una aplicación para recomendarnos.</string>
     <string name="recommend_app_subject">Te recomiendo esta aplicación de un reloj de noche</string>
     <string name="recommend">Recomienda la aplicación</string>
     <string name="remaining">Restante</string>
-    <string name="repeat">Repetir</string>
-    <string name="reset_to_defaults">Restablecer a valores predeterminados</string>
+    <string name="repeat">Retorrec</string>
+    <string name="reset_to_defaults">Rinderés a valores predeterminado</string>
     <string name="restless_mode">Mover el reloj alrededor</string>
     <string name="review_request">Por favor califica esta aplicación. ¡Gracias!</string>
-    <string name="scheduledAutoStart">Encendido programado</string>
+    <string name="scheduledAutoStart">Encendido Encendido</string>
     <string name="scheduledAutoStartChargerRequired">Sólo cargando</string>
     <string name="scheduledAutoStartEnabledDesc">Programar encendido para una hora concreta</string>
-    <string name="scheduledAutoStartEnabledTitle">Encendido programado</string>
+    <string name="scheduledAutoStartEnabledTitle">Encendido Encendido</string>
     <string name="scheduledAutoStartTimeRange">rango horario</string>
     <string name="screen_orientation_automatic">automático</string>
     <string name="screen_orientation_landscape">apaisado</string>
-    <string name="screen_orientation_portrait">vertical</string>
+    <string name="screen_orientation_portrait">Vertical</string>
     <string name="screen_orientation_reverse_landscape">apaisado invertido</string>
     <string name="screen_orientation_reverse_portrait">vertical invertido</string>
     <string name="screenOrientation">Orientación de la pantalla</string>
@@ -228,7 +228,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Mostrar Temperatura</string>
     <string name="show_weather">Mostrar clima local</string>
     <string name="show_wind_speed">Velocidad del viento</string>
-    <string name="sleep_time_dialog_title">Temporizador para dormir</string>
+    <string name="sleep_time_dialog_title">¡El tiempo para dormir</string>
     <string name="snoozeTime">Tiempo para aplazar</string>
     <string name="speedUnit">Unidad de velocidad del viento</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">con pantalla encendida</string>
@@ -253,9 +253,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface">Tipo de letra</string>
     <string name="uninstall">Desinstalar aplicación</string>
     <string name="useAlarmSwipeGesture">Activar la alarma deslizando el dedo por la pantalla</string>
-    <string name="useDeviceLockDescription">La opción Bloquear Pantalla requiere permisos de administrador. Deshabilitar en caso de querer desinstalar la aplicación.</string>
-    <string name="useDeviceLockExplanation">Bloquear el dispositivo mientras la aplicación está en uso. Deshabilitar en caso de querer desinstalar la aplicación.</string>
-    <string name="useDeviceLock">Bloquear dispositivo</string>
+    <string name="useDeviceLockDescription">La opción Bloquear Pantalla requiere permisos de administrador. Desactivar en caso de querer desinstalar la aplicación.</string>
+    <string name="useDeviceLockExplanation">Bloquear el dispositivo mientras la aplicación en uso. Desactivar en caso de querer desinstalar la aplicación.</string>
+    <string name="useDeviceLock">Dispositivo de bloquear</string>
     <string name="weather_calculation_time">hora de pronóstico del tiempo</string>
     <string name="weather_city_id_title">Ubicación de búsqueda</string>
     <string name="weather_info_title">Información</string>

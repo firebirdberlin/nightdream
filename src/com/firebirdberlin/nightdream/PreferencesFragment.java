@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -25,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
@@ -753,9 +751,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             category.addPreference(prefMinBrightness);
             category.addPreference(prefMaxBrightness);
         } else {
-//            removePreference("maxBrightness");
-//            removePreference("minBrightness");
-
             float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
             SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("nightModeBrightnessInt", (int) (100 * nightModeBrightness));
@@ -787,6 +782,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         String selection = prefs.getString("backgroundMode", "1");
 
         showPreference("chooseBackgroundImage", selection.equals("3"));
+        showPreference("slideshowStyle", selection.equals("4"));
         boolean on = selection.equals("3") || selection.equals(("4"));
         showPreference("hideBackgroundImage", on);
         showPreference("autoAccentColor", on);
