@@ -54,7 +54,7 @@ def getApiKeyDarkSky() {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
 
     sourceSets {
@@ -101,6 +101,6 @@ android {
         minSdkVersion 15
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
-        targetSdkVersion 28
+        targetSdkVersion 29
     }
 }
