@@ -106,7 +106,7 @@ public class Settings {
     public boolean showAlarmsPersistently = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
-    public boolean radioStreamActivateWiFi = false;
+    private boolean radioStreamActivateWiFi = false;
     public boolean radioStreamRequireWiFi = true;
     public boolean scheduledAutoStartEnabled = false;
     public boolean scheduledAutoStartChargerRequired = true;
@@ -1007,5 +1007,12 @@ public class Settings {
             return false;
         }
         return preferences.getBoolean("flashlightIsOn", false);
+    }
+
+    public boolean getShallRadioStreamActivateWiFi() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29) {
+            return false;
+        }
+        return radioStreamActivateWiFi;
     }
 }
