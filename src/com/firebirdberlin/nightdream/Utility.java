@@ -121,6 +121,7 @@ public class Utility {
     }
 
     public static boolean isEmulator() {
+        Log.d(TAG, Build.FINGERPRINT + "|" + Build.MODEL +"|"+ Build.PRODUCT);
         return Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.startsWith("unknown")
                 || Build.MODEL.contains("google_sdk")
@@ -128,7 +129,8 @@ public class Utility {
                 || Build.MODEL.contains("Android SDK built for x86")
                 || Build.MANUFACTURER.contains("Genymotion")
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
-                || "google_sdk".equals(Build.PRODUCT);
+                || "google_sdk".equals(Build.PRODUCT)
+                || "sdk_gphone_x86".equals(Build.PRODUCT);
     }
 
     public static int calculateInSampleSize(

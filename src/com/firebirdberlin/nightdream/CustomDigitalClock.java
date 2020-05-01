@@ -56,12 +56,10 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     }
 
     private void initClock() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Due to an issue with hardware acceleration the text disappears if the font
-            // size gets too large. So we disable hardware acceleration.
-            // https://stackoverflow.com/questions/6253528/font-size-too-large-to-fit-in-cache
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
+        // Due to an issue with hardware acceleration the text disappears if the font
+        // size gets too large. So we disable hardware acceleration.
+        // https://stackoverflow.com/questions/6253528/font-size-too-large-to-fit-in-cache
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         setFormat();
         updateTextView();
