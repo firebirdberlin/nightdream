@@ -533,7 +533,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupAlarmClockPreferences() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29) {
             showPreference("radioStreamActivateWiFi");
         }
     }

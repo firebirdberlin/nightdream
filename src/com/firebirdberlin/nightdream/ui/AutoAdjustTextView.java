@@ -80,7 +80,6 @@ public class AutoAdjustTextView extends AppCompatTextView {
     }
 
     private int getAdjustedTextSize() {
-        if (Build.VERSION.SDK_INT < 14) return -1;
         if (maxWidth == -1) return -1;
         if (maxFontSizeSp == -1 || minFontSizeSp == -1) return -1;
         Paint paint = getPaint();
