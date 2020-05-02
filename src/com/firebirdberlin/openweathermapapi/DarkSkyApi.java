@@ -161,9 +161,9 @@ public class DarkSkyApi {
         entry.request_timestamp = System.currentTimeMillis();
         entry.sunriseTime = 0L;
         entry.sunsetTime = 0L;
-        entry.temperature = toKelvin(getValue(jsonCurrently, "temperature", 0.));
-        entry.apparentTemperature = toKelvin(getValue(jsonCurrently, "apparentTemperature", 0.));
-        entry.humidity = (int) (100 * getValue(jsonCurrently, "humidity", 1.));
+        entry.temperature = toKelvin(getValue(jsonCurrently, "temperature", -273.15));
+        entry.apparentTemperature = toKelvin(getValue(jsonCurrently, "apparentTemperature", -273.15));
+        entry.humidity = (int) (100 * getValue(jsonCurrently, "humidity", 0.));
         entry.timestamp = getValue(jsonCurrently, "time", 0L);
         entry.weatherIcon = getValue(jsonCurrently, "icon", "");
         entry.windDirection = getValue(jsonCurrently, "windBearing", -1);
@@ -197,7 +197,9 @@ public class DarkSkyApi {
             entry.request_timestamp = now;
             entry.sunriseTime = 0L;
             entry.sunsetTime = 0L;
-            entry.temperature = toKelvin(getValue(jsonEntry, "temperature", 0.));
+            entry.temperature = toKelvin(getValue(jsonEntry, "temperature", -273.15));
+            entry.apparentTemperature = toKelvin(getValue(jsonEntry, "apparentTemperature", -273.15));
+            entry.humidity = (int) (100 * getValue(jsonEntry, "humidity", 0.));
             entry.timestamp = getValue(jsonEntry, "time", 0L);
             entry.weatherIcon = getValue(jsonEntry, "icon", "");
             entry.windDirection = getValue(jsonEntry, "windBearing", -1);
