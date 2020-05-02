@@ -119,7 +119,7 @@ public class OpenWeatherMapApi {
         return getWeatherEntryFromJSONObject(json);
     }
 
-    public static List<WeatherEntry> fetchWeatherForecast(
+    static List<WeatherEntry> fetchWeatherForecast(
             Context context, City city
     ) {
         int responseCode = 0;
@@ -217,7 +217,9 @@ public class OpenWeatherMapApi {
         entry.clouds = getValue(jsonClouds, "all", 0);
         entry.timestamp = getValue(json, "dt", 0L);
         entry.request_timestamp = System.currentTimeMillis();
+        entry.humidity = getValue(jsonMain, "humidity", -1);
         entry.temperature = getValue(jsonMain, "temp", 0.);
+        entry.apparentTemperature = getValue(jsonMain, "feels_like", entry.temperature);
         entry.rain1h = getValue(jsonRain, "1h", -1.);
         entry.rain3h = getValue(jsonRain, "3h", -1.);
         entry.sunriseTime = getValue(jsonSys, "sunrise", 0L);

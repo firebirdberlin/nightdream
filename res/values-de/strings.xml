@@ -250,6 +250,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">Achtung: Es ist keine Stromquelle verbunden !</string>
     <string name="show_date">Datum anzeigen</string>
     <string name="show_divider">Trennlinie anzeigen</string>
+    <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
     <string name="show_temperature">Temperatur anzeigen</string>
     <string name="show_weather">Wetter anzeigen</string>
     <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>

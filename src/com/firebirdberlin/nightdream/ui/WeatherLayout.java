@@ -26,6 +26,7 @@ public class WeatherLayout extends LinearLayout {
     private TextView temperatureText = null;
     private TextView windText = null;
     private boolean showTemperature = false;
+    private boolean showApparentTemperature = false;
     private boolean showWindSpeed = false;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
@@ -63,8 +64,9 @@ public class WeatherLayout extends LinearLayout {
         iconWind.setTypeface(typeface);
     }
 
-    public void setTemperature(boolean on, int unit) {
+    public void setTemperature(boolean on, boolean showApparentTemperature, int unit) {
         this.showTemperature = on;
+        this.showApparentTemperature = showApparentTemperature;
         this.temperatureUnit = unit;
         temperatureText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
@@ -143,7 +145,7 @@ public class WeatherLayout extends LinearLayout {
 
             iconText.setText(iconToText(entry.weatherIcon));
 
-            temperatureText.setText(entry.formatTemperatureText(temperatureUnit));
+            temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(entry.formatWindText(speedUnit));

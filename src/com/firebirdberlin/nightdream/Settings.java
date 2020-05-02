@@ -96,6 +96,7 @@ public class Settings {
     public boolean showDate = true;
     public boolean showDivider = false;
     public boolean showWeather = false;
+    public boolean showApparentTemperature = true;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
     public boolean useDeviceLock = false;
@@ -269,6 +270,7 @@ public class Settings {
         showDate = settings.getBoolean("showDate", true);
         showDivider = settings.getBoolean("showDivider", false);
         showWeather = settings.getBoolean("showWeather", false);
+        showApparentTemperature = settings.getBoolean("showApparentTemperature", true);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
@@ -862,6 +864,7 @@ public class Settings {
             this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
             this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
             this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
+            this.weatherEntry.apparentTemperature = settings.getFloat("weather_felt_temperature", (float) this.weatherEntry.apparentTemperature);
             this.weatherEntry.windSpeed = settings.getFloat("weather_wind_speed", (float) this.weatherEntry.windSpeed);
             this.weatherEntry.windDirection = settings.getInt("weather_wind_direction", this.weatherEntry.windDirection);
         }
@@ -882,6 +885,7 @@ public class Settings {
         prefEditor.putString("weather_description", entry.description);
         prefEditor.putInt("weather_city_id", entry.cityID);
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
+        prefEditor.putFloat("weather_felt_temperature", (float) entry.apparentTemperature);
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
         prefEditor.putInt("weather_wind_direction", entry.windDirection);
         prefEditor.commit();

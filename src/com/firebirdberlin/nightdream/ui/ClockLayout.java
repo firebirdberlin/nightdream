@@ -196,9 +196,9 @@ public class ClockLayout extends LinearLayout {
         Utility.colorizeView(notificationLayout, color);
     }
 
-    public void setTemperature(boolean on, int unit) {
+    public void setTemperature(boolean on, boolean withApparentTemperature, int unit) {
         if (weatherLayout == null) return;
-        weatherLayout.setTemperature(on, unit);
+        weatherLayout.setTemperature(on, withApparentTemperature, unit);
     }
 
     public void setWindSpeed(boolean on, int unit) {

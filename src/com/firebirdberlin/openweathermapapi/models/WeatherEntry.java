@@ -21,9 +21,11 @@ public class WeatherEntry {
     public int cityID = 0;
     public String cityName = "";
     public int clouds = -1;
+    public int humidity = -1;
     public double rain1h = -1.f;
     public double rain3h = -1.f;
     public double temperature = 0.f;
+    public double apparentTemperature = 0.f;
     public long sunriseTime = 0L;
     public long sunsetTime = 0L;
     public String weatherIcon = "";
@@ -41,6 +43,7 @@ public class WeatherEntry {
         request_timestamp = System.currentTimeMillis();
         timestamp = System.currentTimeMillis() / 1000;
         temperature = 273.15 + randomFromRange(0, 40); // in K
+        apparentTemperature = 273.15 + randomFromRange(0, 40); // in K
         weatherIcon = "03d";
     }
 
@@ -61,9 +64,10 @@ public class WeatherEntry {
     }
 
     public String toString() {
-        return String.format("%2.2fK %2.2fm/s %d° %d %s",
-                temperature, windSpeed, windDirection, timestamp,
-                description);
+        return String.format(
+                "%2.2fK %2.2fm/s %d° %d %s",
+                temperature, windSpeed, windDirection, timestamp, description
+        );
     }
 
 
@@ -73,15 +77,33 @@ public class WeatherEntry {
     }
 
     public String formatTemperatureText(int temperatureUnit) {
+        return formatTemperatureText(temperatureUnit, true);
+    }
+
+    public String formatTemperatureText(int temperatureUnit, boolean showApparentTemperature) {
+        if (showApparentTemperature) {
+            return String.format("%s (%s)", formatTemperatureText(temperatureUnit, temperature), formatTemperatureText(temperatureUnit, apparentTemperature));
+        }
+
+        return formatTemperatureText(temperatureUnit, temperature);
+    }
+
+    public String formatTemperatureText(int temperatureUnit, double temp) {
         switch (temperatureUnit) {
             case WeatherEntry.CELSIUS:
-                return String.format("%d°C", Math.round(toDegreesCelcius(this.temperature)));
+                return String.format("%d°C", Math.round(toDegreesCelcius(temp)));
             case WeatherEntry.FAHRENHEIT:
-                return String.format("%d°F", Math.round(toDegreesFahrenheit(this.temperature)));
+                return String.format("%d°F", Math.round(toDegreesFahrenheit(temp)));
             default:
-                return String.format("%d K", Math.round(this.temperature));
+                return String.format("%d K", Math.round(temp));
         }
     }
+
+    public String formatHumidityText() {
+        if (humidity < 0) return "";
+        return String.format("%d %%", humidity);
+    }
+
     private double toDegreesCelcius(double kelvin) {
         return kelvin - 273.15;
     }
