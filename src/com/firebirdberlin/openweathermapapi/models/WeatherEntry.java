@@ -21,7 +21,7 @@ public class WeatherEntry {
     public int cityID = 0;
     public String cityName = "";
     public int clouds = -1;
-    public int humidity = -1;
+    public int humidity = 0;
     public double rain1h = -1.f;
     public double rain3h = -1.f;
     public double temperature = 0.f;
@@ -81,7 +81,7 @@ public class WeatherEntry {
     }
 
     public String formatTemperatureText(int temperatureUnit, boolean showApparentTemperature) {
-        if (showApparentTemperature) {
+        if (showApparentTemperature && apparentTemperature > 0.f) {
             return String.format("%s (%s)", formatTemperatureText(temperatureUnit, temperature), formatTemperatureText(temperatureUnit, apparentTemperature));
         }
 
