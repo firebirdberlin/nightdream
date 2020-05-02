@@ -96,7 +96,7 @@ public class Settings {
     public boolean showDate = true;
     public boolean showDivider = false;
     public boolean showWeather = false;
-    public boolean showApparentTemperature = true;
+    public boolean showApparentTemperature = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
     public boolean useDeviceLock = false;
@@ -270,7 +270,7 @@ public class Settings {
         showDate = settings.getBoolean("showDate", true);
         showDivider = settings.getBoolean("showDivider", false);
         showWeather = settings.getBoolean("showWeather", false);
-        showApparentTemperature = settings.getBoolean("showApparentTemperature", true);
+        showApparentTemperature = settings.getBoolean("showApparentTemperature", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
