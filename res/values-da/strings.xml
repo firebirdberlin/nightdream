@@ -21,6 +21,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stop</string>
     <string name="activateDoNotDisturb">Forstyr ikke</string>
+    <string name="activateDoNotDisturbAllowPriority">Tillad prioriteret</string>
     <string name="activateDoNotDisturbSummary">Aktiver \'Forstyr ikke\' når appen er aktiv</string>
     <string name="add_new_alarm">Sæt ny alarm</string>
     <string name="add_custom_alarm_tone">Tilføj alarm tone</string>
@@ -48,10 +49,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Slut tid</string>
     <string name="autostart_timerange_label_start">Start tid</string>
     <string name="background">Baggrund</string>
+    <string name="background_auto_accent_color">Automatisk farve valg</string>
+    <string name="background_auto_accent_summary">Vælg automatisk en passende farve</string>
     <string name="background_black">Sort</string>
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Billede</string>
     <string name="background_image_select">Vælg et billede</string>
+    <string name="background_slideshow">Slide show</string>
     <string name="backgroundServiceDialogTitle">Stop baggrunds service</string>
     <string name="backgroundServiceDialogMessage"> Hvis du stopper baggrundstjenesten, deaktiveres autostart og standbytilstand samt batteri-forudsigelse. Widgets kan ikke opdateres mere. Fortsæt?</string>
     <string name="backgroundServiceDialogMessageWidget">Kan ikke stoppe baggrundstjenesten, mens en widget er aktiv. Fjern widgets og prøv igen</string>
@@ -195,6 +199,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_autostart"> Tilladelsen til at vise overlays (autostart) er ikke tildelt. Giv denne tilladelse!</string>
     <string name="persistent_battery_value_while_charging">Vis altid batteristatus</string>
     <string name="persistent_battery_value_while_charging_summary">Vis altid batteristatus under opladning</string>
+    <string name="power_source">Strøm kilde</string>
     <string name="preferences">Præference</string>
     <string name="prev">forrige</string>
     <string name="preview">Preview</string>
@@ -258,6 +263,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Vis temperatur</string>
     <string name="show_weather">Vis lokalt vejr</string>
     <string name="show_wind_speed">Vis vindhastighed</string>
+    <string name="slideshow_center_animated">Animeret</string>
+    <string name="slideshow_style">Stil</string>
     <string name="sleep_time_dialog_title">Timer</string>
     <string name="snoozeTime">Snooze tid</string>
     <string name="speedUnit">Enhed for vindhastighed</string>
@@ -294,5 +301,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Information</string>
     <string name="weather">Vejr</string>
     <string name="weatherProvider">Vejr udbyder</string>
+    <string name="weekdays">Ugedage</string>
     <string name="width">med</string>
 </resources>

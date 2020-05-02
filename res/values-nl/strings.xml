@@ -21,6 +21,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_snooze">Sluimer</string>
     <string name="action_stop">Stop</string>
     <string name="activateDoNotDisturb">Niet storen inschakelen</string>
+    <string name="activateDoNotDisturbAllowPriority">Sta prioriteit toe</string>
     <string name="activateDoNotDisturbSummary">Niet storen inschakelen wanneer de app actief is.</string>
     <string name="add_new_alarm">Nieuw alarm toevoegen</string>
     <string name="add_custom_alarm_tone">Aangepaste alarmtoon toevoegen</string>
@@ -48,10 +49,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Eindtijd</string>
     <string name="autostart_timerange_label_start">Begintijd</string>
     <string name="background">Achtergrond</string>
+    <string name="background_auto_accent_color">Automatische kleur selectie</string>
+    <string name="background_auto_accent_summary">Selecteer automatisch een toepasselijke accent kleur</string>
     <string name="background_black">Zwart</string>
     <string name="background_gradient">Verloop</string>
     <string name="background_image">Afbeelding</string>
     <string name="background_image_select">Selecteer een afbeelding</string>
+    <string name="background_slideshow">Slideshow</string>
     <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
     <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterijvoorspelling. Doorgaan?</string>
     <string name="backgroundServiceDialogMessageWidget">Achtergrondservice kan niet worden gestopt als een widget actief is. Verwijder de widget en probeer opnieuw.</string>
@@ -260,6 +264,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Temperatuur tonen</string>
     <string name="show_weather">Lokaal weerbericht tonen</string>
     <string name="show_wind_speed">Windsnelheid tonen</string>
+    <string name="slideshow_center_crop">snij randen bij</string>
+    <string name="slideshow_center_inside">voeg rand toe</string>
+    <string name="slideshow_center_animated">geanimeerd</string>
+    <string name="slideshow_style">Stijl</string>
     <string name="sleep_time_dialog_title">Bedtijd</string>
     <string name="snoozeTime">Sluimertijd</string>
     <string name="speedUnit">Eenheid van windsnelheid</string>
