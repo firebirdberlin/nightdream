@@ -162,6 +162,8 @@ public class DarkSkyApi {
         entry.sunriseTime = 0L;
         entry.sunsetTime = 0L;
         entry.temperature = toKelvin(getValue(jsonCurrently, "temperature", 0.));
+        entry.apparentTemperature = toKelvin(getValue(jsonCurrently, "apparentTemperature", 0.));
+        entry.humidity = (int) (100 * getValue(jsonCurrently, "humidity", 1.));
         entry.timestamp = getValue(jsonCurrently, "time", 0L);
         entry.weatherIcon = getValue(jsonCurrently, "icon", "");
         entry.windDirection = getValue(jsonCurrently, "windBearing", -1);

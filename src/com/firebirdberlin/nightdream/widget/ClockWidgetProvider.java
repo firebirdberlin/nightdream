@@ -91,7 +91,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         if (settings.weatherEntry != null
                 && settings.weatherEntry.timestamp > -1L
                 && settings.weatherEntry.ageMillis() <= 8 * 60 * 60 * 1000) {
-            clockLayout.setTemperature(settings.showTemperature, settings.temperatureUnit);
+            clockLayout.setTemperature(
+                    settings.showTemperature,
+                    settings.showApparentTemperature,
+                    settings.temperatureUnit
+            );
             clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
             clockLayout.showWeather(showAdditionalLines && settings.showWeather);
 

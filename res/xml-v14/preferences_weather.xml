@@ -26,6 +26,15 @@
         app:key="showTemperature"
         app:title="@string/show_temperature" />
 
+    <CheckBoxPreference
+        app:defaultValue="false"
+        app:dependency="showTemperature"
+        app:iconSpaceReserved="false"
+        app:key="showApparentTemperature"
+        app:title="@string/show_apparent_temperature" />
+    />
+
+
     <ListPreference
         app:iconSpaceReserved="false"
         app:defaultValue="1"

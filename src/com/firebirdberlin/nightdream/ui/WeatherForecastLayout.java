@@ -32,6 +32,7 @@ public class WeatherForecastLayout extends LinearLayout {
     private DirectionIconView iconWindDirection = null;
     private TextView cloudText = null;
     private TextView temperatureText = null;
+    private TextView humidityText = null;
     private TextView windText = null;
     private TextView rainText = null;
     private int temperatureUnit = WeatherEntry.CELSIUS;
@@ -68,6 +69,7 @@ public class WeatherForecastLayout extends LinearLayout {
         iconWindDirection = findViewById(R.id.iconWindDirection);
         cloudText = findViewById(R.id.cloudText);
         temperatureText = findViewById(R.id.temperatureText);
+        humidityText = findViewById(R.id.humidityText);
         rainText = findViewById(R.id.rainText);
         windText = findViewById(R.id.windText);
         Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
@@ -104,6 +106,7 @@ public class WeatherForecastLayout extends LinearLayout {
         iconWindDirection.setDirection(DirectionIconView.INVALID);
         cloudText.setText("");
         temperatureText.setText("");
+        humidityText.setText("");
         rainText.setText("");
         windText.setText("");
         timeView.invalidate();
@@ -111,11 +114,13 @@ public class WeatherForecastLayout extends LinearLayout {
         iconWind.invalidate();
         iconWindDirection.invalidate();
         temperatureText.invalidate();
+        humidityText.invalidate();
         windText.invalidate();
     }
 
     public void setTypeface(Typeface typeface) {
         temperatureText.setTypeface(typeface);
+        humidityText.setTypeface(typeface);
         windText.setTypeface(typeface);
         rainText.setTypeface(typeface);
     }
@@ -135,6 +140,7 @@ public class WeatherForecastLayout extends LinearLayout {
 
         iconText.setText(iconToText(entry.weatherIcon));
         temperatureText.setText(entry.formatTemperatureText(temperatureUnit));
+        humidityText.setText(entry.formatHumidityText());
         iconWind.setText("F");
 
         iconWindDirection.setDirection(entry.windDirection);

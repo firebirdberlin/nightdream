@@ -261,6 +261,7 @@ OR
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
+    <string name="show_apparent_temperature">include apparent temperature</string>
     <string name="show_temperature">Show temperature</string>
     <string name="show_weather">Show local weather</string>
     <string name="show_wind_speed">Show wind speed</string>
