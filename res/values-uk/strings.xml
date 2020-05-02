@@ -17,16 +17,25 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Про додаток</string>
+    <string name="action_skip">Пропустити</string>
     <string name="action_snooze">Повторити пізніше</string>
     <string name="action_stop">Вимкнути</string>
+    <string name="activateDoNotDisturb">"Не турбувати"</string>
+    <string name="activateDoNotDisturbAllowPriority">"Не турбувати" дозволивши сповіщення</string>
+    <string name="activateDoNotDisturbSummary">"Не турбувати" коли активна програма</string>
     <string name="add_new_alarm">Додати новий будильник</string>
     <string name="add_custom_alarm_tone">Додати власний тон сигналу</string>
     <string name="add_custom_font">Додати власний шрифт</string>
     <string name="alarm">Будильник</string>
     <string name="alarmFadeIn">Плавна гучність</string>
+    <string name="alarmUpcoming">Старт будильника</string>
+    <string name="alarmStartDate">Наступний будильник</string>
+    <string name="alarmStartsFrom">Початок</string>
     <string name="alarmVolume">Гучність</string>
     <string name="allow_screen_off_summary">Вимикати екран на ніч</string>
     <string name="allow_screen_off">Вимикати екран</string>
+    <string name="always_on">Завжди включено</string>
+    <string name="alwaysOnStartWithLockedUI">Включати з блокуванням екрану</string>
     <string name="ambient_noise">Виявлення стороннього шуму</string>
     <string name="ambient_noise_summary">Вимикати нічний режим при наявності стороннього шуму?</string>
     <string name="appearance">Вигляд</string>
@@ -36,14 +45,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Час завершення</string>
     <string name="autostart_timerange_label_start">Час початку</string>
     <string name="background">Фон</string>
+    <string name="background_auto_accent_color">Автоматичний вибір кольору</string>
     <string name="background_black">Чорний</string>
     <string name="background_gradient">Градієнт</string>
     <string name="background_image">Зображення</string>
     <string name="background_image_select">Оберіть зображення</string>
+    <string name="background_slideshow">Слайд- шоу</string>
     <string name="behaviour">Поведінка</string>
     <string name="brightness">Яскравість</string>
+    <string name="brightness_night_mode">Яскравість в нічному режимі</string>
     <string name="brightness_offset">Зміщення яскравості</string>
     <string name="buy">Купити</string>
+    <string name="buy_upgrade_summary">Оновити до PRO версії</string>
     <string name="category_handle_power">... і коли приєднані</string>
     <string name="category_handle_power_autostart_time">Вмикати у зазначеному інтервалі</string>
     <string name="choose_alarm_sound">Звук будильника</string>
@@ -62,6 +75,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="confirm_reset_question_layout">Ви дійсно бажаєте скинути вигляд?</string>
     <string name="confirm_reset">Скинути</string>
     <string name="contribute">Долучайтеся</string>
+    <string name="contribute_beta_channel">Отримати тестові версії програми</string>
     <string name="contribute_source_code">Програмний код</string>
     <string name="contribute_translation">Переклад</string>
     <string name="country">Країна</string>
@@ -69,6 +83,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits_pull_requests">Пул-реквести</string>
     <string name="date_format">Формат дати</string>
     <string name="delete">Видалити</string>
+    <string name="dialog_message_already_owned">Куплено!</string>
     <string name="dialog_message_thank_you">Дуже Вам дякуємо!</string>
     <string name="dialog_title_thank_you">Подяка</string>
     <string name="digit_emphasize_quarters">Виділені чверті</string>
