@@ -19,7 +19,9 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
+import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.util.Calendar;
 
@@ -151,6 +153,7 @@ public class ScreenReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         handler.removeCallbacks(checkAndActivateApp);
+        Settings settings = new Settings(context);
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             this.context = context;
 
@@ -160,37 +163,30 @@ public class ScreenReceiver extends BroadcastReceiver {
                 if (wakeLock.isHeld()) wakeLock.release();
                 wakeLock = null;
             }
-            wakeLock = ((PowerManager) context.getSystemService(Context.POWER_SERVICE))
-                .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,
-                            "nightdream:SCREEN_OFF_WAKE_LOCK");
+            PowerManager pm = ((PowerManager) context.getSystemService(Context.POWER_SERVICE));
+            wakeLock = pm.newWakeLock(
+                    PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                    "nightdream:SCREEN_OFF_WAKE_LOCK"
+            );
             wakeLock.acquire(20000);
             getGravity(context);
             long delay = (Utility.isScreenLocked(context) ? 6000 : 6000);
             handler.postDelayed(checkAndActivateApp, delay);
-        }
-
-        if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             deviceIsCovered = false;
             isScreenUp = false;
-            Settings settings = new Settings(context);
             settings.deleteNextAlwaysOnTime();
-            ClockWidgetProvider.updateAllWidgets(context);
         }
 
         switch (intent.getAction()) {
+            case Intent.ACTION_SCREEN_ON:
+            case Intent.ACTION_TIMEZONE_CHANGED:
+            case Intent.ACTION_TIME_CHANGED:
             case Intent.ACTION_TIME_TICK:
                 ClockWidgetProvider.updateAllWidgets(context);
-                break;
-            case Intent.ACTION_TIME_CHANGED:
-                Log.i(TAG, "time changed");
-                ClockWidgetProvider.updateAllWidgets(context);
-                break;
-            case Intent.ACTION_TIMEZONE_CHANGED:
-                Log.i(TAG, "timezone changed");
-                ClockWidgetProvider.updateAllWidgets(context);
+                ScreenWatcherService.updateNotification(context, settings);
                 break;
         }
-
     }
 
 }

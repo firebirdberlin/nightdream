@@ -3,15 +3,12 @@ package com.firebirdberlin.nightdream.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.services.LocationUpdateJobService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
-import com.firebirdberlin.nightdream.services.WeatherUpdateJobService;
 
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = "BootReceiver";
@@ -27,10 +24,5 @@ public class BootReceiver extends BroadcastReceiver {
         }
 
         ScreenWatcherService.conditionallyStart(context, settings);
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            LocationUpdateJobService.schedule(context);
-            WeatherUpdateJobService.schedule(context);
-        }
     }
 }

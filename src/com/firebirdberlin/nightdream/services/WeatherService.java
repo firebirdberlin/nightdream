@@ -4,8 +4,10 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherService {
@@ -13,16 +15,15 @@ public class WeatherService {
 
     public static void start(Context context, String cityID) {
         Log.d(TAG, "start(" + cityID + ")");
-        if (!cityID.isEmpty()) {
-            DownloadWeatherService.start(context);
-            return;
-        }
 
-        LocationService.start(context);
+        DownloadWeatherService.start(context);
+        if (cityID.isEmpty()) {
+            LocationService.start(context);
+        }
     }
 
     public static boolean shallUpdateWeatherData(Context context, Settings settings) {
-        if (!settings.showWeather) return false;
+        if (!settings.showWeather || !Utility.isScreenOn(context)) return false;
         WeatherEntry entry = settings.weatherEntry;
         long age = entry.ageMillis();
         final int maxAge = 60 * 60 * 1000;

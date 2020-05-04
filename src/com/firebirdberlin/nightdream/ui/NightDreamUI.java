@@ -498,16 +498,12 @@ public class NightDreamUI {
 
         WeatherEntry entry = settings.weatherEntry;
 
-        ScreenWatcherService.updateNotification(mContext, entry, settings.temperatureUnit);
-
-        long diff = entry.ageMillis();
-
         WeatherService.start(mContext, settings.weatherCityID);
 
         // handle outdated weather data
+        long diff = entry.ageMillis();
         if (entry.timestamp == -1L || diff > 8 * 60 * 60 * 1000) {
             clockLayout.clearWeather();
-            ScreenWatcherService.updateNotification(mContext, null, settings.temperatureUnit);
         }
     }
 

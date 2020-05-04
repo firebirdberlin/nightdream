@@ -50,6 +50,15 @@ public class ScreenWatcherService extends Service {
         chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
     }
 
+    public static void updateNotification(Context context, Settings settings) {
+        WeatherEntry entry = settings.getWeatherEntry();
+        long diff = entry.ageMillis();
+        if (entry.timestamp == -1L || diff > 2 * 60 * 60 * 1000) { // handle outdated weather data
+            entry = null;
+        }
+        ScreenWatcherService.updateNotification(context, entry, settings.temperatureUnit);
+    }
+
     public static void updateNotification(Context context, WeatherEntry weatherEntry, int temperatureUnit) {
         if (ScreenWatcherService.isRunning) {
             if (weatherEntry != null ) {

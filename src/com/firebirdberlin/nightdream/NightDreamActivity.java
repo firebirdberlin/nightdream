@@ -47,10 +47,8 @@ import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
-import com.firebirdberlin.nightdream.services.LocationUpdateJobService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
-import com.firebirdberlin.nightdream.services.WeatherUpdateJobService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
@@ -72,6 +70,7 @@ public class NightDreamActivity extends BillingHelperActivity
                                            RadioInfoDialogFragment.RadioInfoDialogListener
 {
     public static String TAG ="NightDreamActivity";
+    public static boolean isRunning = false;
     private static int PENDING_INTENT_STOP_APP = 1;
     private static int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
     final private Handler handler = new Handler();
@@ -243,6 +242,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
+        isRunning = true;
         resumeTime = System.currentTimeMillis();
         screenWasOn = false;
         setKeepScreenOn(true);
@@ -252,10 +252,6 @@ public class NightDreamActivity extends BillingHelperActivity
             AudioManage.activateDnDMode(true, mySettings.activateDoNotDisturbAllowPriority);
         }
         ScreenWatcherService.conditionallyStart(this, mySettings);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            LocationUpdateJobService.schedule(context);
-            WeatherUpdateJobService.schedule(context);
-        }
 
         scheduleShutdown();
         setupAlarmClockIcon();
@@ -404,6 +400,7 @@ public class NightDreamActivity extends BillingHelperActivity
         } else {
             nightDreamUI.restoreRingerMode();
         }
+        isRunning = false;
     }
 
     private void unregister(BroadcastReceiver receiver) {
