@@ -493,6 +493,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
         if (panel == BottomPanelLayout.Panel.WEB_RADIO) {
+            if (RadioStreamService.isRunning) RadioStreamService.stop(this);
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
             setIconInactive(radioIcon);
         } else {

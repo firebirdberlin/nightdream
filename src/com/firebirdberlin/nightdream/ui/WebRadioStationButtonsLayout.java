@@ -43,6 +43,7 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
             if (activeStationIndex != null && index == activeStationIndex) {
                 stopRadioStream();
             } else {
+                Settings.setLastActiveRadioStation(context, index);
                 startRadioStreamOrShowDialog(index);
             }
         }
@@ -174,6 +175,20 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
         int green = Color.green(color);
         int blue = Color.blue(color);
         return Color.argb(alpha, red, green, blue);
+    }
+
+    public void startLastActiveRadioStream() {
+        if (RadioStreamService.isRunning) return;
+        int stationIndex = Settings.getLastActiveRadioStation(context);
+        RadioStation station = null;
+        if (stations != null) {
+            station = stations.get(stationIndex);
+        }
+        if (station != null) {
+            //start radio stream
+            toggleRadioStreamState(stationIndex);
+
+        }
     }
 
     private void startRadioStreamOrShowDialog(final int stationIndex) {

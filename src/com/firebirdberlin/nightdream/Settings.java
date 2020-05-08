@@ -962,6 +962,20 @@ public class Settings {
         return preferences.getInt("defaultAlarmRadioStation", -1);
     }
 
+    public static void setLastActiveRadioStation(Context context, int stationIndex) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putInt("lastActiveRadioStation", stationIndex);
+        edit.apply();
+    }
+
+    public static int getLastActiveRadioStation(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return -1;
+        }
+        return preferences.getInt("lastActiveRadioStation", -1);
+    }
     static String getDefaultAlarmTone(Context context) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         if (preferences == null) {
