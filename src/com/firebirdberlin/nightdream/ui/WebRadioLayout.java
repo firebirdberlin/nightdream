@@ -51,6 +51,9 @@ public class WebRadioLayout extends RelativeLayout {
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
     private UserInteractionObserver userInteractionObserver;
     final private Handler handler = new Handler();
+    private int currentVolumme = -1;
+    private int accentColor = -1;
+    private int textColor = -1;
 
     public WebRadioLayout(Context context) {
         super(context);
@@ -78,6 +81,7 @@ public class WebRadioLayout extends RelativeLayout {
         addView(volumeMutedIndicator);
         addView(webRadioButtons);
 
+        webRadioButtons.startLastActiveRadioStream();
         updateText();
     }
 
@@ -100,7 +104,7 @@ public class WebRadioLayout extends RelativeLayout {
             public void onClick(View view) {
                 if (locked) return;
                 notifyUserInteraction();
-                showInfoDialog();
+                updateMetaData();
             }
         });
         textView.setOnLongClickListener(new OnLongClickListener() {
@@ -108,7 +112,7 @@ public class WebRadioLayout extends RelativeLayout {
             public boolean onLongClick(View view) {
                 if (locked) return false;
                 notifyUserInteraction();
-                updateMetaData();
+                showInfoDialog();
                 return true;
             }
         });
@@ -171,12 +175,17 @@ public class WebRadioLayout extends RelativeLayout {
                 if (audio == null) {
                     return;
                 }
-                int maxVol = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-                audio.setStreamVolume(
-                        AudioManager.STREAM_MUSIC,
-                        Math.round((float) maxVol * 0.1f),
-                        AudioManager.FLAG_SHOW_UI
-                );
+                int newVolume = 0;
+                if (isStreamMuted()) {
+                    int maxVol = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                    newVolume = (currentVolumme > -1) ? currentVolumme : Math.round((float) maxVol * 0.1f);
+                    currentVolumme = -1;
+                } else {
+                    currentVolumme = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+                }
+                audio.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_SHOW_UI);
+                updateVolumeMutedIndicator();
+                notifyUserInteraction();
             }
         });
 
@@ -229,6 +238,8 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     public void setCustomColor(int accentColor, int textColor) {
+        this.accentColor = accentColor;
+        this.textColor = textColor;
         Drawable bg = getBackground();
         bg.setColorFilter( accentColor, PorterDuff.Mode.MULTIPLY );
 
@@ -237,7 +248,7 @@ public class WebRadioLayout extends RelativeLayout {
                 PorterDuff.Mode.SRC_ATOP
         );
         volumeMutedIndicator.setColorFilter(
-                textColor,
+                isStreamMuted() ? accentColor : textColor,
                 PorterDuff.Mode.SRC_ATOP
         );
         textView.setTextColor(textColor);
@@ -251,6 +262,21 @@ public class WebRadioLayout extends RelativeLayout {
                 drawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
             }
         }
+    }
+
+    private boolean isStreamMuted() {
+        AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (audio == null) {
+            return false;
+        }
+
+        /*
+        if (Build.VERSION.SDK_INT >= 23) {
+            return audio.isStreamMute(AudioManager.STREAM_MUSIC);
+        }
+        */
+        int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+        return currentVolume == 0;
     }
 
     private void showSleepTimerDialog() {
@@ -298,6 +324,7 @@ public class WebRadioLayout extends RelativeLayout {
         webRadioButtons.invalidate();
         updateVolumeMutedIndicator();
         buttonSleepTimer.setVisibility(RadioStreamService.isRunning ? VISIBLE : INVISIBLE);
+        volumeMutedIndicator.setVisibility(RadioStreamService.isRunning ? VISIBLE : INVISIBLE);
         showMetaInfoOnNextUpdate = false;
     }
 
@@ -399,24 +426,17 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     private void updateVolumeMutedIndicator() {
-        AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        if (audio == null) {
-            return;
-        }
-        int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-        boolean muted = false;
-        if (Build.VERSION.SDK_INT >= 23) {
-            muted = audio.isStreamMute(AudioManager.STREAM_MUSIC);
-        }
-
-        updateVolumeMutedIndicatorVisibility(currentVolume, muted);
+        updateVolumeMutedIndicatorVisibility();
     }
 
-    private void updateVolumeMutedIndicatorVisibility(int currentVolume, boolean muted) {
+    private void updateVolumeMutedIndicatorVisibility() {
         if (volumeMutedIndicator != null) {
-            volumeMutedIndicator.setVisibility(currentVolume > 0 && !muted ? GONE : VISIBLE);
+            volumeMutedIndicator.setColorFilter(
+                    isStreamMuted() ? accentColor : textColor,
+                    PorterDuff.Mode.SRC_ATOP
+            );
         }
+        invalidate();
     }
 
     private void notifyUserInteraction() {
@@ -452,7 +472,7 @@ public class WebRadioLayout extends RelativeLayout {
     class AudioVolumeContentObserver extends ContentObserver {
 
         private int previousVolume = -1;
-        private boolean previousMuted = false;
+        private boolean wasMuted = false;
 
         AudioVolumeContentObserver(Context context, Handler handler) {
             super(handler);
@@ -460,37 +480,18 @@ public class WebRadioLayout extends RelativeLayout {
             if (audio != null) {
                 previousVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
             }
-        }
-
-        @Override
-        public boolean deliverSelfNotifications() {
-            return super.deliverSelfNotifications();
+            wasMuted = previousVolume == 0;
         }
 
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
 
-            AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audio == null) {
-                return;
+            Log.d(TAG, "volume changed");
+            if ( wasMuted != isStreamMuted() ) {
+                updateVolumeMutedIndicatorVisibility();
             }
-            int currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-            boolean muted = false;
-            if (Build.VERSION.SDK_INT >= 23) {
-                muted = audio.isStreamMute(AudioManager.STREAM_MUSIC);
-            }
-
-
-            if (previousVolume != currentVolume || muted != previousMuted) {
-                previousVolume = currentVolume;
-                previousMuted = muted;
-
-                Log.i(TAG, "volume/muted changed");
-
-                updateVolumeMutedIndicatorVisibility(currentVolume, muted);
-            }
+            wasMuted = isStreamMuted();
         }
     }
 }
