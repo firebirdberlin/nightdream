@@ -1,2 +1,2 @@
-## Welcome to Night Clock
-[Privacy policy](privacy.md)
+- [Wiki](http://github.com/firebirdberlin/nightdream/wiki)
+- [Privacy policy](privacy.md)
