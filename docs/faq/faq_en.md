@@ -1,5 +1,5 @@
-# Night Clock Wiki
-[[> Häufig gestellte Fragen (Deutsch) |faq_de]]
+# Night Clock FAQ
+[> Häufig gestellte Fragen (Deutsch)](faq_de.md)
 ## Frequently Asked Questions (FAQ)
 
 ### Where do I find support ?
