@@ -1,6 +1,10 @@
 # Häufig gestellte Fragen
 
-[[Frequently Asked Questions - FAQ (English)|home]]
+[> Frequently Asked Questions - FAQ (English)](faq_en.md)
+
+# Inhaltsverzeichnis
+ - [In-App Käufe](#in-app-käufe)
+ - [Autostart](#autostart)
 
 ## Wo finde ich Hilfe ?
 Wenn Ihre Frage hier nicht beantwortet wird, dann stellen Sie diese bitte auf der öffentlichen Mailingliste:
@@ -29,7 +33,7 @@ Fügt zusätzliche Fähigkeiten hinzu:
 Um Ihre Anerkennung für diese App zu zeigen und zusätzlich zu unterstützen, können Sie eine Spende hinterlassen. 
 Damit werden die bezahlten Features ebenfalls freigeschaltet. Als besondere Aufmerksamkeit gibt es eine exklusive Überraschung: ein Retro-Flipkarten Design.  
 
-## Autostart/ Always on
+## Autostart
 
 Für den Autostart gibt es zwei Möglichkeiten: Autstart und Always On
 
