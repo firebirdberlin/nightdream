@@ -5,6 +5,7 @@
 # Inhaltsverzeichnis
  - [In-App Käufe](#in-app-käufe)
  - [Autostart](#autostart)
+ - [Wecker](#wecker)
 
 ## Wo finde ich Hilfe ?
 Wenn Ihre Frage hier nicht beantwortet wird, dann stellen Sie diese bitte auf der öffentlichen Mailingliste:
@@ -51,3 +52,6 @@ Ich empfehle ergänzend die Funktion Automatisch beenden > Nach Timeout (im Akku
 
 ### Warum funktioniert die Aktivierung des WLANs für den Radiowecker nicht ? 
 Neuere Versionen von Android verbieten es leider, WLAN automatisch zu aktivieren, wenn sich das Gerät im Flugmodus befindet. Wenn sie das Internetradio als Wecker verwenden möchten, dann bleibt nur die Option auf den Flugmodus zu verzichten. Statt dessen könnten Sie Bluetooth, WLAN und Datenverbindungen manuell deaktivieren. 
+
+### Ich bin vor dem Wecker aufgewacht und möchte heute nicht mehr geweckt werden.
+Etwa eine Stunde vor der eigentlichen Weckzeit wird eine Benachrichtigung angezeigt. Um einen wiederholenden Wecker einmalig zu deaktivieren, können Sie in dieser Benachrichtigung AUSLASSEN auswählen. Damit wird die nächste Weckzeit übersprungen und der Wecker bleibt für den folgenden Wecktag aktiv. 
