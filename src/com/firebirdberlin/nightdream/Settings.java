@@ -255,6 +255,7 @@ public class Settings {
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
+        if (Utility.isEmulator()) purchasedWeatherData = true;
         purchasedDonation = settings.getBoolean("purchasedDonation", false);
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
