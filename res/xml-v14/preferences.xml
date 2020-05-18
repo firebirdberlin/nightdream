@@ -12,7 +12,7 @@
         app:isPreferenceVisible="false">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://nightclock.duckdns.org/pastt" />
+            android:data="https://firebirdberlin.github.io/nightdream/translation.html" />
     </Preference>
 
     <Preference
