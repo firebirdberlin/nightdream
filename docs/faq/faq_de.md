@@ -2,7 +2,7 @@
 
 # Häufig gestellte Fragen
 
-[> english](faq/faq_en.md)
+[> english](faq_en.md)
 
 # Inhaltsverzeichnis
  - [In-App Käufe](#in-app-käufe)
