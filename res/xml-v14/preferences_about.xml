@@ -24,7 +24,7 @@
         app:title="FAQ">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/firebirdberlin/nightdream/wiki" />
+            android:data="ihttps://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
 
     </Preference>
 
@@ -57,7 +57,7 @@
         app:title="@string/titlePrivacyPolicy">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="http://nightclock.duckdns.org/apps/NightDream/privacy.html"
+            android:data="https://firebirdberlin.github.io/nightdream/privacy.html"
             />
     </Preference>
 
@@ -90,7 +90,7 @@
             app:title="@string/contribute_translation">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://nightclock.duckdns.org/pastt" />
+                android:data="https://firebirdberlin.github.io/nightdream/translation.html" />
         </Preference>
     </PreferenceCategory>
 

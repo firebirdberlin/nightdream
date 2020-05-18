@@ -46,6 +46,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Hora de finalización</string>
     <string name="autostart_timerange_label_start">Hora de inicio</string>
     <string name="background">Fondo de pantalla</string>
+    <string name="background_auto_accent_color">Selección automática de color</string>
     <string name="background_black">Negro</string>
     <string name="background_gradient">Gradiente</string>
     <string name="background_image">Imagen</string>
@@ -103,6 +104,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="digit_emphasize_quarters">Enfatizar los cuartos</string>
     <string name="decoration">Decoración</string>
     <string name="decoration_glow_effect">Efecto de brillo</string>
+    <string name="decoration_style_gold">Dorado</string>
     <string name="decoration_style_none">Ninguno</string>
     <string name="decoration_style_minute_hand">Minutero</string>
     <string name="decoration_style_labels">Números</string>

@@ -255,6 +255,7 @@ public class Settings {
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
+        if (Utility.isEmulator()) purchasedWeatherData = true;
         purchasedDonation = settings.getBoolean("purchasedDonation", false);
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
@@ -962,6 +963,20 @@ public class Settings {
         return preferences.getInt("defaultAlarmRadioStation", -1);
     }
 
+    public static void setLastActiveRadioStation(Context context, int stationIndex) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putInt("lastActiveRadioStation", stationIndex);
+        edit.apply();
+    }
+
+    public static int getLastActiveRadioStation(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return -1;
+        }
+        return preferences.getInt("lastActiveRadioStation", -1);
+    }
     static String getDefaultAlarmTone(Context context) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         if (preferences == null) {

@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
@@ -61,6 +62,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class NightDreamActivity extends BillingHelperActivity
                                 implements View.OnTouchListener,
@@ -222,8 +224,11 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     protected void onStart() {
         super.onStart();
-        setKeepScreenOn(true);
         Log.i(TAG, "onStart()");
+
+        setExcludeFromRecents();
+        setKeepScreenOn(true);
+
         Utility.registerEventBus(this);
         nightDreamUI.onStart();
 
@@ -321,6 +326,18 @@ public class NightDreamActivity extends BillingHelperActivity
                 }
             }
         });
+    }
+
+    private void setExcludeFromRecents() {
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            boolean isConfiguredAsDaydream = Utility.isConfiguredAsDaydream(this);
+            List<ActivityManager.AppTask> tasks = (am != null) ? am.getAppTasks() : null;
+            if (tasks != null) {
+                for (ActivityManager.AppTask task : tasks)
+                    task.setExcludeFromRecents(isConfiguredAsDaydream);
+            }
+        }
     }
 
     private void showToastIfNotCharging() {
@@ -493,6 +510,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
         if (panel == BottomPanelLayout.Panel.WEB_RADIO) {
+            if (RadioStreamService.isRunning) RadioStreamService.stop(this);
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
             setIconInactive(radioIcon);
         } else {

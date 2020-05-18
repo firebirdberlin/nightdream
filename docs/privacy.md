@@ -1,3 +1,4 @@
+[< back](index.md)
 
 ## NightDream Privacy Policy
 
