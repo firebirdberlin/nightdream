@@ -2,6 +2,8 @@
 
 # Frequently Asked Questions (FAQ)
 
+[> deutsch](faq/faq_de.md)
+
 ## Table of Contents
 
 - [Ads](#ads)

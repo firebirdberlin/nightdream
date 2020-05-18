@@ -24,7 +24,7 @@
         app:title="FAQ">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="ihttps://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
+            android:data="https://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
 
     </Preference>
 
