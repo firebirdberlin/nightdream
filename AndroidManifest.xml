@@ -110,6 +110,7 @@
         <activity
             android:name=".PreferencesActivity"
             android:configChanges="orientation|keyboard|screenSize"
+            android:excludeFromRecents="true"
             android:theme="@style/PreferencesTheme" />
         <activity
             android:name=".NightDreamActivity"
@@ -191,17 +192,19 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
-            android:name=".WeatherForecastActivity"
+            android:excludeFromRecents="true"
             android:label="@string/forecast"
-            android:theme="@style/SecondaryActivityTheme"
-            android:parentActivityName=".NightDreamActivity">
+            android:name=".WeatherForecastActivity"
+            android:parentActivityName=".NightDreamActivity"
+            android:theme="@style/SecondaryActivityTheme">
         </activity>
         <activity
-            android:name=".SetAlarmClockActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:label="@string/alarm"
-            android:theme="@style/AlarmClockActivityTheme"
-            android:parentActivityName=".NightDreamActivity">
+            android:name=".SetAlarmClockActivity"
+            android:parentActivityName=".NightDreamActivity"
+            android:theme="@style/AlarmClockActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SET_ALARM" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -211,7 +214,5 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>
