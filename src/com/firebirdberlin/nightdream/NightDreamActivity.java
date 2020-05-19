@@ -566,7 +566,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (city != null) {
             WeatherForecastActivity.start(this, city);
         }
-
     }
 
     @SuppressWarnings("UnusedParameters")

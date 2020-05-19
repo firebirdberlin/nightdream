@@ -794,14 +794,14 @@ public class Settings {
         reactivate_screen_on_noise = on;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("reactivate_screen_on_noise", on);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public void setFetchWeatherData(boolean on) {
         showWeather = on;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("showWeather", on);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public Location getLocation() {
@@ -822,10 +822,10 @@ public class Settings {
         prefEditor.putFloat("location_lat", (float) location.getLatitude());
         prefEditor.putLong("location_time", location.getTime());
         prefEditor.putString("location_provider", location.getProvider());
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
-    public City getValidCity() {
+    City getValidCity() {
         City city = getCityForWeather();
 
         if (city != null) {
