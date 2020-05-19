@@ -5,6 +5,7 @@
 [> english](faq_en.md)
 
 # Inhaltsverzeichnis
+
  - [In-App Käufe](#in-app-käufe)
  - [Autostart](#autostart)
  - [Wecker](#wecker)

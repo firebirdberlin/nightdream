@@ -30,7 +30,7 @@ Night Clock does not show any advertisements, neither in the free version nor in
 If you observe any ads check the other apps on your device. I don't want to contribute to a world 
 which is full of ads in all possible situations of life.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## In-App payments
 
@@ -74,7 +74,7 @@ If you like to send a special appreciation for the app you can choose a
 donation. I will grant access to the paid features. As a special gift
 the donation unlocks a calendar view.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## User Interface
 
@@ -113,7 +113,7 @@ as the screen lock is activated.
 can setup the auto start feature of the app to your needs.
 * Solution 2: Try to enable Settings > Appearance > Force auto rotation in DayDream.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## Weather
 
@@ -169,7 +169,7 @@ Weather data may not be shown for several reasons.
     or high accuracy)
 * The network may not be connected. Check your network connection.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## Web Radio
 
@@ -187,7 +187,7 @@ Stop playing a radio station by pressing its button again.
 Just tap on a radio station button a bit longer ("long press") to open the radio streams
 configuration window. There you can alter the radio stream for that button or remove it.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## Alarms
 
@@ -205,7 +205,7 @@ In the dialog for setting the alarm tone you can choose your custom MP3 file, at
 dialog. Just navigate to your music folder and select the file you like. With the next release this
 dialog will move to the alarm overview allowing you to set different alarm tones per alarm.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## Autostart
 
@@ -215,7 +215,7 @@ into standby, i.e. the screen turns off and restarts the night clock. The "alway
 starting the app while the device is not charging. In order to save some battery I advise to stop
 the app after some minutes (Preferences > Autostart > Stop automatically > on battery timeout).
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## Night mode
 
@@ -234,7 +234,7 @@ The night mode has the following features:
   meant for devices which do not have a light sensor. If you want to benefit from the automatic
   brightness control you should leave the night mode activation settings at *automatic*.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## Brightness settings
 
@@ -267,7 +267,7 @@ along the upper rim of your display.
 In low light conditions the automatic brightness control may not be very accurate. This is due to
 the fact that most of the devices do not report accurate values below 10 lux.
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
 ## Widget
 
@@ -280,5 +280,5 @@ notification in the notification area. If this service is not properly running (
 the android system) the widget is no longer updated. If you want to (re-) enable this service you 
 can disable and re-enable the autostart of the app. This triggers the start of the service. 
 
-[Top](#Table-of-Contents)
+[Top](#table-of-contents)
 
