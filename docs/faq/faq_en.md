@@ -8,12 +8,14 @@
 
 - [Ads](#ads)
 - [In-App payments](#in-app-payments)
+- [User Interface](#user-interface)
+- [Weather](#weather)
+- [Web Radio](#web-radio)
 - [Alarms](#alarms)
 - [Autostart](#autostart)
 - [Night mode](#night-mode)
 - [Brightness settings](#brightness-settings)
-- [Web Radio](#web-radio)
-- [Misc](#misc)
+- [Wdget](#widget)
 
 ## Where do I find support ?
 
@@ -44,12 +46,12 @@ of the packages.
 
 #### Weather and design package
 
-Adds weather information a a status line below the clock in the main
-view as well as in the widget.
+Adds weather information as a status line below the clock and a 5-day weather
+forecast (cf. [weather](#weather))
 
 Only one digital clock layout and one analog clock layout can be accessed
-in the free version. The package adds new analog clock faces. Which can
-freely be modified using an integrated designer.
+in the free version. The package adds new clock faces. The preview and the clock
+designer interface are fully functional in the free version.
 
 #### Web radio package
 
@@ -64,12 +66,126 @@ Adds additional abilities to the app.
 - Scheduled Autostart: Start the app at a certain time (without
   having to setup an alarm)
 - Notifications: start the app when new notifications show up.
+- Turn the screen off in night mode.
 
 #### Donation
 
 If you like to send a special appreciation for the app you can choose a
 donation. I will grant access to the paid features. As a special gift
-the donation unlocks a retro flip card design.
+the donation unlocks a calendar view.
+
+[Top](#Table-of-Contents)
+
+## User Interface
+
+### How can I change the clock size ?
+
+Using a two-finger pinch gesture you can freely resize the clock layout.
+
+### The interface is locked
+
+If Night Clock shows a padlock symbol in the top left corner instead of the
+menu icon (aka burger icon) the user interface is locked. In order to unlock
+simply long press the lock icon. Vice versa the user interface is locked by
+long pressing the menu icon.
+
+If the standby mode is enabled, the user interface always starts in locked mode.
+
+### AM/PM indicator not working properly
+
+The seven segment font is not able to draw uppercase letters very precisely. An alternative font is 
+a 14 segments digital font as found at https://www.keshikan.net/fonts-e.html.
+
+### Custom fonts
+
+You can choose plain .ttf and .otf files, but also .zip archives which may
+contain multiple font files. Just navigate to your download folder and choose
+a file you downloaded before.
+There are sources of free fonts in the web, such as
+[fonts.google.com](https://fonts.google.com/) and
+[Font Squirrel](https://www.fontsquirrel.com/).
+
+### The landscape orientation does not work
+
+Starting from Android 5 Daydreams have a bug. The screen orientation changes to portrait as soon 
+as the screen lock is activated.
+* Solution 1: Disable Daydreams completely (System Settings > Display > Daydream). Instead you
+can setup the auto start feature of the app to your needs.
+* Solution 2: Try to enable Settings > Appearance > Force auto rotation in DayDream.
+
+[Top](#Table-of-Contents)
+
+## Weather
+
+Screenshot                                      | Description
+------------------------------------------------|-----------------------
+![Preferences](weather_status_300.png)          | Weather status line
+![Preferences](weather_settings_300.png)        | Weather preferences
+![Preferences](weather_location_search_300.png) | Location search dialog
+![Preferences](weather_forecast_300.png)        | 5-day weather forecast
+
+### Weather status line
+
+Shows the current temperature and optionally the wind direction and wind speed.
+The weather data is updated approximately once an hour if the app is in the
+foreground.
+
+### Weather preferences
+
+Allows to configure what is shown in the status line. If you leave the weather
+location blank the app needs the permission to read your current (coarse)
+location.
+
+The default weather provider is [OpenWeather](http://www.openweathermap.org).
+The weather provider [Dark Sky](http://www.darksky.net) will shut down its
+service end of 2021.
+
+### Location search dialog
+
+You can search for a location yourself. In this case you can revoke the
+permission for location access safely.
+
+### 5-day weather forecast
+
+The headline shows the current location which is especially useful if it
+was detected automatically.
+
+The following information shown
+ - temperature (apparent temperature)
+ - wind direction and wind speed
+ - cloud coverage in *%*
+ - humidity in *%*
+ - 3 hour rain volume in *mm* (only if rain is expected)
+
+### Weather data is not shown
+
+Weather data may not be shown for several reasons.
+* These are not displayed if outdated for more than 8 hours (e.g. in flight
+  mode).
+* The current location cannot be retrieved:
+  - Can you retrieve weather information, when defining the location manually ?
+  - Please grant permissions for accessing the location (Android 6+)
+  - Please check if your location services are activated (e.g. battery saving
+    or high accuracy)
+* The network may not be connected. Check your network connection.
+
+[Top](#Table-of-Contents)
+
+## Web Radio
+
+### How to play a radio stream
+
+The web radio panel appears by tapping the radio icon from the sidebar.
+
+Tab the "+" button to add a new radio station to the panel. You can search for radio stations or
+enter a url you know. This can be a plain mp3 stream url but also m3u/pls playlists.
+
+Stop playing a radio station by pressing its button again.
+
+### How to remove or edit a radio station button
+
+Just tap on a radio station button a bit longer ("long press") to open the radio streams
+configuration window. There you can alter the radio stream for that button or remove it.
 
 [Top](#Table-of-Contents)
 
@@ -78,15 +194,15 @@ the donation unlocks a retro flip card design.
 ### How do I stop or snooze an alarm ?
 
 An alarm is stopped by tapping the lower right corner. Snooze is enabled by tapping anywhere else.
-The snooze time is adjustbable in preferences > alarms.
+The snooze time is adjustable in preferences > alarms.
 
-Upcoming alarms can be stopped from the notification area. The notification is shown one hour
-before the alarm time.
+Upcoming alarms can be stopped from the notification area. The notification is
+shown approximately one hour before the alarm time.
 
 ## Custom mp3 as alarm tone
 
-In the dialog for setting the alarm tone you can choose your custom MP3 file, at the bottom of the 
-dialog. Just navigate to your music folder and select the file you like. With the next release this 
+In the dialog for setting the alarm tone you can choose your custom MP3 file, at the bottom of the
+dialog. Just navigate to your music folder and select the file you like. With the next release this
 dialog will move to the alarm overview allowing you to set different alarm tones per alarm.
 
 [Top](#Table-of-Contents)
@@ -153,56 +269,7 @@ the fact that most of the devices do not report accurate values below 10 lux.
 
 [Top](#Table-of-Contents)
 
-## Web Radio
-
-### How to play a radio stream
-
-The web radio panel appears by tapping the radio icon from the sidebar.
-
-Tab the "+" button to add a new radio station to the panel. You can search for radio stations or
-enter a url you know. This can be a plain mp3 stream url but also m3u/pls playlists.
-
-Stop playing a radio station by pressing its button again.
-
-### How to remove or edit a radio station button
-
-Just tap on a radio station button a bit longer ("long press") to open the radio streams
-configuration window. There you can alter the radio stream for that button or remove it.
-
-[Top](#Table-of-Contents)
-
-## Misc
-
-### Custom fonts
-
-You can choose plain .ttf and .otf files, but also .zip archives which may contain multiple font
-files. Just navigate to your download folder and choose a file you downloaded before. 
-There are sources of free fonts in the web, such as [fonts.google.com](https://fonts.google.com/) 
-and [Font Squirrel](https://www.fontsquirrel.com/).
-
-### AM/PM indicator not working properly
-
-The seven segment font is not able to draw uppercase letters very precisely. An alternative font is 
-a 14 segments digital font as found at https://www.keshikan.net/fonts-e.html.
-
-### The landscape orientation does not work
-
-Starting from Android 5 Daydreams have a bug. The screen orientation changes to portrait as soon 
-as the screen lock is activated.
-* Solution 1: Disable Daydreams completely (System Settings > Display > Daydream). Instead you 
-can setup the auto start feature of the app to your needs.
-* Solution 2: Try to enable Settings > Appearance > Force auto rotation in DayDream.
-
-### Weather data is not shown
-
-Weather data usually are updated once within 2 hours.
-
-Weather data may not be shown for several reasons.
-* They are not displayed if they are outdated for more than 8 hours.
-* The current location cannot be retrieved.
-  - Please grant permissions for accessing the location (Android 6+)
-  - Please check if your location services are activated (e.g. battery saving, high accuracy)
-* The network may not be connected. Check your network connection.
+## Widget
 
 ### The clock widget is not updated
 
@@ -213,12 +280,5 @@ notification in the notification area. If this service is not properly running (
 the android system) the widget is no longer updated. If you want to (re-) enable this service you 
 can disable and re-enable the autostart of the app. This triggers the start of the service. 
 
-### The interface is locked
-
-If Night Clock shows a lock symbol in the top left corner instead of the menu icon (aka burger icon)
-the user interface is locked. In order to unlock simply long press the lock icon. Vice versa the
-user interface is locked by long pressing the menu icon.
-
-If the standby mode is enabled, the user interface always starts in locked mode.
-
 [Top](#Table-of-Contents)
+
