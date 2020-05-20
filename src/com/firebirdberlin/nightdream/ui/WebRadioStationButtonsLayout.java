@@ -179,15 +179,19 @@ public class WebRadioStationButtonsLayout extends LinearLayout {
 
     public void startLastActiveRadioStream() {
         if (RadioStreamService.isRunning) return;
-        int stationIndex = Settings.getLastActiveRadioStation(context);
-        RadioStation station = null;
-        if (stations != null) {
-            station = stations.get(stationIndex);
+        if (stations == null) {
+            return;
         }
-        if (station != null) {
-            //start radio stream
-            toggleRadioStreamState(stationIndex);
 
+        if (stations.numAvailableStations() == 0) {
+            showRadioStreamDialog(0);
+            return;
+        }
+
+        int stationIndex = Settings.getLastActiveRadioStation(context);
+        //start radio stream
+        if (stations.get(stationIndex) != null) {
+            toggleRadioStreamState(stationIndex);
         }
     }
 
