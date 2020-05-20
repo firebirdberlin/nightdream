@@ -561,11 +561,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onWeatherForecastClick(View v) {
-        City city = mySettings.getValidCity();
-
-        if (city != null) {
-            WeatherForecastActivity.start(this, city);
-        }
+        WeatherForecastActivity.start(this);
     }
 
     @SuppressWarnings("UnusedParameters")

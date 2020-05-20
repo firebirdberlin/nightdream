@@ -6,15 +6,22 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
+import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
@@ -22,18 +29,17 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-public class WeatherForecastActivity extends AppCompatActivity
-                                     implements ForecastRequestTask.AsyncResponse {
+public class WeatherForecastActivity
+        extends AppCompatActivity
+        implements ForecastRequestTask.AsyncResponse,
+        WeatherLocationDialogFragment.WeatherLocationDialogListener {
     final static String TAG = "WeatherForecastActivity";
 
     private LinearLayout scrollView = null;
     private Settings settings;
 
-    public static void start(Context context, City city) {
+    public static void start(Context context) {
         Intent intent = new Intent(context, WeatherForecastActivity.class);
-        if (city != null) {
-            intent.putExtra("city", city.toJson());
-        }
         context.startActivity(intent);
     }
 
@@ -49,14 +55,11 @@ public class WeatherForecastActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         Log.i(TAG, "onResume()");
-        Intent intent = getIntent();
-        String cityJson = intent.getStringExtra("city");
-        if (cityJson != null && cityJson.isEmpty()) {
-            cityJson = "";
-        }
         settings = new Settings(this);
-
-        new ForecastRequestTask(this, settings.getWeatherProvider()).execute(cityJson);
+        City city = settings.getValidCity();
+        if (city != null) {
+            new ForecastRequestTask(this, settings.getWeatherProvider()).execute(city.toJson());
+        }
     }
 
     public void onRequestFinished(List<WeatherEntry> entries) {
@@ -115,4 +118,43 @@ public class WeatherForecastActivity extends AppCompatActivity
             ab.setSubtitle(subtitle);
         }
     }
+
+    final int MENU_ITEM_SEARCH = 3000;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+            menu.add(Menu.NONE, MENU_ITEM_SEARCH , Menu.NONE, getString(R.string.weather_city_id_title))
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            final MenuItem item = menu.getItem(0);
+            return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case MENU_ITEM_SEARCH:
+                showWeatherLocationDialog();
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    private void showWeatherLocationDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        WeatherLocationDialogFragment dialog = new WeatherLocationDialogFragment();
+        dialog.show(fm, "weather_location_selection_dialog");
+    }
+
+    public void onWeatherLocationSelected(City city) {
+
+        settings.setWeatherLocation(city);
+        if (city != null) {
+            new ForecastRequestTask(this, settings.getWeatherProvider()).execute(city.toJson());
+        }
+    };
+
 }

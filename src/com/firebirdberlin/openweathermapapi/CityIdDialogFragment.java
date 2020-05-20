@@ -40,8 +40,6 @@ public class CityIdDialogFragment extends PreferenceDialogFragmentCompat
     private TextView noResultsText;
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
-    private String textSummary = "";
-    private int pressedButton;
 
     public static CityIdDialogFragment newInstance(String key) {
         final CityIdDialogFragment fragment = new CityIdDialogFragment();

@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/radio_stream_query_hint"
             android:inputType="text"
+            android:nextFocusForward="@id/start_search"
             android:imeOptions="actionSearch"
             android:layout_weight="1" />
 

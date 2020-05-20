@@ -848,6 +848,19 @@ public class Settings {
         return City.fromJson(json);
     }
 
+    void setWeatherLocation(City city) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        if (city != null) {
+            prefEditor.putString("weatherCityID", String.valueOf(city.id));
+            prefEditor.putString("weatherCityID_name", city.name);
+            prefEditor.putString("weatherCityID_json", city.toJson());
+        } else {
+            prefEditor.putString("weatherCityID", "");
+            prefEditor.putString("weatherCityID_name", "");
+            prefEditor.putString("weatherCityID_json", "");
+        }
+        prefEditor.apply();
+    }
 
     public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY}
 
