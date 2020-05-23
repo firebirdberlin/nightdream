@@ -848,6 +848,16 @@ public class Settings {
         return City.fromJson(json);
     }
 
+    public void setWeatherAutoLocationEnabled(boolean on) {
+        SharedPreferences.Editor edit = settings.edit();
+        edit.putBoolean("weatherAutoLocationEnabled", on);
+        edit.apply();
+    }
+
+    public boolean getWeatherAutoLocationEnabled() {
+        return settings.getBoolean("weatherAutoLocationEnabled", false);
+    }
+
     void setWeatherLocation(City city) {
         SharedPreferences.Editor prefEditor = settings.edit();
         if (city != null) {
