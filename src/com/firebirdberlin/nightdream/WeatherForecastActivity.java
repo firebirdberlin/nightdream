@@ -106,7 +106,7 @@ public class WeatherForecastActivity
         autoLocationEnabled = settings.getWeatherAutoLocationEnabled();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        init();
+        //init();
     }
 
     void init() {
@@ -368,7 +368,7 @@ public class WeatherForecastActivity
         WeatherEntry entry1= new WeatherEntry();
         entry1.apparentTemperature = 292.15;
         entry1.cityName = "Bullerby";
-        entry1.clouds = 67;
+        entry1.clouds = 71;
         entry1.humidity = 53;
         entry1.temperature = 293.15;
         entry1.timestamp = now.getTimeInMillis() / 1000;
@@ -379,7 +379,7 @@ public class WeatherForecastActivity
         WeatherEntry entry2 = new WeatherEntry();
         now.add(Calendar.HOUR, 3);
         entry2.apparentTemperature = 294.15;
-        entry2.clouds = 71;
+        entry2.clouds = 57;
         entry2.humidity = 57;
         entry2.rain3h = 1.3;
         entry2.temperature = 295.15;
@@ -396,6 +396,10 @@ public class WeatherForecastActivity
         super.onItemPurchased(sku);
         init();
         invalidateOptionsMenu();
+        City city = settings.getCityForWeather();
+        if (!autoLocationEnabled && (city == null || city.id == 0)) {
+            showWeatherLocationDialog();
+        }
     }
 
     @Override
