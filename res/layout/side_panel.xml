@@ -46,7 +46,7 @@
             android:onClick="onWeatherForecastClick"
             android:padding="5dp"
             app:srcCompat="@drawable/ic_cloud"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
 
         <ImageView
