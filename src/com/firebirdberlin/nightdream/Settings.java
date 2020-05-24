@@ -848,13 +848,21 @@ public class Settings {
         return City.fromJson(json);
     }
 
-    public void setWeatherAutoLocationEnabled(boolean on) {
+    void initWeatherAutoLocationEnabled() {
+        if (!settings.contains("weatherAutoLocationEnabled") && showWeather) {
+            City city = getCityForWeather();
+            boolean on = (city == null) || city.id == 0);
+            setWeatherAutoLocationEnabled(on);
+        }
+    }
+
+    void setWeatherAutoLocationEnabled(boolean on) {
         SharedPreferences.Editor edit = settings.edit();
         edit.putBoolean("weatherAutoLocationEnabled", on);
         edit.apply();
     }
 
-    public boolean getWeatherAutoLocationEnabled() {
+    boolean getWeatherAutoLocationEnabled() {
         return settings.getBoolean("weatherAutoLocationEnabled", false);
     }
 

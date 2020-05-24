@@ -103,10 +103,9 @@ public class WeatherForecastActivity
         Log.i(TAG, "onStart()");
         locationAccessGranted = hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
         settings = new Settings(this);
+        settings.initWeatherAutoLocationEnabled();
         autoLocationEnabled = settings.getWeatherAutoLocationEnabled();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        //init();
     }
 
     void init() {
