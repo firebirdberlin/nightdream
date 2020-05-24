@@ -260,7 +260,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         scheduleShutdown();
         setupAlarmClockIcon();
-        setupWeatherForecastIcon();
         nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
         nightModeReceiver = NightModeReceiver.register(this, this);
@@ -535,19 +534,6 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onLocationFailure() { }
     public void onLocationUpdated() {
         DownloadWeatherService.start(this);
-    }
-
-    private void setupWeatherForecastIcon() {
-        City city = mySettings.getValidCity();
-        if (!mySettings.showWeather || city == null) {
-            weatherIcon.setVisibility(View.GONE);
-        } else {
-            weatherIcon.setVisibility(View.VISIBLE);
-        }
-
-        if (nightDreamUI.sidePanelIsHidden()) {
-            nightDreamUI.initSidePanel();
-        }
     }
 
     private void setupAlarmClockIcon() {
@@ -836,7 +822,6 @@ public class NightDreamActivity extends BillingHelperActivity
             Log.i(TAG, "action -> " + action);
             if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 mySettings = new Settings(context);
-                setupWeatherForecastIcon();
             } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)
                     || Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setupRadioStreamUI();
