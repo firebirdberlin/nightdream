@@ -301,11 +301,12 @@ OR
     <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>
     <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
     <string name="useDeviceLock">Lock device</string>
-    <string name="weather_calculation_time">weather calculation time</string>
-    <string name="weather_city_id_title">Search location</string>
-    <string name="weather_info_title">Information</string>
     <string name="weather">Weather</string>
     <string name="weatherProvider">Weather Provider</string>
+    <string name="weather_calculation_time">weather calculation time</string>
+    <string name="weather_city_id_title">Search location</string>
+    <string name="weather_current_location">Current location</string>
+    <string name="weather_info_title">Information</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

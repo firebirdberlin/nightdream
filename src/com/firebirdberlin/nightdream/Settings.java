@@ -848,6 +848,37 @@ public class Settings {
         return City.fromJson(json);
     }
 
+    void initWeatherAutoLocationEnabled() {
+        if (!settings.contains("weatherAutoLocationEnabled") && showWeather) {
+            City city = getCityForWeather();
+            boolean on = (city == null || city.id == 0);
+            setWeatherAutoLocationEnabled(on);
+        }
+    }
+
+    void setWeatherAutoLocationEnabled(boolean on) {
+        SharedPreferences.Editor edit = settings.edit();
+        edit.putBoolean("weatherAutoLocationEnabled", on);
+        edit.apply();
+    }
+
+    boolean getWeatherAutoLocationEnabled() {
+        return settings.getBoolean("weatherAutoLocationEnabled", false);
+    }
+
+    void setWeatherLocation(City city) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        if (city != null) {
+            prefEditor.putString("weatherCityID", String.valueOf(city.id));
+            prefEditor.putString("weatherCityID_name", city.name);
+            prefEditor.putString("weatherCityID_json", city.toJson());
+        } else {
+            prefEditor.putString("weatherCityID", "");
+            prefEditor.putString("weatherCityID_name", "");
+            prefEditor.putString("weatherCityID_json", "");
+        }
+        prefEditor.apply();
+    }
 
     public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY}
 

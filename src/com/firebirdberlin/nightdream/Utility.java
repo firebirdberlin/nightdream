@@ -717,11 +717,13 @@ public class Utility {
         while (dirs.size() > 0) {
             File dir = dirs.pop();
             File[] files = dir.listFiles(fileFilter);
-            for(File file: files) {
-                if (file.isDirectory() && !file.getName().startsWith(".")) {
-                    dirs.push(file);
-                } else if (file.isFile()) {
-                    results.add(file);
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory() && !file.getName().startsWith(".")) {
+                        dirs.push(file);
+                    } else if (file.isFile()) {
+                        results.add(file);
+                    }
                 }
             }
         }
