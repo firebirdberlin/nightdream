@@ -31,9 +31,11 @@ import org.json.JSONException;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -947,6 +949,37 @@ public class Settings {
 
     public FavoriteRadioStations getFavoriteRadioStations() {
         return getFavoriteRadioStations(settings);
+    }
+
+    static void setFavoriteWeatherLocations(Context context, List<City> cities) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        while (cities.size() > 5) {
+            cities.remove(0);
+        }
+        for (int i = 0; i < 5; i++) {
+            String key = String.format("favoriteWeatherLocation_%d", i);
+            City city = (i < cities.size()) ? cities.get(i) : null;
+            if (city == null) {
+                edit.putString(key, "");
+            } else {
+                edit.putString(key, city.toJson());
+            }
+        }
+        edit.apply();
+    }
+
+    static ArrayList<City> getFavoriteWeatherLocations(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        ArrayList<City> cities = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            String key = String.format("favoriteWeatherLocation_%d", i);
+            String json = preferences.getString(key, "");
+            if (!json.isEmpty()) {
+                cities.add(City.fromJson(json));
+            }
+        }
+        return cities;
     }
 
     private void setFavoriteRadioStations(FavoriteRadioStations stations) {

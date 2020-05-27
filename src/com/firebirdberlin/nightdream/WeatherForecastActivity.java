@@ -49,11 +49,26 @@ public class WeatherForecastActivity
     final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 4000;
     final int MENU_ITEM_SEARCH = 3000;
     final int MENU_ITEM_ENABLE_GPS = 3001;
+    final int MENU_ITEM_LOCATION_0 = 3002;
+    final int MENU_ITEM_LOCATION_1 = 3003;
+    final int MENU_ITEM_LOCATION_2 = 3004;
+    final int MENU_ITEM_LOCATION_3 = 3005;
+    final int MENU_ITEM_LOCATION_4 = 3006;
+    final int[] MENU_ITEMS_LOCATION = new int[] {
+            MENU_ITEM_LOCATION_0,
+            MENU_ITEM_LOCATION_1,
+            MENU_ITEM_LOCATION_2,
+            MENU_ITEM_LOCATION_3,
+            MENU_ITEM_LOCATION_4,
+    };
     private LinearLayout scrollView = null;
     private Settings settings;
     private boolean locationAccessGranted = false;
     private boolean autoLocationEnabled = false;
     private LocationManager locationManager = null;
+    private ArrayList<City> cities = null;
+    private City selectedCity = null;
+
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -95,6 +110,7 @@ public class WeatherForecastActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_forecast);
         scrollView = findViewById(R.id.scroll_view);
+        cities = Settings.getFavoriteWeatherLocations(this);
     }
 
     @Override
@@ -104,6 +120,7 @@ public class WeatherForecastActivity
         locationAccessGranted = hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
         settings = new Settings(this);
         settings.initWeatherAutoLocationEnabled();
+        selectedCity = settings.getCityForWeather();
         autoLocationEnabled = settings.getWeatherAutoLocationEnabled();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
@@ -115,15 +132,31 @@ public class WeatherForecastActivity
         }
 
         if (autoLocationEnabled) {
-            Log.i(TAG, "starting with auto location");
-            getLastKnownLocation();
+            Log.i(TAG, "starting with auto location (GPS)");
             getWeatherForCurrentLocation();
         } else {
-            City city = settings.getCityForWeather();
-            if (city != null && city.id > 0) {
-                Log.i(TAG, "starting with " + city.toJson());
-                requestWeather(city);
+
+            selectedCity = settings.getCityForWeather();
+            if (selectedCity != null && selectedCity.id > 0) {
+                Log.i(TAG, "starting with " + selectedCity.toJson());
+                addToFavoriteCities(selectedCity);
+                requestWeather(selectedCity);
             }
+        }
+    }
+
+    void addToFavoriteCities(City city) {
+        if (city != null && cities != null ) {
+            Log.i(TAG, "addToFavoriteCities(" + city.toJson() + ")");
+            if (!cities.contains(city)) {
+                cities.add(city);
+                while (cities.size() > MENU_ITEMS_LOCATION.length) {
+                    cities.remove(0);
+                }
+            }
+            selectedCity = city;
+            Settings.setFavoriteWeatherLocations(this, cities);
+            invalidateOptionsMenu();
         }
     }
 
@@ -172,6 +205,7 @@ public class WeatherForecastActivity
     public void onRequestFinished(List<WeatherEntry> entries) {
         Log.i(TAG, "onRequestFinished()");
         Log.i(TAG, String.format(" > got %d entries", entries.size()));
+        scrollView.setAlpha(0);
         scrollView.removeAllViews();
 
         String timeFormat = settings.getFullTimeFormat();
@@ -215,7 +249,7 @@ public class WeatherForecastActivity
             layout.update(entry);
             scrollView.addView(layout);
         }
-        scrollView.invalidate();
+        scrollView.setAlpha(1);
     }
 
     private void actionBarSetup(String subtitle) {
@@ -229,39 +263,74 @@ public class WeatherForecastActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(Menu.NONE, MENU_ITEM_SEARCH, Menu.NONE, getString(R.string.weather_city_id_title))
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        if (cities != null) {
+            for (int i = 0; i < cities.size(); i++) {
+                City city = cities.get(i);
+                if (city != null) {
+                    menu.add(Menu.NONE, MENU_ITEMS_LOCATION[i], Menu.NONE, city.name)
+                            .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                }
+            }
+        }
         menu.add(Menu.NONE, MENU_ITEM_ENABLE_GPS, Menu.NONE, getString(R.string.weather_current_location))
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        final MenuItem item = menu.getItem(1);
-        item.setCheckable(true);
-        item.setChecked(locationAccessGranted && autoLocationEnabled);
+        menu.add(Menu.NONE, MENU_ITEM_SEARCH, Menu.NONE, getString(R.string.weather_city_id_title))
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        int num_items = cities.size() + 2;
+
+        for (int i = 0; i < cities.size(); i++ ){
+            City city = cities.get(i);
+            final MenuItem item = menu.getItem(i);
+            item.setCheckable(true);
+            item.setChecked(city.equals(selectedCity) && !autoLocationEnabled);
+        }
+        menu.getItem(num_items - 2).setCheckable(true);
+        menu.getItem(num_items - 2).setChecked(locationAccessGranted && autoLocationEnabled);
 
         boolean on = isPurchased(ITEM_WEATHER_DATA);
-        menu.getItem(0).setEnabled(on);
-        menu.getItem(1).setEnabled(on);
+        for (int i = 0; i < num_items; i++ ) {
+            menu.getItem(i).setEnabled(on);
+        }
 
         return true;
     }
 
+    void setAutoLocationEnabled(boolean autoLocationEnabled) {
+        this.autoLocationEnabled = autoLocationEnabled;
+        settings.setWeatherAutoLocationEnabled(autoLocationEnabled);
+        if (autoLocationEnabled) {
+            settings.setWeatherLocation(null);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //return super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case MENU_ITEM_SEARCH:
-                autoLocationEnabled = false;
-                settings.setWeatherAutoLocationEnabled(false);
                 showWeatherLocationDialog();
                 invalidateOptionsMenu();
                 return true;
             case MENU_ITEM_ENABLE_GPS:
                 autoLocationEnabled = !autoLocationEnabled;
-                settings.setWeatherAutoLocationEnabled(autoLocationEnabled);
-                if (autoLocationEnabled) {
-                    settings.setWeatherLocation(null);
-                }
+                setAutoLocationEnabled(autoLocationEnabled);
                 getWeatherForCurrentLocation();
                 invalidateOptionsMenu();
+                return true;
+            case MENU_ITEM_LOCATION_0:
+                onWeatherLocationSelected(cities.get(0));
+                return true;
+            case MENU_ITEM_LOCATION_1:
+                onWeatherLocationSelected(cities.get(1));
+                return true;
+            case MENU_ITEM_LOCATION_2:
+                onWeatherLocationSelected(cities.get(2));
+                return true;
+            case MENU_ITEM_LOCATION_3:
+                onWeatherLocationSelected(cities.get(3));
+                return true;
+            case MENU_ITEM_LOCATION_4:
+                onWeatherLocationSelected(cities.get(4));
                 return true;
             default:
                 return false;
@@ -275,7 +344,10 @@ public class WeatherForecastActivity
     }
 
     public void onWeatherLocationSelected(City city) {
+        setAutoLocationEnabled(false);
         settings.setWeatherLocation(city);
+        selectedCity = city;
+        addToFavoriteCities(city);
         requestWeather(city);
     }
 
@@ -297,8 +369,9 @@ public class WeatherForecastActivity
             }
         }
         Log.i(TAG, "searching location");
+        getLastKnownLocation();
         locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 1000, 1000, locationListener
+                LocationManager.NETWORK_PROVIDER, 0, 0, locationListener
         );
     }
 
@@ -354,6 +427,7 @@ public class WeatherForecastActivity
             requestWeather(city);
         }
     }
+
     List<WeatherEntry> getFakeEntries() {
         List<WeatherEntry> entries = new ArrayList<>();
 
