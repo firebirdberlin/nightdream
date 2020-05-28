@@ -130,6 +130,12 @@ public class WeatherForecastActivity
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        hide();
+    }
+
     void init() {
         if (! isPurchased(ITEM_WEATHER_DATA)) {
             setupForecastPreview();
@@ -207,13 +213,17 @@ public class WeatherForecastActivity
         }
     }
 
-    public void onRequestFinished(List<WeatherEntry> entries) {
-        Log.i(TAG, "onRequestFinished()");
-        Log.i(TAG, String.format(" > got %d entries", entries.size()));
+    private void hide() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             // avoid flickering during build
             scrollView.setAlpha(0);
         }
+    }
+
+    public void onRequestFinished(List<WeatherEntry> entries) {
+        Log.i(TAG, "onRequestFinished()");
+        Log.i(TAG, String.format(" > got %d entries", entries.size()));
+        hide();
         scrollViewLayout.removeAllViews();
 
         String timeFormat = settings.getFullTimeFormat();
