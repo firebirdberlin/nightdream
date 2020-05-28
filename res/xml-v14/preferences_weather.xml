@@ -19,19 +19,6 @@
         app:key="showWeather"
         app:title="@string/show_weather" />
 
-    <com.firebirdberlin.openweathermapapi.CityIDPreference
-        app:iconSpaceReserved="false"
-        xmlns:owmapi="owmapi"
-        app:dependency="showWeather"
-        app:icon="@drawable/ic_search"
-        app:key="weatherCityID"
-        app:allowDividerAbove="true"
-        app:allowDividerBelow="true"
-        app:title="@string/weather_city_id_title"
-        owmapi:textClear="@string/clear"
-        owmapi:textSummary=""
-        />
-
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="true"

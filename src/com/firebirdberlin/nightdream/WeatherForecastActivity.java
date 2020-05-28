@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -61,13 +62,15 @@ public class WeatherForecastActivity
             MENU_ITEM_LOCATION_3,
             MENU_ITEM_LOCATION_4,
     };
-    private LinearLayout scrollView = null;
+    private ScrollView scrollView = null;
+    private LinearLayout scrollViewLayout = null;
     private Settings settings;
     private boolean locationAccessGranted = false;
     private boolean autoLocationEnabled = false;
     private LocationManager locationManager = null;
     private ArrayList<City> cities = null;
     private City selectedCity = null;
+    private int fadeDuration = 2000;
 
     private final LocationListener locationListener = new LocationListener() {
         @Override
@@ -110,6 +113,7 @@ public class WeatherForecastActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_forecast);
         scrollView = findViewById(R.id.scroll_view);
+        scrollViewLayout = findViewById(R.id.scroll_view_layout);
         cities = Settings.getFavoriteWeatherLocations(this);
     }
 
@@ -191,7 +195,7 @@ public class WeatherForecastActivity
                 showPurchaseDialog();
             }
         });
-        scrollView.addView(textView);
+        scrollViewLayout.addView(textView);
     }
 
     @Override
@@ -205,8 +209,11 @@ public class WeatherForecastActivity
     public void onRequestFinished(List<WeatherEntry> entries) {
         Log.i(TAG, "onRequestFinished()");
         Log.i(TAG, String.format(" > got %d entries", entries.size()));
-        scrollView.setAlpha(0);
-        scrollView.removeAllViews();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            // avoid flickering during build
+            scrollView.setAlpha(0);
+        }
+        scrollViewLayout.removeAllViews();
 
         String timeFormat = settings.getFullTimeFormat();
 
@@ -238,7 +245,7 @@ public class WeatherForecastActivity
                 DateFormat sdf = DateFormat.getDateInstance(DateFormat.FULL);
                 String text = sdf.format(mCalendar.getTime());
                 dateView.setText(text);
-                scrollView.addView(dateView);
+                scrollViewLayout.addView(dateView);
 
             }
 
@@ -247,9 +254,12 @@ public class WeatherForecastActivity
             layout.setTemperature(true, settings.temperatureUnit);
             layout.setWindSpeed(true, settings.speedUnit);
             layout.update(entry);
-            scrollView.addView(layout);
+            scrollViewLayout.addView(layout);
         }
-        scrollView.setAlpha(1);
+
+        // avoid flickering of the UI
+        scrollView.animate().setDuration(fadeDuration).alpha(1);
+        fadeDuration = 1000;
     }
 
     private void actionBarSetup(String subtitle) {
