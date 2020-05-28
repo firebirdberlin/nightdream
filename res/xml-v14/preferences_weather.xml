@@ -5,17 +5,10 @@
     app:key="weather"
     app:title="@string/weather">
 
-    <Preference
-        app:iconSpaceReserved="false"
-        app:icon="@drawable/ic_googleplay"
-        app:key="purchaseWeatherData"
-        app:isPreferenceVisible="false"
-        app:title="@string/purchaseWeatherData"/>
-
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="false"
-        app:enabled="false"
+        app:enabled="true"
         app:key="showWeather"
         app:title="@string/show_weather" />
 

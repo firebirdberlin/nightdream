@@ -52,7 +52,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
-    private final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 5;
     Snackbar snackbar;
     String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
@@ -70,17 +69,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     if (on && !hasPermission(Manifest.permission.RECORD_AUDIO)) {
                         requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
                                 PERMISSIONS_REQUEST_RECORD_AUDIO);
-                    }
-                    return true;
-                }
-            };
-    Preference.OnPreferenceChangeListener fetchWeatherDataPrefChangeListener =
-            new Preference.OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(Preference preference, Object new_value) {
-                    boolean on = Boolean.parseBoolean(new_value.toString());
-                    if (on && !hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                PERMISSIONS_REQUEST_ACCESS_LOCATION);
                     }
                     return true;
                 }
@@ -164,9 +152,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         case "activateDoNotDisturb":
                             setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");
                             break;
-                        case "weatherProvider":
-                            setupWeatherProviderPreference();
-                            break;
                     }
 
                     Log.i(TAG, "prefChangedListener called");
@@ -248,17 +233,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         setupDeviceAdministratorPermissions(prefs);
     }
 
-    private void storeWeatherDataPurchase(boolean weatherIsPurchased, boolean donationIsPurchased) {
-        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
-        editor.putBoolean("purchasedDonation", donationIsPurchased);
-        editor.apply();
-        Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
-    }
-
     void onPurchasesInitialized() {
-        storeWeatherDataPurchase(
+        Settings.storeWeatherDataPurchase(
+                getContext(),
                 isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                 isPurchased(BillingHelperActivity.ITEM_DONATION)
         );
@@ -278,7 +255,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Log.i(TAG, "actions: " + isPurchasedActions);
         Log.i(TAG, "weather: " + isPurchasedWeather);
         Log.i(TAG, "donation: " + isPurchasedDonation);
-        enablePreference("showWeather", isPurchasedWeather);
         enablePreference("expert_screen", isPurchasedActions);
         enablePreference("scheduled_autostart_screen", isPurchasedActions);
         enablePreference("activateDoNotDisturb", isPurchasedActions);
@@ -291,7 +267,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("category_night_mode_display_management", enableNightMode);
 
         showPreference("donation_category", !isPurchasedDonation);
-        showPreference("purchaseWeatherData", !isPurchasedWeather);
         showPreference("purchaseDesignPackage", !isPurchasedWeather);
 
         showPreference("purchaseActions", !isPurchasedActions);
@@ -328,8 +303,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setPreferencesFromResource(R.xml.preferences_behaviour, rootKey);
         } else if ("nightmode".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_nightmode, rootKey);
-        } else if ("weather".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_weather, rootKey);
         } else if ("notifications".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_notifications, rootKey);
         } else if ("alarms".equals(rootKey)) {
@@ -345,7 +318,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("purchaseActions3");
         initPurchasePreference("purchaseActions4");
         initPurchasePreference("donation_play");
-        initPurchasePreference("purchaseWeatherData");
         initPurchasePreference("purchaseDesignPackage");
     }
 
@@ -414,11 +386,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         } else if ("alarms".equals(rootKey)) {
 
             setupAlarmClockPreferences();
-        } else if ("weather".equals(rootKey)) {
-
-            Preference prefFetchWeatherData = findPreference("showWeather");
-            prefFetchWeatherData.setOnPreferenceChangeListener(fetchWeatherDataPrefChangeListener);
-            setupWeatherProviderPreference();
         } else if ("notifications".equals(rootKey)) {
 
         } else if ("about".equals(rootKey)) {
@@ -459,7 +426,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                         db.open();
                                         db.dropData();
                                         db.close();
-                                        storeWeatherDataPurchase(
+                                        Settings.storeWeatherDataPurchase(
+                                                getContext(),
                                                 isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                                                 isPurchased(BillingHelperActivity.ITEM_DONATION)
                                         );
@@ -656,18 +624,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
                 return;
             }
-            case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    settings.setFetchWeatherData(false);
-
-                    SwitchPreferenceCompat prefShowWeather = findPreference("showWeather");
-                    prefShowWeather.setChecked(false);
-                    Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
         }
     }
 
@@ -685,26 +641,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void setupDoNotDisturbPreference() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             removePreference("activateDoNotDisturb");
-        }
-    }
-
-    private void setupWeatherProviderPreference() {
-        Preference pref = findPreference("weatherProvider");
-        if (!isAdded() || pref == null) {
-            return;
-        }
-        Preference prefAttribution = findPreference("weatherProviderAttribution");
-        if (settings.getWeatherProviderString().equals("0")) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://openweathermap.org"));
-            prefAttribution.setIntent(intent);
-            prefAttribution.setTitle("Powered by OpenWeatherMap");
-            prefAttribution.setSummary("https://openweathermap.org");
-        }
-        else if (settings.getWeatherProviderString().equals("1")) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://darksky.net/poweredby/"));
-            prefAttribution.setIntent(intent);
-            prefAttribution.setTitle("Powered by Dark Sky");
-            prefAttribution.setSummary("https://darksky.net/poweredby/");
         }
     }
 
