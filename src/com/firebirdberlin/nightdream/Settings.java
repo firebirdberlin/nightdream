@@ -1098,4 +1098,13 @@ public class Settings {
         }
         return radioStreamActivateWiFi;
     }
+
+    public static void storeWeatherDataPurchase(Context context, boolean weatherIsPurchased, boolean donationIsPurchased) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
+        editor.putBoolean("purchasedDonation", donationIsPurchased);
+        editor.apply();
+        Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
+    }
 }

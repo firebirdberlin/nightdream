@@ -47,12 +47,6 @@
         app:title="@string/alarm" />
 
     <Preference
-        app:icon="@drawable/ic_cloud"
-        app:key="weather"
-        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-        app:title="@string/weather"/>
-
-    <Preference
         app:icon="@drawable/ic_menu"
         app:key="notifications"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"

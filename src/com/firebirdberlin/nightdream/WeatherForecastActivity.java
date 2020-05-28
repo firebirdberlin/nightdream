@@ -55,6 +55,7 @@ public class WeatherForecastActivity
     final int MENU_ITEM_LOCATION_2 = 3004;
     final int MENU_ITEM_LOCATION_3 = 3005;
     final int MENU_ITEM_LOCATION_4 = 3006;
+    final int MENU_ITEM_PREFERENCES = 3007;
     final int[] MENU_ITEMS_LOCATION = new int[] {
             MENU_ITEM_LOCATION_0,
             MENU_ITEM_LOCATION_1,
@@ -286,22 +287,26 @@ public class WeatherForecastActivity
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         menu.add(Menu.NONE, MENU_ITEM_SEARCH, Menu.NONE, getString(R.string.weather_city_id_title))
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, MENU_ITEM_PREFERENCES, Menu.NONE, getString(R.string.preferences))
+                .setIcon(R.drawable.ic_settings)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        int num_items = cities.size() + 2;
-
+        int num_items = cities.size() + 3;
         for (int i = 0; i < cities.size(); i++ ){
             City city = cities.get(i);
             final MenuItem item = menu.getItem(i);
             item.setCheckable(true);
             item.setChecked(city.equals(selectedCity) && !autoLocationEnabled);
         }
-        menu.getItem(num_items - 2).setCheckable(true);
-        menu.getItem(num_items - 2).setChecked(locationAccessGranted && autoLocationEnabled);
+        menu.getItem(num_items - 3).setCheckable(true);
+        menu.getItem(num_items - 3).setChecked(locationAccessGranted && autoLocationEnabled);
 
         boolean on = isPurchased(ITEM_WEATHER_DATA);
         for (int i = 0; i < num_items; i++ ) {
             menu.getItem(i).setEnabled(on);
         }
+        MenuItem item = menu.getItem(num_items - 1);
+        item.setVisible(on);
 
         return true;
     }
@@ -317,6 +322,9 @@ public class WeatherForecastActivity
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case MENU_ITEM_PREFERENCES:
+                WeatherPreferenceActivity.start(this);
+                return true;
             case MENU_ITEM_SEARCH:
                 showWeatherLocationDialog();
                 invalidateOptionsMenu();
@@ -490,6 +498,11 @@ public class WeatherForecastActivity
         super.onPurchasesInitialized();
         init();
         invalidateOptionsMenu();
+        Settings.storeWeatherDataPurchase(
+                this,
+                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
+                isPurchased(BillingHelperActivity.ITEM_DONATION)
+        );
     }
 
 }
