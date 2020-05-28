@@ -312,14 +312,20 @@ public abstract class BillingHelperActivity
                 .setListener(this)
                 .enablePendingPurchases()
                 .build();
+
         mBillingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(BillingResult billingResult) {
                 Log.i(TAG, "onBillingSetupFinished");
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here.
-                    querySkuDetails();
-                    queryPurchases();
+                try {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        // The BillingClient is ready. You can query purchases here.
+                        querySkuDetails();
+                        queryPurchases();
+                    }
+                } catch (IllegalStateException e) {
+                    // if the Activity is closed immediately this operation is no longer permitted
+                    mBillingClient = null;
                 }
             }
             @Override
