@@ -17,7 +17,7 @@ public class DirectionIconView extends View {
     private static final String TAG = "DirectionIconView";
     Context context;
     Paint paint = new Paint();
-    int customcolor = Color.GREEN;
+    int customcolor = Color.WHITE;
     int width;
     int height;
     float direction;

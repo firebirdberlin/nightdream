@@ -203,6 +203,11 @@ OR
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
+    <string name="product_description_weather">An upgrade includes\n
+    \n- a weather status line shown below the clock
+    \n- a 5-day weather forecast
+    \n- more clock faces
+    </string>
     <string name="product_name_actions">Always On package</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Full version</string>
@@ -296,6 +301,7 @@ OR
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
     <string name="uninstall">Uninstall application</string>
+    <string name="upgrade_now">Upgrade now!</string>
     <string name="useAlarmSwipeGesture">Set alarm via swipe gesture</string>
     <string name="useAlarmSwipeGestureSummary">Allows to set a new alarm with a swipe from the lower left corner.</string>
     <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>

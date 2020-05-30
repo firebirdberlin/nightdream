@@ -203,6 +203,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Einstellungen</string>
     <string name="prev">vorheriges</string>
     <string name="preview">Vorschau</string>
+    <string name="product_description_weather">Ein Upgrade enthält\n
+    \n- Anzeige der aktuellen Wetterbedingungen unter der Uhrzeit
+    \n- eine 5-Tages Wettervorhersage
+    \n- mehr Uhrendesigns
+    </string>
     <string name="product_name_actions">Zusatzfunktionen</string>
     <string name="product_name_donation">Spende</string>
     <string name="product_name_pro">Vollversion</string>
@@ -296,6 +301,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_regular">Roboto Regular</string>
     <string name="typeface_roboto_thin">Roboto Thin</string>
     <string name="uninstall">Anwendung deinstallieren</string>
+    <string name="upgrade_now">Jetzt kaufen!</string>
     <string name="useAlarmSwipeGesture">Alarm stellen via Wischgeste</string>
     <string name="useAlarmSwipeGestureSummary">Einmalige Weckzeiten können schnell per Wischen aus der unteren linken Ecke eingestellt werden.</string>
     <string name="useDeviceLock">Gerät sperren</string>
