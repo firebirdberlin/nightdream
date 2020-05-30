@@ -261,6 +261,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">Let op: Geen voeding aangesloten!</string>
     <string name="show_date">Datum tonen</string>
     <string name="show_divider">Scheidingslijn tonen</string>
+    <string name="show_apparent_temperature">Toon gevoelstemperatuur</string>
     <string name="show_temperature">Temperatuur tonen</string>
     <string name="show_weather">Lokaal weerbericht tonen</string>
     <string name="show_wind_speed">Windsnelheid tonen</string>
@@ -300,11 +301,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">De vergrendel-optie heeft administrator-machtigingen nodig. Schakel deze optie uit voordat je de app verwijdert.</string>
     <string name="useDeviceLockExplanation">Apparaat vergrendelen terwijl de app draait. Trek deze machtiging in voordat je de app verwijdert.</string>
     <string name="useDeviceLock">Apparaat vergrendelen</string>
-    <string name="weather_calculation_time">Weerberekeningstijd</string>
-    <string name="weather_city_id_title">Locatie zoeken</string>
-    <string name="weather_info_title">Informatie</string>
     <string name="weather">Weer</string>
     <string name="weatherProvider">Weersdienst leverancier</string>
+    <string name="weather_calculation_time">Weerberekeningstijd</string>
+    <string name="weather_city_id_title">Locatie zoeken</string>
+    <string name="weather_current_location">Huidige locatie</string>
+    <string name="weather_info_title">Informatie</string>
     <string name="weekdays">Dagen van de week</string>
     <string name="width">Breedte</string>
 </resources>
