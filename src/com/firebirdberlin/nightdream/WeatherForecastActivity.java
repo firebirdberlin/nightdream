@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
@@ -14,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -21,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
+import com.firebirdberlin.nightdream.ui.WeatherLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -173,7 +177,8 @@ public class WeatherForecastActivity
 
     void setupForecastPreview() {
         List<WeatherEntry> entries = getFakeEntries();
-        onRequestFinished(entries);
+        scrollViewLayout.removeAllViews();
+
         TextView textView = new TextView(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
@@ -191,18 +196,58 @@ public class WeatherForecastActivity
         Typeface typeface = FontCache.get(this, "fonts/dancingscript_regular.ttf");
         textView.setTypeface(typeface);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable icon = getDrawable(R.drawable.ic_googleplay);
             icon.setColorFilter(new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP));
             textView.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, icon, null);
         }
-        textView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener purchaseListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPurchaseDialog();
             }
-        });
+        };
+        textView.setOnClickListener(purchaseListener);
         scrollViewLayout.addView(textView);
+
+        TextView textView1 = new TextView(this);
+        textView1.setLayoutParams(layoutParams);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            textView1.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+        } else {
+            textView1.setGravity(Gravity.CENTER);
+        }
+        int dp20 = Utility.dpToPx(this, 12);
+        textView1.setPadding(dp20, dp20, dp20, dp20);
+        textView1.setText(getString(R.string.product_description_weather));
+        textView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        scrollViewLayout.addView(textView1);
+
+        TextView textView2 = new TextView(this);
+        LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams2.gravity = Gravity.CENTER_VERTICAL | Gravity.END;
+        textView2.setLayoutParams(layoutParams2);
+        textView2.setBackgroundColor(color);
+        textView2.setTextColor(textColor);
+        textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        textView2.setPadding(10, dp20, 10, 0);
+        textView2.setText(getString(R.string.upgrade_now));
+
+        textView2.setTypeface(typeface);
+        textView2.setOnClickListener(purchaseListener);
+        scrollViewLayout.addView(textView2);
+
+        WeatherLayout statusLine = new WeatherLayout(this);
+        statusLine.setColor(Color.WHITE);
+        statusLine.setGravity(Gravity.CENTER);
+        statusLine.setWindSpeed(true, WeatherEntry.METERS_PER_SECOND);
+        statusLine.update(entries.get(0));
+        statusLine.setPadding(dp20, dp20, dp20, dp20);
+
+        scrollViewLayout.addView(statusLine);
+        addWeatherEntries(entries);
     }
 
     @Override
@@ -222,10 +267,13 @@ public class WeatherForecastActivity
 
     public void onRequestFinished(List<WeatherEntry> entries) {
         Log.i(TAG, "onRequestFinished()");
-        Log.i(TAG, String.format(" > got %d entries", entries.size()));
         hide();
         scrollViewLayout.removeAllViews();
+        addWeatherEntries(entries);
+    }
 
+    void addWeatherEntries(List<WeatherEntry> entries) {
+        Log.i(TAG, String.format(" > got %d entries", entries.size()));
         String timeFormat = settings.getFullTimeFormat();
 
         if (entries.size() > 0) {
@@ -466,13 +514,14 @@ public class WeatherForecastActivity
         int hour = now.get(Calendar.HOUR);
         int diff = ((23 + 1) / 3 * 3 + 2) - hour;
         now.add(Calendar.HOUR, diff);
-        WeatherEntry entry1= new WeatherEntry();
+        WeatherEntry entry1 = new WeatherEntry();
         entry1.apparentTemperature = 292.15;
         entry1.cityName = "Bullerby";
         entry1.clouds = 71;
         entry1.humidity = 53;
         entry1.temperature = 293.15;
         entry1.timestamp = now.getTimeInMillis() / 1000;
+        entry1.request_timestamp = System.currentTimeMillis();
         entry1.weatherIcon = "04n";
         entry1.windDirection = 247;
         entry1.windSpeed = 3.4;
@@ -485,6 +534,7 @@ public class WeatherForecastActivity
         entry2.rain3h = 1.3;
         entry2.temperature = 295.15;
         entry2.timestamp = now.getTimeInMillis() / 1000;
+        entry1.request_timestamp = System.currentTimeMillis();
         entry2.weatherIcon = "03n";
         entry2.windDirection = 266;
         entry2.windSpeed = 2.3;
@@ -495,6 +545,7 @@ public class WeatherForecastActivity
     @Override
     protected void onItemPurchased(String sku) {
         super.onItemPurchased(sku);
+        scrollViewLayout.removeAllViews();
         init();
         invalidateOptionsMenu();
         City city = settings.getCityForWeather();

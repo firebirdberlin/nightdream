@@ -141,6 +141,7 @@ public class WeatherLayout extends LinearLayout {
         long age = entry.ageMillis();
         Log.d("WeatherLayout", entry.toString());
         Log.d("WeatherLayout", entry.formatTemperatureText(temperatureUnit));
+        Log.d("WeatherLayout", String.valueOf(entry.ageMillis()));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
 
             iconText.setText(iconToText(entry.weatherIcon));

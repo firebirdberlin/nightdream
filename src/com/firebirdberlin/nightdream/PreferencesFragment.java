@@ -935,8 +935,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return;
         }
 
-        if (! (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext))) {
-            showPreference("autostart");
+        if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) {
+            hidePreference("autostart");
         }
 
         enablePreference("autostart",  !Utility.isConfiguredAsDaydream(mContext) );
