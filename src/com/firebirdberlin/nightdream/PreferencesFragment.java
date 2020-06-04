@@ -143,9 +143,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         case "autostartForNotifications":
                             setupStandByService(sharedPreferences);
                             break;
-                        case "useInternalAlarm":
-                            setupAlarmClock(sharedPreferences);
-                            break;
                         case "Night.muteRinger":
                             setupNotificationAccessPermission(sharedPreferences, "Night.muteRinger");
                             break;
@@ -305,8 +302,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setPreferencesFromResource(R.xml.preferences_nightmode, rootKey);
         } else if ("notifications".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_notifications, rootKey);
-        } else if ("alarms".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_alarms, rootKey);
         } else if ("about".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_about, rootKey);
         } else {
@@ -383,9 +378,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
             prefAmbientNoiseDetection.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
             prefAmbientNoiseReactivation.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
-        } else if ("alarms".equals(rootKey)) {
 
-            setupAlarmClockPreferences();
         } else if ("notifications".equals(rootKey)) {
 
         } else if ("about".equals(rootKey)) {
@@ -500,11 +493,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private void setupAlarmClockPreferences() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29) {
-            showPreference("radioStreamActivateWiFi");
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -791,16 +779,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void requestCanDrawOverlaysPermission() {
         startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
     }
-
-    private void setupAlarmClock(SharedPreferences sharedPreferences) {
-        if (!isAdded() ) return;
-        boolean on = sharedPreferences.getBoolean("useInternalAlarm", false);
-
-        if (!on) {
-            WakeUpReceiver.cancelAlarm(mContext);
-        }
-    }
-
 
     private void setupNotificationAccessPermission(SharedPreferences sharedPreferences, String preferenceKey) {
         if (!isAdded() ) return;

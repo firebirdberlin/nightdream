@@ -45,8 +45,6 @@ public class AlarmHandlerService extends IntentService {
 
     public static void start(Context context) {
         Settings settings = new Settings(context);
-        if (!settings.useInternalAlarm) return;
-
         boolean hasNetworkConnection = settings.radioStreamRequireWiFi ?
                 Utility.hasFastNetworkConnection(context) : Utility.hasNetworkConnection(context);
 

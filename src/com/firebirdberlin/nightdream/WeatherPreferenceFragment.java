@@ -1,20 +1,13 @@
 package com.firebirdberlin.nightdream;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
-import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
-
-import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
     public static final String PREFS_KEY = "NightDream preferences";

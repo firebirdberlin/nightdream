@@ -132,7 +132,7 @@
             app:key="credits"
             app:selectable="false"
             app:summary="stefan.fruhner@googlemail.com"
-            app:title="Stefan Fruhner (2019)"
+            app:title="Stefan Fruhner (2020)"
             app:enableCopying="true"/>
 
         <Preference
