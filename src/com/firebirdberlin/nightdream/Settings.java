@@ -102,7 +102,6 @@ public class Settings {
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
     public boolean useDeviceLock = false;
-    public boolean useInternalAlarm = true;
     public boolean stopAlarmOnTap = true;
     public boolean stopAlarmOnLongPress = false;
     public boolean useAlarmSwipeGesture = false;

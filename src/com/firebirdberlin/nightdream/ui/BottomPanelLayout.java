@@ -14,11 +14,9 @@ public class BottomPanelLayout extends FrameLayout {
     public static String TAG ="BottomPanelLayout";
 
     public boolean isVisible = true;
-    public boolean useInternalAlarm = false;
     Panel activePanel = Panel.ALARM_CLOCK;
     private Context context;
     private AttributeSet attrs;
-    private StockAlarmLayout stockAlarmView = null;
     private WebRadioLayout webRadioLayout = null;
     private int accentColor;
     private int textColor;
@@ -112,7 +110,6 @@ public class BottomPanelLayout extends FrameLayout {
         if (view != null) {
             view.setCustomColor(accentColor, textColor);
         }
-        if (stockAlarmView != null) stockAlarmView.setCustomColor(accentColor, textColor);
         if (webRadioLayout != null) webRadioLayout.setCustomColor(accentColor, textColor);
     }
 
@@ -121,8 +118,6 @@ public class BottomPanelLayout extends FrameLayout {
             showAlarmView();
         } else if (activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
-        } else if (!useInternalAlarm) {
-            showStockAlarmView();
         } else {
             showAlarmView();
         }
@@ -131,26 +126,7 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private void clearViews() {
-        stockAlarmView = null;
         webRadioLayout = null;
-    }
-
-    private void showStockAlarmView() {
-        if (stockAlarmView != null) {
-            stockAlarmView.setCustomColor(accentColor, textColor);
-            stockAlarmView.setText();
-            return; // already visible
-        }
-        if (activePanel == Panel.WEB_RADIO) return;
-
-        removeAllViews();
-        clearViews();
-        view.cancelAlarm();
-        stockAlarmView = new StockAlarmLayout(context, attrs);
-        stockAlarmView.setCustomColor(accentColor, textColor);
-        stockAlarmView.setText();
-        addView(stockAlarmView);
-        invalidate();
     }
 
     private void showWebRadioView() {
@@ -194,7 +170,6 @@ public class BottomPanelLayout extends FrameLayout {
     public void setLocked(boolean locked) {
         this.locked = locked;
         view.setLocked(locked);
-        if (stockAlarmView != null) stockAlarmView.setLocked(locked);
         if (webRadioLayout != null) webRadioLayout.setLocked(locked);
     }
 

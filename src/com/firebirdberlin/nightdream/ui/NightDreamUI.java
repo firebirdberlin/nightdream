@@ -461,7 +461,6 @@ public class NightDreamUI {
         setScreenOrientation(settings.screenOrientation);
 
         initSidePanel();
-        bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
@@ -933,7 +932,6 @@ public class NightDreamUI {
     }
 
     private void setupAlarmClock() {
-        bottomPanelLayout.useInternalAlarm = settings.useInternalAlarm;
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);

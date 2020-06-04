@@ -537,12 +537,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void setupAlarmClockIcon() {
-
-        if (!mySettings.useInternalAlarm) {
-            alarmClockIcon.setVisibility(View.GONE);
-        } else {
-            alarmClockIcon.setVisibility(View.VISIBLE);
-        }
+        alarmClockIcon.setVisibility(View.VISIBLE);
         Utility.setIconSize(this, alarmClockIcon);
     }
 

@@ -19,10 +19,8 @@ public class BootReceiver extends BroadcastReceiver {
         PowerConnectionReceiver.schedule(context);
         ScheduledAutoStartReceiver.schedule(context);
         Settings settings = new Settings(context);
-        if (settings.useInternalAlarm) {
-            SqliteIntentService.scheduleAlarm(context);
-        }
 
+        SqliteIntentService.scheduleAlarm(context);
         ScreenWatcherService.conditionallyStart(context, settings);
     }
 }

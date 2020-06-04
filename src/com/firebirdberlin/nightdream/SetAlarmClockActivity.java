@@ -10,11 +10,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.AlarmClock;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
@@ -45,6 +48,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private List<SimpleTime> entries = null;
     private HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
     private FavoriteRadioStations radioStations = null;
+    final int MENU_ITEM_PREFERENCES = 3000;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -64,6 +68,28 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             LayoutTransition layoutTransition = scrollView.getLayoutTransition();
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // return super.onCreateOptionsMenu(menu);
+        menu.add(Menu.NONE, MENU_ITEM_PREFERENCES, Menu.NONE, getString(R.string.preferences))
+                .setIcon(R.drawable.ic_settings)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //return super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case MENU_ITEM_PREFERENCES:
+                AlarmsPreferenceActivity.start(this);
+                return true;
+            default:
+                return false;
         }
     }
 

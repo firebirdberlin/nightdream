@@ -113,6 +113,12 @@
             android:excludeFromRecents="true"
             android:theme="@style/PreferencesTheme" />
         <activity
+            android:name=".AlarmsPreferenceActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:excludeFromRecents="true"
+            android:parentActivityName=".SetAlarmClockActivity"
+            android:theme="@style/PreferencesTheme"/>
+        <activity
             android:name=".WeatherPreferenceActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
