@@ -43,6 +43,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private Context context;
     private SimpleTime alarmTime = null;
     VibrationHandler vibrator = null;
+    long startTime = 0;
 
     @Override
     public void onCreate(){
@@ -87,7 +88,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
 
     public void stopAlarm() {
-        handler.removeCallbacks(timeout);
         handler.removeCallbacks(fadeIn);
         AlarmStop();
         restoreVolume();
@@ -97,20 +97,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         stopSelf();
     }
 
-    private Runnable timeout = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(timeout);
-            handler.removeCallbacks(fadeIn);
-            AlarmHandlerService.snooze(context);
-        }
-    };
-
     private Runnable retry = new Runnable() {
         @Override
         public void run() {
             AlarmPlay();
-            handler.postDelayed(timeout, 120000);
         }
     };
 
@@ -154,7 +144,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 alarmTime = new SimpleTime(intent.getExtras());
                 setVolume(settings.alarmVolume);
                 AlarmPlay();
-                handler.postDelayed(timeout, 120000);
             }
         }
 
@@ -201,12 +190,33 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.e(TAG, "onCompletion ");
+
+        long now = System.currentTimeMillis();
+        if (now - startTime > 120000) {
+            timeout();
+        } else {
+            mMediaPlayer.stop();
+            try {
+                mMediaPlayer.prepare();
+            } catch (IOException e) {
+                Log.e(TAG, "MediaPlayer.prepare() failed", e);
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "MediaPlayer.prepare() failed", e);
+            }
+            mMediaPlayer.start();
+        }
     }
+    private void timeout() {
+        handler.removeCallbacks(fadeIn);
+        AlarmHandlerService.snooze(context);
+    }
+
 
     public void AlarmPlay() {
         AlarmStop();
         Log.i(TAG, "AlarmPlay()");
         isRunning = true;
+        startTime = System.currentTimeMillis();
         mMediaPlayer = new MediaPlayer();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mMediaPlayer.setAudioAttributes(
@@ -221,7 +231,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
-        mMediaPlayer.setLooping(true);
+        mMediaPlayer.setLooping(false);
 
         boolean result;
         Uri soundUri = getAlarmToneUri();
@@ -233,7 +243,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         if (! result ) {
             Log.e(TAG, "Could not set the data source !");
-            handler.removeCallbacks(timeout);
             handler.removeCallbacks(fadeIn);
             AlarmStop();
             handler.postDelayed(retry, 10000);
