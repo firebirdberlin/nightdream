@@ -55,7 +55,6 @@ import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
@@ -72,15 +71,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-/*
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.PointTarget;
-import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-*/
-
-
 public class NightDreamUI {
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -95,8 +85,8 @@ public class NightDreamUI {
     private Context mContext;
 
     private FrameLayout mainFrame;
-    private Drawable bgshape;
-    private Drawable bgblack;
+    final private Drawable bgblack = new ColorDrawable(Color.BLACK);
+    private Drawable bgshape = bgblack;
     private AlarmClock alarmClock;
     private ImageView background_image;
     private ImageView menuIcon;
@@ -286,6 +276,14 @@ public class NightDreamUI {
             if (AlarmHandlerService.alarmIsRunning()) {
                 alarmClock.snooze();
             }
+
+            removeCallbacks(hideBrightnessLevel);
+            removeCallbacks(hideBrightnessView);
+            setBrightnessProgress();
+            brightnessProgress.setVisibility(View.VISIBLE);
+            setAlpha(brightnessProgress, 1.f, 0);
+            handler.postDelayed(hideBrightnessLevel, 1000);
+
             return false;
         }
 
@@ -296,33 +294,39 @@ public class NightDreamUI {
                             || brightnessProgress == null
             ) return false;
 
-            clockLayoutContainer.getLocationOnScreen(rect);
-            if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
-                Point size = Utility.getDisplaySize(mContext);
-                float dx = -2.f * (distanceX / size.x);
-                float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
-                value += dx;
-                value = to_range(value, -1.f, 1.f);
+            if (brightnessProgress.getVisibility() == View.VISIBLE) {
+                clockLayoutContainer.getLocationOnScreen(rect);
+                if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
+                    Point size = Utility.getDisplaySize(mContext);
+                    float dx = -2.f * (distanceX / size.x);
+                    float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                    value += dx;
+                    value = to_range(value, -1.f, 1.f);
 
-                int intValue = (int) (100.f * (value + 1.f));
-                brightnessProgress.setProgress(intValue);
-                brightnessProgress.setVisibility(View.VISIBLE);
+                    setAlpha(brightnessProgress, 1.f, 0);
 
-                setAlpha(brightnessProgress, 1.f, 0);
-
-                dimScreen(0, last_ambient, value);
-                if (mode != 0) {
-                    settings.setBrightnessOffset(value);
-                } else {
-                    settings.setNightModeBrightness(value);
+                    dimScreen(0, last_ambient, value);
+                    if (mode != 0) {
+                        settings.setBrightnessOffset(value);
+                    } else {
+                        settings.setNightModeBrightness(value);
+                    }
+                    setBrightnessProgress();
                 }
+                removeCallbacks(hideBrightnessLevel);
+                removeCallbacks(hideBrightnessView);
+                handler.postDelayed(hideBrightnessLevel, 1000);
             }
-            removeCallbacks(hideBrightnessLevel);
-            removeCallbacks(hideBrightnessView);
-            handler.postDelayed(hideBrightnessLevel, 1000);
             return false;
         }
     };
+
+    void setBrightnessProgress() {
+        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+        value = to_range(value, -1.f, 1.f);
+        int intValue = (int) (100.f * (value + 1.f));
+        brightnessProgress.setProgress(intValue);
+    }
     /*
     private OnShowcaseEventListener showcaseViewEventListener = new OnShowcaseEventListener() {
         @Override
@@ -609,7 +613,6 @@ public class NightDreamUI {
 
     private void setupBackgroundImage() {
         if (mode == 0) return;
-        bgblack = new ColorDrawable(Color.BLACK);
         bgshape = bgblack;
         if (!Utility.isLowRamDevice(mContext)) {
             switch (settings.getBackgroundMode()){
