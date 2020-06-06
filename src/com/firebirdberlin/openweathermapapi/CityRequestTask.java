@@ -10,7 +10,7 @@ import com.firebirdberlin.openweathermapapi.models.City;
 public class CityRequestTask extends AsyncTask<String, Void, List<City> > {
 
     public interface AsyncResponse {
-        public void onRequestFinished(List<City> cities);
+        void onRequestFinished(List<City> cities);
     }
 
     private AsyncResponse delegate = null;
