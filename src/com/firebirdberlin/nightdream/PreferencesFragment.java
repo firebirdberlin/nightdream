@@ -31,6 +31,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
@@ -296,6 +297,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
         } else if ("appearance".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_appearance, rootKey);
+        } else if ("brightness".equals(rootKey)) {
+            setPreferencesFromResource(R.xml.preferences_brightness, rootKey);
         } else if ("behaviour".equals(rootKey)) {
             setPreferencesFromResource(R.xml.preferences_behaviour, rootKey);
         } else if ("nightmode".equals(rootKey)) {
@@ -365,6 +368,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 }
             });
+        } else if ("brightness".equals(rootKey)) {
             setupBrightnessControls(prefs);
             setupLightSensorPreferences();
         } else if ("behaviour".equals(rootKey)) {
@@ -646,7 +650,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             title = getString(R.string.brightness_offset);
         }
         brightnessOffset.setTitle(title);
-        PreferenceCategory category = findPreference("category_brightness");
+        PreferenceScreen category = findPreference("brightness");
         if (category == null) return;
 
         removePreference("maxBrightnessBattery");

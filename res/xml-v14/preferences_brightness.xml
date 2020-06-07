@@ -1,0 +1,25 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:key="brightness"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/brightness">
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="autoBrightness"
+        app:title="@string/auto_brightness" />
+
+    <de.firebirdberlin.preference.InlineSeekBarPreference
+        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+        app:iconSpaceReserved="false"
+        app:defaultValue="80"
+        app:key="brightness_offset"
+        app:title="@string/brightness_offset"
+        seekbar:interval="1"
+        seekbar:max="100"
+        seekbar:min="-100"
+        seekbar:unitsLeft=""
+        seekbar:unitsRight=""/>
+</PreferenceScreen>

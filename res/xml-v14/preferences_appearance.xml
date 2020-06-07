@@ -120,29 +120,4 @@
             />
 
     </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
-        app:key="category_brightness"
-        app:title="@string/brightness">
-
-        <SwitchPreferenceCompat
-            app:iconSpaceReserved="false"
-            app:defaultValue="false"
-            app:key="autoBrightness"
-            app:title="@string/auto_brightness" />
-
-        <de.firebirdberlin.preference.InlineSeekBarPreference
-            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-            app:iconSpaceReserved="false"
-            app:defaultValue="80"
-            app:key="brightness_offset"
-            app:title="@string/brightness_offset"
-            seekbar:interval="1"
-            seekbar:max="100"
-            seekbar:min="-100"
-            seekbar:unitsLeft=""
-            seekbar:unitsRight=""/>
-    </PreferenceCategory>
 </PreferenceScreen>
