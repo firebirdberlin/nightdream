@@ -7,7 +7,7 @@
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
-        app:defaultValue="false"
+        app:defaultValue="true"
         app:key="doubleTapToFinish"
         app:summary="@string/doubleTapToFinishSummary"
         app:title="@string/doubleTapToFinishTitle" />
