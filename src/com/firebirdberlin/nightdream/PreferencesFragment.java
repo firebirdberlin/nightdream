@@ -357,7 +357,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
 
         } else if ("appearance".equals(rootKey)) {
-            setupBrightnessControls(prefs);
             setupBackgroundImageControls(prefs);
             Preference chooseImage = findPreference("chooseBackgroundImage");
             chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -366,6 +365,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 }
             });
+            setupBrightnessControls(prefs);
             setupLightSensorPreferences();
         } else if ("behaviour".equals(rootKey)) {
             initUseDeviceLockPreference();
@@ -463,7 +463,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if ( Utility.getLightSensor(mContext) == null ) {
             Log.d(TAG, "no light sensor");
 
-            removePreference("category_brightness");
             removePreference("reactivate_on_ambient_light_value");
 
             ListPreference nightModePref = findPreference("nightModeActivationMode");
@@ -638,21 +637,25 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (brightnessOffset == null) {
             return;
         }
-        boolean on = prefs.getBoolean("autoBrightness", false);
+        boolean hasLightSensor = ( Utility.getLightSensor(mContext) != null );
+        boolean on = prefs.getBoolean("autoBrightness", false) && hasLightSensor;
+
+        showPreference("autoBrightness", hasLightSensor);
         String title = getString(R.string.brightness);
         if (on) {
             title = getString(R.string.brightness_offset);
         }
         brightnessOffset.setTitle(title);
         PreferenceCategory category = findPreference("category_brightness");
+        if (category == null) return;
 
         removePreference("maxBrightnessBattery");
         removePreference("nightModeBrightnessInt");
         removePreference("maxBrightness");
         removePreference("minBrightness");
+        float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
+        SharedPreferences.Editor prefEditor = prefs.edit();
         if (on) {
-            float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
-            SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("minBrightness", (int) (100 * nightModeBrightness));
             prefEditor.apply();
 
@@ -675,8 +678,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             category.addPreference(prefMinBrightness);
             category.addPreference(prefMaxBrightness);
         } else {
-            float nightModeBrightness = prefs.getFloat("nightModeBrightness", 0.01f);
-            SharedPreferences.Editor prefEditor = prefs.edit();
             prefEditor.putInt("nightModeBrightnessInt", (int) (100 * nightModeBrightness));
             prefEditor.apply();
             InlineSeekBarPreference prefNightModeBrightness = new InlineSeekBarPreference(mContext);
