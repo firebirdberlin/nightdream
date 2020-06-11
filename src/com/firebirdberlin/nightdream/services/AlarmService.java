@@ -192,7 +192,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         Log.e(TAG, "onCompletion ");
 
         long now = System.currentTimeMillis();
-        if (now - startTime > 120000) {
+        if (now - startTime > settings.autoSnoozeTimeInMillis) {
             timeout();
         } else {
             mMediaPlayer.stop();
