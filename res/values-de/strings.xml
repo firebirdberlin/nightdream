@@ -276,6 +276,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="slideshow_center_inside">Ränder einfügen</string>
     <string name="slideshow_style">Stil</string>
     <string name="snoozeTime">Schlummerzeit</string>
+    <string name="snoozeAfter">Automatisch schlummern nach</string>
     <string name="speedUnit">Einheit der Windgeschwindigkeit</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">mit Bildschirm nach oben</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Diese Funktion entlädt den Akku sehr schnell!</string>

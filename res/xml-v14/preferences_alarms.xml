@@ -20,6 +20,18 @@
     <de.firebirdberlin.preference.InlineSeekBarPreference
         app:iconSpaceReserved="false"
         xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+        app:defaultValue="2"
+        app:key="autoSnoozeTimeInMinutes"
+        app:title="@string/snoozeAfter"
+        seekbar:interval="1"
+        seekbar:max="60"
+        seekbar:min="1"
+        seekbar:unitsLeft=""
+        seekbar:unitsRight="min"/>
+
+    <de.firebirdberlin.preference.InlineSeekBarPreference
+        app:iconSpaceReserved="false"
+        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
         app:defaultValue="5"
         app:key="snoozeTimeInMinutes"
         app:title="@string/snoozeTime"
