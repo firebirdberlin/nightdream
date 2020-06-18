@@ -203,6 +203,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Voorkeuren</string>
     <string name="prev">vorige</string>
     <string name="preview">Voorbeeld</string>
+    <string name="product_description_weather">Een update bevat\n
+    \n- een één-lijns weerbericht onder de klok
+    \n- een vijfdaagse weersvoorspelling
+    \n- meer wijzerplaten
+    </string>
     <string name="product_name_actions">Altijd aanwezig</string>
     <string name="product_name_donation">Donatie</string>
     <string name="product_name_pro">Volledige versie</string>
@@ -296,6 +301,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Lettertype</string>
     <string name="uninstall">App verwijderen</string>
+    <string name="upgrade_now">Upgrade nu!</string>
     <string name="useAlarmSwipeGesture">Alarm instellen middels veegbeweging</string>
     <string name="useAlarmSwipeGestureSummary">Toestemming om nieuw alarm in te stellen met een veeg van de linkerbenedenhoek</string>
     <string name="useDeviceLockDescription">De vergrendel-optie heeft administrator-machtigingen nodig. Schakel deze optie uit voordat je de app verwijdert.</string>

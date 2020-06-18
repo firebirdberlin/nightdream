@@ -292,11 +292,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">La funzione di blocco schermo richiede privilegi amministrativi. Per disinstallare questa app per favore disabilitare questa funzione</string>
     <string name="useDeviceLockExplanation">Blocca il dispositivo mentre l\'app è attiva. Per disinstallare l\'app, si prega di revocare questa autorizzazione.</string>
     <string name="useDeviceLock">Blocca dispositivo</string>
+    <string name="weather">Meteo</string>
+    <string name="weatherProvider">Fornitore servizi meteo</string>
     <string name="weather_calculation_time">Tempo di calcolo previsioni meteo</string>
     <string name="weather_city_id_title">Ricerca posizione</string>
     <string name="weather_info_title">Informazioni</string>
-    <string name="weather">Meteo</string>
-    <string name="weatherProvider">Fornitore servizi meteo</string>
     <string name="weekdays">Giorni della settimana</string>
     <string name="width">Larghezza</string>
 </resources>

@@ -292,11 +292,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Функция блокировки экрана требует разрешения администратора устройства. Чтобы удалить приложение, отключите эту функцию.</string>
     <string name="useDeviceLockExplanation">Заблокируйте устройство, пока приложение активно. Чтобы удалить приложение, отмените это разрешение.</string>
     <string name="useDeviceLock">Заблокировать устройство</string>
+    <string name="weather">Погода</string>
+    <string name="weatherProvider">Провайдер погоды</string>
     <string name="weather_calculation_time">время подсчёта погоды</string>
     <string name="weather_city_id_title">Поиск местоположения</string>
     <string name="weather_info_title">Информация</string>
-    <string name="weather">Погода</string>
-    <string name="weatherProvider">Провайдер погоды</string>
     <string name="weekdays">будние дни</string>
     <string name="width">Ширина</string>
 </resources>

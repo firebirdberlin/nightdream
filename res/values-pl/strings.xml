@@ -264,9 +264,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Zablokowanie ekranu potrzebuje uprawnienia administatora urządzenia Prosze wyłącz ta funkcje przed odinstalowaniem tej aplikacji.</string>
     <string name="useDeviceLockExplanation">Zablokuj urządzenie kiedy Nocny Zegar jest aktywny. Przed odinstalowaniem tej aplikacji proszę odznacz to ustawienie</string>
     <string name="useDeviceLock">Zablokuj urządzenie</string>
+    <string name="weather">Pogoda</string>
     <string name="weather_calculation_time">Częstotliwość odswieżania pogody</string>
     <string name="weather_city_id_title">Znajdź lokalizację</string>
     <string name="weather_info_title">Informacje</string>
-    <string name="weather">Pogoda</string>
     <string name="width">Szerokość</string>
 </resources>

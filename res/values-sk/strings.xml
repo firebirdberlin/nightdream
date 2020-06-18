@@ -17,8 +17,10 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">O aplikácii</string>
+    <string name="action_skip">Preskočiť</string>
     <string name="action_snooze">Odložiť o</string>
     <string name="action_stop">Zastaviť</string>
+    <string name="activateDoNotDisturb">Aktivovať DnD</string>
     <string name="add_new_alarm">Pridať nový budík</string>
     <string name="add_custom_alarm_tone">Pridať zvonenie podľa vlastného výberu</string>
     <string name="add_custom_font">Pridať vlastné písmo</string>
@@ -165,8 +167,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Funkcia zámku obrazovky potrebuje povolenie správcu zariadenia. Ak chcete aplikáciu odinštalovať, túto funkciu zakážte.</string>
     <string name="useDeviceLockExplanation">Uzamknite zariadenie, keď je aplikácia aktívna. Ak chcete odinštalovať aplikáciu, zrušte toto povolenie.</string>
     <string name="useDeviceLock">Zamknúť zariadenie</string>
+    <string name="weather">Počasie</string>
     <string name="weather_calculation_time">čas predpovede počasia</string>
     <string name="weather_city_id_title">Identifikácia mesta</string>
     <string name="weather_info_title">Informácie</string>
-    <string name="weather">Počasie</string>
 </resources>

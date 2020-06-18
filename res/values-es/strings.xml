@@ -258,9 +258,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">La opción Bloquear Pantalla requiere permisos de administrador. Desactivar en caso de querer desinstalar la aplicación.</string>
     <string name="useDeviceLockExplanation">Bloquear el dispositivo mientras la aplicación en uso. Desactivar en caso de querer desinstalar la aplicación.</string>
     <string name="useDeviceLock">Dispositivo de bloquear</string>
+    <string name="weather">Clima</string>
     <string name="weather_calculation_time">hora de pronóstico del tiempo</string>
     <string name="weather_city_id_title">Ubicación de búsqueda</string>
     <string name="weather_info_title">Información</string>
-    <string name="weather">Clima</string>
     <string name="width">Grosor</string>
 </resources>
