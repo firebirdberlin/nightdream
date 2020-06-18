@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Über</string>
+    <string name="action_change">Ändern</string>
     <string name="action_skip">Auslassen</string>
     <string name="action_snooze">Schlummern</string>
     <string name="action_stop">Beenden</string>
@@ -197,6 +198,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_radius">Radius des äußeren Kreises</string>
     <string name="outer_circle_width">Dicke des äußeren Kreises</string>
     <string name="permission_request_autostart">Bitte geben Sie die Berechtigung für den Autostart (Über anderen Apps einblenden).</string>
+    <string name="permission_request_location_mode">Die Standortbestimmung ist zur Zeit deaktiviert.</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
     <string name="power_source">Stromquelle</string>

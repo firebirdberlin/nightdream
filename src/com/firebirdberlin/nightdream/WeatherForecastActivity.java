@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -40,6 +41,7 @@ import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -76,6 +78,7 @@ public class WeatherForecastActivity
     private ArrayList<City> cities = null;
     private City selectedCity = null;
     private int fadeDuration = 2000;
+    private Snackbar snackbar;
 
     private final LocationListener locationListener = new LocationListener() {
         @Override
@@ -158,6 +161,7 @@ public class WeatherForecastActivity
                 requestWeather(selectedCity);
             }
         }
+        conditionallyShowSnackBar();
     }
 
     void addToFavoriteCities(City city) {
@@ -566,4 +570,63 @@ public class WeatherForecastActivity
         );
     }
 
+    private boolean isLocationProviderEnabled() {
+        int locationMode = 0;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = android.provider.Settings.Secure.getInt(
+                        getContentResolver(), android.provider.Settings.Secure.LOCATION_MODE
+                );
+
+            } catch (android.provider.Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return locationMode != android.provider.Settings.Secure.LOCATION_MODE_OFF;
+
+        } else {
+            String locationProviders = android.provider.Settings.Secure.getString(
+                    getContentResolver(),
+                    android.provider.Settings.Secure.LOCATION_PROVIDERS_ALLOWED
+            );
+            return !locationProviders.isEmpty();
+        }
+    }
+
+    private void conditionallyShowSnackBar(){
+        if (!isLocationProviderEnabled()) {
+            View view = findViewById(android.R.id.content);
+            snackbar = Snackbar.make(view, R.string.permission_request_location_mode, Snackbar.LENGTH_INDEFINITE);
+            int color = Utility.getRandomMaterialColor(this);
+            int textColor = Utility.getContrastColor(color);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(color);
+            snackbar.setActionTextColor(textColor);
+
+            TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+            tv.setTextColor(textColor);
+
+            snackbar.setAction(R.string.action_change, new LocationProviderSettingListener());
+            snackbar.show();
+        } else {
+            dismissSnackBar();
+        }
+    }
+
+    void dismissSnackBar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
+    }
+
+    public class LocationProviderSettingListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Intent viewIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(viewIntent);
+        }
+    }
 }
