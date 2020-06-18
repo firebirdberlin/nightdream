@@ -21,6 +21,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_snooze">Soneca</string>
     <string name="action_stop">Parar</string>
     <string name="activateDoNotDisturb">Ativar Não Perturbe</string>
+    <string name="activateDoNotDisturbAllowPriority">permitir prioridade</string>
     <string name="activateDoNotDisturbSummary">Ativar Não Perturbe enquanto o aplicativo estiver ativo</string>
     <string name="add_new_alarm">Adicionar novo alarme</string>
     <string name="add_custom_alarm_tone">Adicione um tom de alarme personalizado</string>
@@ -48,10 +49,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Horário de fim</string>
     <string name="autostart_timerange_label_start">Horário do início</string>
     <string name="background">Pano de fundo</string>
+    <string name="background_auto_accent_color">seleção automática de cor</string>
+    <string name="background_auto_accent_summary">Seleção automática da cor de destaque </string>
     <string name="background_black">Preto</string>
     <string name="background_gradient">Gradiente</string>
     <string name="background_image">Imagem</string>
     <string name="background_image_select">Selecione uma imagem</string>
+    <string name="background_slideshow">apresentação</string>
     <string name="backgroundServiceDialogTitle">Parar atividade em segundo plano</string>
     <string name="backgroundServiceDialogMessage">Parar atividade em segundo plano irá desabilitar o início automático e o modo em espera, bem como a previsão de bateria. Continuar mesmo assim?</string>
     <string name="backgroundServiceDialogMessageWidget">Não é possível parar o serviço em segundo plano enquanto um widget está ativo. Remova os widgets e tente novamente.</string>
@@ -199,6 +203,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferências</string>
     <string name="prev">Anterior</string>
     <string name="preview">Exemplo</string>
+<string name="product_description_weather">O upgrade inclui\n- linha de informação meteorológica mostrada abaixo do relógio\n- previsão meteorológica de 5 dias\n- mais estilos de relógio</string>
     <string name="product_name_actions">Pacote "Always On"</string>
     <string name="product_name_donation">Doação</string>
     <string name="product_name_pro">Versão Completa</string>
@@ -257,9 +262,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">Atenção! Nenhum carregador conectado!</string>
     <string name="show_date">Mostre a data</string>
     <string name="show_divider">Exibir divisor</string>
+    <string name="show_apparent_temperature">inclui temperatura aparente</string>
     <string name="show_temperature">Mostra a temperatura</string>
     <string name="show_weather">Mostra o clima local</string>
     <string name="show_wind_speed">Mostra a velocidade do vento</string>
+    <string name="slideshow_center_crop">cortar bordas</string>
+    <string name="slideshow_center_inside">adicionar bordas</string>
+    <string name="slideshow_center_animated">animado</string>
+    <string name="slideshow_style">Estilo</string>
     <string name="sleep_time_dialog_title">Despertador</string>
     <string name="snoozeTime">Tempo de soneca.</string>
     <string name="speedUnit">Unidade de velocidade do vento</string>
@@ -287,16 +297,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Robô magro</string>
     <string name="typeface">Tipo de letra</string>
     <string name="uninstall">Desinstalar aplicativo.</string>
+    <string name="upgrade_now">Upgrade agora!</string>
     <string name="useAlarmSwipeGesture">Definir alarme via toque</string>
     <string name="useAlarmSwipeGestureSummary">Permite definir um novo alarme com um toque no canto inferior esquerdo.</string>
     <string name="useDeviceLockDescription">O recurso de bloqueio de tela precisa da permissão de administrador do dispositivo. Para desinstalar o aplicativo, desative esse recurso.</string>
     <string name="useDeviceLockExplanation">Bloqueia o dispositivo enquanto o relógio noturno está ativo.</string>
     <string name="useDeviceLock">Trava o dispositivo</string>
-    <string name="weather_calculation_time">tempo de cálculo do clima</string>
-    <string name="weather_city_id_title">Pesquisar local</string>
-    <string name="weather_info_title">Informação</string>
     <string name="weather">Clima</string>
     <string name="weatherProvider">Provedor de meteorologia</string>
+    <string name="weather_calculation_time">tempo de cálculo do clima</string>
+    <string name="weather_city_id_title">Pesquisar local</string>
+    <string name="weather_current_location">Localização atual</string>
+    <string name="weather_info_title">Informação</string>
     <string name="weekdays">dias úteis</string>
     <string name="width">largura</string>
 </resources>

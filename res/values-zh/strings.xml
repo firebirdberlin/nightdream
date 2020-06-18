@@ -165,8 +165,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">螢幕鎖定功能需要裝置管理員權限，請先停用功能再解除安裝。</string>
     <string name="useDeviceLockExplanation">應用程式正在執行，請先取消所有權限再進行解除安裝。</string>
     <string name="useDeviceLock">鎖定裝置</string>
+    <string name="weather">天氣</string>
     <string name="weather_calculation_time">天氣計算時間</string>
     <string name="weather_city_id_title">搜尋地區</string>
     <string name="weather_info_title">資訊</string>
-    <string name="weather">天氣</string>
 </resources>
