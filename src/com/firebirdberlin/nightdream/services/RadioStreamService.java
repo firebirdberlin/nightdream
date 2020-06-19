@@ -77,6 +77,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
     private VibrationHandler vibrator = null;
+    long fadeInDelay = 150;
+    int maxVolumePercent = 100;
 
     private Runnable fadeIn = new Runnable() {
         @Override
@@ -84,7 +86,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             handler.removeCallbacks(fadeIn);
             if (mMediaPlayer == null) return;
             currentVolume += 0.01;
-            if (currentVolume < 1.) {
+            if ( currentVolume < maxVolumePercent / 100.) {
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
                 handler.postDelayed(fadeIn, 50);
             }
@@ -240,6 +242,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.d(TAG, "onStartCommand() called.");
         settings = new Settings(this);
         isRunning = true;
+
+        maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
+        fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
 
         String action = intent.getAction();
 

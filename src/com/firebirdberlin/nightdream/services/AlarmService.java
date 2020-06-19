@@ -44,6 +44,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private SimpleTime alarmTime = null;
     VibrationHandler vibrator = null;
     long startTime = 0;
+    long fadeInDelay = 150;
+    int maxVolumePercent = 100;
 
     @Override
     public void onCreate(){
@@ -110,10 +112,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             handler.removeCallbacks(fadeIn);
             if ( mMediaPlayer == null ) return;
             currentVolume += 0.01;
-            if ( currentVolume < 1. ) {
+            if ( currentVolume < maxVolumePercent / 100.) {
                 Log.i(TAG, String.format("fadeIn: currentVolume = %3.2f", currentVolume));
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
-                handler.postDelayed(fadeIn, 150);
+                handler.postDelayed(fadeIn, fadeInDelay);
             }
         }
     };
@@ -143,6 +145,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 settings = new Settings(this);
                 alarmTime = new SimpleTime(intent.getExtras());
                 setVolume(settings.alarmVolume);
+                maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
+                fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
+
                 AlarmPlay();
             }
         }
