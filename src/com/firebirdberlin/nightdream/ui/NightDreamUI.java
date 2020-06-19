@@ -1433,9 +1433,11 @@ public class NightDreamUI {
         install_time.setTimeInMillis(firstInstallTime);
 
         Calendar twenty_days_ago = Calendar.getInstance();
+        int hour = twenty_days_ago.get(Calendar.HOUR_OF_DAY);
+
         twenty_days_ago.add(Calendar.DATE, -20);
 
-        if (install_time.before(twenty_days_ago)) {
+        if (install_time.before(twenty_days_ago) && hour >= 18) {
             sendReviewRequest();
             settings.setLastReviewRequestTime(Calendar.getInstance().getTimeInMillis());
         }
