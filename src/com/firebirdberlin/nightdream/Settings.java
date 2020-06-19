@@ -125,6 +125,8 @@ public class Settings {
     public float scaleClockPortrait = -1.f;
     public float scaleClockLandscape = -1.f;
     public int alarmVolume = 3;
+    public int alarmVolumeReductionPercent = 0;
+    public int alarmFadeInDurationSeconds = 10;
     private int background_mode = 1;
     public int slideshowStyle = 1;
     public boolean background_mode_auto_color = true;
@@ -208,7 +210,9 @@ public class Settings {
         alwaysOnStartWithLockedUI = settings.getBoolean("alwaysOnStartWithLockedUI", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         alarmVolume = settings.getInt("alarmVolume", 3);
+        alarmVolumeReductionPercent = settings.getInt("alarmVolumeReductionPercent", 0);
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
+        alarmFadeInDurationSeconds = settings.getInt("alarmFadeInDurationSeconds", 10);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autostartForNotifications = settings.getBoolean("autostartForNotifications", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);

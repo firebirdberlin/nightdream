@@ -4,43 +4,77 @@
     app:key="alarms"
     app:title="@string/alarm">
 
-    <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
-        app:iconSpaceReserved="false"
-        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-        app:defaultValue="3"
-        app:key="alarmVolume"
-        app:title="@string/alarmVolume" />
+    <PreferenceCategory
+        app:title="@string/alarmVolume"
+        app:iconSpaceReserved="false">
 
-    <CheckBoxPreference
-        app:iconSpaceReserved="false"
-        app:defaultValue="true"
-        app:key="alarmFadeIn"
-        app:title="@string/alarmFadeIn" />
+        <com.firebirdberlin.nightdream.ui.AlarmVolumePreference
+            app:iconSpaceReserved="false"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+            app:defaultValue="3"
+            app:key="alarmVolume"
+            app:title="@string/alarmVolume" />
 
-    <de.firebirdberlin.preference.InlineSeekBarPreference
-        app:iconSpaceReserved="false"
-        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-        app:defaultValue="2"
-        app:key="autoSnoozeTimeInMinutes"
-        app:title="@string/snoozeAfter"
-        seekbar:interval="1"
-        seekbar:max="60"
-        seekbar:min="1"
-        seekbar:unitsLeft=""
-        seekbar:unitsRight="min"/>
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:defaultValue="0"
+            app:iconSpaceReserved="false"
+            app:key="alarmVolumeReductionPercent"
+            app:title="@string/alarmVolumeReductionPercent"
+            seekbar:interval="1"
+            seekbar:max="95"
+            seekbar:min="0"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="%"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
 
-    <de.firebirdberlin.preference.InlineSeekBarPreference
-        app:iconSpaceReserved="false"
-        xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-        app:defaultValue="5"
-        app:key="snoozeTimeInMinutes"
-        app:title="@string/snoozeTime"
-        seekbar:interval="1"
-        seekbar:max="60"
-        seekbar:min="5"
-        seekbar:unitsLeft=""
-        seekbar:unitsRight="min"/>
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="alarmFadeIn"
+            app:title="@string/alarmFadeIn" />
 
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:defaultValue="15"
+            app:iconSpaceReserved="false"
+            app:key="alarmFadeInDurationSeconds"
+            app:title="@string/alarmFadeInDurationSeconds"
+            app:dependency="alarmFadeIn"
+            seekbar:interval="5"
+            seekbar:max="300"
+            seekbar:min="10"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="s"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/action_snooze"
+        app:iconSpaceReserved="false">
+
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:iconSpaceReserved="false"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+            app:defaultValue="2"
+            app:key="autoSnoozeTimeInMinutes"
+            app:title="@string/snoozeAfter"
+            seekbar:interval="1"
+            seekbar:max="60"
+            seekbar:min="1"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="min"/>
+
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:iconSpaceReserved="false"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
+            app:defaultValue="5"
+            app:key="snoozeTimeInMinutes"
+            app:title="@string/snoozeTime"
+            seekbar:interval="1"
+            seekbar:max="60"
+            seekbar:min="5"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="min"/>
+    </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/behaviour"
         app:iconSpaceReserved="false">
