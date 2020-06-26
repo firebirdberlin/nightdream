@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
@@ -82,7 +84,14 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.showDate(showAdditionalLines && settings.showDate);
         clockLayout.setShowNotifications(false);
 
-        WeatherService.start(context, settings.weatherCityID);
+        if (settings.showWeather) {
+            if (settings.getWeatherAutoLocationEnabled()) {
+                Location location = Utility.getLastKnownLocation(context);
+                settings.setLocation(location);
+            }
+
+            DownloadWeatherService.start(context);
+        }
 
         // update weather date if not outdated
         if (settings.weatherEntry != null

@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -22,6 +24,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -48,6 +52,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityManagerCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.palette.graphics.Palette;
 
@@ -71,6 +76,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.POWER_SERVICE;
 
 public class Utility {
@@ -817,5 +823,32 @@ public class Utility {
         */
         return context.getResources().getConfiguration().orientation;
 
+    }
+
+    public static boolean hasPermission(Context context, String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return (ContextCompat.checkSelfPermission(context, permission)
+                    == PackageManager.PERMISSION_GRANTED);
+        }
+        return true;
+    }
+
+    @SuppressLint("MissingPermission")
+    public static Location getLastKnownLocation(Context context) {
+        if (!hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            return null;
+        }
+
+        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        if (locationManager != null) {
+            List<String> providers = locationManager.getProviders(true);
+            for (String provider : providers) {
+                if (LocationManager.GPS_PROVIDER.equals(provider)) {
+                    continue;
+                }
+                return locationManager.getLastKnownLocation(provider);
+            }
+        }
+        return null;
     }
 }

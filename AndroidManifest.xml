@@ -99,9 +99,6 @@
             android:exported="true"
             android:enabled="true" />
         <service
-            android:name=".services.LocationService"
-            android:enabled="true" />
-        <service
             android:name=".services.RadioStreamService"
             android:enabled="true" />
         <service

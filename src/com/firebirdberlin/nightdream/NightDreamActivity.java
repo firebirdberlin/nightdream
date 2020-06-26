@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
@@ -13,6 +15,9 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.hardware.Sensor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -148,6 +153,38 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     };
 
+    private LocationManager locationManager = null;
+    private final LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onLocationChanged(final Location location) {
+            City city = new City();
+            city.lat = location.getLatitude();
+            city.lon = location.getLongitude();
+            city.name = "current";
+            Log.i(TAG, "current location: " + city.toString());
+            if (mySettings != null) {
+                mySettings.setLocation(location);
+            }
+            onLocationUpdated();
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
     static public void start(Context context) {
         NightDreamActivity.start(context,  null);
     }
@@ -241,8 +278,10 @@ public class NightDreamActivity extends BillingHelperActivity
         this.isChargingWireless = batteryValue.isChargingWireless;
 
         Utility.createNotificationChannels(this);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
         super.onResume();
@@ -325,6 +364,14 @@ public class NightDreamActivity extends BillingHelperActivity
                 }
             }
         });
+
+        if (mySettings.getWeatherAutoLocationEnabled()
+                && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            getLastKnownLocation();
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
+            );
+        }
     }
 
     private void setExcludeFromRecents() {
@@ -415,6 +462,9 @@ public class NightDreamActivity extends BillingHelperActivity
             startBackgroundListener();
         } else {
             nightDreamUI.restoreRingerMode();
+        }
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
         }
         isRunning = false;
     }
@@ -861,6 +911,14 @@ public class NightDreamActivity extends BillingHelperActivity
                 BatteryStats stats = new BatteryStats(context);
                 isChargingWireless = stats.reference.isChargingWireless;
             }
+        }
+    }
+
+    private void getLastKnownLocation() {
+        Location location = Utility.getLastKnownLocation(this);
+        if (location != null) {
+            mySettings.setLocation(location);
+            onLocationUpdated();
         }
     }
 }

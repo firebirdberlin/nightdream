@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -24,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -74,12 +72,12 @@ public class WeatherForecastActivity
     private Settings settings;
     private boolean locationAccessGranted = false;
     private boolean autoLocationEnabled = false;
-    private LocationManager locationManager = null;
     private ArrayList<City> cities = null;
     private City selectedCity = null;
     private int fadeDuration = 2000;
     private Snackbar snackbar;
 
+    private LocationManager locationManager = null;
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
