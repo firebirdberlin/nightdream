@@ -11,13 +11,8 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 public class WeatherService {
     private static String TAG = "WeatherService";
 
-    public static void start(Context context, String cityID) {
-        Log.d(TAG, "start(" + cityID + ")");
-
+    public static void start(Context context) {
         DownloadWeatherService.start(context);
-        if (cityID.isEmpty()) {
-            LocationService.start(context);
-        }
     }
 
     public static boolean shallUpdateWeatherData(Context context, Settings settings) {

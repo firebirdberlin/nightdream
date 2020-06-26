@@ -832,24 +832,6 @@ public class Settings {
         prefEditor.apply();
     }
 
-    City getValidCity() {
-        City city = getCityForWeather();
-
-        if (city != null) {
-            return city;
-        }
-
-        if (this.weatherEntry != null) {
-            City c = new City();
-            c.id = this.weatherEntry.cityID;
-            c.name = this.weatherEntry.cityName;
-            c.lat = this.weatherEntry.lat;
-            c.lon = this.weatherEntry.lon;
-            return c;
-        }
-        return null;
-    }
-
     public City getCityForWeather() {
         String json = settings.getString("weatherCityID_json", "");
         return City.fromJson(json);
@@ -869,7 +851,7 @@ public class Settings {
         edit.apply();
     }
 
-    boolean getWeatherAutoLocationEnabled() {
+    public boolean getWeatherAutoLocationEnabled() {
         return settings.getBoolean("weatherAutoLocationEnabled", false);
     }
 

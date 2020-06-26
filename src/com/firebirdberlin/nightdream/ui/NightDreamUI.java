@@ -55,7 +55,7 @@ import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.WeatherService;
+import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -499,11 +499,10 @@ public class NightDreamUI {
     private void updateWeatherData() {
         if (! settings.showWeather ) return;
 
-        WeatherEntry entry = settings.weatherEntry;
-
-        WeatherService.start(mContext, settings.weatherCityID);
+        DownloadWeatherService.start(mContext);
 
         // handle outdated weather data
+        WeatherEntry entry = settings.weatherEntry;
         long diff = entry.ageMillis();
         if (entry.timestamp == -1L || diff > 8 * 60 * 60 * 1000) {
             clockLayout.clearWeather();
