@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:alignItems="flex_end"
+        app:flexDirection="row"
+        app:flexWrap="nowrap"
+        app:justifyContent="space_between"
+        app:showDivider="middle">
+
+        <com.firebirdberlin.nightdream.ui.WeatherLayout xmlns:weather="weather"
+            android:id="@+id/weatherLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:layout_flexBasisPercent="15%"
+            weather:content="icon|temperature"
+            weather:orientation="vertical" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:alignContent="center"
+            app:alignItems="center"
+            app:flexDirection="column"
+            app:flexWrap="nowrap"
+            app:justifyContent="flex_end">
+            <!--
+                    time
+            -->
+            <LinearLayout
+                android:id="@+id/time_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:padding="0px">
+
+                <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:ellipsize="none"
+                    android:focusable="true"
+                    android:padding="0px"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#C2C2C2"
+                    android:textSize="20sp"
+                    android:translationX="0sp"
+                    android:translationY="0sp"
+                    custom:fontPath="fonts/roboto_thin.ttf"
+                    custom:format12Hr="h:mm"
+                    custom:format24Hr="HH:mm" />
+
+                <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/clock_ampm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:ellipsize="none"
+                    android:focusable="true"
+                    android:padding="0px"
+                    android:singleLine="true"
+                    android:textColor="#C2C2C2"
+                    android:textSize="20sp"
+                    custom:fontPath="fonts/roboto_thin.ttf"
+                    custom:format12Hr="a"
+                    custom:format24Hr="" />
+            </LinearLayout>
+
+            <!--
+                divider
+            -->
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#C2C2C2" />
+            <!--
+                Date
+            -->
+            <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="none"
+                android:paddingTop="5dp"
+                android:singleLine="true"
+                android:text="Sun, 30. October 2016"
+                android:textColor="#C2C2C2"
+                android:textStyle="bold"
+                android:visibility="gone"
+                custom:capitalize="true"
+                custom:fontPath="fonts/roboto_light.ttf"
+                custom:format12Hr="dd. MMMM yyyy"
+                custom:format24Hr="dd. MMMM yyyy" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.firebirdberlin.nightdream.ui.WeatherLayout xmlns:weather="weather"
+            android:id="@+id/weatherLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            app:layout_flexBasisPercent="15%"
+            weather:content="wind"
+            weather:orientation="vertical" />
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <!--
+        Notifications
+    -->
+    <include
+        layout="@layout/notification_bar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>
