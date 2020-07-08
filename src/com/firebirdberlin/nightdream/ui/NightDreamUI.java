@@ -104,22 +104,25 @@ public class NightDreamUI {
     private long lastAnimationTime = 0L;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            float s = clockLayout.getAbsScaleFactor();
-            Configuration config = getConfiguration();
-            settings.setScaleClock(s, config.orientation);
-        }
-
-        @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
+            Log.d(TAG, "onScaleBegin");
             return true;
         }
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
+            Log.d(TAG, "onScale");
             float s = detector.getScaleFactor();
             applyScaleFactor(s);
             return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            Log.d(TAG, "onScaleEnd");
+            float s = clockLayout.getAbsScaleFactor();
+            Configuration config = getConfiguration();
+            settings.setScaleClock(s, config.orientation);
         }
     };
     private SoundMeter soundmeter;
@@ -245,6 +248,7 @@ public class NightDreamUI {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
+            Log.d(TAG, "onFling");
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) return false;
 
@@ -289,11 +293,11 @@ public class NightDreamUI {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "onScroll");
             if (
                     clockLayoutContainer == null || mContext == null || settings == null
                             || brightnessProgress == null
             ) return false;
-
             if (brightnessProgress.getVisibility() == View.VISIBLE) {
                 clockLayoutContainer.getLocationOnScreen(rect);
                 if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
@@ -1415,6 +1419,7 @@ public class NightDreamUI {
 
             return true;
         }
+        Log.d(TAG, "onTouch");
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
         if (mScaleDetector != null) {
             mScaleDetector.onTouchEvent(e);

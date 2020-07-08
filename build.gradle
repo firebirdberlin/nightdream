@@ -25,10 +25,10 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.preference:preference:1.1.1'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android:flexbox:1.1.1'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'com.android.billingclient:billing:2.2.1'
+    implementation 'com.android.billingclient:billing:3.0.0'
 
     // implementation 'uk.co.samuelwall:material-tap-target-prompt:3.0.0'
     // implementation project(':externals:ShowcaseView:library')
@@ -91,6 +91,9 @@ android {
             proguardFile '/home/stefan/android/projects/nightdream/proguard-project.txt'
             minifyEnabled true
             shrinkResources true
+        }
+        debug {
+            proguardFiles 'proguard-project.txt'
         }
     }
 

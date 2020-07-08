@@ -90,16 +90,6 @@
     <!--
         divider
     -->
-<!--
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:background="#C2C2C2" />
--->
-
     <com.firebirdberlin.nightdream.ui.WeatherLayout
         android:id="@+id/weatherLayout"
         android:layout_width="wrap_content"
