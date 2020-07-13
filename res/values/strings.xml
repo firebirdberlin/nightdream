@@ -90,6 +90,7 @@ OR
     <string name="clock_layout_analog">analog clock</string>
     <string name="clock_layout_calendar">digital clock with calendar</string>
     <string name="clock_layout_digital">digital clock</string>
+    <string name="clock_layout_digital2">digital clock with large weather icons</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_digit_analog">analog clock with digits</string>
     <string name="clock_layout_digital_flip">digital flip clock</string>
@@ -122,6 +123,7 @@ OR
     <string name="decoration_style_minute_hand">Minute hand</string>
     <string name="decoration_style_labels">Numbers</string>
     <string name="decoration_style_rust">Rust</string>
+    <string name="decoration_weather_icon_size">Weather icon size</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>

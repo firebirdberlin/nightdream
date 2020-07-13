@@ -27,13 +27,15 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
     private Settings settings = null;
     private boolean isPurchased = false;
     AppCompatActivity activity = null;
+    private int layoutId = ClockLayout.LAYOUT_ID_DIGITAL;
 
     public CustomDigitalClockPreferencesLayout(
-            Context context, Settings settings, AppCompatActivity activity
+            Context context, Settings settings, AppCompatActivity activity, int layoutId
     ) {
         super(context);
         this.settings = settings;
         this.activity = activity;
+        this.layoutId = layoutId;
         init(context);
     }
 
@@ -44,26 +46,31 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
 
     private void init(final Context context) {
 
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.custom_digital_clock_preferences_layout, null);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        int resId = layoutId == ClockLayout.LAYOUT_ID_DIGITAL
+                ? R.layout.custom_digital_clock_preferences_layout
+                : R.layout.custom_digital_clock_preferences_layout2;
+        View child = inflater.inflate(resId, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
 
-        Switch switchShowDivider = child.findViewById(R.id.switch_show_divider);
-        switchShowDivider.setChecked(settings.showDivider);
-        switchShowDivider.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                settings.setShowDivider(isChecked);
-                if (mListener != null) {
-                    mListener.onConfigChanged();
+        if (layoutId == ClockLayout.LAYOUT_ID_DIGITAL) {
+            Switch switchShowDivider = child.findViewById(R.id.switch_show_divider);
+            switchShowDivider.setChecked(settings.getShowDivider(layoutId));
+            switchShowDivider.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    settings.setShowDivider(isChecked, layoutId);
+                    if (mListener != null) {
+                        mListener.onConfigChanged();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         SeekBar glowRadius = child.findViewById(R.id.glowRadius);
-        glowRadius.setProgress(settings.getGlowRadius(ClockLayout.LAYOUT_ID_DIGITAL));
+        glowRadius.setProgress(settings.getGlowRadius(layoutId));
         glowRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -75,16 +82,40 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                settings.setGlowRadius(progress, ClockLayout.LAYOUT_ID_DIGITAL);
+                settings.setGlowRadius(progress, layoutId);
                 if (mListener != null) {
                     mListener.onConfigChanged();
                 }
             }
         });
+
+
+        if (layoutId == ClockLayout.LAYOUT_ID_DIGITAL2) {
+            SeekBar iconSizeFactorSeekbar = child.findViewById(R.id.weatherIconSizeFactor);
+            iconSizeFactorSeekbar.setProgress(settings.getWeatherIconSizeFactor(layoutId) - 1);
+            iconSizeFactorSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    int progress = seekBar.getProgress();
+                    settings.setWeatherIconSizeFactor(progress + 1, layoutId);
+                    if (mListener != null) {
+                        mListener.onConfigChanged();
+                    }
+                }
+            });
+        }
+
         TextView fontButton = child.findViewById(R.id.typeface_preference);
         String fontButtonText = fontButton.getText().toString();
         fontButtonText = String.format(
-                "%s: %s", fontButtonText, settings.getFontName(ClockLayout.LAYOUT_ID_DIGITAL)
+                "%s: %s", fontButtonText, settings.getFontName(layoutId)
         );
         fontButton.setText(fontButtonText);
         fontButton.setOnClickListener(new OnClickListener() {
@@ -97,7 +128,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 FragmentManager fm = activity.getSupportFragmentManager();
                 ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
                 dialog.setIsPurchased(isPurchased);
-                dialog.setSelectedUri(settings.getFontUri(ClockLayout.LAYOUT_ID_DIGITAL));
+                dialog.setSelectedUri(settings.getFontUri(layoutId));
                 dialog.setDefaultFonts(
                         "roboto_regular.ttf", "roboto_light.ttf",
                         "roboto_thin.ttf", "7_segment_digital.ttf", "dseg14classic.ttf",
@@ -106,7 +137,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
                     @Override
                     public void onFontSelected(Uri uri, String name) {
-                        settings.setFontUri(uri.toString(), name, ClockLayout.LAYOUT_ID_DIGITAL);
+                        settings.setFontUri(uri.toString(), name, layoutId);
                         if (mListener != null) {
                             mListener.onConfigChanged();
                         }
@@ -130,7 +161,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         decorationStylePreference.setText(
                 String.format("%s: %s",
                         title,
-                        textures[settings.getTextureId(ClockLayout.LAYOUT_ID_DIGITAL)]
+                        textures[settings.getTextureId(layoutId)]
                 )
         );
         decorationStylePreference.setOnClickListener(new OnClickListener() {
@@ -140,7 +171,7 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 builder.setTitle(R.string.style)
                         .setItems(R.array.textures, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                settings.setTextureId(which, ClockLayout.LAYOUT_ID_DIGITAL);
+                                settings.setTextureId(which, layoutId);
                                 if (mListener != null) {
                                     mListener.onConfigChanged();
                                 }

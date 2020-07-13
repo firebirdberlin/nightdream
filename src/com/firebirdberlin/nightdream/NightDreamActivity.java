@@ -158,6 +158,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         @Override
         public void onLocationChanged(final Location location) {
+            if (location == null) return;
             City city = new City();
             city.lat = location.getLatitude();
             city.lon = location.getLongitude();

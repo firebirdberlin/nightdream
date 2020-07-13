@@ -72,7 +72,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
 
-
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(clockLayoutId);
         clockLayout.setTypeface(settings.typeface);
@@ -80,9 +79,10 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
-        clockLayout.setShowDivider(settings.showDivider);
+        clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
         clockLayout.showDate(showAdditionalLines && settings.showDate);
         clockLayout.setShowNotifications(false);
+        clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
         if (settings.showWeather) {
             if (settings.getWeatherAutoLocationEnabled()) {

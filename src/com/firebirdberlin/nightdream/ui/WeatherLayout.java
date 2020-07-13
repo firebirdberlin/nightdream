@@ -1,10 +1,8 @@
 package com.firebirdberlin.nightdream.ui;
 
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,7 @@ import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
-
-    private static final String TAG = "NightDream.WeatherLayout";
+    private static final String TAG = "WeatherLayout";
     private Context context;
     private static String NAMESPACE = "weather";
     private DirectionIconView iconWindDirection = null;
@@ -35,6 +32,12 @@ public class WeatherLayout extends LinearLayout {
     private int maxWidth = -1;
     private int minFontSizePx = -1;
     private int maxFontSizePx = -1;
+
+    public void setIconSizeFactor(int iconSizeFactor) {
+        this.iconSizeFactor = iconSizeFactor;
+    }
+
+    private int iconSizeFactor = 1;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private boolean isVertical = false;
@@ -56,7 +59,6 @@ public class WeatherLayout extends LinearLayout {
         showWindSpeed = content.contains("wind");
         showTemperature = content.contains("temperature");
         isVertical = "vertical".equals(orientation);
-        Log.i("WeatherLayout", content + "showIcon: " + showIcon);
         init();
     }
 
@@ -165,9 +167,6 @@ public class WeatherLayout extends LinearLayout {
         this.weatherEntry = entry;
         if (iconText == null || temperatureText == null) return;
         long age = entry.ageMillis();
-        Log.d("WeatherLayout", entry.toString());
-        Log.d("WeatherLayout", entry.formatTemperatureText(temperatureUnit));
-        Log.d("WeatherLayout", String.valueOf(entry.ageMillis()));
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
 
             iconText.setText(iconToText(entry.weatherIcon));
@@ -184,8 +183,8 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTextSize(int unit, int size) {
-        iconText.setTextSize(unit, isVertical ? 3 * size : size);
-        iconWind.setTextSize(unit, isVertical ? 3 * size : size);
+        iconText.setTextSize(unit, isVertical ? (iconSizeFactor * size) : size);
+        iconWind.setTextSize(unit, isVertical ? this.iconSizeFactor * size : size);
         windText.setTextSize(unit, size);
         temperatureText.setTextSize(unit, size);
         invalidate();
@@ -244,15 +243,6 @@ public class WeatherLayout extends LinearLayout {
 
     private void adjustTextSize() {
         if (maxWidth == -1) return;
-        /*setTextSize(TypedValue.COMPLEX_UNIT_PX, maxFontSizePx);
-        int actualSize = measureText();
-        if ( actualSize > maxWidth ) {
-            float scale = maxWidth / (float) actualSize;
-            setScaleX(scale);
-            setScaleY(scale);
-        }
-
-         */
         if (maxFontSizePx == -1 || minFontSizePx == -1) return;
         for (int size = minFontSizePx; size <= maxFontSizePx; size++) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size);

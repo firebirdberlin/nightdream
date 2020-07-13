@@ -104,7 +104,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         resetButton.setVisibility(showResetButton(settings) ? View.VISIBLE : View.GONE);
         updateClockLayout(clockLayoutId, settings);
         setupPreferencesFragment(clockLayoutId, settings);
-        setupResetButton(clockLayoutId, settings);
+        setupResetButton(clockLayoutId);
     }
 
     private void updateClockLayout(int clockLayoutId, Settings settings) {
@@ -119,10 +119,11 @@ public class ClockLayoutPreviewPreference extends Preference {
 
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
-        clockLayout.setShowDivider(settings.showDivider);
+        clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.setScaleFactor(1.f);
         clockLayout.showDate(settings.showDate);
+        clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
         clockLayout.setTemperature(settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
@@ -146,9 +147,9 @@ public class ClockLayoutPreviewPreference extends Preference {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setupPreferencesFragment(final int clockLayoutID, final Settings settings) {
         preferencesContainer.removeAllViews();
-        if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL) {
+        if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL || clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL2) {
             CustomDigitalClockPreferencesLayout prefs =
-                    new CustomDigitalClockPreferencesLayout(context, settings, getActivity());
+                    new CustomDigitalClockPreferencesLayout(context, settings, getActivity(), clockLayoutID);
             prefs.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
             prefs.setOnConfigChangedListener(
                     new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
@@ -215,7 +216,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         }
     }
 
-    private void setupResetButton(final int clockLayoutID, final Settings settings) {
+    private void setupResetButton(final int clockLayoutID) {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -294,6 +295,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         return (
                 layoutID != ClockLayout.LAYOUT_ID_ANALOG
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL
+                        && layoutID != ClockLayout.LAYOUT_ID_DIGITAL2
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_FLIP
                         && layoutID != ClockLayout.LAYOUT_ID_CALENDAR
         );
