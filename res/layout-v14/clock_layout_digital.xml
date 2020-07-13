@@ -12,8 +12,7 @@
         app:alignItems="flex_end"
         app:flexDirection="row"
         app:flexWrap="nowrap"
-        app:justifyContent="space_between"
-        app:showDivider="middle">
+        app:justifyContent="space_between">
 
         <com.firebirdberlin.nightdream.ui.WeatherLayout xmlns:weather="weather"
             android:id="@+id/weatherLayout"
@@ -21,9 +20,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
+            android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp"
             app:layout_flexBasisPercent="15%"
             weather:content="icon|temperature"
-            weather:orientation="vertical" />
+            weather:orientation="vertical"
+            />
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
@@ -81,14 +83,6 @@
             </LinearLayout>
 
             <!--
-                divider
-            -->
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="#C2C2C2" />
-            <!--
                 Date
             -->
             <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -115,8 +109,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"
             android:visibility="gone"
             app:layout_flexBasisPercent="15%"
             weather:content="wind"

@@ -58,6 +58,8 @@ public class ClockLayout extends LinearLayout {
     private boolean showDivider = true;
     private boolean mirrorText = false;
     private boolean showNotifications = true;
+    private int weatherIconSizeFactor = 3;
+
 
     public ClockLayout(Context context) {
         super(context);
@@ -128,6 +130,10 @@ public class ClockLayout extends LinearLayout {
             calendarView.setRightArrowMask(null);
             calendarView.setDynamicHeightEnabled(true);
         }
+    }
+
+    public void setWeatherIconSizeFactor(int weatherIconSizeFactor) {
+        this.weatherIconSizeFactor = weatherIconSizeFactor;
     }
 
     public void setTypeface(Typeface typeface) {
@@ -374,14 +380,13 @@ public class ClockLayout extends LinearLayout {
     void updateDigitalClock(final Configuration config, int parentWidth) {
         final float minFontSize = 8.f; // in sp
         float widthFactorClock;
-        float maxFontSizeClock;
+        float maxFontSizeClock = 100.f;
         float widthFactor;
         float maxFontSize;
 
         switch (config.orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 widthFactorClock = 0.3f;
-                maxFontSizeClock = 300.f;
 
                 widthFactor = 0.5f;
                 maxFontSize = 20.f;
@@ -389,7 +394,6 @@ public class ClockLayout extends LinearLayout {
             case Configuration.ORIENTATION_PORTRAIT:
             default:
                 widthFactorClock = 0.6f;
-                maxFontSizeClock = 300.f;
 
                 widthFactor = 0.8f;
                 maxFontSize = 25.f;
@@ -413,7 +417,7 @@ public class ClockLayout extends LinearLayout {
     void updateDigitalClock2(final Configuration config, int parentWidth) {
         final float minFontSize = 12.f; // in sp
         float widthFactorClock = 0.40f;
-        float maxFontSizeClock = 200.f;
+        float maxFontSizeClock = 100.f;
         float widthFactor = 0.20f;
         float maxFontSize = 20.f;
 
@@ -429,6 +433,7 @@ public class ClockLayout extends LinearLayout {
         if (weatherLayout != null) {
             weatherLayout.setMaxWidth((int) (widthFactor * parentWidth));
             //weatherLayout.setMaxFontSizesInSp(minFontSize, maxFontSize);
+            weatherLayout.setIconSizeFactor(weatherIconSizeFactor);
             weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
             weatherLayout.update();
             iconHeight = weatherLayout.getIconHeight();
@@ -436,6 +441,7 @@ public class ClockLayout extends LinearLayout {
         if (weatherLayout2 != null) {
             weatherLayout2.setMaxWidth((int) (widthFactor * parentWidth));
             weatherLayout2.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+            weatherLayout2.setIconSizeFactor(weatherIconSizeFactor);
             weatherLayout2.setIconHeight(iconHeight);
             //weatherLayout2.setMaxFontSizesInSp(minFontSize, maxFontSize);
             weatherLayout2.update();

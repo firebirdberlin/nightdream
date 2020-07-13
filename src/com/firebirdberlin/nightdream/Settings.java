@@ -96,7 +96,6 @@ public class Settings {
     public boolean restless_mode = true;
     boolean showBatteryWarning = true;
     public boolean showDate = true;
-    public boolean showDivider = false;
     public boolean showWeather = false;
     public boolean showApparentTemperature = false;
     public boolean showTemperature = true;
@@ -275,7 +274,6 @@ public class Settings {
         sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
-        showDivider = settings.getBoolean("showDivider", false);
         showWeather = settings.getBoolean("showWeather", false);
         showApparentTemperature = settings.getBoolean("showApparentTemperature", false);
         showTemperature = settings.getBoolean("showTemperature", true);
@@ -394,13 +392,6 @@ public class Settings {
         return false;
     }
 
-    public void setShowDivider(boolean on) {
-        showDivider = on;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putBoolean("showDivider", on);
-        prefEditor.apply();
-    }
-
     public void setTextureId(int textureId, int clockLayoutId) {
         SharedPreferences.Editor prefEditor = settings.edit();
         String key = getKeyForClockLayout("textureId", clockLayoutId);
@@ -438,6 +429,30 @@ public class Settings {
     public int getGlowRadius(int clockLayoutId) {
         String key = getKeyForClockLayout("glowRadius", clockLayoutId);
         return settings.getInt(key, 0);
+    }
+
+    public void setWeatherIconSizeFactor(int radius, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("weatherIconSizeFactor", clockLayoutId);
+        prefEditor.putInt(key, radius);
+        prefEditor.apply();
+    }
+
+    public int getWeatherIconSizeFactor(int clockLayoutId) {
+        String key = getKeyForClockLayout("weatherIconSizeFactor", clockLayoutId);
+        return settings.getInt(key, 4);
+    }
+
+    public void setShowDivider(boolean showDivider, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("showDivider", clockLayoutId);
+        prefEditor.putBoolean(key, showDivider);
+        prefEditor.apply();
+    }
+
+    public boolean getShowDivider(int clockLayoutId) {
+        String key = getKeyForClockLayout("showDivider", clockLayoutId);
+        return settings.getBoolean(key, false);
     }
 
     public int getClockLayoutID(boolean preview) {
@@ -820,6 +835,7 @@ public class Settings {
     }
 
     public void setLocation(Location location) {
+        if (location == null) return;
         location_lon = (float) location.getLongitude();
         location_lat = (float) location.getLatitude();
         location_time = location.getTime();
@@ -834,6 +850,7 @@ public class Settings {
 
     public City getCityForWeather() {
         String json = settings.getString("weatherCityID_json", "");
+        if (json.isEmpty()) return null;
         return City.fromJson(json);
     }
 

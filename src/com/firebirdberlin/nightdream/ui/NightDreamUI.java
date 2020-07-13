@@ -518,8 +518,8 @@ public class NightDreamUI {
         if ( !settings.restless_mode ) {
             centerClockLayout();
         }
-
-        clockLayout.setLayout(settings.getClockLayoutID(false));
+        int layoutId = settings.getClockLayoutID(false);
+        clockLayout.setLayout(layoutId);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
         clockLayout.setTypeface(settings.typeface);
@@ -528,10 +528,11 @@ public class NightDreamUI {
         );
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
 
-        clockLayout.setShowDivider(settings.showDivider);
+        clockLayout.setShowDivider(settings.getShowDivider(layoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
+        clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
         clockLayout.update(settings.weatherEntry);
