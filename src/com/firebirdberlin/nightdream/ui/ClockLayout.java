@@ -299,11 +299,6 @@ public class ClockLayout extends LinearLayout {
         }
 
         final float minFontSize = 8.f; // in sp
-
-        if (clock != null && !displayInWidget) {
-            clock.setSampleText("22:55");
-        }
-
         if (layoutId == LAYOUT_ID_DIGITAL) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             if (displayInWidget) {
@@ -416,9 +411,9 @@ public class ClockLayout extends LinearLayout {
 
     void updateDigitalClock2(final Configuration config, int parentWidth) {
         final float minFontSize = 12.f; // in sp
-        float widthFactorClock = 0.40f;
+        float widthFactorClock = 0.25f;
         float maxFontSizeClock = 100.f;
-        float widthFactor = 0.20f;
+        float widthFactor = 0.15f;
         float maxFontSize = 20.f;
 
         if (clock != null) {
