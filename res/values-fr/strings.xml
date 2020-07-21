@@ -271,9 +271,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Le verrouillage de l\'écran nécessite les droits administrateur. Désactiver cette fonctionnalité pour désinstaller l\'application</string>
     <string name="useDeviceLockExplanation">Verrouille l\'appareil quand l\'applicaiton est active. Révoquer cette permission pour désinstaller l\'application</string>
     <string name="useDeviceLock">Verrouiller l\'appareil</string>
+    <string name="weather">Météo</string>
     <string name="weather_calculation_time">Prévisions récupérées le:</string>
     <string name="weather_city_id_title">ID de la ville</string>
     <string name="weather_info_title">Information</string>
-    <string name="weather">Météo</string>
     <string name="width">Largeur</string>
 </resources>
