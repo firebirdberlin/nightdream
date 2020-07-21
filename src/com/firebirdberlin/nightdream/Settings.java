@@ -455,6 +455,18 @@ public class Settings {
         return settings.getBoolean(key, false);
     }
 
+    public void setShowSeconds(boolean showSeconds, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("showSeconds", clockLayoutId);
+        prefEditor.putBoolean(key, showSeconds);
+        prefEditor.apply();
+    }
+
+    public boolean getShowSeconds(int clockLayoutId) {
+        String key = getKeyForClockLayout("showSeconds", clockLayoutId);
+        return settings.getBoolean(key, false);
+    }
+
     public int getClockLayoutID(boolean preview) {
         if (preview) {
             return clockLayout;
@@ -479,6 +491,14 @@ public class Settings {
     }
 
     public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public String getTimeFormat(int layoutId) {
+        String timeFormat = getTimeFormat();
+        if (getShowSeconds(layoutId)) {
+            return timeFormat.replace(":mm", ":mm:ss");
+        }
         return timeFormat;
     }
 

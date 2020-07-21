@@ -118,7 +118,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
         clockLayout.setDateFormat(settings.dateFormat);
-        clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
+        clockLayout.setTimeFormat(settings.getTimeFormat(clockLayoutId), settings.is24HourFormat());
         clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.setScaleFactor(1.f);

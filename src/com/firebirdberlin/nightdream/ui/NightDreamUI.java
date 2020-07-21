@@ -248,7 +248,6 @@ public class NightDreamUI {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
-            Log.d(TAG, "onFling");
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) return false;
 
@@ -521,7 +520,9 @@ public class NightDreamUI {
         int layoutId = settings.getClockLayoutID(false);
         clockLayout.setLayout(layoutId);
         clockLayout.setDateFormat(settings.dateFormat);
-        clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
+
+        String timeFormat = settings.getTimeFormat(layoutId);
+        clockLayout.setTimeFormat(timeFormat, settings.is24HourFormat());
         clockLayout.setTypeface(settings.typeface);
         clockLayout.setTemperature(
                 settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit
@@ -990,6 +991,7 @@ public class NightDreamUI {
                     clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
                     centerClockLayout();
                     float s = getScaleFactor(newConfig);
+                    //applyScaleFactor(s);
                     clockLayout.setScaleFactor(s);
 
                     handler.postDelayed(moveAround, 60000);
@@ -1336,10 +1338,6 @@ public class NightDreamUI {
         final float distanceX = containerWidth - newClockWidth - Math.abs(clockLayout.getTranslationX()) * 2f;
         final float distanceY = containerHeight - newClockHeight - Math.abs(clockLayout.getTranslationY()) * 2f;
 
-        /*
-        Log.d(TAG, String.format("translx=%f  distanceX= %f", clockLayout.getTranslationX(), distanceX));
-        Log.d(TAG, String.format("transly=%f  distanceY= %f", clockLayout.getTranslationY(), distanceY));
-        */
 
         if (distanceX < 0 || distanceY < 0) {
 
@@ -1420,7 +1418,6 @@ public class NightDreamUI {
 
             return true;
         }
-        Log.d(TAG, "onTouch");
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
         if (mScaleDetector != null) {
             mScaleDetector.onTouchEvent(e);

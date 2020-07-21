@@ -76,5 +76,17 @@
         android:textSize="18sp"
         tools:checked="false" />
 
+    <Switch
+        android:id="@+id/switch_show_seconds"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:checked="false"
+        android:minWidth="200dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="@string/show_seconds"
+        android:textSize="18sp"
+        tools:checked="false" />
 
 </LinearLayout>
