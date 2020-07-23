@@ -49,3 +49,8 @@ screenshot:
 
 test:
 	./gradlew test
+
+strings:
+	rm -rf tmp-strings
+	mkdir tmp-strings
+	rsync -av  res/ tmp-strings/ --prune-empty-dirs --include="*/" --include="strings.xml" --exclude="*"
