@@ -223,11 +223,13 @@ public abstract class BillingHelperActivity
     }
 
     public void launchBillingFlow(String sku) {
-        SkuDetails skuDetails = getSkuDetails(sku);
-        BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-                .setSkuDetails(skuDetails)
-                .build();
-        mBillingClient.launchBillingFlow(this, flowParams);
+        SkuDetails details = getSkuDetails(sku);
+        if (details != null) {
+            BillingFlowParams flowParams = BillingFlowParams.newBuilder()
+                    .setSkuDetails(details)
+                    .build();
+            mBillingClient.launchBillingFlow(this, flowParams);
+        }
     }
 
     protected void onPurchasesInitialized() {
