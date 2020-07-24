@@ -7,10 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
-import android.os.Build;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -32,7 +33,13 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     private boolean capitalize = false;
     private SimpleDateFormat simpleDateFormat;
     private FormatChangeObserver mFormatChangeObserver;
-
+    private Handler handler;
+    private Runnable update = new Runnable() {
+        @Override
+        public void run() {
+            updateTextView();
+        }
+    };
 
     public CustomDigitalClock(Context context) {
         super(context);
@@ -82,7 +89,17 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         String text = simpleDateFormat.format(mCalendar.getTime());
         if (text != getText() ) {
             setText(text);
-            invalidate();
+            //invalidate();
+        }
+
+        if (mFormat.contains(":ss")) {
+            if (handler == null) {
+                handler = new Handler();
+            }
+            handler.removeCallbacks(update);
+            long now = System.currentTimeMillis();
+            long delta = 1000 - now / 1000 * 1000;
+            handler.postDelayed(update, delta);
         }
     }
 
@@ -112,6 +129,9 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             ContentResolver cr = getContext().getContentResolver();
             cr.unregisterContentObserver(mFormatChangeObserver);
         }
+        if (handler != null) {
+            handler.removeCallbacks(update);
+        }
     }
 
     void setTimeTick() {
@@ -136,6 +156,16 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             mFormat = m12;
         }
         simpleDateFormat = new SimpleDateFormat(mFormat);
+        setSampleTime();
+    }
+
+    void setSampleTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 22);
+        cal.set(Calendar.MINUTE, 55);
+        cal.set(Calendar.SECOND, 55);
+        String text = simpleDateFormat.format(cal.getTime());
+        setSampleText(text);
     }
 
     public void setCustomFormat(String format) {

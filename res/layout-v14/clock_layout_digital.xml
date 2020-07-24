@@ -76,7 +76,7 @@
                     android:padding="0px"
                     android:singleLine="true"
                     android:textColor="#C2C2C2"
-                    android:textSize="20sp"
+                    android:textSize="12sp"
                     custom:fontPath="fonts/roboto_thin.ttf"
                     custom:format12Hr="a"
                     custom:format24Hr="" />

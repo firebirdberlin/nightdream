@@ -69,6 +69,18 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
             });
         }
 
+        Switch switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
+        switchShowSeconds.setChecked(settings.getShowSeconds(layoutId));
+        switchShowSeconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                settings.setShowSeconds(isChecked, layoutId);
+                if (mListener != null) {
+                    mListener.onConfigChanged();
+                }
+            }
+        });
+
         SeekBar glowRadius = child.findViewById(R.id.glowRadius);
         glowRadius.setProgress(settings.getGlowRadius(layoutId));
         glowRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

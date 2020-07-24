@@ -274,6 +274,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_date">Datum anzeigen</string>
     <string name="show_divider">Trennlinie anzeigen</string>
     <string name="show_temperature">Temperatur anzeigen</string>
+    <string name="show_seconds">Sekunden anzeigen</string>
     <string name="show_weather">Wetter anzeigen</string>
     <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
     <string name="sleep_time_dialog_title">Sleep Timer</string>

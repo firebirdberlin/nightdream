@@ -270,10 +270,11 @@ OR
     <string name="showBatteryWarningSummary">Show a warning at startup when on battery.</string>
     <string name="showBatteryWarningTitle">Battery warning</string>
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
+    <string name="show_apparent_temperature">include apparent temperature</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
-    <string name="show_apparent_temperature">include apparent temperature</string>
     <string name="show_temperature">Show temperature</string>
+    <string name="show_seconds">Show seconds</string>
     <string name="show_weather">Show local weather</string>
     <string name="show_wind_speed">Show wind speed</string>
     <string name="slideshow_center_crop">crop borders</string>

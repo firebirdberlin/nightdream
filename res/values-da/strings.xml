@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Om</string>
+    <string name="action_change">Ændre</string>
     <string name="action_skip">Fortryd</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stop</string>
@@ -56,10 +57,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">Billede</string>
     <string name="background_image_select">Vælg et billede</string>
     <string name="background_slideshow">Slide show</string>
-    <string name="backgroundServiceDialogTitle">Stop baggrunds service</string>
+    <string name="backgroundServiceDialogTitle">Stop baggrundstjeneste</string>
     <string name="backgroundServiceDialogMessage"> Hvis du stopper baggrundstjenesten, deaktiveres autostart og standbytilstand samt batteri-forudsigelse. Widgets kan ikke opdateres mere. Fortsæt?</string>
     <string name="backgroundServiceDialogMessageWidget">Kan ikke stoppe baggrundstjenesten, mens en widget er aktiv. Fjern widgets og prøv igen</string>
-    <string name="backgroundServiceNotificationText">Baggrund service kører</string>
+    <string name="backgroundServiceNotificationText">Baggrundstjeneste kører</string>
     <string name="backgroundServiceNotificationTextLocation">Lokations opdatering igang</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service kører</string>
     <string name="batteryTimeoutDescription">Ved batteritimeout</string>
@@ -197,12 +198,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_radius">Ydre cirkel radius</string>
     <string name="outer_circle_width">Ydre cirkel bredde</string>
     <string name="permission_request_autostart"> Tilladelsen til at vise overlays (autostart) er ikke tildelt. Giv denne tilladelse!</string>
+    <string name="permission_request_location_mode">Den aktuelle lokationstilstand tillader ikke scanning på den aktuelle lokation..</string>
     <string name="persistent_battery_value_while_charging">Vis altid batteristatus</string>
     <string name="persistent_battery_value_while_charging_summary">Vis altid batteristatus under opladning</string>
     <string name="power_source">Strøm kilde</string>
     <string name="preferences">Præference</string>
     <string name="prev">forrige</string>
     <string name="preview">Preview</string>
+<string name="product_description_weather">En opgradering inkluderer\n\n- en vejrstatuslinje vist under uret\n- en 5-dages vejrudsigt\n- flere urskiver</string>
+    <string name="product_name_actions">Altid på pakken</string>
     <string name="product_name_donation">Donatiosn</string>
     <string name="product_name_pro">Fuld version</string>
     <string name="product_name_weather">Vejr og design pakke</string>
@@ -232,7 +236,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_unreachable_url">URL giver intet resultat</string>
     <string name="reactivate_on_ambient_light_value">Belysnings tærskel</string>
     <string name="reactivate_on_ambient_light_value_summary">Skærmen aktiveres hvis belysnings tærsklen er overskredet</string>
-    <string name="reactivate_screen_on_noise">Wågn ved omgivende støj</string>
+    <string name="reactivate_screen_on_noise">Vågn ved omgivende støj</string>
     <string name="recommend_app_desc">Vælg en app for at dele din anbefaling</string>
     <string name="recommend_app_subject">Jeg vil gerne anbefale denne Night Clock app </string>
     <string name="recommend">Anbefal app</string>
@@ -260,13 +264,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">BEMÆRK: Enheden er ikke tilsluttet strømkilde</string>
     <string name="show_date">Vis dato</string>
     <string name="show_divider">Vis dele linje</string>
+    <string name="show_apparent_temperature">inkluderer synlig temperatur</string>
     <string name="show_temperature">Vis temperatur</string>
     <string name="show_weather">Vis lokalt vejr</string>
     <string name="show_wind_speed">Vis vindhastighed</string>
+    <string name="slideshow_center_crop">beskær linjer</string>
+    <string name="slideshow_center_inside">tilføj linjer</string>
     <string name="slideshow_center_animated">Animeret</string>
     <string name="slideshow_style">Stil</string>
     <string name="sleep_time_dialog_title">Timer</string>
     <string name="snoozeTime">Snooze tid</string>
+    <string name="snoozeAfter">Autosnooze efter</string>
     <string name="speedUnit">Enhed for vindhastighed</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">Med skærm op</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Denne funktion bruger meget batteri</string>
@@ -279,6 +287,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_circle">Cirkel</string>
     <string name="tick_style_dash">Skråstreg</string>
     <string name="tick_style_none">Ingen</string>
+    <string name="ticks">Ticks</string>
     <string name="timeFormat">Tidsformat</string>
     <string name="timerange_label_end">Slut tidspunkt</string>
     <string name="timerange_label_start">Start tidspunkt</string>
@@ -291,16 +300,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto tynd</string>
     <string name="typeface">Skrifttype</string>
     <string name="uninstall">afinstaller programmet</string>
+    <string name="upgrade_now">Opgrader nu</string>
     <string name="useAlarmSwipeGesture">Sæt alarmen med Swipe bevægelse</string>
     <string name="useAlarmSwipeGestureSummary">Sæt alarm med et Swipe fra venstre hjørne</string>
     <string name="useDeviceLockDescription">\'Lås skræm\' funktionen skal bruge administrator privilegier for at kunne afinstallere appen. Slå denne funktion fra</string>
     <string name="useDeviceLockExplanation">Lås enheden mens appen er aktiv. For at kunne afinstallere appen skal denne tilladelse fjernes</string>
     <string name="useDeviceLock">Lås enheden</string>
-    <string name="weather_calculation_time">vejr beregnings tid</string>
-    <string name="weather_city_id_title">Søg lokation</string>
-    <string name="weather_info_title">Information</string>
     <string name="weather">Vejr</string>
     <string name="weatherProvider">Vejr udbyder</string>
+    <string name="weather_calculation_time">vejr beregnings tid</string>
+    <string name="weather_city_id_title">Søg lokation</string>
+    <string name="weather_current_location">Nuværende lokation</string>
+    <string name="weather_info_title">Information</string>
     <string name="weekdays">Ugedage</string>
     <string name="width">med</string>
 </resources>
