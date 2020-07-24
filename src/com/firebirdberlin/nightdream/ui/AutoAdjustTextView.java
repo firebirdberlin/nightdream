@@ -114,6 +114,7 @@ public class AutoAdjustTextView extends AppCompatTextView {
     private float measureText(Paint paint) {
         String text = (sampleText != null ) ? sampleText : getText().toString();
         return paint.measureText(text);
+        //return paint.measureText(text) + Utility.dpToPx(getContext(), 40);
     }
 
     private float measureTextHeight(Paint paint) {

@@ -6,8 +6,10 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -138,6 +140,17 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
             }
         });
 
+        Switch switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
+        switchShowSeconds.setChecked(settings.getShowSeconds(ClockLayout.LAYOUT_ID_CALENDAR));
+        switchShowSeconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                settings.setShowSeconds(isChecked, ClockLayout.LAYOUT_ID_CALENDAR);
+                if (mListener != null) {
+                    mListener.onConfigChanged();
+                }
+            }
+        });
     }
 
     public void setIsPurchased(boolean isPurchased) {
