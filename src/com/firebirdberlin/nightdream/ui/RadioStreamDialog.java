@@ -188,7 +188,7 @@ public class RadioStreamDialog
 
         String country = getSelectedCountry();
         String countryCode = getCountryCodeForCountry(country);
-        new StationRequestTask(this).execute(query, countryCode, country);
+        new StationRequestTask(this).execute(query, countryCode);
 
         InputMethodManager imm =
                 (InputMethodManager) queryText.getContext()
