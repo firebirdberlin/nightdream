@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -27,19 +28,33 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class RadioBrowserApi {
 
     private static String TAG = "RadioBrowserApi";
 
-    private static String BASEURL = "https://www.radio-browser.info/webservice/json/";
     private static final String COUNTRIES_CACHE_FILE = "radioBrowserCountries.json";
 
     private static int MAX_NUM_RESULTS = 100;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
 
-    public static List<RadioStation> fetchStations(String queryString, String country) {
+    private static String getRandomServer() {
+        List<String> servers = new ArrayList<>();
+        try {
+            // add all round robin servers one by one to select them separately
+            InetAddress[] list = InetAddress.getAllByName("all.api.radio-browser.info");
+            for (InetAddress item : list) {
+                servers.add(item.getCanonicalHostName());
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return servers.get(new Random().nextInt(servers.size()));
+    }
+
+    public static List<RadioStation> fetchStations(String queryString, String countryCode) {
         List<RadioStation> stationList = new ArrayList<RadioStation>();
         int responseCode = 0;
         String response = "";
@@ -54,8 +69,8 @@ public class RadioBrowserApi {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", queryString);
             jsonObject.put("limit", MAX_NUM_RESULTS);
-            if (country != null && !country.isEmpty()) {
-                jsonObject.put("countryExact", country);
+            if (countryCode != null && !countryCode.isEmpty()) {
+                jsonObject.put("countrycode", countryCode);
             }
             String postDataString = jsonObject.toString();
             byte[] postDataBytes = postDataString.getBytes(Charset.forName("UTF-8"));
@@ -97,9 +112,9 @@ public class RadioBrowserApi {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonStation = jsonArray.getJSONObject(i);
                     RadioStation station = new RadioStation();
-                    station.id = jsonStation.getLong("id");
+                    station.uuid = jsonStation.getString("stationuuid");
                     station.name = jsonStation.getString("name");
-                    station.countryCode = jsonStation.getString("country");
+                    station.countryCode = jsonStation.getString("countrycode");
                     station.stream = jsonStation.getString("url");
                     station.bitrate = jsonStation.getLong("bitrate");
                     station.isOnline = jsonStation.getLong("lastcheckok") == 1L;
@@ -123,12 +138,15 @@ public class RadioBrowserApi {
     }
 
     private static String getCountriesPath() {
-        Uri.Builder builder = getPathBuilder("countries");
+        Uri.Builder builder = getPathBuilder("countrycodes");
         return builder.build().toString();
     }
 
     private static Uri.Builder getPathBuilder(String endpoint) {
-        return Uri.parse(BASEURL).buildUpon()
+        String server = getRandomServer();
+        Log.d(TAG, server);
+        return Uri.parse("https://" + server).buildUpon()
+                .appendPath("json")
                 .appendPath(endpoint);
     }
 
@@ -225,10 +243,11 @@ public class RadioBrowserApi {
             JSONObject jsonCountry = jsonArray.getJSONObject(i);
 
             Country country = new Country();
-            country.name = jsonCountry.getString("value");
-            country.countryCode = null;
+            country.name = jsonCountry.getString("name");
+            country.countryCode = country.name; // there is no proper name
             country.region = null;
             country.subRegion = null;
+            country.setNameFromIsoCode();
             countries.add(country);
         }
 
@@ -241,8 +260,7 @@ public class RadioBrowserApi {
 
     private static Date getCacheExpireDate() {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, -1);
-        //cal.add(Calendar.SECOND, -30);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
         Date result = cal.getTime();
         return result;
     }

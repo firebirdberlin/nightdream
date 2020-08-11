@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public class RadioStation {
 
-    private static final String JSON_ID = "id";
+    private static final String JSON_UUID = "id";
     private static final String JSON_NAME = "name";
     private static final String JSON_COUNTRY = "country";
     private static final String JSON_STREAM = "stream";
@@ -13,7 +13,7 @@ public class RadioStation {
     private static final String JSON_USER_DEFINED_STREAM_URL = "user_defined_stream_URL";
     private static final String JSON_STATUS = "status";
     private static final String JSON_MUTE_DELAY_MILLIS = "muteDelayInMills";
-    public long id;
+    public String uuid;
     public String name;
     public String countryCode;
     public String stream;
@@ -32,7 +32,7 @@ public class RadioStation {
 
     public static RadioStation fromJsonObj(JSONObject jsonStation) throws JSONException {
         RadioStation station = new RadioStation();
-        station.id = jsonStation.getLong(JSON_ID);
+        station.uuid = jsonStation.getString(JSON_UUID);
         station.name = jsonStation.getString(JSON_NAME);
         station.countryCode = jsonStation.getString(JSON_COUNTRY);
         station.stream = jsonStation.getString(JSON_STREAM);
@@ -71,7 +71,7 @@ public class RadioStation {
 
     public JSONObject toJsonObject() throws JSONException {
         JSONObject jsonStation = new JSONObject();
-        jsonStation.put(JSON_ID, id);
+        jsonStation.put(JSON_UUID, uuid);
         jsonStation.put(JSON_NAME, name);
         jsonStation.put(JSON_COUNTRY, countryCode);
         jsonStation.put(JSON_STREAM, stream);
