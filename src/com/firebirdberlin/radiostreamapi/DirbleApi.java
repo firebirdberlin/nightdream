@@ -97,7 +97,7 @@ public class DirbleApi {
                     for (int j = 0; j < jsonStreams.length(); j++) {
                         JSONObject streamObj = jsonStreams.getJSONObject(j);
                         RadioStation station = new RadioStation();
-                        station.id = jsonStation.getLong("id");
+                        station.uuid = jsonStation.getString("id");
                         station.name = jsonStation.getString("name");
                         station.countryCode = jsonStation.getString("country");
                         station.stream = streamObj.getString("stream");
