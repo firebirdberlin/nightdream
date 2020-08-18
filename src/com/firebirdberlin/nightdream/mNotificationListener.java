@@ -5,18 +5,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -49,6 +58,7 @@ public class mNotificationListener extends NotificationListenerService {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(nlservicereciver);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
@@ -65,9 +75,18 @@ public class mNotificationListener extends NotificationListenerService {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private boolean shallIgnoreNotification(StatusBarNotification sbn) {
 
-        if ( ! isClearable(sbn) ) return true;
+        Bundle extras = sbn.getNotification().extras;
+        if(extras.containsKey(Notification.EXTRA_TEMPLATE) && extras.getCharSequence("android.template") != null){
+            if (((String) extras.getCharSequence("android.template")).contains("MediaStyle")){
+                Log.w(TAG, "MediaStyle notification found");
+                return false;
+            }
+        }
+
+        if ( ! isClearable(sbn)) return true;
         Notification notification = sbn.getNotification();
 
         if ( notification == null ) return true;
@@ -110,6 +129,7 @@ public class mNotificationListener extends NotificationListenerService {
         }, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.i(TAG,"++++ notification removed ++++");
@@ -118,6 +138,7 @@ public class mNotificationListener extends NotificationListenerService {
         listNotifications();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void listNotifications() {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         groupSimilarNotifications = Settings.groupSimilarNotifications(this);
@@ -186,7 +207,29 @@ public class mNotificationListener extends NotificationListenerService {
         return (iconID > 0 && iconIds != null && iconIds.contains(iconID));
     }
 
+    private static Bitmap drawableToBitMap(Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
+            return bitmapDrawable.getBitmap();
+        }
+        else {
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
+        final Context context = this;
         Notification notification = sbn.getNotification();
         if (notification != null ) {
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
@@ -194,6 +237,59 @@ public class mNotificationListener extends NotificationListenerService {
             i.putExtra("iconId", getIconId(notification));
             i.putExtra("tickertext", notification.tickerText);
             i.putExtra("number", notification.number);
+
+            //get extra informations from notification
+            Bundle extras = sbn.getNotification().extras;
+            if(extras.containsKey(Notification.EXTRA_TEMPLATE) && extras.getCharSequence("android.template") != null){
+                i.putExtra("template", extras.getCharSequence("android.template").toString());
+            }
+
+            Icon largeicon = sbn.getNotification().getLargeIcon();
+            if (largeicon != null) {
+                Bitmap largeiconbitmap = drawableToBitMap(largeicon.loadDrawable(context));
+
+                i.putExtra("largeicon", largeicon);
+                i.putExtra("largeiconbitmap", largeiconbitmap );
+            }
+
+            if(extras.containsKey(Notification.EXTRA_PICTURE)){
+                i.putExtra("bigpicture", (Bitmap) extras.get(Notification.EXTRA_PICTURE));
+            }
+
+            //Actions in Notification
+            try {
+                Notification.Action[] action = sbn.getNotification().actions;
+                i.putExtra("actions", action);
+            }catch (Exception ex){
+
+            }
+
+            //get application packageName
+            final PackageManager pm = getApplicationContext().getPackageManager();
+            ApplicationInfo ai;
+
+            try {
+                ai = pm.getApplicationInfo( sbn.getPackageName(), 0);
+            }
+            catch (final PackageManager.NameNotFoundException e){
+                ai = null;
+            } final
+
+            String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+            i.putExtra("applicationname", applicationName);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm",java.util.Locale.getDefault());
+            String postTime = dateFormat.format(sbn.getPostTime());
+            i.putExtra("posttimestamp", postTime);
+
+            if(extras.containsKey(Notification.EXTRA_TITLE) && extras.getString("android.title") != null){
+                i.putExtra("title", extras.getString("android.title"));
+            }
+
+            if(extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null){
+                i.putExtra("text", extras.getCharSequence("android.text").toString());
+            }
+
             return i;
         }
         return null;

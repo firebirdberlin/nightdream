@@ -52,21 +52,22 @@
                     android:fontFamily="monospace"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
+                    android:singleLine="true"
                     android:text=""
                     android:textColor="#C2C2C2"
-                    android:textSize="20sp"
-                    android:singleLine="true" />
+                    android:textSize="20sp" />
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/notificationstatusbar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:flexDirection="row"
                     app:alignContent="flex_end"
-                    app:justifyContent="flex_end">
-                </com.google.android.flexbox.FlexboxLayout>
+                    app:flexDirection="row"
+                    app:justifyContent="flex_end"></com.google.android.flexbox.FlexboxLayout>
+
             </LinearLayout>
+
         </LinearLayout>
 
         <FrameLayout
@@ -101,6 +102,8 @@
         <com.firebirdberlin.nightdream.ui.BottomPanelLayout
             android:id="@+id/bottomPanel"
             android:layout_width="match_parent"
-            android:layout_height="60dp"/>
+            android:layout_height="60dp">
+
+        </com.firebirdberlin.nightdream.ui.BottomPanelLayout>
     </LinearLayout>
 </FrameLayout>

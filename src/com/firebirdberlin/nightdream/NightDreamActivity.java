@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -33,6 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.ContentView;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -100,6 +102,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
+    private View mediastylecontrol = null;
     private long resumeTime = -1L;
 
     private Settings mySettings = null;
@@ -132,7 +135,11 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     };
 
-    private Runnable alwaysOnTimeout = new Runnable() {
+    public void buttonNotificationMessaging(View v) {
+        Toast.makeText(this, "Sending Notification MessagingStyle!", Toast.LENGTH_SHORT).show();
+    }
+
+        private Runnable alwaysOnTimeout = new Runnable() {
         @Override
         public void run() {
             if ( Utility.isCharging(context) && mode > 0) return;
@@ -226,6 +233,10 @@ public class NightDreamActivity extends BillingHelperActivity
         weatherIcon = findViewById(R.id.icon_weather_forecast);
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         radioIcon = findViewById(R.id.radio_icon);
+
+        LayoutInflater inflater =(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mediastylecontrol = inflater.inflate(R.layout.notification_mediacontrol, null);
+
         ImageView background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
@@ -547,6 +558,9 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onSettingsClick(View v) {
         PreferencesActivity.start(this);
     }
+
+    public View get_mediastylecontrol() {return mediastylecontrol;};
+
 
     @SuppressWarnings("UnusedParameters")
     public void onRadioClick(View v) {

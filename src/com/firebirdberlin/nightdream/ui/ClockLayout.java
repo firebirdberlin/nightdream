@@ -79,19 +79,27 @@ public class ClockLayout extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater)
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View child;
-        if (layoutId == LAYOUT_ID_DIGITAL) {
-            child = inflater.inflate(R.layout.clock_layout, null);
-        } else if (layoutId == LAYOUT_ID_DIGITAL2) {
-            child = inflater.inflate(R.layout.clock_layout_digital, null);
-        } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
-            child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
-        } else if (layoutId == LAYOUT_ID_CALENDAR) {
-            child = inflater.inflate(R.layout.clock_layout_calendar, null);
-        } else if (layoutId == LAYOUT_ID_ANALOG) {
-            child = inflater.inflate(R.layout.analog_clock_layout, null);
-        } else {
-            child = inflater.inflate(R.layout.analog_clock_layout_4, null);
+
+        switch(layoutId){
+            case LAYOUT_ID_DIGITAL:
+                child = inflater.inflate(R.layout.clock_layout, null);
+                break;
+            case LAYOUT_ID_DIGITAL2:
+                child = inflater.inflate(R.layout.clock_layout_digital, null);
+                break;
+            case LAYOUT_ID_DIGITAL_FLIP:
+                child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
+                break;
+            case LAYOUT_ID_CALENDAR:
+                child = inflater.inflate(R.layout.clock_layout_calendar, null);
+                break;
+            case LAYOUT_ID_ANALOG:
+                child = inflater.inflate(R.layout.analog_clock_layout, null);
+                break;
+            default:
+                child = inflater.inflate(R.layout.analog_clock_layout_4, null);
         }
+
         if (child != null) {
             addView(child);
         }
@@ -100,7 +108,8 @@ public class ClockLayout extends LinearLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 
-        return true;
+        //return true;
+        return false;
     }
 
     public void setLayout(int layoutId) {

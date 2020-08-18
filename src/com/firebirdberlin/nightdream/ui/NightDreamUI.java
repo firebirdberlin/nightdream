@@ -269,6 +269,7 @@ public class NightDreamUI {
             return false;
         }
 
+
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             Log.w(TAG, "single tap up");
@@ -289,6 +290,7 @@ public class NightDreamUI {
 
             return false;
         }
+
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {

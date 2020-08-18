@@ -1,17 +1,26 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 
@@ -21,11 +30,12 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
     private int color;
     private View contentView;
-
+    private View mediastylecontrol;
 
     public NotificationReceiver(NightDreamActivity context) {
         Window window = context.getWindow();
         contentView = window.getDecorView().findViewById(android.R.id.content);
+        mediastylecontrol = context.get_mediastylecontrol();
     }
 
     public NotificationReceiver(Window window) {
@@ -37,6 +47,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
@@ -46,7 +57,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
     }
 
-    private void handleOnReceive(Context context, Intent intent) {
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private void handleOnReceive(final Context context, Intent intent) {
         if (intent == null || context == null) return;
         if (Utility.isDebuggable(context)){
             Log.d(TAG, "Broadcast received.");
@@ -96,6 +109,80 @@ public class NotificationReceiver extends BroadcastReceiver {
             layoutParams.setMaxHeight(Utility.dpToPx(context, 24.f));
             image.setLayoutParams(layoutParams);
             container.addView(image);
+
+            //MediaStyle Control
+            if (intent.getStringExtra("template").contains("MediaStyle")) {
+                FlexboxLayout mediastylecontrolcontainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
+
+                mediastylecontrol.findViewById(R.id.notify_largeicon).setVisibility(View.GONE);
+                mediastylecontrol.findViewById(R.id.notify_largepicture).setVisibility(View.GONE);
+
+                ImageView notificationMessagebitmap = (ImageView) mediastylecontrol.findViewById(R.id.notify_smallicon);
+                Drawable notificationMessagesmallicon = getNotificationIcon(context, packageName, iconId);
+                notificationMessagesmallicon.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+                notificationMessagebitmap.setImageDrawable(getNotificationIcon(context, packageName, iconId));
+
+                TextView appname = mediastylecontrol.findViewById(R.id.notify_appname);
+                appname.setText((String) intent.getStringExtra("applicationname"));
+
+                TextView timestamp = mediastylecontrol.findViewById(R.id.notify_timestamp);
+                timestamp.setText((String) intent.getStringExtra("posttimestamp"));
+
+                TextView title = mediastylecontrol.findViewById(R.id.notify_title);
+                title.setText((String) intent.getStringExtra("title"));
+
+                TextView ntext = mediastylecontrol.findViewById(R.id.notify_text);
+                ntext.setText((String) intent.getStringExtra("text"));
+
+                mediastylecontrol.findViewById(R.id.notification_control).setVisibility(View.VISIBLE);
+                mediastylecontrol.findViewById(R.id.notify_background).setBackground(new BitmapDrawable(context.getResources(),(Bitmap) intent.getParcelableExtra("largeiconbitmap")));
+                mediastylecontrol.findViewById(R.id.notify_actiontext1).setVisibility(View.GONE);
+                mediastylecontrol.findViewById(R.id.notify_actiontext2).setVisibility(View.GONE);
+                mediastylecontrol.findViewById(R.id.notify_actiontext3).setVisibility(View.GONE);
+
+                ImageView[] notificationActionImages = new ImageView[5];
+                notificationActionImages[0] = (ImageView) mediastylecontrol.findViewById(R.id.notify_actionview1);
+                notificationActionImages[1] = (ImageView) mediastylecontrol.findViewById(R.id.notify_actionview2);
+                notificationActionImages[2] = (ImageView) mediastylecontrol.findViewById(R.id.notify_actionview3);
+                notificationActionImages[3] = (ImageView) mediastylecontrol.findViewById(R.id.notify_actionview4);
+                notificationActionImages[4] = (ImageView) mediastylecontrol.findViewById(R.id.notify_actionview5);
+
+                for( ImageView ActionImage: notificationActionImages )
+                {
+                    ActionImage.setVisibility(View.GONE);
+                }
+
+                int positionAction = 0;
+
+                try {
+                    for (final Notification.Action actionm : (Notification.Action[]) intent.getParcelableArrayExtra("actions")) {
+                        try {
+                            Context remotePackageContext = context.getApplicationContext().createPackageContext((String) (String) intent.getStringExtra("packageName"), 0);
+                            Drawable notification_drawableicon = ContextCompat.getDrawable(remotePackageContext, (int) actionm.getIcon().getResId());
+                            notificationActionImages[positionAction].setImageDrawable(notification_drawableicon);
+                            notificationActionImages[positionAction].setVisibility(View.VISIBLE);
+                            notificationActionImages[positionAction].setOnClickListener(new View.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                                public void onClick(View v) {
+                                    try {
+                                        actionm.actionIntent.send();
+                                    } catch (Exception ex) {
+                                        Log.e(TAG, "MediaStyle - Notification set actionIntent");
+                                    }
+                                }
+                            });
+                            positionAction++;
+                        } catch (Exception exMediaStyle) {
+                            Log.w(TAG, "MediaStyle - Notification set Icon");
+                        }
+                    }
+                }catch (Exception ex){
+                    Log.e(TAG, "MediaStyle - Notification actions");
+                }
+
+                mediastylecontrolcontainer.removeView(mediastylecontrol);
+                mediastylecontrolcontainer.addView(mediastylecontrol);
+            }
         }
     }
 
