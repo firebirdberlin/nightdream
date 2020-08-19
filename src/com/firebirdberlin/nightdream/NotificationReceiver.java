@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Notification;
+import android.content.SharedPreferences;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +15,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -26,16 +27,17 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.flexbox.FlexboxLayout;
 
+import java.util.Objects;
+
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
+    public static final String PREFS_KEY = "NightDream preferences";
     private int color;
     private View contentView;
-    private View mediastylecontrol;
 
     public NotificationReceiver(NightDreamActivity context) {
         Window window = context.getWindow();
         contentView = window.getDecorView().findViewById(android.R.id.content);
-        mediastylecontrol = context.get_mediastylecontrol();
     }
 
     public NotificationReceiver(Window window) {
@@ -46,20 +48,19 @@ public class NotificationReceiver extends BroadcastReceiver {
         this.color = color;
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
             handleOnReceive(context, intent);
         } catch (NullPointerException e) {
-
+            Log.e(TAG, "Unknown error in onReceive (NotificationReceiver)");
         }
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void handleOnReceive(final Context context, Intent intent) {
+
         if (intent == null || context == null) return;
         if (Utility.isDebuggable(context)){
             Log.d(TAG, "Broadcast received.");
@@ -111,14 +112,28 @@ public class NotificationReceiver extends BroadcastReceiver {
             container.addView(image);
 
             //MediaStyle Control
-            if (intent.getStringExtra("template").contains("MediaStyle")) {
-                FlexboxLayout mediastylecontrolcontainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
 
+            FlexboxLayout mediastylecontrolcontainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
+
+            SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+            boolean showmediastyle = preferences.getBoolean("showMediaStyle", false);
+
+            if (Objects.requireNonNull(intent.getStringExtra("template")).contains("MediaStyle") && showmediastyle) {
+                Log.w(TAG, "Show MediaStyle notification");
+
+                mediastylecontrolcontainer.setVisibility(View.VISIBLE);
+                mediastylecontrolcontainer.removeAllViews();
+
+                LayoutInflater inflater = (LayoutInflater)
+                        context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+
+                View mediastylecontrol = inflater.inflate(R.layout.notification_mediacontrol, null);
                 mediastylecontrol.findViewById(R.id.notify_largeicon).setVisibility(View.GONE);
                 mediastylecontrol.findViewById(R.id.notify_largepicture).setVisibility(View.GONE);
 
                 ImageView notificationMessagebitmap = (ImageView) mediastylecontrol.findViewById(R.id.notify_smallicon);
                 Drawable notificationMessagesmallicon = getNotificationIcon(context, packageName, iconId);
+                assert notificationMessagesmallicon != null;
                 notificationMessagesmallicon.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                 notificationMessagebitmap.setImageDrawable(getNotificationIcon(context, packageName, iconId));
 
@@ -179,8 +194,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 }catch (Exception ex){
                     Log.e(TAG, "MediaStyle - Notification actions");
                 }
-
-                mediastylecontrolcontainer.removeView(mediastylecontrol);
                 mediastylecontrolcontainer.addView(mediastylecontrol);
             }
         }

@@ -179,6 +179,8 @@ OR
     <string name="notification_channel_desc_services">Notification indicating running services</string>
     <string name="notification_grouping_title">Group similar notifications</string>
     <string name="notification_grouping_summary">Group notifications from the same apps showing the same icon.</string>
+    <string name="notification_show_mediastyle_summary">Show notification with Media Player controls in digital clock</string>
+    <string name="notification_show_mediastyle_title">Media Player</string>
     <string name="notification_lowest_importance">Importance is higher or equal than</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">low</string>

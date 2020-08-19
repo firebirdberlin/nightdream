@@ -102,7 +102,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
-    private View mediastylecontrol = null;
     private long resumeTime = -1L;
 
     private Settings mySettings = null;
@@ -135,11 +134,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     };
 
-    public void buttonNotificationMessaging(View v) {
-        Toast.makeText(this, "Sending Notification MessagingStyle!", Toast.LENGTH_SHORT).show();
-    }
-
-        private Runnable alwaysOnTimeout = new Runnable() {
+    private Runnable alwaysOnTimeout = new Runnable() {
         @Override
         public void run() {
             if ( Utility.isCharging(context) && mode > 0) return;
@@ -234,8 +229,6 @@ public class NightDreamActivity extends BillingHelperActivity
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         radioIcon = findViewById(R.id.radio_icon);
 
-        LayoutInflater inflater =(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mediastylecontrol = inflater.inflate(R.layout.notification_mediacontrol, null);
 
         ImageView background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
@@ -558,8 +551,6 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onSettingsClick(View v) {
         PreferencesActivity.start(this);
     }
-
-    public View get_mediastylecontrol() {return mediastylecontrol;};
 
 
     @SuppressWarnings("UnusedParameters")
