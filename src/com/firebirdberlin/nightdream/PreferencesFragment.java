@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
@@ -32,6 +33,7 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
@@ -53,6 +55,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
+    private Handler handler = new Handler();
+    private boolean started;
+    private NotificationManager n;
     Snackbar snackbar;
     String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
@@ -78,6 +83,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private Context mContext = null;
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                     if (isAdded() && "appearance".equals(rootKey)) {
@@ -97,7 +103,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
 
                     }
+
                     switch (key) {
+                        case "showNotification":
+                            break;
                         case "brightness_offset":
                             int offsetInt = sharedPreferences.getInt("brightness_offset", 0);
                             settings.setBrightnessOffset(offsetInt / 100.f);
@@ -288,26 +297,71 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         super.onActivityCreated(savedInstanceState);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         Log.d("Prefs", "rootKey " + rootKey);
         this.rootKey = rootKey;
+
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
-        if ("autostart".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
-        } else if ("appearance".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_appearance, rootKey);
-        } else if ("brightness".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_brightness, rootKey);
-        } else if ("behaviour".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_behaviour, rootKey);
-        } else if ("nightmode".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_nightmode, rootKey);
-        } else if ("notifications".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_notifications, rootKey);
-        } else if ("about".equals(rootKey)) {
-            setPreferencesFromResource(R.xml.preferences_about, rootKey);
-        } else {
+
+        if (rootKey != null) {
+
+            switch (rootKey) {
+                case "autostart":
+                    setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
+                    break;
+                case "appearance":
+                    setPreferencesFromResource(R.xml.preferences_appearance, rootKey);
+                    break;
+                case "brightness":
+                    setPreferencesFromResource(R.xml.preferences_brightness, rootKey);
+                    break;
+                case "behaviour":
+                    setPreferencesFromResource(R.xml.preferences_behaviour, rootKey);
+                    break;
+                case "nightmode":
+                    setPreferencesFromResource(R.xml.preferences_nightmode, rootKey);
+                    break;
+                case "notifications":
+                    setPreferencesFromResource(R.xml.preferences_notifications, rootKey);
+                    Preference showNotificationPreference = findPreference("showNotification");
+
+                    n = (NotificationManager) mContext.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    //Start Runnable to check if status is changed
+                    if (showNotificationPreference != null) {
+                        start_notifyaccess_changed();
+                    }
+
+                    if (showNotificationPreference != null) {
+
+                        if (!n.isNotificationPolicyAccessGranted()) {
+                            showNotificationPreference.setSummary(getString(R.string.showNotificationsnoaccess));
+                            showNotificationPreference.setEnabled(false);
+
+                            new android.app.AlertDialog.Builder(mContext)
+                                    .setTitle(getString(R.string.showNotificationsalert))
+                                    .setMessage(getString(R.string.showNotificationsalerttext))
+                                    .setPositiveButton(android.R.string.yes, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                        }
+                        else{
+                            showNotificationPreference.setSummary(getString(R.string.showNotificationsaccess));
+                            showNotificationPreference.setEnabled(true);
+                        }
+                    }
+                    break;
+                case "about":
+                    setPreferencesFromResource(R.xml.preferences_about, rootKey);
+                    break;
+                default:
+                    setPreferencesFromResource(R.xml.preferences, rootKey);
+                    break;
+            }
+        }
+        else{
             setPreferencesFromResource(R.xml.preferences, rootKey);
         }
 
@@ -1028,5 +1082,50 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
             }
         }
+    }
+
+    private Runnable notifyinformation_changed = new Runnable() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        public void run() {
+            Log.i(TAG, "Runnable called");
+            Preference numberPreference = findPreference("showNotification");
+
+            if (!n.isNotificationPolicyAccessGranted()) {
+                if (numberPreference != null) {
+                    try{
+                        numberPreference.setSummary(getString(R.string.showNotificationsnoaccess));
+                        numberPreference.setEnabled(false);
+                    }catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            else{
+                if (numberPreference != null) {
+                    try {
+                        numberPreference.setSummary(getString(R.string.showNotificationsaccess));
+                        numberPreference.setEnabled(true);
+                    }catch (Exception ex){
+
+                    }
+                }
+            }
+
+            if(started) {
+                start_notifyaccess_changed();
+            }
+        }
+    };
+
+    public void stop_notifyaccess_changed() {
+        started = false;
+        handler.removeCallbacks(notifyinformation_changed);
+    }
+
+    public void start_notifyaccess_changed() {
+        started = true;
+        handler.postDelayed(notifyinformation_changed, 2000);
     }
 }

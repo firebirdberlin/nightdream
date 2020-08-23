@@ -191,6 +191,12 @@ OR
     <string name="notificationsInStatusBarTitle">Status bar</string>
     <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
     <string name="notificationListenerService">Notification listener service</string>
+    <string name="showNotifications">Show notifications</string>
+    <string name="showNotificationsaccess">Access granted.</string>
+    <string name="showNotificationsnoaccess">Access not granted!</string>
+    <string name="showNotificationsalert">Notification access not granted</string>
+    <string name="showNotificationsalerttext">Notification access must be granted to show notifications.</string>
+    <string name="notifications_options">Notification options</string>
     <string name="numbers">Numbers</string>
     <string name="numberStyleArabic">Arabic</string>
     <string name="numberStyleRoman">Roman</string>

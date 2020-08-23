@@ -170,6 +170,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_title">Nachtzeit</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
     <string name="notificationListenerService">Benachrichtigungsservice verwalten</string>
+    <string name="showNotifications">Benachrichtigungen anzeigen</string>
+    <string name="showNotificationsaccess">Benachrichtigungszugriff erteilt.</string>
+    <string name="showNotificationsnoaccess">Benachrichtigungszugriff nicht erteilt!</string>
+    <string name="showNotificationsalert">Benachrichtigungszugriff nicht erteilt</string>
+    <string name="showNotificationsalerttext">Um Benachrichtigungen anzuzeigen muss das Recht in den Android - Einstellungen erteilt werden.</string>
+    <string name="notifications_options">Benachrichtigungsoptionen</string>
     <string name="notification_channel_desc_alarms">Benachrichtigung, die einen aktiven Weckalarm anzeigt.</string>
     <string name="notification_channel_desc_devmsg">Benachrichtigungen, die die Nachtuhr betreffen.</string>
     <string name="notification_channel_desc_radio">Benachrichtigung, die einen aktiven Radiostream anzeigt.</string>
