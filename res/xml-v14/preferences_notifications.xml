@@ -4,46 +4,67 @@
     app:key="notifications"
     app:title="@string/notifications">
 
-    <de.firebirdberlin.preference.NotificationListenerServicePreference
-        app:icon="@drawable/ic_expert"
-        app:key="startNotificationService"
-        app:title="@string/notificationListenerService" />
-
-    <Preference
-        app:iconSpaceReserved="false"
-        app:icon="@drawable/ic_googleplay"
-        app:key="purchaseActions3"
-        app:isPreferenceVisible="false"
-        app:title="@string/purchaseActions" />
-
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:layout="@layout/preferences_category"
-        app:key="category_notifications"
+        app:key="cat_notifications"
         app:title="@string/notifications">
 
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
             app:defaultValue="true"
-            app:key="showNotificationsInStatusBar"
-            app:summary="@string/notificationsInStatusBarSummary"
-            app:title="@string/notificationsInStatusBarTitle" />
+            app:key="showNotification"
+            app:summary=""
+            app:title="@string/showNotifications" />
 
-        <ListPreference
-            app:useSimpleSummaryProvider="true"
-            app:iconSpaceReserved="false"
-            app:defaultValue="3"
-            app:key="minNotificationImportance"
-            app:title="@string/notification_lowest_importance"
-            android:entryValues="@array/notificationImportanceValues"
-            app:entries="@array/notificationImportance"
-            />
+        <de.firebirdberlin.preference.NotificationListenerServicePreference
+            app:icon="@drawable/ic_expert"
+            app:key="startNotificationService"
+            app:title="@string/notificationListenerService" />
 
-        <SwitchPreferenceCompat
+        <Preference
             app:iconSpaceReserved="false"
-            app:defaultValue="false"
-            app:key="groupSimilarNotifications"
-            app:summary="@string/notification_grouping_summary"
-            app:title="@string/notification_grouping_title" />
+            app:icon="@drawable/ic_googleplay"
+            app:key="purchaseActions3"
+            app:isPreferenceVisible="false"
+            app:title="@string/purchaseActions" />
+
+        <PreferenceCategory
+            app:iconSpaceReserved="false"
+            app:key="category_notifications"
+            app:title="@string/notifications_options">
+            >
+
+            <SwitchPreferenceCompat
+                app:iconSpaceReserved="false"
+                app:defaultValue="true"
+                app:key="showNotificationsInStatusBar"
+                app:summary="@string/notificationsInStatusBarSummary"
+                app:title="@string/notificationsInStatusBarTitle" />
+
+            <ListPreference
+                app:useSimpleSummaryProvider="true"
+                app:iconSpaceReserved="false"
+                app:defaultValue="3"
+                app:key="minNotificationImportance"
+                app:title="@string/notification_lowest_importance"
+                android:entryValues="@array/notificationImportanceValues"
+                app:entries="@array/notificationImportance"
+                />
+
+            <SwitchPreferenceCompat
+                app:iconSpaceReserved="false"
+                app:defaultValue="false"
+                app:key="groupSimilarNotifications"
+                app:summary="@string/notification_grouping_summary"
+                app:title="@string/notification_grouping_title" />
+
+            <SwitchPreferenceCompat
+                app:iconSpaceReserved="false"
+                app:defaultValue="false"
+                app:key="showMediaStyleNotification"
+                app:summary="@string/notification_show_mediastyle_summary"
+                app:title="@string/notification_show_mediastyle_title" />
+        </PreferenceCategory>
     </PreferenceCategory>
 </PreferenceScreen>

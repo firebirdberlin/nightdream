@@ -193,6 +193,8 @@ OR
     <string name="notification_channel_desc_services">Notification indicating running services</string>
     <string name="notification_grouping_title">Group similar notifications</string>
     <string name="notification_grouping_summary">Group notifications from the same apps showing the same icon.</string>
+    <string name="notification_show_mediastyle_summary">Show media player controls in digital clock</string>
+    <string name="notification_show_mediastyle_title">Media controls</string>
     <string name="notification_lowest_importance">Importance is higher or equal than</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">low</string>
@@ -203,6 +205,11 @@ OR
     <string name="notificationsInStatusBarTitle">Status bar</string>
     <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
     <string name="notificationListenerService">Notification listener service</string>
+    <string name="showNotifications">Show notifications</string>
+    <string name="showNotificationsAccessGranted">Access granted</string>
+    <string name="showNotificationsAccessNotGranted">Access not granted!</string>
+    <string name="showNotificationsAlertText">Notification access must be granted to show notifications.</string>
+    <string name="notifications_options">Notification options</string>
     <string name="numbers">Numbers</string>
     <string name="numberStyleArabic">Arabic</string>
     <string name="numberStyleRoman">Roman</string>
