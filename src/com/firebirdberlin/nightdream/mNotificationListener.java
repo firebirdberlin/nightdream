@@ -5,18 +5,28 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import androidx.annotation.RequiresApi;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -24,20 +34,38 @@ import java.util.HashSet;
 public class mNotificationListener extends NotificationListenerService {
 
     public static boolean running = false;
-    private String TAG = this.getClass().getSimpleName();
-    private NLServiceReceiver nlservicereciver;
     int minNotificationImportance = 2;
     boolean groupSimilarNotifications = false;
-    HashMap<String, HashSet<Integer> > iconIdsByPackage = new HashMap<>();
+    HashMap<String, HashSet<Integer>> iconIdsByPackage = new HashMap<>();
+    private String TAG = this.getClass().getSimpleName();
+    private NLServiceReceiver nlServiceReceiver;
+
+    private static Bitmap drawableToBitMap(Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
+            return bitmapDrawable.getBitmap();
+        } else {
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        }
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        nlservicereciver = new NLServiceReceiver();
+        nlServiceReceiver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
-        LocalBroadcastManager.getInstance(this).registerReceiver(nlservicereciver, filter);
-        Log.i(TAG,"**********  Notification listener STARTED");
+        LocalBroadcastManager.getInstance(this).registerReceiver(nlServiceReceiver, filter);
+        Log.i(TAG, "**********  Notification listener STARTED");
         running = true;
     }
 
@@ -45,8 +73,8 @@ public class mNotificationListener extends NotificationListenerService {
     public void onDestroy() {
         super.onDestroy();
         running = false;
-        Log.i(TAG,"**********  Notification listener STOPPED");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(nlservicereciver);
+        Log.i(TAG, "**********  Notification listener STOPPED");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(nlServiceReceiver);
     }
 
     @Override
@@ -54,10 +82,10 @@ public class mNotificationListener extends NotificationListenerService {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         groupSimilarNotifications = Settings.groupSimilarNotifications(this);
 
-        Log.i(TAG,"++++ notification posted ++++");
+        Log.i(TAG, "++++ notification posted ++++");
         logNotification(sbn);
 
-        if ( shallIgnoreNotification(sbn) ) return;
+        if (shallIgnoreNotification(sbn)) return;
         listNotifications();
 
         if (!Utility.isScreenOn(this)) {
@@ -67,12 +95,25 @@ public class mNotificationListener extends NotificationListenerService {
 
     private boolean shallIgnoreNotification(StatusBarNotification sbn) {
 
-        if ( ! isClearable(sbn) ) return true;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            Bundle extras = sbn.getNotification().extras;
+            if (
+                    extras.containsKey(Notification.EXTRA_TEMPLATE)
+                            && extras.getCharSequence("android.template") != null
+            ) {
+                if (((String) extras.getCharSequence("android.template")).contains("MediaStyle")) {
+                    Log.w(TAG, "MediaStyle notification found");
+                    return false;
+                }
+            }
+        }
+
+        if (!isClearable(sbn)) return true;
         Notification notification = sbn.getNotification();
 
-        if ( notification == null ) return true;
+        if (notification == null) return true;
 
-        if (groupSimilarNotifications && isIconIdinCache(sbn)) {
+        if (groupSimilarNotifications && isIconIdInCache(sbn)) {
             return true;
         }
 
@@ -87,7 +128,7 @@ public class mNotificationListener extends NotificationListenerService {
     private void conditionallyStartActivity() {
         final Context context = this;
         Settings settings = new Settings(this);
-        if ( ! settings.autostartForNotifications ) return;
+        if (!settings.autostartForNotifications) return;
         final SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager == null) return;
 
@@ -112,7 +153,7 @@ public class mNotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i(TAG,"++++ notification removed ++++");
+        Log.i(TAG, "++++ notification removed ++++");
         logNotification(sbn);
 
         listNotifications();
@@ -149,7 +190,7 @@ public class mNotificationListener extends NotificationListenerService {
                 }
             }
 
-            if ( shallIgnoreNotification(sbn)) {
+            if (shallIgnoreNotification(sbn)) {
                 continue;
             }
 
@@ -178,7 +219,7 @@ public class mNotificationListener extends NotificationListenerService {
         ids.add(getIconId(notification));
     }
 
-    boolean isIconIdinCache(StatusBarNotification sbn) {
+    boolean isIconIdInCache(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
         HashSet<Integer> iconIds = iconIdsByPackage.get(packageName);
         Notification notification = sbn.getNotification();
@@ -187,13 +228,66 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
+        final Context context = this;
         Notification notification = sbn.getNotification();
-        if (notification != null ) {
+        if (notification != null) {
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("packageName", sbn.getPackageName());
             i.putExtra("iconId", getIconId(notification));
-            i.putExtra("tickertext", notification.tickerText);
+            i.putExtra("tickerText", notification.tickerText);
             i.putExtra("number", notification.number);
+
+
+            //get extra information
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                Bundle extras = notification.extras;
+                if (extras.containsKey(Notification.EXTRA_TEMPLATE) && extras.getCharSequence("android.template") != null) {
+                    i.putExtra("template", extras.getCharSequence("android.template").toString());
+                }
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    Icon largeIcon = notification.getLargeIcon();
+                    if (largeIcon != null) {
+                        Bitmap largeIconBitmap = drawableToBitMap(largeIcon.loadDrawable(context));
+                        i.putExtra("largeIconBitmap", largeIconBitmap);
+                    }
+                } else {
+                    if (extras.containsKey(Notification.EXTRA_PICTURE)) {
+                        i.putExtra("largeIconBitmap", (Bitmap) extras.get(Notification.EXTRA_PICTURE));
+                    }
+                }
+
+                //notification actions
+                try {
+                    Notification.Action[] actions = notification.actions;
+                    i.putExtra("actions", actions);
+                } catch (Exception ignored) {
+
+                }
+                //get application packageName
+                final PackageManager pm = getApplicationContext().getPackageManager();
+                ApplicationInfo info;
+                try {
+                    info = pm.getApplicationInfo(sbn.getPackageName(), 0);
+                } catch (final PackageManager.NameNotFoundException e) {
+                    info = null;
+                }
+                final String applicationName = (String) (info != null ? pm.getApplicationLabel(info) : "(unknown)");
+                i.putExtra("applicationName", applicationName);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+                String postTime = dateFormat.format(sbn.getPostTime());
+                i.putExtra("postTimestamp", postTime);
+
+                if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getString("android.title") != null) {
+                    i.putExtra("title", extras.getString("android.title"));
+                }
+
+                if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
+                    i.putExtra("text", extras.getCharSequence("android.text").toString());
+                }
+
+            }
             return i;
         }
         return null;
@@ -212,15 +306,13 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
 
-
     private int getIconId(Notification notification) {
         Log.d(TAG, "getIconId(" + notification.toString() + ")");
         try {
             if (Build.VERSION.SDK_INT >= 28) {
                 Icon icon = notification.getSmallIcon();
                 return icon.getResId();
-            } else
-            if (Build.VERSION.SDK_INT >= 19) {
+            } else if (Build.VERSION.SDK_INT >= 19) {
                 return notification.extras.getInt(Notification.EXTRA_SMALL_ICON);
             }
         } catch (Exception e) {
@@ -256,8 +348,8 @@ public class mNotificationListener extends NotificationListenerService {
         Notification notification = sbn.getNotification();
         CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
-        String group_key =  notification.getGroup();
-        Log.i(TAG,"ID :" + sbn.getId()
+        String group_key = notification.getGroup();
+        Log.i(TAG, "ID :" + sbn.getId()
                 + "\t" + title
                 + "\t" + text
                 + "\t" + notification.tickerText

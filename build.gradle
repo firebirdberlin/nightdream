@@ -102,7 +102,7 @@ android {
         unitTests.returnDefaultValues = true
     }
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 17
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
         targetSdkVersion 29
