@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 }
 
 def getApiKeyOWM() {

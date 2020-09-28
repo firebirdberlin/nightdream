@@ -4,12 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/background_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/background_group"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"/>
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/background_view2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/background_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/background" />
 

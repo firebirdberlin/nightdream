@@ -14,16 +14,40 @@
         <item>@string/background_slideshow</item>
     </string-array>
 
+    <string-array name="backgroundImageDurationValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="backgroundImageDuration">
+        <item>@string/seconds_15</item>
+        <item>@string/seconds_30</item>
+        <item>@string/seconds_60</item>
+    </string-array>
+
     <string-array name="slideshowStyleValues">
         <item>1</item>
         <item>2</item>
-        <item>3</item>
     </string-array>
 
     <string-array name="slideshowStyles">
         <item>@string/slideshow_center_crop</item>
         <item>@string/slideshow_center_inside</item>
-        <item>@string/slideshow_center_animated</item>
+    </string-array>
+
+    <string-array name="backgroundMoveinValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="backgroundMovein">
+        <item>@string/background_movein_top</item>
+        <item>@string/background_movein_right</item>
+        <item>@string/background_movein_bottom</item>
+        <item>@string/background_movein_left</item>
     </string-array>
 
     <string-array name="decorationStyles">
