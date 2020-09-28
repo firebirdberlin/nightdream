@@ -52,6 +52,16 @@ OR
     <string name="autostart_timerange_label_end">End time</string>
     <string name="autostart_timerange_label_start">Start time</string>
     <string name="background">Background</string>
+    <string name="background_zoomin">Zoom animation</string>
+    <string name="background_zoomin_summary">Automatically zoom into background picture.</string>
+    <string name="background_fadein">Cross-fade animation</string>
+    <string name="background_fadein_summary">Cross-fade between background images.</string>
+    <string name="background_movein">Translation animation</string>
+    <string name="background_movein_direction">Slide the next background image into the screen from</string>
+    <string name="background_movein_top">top</string>
+    <string name="background_movein_right">right</string>
+    <string name="background_movein_bottom">bottom</string>
+    <string name="background_movein_left">left</string>
     <string name="background_auto_accent_color">Automatic color selection</string>
     <string name="background_auto_accent_summary">Automatically select an appropriate accent color.</string>
     <string name="background_black">Black</string>
@@ -59,6 +69,10 @@ OR
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
     <string name="background_slideshow">Slide show</string>
+    <string name="background_image_duration">Image change every</string>
+    <string name="seconds_60">60 seconds</string>
+    <string name="seconds_30">30 seconds</string>
+    <string name="seconds_15">15 seconds</string>
     <string name="backgroundServiceDialogTitle">Stop background service</string>
     <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode as well as the battery prediction. Widgets cannot be updated any more. Proceed?</string>
     <string name="backgroundServiceDialogMessageWidget">Cannot stop the background service while a widget is active. Please remove widgets and try again.</string>
@@ -272,6 +286,7 @@ OR
     <string name="showBatteryWarningTitle">Battery warning</string>
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
     <string name="show_apparent_temperature">include apparent temperature</string>
+    <string name="fade_clock">Fade clock</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
     <string name="show_temperature">Show temperature</string>

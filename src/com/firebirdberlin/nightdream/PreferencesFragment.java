@@ -152,7 +152,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             break;
                     }
 
-                    Log.i(TAG, "prefChangedListener called");
+                    Log.i(TAG, "prefChangedListener called. Key: "+key);
 
                     // update all widgets via intent, so the are repainted with current settings
                     ClockWidgetProvider.updateAllWidgets(mContext);
@@ -723,8 +723,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         String selection = prefs.getString("backgroundMode", "1");
 
         showPreference("chooseBackgroundImage", selection.equals("3"));
-        showPreference("slideshowStyle", selection.equals("4"));
-        boolean on = selection.equals("3") || selection.equals(("4"));
+
+        boolean on =  selection.equals("4");
+        showPreference("backgroundImageDuration", on);
+        showPreference("backgroundImageZoomIn", on);
+        showPreference("backgroundImageFadeIn", on);
+        showPreference("backgroundImageMoveIn", on);
+        showPreference("backgroundMovein", on);
+
+        on = selection.equals("3") || selection.equals(("4"));
+        showPreference("slideshowStyle", on);
         showPreference("hideBackgroundImage", on);
         showPreference("autoAccentColor", on);
 

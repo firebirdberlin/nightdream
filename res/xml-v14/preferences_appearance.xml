@@ -42,6 +42,14 @@
             app:title="@string/colors"
             />
 
+<!--
+ToDo
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="fadeClock"
+            app:title="@string/fade_clock" />
+-->
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
             app:defaultValue="true"
@@ -100,6 +108,53 @@
             app:key="slideshowStyle"
             app:title="@string/slideshow_style"
             app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="4"
+            app:entries="@array/backgroundImageDuration"
+            app:entryValues="@array/backgroundImageDurationValues"
+            app:key="backgroundImageDuration"
+            app:title="@string/background_image_duration"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="false"/>
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="backgroundImageZoomIn"
+            app:title="@string/background_zoomin"
+            app:summary="@string/background_zoomin_summary"
+            app:isPreferenceVisible="false"
+            />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="backgroundImageFadeIn"
+            app:title="@string/background_fadein"
+            app:summary="@string/background_fadein_summary"
+            app:isPreferenceVisible="false"
+            />
+
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="backgroundImageMoveIn"
+            app:title="@string/background_movein"
+            app:isPreferenceVisible="false"
+            />
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="1"
+            app:entries="@array/backgroundMovein"
+            app:entryValues="@array/backgroundMoveinValues"
+            app:key="backgroundMovein"
+            app:dependency="backgroundImageMoveIn"
+            app:title="@string/background_movein_direction"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="false"/>
 
         <CheckBoxPreference
             app:iconSpaceReserved="false"
