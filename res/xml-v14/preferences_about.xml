@@ -34,6 +34,12 @@
         app:key="recommendApp"
         app:title="@string/recommend"/>
 
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_export"
+        app:key="exportPreferences"
+        app:title="@string/export_preferences"/>
+
     <de.firebirdberlin.preference.AppDetailsPreference
         app:key="appDetails"
         app:icon="@drawable/ic_info"
@@ -140,7 +146,9 @@
             app:enabled="true"
             app:key="credits_pr"
             app:selectable="false"
-            app:summary="Martin Poschmann"
+            app:summary="
+Martin Poschmann\n
+Michael Groth"
             app:title="@string/credits_pull_requests" />
 
         <Preference
