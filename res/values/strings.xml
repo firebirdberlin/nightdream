@@ -248,6 +248,7 @@ OR
     <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend">Recommend app</string>
+    <string name="export_preferences">Export app information</string>
     <string name="remaining">rem.</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
