@@ -7,9 +7,12 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
+
 import androidx.core.content.FileProvider;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +28,7 @@ public class ExportPreferences extends AsyncTask<Void, Void, Void> {
     private Context context;
 
     public ExportPreferences(Context context) {
-        this.context  = context;
+        this.context = context;
     }
 
     @Override
@@ -36,16 +39,16 @@ public class ExportPreferences extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         File exportPath = new File(context.getFilesDir(), "export");
-        if(!exportPath.exists()) {
+        if (!exportPath.exists()) {
             boolean mkdirsResult = exportPath.mkdirs();
             Log.d(TAG, "Created Directory for export: " + mkdirsResult);
         }
 
         // delete old exports
         File[] oldFiles = exportPath.listFiles();
-        if(oldFiles != null) {
-            for(File oldFile : oldFiles) {
-                if(oldFile.isFile() && oldFile.getName().startsWith("nightclock_preferences_export")) {
+        if (oldFiles != null) {
+            for (File oldFile : oldFiles) {
+                if (oldFile.isFile() && oldFile.getName().startsWith("nightclock_preferences_export")) {
                     oldFile.delete();
                     Log.d(TAG, "Old files deleted: " + oldFile);
                 }
@@ -69,16 +72,16 @@ public class ExportPreferences extends AsyncTask<Void, Void, Void> {
             outputStream.write("\"device\": ".getBytes());
 
             JSONObject json = new JSONObject();
-            json.put("Version",      BuildConfig.VERSION_CODE);
-            json.put("SDK",          Build.VERSION.SDK_INT);
-            json.put("Product",      Build.PRODUCT);
+            json.put("Version", BuildConfig.VERSION_CODE);
+            json.put("SDK", Build.VERSION.SDK_INT);
+            json.put("Product", Build.PRODUCT);
             json.put("Manufacturer", Build.MANUFACTURER);
-            json.put("Model",        Build.MODEL);
-            json.put("Device",       Build.DEVICE);
-            json.put("Display",      Build.DISPLAY);
-            json.put("Timezone",     TimeZone.getDefault().getID());
-            json.put("Offset",       TimeZone.getDefault().getOffset(System.currentTimeMillis()));
-            json.put("ExportTime",   System.currentTimeMillis());
+            json.put("Model", Build.MODEL);
+            json.put("Device", Build.DEVICE);
+            json.put("Display", Build.DISPLAY);
+            json.put("Timezone", TimeZone.getDefault().getID());
+            json.put("Offset", TimeZone.getDefault().getOffset(System.currentTimeMillis()));
+            json.put("ExportTime", System.currentTimeMillis());
 
             Map<String, ?> allSP = context.getSharedPreferences(Settings.PREFS_KEY, 0).getAll();
             for (Map.Entry<String, ?> entry : allSP.entrySet()) {
@@ -88,7 +91,7 @@ public class ExportPreferences extends AsyncTask<Void, Void, Void> {
             outputStream.write(json.toString().getBytes());
             outputStream.write("\n\n}".getBytes());
             outputStream.close();
-        } catch(JSONException | IOException ex) {
+        } catch (JSONException | IOException ex) {
             Toast.makeText(context, "Export failed.", Toast.LENGTH_LONG).show();
             return null;
         }
