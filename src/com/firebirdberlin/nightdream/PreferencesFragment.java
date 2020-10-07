@@ -396,6 +396,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     }
                 });
             }
+
+            Preference exportPreferences = findPreference("exportPreferences");
+            if (exportPreferences != null) {
+                exportPreferences.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        public boolean onPreferenceClick(Preference preference) {
+                            ExportPreferences export = new ExportPreferences(getActivity());
+                            export.execute();
+                        return true;
+                        }
+                    });
+            }
+
             Preference uninstallApp = findPreference("uninstallApp");
             if (uninstallApp != null) {
                 uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
