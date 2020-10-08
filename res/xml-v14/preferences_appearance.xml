@@ -50,6 +50,7 @@ ToDo
             app:key="fadeClock"
             app:title="@string/fade_clock" />
 -->
+
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
             app:defaultValue="true"

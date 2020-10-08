@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -271,7 +272,10 @@ public class ClockLayout extends LinearLayout {
             if (showDivider) {
                 divider.setVisibility(VISIBLE);
             }
-            setBackgroundColor(Color.parseColor("#44000000"));
+            GradientDrawable shape =  new GradientDrawable();
+            shape.setCornerRadius(30);
+            shape.setColor(Color.parseColor("#44000000"));
+            setBackground(shape);
         }
     }
 

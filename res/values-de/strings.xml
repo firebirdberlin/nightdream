@@ -69,7 +69,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_movein_bottom">unten</string>
     <string name="background_movein_left">links</string>
     <string name="background_auto_accent_color">Automatische Farbauswahl</string>
-    <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen</string>
+    <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen.</string>
     <string name="background_black">Schwarz</string>
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Bild</string>
@@ -286,7 +286,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Beim Start eine Warnung anzeigen, falls keine Stromquelle angeschlossen ist.</string>
     <string name="showBatteryWarningTitle">Akkuwarnung</string>
     <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
-    <string name="fade_clock">Uhr automatisch ein / ausblenden</string>
     <string name="show_date">Datum anzeigen</string>
     <string name="show_divider">Trennlinie anzeigen</string>
     <string name="show_temperature">Temperatur anzeigen</string>
