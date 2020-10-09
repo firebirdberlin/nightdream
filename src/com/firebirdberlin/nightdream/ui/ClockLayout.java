@@ -62,7 +62,6 @@ public class ClockLayout extends LinearLayout {
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
 
-
     public ClockLayout(Context context) {
         super(context);
         this.context = context;
@@ -519,7 +518,6 @@ public class ClockLayout extends LinearLayout {
         final float sign = mirrorText ? -1.f : 1.f;
         if (animated) {
             animate().setDuration(1000).scaleX(sign * factor).scaleY(factor);
-
         } else {
             setScaleX(sign * factor);
             setScaleY(factor);
@@ -675,6 +673,5 @@ public class ClockLayout extends LinearLayout {
         if (weatherLayout2 != null) {
             weatherLayout2.update(entry);
         }
-
     }
 }

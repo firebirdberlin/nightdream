@@ -5,6 +5,9 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -35,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -80,6 +84,7 @@ public class NightDreamActivity extends BillingHelperActivity
         RadioInfoDialogFragment.RadioInfoDialogListener {
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
+    public static Window window;
     static long lastNoiseTime = System.currentTimeMillis();
     private static int PENDING_INTENT_STOP_APP = 1;
     private static int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
@@ -94,7 +99,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private BottomPanelLayout bottomPanelLayout;
     private FrameLayout clockLayoutContainer;
     private boolean screenWasOn = false;
-    private Context context = null;
+    private static Context context = null;
     private float last_ambient = 4.0f;
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
@@ -240,7 +245,7 @@ public class NightDreamActivity extends BillingHelperActivity
         setContentView(R.layout.main);
 
         Log.i(TAG, "onCreate()");
-        Window window = getWindow();
+        window = getWindow();
 
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);

@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -121,6 +122,9 @@ public class NightDreamUI {
     private FlexboxLayout sidePanel;
     private BottomPanelLayout bottomPanelLayout;
     private Settings settings;
+    private float clockLayout_xDelta;
+    private float clockLayout_yDelta;
+
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -178,10 +182,11 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
+            clockLayout.setVisibility(View.VISIBLE);
             Configuration config = getConfiguration();
             clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
             //clockLayout.update(settings.weatherEntry);
-
+            setClockPosition(false);
             float s = getScaleFactor(config);
             clockLayout.setScaleFactor(s, true);
             Utility.turnScreenOn(mContext);
@@ -447,6 +452,41 @@ public class NightDreamUI {
     };
      */
 
+     public Runnable initClockLayout = new Runnable() {
+        @Override
+        public void run() {
+
+            clockLayout.setVisibility(View.INVISIBLE);
+            setupClockLayout();
+            setColor();
+            updateWeatherData();
+            controlsVisible = true;
+
+            brightnessProgress.setVisibility(View.INVISIBLE);
+            setupBackgroundImage();
+
+            showAlarmClock();
+            setupShowcase();
+
+            clockLayout.post(new Runnable() {
+                public void run() {
+                    handler.postDelayed(zoomIn, 500);
+                }
+            });
+        }
+    };
+
+    private Runnable setupSidePanel = new Runnable() {
+        @Override
+        public void run() {
+            if (sidePanel.getX() < 0) {
+                initSidePanel();
+            }
+
+        }
+    };
+
+    @SuppressLint("ClickableViewAccessibility")
     public NightDreamUI(Context context, Window window) {
         mContext = context;
 
@@ -505,13 +545,35 @@ public class NightDreamUI {
         // prepare zoom-in effect
         menuIcon.setScaleX(.8f);
         menuIcon.setScaleY(.8f);
-        clockLayout.setScaleFactor(.1f);
+       // clockLayout.setScaleFactor(.1f);
 
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
         checkForReviewRequest();
         isDebuggable = Utility.isDebuggable(context);
+
+        clockLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent e) {
+                switch (e.getAction()) {
+                   case MotionEvent.ACTION_DOWN:
+                        clockLayout_xDelta = e.getRawX() - clockLayout.getX();
+                        clockLayout_yDelta = e.getRawY() - clockLayout.getY() ;
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (!locked && settings.dragClockAround) {
+                            float clockLayout_xPosition = e.getRawX() - clockLayout_xDelta;
+                            float clockLayout_yPosition = e.getRawY() - clockLayout_yDelta;
+
+                            setClockPosition(clockLayout_xPosition,clockLayout_yPosition, true);
+                        }
+                          break;
+                }
+                return true;
+            }
+        });
     }
 
     private void resetAlarmClockHideDelay() {
@@ -535,7 +597,16 @@ public class NightDreamUI {
     public void onResume() {
         Log.d(TAG, "onResume()");
         hideSystemUI();
+
+        int oldClockLayoutID = settings.getClockLayoutID(false);
+
         settings.reload();
+
+        if ( (settings.getxPositionClock(getConfiguration().orientation) == 0) &&
+             (settings.getyPositionClock(getConfiguration().orientation) == 0) ) {
+            centerClockLayout();
+         }
+
         vibrantColor = 0;
         vibrantColorDark = 0;
         this.locked = settings.isUIlocked;
@@ -599,9 +670,12 @@ public class NightDreamUI {
     }
 
     public void setupClockLayout() {
+   /*
         if (settings.screenProtection != Settings.ScreenProtectionModes.MOVE) {
             centerClockLayout();
         }
+
+    */
         int layoutId = settings.getClockLayoutID(false);
         clockLayout.setLayout(layoutId);
         clockLayout.setDateFormat(settings.dateFormat);
@@ -622,6 +696,18 @@ public class NightDreamUI {
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
         clockLayout.update(settings.weatherEntry);
+
+        if (clockLayout.getScaleY() == .1f ) {
+            clockLayout.animate()
+                    .x(settings.getxPositionClock(getConfiguration().orientation))
+                    .y(settings.getyPositionClock(getConfiguration().orientation))
+                    .setDuration(1)
+                    .start();
+        }
+        else{
+            clockLayout.setX(settings.getxPositionClock(getConfiguration().orientation));
+            clockLayout.setY(settings.getyPositionClock(getConfiguration().orientation));
+        }
     }
 
     private void setColor() {
@@ -938,8 +1024,8 @@ public class NightDreamUI {
         parentLayout.bringChildToFront(textViewExif);
 
         if (files != null && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
-            AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
+            AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
             runningTask.execute(preloadBackgroundImageFile);
         }
     }
@@ -1148,16 +1234,22 @@ public class NightDreamUI {
     }
 
     public void onConfigurationChanged(final Configuration newConfig) {
+        Log.d(TAG, "onConfigurationChanged()");
         clockLayout.animate().cancel();
         removeCallbacks(moveAround);
         removeCallbacks(backgroundChange);
 
         Runnable fixConfig = new Runnable() {
-            public void run() {
-                clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
-                centerClockLayout();
-                float s = getScaleFactor(newConfig);
-                clockLayout.setScaleFactor(s);
+                public void run() {
+                    clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
+                    if ( (settings.getxPositionClock(getConfiguration().orientation) == 0) &&
+                            (settings.getyPositionClock(getConfiguration().orientation) == 0) ) {
+                        centerClockLayout();
+                    }
+                    clockLayoutContainer.post(initClockLayout);
+                    float s = getScaleFactor(newConfig);
+                    clockLayout.setScaleFactor(s);
+                    setClockPosition(false);
 
                 handler.postDelayed(moveAround, 60000);
                 handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
@@ -1179,8 +1271,11 @@ public class NightDreamUI {
     }
 
     private void centerClockLayout() {
+        Configuration config = getConfiguration();
+
         clockLayout.setTranslationX(0);
         clockLayout.setTranslationY(0);
+        settings.setPositionClock(clockLayout.getX(),clockLayout.getY(), config.orientation);
         clockLayout.invalidate();
     }
 
@@ -1786,6 +1881,59 @@ public class NightDreamUI {
             showcaseView = null;
         }
  */
+    }
+
+    public void setClockPosition(boolean savePosition){
+        Configuration config = getConfiguration();
+        setClockPosition(settings.getxPositionClock(config.orientation), settings.getyPositionClock(config.orientation), savePosition);
+    }
+
+    public void setClockPosition(float clockLayout_xPosition, float clockLayout_yPosition, boolean savePosition ) {
+        Configuration config = getConfiguration();
+
+        if ( clockLayout.getWidth() > 0 && clockLayout.getHeight() > 0) {
+
+            int scaled_width;
+            int scaled_height;
+
+            if ( clockLayout.getScaleX() > 0 && savePosition) {
+                scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
+                scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
+            }
+            else {
+                scaled_width = Math.abs((int) (clockLayout.getWidth() * getScaleFactor(config)));
+                scaled_height = Math.abs((int) (clockLayout.getHeight() * getScaleFactor(config)));
+            }
+
+            int rxpos = clockLayoutContainer.getWidth() - scaled_width;
+            int rypos = clockLayoutContainer.getHeight() - scaled_height;
+
+            if (clockLayout_xPosition + (int) ((clockLayout.getWidth() - scaled_width) / 2) > rxpos) {
+                clockLayout_xPosition = rxpos - (int) ((clockLayout.getWidth() - scaled_width) / 2);
+            }
+
+            if (clockLayout_yPosition + (int) ((clockLayout.getHeight() - scaled_height) / 2) > rypos) {
+                clockLayout_yPosition = rypos - (int) ((clockLayout.getHeight() - scaled_height) / 2);
+            }
+
+            if (clockLayout_xPosition + (int) ((clockLayout.getWidth() - scaled_width) / 2) < 0) {
+                clockLayout_xPosition = -(int) ((clockLayout.getWidth() - scaled_width) / 2);
+            }
+
+            if (clockLayout_yPosition + (int) ((clockLayout.getHeight() - scaled_height) / 2) < 0) {
+                clockLayout_yPosition = -(int) ((clockLayout.getHeight() - scaled_height) / 2);
+            }
+
+            clockLayout.animate()
+                    .x(clockLayout_xPosition)
+                    .y(clockLayout_yPosition)
+                    .setDuration(0)
+                    .start();
+
+            if (savePosition){
+                settings.setPositionClock(clockLayout_xPosition, clockLayout_yPosition, config.orientation);
+            }
+        }
     }
 
     private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
