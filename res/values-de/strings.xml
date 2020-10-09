@@ -143,6 +143,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Spenden</string>
     <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
+    <string name="drag_clock_around_summary">Position der Uhr durch ziehen ändern.</string>
+    <string name="drag_clock_around">Uhr ziehen</string>
     <string name="flashlight">Taschenlampe</string>
     <string name="forecast">5-Tage-Vorhersage</string>
     <string name="gift_for_donors">Geschenk für Ihre Spende</string>

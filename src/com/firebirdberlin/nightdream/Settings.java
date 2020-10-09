@@ -66,6 +66,7 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
+    public boolean dragClockAround = false;
     public boolean speakTime = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
@@ -106,6 +107,14 @@ public class Settings {
     public float scaleClock = 1.f;
     public float scaleClockPortrait = -1.f;
     public float scaleClockLandscape = -1.f;
+
+    public float xPosition = 0.f;
+    public float yPosition = 0.f;
+    public float xPositionPortrait = 0.f;
+    public float yPositionPortrait = 0.f;
+    public float xPositionLandscape = 0.f;
+    public float yPositionLandscape = 0.f;
+
     public int alarmVolume = 3;
     public int alarmVolumeReductionPercent = 0;
     public int alarmFadeInDurationSeconds = 10;
@@ -372,6 +381,7 @@ public class Settings {
         autoBrightness = settings.getBoolean("autoBrightness", false);
         clockLayoutMirrorText = settings.getBoolean("clockLayoutMirrorText", false);
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
+        dragClockAround = settings.getBoolean("dragClockAround", false);
         speakTime = settings.getBoolean("speakTime", false);
         alwaysOnTimeRangeStartInMinutes = settings.getInt("always_on_time_range_start_minutes", -1);
         alwaysOnTimeRangeEndInMinutes = settings.getInt("always_on_time_range_end_minutes", -1);
@@ -433,6 +443,15 @@ public class Settings {
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", -1.f);
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", -1.f);
         sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
+
+        xPosition = settings.getFloat("xPosition", 0.f);
+        yPosition = settings.getFloat("yPosition", 0.f);
+        xPositionPortrait = settings.getFloat("xPositionPortrait", 0.f);
+        yPositionPortrait = settings.getFloat("yPositionPortrait", 0.f);
+        xPositionLandscape = settings.getFloat("xPositionLandscape", 0.f);
+        yPositionLandscape = settings.getFloat("yPositionLandscape", 0.f);
+
+        sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
@@ -997,6 +1016,52 @@ public class Settings {
             isAllowed = now.after(alwaysOnTime);
         }
         return isAllowed;
+    }
+
+    public void setPositionClock(float xPosition, float yPosition, int orientation) {
+
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                xPositionLandscape = xPosition;
+                yPositionLandscape = yPosition;
+                settings.edit().putFloat("xPositionLandscape", xPosition).apply();
+                settings.edit().putFloat("yPositionLandscape", yPosition).apply();
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                xPositionPortrait = xPosition;
+                yPositionPortrait = yPosition;
+                settings.edit().putFloat("xPositionPortrait", xPosition).apply();
+                settings.edit().putFloat("yPositionPortrait", yPosition).apply();
+                break;
+            default:
+                this.xPosition = xPosition;
+                this.yPosition = yPosition;
+                settings.edit().putFloat("xPosition", xPosition).apply();
+                settings.edit().putFloat("yPosition", yPosition).apply();
+                break;
+        }
+    }
+
+    public float getxPositionClock(int orientation) {
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                return xPositionLandscape;
+            case Configuration.ORIENTATION_PORTRAIT:
+                return xPositionPortrait;
+            default:
+                return xPosition;
+        }
+    }
+
+    public float getyPositionClock(int orientation) {
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                return yPositionLandscape;
+            case Configuration.ORIENTATION_PORTRAIT:
+                return yPositionPortrait;
+            default:
+                return yPosition;
+        }
     }
 
     public void setScaleClock(float factor, int orientation) {
