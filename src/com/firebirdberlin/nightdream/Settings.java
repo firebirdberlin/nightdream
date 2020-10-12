@@ -14,6 +14,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.BatteryValue;
@@ -128,7 +129,13 @@ public class Settings {
     public int alarmFadeInDurationSeconds = 10;
     private int background_mode = 1;
     public int slideshowStyle = 1;
-    public boolean background_mode_auto_color = true;
+    public int backgroundImageDuration = 4;
+    public boolean fade_clock = false;
+    public boolean background_zoomin = false;
+    public boolean background_fadein = false;
+    public boolean background_movein = false;
+    public int background_movein_style = 1;
+    public boolean background_mode_auto_color = false;
     int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
@@ -229,6 +236,12 @@ public class Settings {
         scheduledAutoStartTimeRangeStartInMinutes = settings.getInt("scheduledAutoStartTimeRange_start_minutes", -1);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         slideshowStyle = Integer.parseInt(settings.getString("slideshowStyle", "1"));
+        backgroundImageDuration = Integer.parseInt(settings.getString("backgroundImageDuration", "4"));
+        background_fadein = getBackgroundImageFadeIn();
+        background_zoomin = getBackgroundImageZoomIn();
+        background_movein = getBackgroundImageMoveIn();
+        background_movein_style = Integer.parseInt(settings.getString("backgroundMovein", "1"));
+        fade_clock = settings.getBoolean("fadeClock", false);
         background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
@@ -336,6 +349,38 @@ public class Settings {
         for (String weekday : scheduledAutostartWeekdaysStrings) {
             scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
         }
+    }
+
+    boolean getBackgroundImageZoomIn() {
+        boolean on = settings.getBoolean("backgroundImageZoomIn", false);
+        if (slideshowStyle == SLIDESHOW_STYLE_ANIMATED) {
+            on = true;
+            setBackgroundZoomIn(true);
+            setSlideShowStyle(SLIDESHOW_STYLE_CENTER);
+        }
+        return on;
+    }
+
+    boolean getBackgroundImageFadeIn() {
+        return settings.getBoolean("backgroundImageFadeIn", false);
+    }
+
+    boolean getBackgroundImageMoveIn() {
+        return settings.getBoolean("backgroundImageMoveIn", false);
+    }
+
+    public void setSlideShowStyle(int status){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("slideshowStyle", status);
+        editor.apply();
+    }
+
+    public void setBackgroundZoomIn(boolean status){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("zoominBackgroundImage", status);
+        editor.apply();
     }
 
     private void setPowerSourceOptions() {
