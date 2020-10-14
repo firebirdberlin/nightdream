@@ -28,9 +28,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Adicione um tipo de letra personalizado</string>
     <string name="alarm">Alarme</string>
     <string name="alarmFadeIn">Aumentando o volume</string>
-    <string name="alarmUpcoming">Próximo alarme</string>
     <string name="alarmStartDate">Próximo alarme ativado</string>
     <string name="alarmStartsFrom">De</string>
+    <string name="alarmUpcoming">Próximo alarme</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Desligue a tela durante a noite.</string>
     <string name="allow_screen_off">Desligue a tela</string>
@@ -260,9 +260,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Ao abrir o aplicativo, mostrar um aviso de Uso de Bateria</string>
     <string name="showBatteryWarningTitle">Aviso de bateria</string>
     <string name="showBatteryWarningMessage">Atenção! Nenhum carregador conectado!</string>
+    <string name="show_apparent_temperature">inclui temperatura aparente</string>
     <string name="show_date">Mostre a data</string>
     <string name="show_divider">Exibir divisor</string>
-    <string name="show_apparent_temperature">inclui temperatura aparente</string>
     <string name="show_temperature">Mostra a temperatura</string>
     <string name="show_weather">Mostra o clima local</string>
     <string name="show_wind_speed">Mostra a velocidade do vento</string>

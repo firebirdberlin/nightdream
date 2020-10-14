@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+Translations wanted !
+=====================
+
+If you want to contribute a translation to NightDream
+simply follow these steps
+
+-> Edit the strings in this file
+-> Send your file to stefan.fruhner@googlemail.com.
+OR
+-> Open a pull request on Github.
+
+Please preserve the xml tags and the utf8 encoding.
+-->
+
+
+<resources>
+    <string name="about">앱정보</string>
+    <string name="action_change">변경</string>
+    <string name="action_skip">취소</string>
+    <string name="action_snooze">스누즈</string>
+    <string name="action_stop">정지</string>
+    <string name="activateDoNotDisturb">방해금지 작동</string>
+    <string name="activateDoNotDisturbAllowPriority">우선순위</string>
+    <string name="activateDoNotDisturbSummary">앱작동시 방해금지모드착동</string>
+    <string name="add_new_alarm">새알람</string>
+    <string name="add_custom_alarm_tone">알람소리추가</string>
+    <string name="add_custom_font">알람폰트추가</string>
+    <string name="alarm">알람</string>
+    <string name="alarmFadeIn">음량점점커지게</string>
+    <string name="alarmFadeInDurationSeconds">커지는시간</string>
+    <string name="alarmStartDate">다음알람ON</string>
+    <string name="alarmStartsFrom"> 시작</string>
+    <string name="alarmVolume">볼륨</string>
+    <string name="alarmVolumeReductionPercent">볼륨줄이기비율</string>
+    <string name="allow_screen_off_summary">야간화면끄기</string>
+    <string name="allow_screen_off">화면끄기</string>
+    <string name="always_on">Always On</string>
+    <string name="alwaysOnBatteryLevel">배터리가 다음레벨이사밀 때만 작동하는</string>
+    <string name="alwaysOnStartWithLockedUI">화면잠금</string>
+    <string name="alwaysOnStartWithLockedUIDesc">압작동시 화면잠금모드진입. 화면을 길게 누르면 잠금해제</string>
+</resources>

@@ -27,9 +27,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Добавить свой шрифт</string>
     <string name="alarm">Будильник</string>
     <string name="alarmFadeIn">Нарастание громкости</string>
-    <string name="alarmUpcoming">Время будильника</string>
     <string name="alarmStartDate">Включить следующий будильник</string>
     <string name="alarmStartsFrom">От</string>
+    <string name="alarmUpcoming">Время будильника</string>
     <string name="alarmVolume">Громкость</string>
     <string name="allow_screen_off_summary">Выключать экран в ночное время</string>
     <string name="allow_screen_off">Выключить экран</string>

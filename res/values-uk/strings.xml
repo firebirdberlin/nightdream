@@ -28,9 +28,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Додати власний шрифт</string>
     <string name="alarm">Будильник</string>
     <string name="alarmFadeIn">Плавна гучність</string>
-    <string name="alarmUpcoming">Старт будильника</string>
     <string name="alarmStartDate">Наступний будильник</string>
     <string name="alarmStartsFrom">Початок</string>
+    <string name="alarmUpcoming">Старт будильника</string>
     <string name="alarmVolume">Гучність</string>
     <string name="allow_screen_off_summary">Вимикати екран на ніч</string>
     <string name="allow_screen_off">Вимикати екран</string>
@@ -209,9 +209,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Функція блокування екрану потребує дозволів адміністратора пристрою. Перед видаленням, будь-ласка, вимкніть цю функцію.</string>
     <string name="useDeviceLockExplanation">Блокувати пристрій, коли увімкнено «Нічний годинник».</string>
     <string name="useDeviceLock">Блокувати пристрій</string>
+    <string name="weather">Погода</string>
     <string name="weather_calculation_time">час за місцем погоди</string>
     <string name="weather_city_id_title">Пошук місцезнаходження</string>
     <string name="weather_info_title">Інформація</string>
-    <string name="weather">Погода</string>
     <string name="width">Ширина</string>
 </resources>
