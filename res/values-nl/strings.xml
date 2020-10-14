@@ -17,6 +17,7 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Over</string>
+    <string name="action_change">Verander</string>
     <string name="action_skip">Overslaan</string>
     <string name="action_snooze">Sluimer</string>
     <string name="action_stop">Stop</string>
@@ -28,10 +29,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Aangepast lettertype toevoegen</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Toenemend volume</string>
-    <string name="alarmUpcoming">Aanstaand alarm</string>
+    <string name="alarmFadeInDurationSeconds">Vervaag in duur</string>
     <string name="alarmStartDate">Volgend alarm op</string>
     <string name="alarmStartsFrom">Van</string>
+    <string name="alarmUpcoming">Aanstaand alarm</string>
     <string name="alarmVolume">Volume</string>
+    <string name="alarmVolumeReductionPercent">Verminder volume met</string>
     <string name="allow_screen_off_summary">Scherm \'s nachts uitzetten.</string>
     <string name="allow_screen_off">Scherm uitzetten</string>
     <string name="always_on">Altijd aan</string>
@@ -87,6 +90,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_analog">analoge klok</string>
     <string name="clock_layout_calendar">digitale klok met kalender</string>
     <string name="clock_layout_digital">digitale klok</string>
+    <string name="clock_layout_digital2">Digitale klok met grote weericonen</string>
     <string name="clock_layout_elegant_analog">elegante analoge klok</string>
     <string name="clock_layout_digit_analog">analoge klok met cijfers</string>
     <string name="clock_layout_digital_flip">flip klok</string>
@@ -119,6 +123,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Minuutwijzer</string>
     <string name="decoration_style_labels">Cijfers</string>
     <string name="decoration_style_rust">Roest</string>
+    <string name="decoration_weather_icon_size">Weer icoon grootte</string>
     <string name="donate">Doneren</string>
     <string name="doubleTapToFinishSummary">Dubbeltik op het scherm om de app te sluiten.</string>
     <string name="doubleTapToFinishTitle">Dubbeltikken om te sluiten</string>
@@ -197,17 +202,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_radius">Straal van buitenste cirkel</string>
     <string name="outer_circle_width">Diameter van buitenste cirkel</string>
     <string name="permission_request_autostart">De machtiging om overlays the tonen (autostart) is niet verleend. Verleen deze machtiging a.u.b.</string>
+    <string name="permission_request_location_mode">de locatiemode laat scannen naar de huidige locatie niet toe</string>
     <string name="persistent_battery_value_while_charging">Permanente batterijstatus</string>
     <string name="persistent_battery_value_while_charging_summary">Batterijstatus permanent tonen tijdens het opladen.</string>
     <string name="power_source">Energiebron</string>
     <string name="preferences">Voorkeuren</string>
     <string name="prev">vorige</string>
     <string name="preview">Voorbeeld</string>
-    <string name="product_description_weather">Een update bevat\n
-    \n- een één-lijns weerbericht onder de klok
-    \n- een vijfdaagse weersvoorspelling
-    \n- meer wijzerplaten
-    </string>
+<string name="product_description_weather">Een update bevat\n\n- een één-lijns weerbericht onder de klok\n- een vijfdaagse weersvoorspelling\n- meer wijzerplaten</string>
     <string name="product_name_actions">Altijd aanwezig</string>
     <string name="product_name_donation">Donatie</string>
     <string name="product_name_pro">Volledige versie</string>
@@ -264,10 +266,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Laat een waarschuwing zien bij opstarten als batterij gebruikt wordt.</string>
     <string name="showBatteryWarningTitle">Batterijwaarschuwing</string>
     <string name="showBatteryWarningMessage">Let op: Geen voeding aangesloten!</string>
+    <string name="show_apparent_temperature">Toon gevoelstemperatuur</string>
     <string name="show_date">Datum tonen</string>
     <string name="show_divider">Scheidingslijn tonen</string>
-    <string name="show_apparent_temperature">Toon gevoelstemperatuur</string>
     <string name="show_temperature">Temperatuur tonen</string>
+    <string name="show_seconds">Toon seconden</string>
     <string name="show_weather">Lokaal weerbericht tonen</string>
     <string name="show_wind_speed">Windsnelheid tonen</string>
     <string name="slideshow_center_crop">snij randen bij</string>
@@ -276,6 +279,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="slideshow_style">Stijl</string>
     <string name="sleep_time_dialog_title">Bedtijd</string>
     <string name="snoozeTime">Sluimertijd</string>
+    <string name="snoozeAfter">Auto snooze na</string>
     <string name="speedUnit">Eenheid van windsnelheid</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">met scherm aan</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Deze optie zorgt ervoor dat je batterij snel leegloopt!</string>
