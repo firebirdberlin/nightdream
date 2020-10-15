@@ -95,6 +95,8 @@ public class Settings {
     public boolean muteRinger = false;
     public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
+    public boolean prevent_burnin = true;
+    public int prevent_burnin_mode = 1;
     boolean showBatteryWarning = true;
     public boolean showDate = true;
     public boolean showWeather = false;
@@ -278,6 +280,8 @@ public class Settings {
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
+        prevent_burnin = settings.getBoolean("pburnin", true);
+        prevent_burnin_mode = Integer.parseInt(settings.getString("pburninMode", "1"));
         final String defaultSecondaryColorString = "#C2C2C2";
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor(defaultSecondaryColorString));
         secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor(defaultSecondaryColorString));

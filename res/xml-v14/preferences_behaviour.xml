@@ -15,8 +15,19 @@
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="true"
-        app:key="restlessMode"
-        app:title="@string/restless_mode" />
+        app:key="pburnin"
+        app:title="@string/pburnin"
+        app:isPreferenceVisible="true"
+        />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:entries="@array/pburninMode"
+        app:entryValues="@array/pburninModeValues"
+        app:key="pburninMode"
+        app:dependency="pburnin"
+        app:useSimpleSummaryProvider="true"/>
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"

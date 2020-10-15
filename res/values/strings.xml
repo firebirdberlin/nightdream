@@ -273,7 +273,9 @@ OR
     <string name="remaining">rem.</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
+    <string name="pburnin">Prevent the clock from burn in</string>
     <string name="restless_mode">Move the clock around</string>
+    <string name="fade_clock">Fade clock</string>
     <string name="review_request">Please rate this application. Thanks !</string>
     <string name="scheduledAutoStart">Scheduled Autostart</string>
     <string name="scheduledAutoStartChargerRequired">only when charging</string>
@@ -293,7 +295,6 @@ OR
     <string name="showBatteryWarningTitle">Battery warning</string>
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
     <string name="show_apparent_temperature">include apparent temperature</string>
-    <string name="fade_clock">Fade clock</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
     <string name="show_temperature">Show temperature</string>
