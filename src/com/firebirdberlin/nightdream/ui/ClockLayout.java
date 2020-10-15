@@ -73,12 +73,12 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void init() {
-        if( getChildCount() > 0) {
+        if (getChildCount() > 0) {
             removeAllViews();
         }
 
         LayoutInflater inflater = (LayoutInflater)
-            context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
@@ -142,7 +142,7 @@ public class ClockLayout extends LinearLayout {
             clock.setTypeface(typeface);
 
         }
-        if ( clock_ampm != null ) {
+        if (clock_ampm != null) {
             clock_ampm.setTypeface(typeface);
         }
     }
@@ -152,7 +152,7 @@ public class ClockLayout extends LinearLayout {
             clock.setTextColor(color);
             applyTexture(clock, glowRadius, glowColor, textureId);
         }
-        if ( clock_ampm != null ) {
+        if (clock_ampm != null) {
             clock_ampm.setTextColor(color);
             applyTexture(clock_ampm, glowRadius, glowColor, textureId);
         }
@@ -261,7 +261,7 @@ public class ClockLayout extends LinearLayout {
 
         boolean shallHide = (
                 date != null && date.getVisibility() != VISIBLE
-                && weatherLayout.getVisibility() != VISIBLE
+                        && weatherLayout.getVisibility() != VISIBLE
         );
         if (shallHide) {
             if (showDivider) {
@@ -272,24 +272,24 @@ public class ClockLayout extends LinearLayout {
             if (showDivider) {
                 divider.setVisibility(VISIBLE);
             }
-            GradientDrawable shape =  new GradientDrawable();
+            GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(30);
             shape.setColor(Color.parseColor("#44000000"));
             setBackground(shape);
         }
     }
 
-    public void updateLayout(int parentWidth, Configuration config){
+    public void updateLayout(int parentWidth, Configuration config) {
         updateLayout(parentWidth, -1, config, false);
     }
 
-    public void updateLayoutForWidget(int parentWidth, int parentHeight, Configuration config){
+    public void updateLayoutForWidget(int parentWidth, int parentHeight, Configuration config) {
         updateLayout(parentWidth, parentHeight, config, true);
     }
 
     private void updateLayout(
             int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
-    ){
+    ) {
         if (
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
                         && notificationLayout != null
