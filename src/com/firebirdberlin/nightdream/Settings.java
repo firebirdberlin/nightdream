@@ -95,6 +95,7 @@ public class Settings {
     public boolean muteRinger = false;
     public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
+    public int screenProtection = 1;
     boolean showBatteryWarning = true;
     public boolean showDate = true;
     public boolean showWeather = false;
@@ -278,6 +279,7 @@ public class Settings {
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
+        screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor(defaultSecondaryColorString));
         secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor(defaultSecondaryColorString));
@@ -349,6 +351,14 @@ public class Settings {
         for (String weekday : scheduledAutostartWeekdaysStrings) {
             scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
         }
+    }
+
+    int getScreenProtection() {
+        if (settings.contains("restlessMode") && (!settings.getBoolean("restlessMode",true))){
+            settings.edit().putString("screenProtection", "0").apply();
+            settings.edit().remove("restlessMode").apply();
+        }
+        return Integer.parseInt(settings.getString("screenProtection", "1"));
     }
 
     boolean getBackgroundImageZoomIn() {
