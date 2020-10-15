@@ -18,12 +18,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 
+import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.google.android.flexbox.FlexboxLayout;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -169,84 +171,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         int iconId = intent.getIntExtra("iconId", -1);
         String packageName = intent.getStringExtra("packageName");
-
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View mediaStyleControl = inflater.inflate(R.layout.notification_mediacontrol, null);
-        ImageView largeIconImageView = mediaStyleControl.findViewById(R.id.notify_largeicon);
-
-        ImageView notificationMessageBitmap = mediaStyleControl.findViewById(R.id.notify_smallicon);
         Drawable notificationMessageSmallIcon = getNotificationIcon(context, packageName, iconId);
-        assert notificationMessageSmallIcon != null;
-        notificationMessageSmallIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-        notificationMessageBitmap.setImageDrawable(getNotificationIcon(context, packageName, iconId));
 
-        TextView appName = mediaStyleControl.findViewById(R.id.notify_appname);
-        appName.setText(intent.getStringExtra("applicationName"));
-
-        TextView timestamp = mediaStyleControl.findViewById(R.id.notify_timestamp);
-        timestamp.setText(intent.getStringExtra("postTimestamp"));
-
-        TextView title = mediaStyleControl.findViewById(R.id.notify_title);
-        title.setText(intent.getStringExtra("title"));
-
-        TextView ntext = mediaStyleControl.findViewById(R.id.notify_text);
-        ntext.setText(intent.getStringExtra("text"));
-
-        Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
-        largeIconImageView.setImageBitmap(coverBitmap);
-        mediaStyleControl.findViewById(R.id.notification_control).setVisibility(View.VISIBLE);
-
-        ImageView[] notificationActionImages = new ImageView[5];
-        notificationActionImages[0] = mediaStyleControl.findViewById(R.id.notify_actionview1);
-        notificationActionImages[1] = mediaStyleControl.findViewById(R.id.notify_actionview2);
-        notificationActionImages[2] = mediaStyleControl.findViewById(R.id.notify_actionview3);
-        notificationActionImages[3] = mediaStyleControl.findViewById(R.id.notify_actionview4);
-        notificationActionImages[4] = mediaStyleControl.findViewById(R.id.notify_actionview5);
-
-        for (ImageView ActionImage : notificationActionImages) {
-            ActionImage.setVisibility(View.GONE);
-        }
-
-        int positionAction = 0;
-        try {
-            for (final Notification.Action action : (Notification.Action[]) intent.getParcelableArrayExtra("actions")) {
-                try {
-                    Context remotePackageContext = context.getApplicationContext().createPackageContext(
-                            intent.getStringExtra("packageName"), 0
-                    );
-
-                    Drawable notificationDrawableIcon = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        Icon icon = action.getIcon();
-                        if (icon != null) {
-                            notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
-                        }
-                    } else {
-                        int iconResId = action.icon;
-                        notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
-                    }
-                    notificationActionImages[positionAction].setImageDrawable(notificationDrawableIcon);
-                    notificationActionImages[positionAction].setVisibility(View.VISIBLE);
-                    notificationActionImages[positionAction].setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            try {
-                                action.actionIntent.send();
-                            } catch (Exception ex) {
-                                Log.e(TAG, "MediaStyle - Notification set actionIntent");
-                            }
-                        }
-                    });
-                    positionAction++;
-                } catch (Exception exMediaStyle) {
-                    Log.w(TAG, "MediaStyle - Notification set Icon");
-                }
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, "MediaStyle - Notification actions");
-        }
-        FlexboxLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
-        mediaStyleContainer.removeAllViews();
-        mediaStyleContainer.addView(mediaStyleControl);
-        mediaStyleContainer.setVisibility(View.VISIBLE);
+        MediaControlLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
+        mediaStyleContainer.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
     }
 }

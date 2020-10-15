@@ -241,7 +241,10 @@ public class mNotificationListener extends NotificationListenerService {
             //get extra information
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 Bundle extras = notification.extras;
-                if (extras.containsKey(Notification.EXTRA_TEMPLATE) && extras.getCharSequence("android.template") != null) {
+                if (
+                        extras.containsKey(Notification.EXTRA_TEMPLATE)
+                                && extras.getCharSequence("android.template") != null
+                ) {
                     i.putExtra("template", extras.getCharSequence("android.template").toString());
                 }
 
