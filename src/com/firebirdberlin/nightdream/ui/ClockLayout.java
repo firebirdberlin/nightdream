@@ -263,19 +263,20 @@ public class ClockLayout extends LinearLayout {
                 date != null && date.getVisibility() != VISIBLE
                         && weatherLayout.getVisibility() != VISIBLE
         );
+        if (showDivider) {
+            divider.setVisibility(shallHide ? INVISIBLE : VISIBLE);
+        }
         if (shallHide) {
-            if (showDivider) {
-                divider.setVisibility(INVISIBLE);
-            }
             setBackgroundColor(Color.parseColor("#00000000"));
         } else {
-            if (showDivider) {
-                divider.setVisibility(VISIBLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                GradientDrawable shape = new GradientDrawable();
+                shape.setCornerRadius(30);
+                shape.setColor(Color.parseColor("#44000000"));
+                setBackground(shape);
+            } else {
+                setBackgroundColor(Color.parseColor("#44000000"));
             }
-            GradientDrawable shape = new GradientDrawable();
-            shape.setCornerRadius(30);
-            shape.setColor(Color.parseColor("#44000000"));
-            setBackground(shape);
         }
     }
 
