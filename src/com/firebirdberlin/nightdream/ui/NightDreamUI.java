@@ -18,6 +18,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -41,12 +43,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.exifinterface.media.ExifInterface;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
@@ -75,6 +79,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class NightDreamUI {
@@ -99,9 +105,12 @@ public class NightDreamUI {
     private ImageView[] background_images = new ImageView[2];
     private int background_image_active = 0;
 
+    private TextView exif;
+
     private ArrayList<File> files;
 
     private Bitmap preloadBackgroundImage;
+    private File preloadBackgroundImageFile;
 
     private ImageView menuIcon;
     private ImageView nightModeIcon;
@@ -468,6 +477,8 @@ public class NightDreamUI {
         background_images[1] = rootView.findViewById(R.id.background_view2);
         background_image_active = 0;
 
+        exif = rootView.findViewById(R.id.exif);
+
         brightnessProgress = rootView.findViewById(R.id.brightness_progress);
         batteryIconView = rootView.findViewById(R.id.batteryIconView);
         clockLayoutContainer = rootView.findViewById(R.id.clockLayoutContainer);
@@ -739,9 +750,70 @@ public class NightDreamUI {
                     break;
             }
 
+            try {
+                exif.setText(getExifInformation());
+            }
+            catch (Exception e){
+                exif.setText("Error reading exif information");
+                Log.e(TAG, "exception: ", e);
+            }
+
             background_images[background_image_active].setImageDrawable(bgshape);
             setupSlideshowAnimation();
        }
+    }
+
+    private double convertGPS(String[] separated){
+        double convert;
+        String[] separated2 = separated[2].split("/");
+        convert = Double.parseDouble(separated2[0]) / Double.parseDouble(separated2[1]) / 60;
+        String[] separated1 = separated[1].split("/");
+        convert = (Double.parseDouble(separated1[0]) + convert) / Double.parseDouble(separated1[1]) / 60;
+        String[] separated0 = separated[0].split("/");
+        convert = Double.parseDouble(separated0[0]) + convert;
+        return convert;
+    }
+
+    private String getExifInformation() throws IOException {
+        if (preloadBackgroundImageFile == null){
+            return "";
+        }
+
+        String exifDate ="";
+        String exifTime = "";
+        String exifCity = "";
+        String exifCountry = "";
+
+        ExifInterface exif = new ExifInterface(preloadBackgroundImageFile);
+
+        if (exif.getAttribute(ExifInterface.TAG_DATETIME) != null) {
+            String[] exifDateTime = exif.getAttribute(ExifInterface.TAG_DATETIME).split(" ");
+            String[] exifDateSplit = exifDateTime[0].split(":");
+            exifDate = exifDateSplit[2] + "." + exifDateSplit[1] + "." + exifDateSplit[0];
+            exifTime = exifDateTime[1];
+        }
+
+        if (exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) != null && exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE) != null) {
+            String[] separatedLat = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE).split(",");
+            String[] separatedLong = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE).split(",");
+
+            Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+
+            try {
+                List<Address> addresslist = geocoder.getFromLocation(convertGPS(separatedLat), convertGPS(separatedLong), 1);
+                if (addresslist != null && addresslist.size() > 0) {
+                    exifCity = addresslist.get(0).getLocality();
+                    exifCountry = addresslist.get(0).getCountryName();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "connect to geocoder failed"+
+                        "\nGPS_LATITUDE = "+ convertGPS(separatedLat)+
+                        "\nGPS_LONGITUDE = "+ convertGPS(separatedLong)
+                        , e);
+            }
+        }
+
+        return exifDate+"\n"+exifTime+"\n"+exifCity+"\n"+exifCountry;
     }
 
     private Drawable loadBackgroundSlideshowImage() {
@@ -763,6 +835,7 @@ public class NightDreamUI {
         if (files.isEmpty()) return new ColorDrawable(Color.BLACK);
 
         File file = files.get(new Random().nextInt(files.size()));
+        preloadBackgroundImageFile = file;
         Bitmap bitmap = loadImageFromPath(file);
         bitmap = rescaleBackgroundImage(bitmap);
         writeBackgroundImageToCache(bitmap);
@@ -858,10 +931,12 @@ public class NightDreamUI {
 
         background_images[background_image_active].startAnimation(animationSet);
         parentLayout.bringChildToFront(background_images[background_image_active]);
+        parentLayout.bringChildToFront(exif);
 
         if (files != null && settings.getBackgroundMode()==Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
             AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-            runningTask.execute(files.get(new Random().nextInt(files.size())));
+            preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
+            runningTask.execute(preloadBackgroundImageFile);
         }
     }
 
