@@ -1,8 +1,10 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -25,6 +27,7 @@ import com.firebirdberlin.nightdream.R;
 
 public class MediaControlLayout extends LinearLayout {
     private static String TAG = "MediaControlLayout";
+
     public MediaControlLayout(Context context) {
         super(context);
     }
@@ -76,41 +79,43 @@ public class MediaControlLayout extends LinearLayout {
         }
 
         int positionAction = 0;
+        Context remotePackageContext = null;
         try {
-            for (final Notification.Action action : (Notification.Action[]) intent.getParcelableArrayExtra("actions")) {
-                try {
-                    Context remotePackageContext = context.getApplicationContext().createPackageContext(
+            remotePackageContext =
+                    context.getApplicationContext().createPackageContext(
                             intent.getStringExtra("packageName"), 0
                     );
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
-                    Drawable notificationDrawableIcon = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        Icon icon = action.getIcon();
-                        if (icon != null) {
-                            notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
-                        }
-                    } else {
-                        int iconResId = action.icon;
-                        notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
+        Notification.Action[] actions =
+                (Notification.Action[]) intent.getParcelableArrayExtra("actions");
+        if (actions != null) {
+            for (final Notification.Action action : actions) {
+                Drawable notificationDrawableIcon = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    Icon icon = action.getIcon();
+                    if (icon != null) {
+                        notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
                     }
-                    notificationActionImages[positionAction].setImageDrawable(notificationDrawableIcon);
-                    notificationActionImages[positionAction].setVisibility(View.VISIBLE);
-                    notificationActionImages[positionAction].setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            try {
-                                action.actionIntent.send();
-                            } catch (Exception ex) {
-                                Log.e(TAG, "MediaStyle - Notification set actionIntent");
-                            }
-                        }
-                    });
-                    positionAction++;
-                } catch (Exception exMediaStyle) {
-                    Log.w(TAG, "MediaStyle - Notification set Icon");
+                } else {
+                    int iconResId = action.icon;
+                    notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
                 }
+                notificationActionImages[positionAction].setImageDrawable(notificationDrawableIcon);
+                notificationActionImages[positionAction].setVisibility(View.VISIBLE);
+                notificationActionImages[positionAction].setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        try {
+                            action.actionIntent.send();
+                        } catch (PendingIntent.CanceledException ex) {
+                            Log.e(TAG, "MediaStyle - Notification set actionIntent");
+                        }
+                    }
+                });
+                positionAction++;
             }
-        } catch (Exception ex) {
-            Log.e(TAG, "MediaStyle - Notification actions");
         }
         removeAllViews();
         addView(mediaStyleControl);

@@ -162,12 +162,12 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
         // TODO: media control area is too wide
         // TODO: adjust the text color of the media controls according to the secondary text color
-
         String template = intent.getStringExtra("template");
-        if (template != null && !template.contains("MediaStyle")) {
+        if (template == null || !template.contains("MediaStyle")) {
             return;
         }
         Log.i(TAG, "Show MediaStyle notification");
+        Log.i(TAG, "template = " + template);
 
         int iconId = intent.getIntExtra("iconId", -1);
         String packageName = intent.getStringExtra("packageName");
