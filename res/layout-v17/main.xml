@@ -45,10 +45,10 @@
                 android:id="@+id/burger_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0"
                 android:alpha="0.0"
                 android:clickable="true"
                 android:contentDescription="@string/preferences"
-                android:layout_weight="0"
                 android:focusable="true"
                 app:srcCompat="@drawable/ic_menu" />
 
@@ -61,26 +61,25 @@
 
                 <com.firebirdberlin.nightdream.ui.BatteryIconView
                     android:id="@+id/batteryIconView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:fontFamily="monospace"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
+                    android:singleLine="true"
                     android:text=""
                     android:textColor="#C2C2C2"
-                    android:textSize="20sp"
-                    android:singleLine="true" />
+                    android:textSize="20sp" />
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/notificationstatusbar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:flexDirection="row"
                     app:alignContent="flex_end"
-                    app:justifyContent="flex_end">
-                </com.google.android.flexbox.FlexboxLayout>
+                    app:flexDirection="row"
+                    app:justifyContent="flex_end" />
             </LinearLayout>
         </LinearLayout>
 
@@ -94,7 +93,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
                 <!--
                     date and time
                 -->
@@ -106,8 +104,7 @@
                     android:background="#44000000"
                     android:orientation="vertical"
                     android:translationX="0sp"
-                    android:translationY="0sp"
-                    />
+                    android:translationY="0sp" />
             </FrameLayout>
 
             <include layout="@layout/side_panel" />
@@ -116,6 +113,7 @@
         <com.firebirdberlin.nightdream.ui.BottomPanelLayout
             android:id="@+id/bottomPanel"
             android:layout_width="match_parent"
-            android:layout_height="60dp"/>
+            android:layout_height="60dp">
+        </com.firebirdberlin.nightdream.ui.BottomPanelLayout>
     </LinearLayout>
 </FrameLayout>
