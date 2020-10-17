@@ -1,0 +1,8 @@
+<com.firebirdberlin.nightdream.ui.MediaControlLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notification_mediacontrol_bar"
+    android:layout_width="match_parent"
+    android:layout_height="24dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:orientation="horizontal" />

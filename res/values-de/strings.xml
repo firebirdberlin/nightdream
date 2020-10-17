@@ -184,6 +184,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_title">Nachtzeit</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
     <string name="notificationListenerService">Benachrichtigungsservice verwalten</string>
+    <string name="showNotifications">Benachrichtigungen anzeigen</string>
+    <string name="showNotificationsAccessGranted">Benachrichtigungszugriff erteilt</string>
+    <string name="showNotificationsAccessNotGranted">Benachrichtigungszugriff nicht erteilt!</string>
+    <string name="showNotificationsAlertText">Um Benachrichtigungen anzuzeigen, muss die Berechtigung erteilt in den Android-Einstellungen erteilt werden.</string>
+    <string name="notifications_options">Benachrichtigungsoptionen</string>
     <string name="notification_channel_desc_alarms">Benachrichtigung, die einen aktiven Weckalarm anzeigt.</string>
     <string name="notification_channel_desc_devmsg">Benachrichtigungen, die die Nachtuhr betreffen.</string>
     <string name="notification_channel_desc_radio">Benachrichtigung, die einen aktiven Radiostream anzeigt.</string>
@@ -194,6 +199,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_name_services">Services</string>
     <string name="notification_grouping_summary">Benachrichtigungen mit demselben Icon gruppieren und nur einmal anzeigen.</string>
     <string name="notification_grouping_title">Ähnliche Benachrichtigungen gruppieren</string>
+    <string name="notification_show_mediastyle_summary">Mediensteuerung in Digitaluhr anzeigen</string>
+    <string name="notification_show_mediastyle_title">Medienplayer anzeigen</string>
     <string name="notification_importance_default">default</string>
     <string name="notification_importance_high">hoch</string>
     <string name="notification_importance_low">niedrig</string>

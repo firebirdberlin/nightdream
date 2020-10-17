@@ -1122,6 +1122,22 @@ public class Settings {
         return context.getSharedPreferences("defaults", Context.MODE_PRIVATE);
     }
 
+    public static boolean showNotification(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showNotification", true);
+    }
+
+    public static boolean showMediaStyleNotification(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showMediaStyleNotification", false);
+    }
+
     public static boolean useNotificationStatusBar(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {

@@ -101,7 +101,8 @@ public class ClockLayout extends LinearLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 
-        return true;
+        //return true;
+        return false;
     }
 
     public void setLayout(int layoutId) {
