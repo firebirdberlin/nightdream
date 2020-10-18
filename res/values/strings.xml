@@ -273,7 +273,7 @@ OR
     <string name="remaining">rem.</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
-    <string name="pburnin">Prevent the clock from burn in</string>
+    <string name="preventBurnIn">Prevent the clock from burn in</string>
     <string name="restless_mode">Move the clock around</string>
     <string name="fade_clock">Fade clock</string>
     <string name="review_request">Please rate this application. Thanks !</string>

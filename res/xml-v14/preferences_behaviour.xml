@@ -15,18 +15,18 @@
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="true"
-        app:key="pburnin"
-        app:title="@string/pburnin"
+        app:key="preventBurnIn"
+        app:title="@string/preventBurnIn"
         app:isPreferenceVisible="true"
         />
 
     <ListPreference
         app:iconSpaceReserved="false"
         app:defaultValue="1"
-        app:entries="@array/pburninMode"
-        app:entryValues="@array/pburninModeValues"
-        app:key="pburninMode"
-        app:dependency="pburnin"
+        app:entries="@array/preventBurnInMode"
+        app:entryValues="@array/preventBurnInModeValues"
+        app:key="preventBurnInMode"
+        app:dependency="preventBurnIn"
         app:useSimpleSummaryProvider="true"/>
 
     <SwitchPreferenceCompat

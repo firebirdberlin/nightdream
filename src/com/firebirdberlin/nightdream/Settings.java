@@ -280,8 +280,8 @@ public class Settings {
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
-        prevent_burnin = settings.getBoolean("pburnin", true);
-        prevent_burnin_mode = Integer.parseInt(settings.getString("pburninMode", "1"));
+        prevent_burnin = getPreventBurnIn();
+        prevent_burnin_mode = Integer.parseInt(settings.getString("preventBurnInMode", "1"));
         final String defaultSecondaryColorString = "#C2C2C2";
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor(defaultSecondaryColorString));
         secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor(defaultSecondaryColorString));
@@ -353,6 +353,25 @@ public class Settings {
         for (String weekday : scheduledAutostartWeekdaysStrings) {
             scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
         }
+    }
+
+    boolean getPreventBurnIn() {
+        boolean on = settings.getBoolean("preventBurnIn", true);
+
+        if (!restless_mode){
+            on = false;
+            setPreventBurnIn(on);
+            setRestlessMode(true);
+        }
+        return on;
+    }
+
+    public void setPreventBurnIn(boolean status){
+        settings.edit().putBoolean("preventBurnIn", status).apply();
+    }
+
+    public void setRestlessMode(boolean status){
+        settings.edit().putBoolean("restlessMode", status).apply();
     }
 
     boolean getBackgroundImageZoomIn() {

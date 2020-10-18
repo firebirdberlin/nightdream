@@ -519,7 +519,7 @@ public class NightDreamUI {
 
     public void onStart() {
         Log.d(TAG, "onStart()");
-        handler.postDelayed(moveAround, 60000);
+        handler.postDelayed(moveAround, 30000);
         handler.postDelayed(fadeClock, 30000);
     }
 
