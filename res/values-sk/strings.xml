@@ -135,7 +135,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Zostávajúce</string>
     <string name="repeat">Zas a znova</string>
     <string name="reset_to_defaults">Obnoviť predvolené nastavenia</string>
-    <string name="restless_mode">Posúvať hodiny po displeji</string>
+    <string name="screenProtectionMove">Posúvať hodiny po displeji</string>
     <string name="review_request">Prosím ohodnoťte túto aplikáciu, Ďakujem!</string>
     <string name="screen_orientation_automatic">Orientácia obrazovky automatická</string>
     <string name="screen_orientation_landscape">Orientácia obrazovky na ležato</string>

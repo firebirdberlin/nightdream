@@ -112,7 +112,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend">Preporučene aplikacije</string>
     <string name="remaining">preostalo</string>
     <string name="reset_to_defaults">Vratiti na početna podešavanja</string>
-    <string name="restless_mode">Pomerati sat po ekranu</string>
+    <string name="screenProtectionMove">Pomerati sat po ekranu</string>
     <string name="review_request">Molimo Vas ocenite ovu aplikaciju. Hvala!</string>
     <string name="screen_orientation_automatic">automatski</string>
     <string name="screen_orientation_landscape">horizontalno</string>

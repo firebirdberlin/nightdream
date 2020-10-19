@@ -214,7 +214,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">zbývá</string>
     <string name="repeat">Opakovat</string>
     <string name="reset_to_defaults">Obnovit výchozí nastavení</string>
-    <string name="restless_mode">Posunovat hodiny po displeji</string>
+    <string name="screenProtectionMove">Posunovat hodiny po displeji</string>
     <string name="review_request">Prosím, ohodnoťte tuto aplikaci. Děkuji!</string>
     <string name="scheduledAutoStartChargerRequired">Pouze při nabíjení.</string>
     <string name="screen_orientation_automatic">automaticky</string>

@@ -236,7 +236,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">tilb.</string>
     <string name="repeat">Gjenta</string>
     <string name="reset_to_defaults">Tilbakestill til standard</string>
-    <string name="restless_mode">Flytt på klokken</string>
+    <string name="screenProtectionMove">Flytt på klokken</string>
     <string name="review_request">Venligst ratifiser klokken</string>
     <string name="scheduledAutoStart">Planlegg autostart</string>
     <string name="scheduledAutoStartChargerRequired">Bare ved lading</string>

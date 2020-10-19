@@ -154,7 +154,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Kalan</string>
     <string name="repeat">Tekrarla</string>
     <string name="reset_to_defaults">Varsayılanlara sıfırla</string>
-    <string name="restless_mode">Saati ekranda hareket ettir</string>
+    <string name="screenProtectionMove">Saati ekranda hareket ettir</string>
     <string name="review_request">Uygulamaya oy verin. Teşekkürler !</string>
     <string name="screen_orientation_automatic">Otomatik</string>
     <string name="screen_orientation_landscape">Yatay</string>

@@ -169,7 +169,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">залиш.</string>
     <string name="repeat">Повторення</string>
     <string name="reset_to_defaults">Скинути налаштування</string>
-    <string name="restless_mode">Переміщати годинник по екрану</string>
+    <string name="screenProtectionMove">Переміщати годинник по екрану</string>
     <string name="review_request">Будь ласка, оцініть цей додаток. Дякуємо!</string>
     <string name="screen_orientation_automatic">автоматична</string>
     <string name="screen_orientation_landscape">горизонтальна</string>

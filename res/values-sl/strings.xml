@@ -160,7 +160,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Ostanek</string>
     <string name="repeat">Ponovi</string>
     <string name="reset_to_defaults">Ponastavitev na prednastavljene nastavitve</string>
-    <string name="restless_mode">Premikanje prikaza ure</string>
+    <string name="screenProtectionMove">Premikanje prikaza ure</string>
     <string name="review_request">Prosim oceni to aplikacijo</string>
     <string name="screen_orientation_automatic">Avtomatsko</string>
     <string name="screen_orientation_landscape">Ležeče</string>

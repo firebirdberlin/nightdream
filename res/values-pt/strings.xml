@@ -209,7 +209,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">preferências</string>
     <string name="prev">anterior</string>
     <string name="preview">Exemplo</string>
-<string name="product_description_weather">\nUma atualização inclui:\n-Uma linha do estado do tempo mostrada abaixo do relógio;\n-Previsão do tempo para 5 dias;\n-Mais mostradores de relógio.l</string>
+<string name="product_description_weather">
+\nUma atualização inclui:
+\n-Uma linha do estado do tempo mostrada abaixo do relógio;
+\n-Previsão do tempo para 5 dias;
+\n-Mais mostradores de relógio.l</string>
     <string name="product_name_actions">Pacote Semprwe ligado</string>
     <string name="product_name_donation">Donativo</string>
     <string name="product_name_pro">Versão completa</string>
@@ -247,7 +251,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">restantes</string>
     <string name="repeat">repetir</string>
     <string name="reset_to_defaults">Redefinir para valores padrão</string>
-    <string name="restless_mode">Mover o relógio pelo ecrã</string>
+    <string name="screenProtectionMove">Mover o relógio pelo ecrã</string>
     <string name="review_request">Por favor dê nota a esta aplicação. Obrigado!</string>
     <string name="scheduledAutoStart">Ínicio automático programado </string>
     <string name="scheduledAutoStartChargerRequired">Apenas quando a carregar</string>
