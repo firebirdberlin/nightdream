@@ -134,7 +134,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">megmaradó</string>
     <string name="repeat">ismétlés</string>
     <string name="reset_to_defaults">Visszaállítás alapértelmezettre</string>
-    <string name="restless_mode">Óra mozgása körben</string>
+    <string name="screenProtectionMove">Óra mozgása körben</string>
     <string name="review_request">Kérem értékelje ezt az alkalmazást. Köszönöm!</string>
     <string name="screen_orientation_automatic">Automatikus</string>
     <string name="screen_orientation_landscape">Tájkép</string>

@@ -133,7 +133,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="remaining">falta dira</string>
 <string name="repeat">errepikatu</string>
 <string name="reset_to_defaults">Reset to default</string>
-<string name="restless_mode">Erlojua pantailatik mugitu</string>
+<string name="screenProtectionMove">Erlojua pantailatik mugitu</string>
 <string name="review_request">Mesedez, aplikazio hau baloratu. Eskerrik asko!</string>
 <string name="screen_orientation_automatic">automatikoa</string>
 <string name="screen_orientation_landscape">paisaia</string>

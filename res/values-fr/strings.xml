@@ -221,7 +221,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">rest.</string>
     <string name="repeat">Répéter</string>
     <string name="reset_to_defaults">Réinitialiser aux paramètres par défaut</string>
-    <string name="restless_mode">Horloge en déplacement</string>
+    <string name="screenProtectionMove">Horloge en déplacement</string>
     <string name="review_request">Veuillez évaluer cette application. Merci !</string>
     <string name="scheduledAutoStart">Démarrage automatique planifié</string>
     <string name="scheduledAutoStartChargerRequired">Seulement en chargement</string>

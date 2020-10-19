@@ -134,7 +134,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Εναπομείναντα</string>
     <string name="repeat">Επανάλαβε</string>
     <string name="reset_to_defaults">Επαναφορά στις αρχικές ρυθμίσεις</string>
-    <string name="restless_mode">Εναλλαγή θέσεων στο ρολόι</string>
+    <string name="screenProtectionMove">Εναλλαγή θέσεων στο ρολόι</string>
     <string name="review_request">Παρακαλούμε αξιολογήστε μας </string>
     <string name="screen_orientation_automatic">Αυτόματη</string>
     <string name="screen_orientation_landscape">Οριζόντια</string>

@@ -106,7 +106,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">من می خواهم این برنامه ساعت شبانه را به شما توصیه کنم.</string>
     <string name="recommend">پیشنهاد برنامه</string>
     <string name="reset_to_defaults">برگشت به حالت اولیه</string>
-    <string name="restless_mode">ساعت را در اطراف حرکت دهید</string>
+    <string name="screenProtectionMove">ساعت را در اطراف حرکت دهید</string>
     <string name="review_request">لطفا به این برنامه امتیاز دهید.ممنون ! </string>
     <string name="screen_orientation_automatic">اتوماتیک</string>
     <string name="set_alarm">انتخاب آلارم</string>

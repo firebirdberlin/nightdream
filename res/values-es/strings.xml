@@ -205,7 +205,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferencias</string>
     <string name="prev">anterior</string>
     <string name="preview">Vista previa</string>
-<string name="product_description_weather">Una actualización a versión pro incluye:\n- Una linea de clima bajo el reloj\n- pronóstico de clima para 5 días\n- Modos de reloj adicionales </string>
+<string name="product_description_weather">Una actualización a versión pro incluye:
+\n- Una linea de clima bajo el reloj
+\n- pronóstico de clima para 5 días
+\n- Modos de reloj adicionales </string>
     <string name="product_name_actions">Paquete "siempre encendido"</string>
     <string name="product_name_donation">Donación</string>
     <string name="product_name_pro">Versión completa</string>
@@ -243,7 +246,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Restante</string>
     <string name="repeat">Repetir</string>
     <string name="reset_to_defaults">Reestablecer valores predeterminados</string>
-    <string name="restless_mode">Mover el reloj por la pantalla</string>
+    <string name="screenProtectionMove">Mover el reloj por la pantalla</string>
     <string name="review_request">Por favor califica esta aplicación. ¡Gracias!</string>
     <string name="scheduledAutoStart">Encendido programado</string>
     <string name="scheduledAutoStartChargerRequired">Sólo durante la carga</string>
