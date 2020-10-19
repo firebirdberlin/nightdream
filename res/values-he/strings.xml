@@ -117,7 +117,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend">המלץ על האפליקציה</string>
     <string name="remaining">זיכרון</string>
     <string name="reset_to_defaults">אפס לברירת המחדל</string>
-    <string name="restless_mode">הזז את השעון על כל המסך</string>
+    <string name="screenProtectionMove">הזז את השעון על כל המסך</string>
     <string name="review_request">אנא דרג את האפליקציה. תודה! </string>
     <string name="screen_orientation_automatic">אוטומטי</string>
     <string name="screen_orientation_landscape">לרוחב</string>

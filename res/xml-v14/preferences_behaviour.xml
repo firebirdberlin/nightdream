@@ -12,11 +12,14 @@
         app:summary="@string/doubleTapToFinishSummary"
         app:title="@string/doubleTapToFinishTitle" />
 
-    <SwitchPreferenceCompat
+    <ListPreference
         app:iconSpaceReserved="false"
-        app:defaultValue="true"
-        app:key="restlessMode"
-        app:title="@string/restless_mode" />
+        app:defaultValue="1"
+        app:title="@string/screenProtection"
+        app:entries="@array/screenProtectionMode"
+        app:entryValues="@array/screenProtectionModeValues"
+        app:key="screenProtection"
+        app:useSimpleSummaryProvider="true"/>
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"

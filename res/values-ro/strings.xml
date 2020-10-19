@@ -107,7 +107,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Vreau sa iti recomand aceasta aplicație de ceas de noapte</string>
     <string name="recommend">Recomanda aplicația</string>
     <string name="reset_to_defaults">Revenire la setările inițiale</string>
-    <string name="restless_mode">Misca ceasul împrejur</string>
+    <string name="screenProtectionMove">Misca ceasul împrejur</string>
     <string name="review_request">Te rog da nota aplicației. Merci!</string>
     <string name="screen_orientation_automatic">Automat</string>
     <string name="screen_orientation_landscape">Rasturnat</string>

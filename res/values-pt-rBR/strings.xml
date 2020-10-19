@@ -203,7 +203,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferências</string>
     <string name="prev">Anterior</string>
     <string name="preview">Exemplo</string>
-<string name="product_description_weather">O upgrade inclui\n- linha de informação meteorológica mostrada abaixo do relógio\n- previsão meteorológica de 5 dias\n- mais estilos de relógio</string>
+<string name="product_description_weather">O upgrade inclui
+\n- linha de informação meteorológica mostrada abaixo do relógio
+\n- previsão meteorológica de 5 dias
+\n- mais estilos de relógio</string>
     <string name="product_name_actions">Pacote "Always On"</string>
     <string name="product_name_donation">Doação</string>
     <string name="product_name_pro">Versão Completa</string>
@@ -241,7 +244,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">restantes</string>
     <string name="repeat">Repetir</string>
     <string name="reset_to_defaults">Redefinir para valores padrão</string>
-    <string name="restless_mode">Mover o relógio pela tela</string>
+    <string name="screenProtectionMove">Mover o relógio pela tela</string>
     <string name="review_request">Por favor avalie esta aplicação. Obrigado!</string>
     <string name="scheduledAutoStart">Início automático agendado</string>
     <string name="scheduledAutoStartChargerRequired">Apenas quando estiver carregando</string>

@@ -232,7 +232,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">تذكير</string>
     <string name="repeat">تكرار</string>
     <string name="reset_to_defaults">إعادة الضبط الافتراضي</string>
-    <string name="restless_mode">تَحَرُك الساعة حول الشاشة</string>
+    <string name="screenProtectionMove">تَحَرُك الساعة حول الشاشة</string>
     <string name="review_request">من فضلك قيّم هذا التطبيق، شكراً</string>
     <string name="scheduledAutoStart">تشغيل تلقائي مجدول</string>
     <string name="scheduledAutoStartChargerRequired">عند الشحن فقط</string>

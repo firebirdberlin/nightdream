@@ -205,7 +205,7 @@ public class NightDreamUI {
     private Runnable fadeClock = new Runnable() {
         @Override
         public void run() {
-            if (settings.fade_clock) {
+            if (settings.screenProtection == Settings.ScreenProtectionModes.FADE) {
                 AlphaAnimation alpha;
                 alpha = new AlphaAnimation(1.0f, 0.0f);
                 alpha.setDuration(2000);
@@ -236,8 +236,8 @@ public class NightDreamUI {
                     }
                 });
                 clockLayoutContainer.startAnimation(animationSet);
+                handler.postDelayed(this, 30000);
             }
-            handler.postDelayed(this, 30000);
         }
     };
 
@@ -250,8 +250,8 @@ public class NightDreamUI {
             setupScreenAnimation();
 
             hideBatteryView(2000);
-
             updateClockPosition();
+
             updateWeatherData();
 
             handler.postDelayed(this, 60000);
@@ -590,8 +590,7 @@ public class NightDreamUI {
     }
 
     public void setupClockLayout() {
-
-        if ( !settings.restless_mode ) {
+        if (settings.screenProtection != Settings.ScreenProtectionModes.MOVE) {
             centerClockLayout();
         }
         int layoutId = settings.getClockLayoutID(false);
@@ -1144,7 +1143,7 @@ public class NightDreamUI {
     }
 
     private void updateClockPosition() {
-        if ( !settings.restless_mode) {
+        if (settings.screenProtection != Settings.ScreenProtectionModes.MOVE) {
             return;
         }
         Random random = new Random();

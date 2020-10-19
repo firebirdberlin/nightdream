@@ -236,7 +236,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Residuo</string>
     <string name="repeat">Ripeti</string>
     <string name="reset_to_defaults">Reset ai valori predefiniti</string>
-    <string name="restless_mode">sposta l\'orologio</string>
+    <string name="screenProtectionMove">sposta l\'orologio</string>
     <string name="review_request">valuta questa app.Grazie!</string>
     <string name="scheduledAutoStart">Pianifica l\'autostart</string>
     <string name="scheduledAutoStartChargerRequired">Solo quando carica</string>

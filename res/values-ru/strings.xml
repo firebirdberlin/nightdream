@@ -236,7 +236,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">осталось</string>
     <string name="repeat">Повторы</string>
     <string name="reset_to_defaults">Сброс настроек</string>
-    <string name="restless_mode">Перемещать часы по экрану</string>
+    <string name="screenProtectionMove">Перемещать часы по экрану</string>
     <string name="review_request">Пожалуйста, оцените это приложение. Спасибо!</string>
     <string name="scheduledAutoStart">Запланированный Автозапуск</string>
     <string name="scheduledAutoStartChargerRequired">только при зарядке</string>

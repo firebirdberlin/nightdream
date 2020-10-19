@@ -135,7 +135,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">återstående.</string>
     <string name="repeat">Upprepa</string>
     <string name="reset_to_defaults">Återställ grundinställningar</string>
-    <string name="restless_mode">Flytta klockan</string>
+    <string name="screenProtectionMove">Flytta klockan</string>
     <string name="review_request">Var vänlig att betygsätta den här appen. Tack!</string>
     <string name="screen_orientation_automatic">automatisk</string>
     <string name="screen_orientation_landscape">landskap</string>

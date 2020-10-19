@@ -205,7 +205,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Præference</string>
     <string name="prev">forrige</string>
     <string name="preview">Preview</string>
-<string name="product_description_weather">En opgradering inkluderer\n\n- en vejrstatuslinje vist under uret\n- en 5-dages vejrudsigt\n- flere urskiver</string>
+<string name="product_description_weather">En opgradering inkluderer
+\n
+\n- en vejrstatuslinje vist under uret
+\n- en 5-dages vejrudsigt
+\n- flere urskiver</string>
     <string name="product_name_actions">Altid på pakken</string>
     <string name="product_name_donation">Donatiosn</string>
     <string name="product_name_pro">Fuld version</string>
@@ -243,7 +247,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Rest.</string>
     <string name="repeat">Gentag</string>
     <string name="reset_to_defaults">Reset til standard</string>
-    <string name="restless_mode">Bevæg uret rundt</string>
+    <string name="screenProtectionMove">Bevæg uret rundt</string>
     <string name="review_request">Bedøm venligst denne app. På forhånd tak</string>
     <string name="scheduledAutoStart">Planlagt Autostart</string>
     <string name="scheduledAutoStartChargerRequired">kun mens der lades op</string>

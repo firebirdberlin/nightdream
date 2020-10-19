@@ -171,7 +171,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">残り</string>
     <string name="repeat">繰り返し</string>
     <string name="reset_to_defaults">初期設定にリセット</string>
-    <string name="restless_mode">時計の浮遊</string>
+    <string name="screenProtectionMove">時計の浮遊</string>
     <string name="review_request">このアプリケーションを評価してください。ありがとう！</string>
     <string name="scheduledAutoStartChargerRequired">充電時のみ</string>
     <string name="screen_orientation_automatic">自動</string>

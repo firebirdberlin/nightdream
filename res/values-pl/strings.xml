@@ -209,7 +209,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferencje</string>
     <string name="prev">Poprzedni</string>
     <string name="preview">Podgląd</string>
-<string name="product_description_weather">Upgrade zawiera\n- linia statusu pogody poniżej zegara\n- 5-dniowa prognoza pogody\n- więcej skór zegara</string>
+<string name="product_description_weather">Upgrade zawiera
+\n- linia statusu pogody poniżej zegara
+\n- 5-dniowa prognoza pogody
+\n- więcej skór zegara</string>
     <string name="product_name_actions">Zawsze na opakowaniu</string>
     <string name="product_name_donation">Dotacja</string>
     <string name="product_name_pro">Pełna wersja</string>
@@ -247,7 +250,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">Pozostało</string>
     <string name="repeat">Powtórzenie</string>
     <string name="reset_to_defaults">Przywrócenie ustawień domyślnych</string>
-    <string name="restless_mode">Przesuwaj zegar na całym ekranie</string>
+    <string name="screenProtectionMove">Przesuwaj zegar na całym ekranie</string>
     <string name="review_request">Oceń aplikacje Dziękuje !</string>
     <string name="scheduledAutoStart">Zaplanowany Autostart</string>
     <string name="scheduledAutoStartChargerRequired">Tylko podczas ładowania</string>

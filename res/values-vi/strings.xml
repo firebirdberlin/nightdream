@@ -130,7 +130,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">rem.</string>
     <string name="repeat">lặp lại</string>
     <string name="reset_to_defaults">Cài về mặc định</string>
-    <string name="restless_mode">Đi chuyển đồng hồ chung quanh</string>
+    <string name="screenProtectionMove">Đi chuyển đồng hồ chung quanh</string>
     <string name="review_request">Vui lòng đánh giá ứng dụng này. Cảm ơn !</string>
     <string name="screen_orientation_automatic">Tự động</string>
     <string name="screen_orientation_landscape">Hướng ngang</string>

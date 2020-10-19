@@ -133,7 +133,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">其他</string>
     <string name="repeat">重覆</string>
     <string name="reset_to_defaults">重設成預設</string>
-    <string name="restless_mode">移動時鐘</string>
+    <string name="screenProtectionMove">移動時鐘</string>
     <string name="review_request">請為本應用評分，謝謝！</string>
     <string name="screen_orientation_automatic">自動</string>
     <string name="screen_orientation_landscape">橫向</string>
