@@ -15,7 +15,8 @@
 - [Autostart](#autostart)
 - [Night mode](#night-mode)
 - [Brightness settings](#brightness-settings)
-- [Wdget](#widget)
+- [Widget](#widget)
+- [Slideshow](#slideshow)
 
 ## Where do I find support ?
 
@@ -282,3 +283,18 @@ can disable and re-enable the autostart of the app. This triggers the start of t
 
 [Top](#table-of-contents)
 
+## Slideshow
+
+### Which pictures are shown in the slideshow
+
+The app shows all images in JPG format that were taken with the camera or are in this directory.
+Videos or images in any other format are not displayed.
+It is currently not possible to select individual images for the slideshow.
+
+### Only a black screen is displayed
+
+Please check if there are pictures in JPG format on the device. 
+The option * Hide the background image in night mode * may be activated. 
+If so, a black background is shown instead of a slideshow during the night.
+
+[Top](#table-of-contents)
