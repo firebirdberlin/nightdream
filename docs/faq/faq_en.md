@@ -293,7 +293,8 @@ It is currently not possible to select individual images for the slideshow.
 
 ### Only a black screen is displayed
 
-Please check if there are pictures in JPG format on the device.
-Also restarting the app may solve the problem.
+Please check if there are pictures in JPG format on the device. 
+The option * Hide the background image in night mode * may be activated. 
+If so, a black background is shown instead of a slideshow during the night.
 
 [Top](#table-of-contents)

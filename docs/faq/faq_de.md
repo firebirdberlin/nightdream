@@ -24,7 +24,7 @@ Wenn Ihre Frage hier nicht beantwortet wird, dann stellen Sie diese bitte auf
 der öffentlichen Mailingliste:
 https://groups.google.com/d/forum/night-clock. 
 
-## Ads
+## Werbung
 
 ### Wie kann ich die Werbung abschalten ?
 
@@ -86,8 +86,8 @@ Im Standby-Modus startet die Benutzeroberfläche immer im gesperrten Modus.
 
 ### AM / PM-Anzeige funktioniert nicht richtig
 
-Die Sieben-Segment-Schriftart kann Großbuchstaben nicht sehr genau zeichnen. 
-Eine alternative Schriftart mit 14 Segmenten kann unter folgender Adresse gefunden werden: https://www.keshikan.net/fonts-e.html.
+Die Schriftart 7 Segment Digital bildet Großbuchstaben nicht gut ab. 
+Verwenden Sie alternativ eine andere Schriftart, z.B. DSEG 14CLASSIC.   
 
 ### Benutzerdefinierte Schriftarten
 
@@ -142,8 +142,8 @@ automatisch erkannt wurde.
 Die folgenden Informationen werden angezeigt
   - Temperatur (gefühlte Temperatur)
   - Windrichtung und Windgeschwindigkeit
-  - Wolkendecke in *% *
-  - Luftfeuchtigkeit in *% *
+  - Bedeckungsgrad mit Wolken in *% *
+  -  rel. Luftfeuchtigkeit in *% *
   - 3 Stunden Regenvolumen in * mm * (nur wenn Regen erwartet wird)
 
 ### Wetterdaten werden nicht angezeigt
@@ -247,7 +247,7 @@ Wenn Sie am oberen Rand des Displays wischen, können Sie die Helligkeit einstel
 aktuellen Helligkeitswert im Nachtmodus, der sich von der Einstellung im Tagmodus unterscheidet. 
 Wenn sich der Modus ändert, kann sich die Helligkeit erhöhen / verringern.
 Während des Betriebs mit Batterie darf die Helligkeit niemals größer als der maximal
-unter * Einstellungen> Aussehen> Maximale Bildschirmhelligkeit im Akkubetrieb * efinierte Helligkeitswert sein.
+unter * Einstellungen> Aussehen> Maximale Bildschirmhelligkeit im Akkubetrieb * definierte Helligkeitswert sein.
 
 ### Automatischer Helligkeitsmodus
 
@@ -273,7 +273,7 @@ die automatische Helligkeitsregelung möglicherweise nicht sehr genau.
 
 ### Das Uhr-Widget wird nicht aktualisiert
 
-Das Uhr-Widget muss einmal pro Minute aktualisiert werden. 
+Das Uhr-Widget wird einmal pro Minute aktualisiert. 
 Aufgrund von Einschränkungen des Android-Systems wird ein Vordergrunddienst benötigt (der gleiche Dienst verwaltet den Autostart der App). 
 Dieses wird durch eine permanente Benachrichtigung im Benachrichtigungscenter angezeigt.
 Falls dieser Dienst nicht ordnungsgemäß ausgeführt wird (oder vom Android-System unterbrochen wird), 
@@ -284,11 +284,12 @@ der App deaktivieren und wieder aktivieren. Dies löst den Start des Dienstes er
 
 ### Welche Bilder werden in der Slideshow angezeigt
 
-Die App zeigt alle Bilder im JPG - Format, die mit der Kamera aufgenommen wurden bzw. in diesem Verzeichnis liegen an. 
+Die App zeigt alle Bilder im JPG - Format an, die mit der Kamera aufgenommen wurden bzw. im Foto-Verzeichnis liegen. 
 Videos oder Bilder in einem anderen Format werden nicht angezeigt.
 Aktuell ist es nicht möglich eine Auswahl einzelner Bilder für die Slideshow einzustellen.
 
 ### Es wird nur ein schwarzer Bildschirm angezeigt
 
 Bitte prüfen Sie, ob auf dem Gerät Bilder im JPG - Format vorliegen.
-Auch ein Neustart der App kann das Problem ggf. lösen.
+Möglicherweise ist die Option *Ausblenden - Das Hintergrundbild soll im Nachtmodus ausgeblendet werden* aktiv. 
+Im Nachtmodus wird dann nur ein schwarzer Hintergrund statt der Diashow angezeigt.
