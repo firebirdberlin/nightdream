@@ -354,7 +354,7 @@ public class Settings {
     }
 
     int getScreenProtection() {
-        if (settings.contains("restlessMode") && (!settings.contains("restlessMode"))){
+        if (settings.contains("restlessMode") && (!settings.getBoolean("restlessMode",true))){
             settings.edit().putString("screenProtection", "0").apply();
             settings.edit().remove("restlessMode").apply();
         }
