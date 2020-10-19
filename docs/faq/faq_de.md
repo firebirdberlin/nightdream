@@ -236,7 +236,7 @@ Der Nachtmodus verfügt über folgende Funktionen:
    beiden Modi leicht erhöhen.
 * Der Nachtmodus kann automatisch aktiviert werden, sobald es dunkel wird. 
    Andere Aktivierungsmodi sind * geplant * und * manuell *. Diese sind
-   für Geräte ohne Lichtsensor gedacht.Wenn Sie von der automatischen Helligkeitsregelung profitieren möchten, 
+   für Geräte ohne Lichtsensor gedacht. Wenn Sie von der automatischen Helligkeitsregelung profitieren möchten, 
    sollten Sie die Aktivierungseinstellungen für den Nachtmodus auf * automatisch * lassen.
 
 ## Helligkeitseinstellungen
