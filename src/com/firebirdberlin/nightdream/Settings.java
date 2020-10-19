@@ -44,29 +44,13 @@ import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
-    public String getWeatherProviderString() {
-        return settings.getString("weatherProvider", "0");
-    }
-    public WeatherProvider getWeatherProvider() {
-        String provider = settings.getString("weatherProvider", "0");
-        switch (provider) {
-            case "0":
-            default:
-                return WeatherProvider.OPEN_WEATHER_MAP;
-            case "1":
-                return WeatherProvider.DARK_SKY;
-        }
-    }
-
     public final static int BACKGROUND_BLACK = 1;
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
     public final static int BACKGROUND_SLIDESHOW = 4;
-
     public final static int SLIDESHOW_STYLE_CROPPED = 1;
     public final static int SLIDESHOW_STYLE_CENTER = 2;
     public final static int SLIDESHOW_STYLE_ANIMATED = 3;
-
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
@@ -77,7 +61,6 @@ public class Settings {
     public boolean alwaysOnStartWithLockedUI = false;
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
-    boolean autostartForNotifications = true;
     public boolean standbyEnabledWhileDisconnected = false;
     public boolean standbyEnabledWhileDisconnectedScreenUp = false;
     public boolean autoBrightness = false;
@@ -94,9 +77,7 @@ public class Settings {
     public boolean hideBackgroundImage = true;
     public boolean muteRinger = false;
     public boolean persistentBatteryValueWhileCharging = true;
-    public boolean restless_mode = true;
-    public int screenProtection = 1;
-    boolean showBatteryWarning = true;
+    public ScreenProtectionModes screenProtection = ScreenProtectionModes.MOVE;
     public boolean showDate = true;
     public boolean showWeather = false;
     public boolean showApparentTemperature = false;
@@ -109,7 +90,6 @@ public class Settings {
     public boolean showAlarmsPersistently = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
-    private boolean radioStreamActivateWiFi = false;
     public boolean radioStreamRequireWiFi = true;
     public boolean scheduledAutoStartEnabled = false;
     public boolean scheduledAutoStartChargerRequired = true;
@@ -128,7 +108,6 @@ public class Settings {
     public int alarmVolume = 3;
     public int alarmVolumeReductionPercent = 0;
     public int alarmFadeInDurationSeconds = 10;
-    private int background_mode = 1;
     public int slideshowStyle = 1;
     public int backgroundImageDuration = 4;
     public boolean fade_clock = false;
@@ -137,7 +116,6 @@ public class Settings {
     public boolean background_movein = false;
     public int background_movein_style = 1;
     public boolean background_mode_auto_color = false;
-    int batteryTimeout = -1;
     public int clockColor;
     public int clockColorNight;
     public int nightModeActivationMode;
@@ -160,7 +138,6 @@ public class Settings {
     public int nextAlarmTimeMinutes = 0;
     public int sleepTimeInMinutesDefaultValue = 30;
     public long lastReviewRequestTime = 0L;
-    private long nextAlwaysOnTime = 0L;
     public long sleepTimeInMillis = 0L; // 5 min
     public long snoozeTimeInMillis = 300000; // 5 min
     public long autoSnoozeTimeInMillis = 120000; // 2 min
@@ -175,18 +152,23 @@ public class Settings {
     public Set<Integer> autostartWeekdays;
     public Set<Integer> alwaysOnWeekdays;
     public Set<Integer> scheduledAutostartWeekdays;
-    public double NOISE_AMPLITUDE_WAKE  = Config.NOISE_AMPLITUDE_WAKE;
+    public double NOISE_AMPLITUDE_WAKE = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
+    public int clockLayout;
+    boolean autostartForNotifications = true;
+    boolean showBatteryWarning = true;
+    int batteryTimeout = -1;
+    SharedPreferences settings;
+    private boolean radioStreamActivateWiFi = false;
+    private int background_mode = 1;
+    private long nextAlwaysOnTime = 0L;
     private boolean purchasedDonation = false;
     private Context mContext;
-    SharedPreferences settings;
-    public int clockLayout;
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
-
-    public Settings(Context context){
+    public Settings(Context context) {
         this.mContext = context;
         settings = context.getSharedPreferences(PREFS_KEY, 0);
         reload();
@@ -204,6 +186,166 @@ public class Settings {
         }
         return new FavoriteRadioStations();
 
+    }
+
+    static void setFavoriteWeatherLocations(Context context, List<City> cities) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        while (cities.size() > 5) {
+            cities.remove(0);
+        }
+        for (int i = 0; i < 5; i++) {
+            String key = String.format("favoriteWeatherLocation_%d", i);
+            City city = (i < cities.size()) ? cities.get(i) : null;
+            if (city == null) {
+                edit.putString(key, "");
+            } else {
+                edit.putString(key, city.toJson());
+            }
+        }
+        edit.apply();
+    }
+
+    static ArrayList<City> getFavoriteWeatherLocations(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        ArrayList<City> cities = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            String key = String.format("favoriteWeatherLocation_%d", i);
+            String json = preferences.getString(key, "");
+            if (!json.isEmpty()) {
+                cities.add(City.fromJson(json));
+            }
+        }
+        return cities;
+    }
+
+    public static void setDefaultAlarmTone(Context context, String uriString) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("defaultAlarmTone", uriString);
+        edit.apply();
+    }
+
+    public static void setDefaultAlarmRadioStation(Context context, int stationIndex) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putInt("defaultAlarmRadioStation", stationIndex);
+        edit.apply();
+    }
+
+    static int getDefaultRadioStation(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return -1;
+        }
+        return preferences.getInt("defaultAlarmRadioStation", -1);
+    }
+
+    public static void setLastActiveRadioStation(Context context, int stationIndex) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putInt("lastActiveRadioStation", stationIndex);
+        edit.apply();
+    }
+
+    public static int getLastActiveRadioStation(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return -1;
+        }
+        return preferences.getInt("lastActiveRadioStation", -1);
+    }
+
+    static String getDefaultAlarmTone(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return null;
+        }
+        return preferences.getString("defaultAlarmTone", null);
+    }
+
+    public static SharedPreferences getDefaultSharedPreferences(Context context) {
+        return context.getSharedPreferences("defaults", Context.MODE_PRIVATE);
+    }
+
+    public static boolean showNotification(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showNotification", true);
+    }
+
+    public static boolean showMediaStyleNotification(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showMediaStyleNotification", false);
+    }
+
+    public static boolean useNotificationStatusBar(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showNotificationsInStatusBar", true);
+    }
+
+    public static boolean groupSimilarNotifications(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return false;
+        }
+        return preferences.getBoolean("groupSimilarNotifications", false);
+    }
+
+    public static int getMinNotificationImportance(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return 3;
+        }
+        String val = preferences.getString("minNotificationImportance", "3");
+        return Integer.valueOf(val);
+    }
+
+    public static void setFlashlightIsOn(Context context, boolean isOn) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean("flashlightIsOn", isOn);
+        edit.apply();
+    }
+
+    public static boolean getFlashlightIsOn(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return false;
+        }
+        return preferences.getBoolean("flashlightIsOn", false);
+    }
+
+    public static void storeWeatherDataPurchase(Context context, boolean weatherIsPurchased, boolean donationIsPurchased) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
+        editor.putBoolean("purchasedDonation", donationIsPurchased);
+        editor.apply();
+        Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
+    }
+
+    public String getWeatherProviderString() {
+        return settings.getString("weatherProvider", "0");
+    }
+
+    public WeatherProvider getWeatherProvider() {
+        String provider = settings.getString("weatherProvider", "0");
+        switch (provider) {
+            case "0":
+            default:
+                return WeatherProvider.OPEN_WEATHER_MAP;
+            case "1":
+                return WeatherProvider.DARK_SKY;
+        }
     }
 
     public void reload() {
@@ -278,7 +420,6 @@ public class Settings {
         purchasedDonation = settings.getBoolean("purchasedDonation", false);
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
-        restless_mode = settings.getBoolean("restlessMode", true);
         screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor(defaultSecondaryColorString));
@@ -286,15 +427,15 @@ public class Settings {
         scaleClock = settings.getFloat("scaleClock", 1.f);
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", -1.f);
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", -1.f);
-        sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
+        sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
         showApparentTemperature = settings.getBoolean("showApparentTemperature", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
-        snoozeTimeInMillis =  60000L * settings.getInt("snoozeTimeInMinutes", 5);
-        autoSnoozeTimeInMillis =  60000L * settings.getInt("autoSnoozeTimeInMinutes", 2);
+        snoozeTimeInMillis = 60000L * settings.getInt("snoozeTimeInMinutes", 5);
+        autoSnoozeTimeInMillis = 60000L * settings.getInt("autoSnoozeTimeInMinutes", 2);
 
         String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
         sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
@@ -317,7 +458,7 @@ public class Settings {
         batteryTimeout = Integer.parseInt(settings.getString("batteryTimeout", "-1"));
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
-        NOISE_AMPLITUDE_WAKE  *= sensitivity;
+        NOISE_AMPLITUDE_WAKE *= sensitivity;
 
         typeface = loadTypeface();
         weatherEntry = getWeatherEntry();
@@ -353,12 +494,20 @@ public class Settings {
         }
     }
 
-    int getScreenProtection() {
-        if (settings.contains("restlessMode") && (!settings.getBoolean("restlessMode",true))){
+    ScreenProtectionModes getScreenProtection() {
+        if (settings.contains("restlessMode") && !settings.getBoolean("restlessMode", true)) {
             settings.edit().putString("screenProtection", "0").apply();
             settings.edit().remove("restlessMode").apply();
         }
-        return Integer.parseInt(settings.getString("screenProtection", "1"));
+
+        int mode = Integer.parseInt(settings.getString("screenProtection", "1"));
+        switch (mode) {
+            case 0: return ScreenProtectionModes.NONE;
+            case 1:
+            default:
+                return ScreenProtectionModes.MOVE;
+            case 2: return ScreenProtectionModes.FADE;
+        }
     }
 
     boolean getBackgroundImageZoomIn() {
@@ -379,14 +528,14 @@ public class Settings {
         return settings.getBoolean("backgroundImageMoveIn", false);
     }
 
-    public void setSlideShowStyle(int status){
+    public void setSlideShowStyle(int status) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("slideshowStyle", status);
         editor.apply();
     }
 
-    public void setBackgroundZoomIn(boolean status){
+    public void setBackgroundZoomIn(boolean status) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("zoominBackgroundImage", status);
@@ -412,15 +561,20 @@ public class Settings {
         )) {
             boolean handle;
             handle = settings.getBoolean("handle_power_ac", false);
-            if (handle) defaultOptions.add("0"); else defaultOptions.remove("0");
+            if (handle) defaultOptions.add("0");
+            else defaultOptions.remove("0");
             handle = settings.getBoolean("handle_power_usb", false);
-            if (handle) defaultOptions.add("1"); else defaultOptions.remove("1");
+            if (handle) defaultOptions.add("1");
+            else defaultOptions.remove("1");
             handle = settings.getBoolean("handle_power_wireless", false);
-            if (handle) defaultOptions.add("2"); else defaultOptions.remove("2");
+            if (handle) defaultOptions.add("2");
+            else defaultOptions.remove("2");
             handle = settings.getBoolean("handle_power_desk", false);
-            if (handle) defaultOptions.add("3"); else defaultOptions.remove("3");
+            if (handle) defaultOptions.add("3");
+            else defaultOptions.remove("3");
             handle = settings.getBoolean("handle_power_car", false);
-            if (handle) defaultOptions.add("4"); else defaultOptions.remove("4");
+            if (handle) defaultOptions.add("4");
+            else defaultOptions.remove("4");
             edit.putStringSet("optionsPowerSource", defaultOptions);
             edit.remove("handle_power_ac");
             edit.remove("handle_power_usb");
@@ -439,7 +593,7 @@ public class Settings {
     }
 
     private boolean preferencesContain(String... keys) {
-        for (String key: keys) {
+        for (String key : keys) {
             if (settings.contains(key)) {
                 return true;
             }
@@ -537,8 +691,7 @@ public class Settings {
     public int getBackgroundMode() {
         if (Utility.isLowRamDevice(mContext)) {
             return BACKGROUND_BLACK;
-        } else
-        if (background_mode != BACKGROUND_SLIDESHOW || purchasedWeatherData) {
+        } else if (background_mode != BACKGROUND_SLIDESHOW || purchasedWeatherData) {
             return background_mode;
         }
 
@@ -615,14 +768,15 @@ public class Settings {
         prefEditor.putBoolean("standbyEnabledWhileDisconnected", false);
         prefEditor.commit();
     }
+
     private String getDefaultDateFormat() {
         // Return the date format as used in versions previous to the version code 72
-        if (Build.VERSION.SDK_INT >= 18){
+        if (Build.VERSION.SDK_INT >= 18) {
             return getBestDateTimePattern(Locale.getDefault(), "EEEEddLLLL");
 
         }
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        return ((SimpleDateFormat)formatter).toLocalizedPattern();
+        return ((SimpleDateFormat) formatter).toLocalizedPattern();
     }
 
     private Typeface loadTypeface() {
@@ -650,15 +804,18 @@ public class Settings {
             case 3:
             case 5:
                 return "fonts/roboto_regular.ttf";
-            case 2: return "fonts/roboto_light.ttf";
-            case 4: return "fonts/roboto_thin.ttf";
+            case 2:
+                return "fonts/roboto_light.ttf";
+            case 4:
+                return "fonts/roboto_thin.ttf";
             case 6:
                 return "fonts/7_segment_digital.ttf";
             case 7:
                 return "fonts/dancingscript_regular.ttf";
             case 8:
                 return "fonts/dseg14classic.ttf";
-            default: return null;
+            default:
+                return null;
         }
     }
 
@@ -712,7 +869,7 @@ public class Settings {
         return String.format("%s:%d", key, clockLayoutId);
     }
 
-    public void setBrightnessOffset(float value){
+    public void setBrightnessOffset(float value) {
         dim_offset = value;
 
         SharedPreferences.Editor prefEditor = settings.edit();
@@ -726,7 +883,7 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public void setNightModeBrightness(float value){
+    public void setNightModeBrightness(float value) {
         nightModeBrightness = value;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("nightModeBrightness", value);
@@ -837,7 +994,7 @@ public class Settings {
 
     public void setScaleClock(float factor, int orientation) {
         SharedPreferences.Editor prefEditor = settings.edit();
-        switch(orientation){
+        switch (orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 scaleClockLandscape = factor;
                 prefEditor.putFloat("scaleClockLandscape", factor);
@@ -855,7 +1012,7 @@ public class Settings {
     }
 
     public float getScaleClock(int orientation) {
-        switch(orientation){
+        switch (orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 return scaleClockLandscape;
             case Configuration.ORIENTATION_PORTRAIT:
@@ -937,14 +1094,14 @@ public class Settings {
         }
     }
 
+    public boolean getWeatherAutoLocationEnabled() {
+        return settings.getBoolean("weatherAutoLocationEnabled", false);
+    }
+
     void setWeatherAutoLocationEnabled(boolean on) {
         SharedPreferences.Editor edit = settings.edit();
         edit.putBoolean("weatherAutoLocationEnabled", on);
         edit.apply();
-    }
-
-    public boolean getWeatherAutoLocationEnabled() {
-        return settings.getBoolean("weatherAutoLocationEnabled", false);
     }
 
     void setWeatherLocation(City city) {
@@ -960,8 +1117,6 @@ public class Settings {
         }
         prefEditor.apply();
     }
-
-    public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY}
 
     public WeatherEntry getWeatherEntry() {
         this.weatherEntry = new WeatherEntry();
@@ -1013,7 +1168,7 @@ public class Settings {
 
     public boolean hasPermission(String permission) {
         return (ContextCompat.checkSelfPermission(mContext, permission)
-                 == PackageManager.PERMISSION_GRANTED);
+                == PackageManager.PERMISSION_GRANTED);
     }
 
     public RadioStation getFavoriteRadioStation(int radioStationIndex) {
@@ -1021,44 +1176,13 @@ public class Settings {
 
         RadioStation station = null;
         if (stations != null) {
-             station = stations.get(radioStationIndex);
+            station = stations.get(radioStationIndex);
         }
         return station;
     }
 
     public FavoriteRadioStations getFavoriteRadioStations() {
         return getFavoriteRadioStations(settings);
-    }
-
-    static void setFavoriteWeatherLocations(Context context, List<City> cities) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        SharedPreferences.Editor edit = preferences.edit();
-        while (cities.size() > 5) {
-            cities.remove(0);
-        }
-        for (int i = 0; i < 5; i++) {
-            String key = String.format("favoriteWeatherLocation_%d", i);
-            City city = (i < cities.size()) ? cities.get(i) : null;
-            if (city == null) {
-                edit.putString(key, "");
-            } else {
-                edit.putString(key, city.toJson());
-            }
-        }
-        edit.apply();
-    }
-
-    static ArrayList<City> getFavoriteWeatherLocations(Context context) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        ArrayList<City> cities = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            String key = String.format("favoriteWeatherLocation_%d", i);
-            String json = preferences.getString(key, "");
-            if (!json.isEmpty()) {
-                cities.add(City.fromJson(json));
-            }
-        }
-        return cities;
     }
 
     private void setFavoriteRadioStations(FavoriteRadioStations stations) {
@@ -1084,109 +1208,6 @@ public class Settings {
         persistFavoriteRadioStation(null, stationIndex);
     }
 
-    public static void setDefaultAlarmTone(Context context, String uriString) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        SharedPreferences.Editor edit = preferences.edit();
-        edit.putString("defaultAlarmTone", uriString);
-        edit.apply();
-    }
-
-    public static void setDefaultAlarmRadioStation(Context context, int stationIndex) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        SharedPreferences.Editor edit = preferences.edit();
-        edit.putInt("defaultAlarmRadioStation", stationIndex);
-        edit.apply();
-    }
-
-    static int getDefaultRadioStation(Context context) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        if (preferences == null) {
-            return -1;
-        }
-        return preferences.getInt("defaultAlarmRadioStation", -1);
-    }
-
-    public static void setLastActiveRadioStation(Context context, int stationIndex) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        SharedPreferences.Editor edit = preferences.edit();
-        edit.putInt("lastActiveRadioStation", stationIndex);
-        edit.apply();
-    }
-
-    public static int getLastActiveRadioStation(Context context) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        if (preferences == null) {
-            return -1;
-        }
-        return preferences.getInt("lastActiveRadioStation", -1);
-    }
-    static String getDefaultAlarmTone(Context context) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        if (preferences == null) {
-            return null;
-        }
-        return preferences.getString("defaultAlarmTone", null);
-    }
-
-    public static SharedPreferences getDefaultSharedPreferences(Context context) {
-        return context.getSharedPreferences("defaults", Context.MODE_PRIVATE);
-    }
-
-    public static boolean showNotification(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
-            return true;
-        }
-        return preferences.getBoolean("showNotification", true);
-    }
-
-    public static boolean showMediaStyleNotification(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
-            return true;
-        }
-        return preferences.getBoolean("showMediaStyleNotification", false);
-    }
-
-    public static boolean useNotificationStatusBar(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
-            return true;
-        }
-        return preferences.getBoolean("showNotificationsInStatusBar", true);
-    }
-
-    public static boolean groupSimilarNotifications(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
-            return false;
-        }
-        return preferences.getBoolean("groupSimilarNotifications", false);
-    }
-    public static int getMinNotificationImportance(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
-            return 3;
-        }
-        String val = preferences.getString("minNotificationImportance", "3");
-        return Integer.valueOf(val);
-    }
-
-    public static void setFlashlightIsOn(Context context, boolean isOn) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        SharedPreferences.Editor edit = preferences.edit();
-        edit.putBoolean("flashlightIsOn", isOn);
-        edit.apply();
-    }
-
-    public static boolean getFlashlightIsOn(Context context) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
-        if (preferences == null) {
-            return false;
-        }
-        return preferences.getBoolean("flashlightIsOn", false);
-    }
-
     public boolean getShallRadioStreamActivateWiFi() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29) {
             return false;
@@ -1194,12 +1215,6 @@ public class Settings {
         return radioStreamActivateWiFi;
     }
 
-    public static void storeWeatherDataPurchase(Context context, boolean weatherIsPurchased, boolean donationIsPurchased) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, 0);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
-        editor.putBoolean("purchasedDonation", donationIsPurchased);
-        editor.apply();
-        Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
-    }
+    public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY}
+    public enum ScreenProtectionModes {NONE, MOVE, FADE}
 }
