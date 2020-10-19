@@ -1,25 +1,17 @@
 package com.firebirdberlin.nightdream;
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -32,14 +24,12 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
     private int color;
     private View contentView;
+    private NightDreamActivity activity;
 
     public NotificationReceiver(NightDreamActivity context) {
         Window window = context.getWindow();
         contentView = window.getDecorView().findViewById(android.R.id.content);
-    }
-
-    public NotificationReceiver(Window window) {
-        contentView = window.getDecorView().findViewById(android.R.id.content);
+        activity = context;
     }
 
     public static void dumpIntent(Intent i) {
@@ -117,6 +107,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 setupMediaControls(context, intent);
             }
         }
+
     }
 
     private void removeViewsFrom(FlexboxLayout layout) {
@@ -157,7 +148,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setupMediaControls(Context context, Intent intent) {
-        if (!Settings.showMediaStyleNotification(context)) {
+        if (!Settings.showMediaStyleNotification(context) || activity == null) {
             return;
         }
         // TODO: media control area is too wide
@@ -175,5 +166,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         MediaControlLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
         mediaStyleContainer.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
+
+        activity.onConfigurationChanged(activity.getResources().getConfiguration());
     }
 }

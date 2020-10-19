@@ -1107,18 +1107,10 @@ public class NightDreamUI {
                     clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
                     centerClockLayout();
                     float s = getScaleFactor(newConfig);
-                    //applyScaleFactor(s);
                     clockLayout.setScaleFactor(s);
 
                     handler.postDelayed(moveAround, 60000);
                     handler.postDelayed(backgroundChange, 15000*settings.backgroundImageDuration);
-/*
-                    if ( showcaseView == null ) {
-                        handler.postDelayed(moveAround, 60000);
-                    } else {
-                        setupShowcaseView();
-                    }
- */
                     sidePanel.post(setupSidePanel);
                 }
         };
