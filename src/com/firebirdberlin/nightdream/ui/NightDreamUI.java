@@ -205,7 +205,7 @@ public class NightDreamUI {
     private Runnable fadeClock = new Runnable() {
         @Override
         public void run() {
-            if (settings.prevent_burnin && settings.prevent_burnin_mode == 2) {
+            if (settings.screenProtection == 2) {
                 AlphaAnimation alpha;
                 alpha = new AlphaAnimation(1.0f, 0.0f);
                 alpha.setDuration(2000);
@@ -590,7 +590,7 @@ public class NightDreamUI {
     }
 
     public void setupClockLayout() {
-        if (!settings.prevent_burnin || settings.prevent_burnin_mode != 1) {
+        if (settings.screenProtection != 1) {
             centerClockLayout();
         }
         int layoutId = settings.getClockLayoutID(false);
@@ -1143,7 +1143,7 @@ public class NightDreamUI {
     }
 
     private void updateClockPosition() {
-        if (!settings.prevent_burnin || settings.prevent_burnin_mode != 1) {
+        if (settings.screenProtection != 1) {
             return;
         }
         Random random = new Random();

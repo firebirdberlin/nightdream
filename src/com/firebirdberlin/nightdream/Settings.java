@@ -95,8 +95,7 @@ public class Settings {
     public boolean muteRinger = false;
     public boolean persistentBatteryValueWhileCharging = true;
     public boolean restless_mode = true;
-    public boolean prevent_burnin = true;
-    public int prevent_burnin_mode = 1;
+    public int screenProtection = 1;
     boolean showBatteryWarning = true;
     public boolean showDate = true;
     public boolean showWeather = false;
@@ -280,8 +279,7 @@ public class Settings {
         reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         restless_mode = settings.getBoolean("restlessMode", true);
-        prevent_burnin = getPreventBurnIn();
-        prevent_burnin_mode = Integer.parseInt(settings.getString("preventBurnInMode", "1"));
+        screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor(defaultSecondaryColorString));
         secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor(defaultSecondaryColorString));
@@ -355,23 +353,12 @@ public class Settings {
         }
     }
 
-    boolean getPreventBurnIn() {
-        boolean on = settings.getBoolean("preventBurnIn", true);
-
-        if (!restless_mode){
-            on = false;
-            setPreventBurnIn(on);
-            setRestlessMode(true);
+    int getScreenProtection() {
+        if (settings.contains("restlessMode") && (!settings.contains("restlessMode"))){
+            settings.edit().putString("screenProtection", "0").apply();
+            settings.edit().remove("restlessMode").apply();
         }
-        return on;
-    }
-
-    public void setPreventBurnIn(boolean status){
-        settings.edit().putBoolean("preventBurnIn", status).apply();
-    }
-
-    public void setRestlessMode(boolean status){
-        settings.edit().putBoolean("restlessMode", status).apply();
+        return Integer.parseInt(settings.getString("screenProtection", "1"));
     }
 
     boolean getBackgroundImageZoomIn() {

@@ -273,9 +273,10 @@ OR
     <string name="remaining">rem.</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
-    <string name="preventBurnIn">Prevent the clock from burn in</string>
-    <string name="restless_mode">Move the clock around</string>
-    <string name="fade_clock">Fade clock</string>
+    <string name="screenProtection">Screen burn protection</string>
+    <string name="screenProtectionNone">None</string>
+    <string name="screenProtectionMove">Move the clock around</string>
+    <string name="screenProtectionFade">Fade the clock</string>
     <string name="review_request">Please rate this application. Thanks !</string>
     <string name="scheduledAutoStart">Scheduled Autostart</string>
     <string name="scheduledAutoStartChargerRequired">only when charging</string>

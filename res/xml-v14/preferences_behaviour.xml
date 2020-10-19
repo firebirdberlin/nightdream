@@ -12,21 +12,13 @@
         app:summary="@string/doubleTapToFinishSummary"
         app:title="@string/doubleTapToFinishTitle" />
 
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="true"
-        app:key="preventBurnIn"
-        app:title="@string/preventBurnIn"
-        app:isPreferenceVisible="true"
-        />
-
     <ListPreference
         app:iconSpaceReserved="false"
         app:defaultValue="1"
-        app:entries="@array/preventBurnInMode"
-        app:entryValues="@array/preventBurnInModeValues"
-        app:key="preventBurnInMode"
-        app:dependency="preventBurnIn"
+        app:title="@string/screenProtection"
+        app:entries="@array/screenProtectionMode"
+        app:entryValues="@array/screenProtectionModeValues"
+        app:key="screenProtection"
         app:useSimpleSummaryProvider="true"/>
 
     <SwitchPreferenceCompat
