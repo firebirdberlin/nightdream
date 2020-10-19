@@ -209,7 +209,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Voorkeuren</string>
     <string name="prev">vorige</string>
     <string name="preview">Voorbeeld</string>
-<string name="product_description_weather">Een update bevat\n\n- een één-lijns weerbericht onder de klok\n- een vijfdaagse weersvoorspelling\n- meer wijzerplaten</string>
+<string name="product_description_weather">Een update bevat
+\n
+\n- een één-lijns weerbericht onder de klok
+\n- een vijfdaagse weersvoorspelling
+\n- meer wijzerplaten</string>
     <string name="product_name_actions">Altijd aanwezig</string>
     <string name="product_name_donation">Donatie</string>
     <string name="product_name_pro">Volledige versie</string>
@@ -247,7 +251,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining">rest.</string>
     <string name="repeat">herhalen</string>
     <string name="reset_to_defaults">Standaardwaarden herstellen</string>
-    <string name="restless_mode">Klok willekeurig verplaatsen</string>
+    <string name="screenProtectionMove">Klok willekeurig verplaatsen</string>
     <string name="review_request">Beoordeel deze applicatie. Bedankt!</string>
     <string name="scheduledAutoStart">Geplande start</string>
     <string name="scheduledAutoStartChargerRequired">alleen bij opladen </string>

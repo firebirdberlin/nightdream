@@ -87,7 +87,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Želim preporučiti ovu aplikaciju noćnog sata.</string>
     <string name="recommend">Preporuči aplikaciju</string>
     <string name="reset_to_defaults">Vrati na tvorničke postavke</string>
-    <string name="restless_mode">Pomiči sat uokolo</string>
+    <string name="screenProtectionMove">Pomiči sat uokolo</string>
     <string name="review_request">Ocijeni ovu aplikaciju. Hvala!</string>
     <string name="screen_orientation_reverse_landscape">Hrvatska</string>
     <string name="screenOrientation">Orijentacija zaslona</string>
