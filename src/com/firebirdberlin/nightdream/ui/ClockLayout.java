@@ -55,6 +55,7 @@ public class ClockLayout extends LinearLayout {
     private WeatherLayout weatherLayout = null;
     private WeatherLayout weatherLayout2 = null;
     private FlexboxLayout notificationLayout = null;
+    private LinearLayout mediaStyleLayout = null;
     private View divider = null;
     private boolean showDivider = true;
     private boolean mirrorText = false;
@@ -124,6 +125,7 @@ public class ClockLayout extends LinearLayout {
         divider = findViewById(R.id.divider);
         analog_clock = findViewById(R.id.analog_clock);
         notificationLayout = findViewById(R.id.notificationbar);
+        mediaStyleLayout = findViewById(R.id.notification_mediacontrol_bar);
 
         if (calendarView != null) {
             calendarView.setTopbarVisible(true);
@@ -600,12 +602,13 @@ public class ClockLayout extends LinearLayout {
         }
         int additionalHeight = (int) (getHeightOf(date) + getHeightOf(weatherLayout));
 
-        additionalHeight += notificationLayout.getVisibility() == VISIBLE
-                ? Utility.dpToPx(context, 24.f) : 0;
+        additionalHeight += notificationLayout.getVisibility() == VISIBLE ? getHeightOf(notificationLayout) : 0;
+        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? getHeightOf(mediaStyleLayout) : 0;
 
         Log.i(TAG, String.format("additionalHeight: %s", additionalHeight));
 
-        setSize(widgetSize, widgetSize + additionalHeight);
+        int finalSize = mediaStyleLayout.getVisibility() == VISIBLE ? parentWidth : widgetSize;
+        setSize(finalSize, widgetSize + additionalHeight);
 
         int measuredHeight = Utility.getHeightOfView(this);
         Log.i(TAG, "### measuredHeight=" + measuredHeight + ", parentHeight=" + parentHeight);
