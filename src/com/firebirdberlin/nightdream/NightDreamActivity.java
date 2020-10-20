@@ -23,12 +23,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.speech.tts.TextToSpeech;
+import android.text.Spannable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -68,6 +71,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class NightDreamActivity extends BillingHelperActivity
         implements View.OnTouchListener,
@@ -101,12 +105,21 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
+    private TextToSpeech ttobj;
+
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             if (mySettings.doubleTapToFinish) {
-                finish();
+               // finish();
+
+                ttobj.speak(Calendar.getInstance().get(Calendar.HOUR)+":"+Calendar.getInstance().get(Calendar.MINUTE), TextToSpeech.QUEUE_FLUSH, null);
+
+                if(!ttobj.isSpeaking()) {
+                    Toast.makeText(getApplicationContext(), "Error: speak failed",Toast.LENGTH_LONG).show();
+                }
+
                 return true;
             }
             return false;
@@ -216,6 +229,15 @@ public class NightDreamActivity extends BillingHelperActivity
 
         Log.i(TAG, "onCreate()");
         Window window = getWindow();
+
+        ttobj = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    ttobj.setLanguage(Locale.getDefault());
+                }
+            }
+        });
 
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
