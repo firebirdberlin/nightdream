@@ -12,6 +12,13 @@
         app:summary="@string/doubleTapToFinishSummary"
         app:title="@string/doubleTapToFinishTitle" />
 
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="SpeakTime"
+        app:summary="@string/SpeakTimeSummary"
+        app:title="@string/SpeakTimeTitle" />
+
     <ListPreference
         app:iconSpaceReserved="false"
         app:defaultValue="1"
