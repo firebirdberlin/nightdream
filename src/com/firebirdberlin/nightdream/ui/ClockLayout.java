@@ -529,9 +529,6 @@ public class ClockLayout extends LinearLayout {
 
     private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config,
                                    boolean displayInWidget) {
-        if (analog_clock != null) {
-            analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
-        }
         final float minFontSize = 8.f; // in sp
         final float maxFontSize = 18.f; // in sp
         int widgetSize;
@@ -540,12 +537,19 @@ public class ClockLayout extends LinearLayout {
         } else {
             widgetSize = getAnalogWidgetSize(parentWidth, config);
         }
+        if (analog_clock != null) {
+            analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
+            analog_clock.getLayoutParams().height = widgetSize;
+            analog_clock.getLayoutParams().width = widgetSize;
+        }
 
-        int additionalHeight = notificationLayout.getVisibility() == VISIBLE
-                ? Utility.dpToPx(context, 24.f) : 0;
+        int additionalHeight = 0;
+        additionalHeight += notificationLayout.getVisibility() == VISIBLE ? Utility.dpToPx(context, 24.f) : 0;
+        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? getHeightOf(mediaStyleLayout) : 0;
 
+        int width = mediaStyleLayout.getVisibility() == VISIBLE ? LayoutParams.WRAP_CONTENT : widgetSize;
+        setSize(width, widgetSize + additionalHeight);
 
-        setSize(widgetSize, widgetSize + additionalHeight);
         if (date != null) {
             date.setMaxWidth(widgetSize / 2);
             date.setMaxFontSizesInSp(minFontSize, maxFontSize);
@@ -559,8 +563,9 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    private void setupLayoutAnalog2(int parentWidth, int parentHeight, Configuration config,
-                                    boolean displayInWidget) {
+    private void setupLayoutAnalog2(
+            int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
+    ) {
         switch (layoutId) {
             case LAYOUT_ID_ANALOG:
                 analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
@@ -600,18 +605,13 @@ public class ClockLayout extends LinearLayout {
             weatherLayout.update();
             weatherLayout.invalidate();
         }
-        int additionalHeight = (int) (getHeightOf(date) + getHeightOf(weatherLayout));
 
+        int additionalHeight = (int) (getHeightOf(date) + getHeightOf(weatherLayout));
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? getHeightOf(notificationLayout) : 0;
         additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? getHeightOf(mediaStyleLayout) : 0;
-
-        Log.i(TAG, String.format("additionalHeight: %s", additionalHeight));
-
-        int finalSize = mediaStyleLayout.getVisibility() == VISIBLE ? parentWidth : widgetSize;
-        setSize(finalSize, widgetSize + additionalHeight);
+        setSize(LinearLayout.LayoutParams.WRAP_CONTENT, widgetSize + additionalHeight);
 
         int measuredHeight = Utility.getHeightOfView(this);
-        Log.i(TAG, "### measuredHeight=" + measuredHeight + ", parentHeight=" + parentHeight);
 
         if (displayInWidget && parentHeight > 0 && measuredHeight > parentHeight) {
             // shrink analog clock
