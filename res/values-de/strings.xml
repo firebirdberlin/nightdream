@@ -199,7 +199,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_name_services">Services</string>
     <string name="notification_grouping_summary">Benachrichtigungen mit demselben Icon gruppieren und nur einmal anzeigen.</string>
     <string name="notification_grouping_title">Ähnliche Benachrichtigungen gruppieren</string>
-    <string name="notification_show_mediastyle_summary">Mediensteuerung in Digitaluhr anzeigen</string>
+    <string name="notification_show_mediastyle_summary">Mediensteuerung anzeigen</string>
     <string name="notification_show_mediastyle_title">Medienplayer anzeigen</string>
     <string name="notification_importance_default">default</string>
     <string name="notification_importance_high">hoch</string>
