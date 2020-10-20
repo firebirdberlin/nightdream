@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.text.Spannable;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -105,7 +106,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
-    private TextToSpeech ttobj;
+    private TextToSpeech ttsobj;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -114,12 +115,29 @@ public class NightDreamActivity extends BillingHelperActivity
             if (mySettings.doubleTapToFinish) {
                // finish();
 
-                ttobj.speak(Calendar.getInstance().get(Calendar.HOUR)+":"+Calendar.getInstance().get(Calendar.MINUTE), TextToSpeech.QUEUE_FLUSH, null);
+                String hour;
+                String minute;
 
-                if(!ttobj.isSpeaking()) {
-                    Toast.makeText(getApplicationContext(), "Error: speak failed",Toast.LENGTH_LONG).show();
+                if (DateFormat.is24HourFormat(context)) {
+                    hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+                }
+                else{
+                    hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR));
                 }
 
+                if (Calendar.getInstance().get(Calendar.MINUTE) < 10){
+                    minute = "0" + Calendar.getInstance().get(Calendar.MINUTE);
+                }
+                else {
+                    minute = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
+                }
+
+                if (ttsobj != null) {
+                    ttsobj.speak(getString(R.string.speakTime) + hour + ":" + minute, TextToSpeech.QUEUE_FLUSH, null);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Error: speaking current time failed",Toast.LENGTH_LONG).show();
+                }
                 return true;
             }
             return false;
@@ -230,11 +248,14 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onCreate()");
         Window window = getWindow();
 
-        ttobj = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+        ttsobj = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
-                    ttobj.setLanguage(Locale.getDefault());
+                    ttsobj.setLanguage(Locale.getDefault());
+                }
+                else {
+                    ttsobj = null;
                 }
             }
         });

@@ -272,6 +272,7 @@ OR
     <string name="export_preferences">Export app information</string>
     <string name="remaining">rem.</string>
     <string name="repeat">repeat</string>
+    <string name="speakTime">The current time is:</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="screenProtection">Screen burn protection</string>
     <string name="screenProtectionNone">None</string>

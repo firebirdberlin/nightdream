@@ -348,4 +348,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Informationen</string>
     <string name="weekdays">Wochentage</string>
     <string name="width">Breite</string>
+    <string name="speakTime">Die aktuelle Uhrzeit ist:</string>
 </resources>
