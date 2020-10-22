@@ -65,6 +65,14 @@
                 app:key="showMediaStyleNotification"
                 app:summary="@string/notification_show_mediastyle_summary"
                 app:title="@string/notification_show_mediastyle_title" />
+
+            <SwitchPreferenceCompat
+                app:iconSpaceReserved="false"
+                app:defaultValue="false"
+                app:key="showNotificationPreview"
+                app:summary="@string/notification_show_preview_summary"
+                app:title="@string/notification_show_preview_title" />
+
         </PreferenceCategory>
     </PreferenceCategory>
 </PreferenceScreen>

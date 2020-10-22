@@ -21,6 +21,8 @@ import androidx.databinding.DataBindingUtil;
 
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
+import com.firebirdberlin.nightdream.ui.NotificationPreviewLayout;
+import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.google.android.flexbox.FlexboxLayout;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -103,14 +105,24 @@ public class NotificationReceiver extends BroadcastReceiver {
             icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
         }
 
-        if ("added".equals(action) && icon != null) {
-            addNotificationIcon(context, container, icon);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                setupMediaControls(context, intent);
+        if (icon != null) {
+            assert action != null;
+            switch (action) {
+                case "added":
+                    addNotificationIcon(context, container, icon);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        setupMediaControls(context, intent);
+                    }
+                    break;
+                case "added_preview":
+                    //todo
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        setupNotificationPreview(context, intent);
+                    }
+                    break;
+                default:
             }
         }
-
     }
 
     private void removeViewsFrom(FlexboxLayout layout) {
@@ -195,5 +207,24 @@ public class NotificationReceiver extends BroadcastReceiver {
                 activity.onConfigurationChanged(activity.getResources().getConfiguration());
             }
         }, 500);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setupNotificationPreview(Context context, Intent intent) {
+        if (!Settings.showNotificationPreview(context) || activity == null) {
+            return;
+        }
+
+        String template = intent.getStringExtra("template");
+        if (template == null || template.contains("MediaStyle")) {
+            return;
+        }
+
+        int iconId = intent.getIntExtra("iconId", -1);
+        String packageName = intent.getStringExtra("packageName");
+        Drawable notificationMessageSmallIcon = getNotificationIcon(context, packageName, iconId);
+
+        NotificationPreviewLayout notificationPreviwContainer = contentView.findViewById(R.id.notification_preview);
+        notificationPreviwContainer.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
     }
 }
