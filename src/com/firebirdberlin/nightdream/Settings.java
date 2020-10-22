@@ -285,6 +285,14 @@ public class Settings {
         return preferences.getBoolean("showNotification", true);
     }
 
+    public static boolean showNotificationPreview(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showNotificationPreview", false);
+    }
+
     public static boolean showMediaStyleNotification(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {

@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -85,6 +86,12 @@ public class mNotificationListener extends NotificationListenerService {
         Log.i(TAG, "++++ notification posted ++++");
         logNotification(sbn);
 
+        Intent i = getIntentForBroadCast(sbn);
+        if (i != null) {
+            i.putExtra("action", "added_preview");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+        }
+
         if (shallIgnoreNotification(sbn)) return;
         listNotifications();
 
@@ -162,7 +169,6 @@ public class mNotificationListener extends NotificationListenerService {
     private void listNotifications() {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         groupSimilarNotifications = Settings.groupSimilarNotifications(this);
-        Log.i(TAG, "listNotifications()");
         clearNotificationUI();
         HashSet<String> groupKeys = new HashSet<>();
 
@@ -199,6 +205,7 @@ public class mNotificationListener extends NotificationListenerService {
             Intent i = getIntentForBroadCast(sbn);
             if (i != null) {
                 i.putExtra("action", "added");
+
                 // Utility.logIntent(TAG, "notification intent", i);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(i);
             }
@@ -288,6 +295,11 @@ public class mNotificationListener extends NotificationListenerService {
 
                 if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
                     i.putExtra("text", extras.getCharSequence("android.text").toString());
+                }
+
+                //get content Intent from notification
+                if (sbn.getNotification().contentIntent != null) {
+                    i.putExtra("contentintent", sbn.getNotification().contentIntent);
                 }
 
             }

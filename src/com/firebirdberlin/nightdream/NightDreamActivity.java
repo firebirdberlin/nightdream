@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -34,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -338,7 +341,7 @@ public class NightDreamActivity extends BillingHelperActivity
         setKeepScreenOn(true);
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
-        if (mySettings.activateDoNotDisturb) {
+        if ( mySettings.activateDoNotDisturb ) {
             AudioManage.activateDnDMode(true, mySettings.activateDoNotDisturbAllowPriority);
         }
         ScreenWatcherService.conditionallyStart(this, mySettings);
@@ -946,5 +949,9 @@ public class NightDreamActivity extends BillingHelperActivity
                 isChargingWireless = stats.reference.isChargingWireless;
             }
         }
+    }
+
+    public static Context getAppContext() {
+        return NightDreamActivity.context;
     }
 }
