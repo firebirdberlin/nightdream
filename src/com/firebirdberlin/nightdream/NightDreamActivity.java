@@ -644,6 +644,12 @@ public class NightDreamActivity extends BillingHelperActivity
         WeatherForecastActivity.start(this);
     }
 
+    public void onNotificationListClick(View v) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            NotificationListActivity.start(this);
+        }
+    }
+
     @SuppressWarnings("UnusedParameters")
     public void onAlarmClockClick(View v) {
         SetAlarmClockActivity.start(this);
