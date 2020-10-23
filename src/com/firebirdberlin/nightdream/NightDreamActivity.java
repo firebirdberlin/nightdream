@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
-import android.text.Spannable;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -32,7 +31,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -90,7 +88,6 @@ public class NightDreamActivity extends BillingHelperActivity
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
-    private ImageView weatherIcon;
     private ImageView alarmClockIcon;
     private ImageView radioIcon;
     private ImageView torchIcon;
@@ -106,41 +103,45 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
-    private TextToSpeech ttsobj;
+    private TextToSpeech textToSpeech;
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (mySettings.doubleTapToFinish) {
-               // finish();
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+            String hour;
+            String minute;
 
-                String hour;
-                String minute;
-
-                if (DateFormat.is24HourFormat(context)) {
-                    hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-                }
-                else{
-                    hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR));
-                }
-
-                if (Calendar.getInstance().get(Calendar.MINUTE) < 10){
-                    minute = "0" + Calendar.getInstance().get(Calendar.MINUTE);
-                }
-                else {
-                    minute = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
-                }
-
-                if (ttsobj != null) {
-                    ttsobj.speak(getString(R.string.speakTime) + hour + ":" + minute, TextToSpeech.QUEUE_FLUSH, null);
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Error: speaking current time failed",Toast.LENGTH_LONG).show();
-                }
-                return true;
+            if (DateFormat.is24HourFormat(context)) {
+                hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
             }
-            return false;
+            else{
+                hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR));
+            }
+
+            if (Calendar.getInstance().get(Calendar.MINUTE) < 10){
+                minute = "0" + Calendar.getInstance().get(Calendar.MINUTE);
+            }
+            else {
+                minute = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
+            }
+
+            if (textToSpeech != null) {
+                textToSpeech.speak(getString(R.string.speakTime) + hour + ":" + minute, TextToSpeech.QUEUE_FLUSH, null);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Error: speaking current time failed",Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (!mySettings.doubleTapToFinish) {
+                return false;
+            }
+            finish();
+            return true;
         }
     };
     private final LocationListener locationListener = new LocationListener() {
@@ -248,18 +249,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onCreate()");
         Window window = getWindow();
 
-        ttsobj = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
-                    ttsobj.setLanguage(Locale.getDefault());
-                }
-                else {
-                    ttsobj = null;
-                }
-            }
-        });
-
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
@@ -269,7 +258,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         setKeepScreenOn(true);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
-        weatherIcon = findViewById(R.id.icon_weather_forecast);
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         radioIcon = findViewById(R.id.radio_icon);
         ImageView background_image = findViewById(R.id.background_view);
@@ -278,6 +266,21 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
+        initTextToSpeech();
+    }
+
+    void initTextToSpeech() {
+        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR && textToSpeech != null) {
+                    textToSpeech.setLanguage(Locale.getDefault());
+                }
+                else {
+                    textToSpeech = null;
+                }
+            }
+        });
     }
 
     public void setupFlashlight() {
