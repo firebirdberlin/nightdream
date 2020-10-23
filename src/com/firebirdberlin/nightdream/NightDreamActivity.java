@@ -68,6 +68,7 @@ import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -113,25 +114,18 @@ public class NightDreamActivity extends BillingHelperActivity
                 return;
             }
             super.onLongPress(e);
-            String hour;
-            String minute;
 
-            if (DateFormat.is24HourFormat(context)) {
-                hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+            SimpleDateFormat simpleDateFormat;
+            Calendar mCalendar = Calendar.getInstance();
+            if (android.text.format.DateFormat.is24HourFormat(context)) {
+                simpleDateFormat = new SimpleDateFormat("HH:mm");
+            } else {
+                simpleDateFormat = new SimpleDateFormat("h:mm aa");
             }
-            else{
-                hour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR));
-            }
-
-            if (Calendar.getInstance().get(Calendar.MINUTE) < 10){
-                minute = "0" + Calendar.getInstance().get(Calendar.MINUTE);
-            }
-            else {
-                minute = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
-            }
+            String text = simpleDateFormat.format(mCalendar.getTime());
 
             if (textToSpeech != null) {
-                textToSpeech.speak(getString(R.string.speakTime) + hour + ":" + minute, TextToSpeech.QUEUE_FLUSH, null);
+                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
             }
             else {
                 Toast.makeText(getApplicationContext(), "Error: speaking current time failed",Toast.LENGTH_LONG).show();
