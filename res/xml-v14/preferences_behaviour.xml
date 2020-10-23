@@ -12,6 +12,13 @@
         app:summary="@string/doubleTapToFinishSummary"
         app:title="@string/doubleTapToFinishTitle" />
 
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="longPressToSpeakTime"
+        app:summary="@string/longPressToSpeakTimeSummary"
+        app:title="@string/longPressToSpeakTimeTitle" />
+
     <ListPreference
         app:iconSpaceReserved="false"
         app:defaultValue="1"

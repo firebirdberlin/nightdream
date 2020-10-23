@@ -139,6 +139,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Dankeschön!</string>
     <string name="digit_emphasize_quarters">Viertel hervorheben</string>
     <string name="donate">Spenden</string>
+    <string name="longPressToSpeakTimeSummary">Aktuelle Uhrzeit vorlesen lassen durch langes Drücken auf den Bildschirm.</string>
+    <string name="longPressToSpeakTimeTitle">Aktuelle Uhrzeit vorlesen</string>
     <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
     <string name="flashlight">Taschenlampe</string>
