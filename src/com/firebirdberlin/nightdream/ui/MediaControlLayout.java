@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -18,11 +17,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 
 public class MediaControlLayout extends LinearLayout {
@@ -38,6 +38,7 @@ public class MediaControlLayout extends LinearLayout {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, Intent intent, Drawable smallIcon) {
+        NightDreamUI nightDreamUI = new NightDreamUI(context, NightDreamActivity.window );
         String template = intent.getStringExtra("template");
         if (template != null && !template.contains("MediaStyle")) {
             return;
@@ -48,7 +49,7 @@ public class MediaControlLayout extends LinearLayout {
 
         ImageView notificationMessageBitmap = mediaStyleControl.findViewById(R.id.notify_smallicon);
         assert smallIcon != null;
-        smallIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        smallIcon.setColorFilter(nightDreamUI.getSecondaryColor(), PorterDuff.Mode.SRC_ATOP);
         notificationMessageBitmap.setImageDrawable(smallIcon);
 
         TextView appName = mediaStyleControl.findViewById(R.id.notify_appname);
@@ -98,10 +99,12 @@ public class MediaControlLayout extends LinearLayout {
                     Icon icon = action.getIcon();
                     if (icon != null) {
                         notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
+                        notificationDrawableIcon.setColorFilter(nightDreamUI.getSecondaryColor(), PorterDuff.Mode.SRC_ATOP);
                     }
                 } else {
                     int iconResId = action.icon;
                     notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
+                    notificationDrawableIcon.setColorFilter(nightDreamUI.getSecondaryColor(), PorterDuff.Mode.SRC_ATOP);
                 }
                 notificationActionImages[positionAction].setImageDrawable(notificationDrawableIcon);
                 notificationActionImages[positionAction].setVisibility(View.VISIBLE);
@@ -117,6 +120,17 @@ public class MediaControlLayout extends LinearLayout {
                 positionAction++;
             }
         }
+
+        //Set all TextView to SecondaryColor
+        ConstraintLayout mediaControl = mediaStyleControl.findViewById(R.id.notify);
+        if (mediaControl != null ) {
+            for (int x = 0; x < mediaControl.getChildCount(); x++) {
+                if (mediaControl.getChildAt(x) instanceof TextView) {
+                    ((TextView) mediaControl.getChildAt(x)).setTextColor(nightDreamUI.getSecondaryColor());
+                }
+            }
+        }
+
         removeAllViews();
         addView(mediaStyleControl);
         setVisibility(View.VISIBLE);

@@ -572,7 +572,6 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
-
     }
 
     private void initLightSensor() {

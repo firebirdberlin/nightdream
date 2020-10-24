@@ -151,8 +151,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (!Settings.showMediaStyleNotification(context) || activity == null) {
             return;
         }
-        // TODO: media control area is too wide
-        // TODO: adjust the text color of the media controls according to the secondary text color
+
         String template = intent.getStringExtra("template");
         if (template == null || !template.contains("MediaStyle")) {
             return;

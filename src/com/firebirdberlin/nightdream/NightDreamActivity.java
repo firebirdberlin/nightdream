@@ -80,6 +80,7 @@ public class NightDreamActivity extends BillingHelperActivity
         RadioInfoDialogFragment.RadioInfoDialogListener {
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
+    public static Window window;
     static long lastNoiseTime = System.currentTimeMillis();
     private static int PENDING_INTENT_STOP_APP = 1;
     private static int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
@@ -240,7 +241,7 @@ public class NightDreamActivity extends BillingHelperActivity
         setContentView(R.layout.main);
 
         Log.i(TAG, "onCreate()");
-        Window window = getWindow();
+        window = getWindow();
 
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
