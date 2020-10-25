@@ -120,6 +120,7 @@ public class Settings {
     public boolean background_movein = false;
     public boolean background_exif = false;
     public int background_movein_style = 1;
+    public int background_filter = 1;
     public boolean background_mode_auto_color = false;
     public int clockColor;
     public int clockColorNight;
@@ -390,6 +391,7 @@ public class Settings {
         background_zoomin = getBackgroundImageZoomIn();
         background_movein = getBackgroundImageMoveIn();
         background_movein_style = Integer.parseInt(settings.getString("backgroundMovein", "1"));
+        background_filter = Integer.parseInt(settings.getString("backgroundImageFilter", "1"));
         background_exif = settings.getBoolean("backgroundEXIF", false);
         fade_clock = settings.getBoolean("fadeClock", false);
         background_mode_auto_color = settings.getBoolean("autoAccentColor", true);

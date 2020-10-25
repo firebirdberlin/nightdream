@@ -68,6 +68,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_movein_right">rechts</string>
     <string name="background_movein_bottom">unten</string>
     <string name="background_movein_left">links</string>
+    <string name="background_image_filter">Bildfilter</string>
+    <string name="background_image_filter_none">Aus</string>
+    <string name="background_image_filter_grey">Graustufen</string>
+    <string name="background_image_filter_sepia">Sepia</string>
+    <string name="background_image_filter_invert">Invertiert</string>
+    <string name="background_image_filter_contrast">Kontrast</string>
+    <string name="background_image_filter_sketch">Skizze</string>
     <string name="background_auto_accent_color">Automatische Farbauswahl</string>
     <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen</string>
     <string name="background_black">Schwarz</string>

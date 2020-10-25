@@ -50,6 +50,24 @@
         <item>@string/background_movein_left</item>
     </string-array>
 
+    <string-array name="backgroundImageFilterModeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array name="backgroundImageFilterMode">
+        <item>@string/background_image_filter_none</item>
+        <item>@string/background_image_filter_grey</item>
+        <item>@string/background_image_filter_sepia</item>
+        <item>@string/background_image_filter_invert</item>
+        <item>@string/background_image_filter_contrast</item>
+        <item>@string/background_image_filter_sketch</item>
+    </string-array>
+
     <string-array name="decorationStyles">
         <item>@string/decoration_style_none</item>
         <item>@string/decoration_style_minute_hand</item>
