@@ -633,6 +633,7 @@ public class NightDreamUI {
         int textColor = getSecondaryColor();
 
         batteryIconView.setColor(textColor);
+        exif.setTextColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
 
         // colorize icons in the side panel
@@ -706,6 +707,8 @@ public class NightDreamUI {
     private void setupBackgroundImage() {
         if (mode == 0) return;
         bgshape = bgblack;
+        exif.setVisibility(View.GONE);
+
         if (!Utility.isLowRamDevice(mContext)) {
             switch (settings.getBackgroundMode()){
                 case Settings.BACKGROUND_BLACK: {
@@ -729,6 +732,15 @@ public class NightDreamUI {
                         // TODO determine the dominant color in an AsyncTask
                         setDominantColorFromBitmap(preloadBackgroundImage);
                     }
+                    if (settings.background_exif) {
+                        exif.setVisibility(View.VISIBLE);
+                        try {
+                            exif.setText(getExifInformation());
+                        } catch (Exception e) {
+                            exif.setText("Error reading exif information");
+                            Log.e(TAG, "exception: ", e);
+                        }
+                    }
                     break;
                 }
             }
@@ -736,6 +748,7 @@ public class NightDreamUI {
 
         if ( settings.hideBackgroundImage && mode == 0 ) {
             background_images[background_image_active].setImageDrawable(bgblack);
+            exif.setVisibility(View.GONE);
         } else {
 
             background_image_active = (background_image_active + 1) % 2;
@@ -748,14 +761,6 @@ public class NightDreamUI {
                 default:
                     background_images[background_image_active].setScaleType(ImageView.ScaleType.CENTER_CROP);
                     break;
-            }
-
-            try {
-                exif.setText(getExifInformation());
-            }
-            catch (Exception e){
-                exif.setText("Error reading exif information");
-                Log.e(TAG, "exception: ", e);
             }
 
             background_images[background_image_active].setImageDrawable(bgshape);

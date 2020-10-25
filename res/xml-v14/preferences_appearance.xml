@@ -101,6 +101,15 @@
             app:title="@string/slideshow_style"
             app:useSimpleSummaryProvider="true" />
 
+        <CheckBoxPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="slideshowEXIF"
+            app:title="@string/slideshow_exif"
+            app:summary="@string/slideshow_exif_summary"
+            app:isPreferenceVisible="false"
+            />
+
         <ListPreference
             app:iconSpaceReserved="false"
             app:defaultValue="4"
