@@ -835,6 +835,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("backgroundImageFadeIn", on);
         showPreference("backgroundImageMoveIn", on);
         showPreference("backgroundMovein", on);
+        showPreference("backgroundImageFilter", on);
         showPreference("backgroundEXIF", on);
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             showPreference("chooseDirectoryBackgroundImage", on);

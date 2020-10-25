@@ -13,7 +13,11 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -825,7 +829,7 @@ public class NightDreamUI {
         bitmap = rescaleBackgroundImage(bitmap);
         setDominantColorFromBitmap(bitmap);
         if (bitmap != null) {
-            return new BitmapDrawable(mContext.getResources(), bitmap);
+            return new BitmapDrawable(mContext.getResources(), imageFilter(bitmap));
         }
         return new ColorDrawable(Color.BLACK);
     }
@@ -1054,7 +1058,7 @@ public class NightDreamUI {
             Bitmap bgimage = BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
             setDominantColorFromBitmap(bgimage);
             Log.d(TAG, "loading image from cache");
-            return new BitmapDrawable(mContext.getResources(), bgimage);
+            return new BitmapDrawable(mContext.getResources(), imageFilter(bgimage));
         }
         return null;
     }
@@ -1677,7 +1681,7 @@ public class NightDreamUI {
             if (files == null || files.isEmpty() || params[0] == null) {
                 return null;
             } else {
-                return rescaleBackgroundImage(loadImageFromPath(params[0]));
+                return imageFilter(rescaleBackgroundImage(loadImageFromPath(params[0])));
             }
         }
 
