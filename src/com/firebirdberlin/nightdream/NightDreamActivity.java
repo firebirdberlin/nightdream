@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -66,8 +67,10 @@ import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class NightDreamActivity extends BillingHelperActivity
         implements View.OnTouchListener,
@@ -85,7 +88,6 @@ public class NightDreamActivity extends BillingHelperActivity
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
-    private ImageView weatherIcon;
     private ImageView alarmClockIcon;
     private ImageView radioIcon;
     private ImageView torchIcon;
@@ -101,15 +103,38 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
+    private TextToSpeech textToSpeech;
+
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (mySettings.doubleTapToFinish) {
-                finish();
-                return true;
+        public void onLongPress(MotionEvent e) {
+            if (!mySettings.speakTime) {
+                return;
             }
-            return false;
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mySettings.getFullTimeFormat(), Locale.getDefault());
+            String text = String.format(
+                    "%s %s",
+                    context.getString(R.string.speakTime),
+                    simpleDateFormat.format(Calendar.getInstance().getTime())
+            );
+
+
+            if (textToSpeech != null) {
+                // TODO implement audio ducking
+                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            }
+            super.onLongPress(e);
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            if (!mySettings.doubleTapToFinish) {
+                return false;
+            }
+            finish();
+            return true;
         }
     };
     private final LocationListener locationListener = new LocationListener() {
@@ -226,7 +251,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         setKeepScreenOn(true);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
-        weatherIcon = findViewById(R.id.icon_weather_forecast);
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         radioIcon = findViewById(R.id.radio_icon);
         ImageView background_image = findViewById(R.id.background_view);
@@ -235,6 +259,20 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
+        initTextToSpeech();
+    }
+
+    void initTextToSpeech() {
+        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR && textToSpeech != null) {
+                    textToSpeech.setLanguage(Locale.getDefault());
+                } else {
+                    textToSpeech = null;
+                }
+            }
+        });
     }
 
     public void setupFlashlight() {

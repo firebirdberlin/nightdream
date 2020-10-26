@@ -27,6 +27,12 @@
         android:name="android.permission.READ_PHONE_STATE"
         tools:node="remove" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <application
         android:name=".NightDreamApplication"
         android:icon="@mipmap/ic_launcher"
