@@ -1383,6 +1383,7 @@ public class NightDreamUI {
             setColor();
             if ( settings.hideBackgroundImage ) {
                 background_images[background_image_active].setImageDrawable(bgblack);
+                exif.setVisibility(View.GONE);
             }
         } else
         if ((new_mode != 0) && (current_mode == 0)){
@@ -1390,6 +1391,9 @@ public class NightDreamUI {
             setColor();
             if ( settings.hideBackgroundImage ) {
                 background_images[background_image_active].setImageDrawable(bgshape);
+                if (settings.background_exif && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
+                    exif.setVisibility(View.VISIBLE);
+                }
             }
         }
 
