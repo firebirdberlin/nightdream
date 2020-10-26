@@ -309,6 +309,9 @@ OR
     <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="snoozeAfter">Auto snooze after</string>
+    <string name="speakTime">It is</string>
+    <string name="speakTimeSummary">Speaks the current time on long pressing the screen.</string>
+    <string name="speakTimeTitle">Speak the current time</string>
     <string name="speedUnit">Wind speed unit</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">with screen up</string>
     <string name="standbyEnabledWhileDisconnectedSummary">This feature quickly drains your battery!</string>
