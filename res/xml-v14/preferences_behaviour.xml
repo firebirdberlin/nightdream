@@ -15,9 +15,9 @@
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="false"
-        app:key="SpeakTime"
-        app:summary="@string/SpeakTimeSummary"
-        app:title="@string/SpeakTimeTitle" />
+        app:key="speakTime"
+        app:summary="@string/speakTimeSummary"
+        app:title="@string/speakTimeTitle" />
 
     <ListPreference
         app:iconSpaceReserved="false"

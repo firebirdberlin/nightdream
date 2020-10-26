@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -110,26 +109,23 @@ public class NightDreamActivity extends BillingHelperActivity
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
-            if (!mySettings.SpeakTime) {
+            if (!mySettings.speakTime) {
                 return;
             }
-            super.onLongPress(e);
 
-            SimpleDateFormat simpleDateFormat;
-            Calendar mCalendar = Calendar.getInstance();
-            if (android.text.format.DateFormat.is24HourFormat(context)) {
-                simpleDateFormat = new SimpleDateFormat("HH:mm");
-            } else {
-                simpleDateFormat = new SimpleDateFormat("h:mm aa");
-            }
-            String text = simpleDateFormat.format(mCalendar.getTime());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mySettings.getFullTimeFormat(), Locale.getDefault());
+            String text = String.format(
+                    "%s %s",
+                    context.getString(R.string.speakTime),
+                    simpleDateFormat.format(Calendar.getInstance().getTime())
+            );
+
 
             if (textToSpeech != null) {
+                // TODO implement audio ducking
                 textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
             }
-            else {
-                Toast.makeText(getApplicationContext(), "Error: speaking current time failed",Toast.LENGTH_LONG).show();
-            }
+            super.onLongPress(e);
         }
 
         @Override
@@ -270,10 +266,9 @@ public class NightDreamActivity extends BillingHelperActivity
         textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR && textToSpeech != null) {
+                if (status != TextToSpeech.ERROR && textToSpeech != null) {
                     textToSpeech.setLanguage(Locale.getDefault());
-                }
-                else {
+                } else {
                     textToSpeech = null;
                 }
             }

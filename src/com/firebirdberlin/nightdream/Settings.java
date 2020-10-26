@@ -66,7 +66,7 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
-    public boolean SpeakTime = false;
+    public boolean speakTime = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
     public boolean handle_power_disconnection_at_time_range_end = true;
@@ -169,6 +169,7 @@ public class Settings {
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
+
     public Settings(Context context) {
         this.mContext = context;
         settings = context.getSharedPreferences(PREFS_KEY, 0);
@@ -370,7 +371,7 @@ public class Settings {
         autoBrightness = settings.getBoolean("autoBrightness", false);
         clockLayoutMirrorText = settings.getBoolean("clockLayoutMirrorText", false);
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
-        SpeakTime = settings.getBoolean("SpeakTime", false);
+        speakTime = settings.getBoolean("speakTime", false);
         alwaysOnTimeRangeStartInMinutes = settings.getInt("always_on_time_range_start_minutes", -1);
         alwaysOnTimeRangeEndInMinutes = settings.getInt("always_on_time_range_end_minutes", -1);
         alwaysOnBatteryLevel = settings.getInt("alwaysOnBatteryLevel", 0);
@@ -504,11 +505,13 @@ public class Settings {
 
         int mode = Integer.parseInt(settings.getString("screenProtection", "1"));
         switch (mode) {
-            case 0: return ScreenProtectionModes.NONE;
+            case 0:
+                return ScreenProtectionModes.NONE;
             case 1:
             default:
                 return ScreenProtectionModes.MOVE;
-            case 2: return ScreenProtectionModes.FADE;
+            case 2:
+                return ScreenProtectionModes.FADE;
         }
     }
 
@@ -1218,5 +1221,6 @@ public class Settings {
     }
 
     public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY}
+
     public enum ScreenProtectionModes {NONE, MOVE, FADE}
 }
