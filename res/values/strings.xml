@@ -139,8 +139,8 @@ OR
     <string name="decoration_style_rust">Rust</string>
     <string name="decoration_weather_icon_size">Weather icon size</string>
     <string name="donate">Donate</string>
-    <string name="longPressToSpeakTimeSummary">Speak the current time by long press on the screen.</string>
-    <string name="longPressToSpeakTimeTitle">Long press to speak current Time</string>
+    <string name="SpeakTimeSummary">Speak the current time by long press on the screen.</string>
+    <string name="SpeakTimeTitle">Long press to speak current Time</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
     <string name="gift_for_donors">Gift for your donation</string>

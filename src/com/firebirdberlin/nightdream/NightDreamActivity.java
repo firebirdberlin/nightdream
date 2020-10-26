@@ -110,7 +110,7 @@ public class NightDreamActivity extends BillingHelperActivity
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
-            if (!mySettings.longPressToSpeakTime) {
+            if (!mySettings.SpeakTime) {
                 return;
             }
             super.onLongPress(e);

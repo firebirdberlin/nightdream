@@ -66,7 +66,7 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
-    public boolean longPressToSpeakTime = false;
+    public boolean SpeakTime = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
     public boolean handle_power_disconnection_at_time_range_end = true;
@@ -370,7 +370,7 @@ public class Settings {
         autoBrightness = settings.getBoolean("autoBrightness", false);
         clockLayoutMirrorText = settings.getBoolean("clockLayoutMirrorText", false);
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
-        longPressToSpeakTime = settings.getBoolean("longPressToSpeakTime", false);
+        SpeakTime = settings.getBoolean("SpeakTime", false);
         alwaysOnTimeRangeStartInMinutes = settings.getInt("always_on_time_range_start_minutes", -1);
         alwaysOnTimeRangeEndInMinutes = settings.getInt("always_on_time_range_end_minutes", -1);
         alwaysOnBatteryLevel = settings.getInt("alwaysOnBatteryLevel", 0);
