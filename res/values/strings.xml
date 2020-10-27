@@ -65,7 +65,7 @@ OR
     <string name="background_auto_accent_color">Automatic color selection</string>
     <string name="background_auto_accent_summary">Automatically select an appropriate accent color.</string>
     <string name="background_black">Black</string>
-    <string name="background_exif">Show EXIF informations</string>
+    <string name="background_exif">Show EXIF information</string>
     <string name="background_exif_summary">Show EXIF information for the current background image</string>
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Image</string>
