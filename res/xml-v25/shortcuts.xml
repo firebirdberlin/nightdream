@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="shortcut_preferences"
+        android:icon="@drawable/ic_settings"
+        android:enabled="true"
+        android:shortcutLongLabel="@string/preferences"
+        android:shortcutShortLabel="@string/preferences"
+        android:shortcutDisabledMessage="@string/preferences">
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetClass="com.firebirdberlin.nightdream.NightDreamActivity"
+            android:targetPackage="com.firebirdberlin.nightdream" />
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.firebirdberlin.nightdream.PreferencesActivity"
+            android:targetPackage="com.firebirdberlin.nightdream" />
+    </shortcut>
+</shortcuts>
