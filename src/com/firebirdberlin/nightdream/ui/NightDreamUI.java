@@ -745,6 +745,7 @@ public class NightDreamUI {
     }
 
     private Drawable loadBackgroundSlideshowImage() {
+        Log.d(TAG, "loadBackgroundSlideshowImage");
         if (! settings.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             return new ColorDrawable(Color.BLACK);
         }
@@ -765,7 +766,8 @@ public class NightDreamUI {
         File file = files.get(new Random().nextInt(files.size()));
         Bitmap bitmap = loadImageFromPath(file);
         bitmap = rescaleBackgroundImage(bitmap);
-        writeBackgroundImageToCache(bitmap);
+        AsyncTask<Bitmap, Integer, Bitmap> runningTask = new writeBackgroundImageToCache();
+        runningTask.execute(bitmap);
         setDominantColorFromBitmap(bitmap);
         if (bitmap != null) {
             return new BitmapDrawable(mContext.getResources(), bitmap);
@@ -890,6 +892,7 @@ public class NightDreamUI {
         if (!settings.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)){
             return;
         }
+        Log.d(TAG, "loadBackgroundImageFiles()");
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
         files = Utility.listFiles(path, ".jpg");
     }
@@ -903,7 +906,8 @@ public class NightDreamUI {
 
             Bitmap bgimage = loadBackgroundBitmap();
             bgimage = rescaleBackgroundImage(bgimage);
-            writeBackgroundImageToCache(bgimage);
+            AsyncTask<Bitmap, Integer, Bitmap> runningTask = new writeBackgroundImageToCache();
+            runningTask.execute(bgimage);
             if (bgimage != null) {
                 return new BitmapDrawable(mContext.getResources(), bgimage);
             }
@@ -965,6 +969,8 @@ public class NightDreamUI {
 
         // Calculate inSampleSize
         options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+        //RGB565 to reduce memory consumption
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
@@ -978,6 +984,7 @@ public class NightDreamUI {
     }
 
     private Bitmap rescaleBackgroundImage(Bitmap bgimage) {
+        Log.d(TAG, "rescaleBackgroundImage");
         if (bgimage == null) return null;
 
         Point display = Utility.getDisplaySize(mContext);
@@ -1015,6 +1022,8 @@ public class NightDreamUI {
     }
 
     private void setDominantColorFromBitmap(Bitmap bitmap) {
+        Log.d(TAG, "setDominantColorFromBitmap");
+
         if (!settings.background_mode_auto_color) return;
         int defaultColor = (mode == 0) ? settings.clockColorNight : settings.clockColor;
         int color = Utility.getVibrantColorFromPalette(bitmap, defaultColor);
@@ -1029,17 +1038,36 @@ public class NightDreamUI {
         mainFrame.setBackgroundColor(vibrantColorDark);
     }
 
-    private void writeBackgroundImageToCache(Bitmap bgimage) {
-        if (bgimage == null) return;
-        Log.d(TAG, "writing image to cache");
-        File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
-        try {
-            FileOutputStream out = new FileOutputStream(cacheFile);
-            bgimage.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private final class writeBackgroundImageToCache extends AsyncTask<Bitmap, Integer, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(Bitmap... params) {
+            if (params[0] == null) {
+                return null;
+            } else {
+                Log.d(TAG, "writing image to cache");
+                File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
+                Bitmap bgimage = params[0];
+                try {
+                    FileOutputStream out = new FileOutputStream(cacheFile);
+                    bgimage.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    out.flush();
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return bgimage;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... params) {
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+
         }
     }
 
@@ -1256,6 +1284,7 @@ public class NightDreamUI {
     }
 
     private void setBrightness(float value) {
+        Log.d(TAG, "setBrightness(float value)");
         Log.i(TAG, String.format("new brightness value %.2f", value));
         LayoutParams layout = window.getAttributes();
         layout.screenBrightness = value;
