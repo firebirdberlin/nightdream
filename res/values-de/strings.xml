@@ -71,6 +71,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_auto_accent_color">Automatische Farbauswahl</string>
     <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen</string>
     <string name="background_black">Schwarz</string>
+    <string name="background_exif">EXIF-Informationen anzeigen</string>
+    <string name="background_exif_summary">Zeigt EXIF-Informationen des aktuellen Hintergrundbildes an.</string>
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Bild</string>
     <string name="background_image_select">Bild auswählen</string>

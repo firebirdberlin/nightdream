@@ -790,6 +790,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("backgroundImageFadeIn", on);
         showPreference("backgroundImageMoveIn", on);
         showPreference("backgroundMovein", on);
+        showPreference("backgroundEXIF", on);
 
         on = selection.equals("3") || selection.equals(("4"));
         showPreference("slideshowStyle", on);
