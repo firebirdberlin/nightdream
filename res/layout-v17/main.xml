@@ -26,7 +26,7 @@
             android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/exif"
+            android:id="@+id/textViewExif"
             android:layout_width="242dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
