@@ -104,9 +104,9 @@
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             app:defaultValue="false"
-            app:key="slideshowEXIF"
-            app:title="@string/slideshow_exif"
-            app:summary="@string/slideshow_exif_summary"
+            app:key="backgroundEXIF"
+            app:title="@string/background_exif"
+            app:summary="@string/background_exif_summary"
             app:isPreferenceVisible="false"
             />
 

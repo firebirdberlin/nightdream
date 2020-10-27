@@ -105,7 +105,7 @@ public class NightDreamUI {
     private ImageView[] background_images = new ImageView[2];
     private int background_image_active = 0;
 
-    private TextView exif;
+    private TextView exitTextView;
 
     private ArrayList<File> files;
 
@@ -477,7 +477,7 @@ public class NightDreamUI {
         background_images[1] = rootView.findViewById(R.id.background_view2);
         background_image_active = 0;
 
-        exif = rootView.findViewById(R.id.exif);
+        exitTextView = rootView.findViewById(R.id.exif);
 
         brightnessProgress = rootView.findViewById(R.id.brightness_progress);
         batteryIconView = rootView.findViewById(R.id.batteryIconView);
@@ -633,7 +633,7 @@ public class NightDreamUI {
         int textColor = getSecondaryColor();
 
         batteryIconView.setColor(textColor);
-        exif.setTextColor(textColor);
+        exitTextView.setTextColor(textColor);
         menuIcon.setColorFilter( textColor, PorterDuff.Mode.SRC_ATOP );
 
         // colorize icons in the side panel
@@ -707,7 +707,7 @@ public class NightDreamUI {
     private void setupBackgroundImage() {
         if (mode == 0) return;
         bgshape = bgblack;
-        exif.setVisibility(View.GONE);
+        exitTextView.setVisibility(View.GONE);
 
         if (!Utility.isLowRamDevice(mContext)) {
             switch (settings.getBackgroundMode()){
@@ -733,11 +733,11 @@ public class NightDreamUI {
                         setDominantColorFromBitmap(preloadBackgroundImage);
                     }
                     if (settings.background_exif) {
-                        exif.setVisibility(View.VISIBLE);
+                        exitTextView.setVisibility(View.VISIBLE);
                         try {
-                            exif.setText(getExifInformation());
+                            exitTextView.setText(getExifInformation());
                         } catch (Exception e) {
-                            exif.setText("Error reading exif information");
+                            exitTextView.setText("");
                             Log.e(TAG, "exception: ", e);
                         }
                     }
@@ -748,7 +748,7 @@ public class NightDreamUI {
 
         if ( settings.hideBackgroundImage && mode == 0 ) {
             background_images[background_image_active].setImageDrawable(bgblack);
-            exif.setVisibility(View.GONE);
+            exitTextView.setVisibility(View.GONE);
         } else {
 
             background_image_active = (background_image_active + 1) % 2;
@@ -768,7 +768,7 @@ public class NightDreamUI {
        }
     }
 
-    private double convertGPS(String[] separated){
+    private double convertArcMinToDegrees (String[] separated){
         double convert;
         String[] separated2 = separated[2].split("/");
         convert = Double.parseDouble(separated2[0]) / Double.parseDouble(separated2[1]) / 60;
@@ -791,29 +791,35 @@ public class NightDreamUI {
 
         ExifInterface exif = new ExifInterface(preloadBackgroundImageFile);
 
-        if (exif.getAttribute(ExifInterface.TAG_DATETIME) != null) {
-            String[] exifDateTime = exif.getAttribute(ExifInterface.TAG_DATETIME).split(" ");
+        String DateTimeExif = exif.getAttribute(ExifInterface.TAG_DATETIME);
+
+        if (DateTimeExif != null) {
+            String[] exifDateTime = DateTimeExif.split(" ");
             String[] exifDateSplit = exifDateTime[0].split(":");
             exifDate = exifDateSplit[2] + "." + exifDateSplit[1] + "." + exifDateSplit[0];
             exifTime = exifDateTime[1];
         }
 
-        if (exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) != null && exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE) != null) {
-            String[] separatedLat = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE).split(",");
-            String[] separatedLong = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE).split(",");
+        String separatedLatExif = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+        String separatedLongExif = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+
+        if (separatedLatExif != null && separatedLongExif != null) {
+            String[] separatedLat =separatedLatExif.split(",");
+            String[] separatedLong = separatedLongExif.split(",");
 
             Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
 
             try {
-                List<Address> addresslist = geocoder.getFromLocation(convertGPS(separatedLat), convertGPS(separatedLong), 1);
+                List<Address> addresslist = geocoder.getFromLocation(convertArcMinToDegrees (separatedLat), convertArcMinToDegrees (separatedLong), 1);
                 if (addresslist != null && addresslist.size() > 0) {
-                    exifCity = addresslist.get(0).getLocality();
-                    exifCountry = addresslist.get(0).getCountryName();
+                    Address address =  addresslist.get(0);
+                    exifCity = address.getLocality();
+                    exifCountry = address.getCountryName();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "connect to geocoder failed"+
-                        "\nGPS_LATITUDE = "+ convertGPS(separatedLat)+
-                        "\nGPS_LONGITUDE = "+ convertGPS(separatedLong)
+                        "\nGPS_LATITUDE = "+ convertArcMinToDegrees (separatedLat)+
+                        "\nGPS_LONGITUDE = "+ convertArcMinToDegrees (separatedLong)
                         , e);
             }
         }
@@ -936,7 +942,7 @@ public class NightDreamUI {
 
         background_images[background_image_active].startAnimation(animationSet);
         parentLayout.bringChildToFront(background_images[background_image_active]);
-        parentLayout.bringChildToFront(exif);
+        parentLayout.bringChildToFront(exitTextView);
 
         if (files != null && settings.getBackgroundMode()==Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
             AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
@@ -1383,7 +1389,7 @@ public class NightDreamUI {
             setColor();
             if ( settings.hideBackgroundImage ) {
                 background_images[background_image_active].setImageDrawable(bgblack);
-                exif.setVisibility(View.GONE);
+                exitTextView.setVisibility(View.GONE);
             }
         } else
         if ((new_mode != 0) && (current_mode == 0)){
@@ -1392,7 +1398,7 @@ public class NightDreamUI {
             if ( settings.hideBackgroundImage ) {
                 background_images[background_image_active].setImageDrawable(bgshape);
                 if (settings.background_exif && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
-                    exif.setVisibility(View.VISIBLE);
+                    exitTextView.setVisibility(View.VISIBLE);
                 }
             }
         }

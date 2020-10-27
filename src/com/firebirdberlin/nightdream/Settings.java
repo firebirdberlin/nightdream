@@ -388,7 +388,7 @@ public class Settings {
         background_zoomin = getBackgroundImageZoomIn();
         background_movein = getBackgroundImageMoveIn();
         background_movein_style = Integer.parseInt(settings.getString("backgroundMovein", "1"));
-        background_exif = settings.getBoolean("slideshowEXIF", false);
+        background_exif = settings.getBoolean("backgroundEXIF", false);
         fade_clock = settings.getBoolean("fadeClock", false);
         background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
         handle_power = settings.getBoolean("handle_power", false);

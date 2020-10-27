@@ -71,6 +71,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_auto_accent_color">Automatische Farbauswahl</string>
     <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen</string>
     <string name="background_black">Schwarz</string>
+    <string name="background_exif">Zeige EXIF - Informationen</string>
+    <string name="background_exif_summary">Zeigt EXIF - Informationen vom aktuellen Hintergrundbild</string>
     <string name="background_gradient">Gradient</string>
     <string name="background_image">Bild</string>
     <string name="background_image_select">Bild auswählen</string>
@@ -78,9 +80,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_duration">Hintergrundbild wechselt alle:</string>
     <string name="seconds_60">60 Sekunden</string>
     <string name="seconds_30">30 Sekunden</string>
-    <string name="seconds_15">15 Sekunden</string>#
-    <string name="slideshow_exif">Zeige EXIF - Informationen</string>
-    <string name="slideshow_exif_summary">Zeigt EXIF - Informationen vom aktuellen Hintergrundbild</string>
+    <string name="seconds_15">15 Sekunden</string>
     <string name="batteryTimeout10min">10 min</string>
     <string name="batteryTimeout15min">15 min</string>
     <string name="batteryTimeout1min">1 min</string>
