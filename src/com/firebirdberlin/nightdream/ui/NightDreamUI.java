@@ -304,6 +304,8 @@ public class NightDreamUI {
     public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
+
+            clockLayout.setVisibility(View.INVISIBLE);
             setupClockLayout();
             setColor();
             updateWeatherData();
@@ -313,6 +315,7 @@ public class NightDreamUI {
 
             showAlarmClock();
             setupShowcase();
+
             clockLayout.post(new Runnable() {
                 public void run() {
                     handler.postDelayed(zoomIn, 500);
@@ -444,40 +447,6 @@ public class NightDreamUI {
         }
     };
      */
-
-     public Runnable initClockLayout = new Runnable() {
-        @Override
-        public void run() {
-
-            clockLayout.setVisibility(View.INVISIBLE);
-            setupClockLayout();
-            setColor();
-            updateWeatherData();
-            controlsVisible = true;
-
-            brightnessProgress.setVisibility(View.INVISIBLE);
-            setupBackgroundImage();
-
-            showAlarmClock();
-            setupShowcase();
-
-            clockLayout.post(new Runnable() {
-                public void run() {
-                    handler.postDelayed(zoomIn, 500);
-                }
-            });
-        }
-    };
-
-    private Runnable setupSidePanel = new Runnable() {
-        @Override
-        public void run() {
-            if (sidePanel.getX() < 0) {
-                initSidePanel();
-            }
-
-        }
-    };
 
     @SuppressLint("ClickableViewAccessibility")
     public NightDreamUI(Context context, Window window) {
