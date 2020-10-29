@@ -48,6 +48,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String PREFS_KEY = "NightDream preferences";
     private static int RESULT_LOAD_IMAGE = 1;
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
+    private static int RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP = 5;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
     Snackbar snackbar;
@@ -430,6 +431,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 }
             });
+            Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
+            chooseDirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    checkPermissionAndSelectDirectoryBackgroundImage();
+                    return true;
+                }
+            });
         } else if ("brightness".equals(rootKey)) {
             setupBrightnessControls(prefs);
             setupLightSensorPreferences();
@@ -590,6 +598,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Uri uri = data.getData();
             settings.setBackgroundImageURI(uri.toString());
         }
+
+        if (requestCode == RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP && resultCode == Activity.RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            settings.setDirectoryBackgroundImageURI(uri.getPath());
+        }
+
     }
 
     public String getRealPathFromURI(Uri contentUri) {
@@ -620,6 +634,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
         selectBackgroundImage();
     }
+
+    private void checkPermissionAndSelectDirectoryBackgroundImage() {
+        if (!hasPermissionReadExternalStorage()) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            return;
+        }
+        selectDirectoryBackgroundImage();
+    }
+
+    private void selectDirectoryBackgroundImage() {
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivityForResult(Intent.createChooser(intent, "Choose directory"), RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP);
+         }
+    }
+
 
     private boolean checkReadExternalStoragePermission() {
         if (!hasPermissionReadExternalStorage()) {
@@ -791,6 +823,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("backgroundImageMoveIn", on);
         showPreference("backgroundMovein", on);
         showPreference("backgroundEXIF", on);
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            showPreference("chooseDirectoryBackgroundImage", on);
+            Preference preference = findPreference("chooseDirectoryBackgroundImage");
+            preference.setSummary(settings.getdirectoryBackgroundImageURI().toString());
+        }
 
         on = selection.equals("3") || selection.equals(("4"));
         showPreference("slideshowStyle", on);

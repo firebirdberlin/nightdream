@@ -617,6 +617,10 @@ public class NightDreamUI {
                     runningTask.execute(preloadBackgroundImageFile);
                     parentLayout.postDelayed(initSlideshowBackground, 500);
                     handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
+                } else {
+                    preloadBackgroundImage = null;
+                    preloadBackgroundImageFile = null;
+                    setupBackgroundImage();
                 }
                 break;
             default:
@@ -928,7 +932,7 @@ public class NightDreamUI {
             return;
         }
         Log.d(TAG, "loadBackgroundImageFiles()");
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
+        File path = settings.getdirectoryBackgroundImageURI();
         files = Utility.listFiles(path, ".jpg");
     }
 
