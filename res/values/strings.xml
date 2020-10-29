@@ -131,6 +131,7 @@ OR
     <string name="dialog_message_thank_you">Thank you very much!</string>
     <string name="dialog_title_thank_you">Thanks</string>
     <string name="digit_emphasize_quarters">Emphasize quarters</string>
+    <string name="directory_background_image_select">Select a directory</string>
     <string name="decoration">Decoration</string>
     <string name="decoration_glow_effect">Glow effect</string>
     <string name="decoration_style_copper">Copper</string>

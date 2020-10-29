@@ -92,6 +92,12 @@
             app:title="@string/background_image_select"
             app:isPreferenceVisible="false"/>
 
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="chooseDirectoryBackgroundImage"
+            app:title="@string/directory_background_image_select"
+            app:isPreferenceVisible="false"/>
+
         <ListPreference
             app:defaultValue="1"
             app:entries="@array/slideshowStyles"

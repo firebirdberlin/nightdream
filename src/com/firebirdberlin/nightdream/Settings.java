@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -148,6 +149,7 @@ public class Settings {
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
     public String backgroundImageURI = "";
+    private String directoryBackgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
     public String timeFormat;
@@ -402,6 +404,7 @@ public class Settings {
         scheduledAutoStartChargerRequired = settings.getBoolean("scheduledAutoStartChargerRequired", true);
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
+        directoryBackgroundImageURI = settings.getString("directoryBackgroundImageURI", "");
         final String defaultColorString = "#33B5E5";
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
@@ -933,6 +936,23 @@ public class Settings {
         prefEditor.putString("BackgroundImage", uri);
         prefEditor.apply();
     }
+
+    public void setDirectoryBackgroundImageURI(String uri) {
+        clearBackgroundImageCache();
+        String[] path = uri.split(":");
+        directoryBackgroundImageURI = path[1];
+        settings.edit().putString("directoryBackgroundImageURI", path[1]).apply();
+    }
+
+
+    public File getdirectoryBackgroundImageURI() {
+        if (directoryBackgroundImageURI.equals("")) {
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
+        } else {
+            return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + directoryBackgroundImageURI);
+        }
+    }
+
 
     public void setBackgroundImageURI(String uri) {
         clearBackgroundImageCache();
