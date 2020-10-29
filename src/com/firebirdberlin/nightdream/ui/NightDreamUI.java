@@ -928,7 +928,7 @@ public class NightDreamUI {
             return;
         }
         Log.d(TAG, "loadBackgroundImageFiles()");
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
+        File path = settings.getdirectoryBackgroundImageURI();
         files = Utility.listFiles(path, ".jpg");
     }
 
