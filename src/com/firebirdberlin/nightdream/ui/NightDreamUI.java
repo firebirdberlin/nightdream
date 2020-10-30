@@ -19,8 +19,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -44,14 +42,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.exifinterface.media.ExifInterface;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
@@ -61,6 +57,7 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.databinding.ExifViewBinding;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
@@ -80,8 +77,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 public class NightDreamUI {
@@ -102,10 +97,9 @@ public class NightDreamUI {
     private AlarmClock alarmClock;
 
     private ConstraintLayout parentLayout;
+    private ExifView exifView;
     private ImageView[] background_images = new ImageView[2];
     private int background_image_active = 0;
-
-    private TextView textViewExif;
 
     private ArrayList<File> files;
 
@@ -116,6 +110,7 @@ public class NightDreamUI {
     private ImageView nightModeIcon;
     private ImageView radioIcon;
     private LightSensorEventListener lightSensorEventListener = null;
+    private ConstraintLayout exifLayoutContainer;
     private ClockLayoutContainer clockLayoutContainer;
     private ClockLayout clockLayout;
     private FlexboxLayout notificationStatusBar;
@@ -473,6 +468,7 @@ public class NightDreamUI {
 
         this.window = window;
         View rootView = window.getDecorView().findViewById(android.R.id.content);
+
         mainFrame = rootView.findViewById(R.id.main_frame);
 
         parentLayout = rootView.findViewById(R.id.background_group);
@@ -481,11 +477,10 @@ public class NightDreamUI {
         background_images[1] = rootView.findViewById(R.id.background_view2);
         background_image_active = 0;
 
-        textViewExif = rootView.findViewById(R.id.textViewExif);
-
         brightnessProgress = rootView.findViewById(R.id.brightness_progress);
         batteryIconView = rootView.findViewById(R.id.batteryIconView);
         clockLayoutContainer = rootView.findViewById(R.id.clockLayoutContainer);
+        exifLayoutContainer =  rootView.findViewById(R.id.ContainerExifView);
         clockLayout = rootView.findViewById(R.id.clockLayout);
         bottomPanelLayout = rootView.findViewById(R.id.bottomPanel);
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
@@ -496,6 +491,9 @@ public class NightDreamUI {
         radioIcon = rootView.findViewById(R.id.radio_icon);
         sidePanel = rootView.findViewById(R.id.side_panel);
         sidePanel.post(setupSidePanel);
+
+        exifView =  new ExifView(mContext);
+        exifLayoutContainer.addView(exifView.getView());
 
         OnClickListener onMenuItemClickListener = new OnClickListener() {
             public void onClick(View v) {
@@ -684,7 +682,6 @@ public class NightDreamUI {
         int textColor = getSecondaryColor();
 
         batteryIconView.setColor(textColor);
-        textViewExif.setTextColor(textColor);
         menuIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
 
         // colorize icons in the side panel
@@ -758,7 +755,7 @@ public class NightDreamUI {
     private void setupBackgroundImage() {
         if (mode == 0) return;
         bgshape = bgblack;
-        textViewExif.setVisibility(View.INVISIBLE);
+        exifLayoutContainer.setVisibility(View.GONE);
 
         if (!Utility.isLowRamDevice(mContext)) {
             switch (settings.getBackgroundMode()) {
@@ -783,13 +780,8 @@ public class NightDreamUI {
                         setDominantColorFromBitmap(preloadBackgroundImage);
                     }
                     if (settings.background_exif) {
-                        try {
-                            textViewExif.setVisibility(View.VISIBLE);
-                            textViewExif.setText(getExifInformation());
-                        } catch (IOException | IndexOutOfBoundsException e) {
-                            textViewExif.setText("");
-                            Log.e(TAG, "exception: ", e);
-                        }
+                        AsyncTask<File, Integer, Boolean> runningTask = new getExifInformation();
+                        runningTask.execute(preloadBackgroundImageFile);
                     }
                     break;
                 }
@@ -798,7 +790,7 @@ public class NightDreamUI {
 
         if (settings.hideBackgroundImage && mode == 0) {
             background_images[background_image_active].setImageDrawable(bgblack);
-            textViewExif.setVisibility(View.INVISIBLE);
+            exifLayoutContainer.setVisibility(View.GONE);
         } else {
 
             background_image_active = (background_image_active + 1) % 2;
@@ -818,57 +810,25 @@ public class NightDreamUI {
         }
     }
 
-    private double convertArcMinToDegrees(String[] separated) {
-        double convert;
-        String[] separated2 = separated[2].split("/");
-        convert = Double.parseDouble(separated2[0]) / Double.parseDouble(separated2[1]) / 60;
-        String[] separated1 = separated[1].split("/");
-        convert = (Double.parseDouble(separated1[0]) + convert) / Double.parseDouble(separated1[1]) / 60;
-        String[] separated0 = separated[0].split("/");
-        convert = Double.parseDouble(separated0[0]) + convert;
-        return convert;
-    }
+    private final class getExifInformation extends AsyncTask<File, Integer, Boolean> {
 
-    private String getExifInformation() throws IOException, IndexOutOfBoundsException {
-        if (preloadBackgroundImageFile == null) {
-            return "";
+        @Override
+        protected Boolean doInBackground(File... params) {
+            return exifView.getExifView(mContext, params[0], getSecondaryColor());
         }
 
-        String exifDate = "";
-        String exifTime = "";
-        String exifCity = "";
-        String exifCountry = "";
-
-        ExifInterface exif = new ExifInterface(preloadBackgroundImageFile);
-
-        String tagDateTime = exif.getAttribute(ExifInterface.TAG_DATETIME);
-        if (tagDateTime != null) {
-            String[] exifDateTime = tagDateTime.split(" ");
-            String[] exifDateSplit = exifDateTime[0].split(":");
-            exifDate = exifDateSplit[2] + "." + exifDateSplit[1] + "." + exifDateSplit[0];
-            exifTime = exifDateTime[1];
+        @Override
+        protected void onProgressUpdate(Integer... params) {
         }
 
-        String tagGpsLatitude = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-        String tagGpsLongitude = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-        if (tagGpsLatitude != null && tagGpsLongitude != null) {
-            String[] separatedLat = tagGpsLatitude.split(",");
-            String[] separatedLong = tagGpsLongitude.split(",");
-
-            Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
-
-            List<Address> addressList = geocoder.getFromLocation(
-                    convertArcMinToDegrees(separatedLat),
-                    convertArcMinToDegrees(separatedLong),
-                    1
-            );
-            if (addressList != null && addressList.size() > 0) {
-                Address address = addressList.get(0);
-                exifCity = address.getLocality();
-                exifCountry = address.getCountryName();
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                exifLayoutContainer.setVisibility(View.VISIBLE);
+            }else{
+                exifLayoutContainer.setVisibility(View.GONE);
             }
         }
-        return exifDate + "\n" + exifTime + "\n" + exifCity + "\n" + exifCountry;
     }
 
     private Drawable loadBackgroundSlideshowImage() {
@@ -977,7 +937,7 @@ public class NightDreamUI {
 
         background_images[background_image_active].startAnimation(animationSet);
         parentLayout.bringChildToFront(background_images[background_image_active]);
-        parentLayout.bringChildToFront(textViewExif);
+        parentLayout.bringChildToFront(exifLayoutContainer);
 
         if (files != null && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
@@ -996,6 +956,7 @@ public class NightDreamUI {
     }
 
     private Drawable loadBackgroundImage() {
+        Log.d(TAG, "loadBackgroundImage()");
         try {
             Drawable cached = loadBackgroundImageFromCache();
             if (cached != null) {
@@ -1435,7 +1396,7 @@ public class NightDreamUI {
             setColor();
             if (settings.hideBackgroundImage) {
                 background_images[background_image_active].setImageDrawable(bgblack);
-                textViewExif.setVisibility(View.INVISIBLE);
+                exifLayoutContainer.setVisibility(View.GONE);
             }
         } else if ((new_mode != 0) && (current_mode == 0)) {
             restoreRingerMode();
@@ -1443,7 +1404,7 @@ public class NightDreamUI {
             if (settings.hideBackgroundImage) {
                 background_images[background_image_active].setImageDrawable(bgshape);
                 if (settings.background_exif && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
-                    textViewExif.setVisibility(View.VISIBLE);
+                    exifLayoutContainer.setVisibility(View.VISIBLE);
                 }
             }
         }
