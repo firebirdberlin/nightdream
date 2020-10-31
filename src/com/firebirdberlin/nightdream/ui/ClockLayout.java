@@ -51,6 +51,7 @@ public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_DIGITAL_FLIP = 5;
     public static final int LAYOUT_ID_CALENDAR = 6;
     public static final int LAYOUT_ID_DIGITAL2 = 7;
+    public static final int LAYOUT_ID_DIGITAL3 = 8;
     private static final String TAG = "NightDream.ClockLayout";
     private int layoutId = LAYOUT_ID_DIGITAL;
 
@@ -93,6 +94,8 @@ public class ClockLayout extends LinearLayout {
             child = inflater.inflate(R.layout.clock_layout, null);
         } else if (layoutId == LAYOUT_ID_DIGITAL2) {
             child = inflater.inflate(R.layout.clock_layout_digital, null);
+        } else if (layoutId == LAYOUT_ID_DIGITAL3) {
+            child = inflater.inflate(R.layout.clock_layout_digital2, null);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
@@ -380,6 +383,9 @@ public class ClockLayout extends LinearLayout {
         } else if (layoutId == LAYOUT_ID_DIGITAL2) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             updateDigitalClock2(config, parentWidth);
+        } else if (layoutId == LAYOUT_ID_DIGITAL3) {
+            setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            updateDigitalClock3(config, parentWidth);
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
             updateDigitalClockCalendar(config, displayInWidget, parentWidth, parentHeight, minFontSize);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
@@ -409,14 +415,12 @@ public class ClockLayout extends LinearLayout {
         switch (config.orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 widthFactorClock = 0.3f;
-
                 widthFactor = 0.5f;
                 maxFontSize = 20.f;
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
             default:
                 widthFactorClock = 0.6f;
-
                 widthFactor = 0.8f;
                 maxFontSize = 25.f;
                 break;
@@ -438,6 +442,52 @@ public class ClockLayout extends LinearLayout {
             }
         }
     }
+
+    void updateDigitalClock3(final Configuration config, int parentWidth) {
+        final float minFontSize = 10.f; // in sp
+        float widthFactorClock;
+        float maxFontSizeClock;
+        float widthFactor;
+        float maxFontSize;
+
+        switch (config.orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+                widthFactorClock = 0.20f;
+                maxFontSizeClock = 100.f;
+                widthFactor = 0.15f;
+                maxFontSize = 15.f;
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                widthFactorClock = 0.25f;
+                maxFontSizeClock = 100.f;
+                widthFactor = 0.25f;
+                maxFontSize = 10.f;
+                break;
+            default:
+                widthFactorClock = 0.25f;
+                maxFontSizeClock = 100.f;
+                widthFactor = 0.15f;
+                maxFontSize = 10.f;
+        }
+
+        if (clock != null) {
+            clock.setMaxWidth((int) (widthFactorClock * parentWidth));
+            clock.setMaxFontSizesInSp(minFontSize, maxFontSizeClock);
+        }
+        if (date != null) {
+            date.setMaxWidth((int) (widthFactorClock * parentWidth));
+            date.setMaxFontSizesInSp(minFontSize, maxFontSize);
+        }
+        int iconHeight = -1;
+        if (weatherLayout != null) {
+            weatherLayout.setMaxWidth((int) (widthFactor * parentWidth));
+            weatherLayout.setIconSizeFactor(weatherIconSizeFactor);
+            weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+            weatherLayout.update();
+            iconHeight = weatherLayout.getIconHeight();
+        }
+    }
+
 
     void updateDigitalClock2(final Configuration config, int parentWidth) {
         final float minFontSize = 12.f; // in sp
