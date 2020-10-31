@@ -12,7 +12,10 @@ import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
@@ -78,10 +81,27 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         mCalendar.setTimeInMillis(System.currentTimeMillis());
 
         if ("a".equals(mFormat)) {
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
-            if (params != null) {
-                int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
-                params.gravity = (hour < 12) ? Gravity.BOTTOM : Gravity.TOP;
+            try {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+
+                if (params != null) {
+                    int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
+                    params.gravity = (hour < 12) ? Gravity.BOTTOM : Gravity.TOP;
+                }
+            }catch (Exception e){
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) getLayoutParams();
+                if (params != null) {
+                    int hour = mCalendar.get(Calendar.HOUR_OF_DAY);
+                    if (hour < 12) {
+                        params.bottomToBottom = ConstraintLayout.LayoutParams.UNSET;
+                        ViewGroup params2 = (ViewGroup) getParent();
+                        params.topToTop = params2.findViewById(R.id.clock).getId();
+                    } else{
+                        params.topToTop = ConstraintLayout.LayoutParams.UNSET;
+                        ViewGroup params2 = (ViewGroup) getParent();
+                        params.bottomToBottom = params2.findViewById(R.id.clock).getId();
+                    }
+                }
             }
         }
 

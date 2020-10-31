@@ -22,6 +22,7 @@ public class WeatherLayout extends LinearLayout {
     private TextView iconText = null;
     private TextView iconWind = null;
     private TextView temperatureText = null;
+    private TextView locationText = null;
     private TextView windText = null;
     private LinearLayout container = null;
     private boolean showApparentTemperature = false;
@@ -29,6 +30,7 @@ public class WeatherLayout extends LinearLayout {
     private boolean showIcon = false;
     private boolean showWindSpeed = false;
     private boolean showTemperature = false;
+    private boolean showLocation = false;
     private int maxWidth = -1;
     private int minFontSizePx = -1;
     private int maxFontSizePx = -1;
@@ -58,6 +60,7 @@ public class WeatherLayout extends LinearLayout {
         showIcon = content.contains("icon");
         showWindSpeed = content.contains("wind");
         showTemperature = content.contains("temperature");
+        showLocation = content.contains("location");
         isVertical = "vertical".equals(orientation);
         init();
     }
@@ -98,6 +101,7 @@ public class WeatherLayout extends LinearLayout {
         iconWind = findViewById(R.id.iconWind);
         iconWindDirection = findViewById(R.id.iconWindDirection);
         temperatureText = findViewById(R.id.temperatureText);
+        locationText = findViewById(R.id.locationText);
         windText = findViewById(R.id.windText);
 
         Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
@@ -118,6 +122,7 @@ public class WeatherLayout extends LinearLayout {
         windText.setVisibility((showWindSpeed) ? View.VISIBLE : View.GONE);
 
         temperatureText.setVisibility((showTemperature) ? View.VISIBLE : View.GONE);
+        locationText.setVisibility((showLocation) ? View.VISIBLE : View.GONE);
         iconText.setVisibility((showIcon) ? View.VISIBLE : View.GONE);
     }
 
@@ -126,18 +131,21 @@ public class WeatherLayout extends LinearLayout {
         iconWind.setText("");
         iconWindDirection.setDirection(DirectionIconView.INVALID);
         temperatureText.setText("");
+        locationText.setText("");
         windText.setText("");
 
         iconText.invalidate();
         iconWind.invalidate();
         iconWindDirection.invalidate();
         temperatureText.invalidate();
+        locationText.invalidate();
         windText.invalidate();
     }
 
     public void setTypeface(Typeface typeface) {
         temperatureText.setTypeface(typeface);
         windText.setTypeface(typeface);
+        locationText.setTypeface(typeface);
     }
 
     public void setMaxFontSizesInSp(float minSize, float maxSize) {
@@ -158,6 +166,9 @@ public class WeatherLayout extends LinearLayout {
         if (temperatureText != null) {
             temperatureText.setTextColor(color);
         }
+        if (locationText != null) {
+            locationText.setTextColor(color);
+        }
         if (windText != null) {
             windText.setTextColor(color);
         }
@@ -172,6 +183,7 @@ public class WeatherLayout extends LinearLayout {
             iconText.setText(iconToText(entry.weatherIcon));
 
             temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
+            locationText.setText(entry.cityName);
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(entry.formatWindText(speedUnit));
@@ -187,6 +199,7 @@ public class WeatherLayout extends LinearLayout {
         iconWind.setTextSize(unit, isVertical ? this.iconSizeFactor * size : size);
         windText.setTextSize(unit, size);
         temperatureText.setTextSize(unit, size);
+        locationText.setTextSize(unit, size);
         invalidate();
     }
 
@@ -235,6 +248,7 @@ public class WeatherLayout extends LinearLayout {
             iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
             iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
         }
+        locationText.invalidate();
         windText.invalidate();
         iconText.invalidate();
         iconWind.invalidate();

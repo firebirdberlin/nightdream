@@ -657,10 +657,8 @@ public class Settings {
     }
 
     public void setWeatherIconSizeFactor(int radius, int clockLayoutId) {
-        SharedPreferences.Editor prefEditor = settings.edit();
         String key = getKeyForClockLayout("weatherIconSizeFactor", clockLayoutId);
-        prefEditor.putInt(key, radius);
-        prefEditor.apply();
+        settings.edit().putInt(key, radius).apply();
     }
 
     public int getWeatherIconSizeFactor(int clockLayoutId) {

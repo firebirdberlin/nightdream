@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:weather="weather"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:alignItems="flex_end"
+        app:flexDirection="row"
+        app:flexWrap="nowrap"
+        app:justifyContent="space_between">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/time_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.firebirdberlin.nightdream.CustomDigitalClock
+                    android:id="@+id/clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:clickable="true"
+                    android:ellipsize="none"
+                    android:focusable="true"
+                    android:padding="0px"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#C2C2C2"
+                    android:textSize="20sp"
+                    android:translationX="0sp"
+                    android:translationY="0sp"
+                    app:fontPath="fonts/roboto_thin.ttf"
+                    app:format12Hr="h:mm"
+                    app:format24Hr="HH:mm"
+                    app:layout_constraintBottom_toTopOf="@+id/date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.firebirdberlin.nightdream.CustomDigitalClock
+                    android:id="@+id/clock_ampm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:ellipsize="none"
+                    android:focusable="true"
+                    android:padding="0px"
+                    android:singleLine="true"
+                    android:textColor="#C2C2C2"
+                    android:textSize="12sp"
+                    android:visibility="visible"
+                    app:fontPath="fonts/roboto_thin.ttf"
+                    app:format12Hr="a"
+                    app:format24Hr=""
+                    app:layout_constraintEnd_toStartOf="@+id/divider"
+                    app:layout_constraintStart_toEndOf="@id/clock"
+                    app:layout_constraintTop_toTopOf="@id/clock"
+                    tools:visibility="visible" />
+
+                <com.firebirdberlin.nightdream.CustomDigitalClock
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="24dp"
+                    android:ellipsize="none"
+                    android:paddingTop="5dp"
+                    android:singleLine="true"
+                    android:text="Sun, 30. October 2016"
+                    android:textColor="#C2C2C2"
+                    android:textSize="20sp"
+                    android:visibility="visible"
+                    app:capitalize="true"
+                    app:format12Hr="dd. MMMM yyyy"
+                    app:format24Hr="dd. MMMM yyyy"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/clock_ampm"
+                    app:layout_constraintStart_toStartOf="@id/clock"
+                    app:layout_constraintTop_toTopOf="@id/weatherLocationLayout" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="2dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#C2C2C2"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/clock_ampm"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+                <com.firebirdberlin.nightdream.ui.WeatherLayout
+                    android:id="@+id/weatherLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/weatherLocationLayout"
+                    app:layout_constraintStart_toEndOf="@id/divider"
+                    app:layout_constraintTop_toTopOf="parent"
+                    weather:content="icon"
+                    weather:orientation="vertical" />
+
+                <com.firebirdberlin.nightdream.ui.WeatherLayout
+                    android:id="@+id/weatherLayout3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toEndOf="@id/weatherLayout"
+                    app:layout_constraintTop_toTopOf="parent"
+                    weather:content="temperature"
+                    weather:orientation="vertical" />
+
+                <com.firebirdberlin.nightdream.ui.WeatherLayout
+                    android:id="@+id/weatherLayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/weatherLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/weatherLayout3"
+                    app:layout_constraintTop_toTopOf="parent"
+                    weather:content="wind"
+                    weather:orientation="vertical" />
+
+                <com.firebirdberlin.nightdream.ui.WeatherLayout
+                    android:id="@+id/weatherLocationLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="24dp"
+                    android:fontFamily="sans-serif"
+                    android:text="TextView"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/divider"
+                    weather:content="location"
+                    weather:orientation="vertical" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <include
+        layout="@layout/notification_mediacontrol_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp" />
+
+    <!--
+        Notifications
+    -->
+    <include
+        layout="@layout/notification_bar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>

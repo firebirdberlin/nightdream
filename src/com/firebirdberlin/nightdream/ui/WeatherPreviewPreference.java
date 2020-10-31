@@ -73,4 +73,5 @@ public class WeatherPreviewPreference extends Preference {
         }
         return "";
     }
+
 }
