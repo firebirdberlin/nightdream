@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -20,6 +22,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
@@ -61,6 +65,7 @@ public class ClockLayout extends LinearLayout {
     private boolean mirrorText = false;
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
+    private int oldPrimaryColor = 0;
 
 
     public ClockLayout(Context context) {
@@ -150,26 +155,60 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     public void setPrimaryColor(int color, int glowRadius, int glowColor, int textureId) {
+        ValueAnimator anim = new ValueAnimator();
+        anim.setIntValues(oldPrimaryColor, color);
+        anim.setEvaluator(new ArgbEvaluator());
+        oldPrimaryColor = color;
+
         if (clock != null) {
-            clock.setTextColor(color);
             applyTexture(clock, glowRadius, glowColor, textureId);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    clock.setTextColor((Integer)valueAnimator.getAnimatedValue());
+                }
+            });
         }
         if (clock_ampm != null) {
-            clock_ampm.setTextColor(color);
             applyTexture(clock_ampm, glowRadius, glowColor, textureId);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    clock_ampm.setTextColor((Integer)valueAnimator.getAnimatedValue());
+                }
+            });
         }
         if (analog_clock != null) {
-            analog_clock.setPrimaryColor(color);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    analog_clock.setPrimaryColor((Integer)valueAnimator.getAnimatedValue());
+                }
+            });
         }
 
         if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
-            CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
-            layout.setPrimaryColor(color);
+            final CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    layout.setPrimaryColor((Integer)valueAnimator.getAnimatedValue());
+                }
+            });
         }
         if (calendarView != null) {
-            calendarView.setSelectionColor(color);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    calendarView.setSelectionColor((Integer)valueAnimator.getAnimatedValue());
+                }
+            });
         }
+
+        anim.setDuration(1000);
+        anim.start();
     }
 
     void applyTexture(TextView view, int glowRadius, int glowColor, int resId) {
