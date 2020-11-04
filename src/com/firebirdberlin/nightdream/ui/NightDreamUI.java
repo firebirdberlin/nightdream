@@ -83,6 +83,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.FutureTask;
 
 public class NightDreamUI {
     private static final int SWIPE_MIN_DISTANCE = 120;
@@ -182,7 +183,6 @@ public class NightDreamUI {
     private Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
-            clockLayout.setVisibility(View.VISIBLE);
             Configuration config = getConfiguration();
             clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
             //clockLayout.update(settings.weatherEntry);
@@ -310,7 +310,6 @@ public class NightDreamUI {
     public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
-
             clockLayout.setVisibility(View.INVISIBLE);
             setupClockLayout();
             setColor();
@@ -318,17 +317,25 @@ public class NightDreamUI {
             controlsVisible = true;
 
             brightnessProgress.setVisibility(View.INVISIBLE);
-            setupBackgroundImage();
 
             showAlarmClock();
             setupShowcase();
 
+            final FutureTask<Void> zoomInAndsetupBackground = new FutureTask<Void>(zoomIn, null) {
+                @Override
+                protected void done() {
+                    setupBackgroundImage();
+                    setClockPosition(false);
+                    clockLayout.setVisibility(View.VISIBLE);
+                }
+            };
+
             clockLayout.post(new Runnable() {
                 public void run() {
-                    handler.postDelayed(zoomIn, 500);
+                    handler.postDelayed(zoomInAndsetupBackground, 500);
                 }
             });
-        }
+       };
     };
     private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         int[] rect = new int[2];
@@ -612,7 +619,6 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
-
     }
 
     private void initLightSensor() {
