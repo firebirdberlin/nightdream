@@ -66,7 +66,6 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
-    public boolean dragClockAround = false;
     public boolean speakTime = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
@@ -108,12 +107,12 @@ public class Settings {
     public float scaleClockPortrait = -1.f;
     public float scaleClockLandscape = -1.f;
 
-    public float xPosition = 0.f;
-    public float yPosition = 0.f;
-    public float xPositionPortrait = 0.f;
-    public float yPositionPortrait = 0.f;
-    public float xPositionLandscape = 0.f;
-    public float yPositionLandscape = 0.f;
+    private float xPosition = -1.f;
+    private float yPosition = -1.f;
+    private float xPositionPortrait = -1.f;
+    private float yPositionPortrait = -1.f;
+    private float xPositionLandscape = -1.f;
+    private float yPositionLandscape = -1.f;
 
     public int alarmVolume = 3;
     public int alarmVolumeReductionPercent = 0;
@@ -381,7 +380,6 @@ public class Settings {
         autoBrightness = settings.getBoolean("autoBrightness", false);
         clockLayoutMirrorText = settings.getBoolean("clockLayoutMirrorText", false);
         doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
-        dragClockAround = settings.getBoolean("dragClockAround", false);
         speakTime = settings.getBoolean("speakTime", false);
         alwaysOnTimeRangeStartInMinutes = settings.getInt("always_on_time_range_start_minutes", -1);
         alwaysOnTimeRangeEndInMinutes = settings.getInt("always_on_time_range_end_minutes", -1);
@@ -444,14 +442,13 @@ public class Settings {
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", -1.f);
         sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
 
-        xPosition = settings.getFloat("xPosition", 0.f);
-        yPosition = settings.getFloat("yPosition", 0.f);
-        xPositionPortrait = settings.getFloat("xPositionPortrait", 0.f);
-        yPositionPortrait = settings.getFloat("yPositionPortrait", 0.f);
-        xPositionLandscape = settings.getFloat("xPositionLandscape", 0.f);
-        yPositionLandscape = settings.getFloat("yPositionLandscape", 0.f);
+        xPosition = settings.getFloat("xPosition", -1.f);
+        yPosition = settings.getFloat("yPosition", -1.f);
+        xPositionPortrait = settings.getFloat("xPositionPortrait", -1.f);
+        yPositionPortrait = settings.getFloat("yPositionPortrait", -1.f);
+        xPositionLandscape = settings.getFloat("xPositionLandscape", -1.f);
+        yPositionLandscape = settings.getFloat("yPositionLandscape", -1.f);
 
-        sensitivity = 10-settings.getInt("NoiseSensitivity", 4);
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
@@ -1020,29 +1017,31 @@ public class Settings {
 
     public void setPositionClock(float xPosition, float yPosition, int orientation) {
 
-        switch(orientation){
+        SharedPreferences.Editor editor = settings.edit();
+        switch(orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 xPositionLandscape = xPosition;
                 yPositionLandscape = yPosition;
-                settings.edit().putFloat("xPositionLandscape", xPosition).apply();
-                settings.edit().putFloat("yPositionLandscape", yPosition).apply();
+                editor.putFloat("xPositionLandscape", xPosition);
+                editor.putFloat("yPositionLandscape", yPosition);
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
                 xPositionPortrait = xPosition;
                 yPositionPortrait = yPosition;
-                settings.edit().putFloat("xPositionPortrait", xPosition).apply();
-                settings.edit().putFloat("yPositionPortrait", yPosition).apply();
+                editor.putFloat("xPositionPortrait", xPosition);
+                editor.putFloat("yPositionPortrait", yPosition);
                 break;
             default:
                 this.xPosition = xPosition;
                 this.yPosition = yPosition;
-                settings.edit().putFloat("xPosition", xPosition).apply();
-                settings.edit().putFloat("yPosition", yPosition).apply();
+                editor.putFloat("xPosition", xPosition);
+                editor.putFloat("yPosition", yPosition);
                 break;
         }
+        editor.apply();
     }
 
-    public float getxPositionClock(int orientation) {
+    public float getXPositionClock(int orientation) {
         switch(orientation){
             case Configuration.ORIENTATION_LANDSCAPE:
                 return xPositionLandscape;
@@ -1053,7 +1052,7 @@ public class Settings {
         }
     }
 
-    public float getyPositionClock(int orientation) {
+    public float getYPositionClock(int orientation) {
         switch(orientation){
             case Configuration.ORIENTATION_LANDSCAPE:
                 return yPositionLandscape;

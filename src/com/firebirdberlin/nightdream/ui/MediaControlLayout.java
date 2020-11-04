@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -24,7 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 
 public class MediaControlLayout extends LinearLayout {
@@ -40,7 +38,6 @@ public class MediaControlLayout extends LinearLayout {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, Intent intent, Drawable smallIcon) {
-        NightDreamUI nightDreamUI = new NightDreamUI(context, NightDreamActivity.window );
         String template = intent.getStringExtra("template");
         if (template != null && !template.contains("MediaStyle")) {
             return;

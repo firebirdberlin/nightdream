@@ -143,8 +143,6 @@ OR
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
-    <string name="drag_clock_around_summary">Change the position of the clock by dragging.</string>
-    <string name="drag_clock_around">Drag the clock</string>
     <string name="gift_for_donors">Gift for your donation</string>
     <string name="flashlight">Flashlight</string>
     <string name="forecast">5-day Weather Forecast</string>

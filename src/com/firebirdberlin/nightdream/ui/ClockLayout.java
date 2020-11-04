@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -260,6 +261,24 @@ public class ClockLayout extends LinearLayout {
         if (!showDivider) {
             divider.setVisibility(GONE);
         }
+
+        boolean shallHide = (
+                date != null && date.getVisibility() != VISIBLE
+                        && weatherLayout.getVisibility() != VISIBLE
+        );
+        if (showDivider) {
+            divider.setVisibility(shallHide ? INVISIBLE : VISIBLE);
+        }
+        setupBackground(null);
+    }
+
+    public void setupBackground(Drawable backgroundDrawable) {
+        if (backgroundDrawable != null) {
+
+            setBackground(backgroundDrawable);
+            return;
+        }
+
 
         boolean shallHide = (
                 date != null && date.getVisibility() != VISIBLE
@@ -674,5 +693,9 @@ public class ClockLayout extends LinearLayout {
         if (weatherLayout2 != null) {
             weatherLayout2.update(entry);
         }
+    }
+    public void getScaledSize(int[] size) {
+        size[0] = Math.abs((int) (getWidth() * getScaleX()));
+        size[1] = Math.abs((int) (getHeight() * getScaleY()));
     }
 }

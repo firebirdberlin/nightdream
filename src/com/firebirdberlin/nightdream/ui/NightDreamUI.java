@@ -116,15 +116,12 @@ public class NightDreamUI {
     private ImageView nightModeIcon;
     private ImageView radioIcon;
     private LightSensorEventListener lightSensorEventListener = null;
-    private FrameLayout clockLayoutContainer;
+    private ClockLayoutContainer clockLayoutContainer;
     private ClockLayout clockLayout;
     private FlexboxLayout notificationStatusBar;
     private FlexboxLayout sidePanel;
     private BottomPanelLayout bottomPanelLayout;
     private Settings settings;
-    private float clockLayout_xDelta;
-    private float clockLayout_yDelta;
-
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -136,7 +133,7 @@ public class NightDreamUI {
         public boolean onScale(ScaleGestureDetector detector) {
             Log.d(TAG, "onScale");
             float s = detector.getScaleFactor();
-            applyScaleFactor(s);
+            clockLayoutContainer.applyScaleFactor(s);
             return true;
         }
 
@@ -148,6 +145,8 @@ public class NightDreamUI {
             settings.setScaleClock(s, config.orientation);
         }
     };
+    private float clockLayout_xDelta;
+    private float clockLayout_yDelta;
     private int vibrantColor = 0;
     private int vibrantColorDark = 0;
     private long lastAnimationTime = 0L;
@@ -183,7 +182,7 @@ public class NightDreamUI {
             Configuration config = getConfiguration();
             clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
             //clockLayout.update(settings.weatherEntry);
-            setClockPosition(false);
+            setClockPosition();
             float s = getScaleFactor(config);
             clockLayout.setScaleFactor(s, true);
             Utility.turnScreenOn(mContext);
@@ -314,7 +313,6 @@ public class NightDreamUI {
             brightnessProgress.setVisibility(View.INVISIBLE);
 
             showAlarmClock();
-            setupShowcase();
 
             clockLayout.post(new Runnable() {
                 public void run() {
@@ -323,12 +321,67 @@ public class NightDreamUI {
             });
         }
     };
+    private Runnable setupSidePanel = new Runnable() {
+        @Override
+        public void run() {
+            if (sidePanel.getX() < 0) {
+                initSidePanel();
+            }
+
+        }
+    };
+    private boolean shallMoveClock = false;
+    View.OnTouchListener onTouchListenerClockLayout = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent e) {
+            if (locked) {
+                return false;
+            }
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_MOVE:
+                    if (shallMoveClock) {
+                        setClockPosition(
+                                e.getRawX() - clockLayout_xDelta,
+                                e.getRawY() - clockLayout_yDelta
+                        );
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    disableMoveClock();
+                    break;
+            }
+            return false;
+        }
+    };
     private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         int[] rect = new int[2];
+        int[] size = new int[2];
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                               float velocityY) {
+        public void onShowPress(MotionEvent e) {
+            super.onShowPress(e);
+            Log.i(TAG, "onShowPress");
+            if (isInsideClockLayout(e)) {
+                clockLayout_xDelta = e.getRawX() - clockLayout.getX();
+                clockLayout_yDelta = e.getRawY() - clockLayout.getY();
+                enableMoveClock();
+            }
+        }
+
+        boolean isInsideClockLayout(MotionEvent e) {
+            clockLayout.getLocationOnScreen(rect);
+            clockLayout.getScaledSize(size);
+            int x = (int) e.getRawX();
+            int y = (int) e.getRawY();
+            return (
+                    x > rect[0] && x < rect[0] + size[0] && y > rect[1] && y < rect[1] + size[1]
+            );
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (e1 == null || e2 == null) return false;
+            Log.i(TAG, "onFling");
             clockLayoutContainer.getLocationOnScreen(rect);
             if (e1.getY() < rect[1]) return false;
 
@@ -367,7 +420,6 @@ public class NightDreamUI {
             brightnessProgress.setVisibility(View.VISIBLE);
             setAlpha(brightnessProgress, 1.f, 0);
             handler.postDelayed(hideBrightnessLevel, 1000);
-
             return false;
         }
 
@@ -404,52 +456,9 @@ public class NightDreamUI {
             return false;
         }
     };
-    private Runnable setupSidePanel = new Runnable() {
-        @Override
-        public void run() {
-            if (sidePanel.getX() < 0) {
-                initSidePanel();
-            }
-
-        }
-    };
-    /*
-    private OnShowcaseEventListener showcaseViewEventListener = new OnShowcaseEventListener() {
-        @Override
-        public void onShowcaseViewHide(ShowcaseView view) {
-            Log.i(TAG, "onShowcaseViewHide()");
-
-        }
-
-        @Override
-        public void onShowcaseViewDidHide(ShowcaseView view) {
-            Log.i(TAG, "onShowcaseViewDidHide()");
-            showcaseView = null;
-            handler.postDelayed(moveAround, 30000);
-            handler.postDelayed(hideAlarmClock, 20000);
-            brightnessProgress.setVisibility(View.INVISIBLE);
-            showAlarmClock();
-        }
-
-        @Override
-        public void onShowcaseViewShow(ShowcaseView view) {
-            Log.i(TAG, "onShowcaseViewShow()");
-            removeCallbacks(moveAround);
-            removeCallbacks(hideAlarmClock);
-            setAlpha(clockLayout, 0.2f, 0);
-            setAlpha(bottomPanelLayout, 0.2f, 0);
-        }
-
-        @Override
-        public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
-            Log.i(TAG, "onShowcaseViewTouchBlocked()");
-
-        }
-    };
-     */
 
     @SuppressLint("ClickableViewAccessibility")
-    public NightDreamUI(Context context, Window window) {
+    public NightDreamUI(final Context context, Window window) {
         mContext = context;
 
         mGestureDetector = new GestureDetector(mContext, mSimpleOnGestureListener);
@@ -507,35 +516,37 @@ public class NightDreamUI {
         // prepare zoom-in effect
         menuIcon.setScaleX(.8f);
         menuIcon.setScaleY(.8f);
-       // clockLayout.setScaleFactor(.1f);
+        // clockLayout.setScaleFactor(.1f);
 
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
         checkForReviewRequest();
         isDebuggable = Utility.isDebuggable(context);
+        clockLayoutContainer.setClockLayout(clockLayout);
+    }
 
-        clockLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent e) {
-                switch (e.getAction()) {
-                   case MotionEvent.ACTION_DOWN:
-                        clockLayout_xDelta = e.getRawX() - clockLayout.getX();
-                        clockLayout_yDelta = e.getRawY() - clockLayout.getY() ;
-                        break;
+    private void enableMoveClock() {
+        shallMoveClock = true;
+        Drawable bg = ContextCompat.getDrawable(mContext, R.drawable.border);
+        clockLayout.setupBackground(bg);
+    }
 
-                    case MotionEvent.ACTION_MOVE:
-                        if (!locked && settings.dragClockAround) {
-                            float clockLayout_xPosition = e.getRawX() - clockLayout_xDelta;
-                            float clockLayout_yPosition = e.getRawY() - clockLayout_yDelta;
+    private void disableMoveClock() {
+        Configuration config = getConfiguration();
+        settings.setPositionClock(clockLayout.getX(), clockLayout.getY(), config.orientation);
+        shallMoveClock = false;
+        clockLayout.setupBackground(null);
 
-                            setClockPosition(clockLayout_xPosition,clockLayout_yPosition, true);
-                        }
-                          break;
-                }
-                return true;
-            }
-        });
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean on) {
+        this.locked = on;
+        lockUI(on);
     }
 
     private void resetAlarmClockHideDelay() {
@@ -560,14 +571,12 @@ public class NightDreamUI {
         Log.d(TAG, "onResume()");
         hideSystemUI();
 
-        int oldClockLayoutID = settings.getClockLayoutID(false);
-
         settings.reload();
 
-        if ( (settings.getxPositionClock(getConfiguration().orientation) == 0) &&
-             (settings.getyPositionClock(getConfiguration().orientation) == 0) ) {
+        int orientation = getConfiguration().orientation;
+        if (settings.getXPositionClock(orientation) < 0 && settings.getYPositionClock(orientation) < 0) {
             centerClockLayout();
-         }
+        }
 
         vibrantColor = 0;
         vibrantColorDark = 0;
@@ -600,7 +609,6 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
-
     }
 
     private void initBackground() {
@@ -645,12 +653,6 @@ public class NightDreamUI {
     }
 
     public void setupClockLayout() {
-   /*
-        if (settings.screenProtection != Settings.ScreenProtectionModes.MOVE) {
-            centerClockLayout();
-        }
-
-    */
         int layoutId = settings.getClockLayoutID(false);
         clockLayout.setLayout(layoutId);
         clockLayout.setDateFormat(settings.dateFormat);
@@ -672,16 +674,15 @@ public class NightDreamUI {
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
         clockLayout.update(settings.weatherEntry);
 
-        if (clockLayout.getScaleY() == .1f ) {
+        if (clockLayout.getScaleY() == .1f) {
             clockLayout.animate()
-                    .x(settings.getxPositionClock(getConfiguration().orientation))
-                    .y(settings.getyPositionClock(getConfiguration().orientation))
+                    .x(settings.getXPositionClock(getConfiguration().orientation))
+                    .y(settings.getYPositionClock(getConfiguration().orientation))
                     .setDuration(1)
                     .start();
-        }
-        else{
-            clockLayout.setX(settings.getxPositionClock(getConfiguration().orientation));
-            clockLayout.setY(settings.getyPositionClock(getConfiguration().orientation));
+        } else {
+            clockLayout.setX(settings.getXPositionClock(getConfiguration().orientation));
+            clockLayout.setY(settings.getYPositionClock(getConfiguration().orientation));
         }
     }
 
@@ -1202,16 +1203,15 @@ public class NightDreamUI {
         removeCallbacks(backgroundChange);
 
         Runnable fixConfig = new Runnable() {
-                public void run() {
-                    clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
-                    if ( (settings.getxPositionClock(getConfiguration().orientation) == 0) &&
-                            (settings.getyPositionClock(getConfiguration().orientation) == 0) ) {
-                        centerClockLayout();
-                    }
-                    clockLayoutContainer.post(initClockLayout);
-                    float s = getScaleFactor(newConfig);
-                    clockLayout.setScaleFactor(s);
-                    setClockPosition(false);
+            public void run() {
+                int orientation = getConfiguration().orientation;
+                clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
+                if (settings.getXPositionClock(orientation) < 0 && settings.getYPositionClock(orientation) < 0) {
+                    centerClockLayout();
+                }
+                float s = getScaleFactor(newConfig);
+                clockLayout.setScaleFactor(s);
+                setClockPosition();
 
                 handler.postDelayed(moveAround, 60000);
                 handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
@@ -1233,11 +1233,9 @@ public class NightDreamUI {
     }
 
     private void centerClockLayout() {
-        Configuration config = getConfiguration();
-
         clockLayout.setTranslationX(0);
         clockLayout.setTranslationY(0);
-        settings.setPositionClock(clockLayout.getX(),clockLayout.getY(), config.orientation);
+        Configuration config = getConfiguration();
         clockLayout.invalidate();
     }
 
@@ -1539,46 +1537,6 @@ public class NightDreamUI {
         return mContext.getResources().getConfiguration();
     }
 
-    private void applyScaleFactor(float factor) {
-        int width = clockLayoutContainer.getWidth();
-        int height = clockLayoutContainer.getHeight();
-        factor *= clockLayout.getAbsScaleFactor();
-        int new_width = (int) (clockLayout.getWidth() * factor);
-        int new_height = (int) (clockLayout.getHeight() * factor);
-        if (factor > 0.5f && new_width < width && new_height < height) {
-            clockLayout.setScaleFactor(factor);
-            keepClockWithinContainer(new_width, new_height, width, height);
-        }
-    }
-
-    /**
-     * make sure the clock does not run over clockLayoutContainer edges after scaling
-     */
-    private void keepClockWithinContainer(int newClockWidth, int newClockHeight, int containerWidth, int containerHeight) {
-
-        final float distanceX = containerWidth - newClockWidth - Math.abs(clockLayout.getTranslationX()) * 2f;
-        final float distanceY = containerHeight - newClockHeight - Math.abs(clockLayout.getTranslationY()) * 2f;
-
-
-        if (distanceX < 0 || distanceY < 0) {
-
-            // stop animation, otherwise it gets out of screen while animation is in progress
-            clockLayout.animate().cancel();
-
-            if (distanceX < 0) {
-                // move clock to left or right screen edge
-                final float correctionX = (newClockWidth - containerWidth) * 0.5f * (clockLayout.getTranslationX() < 0 ? 1f : -1f);
-                clockLayout.setTranslationX(correctionX);
-            }
-
-            if (distanceY < 0) {
-                // move clock to top or bottom screen edge
-                final float correctionY = (newClockHeight - containerHeight) * 0.5f * (clockLayout.getTranslationY() < 0 ? 1f : -1f);
-                clockLayout.setTranslationY(correctionY);
-            }
-        }
-    }
-
     private float getScaleFactor(Configuration config) {
         float s = settings.getScaleClock(config.orientation);
         float max = getMaxScaleFactor();
@@ -1606,11 +1564,6 @@ public class NightDreamUI {
 
     private float getProposedScaleFactor(float maxScaleFactor) {
         return 0.8f * maxScaleFactor;
-    }
-
-    public void setLocked(boolean on) {
-        this.locked = on;
-        lockUI(on);
     }
 
     private void lockUI(boolean on) {
@@ -1643,6 +1596,9 @@ public class NightDreamUI {
         boolean event_consumed = mGestureDetector.onTouchEvent(e);
         if (mScaleDetector != null) {
             mScaleDetector.onTouchEvent(e);
+        }
+        if (shallMoveClock) {
+            onTouchListenerClockLayout.onTouch(view, e);
         }
         return true;
     }
@@ -1727,142 +1683,22 @@ public class NightDreamUI {
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
-    private void setupShowcase() {
-/*
-        if (showcaseView != null) {
-            return;
-        }
-        long firstInstallTime = Utility.getFirstInstallTime(mContext);
-        Calendar install_time = Calendar.getInstance();
-        install_time.setTimeInMillis(firstInstallTime);
-
-        Calendar start_date = Calendar.getInstance();
-        start_date.set(Calendar.YEAR, 2016);
-        start_date.set(Calendar.MONTH, Calendar.JULY);
-        start_date.set(Calendar.DAY_OF_MONTH, 3);
-        start_date.set(Calendar.SECOND, 0);
-        start_date.set(Calendar.MINUTE, 0);
-        start_date.set(Calendar.HOUR_OF_DAY, 0);
-
-        if (install_time.before(start_date)) {
-            return;
-        }
-
-        showcaseCounter = 0;
-        showcaseView = new ShowcaseView.Builder((Activity) mContext)
-            //.withMaterialShowcase()
-            .blockAllTouches()
-            .setContentTitle(mContext.getString(R.string.welcome_screen_title1))
-            .setContentText(mContext.getString(R.string.welcome_screen_text1))
-            .setShowcaseEventListener(showcaseViewEventListener)
-            .setOnClickListener(showCaseOnClickListener)
-            .singleShot(SHOWCASE_ID_ONBOARDING)
-            .build();
-
-        showcaseView.setShowcaseTag(SHOWCASE_ID_ONBOARDING);
-        showcaseView.showButton();
-        showShowcase();
-
-        setupShowcaseForScreenLock();
- */
-    }
-
-    private void setupShowcaseView() {
-/*
-        if (showcaseView == null) return;
-        if (showcaseView.getShowcaseTag() != SHOWCASE_ID_ONBOARDING) return;
-
-        switch(showcaseCounter) {
-            case 0:
-                showcaseView.setShowcase(Target.NONE, true);
-                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title1));
-                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text1));
-                showcaseView.setBlockAllTouches(true);
-                showcaseView.showButton();
-                break;
-            case 1:
-                showcaseView.setShowcase(new ViewTarget(menuIcon), true);
-                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title2));
-                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text2));
-                showcaseView.setBlockAllTouches(false);
-                showcaseView.setBlocksTouches(true);
-                showcaseView.showButton();
-                break;
-            case 2:
-                Point size = utility.getDisplaySize();
-                showcaseView.setShowcase(new PointTarget(size.x/2, 20), true);
-                showcaseView.setBlockAllTouches(false);
-                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title3));
-                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text3));
-                showcaseView.showButton();
-                break;
-            case 3:
-                setAlpha(clockLayout, 1.f, 500);
-                showcaseView.setShowcase(new ViewTarget(clockLayout), true);
-                showcaseView.setContentTitle(mContext.getString(R.string.welcome_screen_title4));
-                showcaseView.setContentText(mContext.getString(R.string.welcome_screen_text4));
-                showcaseView.setBlockAllTouches(false);
-                showcaseView.setBlocksTouches(true);
-                //showcaseView.setBlockAllTouches(true);
-                showcaseView.showButton();
-                break;
-            default:
-                showcaseView.hide();
-                break;
-        }
-        hideSystemUI();
- */
-    }
-
-    private void setupShowcaseForScreenLock() {
-/*
-        if (showcaseView != null) {
-            return;
-        }
-
-        if ( this.locked ) {
-            showcaseView = new ShowcaseView.Builder((Activity) mContext)
-                .setTarget(new ViewTarget(menuIcon))
-                .hideOnTouchOutside()
-                .setContentTitle(mContext.getString(R.string.showcase_title_screen_lock))
-                .setContentText(mContext.getString(R.string.showcase_text_screen_lock))
-                .setShowcaseEventListener(showcaseViewEventListener)
-                .singleShot(SHOWCASE_ID_SCREEN_LOCK)
-                .build();
-            showcaseView.hideButton();
-            showShowcase();
-        }
-
- */
-    }
-
-    private void showShowcase() {
-/*
-        showcaseView.show();
-        if ( !showcaseView.isShowing()) {
-            showcaseView = null;
-        }
- */
-    }
-
-    public void setClockPosition(boolean savePosition){
+    public void setClockPosition() {
         Configuration config = getConfiguration();
-        setClockPosition(settings.getxPositionClock(config.orientation), settings.getyPositionClock(config.orientation), savePosition);
+        setClockPosition(settings.getXPositionClock(config.orientation), settings.getYPositionClock(config.orientation));
     }
 
-    public void setClockPosition(float clockLayout_xPosition, float clockLayout_yPosition, boolean savePosition ) {
+    public void setClockPosition(float clockLayout_xPosition, float clockLayout_yPosition) {
         Configuration config = getConfiguration();
 
-        if ( clockLayout.getWidth() > 0 && clockLayout.getHeight() > 0) {
+        if (clockLayout.getWidth() > 0 && clockLayout.getHeight() > 0) {
 
             int scaled_width;
             int scaled_height;
-
-            if ( clockLayout.getScaleX() > 0 && savePosition) {
+            if (clockLayout.getScaleX() > 0) {
                 scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
                 scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
-            }
-            else {
+            } else {
                 scaled_width = Math.abs((int) (clockLayout.getWidth() * getScaleFactor(config)));
                 scaled_height = Math.abs((int) (clockLayout.getHeight() * getScaleFactor(config)));
             }
@@ -1892,9 +1728,6 @@ public class NightDreamUI {
                     .setDuration(0)
                     .start();
 
-            if (savePosition){
-                settings.setPositionClock(clockLayout_xPosition, clockLayout_yPosition, config.orientation);
-            }
         }
     }
 

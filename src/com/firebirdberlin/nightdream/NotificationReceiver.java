@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
+import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.google.android.flexbox.FlexboxLayout;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -166,6 +167,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         MediaControlLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
         mediaStyleContainer.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
 
-        //activity.onConfigurationChanged(activity.getResources().getConfiguration());
+        activity.onConfigurationChanged(activity.getResources().getConfiguration());
     }
 }
