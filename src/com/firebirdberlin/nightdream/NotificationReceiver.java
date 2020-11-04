@@ -12,9 +12,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
@@ -115,7 +115,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private void addNotificationIcon(Context context, FlexboxLayout container, Drawable icon) {
-        AppCompatImageView image = new AppCompatImageView(context);
+        ImageView image = new ImageView(context);
         int padding = Utility.dpToPx(context, 5);
         image.setPadding(padding, 0, 0, 0);
         image.setImageDrawable(icon);
