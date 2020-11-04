@@ -5,9 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -38,7 +35,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -61,6 +57,7 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
+import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
@@ -84,7 +81,6 @@ public class NightDreamActivity extends BillingHelperActivity
         RadioInfoDialogFragment.RadioInfoDialogListener {
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
-    public static Window window;
     static long lastNoiseTime = System.currentTimeMillis();
     private static int PENDING_INTENT_STOP_APP = 1;
     private static int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
@@ -97,7 +93,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private ImageView radioIcon;
     private ImageView torchIcon;
     private BottomPanelLayout bottomPanelLayout;
-    private FrameLayout clockLayoutContainer;
+    private ClockLayoutContainer clockLayoutContainer;
     private boolean screenWasOn = false;
     private static Context context = null;
     private float last_ambient = 4.0f;
@@ -114,7 +110,7 @@ public class NightDreamActivity extends BillingHelperActivity
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
-            if (!mySettings.speakTime) {
+            if (nightDreamUI.isLocked() || !mySettings.speakTime) {
                 return;
             }
 
@@ -245,7 +241,7 @@ public class NightDreamActivity extends BillingHelperActivity
         setContentView(R.layout.main);
 
         Log.i(TAG, "onCreate()");
-        window = getWindow();
+        Window window = getWindow();
 
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);

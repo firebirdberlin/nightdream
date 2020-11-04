@@ -30,13 +30,6 @@
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
-        app:defaultValue="false"
-        app:key="dragClockAround"
-        app:summary="@string/drag_clock_around_summary"
-        app:title="@string/drag_clock_around" />
-
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
         app:defaultValue="true"
         app:key="persistentBatteryValueWhileCharging"
         app:summary="@string/persistent_battery_value_while_charging_summary"

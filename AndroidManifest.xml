@@ -141,7 +141,7 @@
             android:theme="@style/PreferencesTheme"/>
         <activity
             android:name=".NightDreamActivity"
-            android:configChanges="keyboard|screenSize"
+            android:configChanges="orientation|keyboard|screenSize"
             android:enabled="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
