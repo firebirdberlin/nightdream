@@ -302,6 +302,20 @@ public class NightDreamUI {
             }
         }
     };
+    public Runnable initClockBackground = new Runnable() {
+        @Override
+        public void run() {
+            if (preloadBackgroundImage == null){
+                parentLayout.post(new Runnable() {
+                    public void run() {
+                        handler.postDelayed(initClockBackground, 500);
+                    }
+                });
+            }else {
+                setupBackgroundImage();
+            }
+        }
+    };
     public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
@@ -311,7 +325,12 @@ public class NightDreamUI {
             controlsVisible = true;
 
             brightnessProgress.setVisibility(View.INVISIBLE);
-            setupBackgroundImage();
+
+            parentLayout.post(new Runnable() {
+                public void run() {
+                    handler.postDelayed(initClockBackground, 500);
+                }
+            });
 
             showAlarmClock();
             setupShowcase();
@@ -951,6 +970,9 @@ public class NightDreamUI {
         Log.d(TAG, "loadBackgroundImageFiles()");
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
         files = Utility.listFiles(path, ".jpg");
+        preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
+        AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
+        runningTask.execute(preloadBackgroundImageFile);
     }
 
     private Drawable loadBackgroundImage() {
@@ -1792,7 +1814,7 @@ public class NightDreamUI {
 
         @Override
         protected Bitmap doInBackground(File... params) {
-            if (files == null || files.isEmpty()) {
+            if (files == null || files.isEmpty() || params[0] == null) {
                 return null;
             } else {
                 return rescaleBackgroundImage(loadImageFromPath(params[0]));
