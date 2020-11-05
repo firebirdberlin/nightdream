@@ -758,8 +758,6 @@ public class Utility {
 
     private static int getCameraPhotoOrientation(ExifInterface exif){
         int rotate = 0;
-        //context.getContentResolver().notifyChange(imageUri, null);
-
         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
         switch (orientation) {
