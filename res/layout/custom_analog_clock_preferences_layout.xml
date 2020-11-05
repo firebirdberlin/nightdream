@@ -283,6 +283,20 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp" />
+
+
+        <Switch
+            android:id="@+id/switch_show_second_hand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/show_second_hand"
+            android:paddingBottom="6dp"
+            android:paddingTop="10dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            tools:targetApi="ice_cream_sandwich" />
+
     </LinearLayout>
 
     <LinearLayout
