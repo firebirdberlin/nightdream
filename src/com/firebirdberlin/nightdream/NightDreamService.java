@@ -28,7 +28,7 @@ public class NightDreamService extends DreamService {
     }
 
     public void onDreamingStarted() {
-        handler.postDelayed(startDelayed, 5000);
+        handler.post(startDelayed);
     }
 
     public void onDreamingStopped() {
