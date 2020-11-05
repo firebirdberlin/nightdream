@@ -828,25 +828,12 @@ public class NightDreamUI {
             return new ColorDrawable(Color.BLACK);
         }
 
-        File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
-
-        long now = System.currentTimeMillis();
-        long ONE_MINUTE = 60000;
-        if (cacheFile.exists() && now - cacheFile.lastModified() < ONE_MINUTE) {
-            BitmapDrawable cached = loadBackgroundImageFromCache();
-            if (cached != null) {
-                return cached;
-            }
-        }
-
         if (files.isEmpty()) return new ColorDrawable(Color.BLACK);
 
         File file = files.get(new Random().nextInt(files.size()));
         preloadBackgroundImageFile = file;
         Bitmap bitmap = loadImageFromPath(file);
         bitmap = rescaleBackgroundImage(bitmap);
-        AsyncTask<Bitmap, Integer, Bitmap> runningTask = new writeBackgroundImageToCache();
-        runningTask.execute(bitmap);
         setDominantColorFromBitmap(bitmap);
         if (bitmap != null) {
             return new BitmapDrawable(mContext.getResources(), bitmap);
