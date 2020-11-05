@@ -302,17 +302,19 @@ public class NightDreamUI {
             }
         }
     };
-    public Runnable initClockBackground = new Runnable() {
+    public Runnable initSlideshowBackground = new Runnable() {
         @Override
         public void run() {
-            if (preloadBackgroundImage == null){
-                parentLayout.post(new Runnable() {
-                    public void run() {
-                        handler.postDelayed(initClockBackground, 500);
-                    }
-                });
-            }else {
-                setupBackgroundImage();
+            if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
+                if (preloadBackgroundImage == null) {
+                    parentLayout.post(new Runnable() {
+                        public void run() {
+                            handler.postDelayed(initSlideshowBackground, 500);
+                        }
+                    });
+                } else {
+                    setupBackgroundImage();
+                }
             }
         }
     };
@@ -325,12 +327,6 @@ public class NightDreamUI {
             controlsVisible = true;
 
             brightnessProgress.setVisibility(View.INVISIBLE);
-
-            parentLayout.post(new Runnable() {
-                public void run() {
-                    handler.postDelayed(initClockBackground, 500);
-                }
-            });
 
             showAlarmClock();
             setupShowcase();
@@ -565,14 +561,9 @@ public class NightDreamUI {
         background_images[1].clearAnimation();
         background_images[1].setImageDrawable(bgblack);
         lastAnimationTime = 0L;
-        if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
-            loadBackgroundImageFiles();
-            handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
-        }
-
         setScreenOrientation(settings.screenOrientation);
-
         initSidePanel();
+        initBackground();
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
@@ -592,6 +583,26 @@ public class NightDreamUI {
             soundmeter = null;
         }
 
+    }
+
+    private void initBackground(){
+        switch (settings.getBackgroundMode()){
+            case Settings.BACKGROUND_SLIDESHOW:
+                loadBackgroundImageFiles();
+                preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
+                AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
+                runningTask.execute(preloadBackgroundImageFile);
+                parentLayout.post(new Runnable() {
+                    public void run() {
+                        handler.postDelayed(initSlideshowBackground, 500);
+                    }
+                });
+                handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
+                break;
+            default:
+                setupBackgroundImage();
+                break;
+        }
     }
 
     private void initLightSensor() {
@@ -970,9 +981,6 @@ public class NightDreamUI {
         Log.d(TAG, "loadBackgroundImageFiles()");
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
         files = Utility.listFiles(path, ".jpg");
-        preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-        AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-        runningTask.execute(preloadBackgroundImageFile);
     }
 
     private Drawable loadBackgroundImage() {
