@@ -256,37 +256,23 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void toggleDivider() {
-        if (divider == null) return;
-
-        if (!showDivider) {
-            divider.setVisibility(GONE);
-        }
-
-        boolean shallHide = (
-                date != null && date.getVisibility() != VISIBLE
-                        && weatherLayout.getVisibility() != VISIBLE
-        );
-        if (showDivider) {
-            divider.setVisibility(shallHide ? INVISIBLE : VISIBLE);
-        }
         setupBackground(null);
     }
 
     public void setupBackground(Drawable backgroundDrawable) {
-        if (backgroundDrawable != null) {
-
-            setBackground(backgroundDrawable);
-            return;
-        }
-
-
         boolean shallHide = (
                 date != null && date.getVisibility() != VISIBLE
                         && weatherLayout.getVisibility() != VISIBLE
         );
-        if (showDivider) {
-            divider.setVisibility(shallHide ? INVISIBLE : VISIBLE);
+        if (divider != null) {
+            divider.setVisibility(!showDivider || shallHide ? INVISIBLE : VISIBLE);
         }
+
+        if (backgroundDrawable != null) {
+            setBackground(backgroundDrawable);
+            return;
+        }
+
         if (shallHide) {
             setBackgroundColor(Color.parseColor("#00000000"));
         } else {
@@ -697,5 +683,12 @@ public class ClockLayout extends LinearLayout {
     public void getScaledSize(int[] size) {
         size[0] = Math.abs((int) (getWidth() * getScaleX()));
         size[1] = Math.abs((int) (getHeight() * getScaleY()));
+    }
+
+    public float getScaledWidth() {
+        return getWidth() * getScaleX();
+    }
+    public float getScaledHeight() {
+        return getHeight() * getScaleY();
     }
 }
