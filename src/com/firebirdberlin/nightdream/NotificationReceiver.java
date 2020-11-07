@@ -166,7 +166,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         MediaControlLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
         mediaStyleContainer.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
-
-        activity.onConfigurationChanged(activity.getResources().getConfiguration());
+        mediaStyleContainer.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                activity.onConfigurationChanged(activity.getResources().getConfiguration());
+            }
+        }, 500);
     }
 }
