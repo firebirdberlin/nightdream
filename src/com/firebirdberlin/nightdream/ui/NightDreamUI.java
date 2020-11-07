@@ -767,7 +767,7 @@ public class NightDreamUI {
     private void setupBackgroundImage() {
         if (mode == 0) return;
         bgshape = bgblack;
-        textViewExif.setVisibility(View.GONE);
+        textViewExif.setVisibility(View.INVISIBLE);
 
         if (!Utility.isLowRamDevice(mContext)) {
             switch (settings.getBackgroundMode()) {
@@ -807,7 +807,7 @@ public class NightDreamUI {
 
         if (settings.hideBackgroundImage && mode == 0) {
             background_images[background_image_active].setImageDrawable(bgblack);
-            textViewExif.setVisibility(View.GONE);
+            textViewExif.setVisibility(View.INVISIBLE);
         } else {
 
             background_image_active = (background_image_active + 1) % 2;
@@ -1205,12 +1205,12 @@ public class NightDreamUI {
         Runnable fixConfig = new Runnable() {
             public void run() {
                 int orientation = getConfiguration().orientation;
-                clockLayout.updateLayout(clockLayoutContainer.getWidth(), newConfig);
                 if (settings.getXPositionClock(orientation) < 0 && settings.getYPositionClock(orientation) < 0) {
                     centerClockLayout();
                 }
                 float s = getScaleFactor(newConfig);
                 clockLayout.setScaleFactor(s);
+                Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
                 setClockPosition();
 
                 handler.postDelayed(moveAround, 60000);
@@ -1219,7 +1219,7 @@ public class NightDreamUI {
             }
         };
 
-        handler.postDelayed(fixConfig, 200);
+        clockLayout.postDelayed(fixConfig, 200);
     }
 
     private void setupScreenAnimation() {
@@ -1235,7 +1235,6 @@ public class NightDreamUI {
     private void centerClockLayout() {
         clockLayout.setTranslationX(0);
         clockLayout.setTranslationY(0);
-        Configuration config = getConfiguration();
         clockLayout.invalidate();
     }
 
@@ -1410,7 +1409,7 @@ public class NightDreamUI {
             setColor();
             if (settings.hideBackgroundImage) {
                 background_images[background_image_active].setImageDrawable(bgblack);
-                textViewExif.setVisibility(View.GONE);
+                textViewExif.setVisibility(View.INVISIBLE);
             }
         } else if ((new_mode != 0) && (current_mode == 0)) {
             restoreRingerMode();
@@ -1688,46 +1687,32 @@ public class NightDreamUI {
         setClockPosition(settings.getXPositionClock(config.orientation), settings.getYPositionClock(config.orientation));
     }
 
-    public void setClockPosition(float clockLayout_xPosition, float clockLayout_yPosition) {
-        Configuration config = getConfiguration();
-
+    public void setClockPosition(float x, float y) {
         if (clockLayout.getWidth() > 0 && clockLayout.getHeight() > 0) {
 
-            int scaled_width;
-            int scaled_height;
-            if (clockLayout.getScaleX() > 0) {
-                scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
-                scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
-            } else {
-                scaled_width = Math.abs((int) (clockLayout.getWidth() * getScaleFactor(config)));
-                scaled_height = Math.abs((int) (clockLayout.getHeight() * getScaleFactor(config)));
+            float scaled_width = clockLayout.getScaledWidth();
+            float scaled_height = clockLayout.getScaledHeight();
+
+            float rxpos = clockLayoutContainer.getWidth() - scaled_width;
+            float rypos = clockLayoutContainer.getHeight() - scaled_height;
+
+            if (x + (clockLayout.getWidth() - scaled_width) / 2 > rxpos) {
+                x = rxpos - ((clockLayout.getWidth() - scaled_width) / 2);
             }
 
-            int rxpos = clockLayoutContainer.getWidth() - scaled_width;
-            int rypos = clockLayoutContainer.getHeight() - scaled_height;
-
-            if (clockLayout_xPosition + (int) ((clockLayout.getWidth() - scaled_width) / 2) > rxpos) {
-                clockLayout_xPosition = rxpos - (int) ((clockLayout.getWidth() - scaled_width) / 2);
+            if (y + (clockLayout.getHeight() - scaled_height) / 2 > rypos) {
+                y = rypos - ((clockLayout.getHeight() - scaled_height) / 2);
             }
 
-            if (clockLayout_yPosition + (int) ((clockLayout.getHeight() - scaled_height) / 2) > rypos) {
-                clockLayout_yPosition = rypos - (int) ((clockLayout.getHeight() - scaled_height) / 2);
+            if (x + (clockLayout.getWidth() - scaled_width) / 2 < 0) {
+                x = -((clockLayout.getWidth() - scaled_width) / 2);
             }
 
-            if (clockLayout_xPosition + (int) ((clockLayout.getWidth() - scaled_width) / 2) < 0) {
-                clockLayout_xPosition = -(int) ((clockLayout.getWidth() - scaled_width) / 2);
+            if (y + (clockLayout.getHeight() - scaled_height) / 2 < 0) {
+                y = -((clockLayout.getHeight() - scaled_height) / 2);
             }
 
-            if (clockLayout_yPosition + (int) ((clockLayout.getHeight() - scaled_height) / 2) < 0) {
-                clockLayout_yPosition = -(int) ((clockLayout.getHeight() - scaled_height) / 2);
-            }
-
-            clockLayout.animate()
-                    .x(clockLayout_xPosition)
-                    .y(clockLayout_yPosition)
-                    .setDuration(0)
-                    .start();
-
+            clockLayout.animate().x(x).y(y).setDuration(0).start();
         }
     }
 
