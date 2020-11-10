@@ -921,9 +921,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void resetScaleFactor(SharedPreferences sharedPreferences) {
         SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+        // reset custom scaling
         prefEditor.putFloat("scaleClockLandscape", -1.f);
         prefEditor.putFloat("scaleClockPortrait", -1.f);
         prefEditor.putFloat("scaleClock", -1.f);
+        // reset custom translation
+        prefEditor.remove("xPosition");
+        prefEditor.remove("xPositionLandscape");
+        prefEditor.remove("xPositionPortrait");
+        prefEditor.remove("yPosition");
+        prefEditor.remove("yPositionLandscape");
+        prefEditor.remove("yPositionPortrait");
         prefEditor.apply();
     }
 
