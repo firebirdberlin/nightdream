@@ -567,11 +567,13 @@ public class NightDreamUI {
         switch (settings.getBackgroundMode()) {
             case Settings.BACKGROUND_SLIDESHOW:
                 loadBackgroundImageFiles();
-                preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-                AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-                runningTask.execute(preloadBackgroundImageFile);
-                parentLayout.postDelayed(initSlideshowBackground, 500);
-                handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
+                if (files.size() > 0) {
+                    preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
+                    AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
+                    runningTask.execute(preloadBackgroundImageFile);
+                    parentLayout.postDelayed(initSlideshowBackground, 500);
+                    handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
+                }
                 break;
             default:
                 setupBackgroundImage();
