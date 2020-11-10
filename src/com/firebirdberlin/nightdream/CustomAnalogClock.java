@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -75,6 +76,21 @@ public class CustomAnalogClock extends View {
 
     AnalogClockConfig config;
 
+    private Handler handler;
+    private Runnable update = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(update);
+            invalidate();
+            if (config != null && !config.showSecondHand) {
+                return;
+            }
+            long now = System.currentTimeMillis();
+            long delta = 1000 - now / 1000 * 1000;
+            handler.postDelayed(update, delta);
+        }
+    };
+
     public CustomAnalogClock(Context context) {
         super(context);
         init(context);
@@ -105,6 +121,10 @@ public class CustomAnalogClock extends View {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setTimeTick();
+        handler = new Handler();
+        if (handler != null) {
+            handler.post(update);
+        }
     }
 
     @Override
@@ -117,6 +137,9 @@ public class CustomAnalogClock extends View {
                 // receiver was not registered,
             }
             timeReceiver = null;
+        }
+        if (handler != null) {
+            handler.removeCallbacks(update);
         }
     }
 
@@ -132,11 +155,15 @@ public class CustomAnalogClock extends View {
         invalidate();
     }
 
-    public void setStyle(AnalogClockConfig.Style style) {
+    public void setStyle(AnalogClockConfig.Style style, boolean allow_second_hand) {
         config = new AnalogClockConfig(context, style);
-
+        config.showSecondHand = allow_second_hand && config.showSecondHand;
         this.typeface = FontCache.get(context, config.fontUri);
         this.boldTypeface = Typeface.create(typeface, Typeface.BOLD);
+    }
+
+    public void setStyle(AnalogClockConfig.Style style) {
+        setStyle(style, true);
     }
 
     public void onDraw(Canvas canvas) {
@@ -147,8 +174,10 @@ public class CustomAnalogClock extends View {
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
 
-        int hour = Calendar.getInstance().get(Calendar.HOUR);
-        int min = Calendar.getInstance().get(Calendar.MINUTE);
+        Calendar now = Calendar.getInstance();
+        int hour = now.get(Calendar.HOUR);
+        int min = now.get(Calendar.MINUTE);
+        int sec = now.get(Calendar.SECOND);
 
         // radian unit (rad), 2PI = 360 degree = 12h -> 3:00/15:00 = 0 rad
         // 12h/6=2PI
@@ -157,6 +186,8 @@ public class CustomAnalogClock extends View {
                 + (double) min / 60. * Math.PI / 6.;
         // 60min = 2PI -> min / 60 * 2PI
         double min_angle = (double) min / 30. * Math.PI - Math.PI / 2.;
+
+        double sec_angle = (double) sec / 30. * Math.PI - Math.PI / 2.;
 
         paint.setAlpha(255);
         paint.setColor(Color.WHITE);
@@ -169,21 +200,21 @@ public class CustomAnalogClock extends View {
         drawTicks(canvas, centerX, centerY, radius);
         drawHourDigits(canvas, centerX, centerY, radius);
 
-        drawHands(canvas, centerX, centerY, radius, hour_angle, min_angle);
+        drawHands(canvas, centerX, centerY, radius, hour_angle, min_angle, sec_angle);
     }
 
     private void drawHands(Canvas canvas, float centerX, float centerY, int radius,
-                           double hour_angle, double min_angle) {
+                           double hour_angle, double min_angle, double sec_angle) {
         if (isTextureDecoration()) {
             applyPureTexture(paint);
         }
         paint.setStyle(Paint.Style.FILL);
-        if (! isTextureDecoration() ) {
+        if (!isTextureDecoration()) {
             paint.setShader(null);
         }
         // minute hand
         canvas.save();
-        if (! isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
+        if (!isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
             paint.setColorFilter(customColorFilter);
         }
         canvas.rotate((float) radiansToDegrees(min_angle), centerX, centerY);
@@ -191,9 +222,20 @@ public class CustomAnalogClock extends View {
                 (int) (config.handWidthMinutes * radius));
         canvas.restore();
 
+        // second hand
+        if (config.showSecondHand) {
+            canvas.save();
+            if (!isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
+                paint.setColorFilter(secondaryColorFilter);
+            }
+            canvas.rotate((float) radiansToDegrees(sec_angle), centerX, centerY);
+            drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthMinutes * radius),
+                    (int) (config.handWidthMinutes / 3 * radius));
+            canvas.restore();
+        }
         // hour hand
         canvas.save();
-        if (! isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC) ) {
+        if (!isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
             paint.setColorFilter(secondaryColorFilter);
         }
         canvas.rotate((float) radiansToDegrees(hour_angle), centerX, centerY);
@@ -321,7 +363,7 @@ public class CustomAnalogClock extends View {
     }
 
     private void applyGoldShader(Paint paint, float centerX, float centerY, int radius) {
-        if (! isTextureDecoration()) return;
+        if (!isTextureDecoration()) return;
 
         int resID = R.drawable.gold;
         switch (config.decoration) {
@@ -349,7 +391,7 @@ public class CustomAnalogClock extends View {
     }
 
     private void applyPureTexture(Paint paint) {
-        if (! isTextureDecoration()) return;
+        if (!isTextureDecoration()) return;
 
         int resID = R.drawable.gold;
         switch (config.decoration) {
@@ -528,19 +570,19 @@ public class CustomAnalogClock extends View {
             if (degree >= 45) {
                 sharpAngle = 2 * Math.PI - angle;
             }
-            triangleAdjacentLength = (double)textWidth / 2f;
+            triangleAdjacentLength = (double) textWidth / 2f;
         } else if (degree >= 45 && degree < 135) {
             // intersects bottom edge
             sharpAngle = Math.abs(Math.PI / 2f - angle);
-            triangleAdjacentLength = (double)textHeight / 2f;
+            triangleAdjacentLength = (double) textHeight / 2f;
         } else if (degree >= 135 && degree < 225) {
             // intersects left edge
             sharpAngle = Math.abs(Math.PI - angle);
-            triangleAdjacentLength = (double)textWidth / 2f;
+            triangleAdjacentLength = (double) textWidth / 2f;
         } else {
             // 225 to 315: intersects top edge
             sharpAngle = Math.abs(Math.PI * 1.5 - angle);
-            triangleAdjacentLength = (double)textHeight / 2f;
+            triangleAdjacentLength = (double) textHeight / 2f;
         }
 
         double result = Math.abs(triangleAdjacentLength / Math.cos(sharpAngle));
