@@ -120,6 +120,15 @@ public class NightDreamUI {
     private ClockLayout clockLayout;
     private FlexboxLayout notificationStatusBar;
     private FlexboxLayout sidePanel;
+    private final Runnable setupSidePanel = new Runnable() {
+        @Override
+        public void run() {
+            if (sidePanel.getX() < 0) {
+                initSidePanel();
+            }
+
+        }
+    };
     private BottomPanelLayout bottomPanelLayout;
     private Settings settings;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
@@ -171,24 +180,36 @@ public class NightDreamUI {
     private GestureDetector mGestureDetector;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private boolean locked = false;
+    private boolean zoomFinished = false;
+    private final Runnable zoomIn = new Runnable() {
+        @Override
+        public void run() {
+            removeCallbacks(zoomIn);
+            clockLayout.setVisibility(View.INVISIBLE);
+            Configuration config = getConfiguration();
+            clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
+
+            float s = getScaleFactor(config);
+            // set the right scaling and position
+            clockLayout.setScaleFactor(s, false);
+            setClockPosition(config);
+            // prepare zoom in
+            if (!zoomFinished) {
+                clockLayout.setScaleFactor(0.1f, false);
+            }
+            // finally zoom in
+            clockLayout.setVisibility(View.VISIBLE);
+            clockLayout.setScaleFactor(s, true);
+
+            Utility.turnScreenOn(mContext);
+            Utility.hideSystemUI(mContext);
+            zoomFinished = true;
+        }
+    };
     private float last_ambient = 4.0f;
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
     private float LIGHT_VALUE_DAYLIGHT = 300.0f;
-    private Runnable zoomIn = new Runnable() {
-        @Override
-        public void run() {
-            clockLayout.setVisibility(View.VISIBLE);
-            Configuration config = getConfiguration();
-            clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
-            //clockLayout.update(settings.weatherEntry);
-            setClockPosition(config);
-            float s = getScaleFactor(config);
-            clockLayout.setScaleFactor(s, true);
-            Utility.turnScreenOn(mContext);
-            Utility.hideSystemUI(mContext);
-        }
-    };
     private Runnable hideBrightnessView = new Runnable() {
         @Override
         public void run() {
@@ -303,7 +324,6 @@ public class NightDreamUI {
     public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
-
             clockLayout.setVisibility(View.INVISIBLE);
             setupClockLayout();
             setColor();
@@ -314,20 +334,7 @@ public class NightDreamUI {
 
             showAlarmClock();
 
-            clockLayout.post(new Runnable() {
-                public void run() {
-                    handler.postDelayed(zoomIn, 500);
-                }
-            });
-        }
-    };
-    private Runnable setupSidePanel = new Runnable() {
-        @Override
-        public void run() {
-            if (sidePanel.getX() < 0) {
-                initSidePanel();
-            }
-
+            clockLayout.postDelayed(zoomIn, 500);
         }
     };
     private boolean shallMoveClock = false;
@@ -513,10 +520,8 @@ public class NightDreamUI {
         };
         menuIcon.setOnLongClickListener(onMenuItemLongClickListener);
 
-        // prepare zoom-in effect
         menuIcon.setScaleX(.8f);
         menuIcon.setScaleY(.8f);
-        // clockLayout.setScaleFactor(.1f);
 
         settings = new Settings(context);
         AudioManage = new mAudioManager(context);
@@ -668,19 +673,8 @@ public class NightDreamUI {
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
-        setClockPosition(config);
         clockLayout.update(settings.weatherEntry);
-        // FIXME
-        /*
-        if (clockLayout.getScaleY() == .1f) {
-            clockLayout.animate()
-                    .x(settings.getXPositionClock(orientation))
-                    .y(settings.getYPositionClock(orientation))
-                    .setDuration(1)
-                    .start();
-        } else {
-        }
-         */
+        setClockPosition(config);
     }
 
     private void setColor() {
@@ -954,8 +948,10 @@ public class NightDreamUI {
             }
 
             if (settings.background_zoomin) {
-                Animation animZoomIn = AnimationUtils.loadAnimation(mContext.getApplicationContext(),
-                        R.anim.zoom_in);
+                Animation animZoomIn = AnimationUtils.loadAnimation(
+                        mContext.getApplicationContext(),
+                        R.anim.zoom_in
+                );
                 animZoomIn.setDuration(50000 * settings.backgroundImageDuration);
                 animationSet.addAnimation(animZoomIn);
             }
@@ -1226,13 +1222,10 @@ public class NightDreamUI {
     }
 
     public void setClockPosition(final Configuration config) {
-        Point p  = settings.getClockPosition(config.orientation);
+        Point p = settings.getClockPosition(config.orientation);
         if (p != null) {
-            Log.w(TAG, "POS: pos");
-            Log.w(TAG, "POS: " + config.orientation + " " + p.x + ":" + p.y);
             setClockPosition(p.x, p.y);
         } else {
-            Log.w(TAG, "POS: center");
             centerClockLayout();
         }
     }
@@ -1263,8 +1256,6 @@ public class NightDreamUI {
             }
             clockLayout.setX(x);
             clockLayout.setY(y);
-
-            //clockLayout.animate().x(x).y(y).setDuration(0).start();
         }
     }
 
