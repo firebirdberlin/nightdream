@@ -308,6 +308,15 @@ public class CustomAnalogClockPreferencesLayout extends LinearLayout {
             }
         });
 
+        Switch showSecondHand = child.findViewById(R.id.switch_show_second_hand);
+        showSecondHand.setChecked(config.showSecondHand);
+        showSecondHand.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                config.showSecondHand = checked;
+                configHasChanged(config);
+            }
+        });
     }
 
     private void setupLayoutForTicks(View child, final AnalogClockConfig config) {

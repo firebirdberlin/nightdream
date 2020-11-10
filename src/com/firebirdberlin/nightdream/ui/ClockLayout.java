@@ -527,8 +527,9 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    private void setupLayoutAnalog(int parentWidth, int parentHeight, Configuration config,
-                                   boolean displayInWidget) {
+    private void setupLayoutAnalog(
+            int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
+    ) {
         final float minFontSize = 8.f; // in sp
         final float maxFontSize = 18.f; // in sp
         int widgetSize;
@@ -568,16 +569,16 @@ public class ClockLayout extends LinearLayout {
     ) {
         switch (layoutId) {
             case LAYOUT_ID_ANALOG:
-                analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC);
+                analog_clock.setStyle(AnalogClockConfig.Style.MINIMALISTIC, !displayInWidget);
                 break;
             case LAYOUT_ID_ANALOG2:
-                analog_clock.setStyle(AnalogClockConfig.Style.SIMPLE);
+                analog_clock.setStyle(AnalogClockConfig.Style.SIMPLE, !displayInWidget);
                 break;
             case LAYOUT_ID_ANALOG3:
-                analog_clock.setStyle(AnalogClockConfig.Style.ARC);
+                analog_clock.setStyle(AnalogClockConfig.Style.ARC, !displayInWidget);
                 break;
             case LAYOUT_ID_ANALOG4:
-                analog_clock.setStyle(AnalogClockConfig.Style.DEFAULT);
+                analog_clock.setStyle(AnalogClockConfig.Style.DEFAULT, !displayInWidget);
                 break;
         }
         final float minFontSize = (displayInWidget) ? 6f : 10f; // in sp
