@@ -182,7 +182,7 @@ public class NightDreamUI {
             Configuration config = getConfiguration();
             clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
             //clockLayout.update(settings.weatherEntry);
-            setClockPosition();
+            setClockPosition(config);
             float s = getScaleFactor(config);
             clockLayout.setScaleFactor(s, true);
             Utility.turnScreenOn(mContext);
@@ -573,11 +573,6 @@ public class NightDreamUI {
 
         settings.reload();
 
-        int orientation = getConfiguration().orientation;
-        if (settings.getXPositionClock(orientation) < 0 && settings.getYPositionClock(orientation) < 0) {
-            centerClockLayout();
-        }
-
         vibrantColor = 0;
         vibrantColorDark = 0;
         this.locked = settings.isUIlocked;
@@ -672,18 +667,20 @@ public class NightDreamUI {
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
-        clockLayout.update(settings.weatherEntry);
 
+        setClockPosition(config);
+        clockLayout.update(settings.weatherEntry);
+        // FIXME
+        /*
         if (clockLayout.getScaleY() == .1f) {
             clockLayout.animate()
-                    .x(settings.getXPositionClock(getConfiguration().orientation))
-                    .y(settings.getYPositionClock(getConfiguration().orientation))
+                    .x(settings.getXPositionClock(orientation))
+                    .y(settings.getYPositionClock(orientation))
                     .setDuration(1)
                     .start();
         } else {
-            clockLayout.setX(settings.getXPositionClock(getConfiguration().orientation));
-            clockLayout.setY(settings.getYPositionClock(getConfiguration().orientation));
         }
+         */
     }
 
     private void setColor() {
@@ -1204,14 +1201,10 @@ public class NightDreamUI {
 
         Runnable fixConfig = new Runnable() {
             public void run() {
-                int orientation = getConfiguration().orientation;
-                if (settings.getXPositionClock(orientation) < 0 && settings.getYPositionClock(orientation) < 0) {
-                    centerClockLayout();
-                }
                 float s = getScaleFactor(newConfig);
                 clockLayout.setScaleFactor(s);
                 Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
-                setClockPosition();
+                setClockPosition(newConfig);
 
                 handler.postDelayed(moveAround, 60000);
                 handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
@@ -1232,6 +1225,49 @@ public class NightDreamUI {
         }
     }
 
+    public void setClockPosition(final Configuration config) {
+        Point p  = settings.getClockPosition(config.orientation);
+        if (p != null) {
+            Log.w(TAG, "POS: pos");
+            Log.w(TAG, "POS: " + config.orientation + " " + p.x + ":" + p.y);
+            setClockPosition(p.x, p.y);
+        } else {
+            Log.w(TAG, "POS: center");
+            centerClockLayout();
+        }
+    }
+
+    public void setClockPosition(float x, float y) {
+        if (clockLayout.getWidth() > 0 && clockLayout.getHeight() > 0) {
+
+            float scaled_width = clockLayout.getScaledWidth();
+            float scaled_height = clockLayout.getScaledHeight();
+
+            float rxpos = clockLayoutContainer.getWidth() - scaled_width;
+            float rypos = clockLayoutContainer.getHeight() - scaled_height;
+
+            if (x + (clockLayout.getWidth() - scaled_width) / 2 > rxpos) {
+                x = rxpos - ((clockLayout.getWidth() - scaled_width) / 2);
+            }
+
+            if (y + (clockLayout.getHeight() - scaled_height) / 2 > rypos) {
+                y = rypos - ((clockLayout.getHeight() - scaled_height) / 2);
+            }
+
+            if (x + (clockLayout.getWidth() - scaled_width) / 2 < 0) {
+                x = -((clockLayout.getWidth() - scaled_width) / 2);
+            }
+
+            if (y + (clockLayout.getHeight() - scaled_height) / 2 < 0) {
+                y = -((clockLayout.getHeight() - scaled_height) / 2);
+            }
+            clockLayout.setX(x);
+            clockLayout.setY(y);
+
+            //clockLayout.animate().x(x).y(y).setDuration(0).start();
+        }
+    }
+
     private void centerClockLayout() {
         clockLayout.setTranslationX(0);
         clockLayout.setTranslationY(0);
@@ -1242,23 +1278,22 @@ public class NightDreamUI {
         if (settings.screenProtection != Settings.ScreenProtectionModes.MOVE) {
             return;
         }
-        Random random = new Random();
         int w = clockLayoutContainer.getWidth();
         int h = clockLayoutContainer.getHeight();
-        Log.i(TAG, w + "x" + h);
+
+        float scaledWidth = clockLayout.getScaledWidth();
+        float scaledHeight = clockLayout.getScaledHeight();
+
+        float rxpos = w - scaledWidth;
+        float rypos = h - scaledHeight;
+
         // determine a random position
-        int scaled_width = Math.abs((int) (clockLayout.getWidth() * clockLayout.getScaleX()));
-        int scaled_height = Math.abs((int) (clockLayout.getHeight() * clockLayout.getScaleY()));
-        Log.i(TAG, scaled_width + "x" + scaled_height);
-        int rxpos = w - scaled_width;
-        int rypos = h - scaled_height;
+        Random random = new Random();
+        int i1 = (rxpos > 0) ? random.nextInt((int) rxpos) : 0;
+        int i2 = (rypos > 0) ? random.nextInt((int) rypos) : 0;
 
-        int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
-        int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
-
-        i1 -= (clockLayout.getWidth() - scaled_width) / 2;
-        i2 -= (clockLayout.getHeight() - scaled_height) / 2;
-        Log.i(TAG, i1 + "x" + i2);
+        i1 -= (clockLayout.getWidth() - scaledWidth) / 2;
+        i2 -= (clockLayout.getHeight() - scaledHeight) / 2;
         clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
     }
 
@@ -1682,39 +1717,6 @@ public class NightDreamUI {
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
-    public void setClockPosition() {
-        Configuration config = getConfiguration();
-        setClockPosition(settings.getXPositionClock(config.orientation), settings.getYPositionClock(config.orientation));
-    }
-
-    public void setClockPosition(float x, float y) {
-        if (clockLayout.getWidth() > 0 && clockLayout.getHeight() > 0) {
-
-            float scaled_width = clockLayout.getScaledWidth();
-            float scaled_height = clockLayout.getScaledHeight();
-
-            float rxpos = clockLayoutContainer.getWidth() - scaled_width;
-            float rypos = clockLayoutContainer.getHeight() - scaled_height;
-
-            if (x + (clockLayout.getWidth() - scaled_width) / 2 > rxpos) {
-                x = rxpos - ((clockLayout.getWidth() - scaled_width) / 2);
-            }
-
-            if (y + (clockLayout.getHeight() - scaled_height) / 2 > rypos) {
-                y = rypos - ((clockLayout.getHeight() - scaled_height) / 2);
-            }
-
-            if (x + (clockLayout.getWidth() - scaled_width) / 2 < 0) {
-                x = -((clockLayout.getWidth() - scaled_width) / 2);
-            }
-
-            if (y + (clockLayout.getHeight() - scaled_height) / 2 < 0) {
-                y = -((clockLayout.getHeight() - scaled_height) / 2);
-            }
-
-            clockLayout.animate().x(x).y(y).setDuration(0).start();
-        }
-    }
 
     private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
 
