@@ -98,7 +98,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <FrameLayout
+            <com.firebirdberlin.nightdream.ui.ClockLayoutContainer
                 android:id="@+id/clockLayoutContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -113,9 +113,9 @@
                     android:layout_gravity="center"
                     android:background="#44000000"
                     android:orientation="vertical"
-                    android:translationX="0sp"
-                    android:translationY="0sp" />
-            </FrameLayout>
+                    android:translationX="0dp"
+                    android:translationY="0dp" />
+            </com.firebirdberlin.nightdream.ui.ClockLayoutContainer>
 
             <include layout="@layout/side_panel" />
         </FrameLayout>

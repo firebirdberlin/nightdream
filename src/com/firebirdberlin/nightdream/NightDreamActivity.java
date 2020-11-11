@@ -57,6 +57,7 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
+import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
@@ -92,9 +93,9 @@ public class NightDreamActivity extends BillingHelperActivity
     private ImageView radioIcon;
     private ImageView torchIcon;
     private BottomPanelLayout bottomPanelLayout;
-    private FrameLayout clockLayoutContainer;
+    private ClockLayoutContainer clockLayoutContainer;
     private boolean screenWasOn = false;
-    private Context context = null;
+    private static Context context = null;
     private float last_ambient = 4.0f;
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
@@ -109,7 +110,7 @@ public class NightDreamActivity extends BillingHelperActivity
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
-            if (!mySettings.speakTime) {
+            if (nightDreamUI.isLocked() || !mySettings.speakTime) {
                 return;
             }
 
