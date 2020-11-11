@@ -282,8 +282,8 @@ public class mNotificationListener extends NotificationListenerService {
                 String postTime = dateFormat.format(sbn.getPostTime());
                 i.putExtra("postTimestamp", postTime);
 
-                if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getString("android.title") != null) {
-                    i.putExtra("title", extras.getString("android.title"));
+                if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getCharSequence("android.title") != null) {
+                    i.putExtra("title", extras.getCharSequence("android.title").toString());
                 }
 
                 if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
