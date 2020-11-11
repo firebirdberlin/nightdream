@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -61,7 +62,6 @@ public class ClockLayout extends LinearLayout {
     private boolean mirrorText = false;
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
-
 
     public ClockLayout(Context context) {
         super(context);
@@ -256,19 +256,23 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void toggleDivider() {
-        if (divider == null) return;
+        setupBackground(null);
+    }
 
-        if (!showDivider) {
-            divider.setVisibility(GONE);
-        }
-
+    public void setupBackground(Drawable backgroundDrawable) {
         boolean shallHide = (
                 date != null && date.getVisibility() != VISIBLE
                         && weatherLayout.getVisibility() != VISIBLE
         );
-        if (showDivider) {
-            divider.setVisibility(shallHide ? INVISIBLE : VISIBLE);
+        if (divider != null) {
+            divider.setVisibility(!showDivider || shallHide ? INVISIBLE : VISIBLE);
         }
+
+        if (backgroundDrawable != null) {
+            setBackground(backgroundDrawable);
+            return;
+        }
+
         if (shallHide) {
             setBackgroundColor(Color.parseColor("#00000000"));
         } else {
@@ -519,7 +523,6 @@ public class ClockLayout extends LinearLayout {
         final float sign = mirrorText ? -1.f : 1.f;
         if (animated) {
             animate().setDuration(1000).scaleX(sign * factor).scaleY(factor);
-
         } else {
             setScaleX(sign * factor);
             setScaleY(factor);
@@ -676,6 +679,16 @@ public class ClockLayout extends LinearLayout {
         if (weatherLayout2 != null) {
             weatherLayout2.update(entry);
         }
+    }
+    public void getScaledSize(int[] size) {
+        size[0] = Math.abs((int) (getWidth() * getScaleX()));
+        size[1] = Math.abs((int) (getHeight() * getScaleY()));
+    }
 
+    public float getScaledWidth() {
+        return getWidth() * getScaleX();
+    }
+    public float getScaledHeight() {
+        return getHeight() * getScaleY();
     }
 }

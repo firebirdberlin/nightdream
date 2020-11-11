@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
@@ -106,6 +107,7 @@ public class Settings {
     public float scaleClock = 1.f;
     public float scaleClockPortrait = -1.f;
     public float scaleClockLandscape = -1.f;
+
     public int alarmVolume = 3;
     public int alarmVolumeReductionPercent = 0;
     public int alarmFadeInDurationSeconds = 10;
@@ -433,6 +435,7 @@ public class Settings {
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", -1.f);
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", -1.f);
         sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
+
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
@@ -999,6 +1002,55 @@ public class Settings {
         return isAllowed;
     }
 
+    public void setPositionClock(float x, float y, int orientation) {
+
+        SharedPreferences.Editor editor = settings.edit();
+        switch(orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+                editor.putInt("xPositionLandscape", (int) x);
+                editor.putInt("yPositionLandscape", (int) y);
+                break;
+            case Configuration.ORIENTATION_PORTRAIT:
+                editor.putInt("xPositionPortrait", (int) x);
+                editor.putInt("yPositionPortrait", (int) y);
+                break;
+            default:
+                editor.putInt("xPosition", (int) x);
+                editor.putInt("yPosition", (int) y);
+                break;
+        }
+        editor.apply();
+    }
+
+    public Point getClockPosition(int orientation) {
+        switch(orientation){
+            case Configuration.ORIENTATION_LANDSCAPE:
+                if (settings.contains("xPositionLandscape")) {
+                    int x = settings.getInt("xPositionLandscape", 0);
+                    int y = settings.getInt("yPositionLandscape", 0);
+                    return new Point(x, y);
+                } else {
+                    return null;
+                }
+            case Configuration.ORIENTATION_PORTRAIT:
+                if (settings.contains("xPositionPortrait")) {
+                    int x = settings.getInt("xPositionPortrait", 0);
+                    int y = settings.getInt("yPositionPortrait", 0);
+                    return new Point(x, y);
+                } else {
+                    return null;
+                }
+            default:
+                if (settings.contains("xPosition")) {
+                    int x = settings.getInt("xPosition", 0);
+                    int y = settings.getInt("yPosition", 0);
+                    return new Point(x, y);
+                } else {
+                    return null;
+                }
+        }
+    }
+
     public void setScaleClock(float factor, int orientation) {
         SharedPreferences.Editor prefEditor = settings.edit();
         switch (orientation) {
@@ -1015,7 +1067,7 @@ public class Settings {
                 prefEditor.putFloat("scaleClock", factor);
                 break;
         }
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public float getScaleClock(int orientation) {

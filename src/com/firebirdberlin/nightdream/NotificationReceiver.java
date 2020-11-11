@@ -163,10 +163,14 @@ public class NotificationReceiver extends BroadcastReceiver {
         int iconId = intent.getIntExtra("iconId", -1);
         String packageName = intent.getStringExtra("packageName");
         Drawable notificationMessageSmallIcon = getNotificationIcon(context, packageName, iconId);
-
+        View clockLayout = contentView.findViewById(R.id.clockLayout);
         MediaControlLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
         mediaStyleContainer.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
-
-        activity.onConfigurationChanged(activity.getResources().getConfiguration());
+        clockLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                activity.onConfigurationChanged(activity.getResources().getConfiguration());
+            }
+        }, 500);
     }
 }
