@@ -107,4 +107,7 @@ android {
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
         targetSdkVersion 29
     }
+    buildFeatures {
+        dataBinding true
+    }
 }

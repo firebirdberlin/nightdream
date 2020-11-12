@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="exifDate"
+            type="String"/>
+        <variable
+            name="exifTime"
+            type="String"/>
+        <variable
+            name="exifCity"
+            type="String"/>
+        <variable
+            name="exifCountry"
+            type="String"/>
+        <variable
+            name="exifTextColor"
+            type="Integer"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewExifDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{exifDate}"
+            android:textColor="@{exifTextColor}"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{exifDate.isEmpty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewExifTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{exifTime}"
+            android:textColor="@{exifTextColor}"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{exifTime.isEmpty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewExifDate" />
+
+        <TextView
+            android:id="@+id/textViewExifCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{exifCity}"
+            android:textColor="@{exifTextColor}"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{exifCity == null | exifCity.isEmpty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewExifTime" />
+
+        <TextView
+            android:id="@+id/textViewExifCountry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{exifCountry}"
+            android:textColor="@{exifTextColor}"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="@{exifCountry == null | exifCountry.isEmpty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewExifCity" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
