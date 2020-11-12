@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -21,12 +20,17 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.R;
 
 public class MediaControlLayout extends LinearLayout {
     private static String TAG = "MediaControlLayout";
+
+    private int color = 0;
+    private View mediaStyleControl;
+    private Drawable smallAppIcon;
 
     public MediaControlLayout(Context context) {
         super(context);
@@ -36,6 +40,36 @@ public class MediaControlLayout extends LinearLayout {
         super(context, attrs);
     }
 
+    public void setColor(int color) {
+        this.color = color;
+        setColor();
+    }
+
+    private void setColor() {
+        if (mediaStyleControl == null) return;
+        //set all TextView colors
+        ConstraintLayout mediaControl = mediaStyleControl.findViewById(R.id.notify);
+        if (mediaControl != null) {
+            for (int x = 0; x < mediaControl.getChildCount(); x++) {
+                if (mediaControl.getChildAt(x) instanceof TextView) {
+                    ((TextView) mediaControl.getChildAt(x)).setTextColor(color);
+                }
+            }
+        }
+        if (smallAppIcon != null) {
+            smallAppIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
+        ConstraintLayout actionImages = mediaStyleControl.findViewById(R.id.notify_action_images);
+        if (actionImages != null) {
+            for (int x = 0; x < actionImages.getChildCount(); x++) {
+                if (actionImages.getChildAt(x) instanceof ImageView) {
+                    ImageView v = (ImageView) actionImages.getChildAt(x);
+                    v.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, Intent intent, Drawable smallIcon) {
         String template = intent.getStringExtra("template");
@@ -43,12 +77,12 @@ public class MediaControlLayout extends LinearLayout {
             return;
         }
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View mediaStyleControl = inflater.inflate(R.layout.notification_mediacontrol, null);
+        mediaStyleControl = inflater.inflate(R.layout.notification_mediacontrol, null);
         ImageView largeIconImageView = mediaStyleControl.findViewById(R.id.notify_largeicon);
 
         ImageView notificationMessageBitmap = mediaStyleControl.findViewById(R.id.notify_smallicon);
         assert smallIcon != null;
-        smallIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        smallAppIcon = smallIcon;
         notificationMessageBitmap.setImageDrawable(smallIcon);
 
         TextView appName = mediaStyleControl.findViewById(R.id.notify_appname);
@@ -117,8 +151,10 @@ public class MediaControlLayout extends LinearLayout {
                 positionAction++;
             }
         }
+
         removeAllViews();
         addView(mediaStyleControl);
         setVisibility(View.VISIBLE);
+        setColor();
     }
 }
