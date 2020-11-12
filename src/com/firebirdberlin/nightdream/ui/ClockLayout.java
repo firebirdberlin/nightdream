@@ -56,7 +56,7 @@ public class ClockLayout extends LinearLayout {
     private WeatherLayout weatherLayout = null;
     private WeatherLayout weatherLayout2 = null;
     private FlexboxLayout notificationLayout = null;
-    private LinearLayout mediaStyleLayout = null;
+    private MediaControlLayout mediaStyleLayout = null;
     private View divider = null;
     private boolean showDivider = true;
     private boolean mirrorText = false;
@@ -211,6 +211,12 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setSecondaryColor(color);
         }
+
+        if (mediaStyleLayout != null) {
+            mediaStyleLayout.setColor(color);
+            mediaStyleLayout.invalidate();
+        }
+
         Utility.colorizeView(calendarView, color, PorterDuff.Mode.MULTIPLY);
         Utility.colorizeView(notificationLayout, color);
     }
