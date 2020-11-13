@@ -27,9 +27,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Opprett egendefinert skrift</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Øk lydnivå</string>
-    <string name="alarmUpcoming">Neste alarm</string>
     <string name="alarmStartDate">Dato</string>
     <string name="alarmStartsFrom">Fra</string>
+    <string name="alarmUpcoming">Neste alarm</string>
     <string name="alarmVolume">Lydnivå</string>
     <string name="allow_screen_off_summary">Skru av skjermen om natten</string>
     <string name="allow_screen_off">Skru av skjermen</string>
@@ -292,11 +292,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Denne skjermlåsegenskapen trenger administrasjonssprivilegier. Skru av privilegiet for å kunne avinnstallere appen.</string>
     <string name="useDeviceLockExplanation">Enheten låses mens appen kjører. For å avinnstallere den, må denne egenskapen skrus av.</string>
     <string name="useDeviceLock">Bruk enhetenslås</string>
+    <string name="weather">Vær</string>
+    <string name="weatherProvider">Værapplikasjon</string>
     <string name="weather_calculation_time">vær kalkulering tid</string>
     <string name="weather_city_id_title">Søkemotor</string>
     <string name="weather_info_title">Informasjon</string>
-    <string name="weather">Vær</string>
-    <string name="weatherProvider">Værapplikasjon</string>
     <string name="weekdays">Ukedager</string>
     <string name="width">Bredde</string>
 </resources>

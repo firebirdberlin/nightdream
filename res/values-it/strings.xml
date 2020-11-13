@@ -27,9 +27,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Aggiungi un tipo di carattere personalizzato</string>
     <string name="alarm">Sveglia</string>
     <string name="alarmFadeIn">Volume incrementale</string>
-    <string name="alarmUpcoming">Sveglia imminente</string>
     <string name="alarmStartDate">Prossimo allarme attivo</string>
     <string name="alarmStartsFrom">A da partire</string>
+    <string name="alarmUpcoming">Sveglia imminente</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off_summary">Spegni lo schermo durante la notte</string>
     <string name="allow_screen_off">Spegni lo schermo</string>

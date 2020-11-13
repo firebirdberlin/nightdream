@@ -209,10 +209,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferencje</string>
     <string name="prev">Poprzedni</string>
     <string name="preview">Podgląd</string>
-<string name="product_description_weather">Upgrade zawiera
-\n- linia statusu pogody poniżej zegara
-\n- 5-dniowa prognoza pogody
-\n- więcej skór zegara</string>
+<string name="product_description_weather">Upgrade zawiera\n- linia statusu pogody poniżej zegara\n- 5-dniowa prognoza pogody\n- więcej skór zegara</string>
     <string name="product_name_actions">Zawsze na opakowaniu</string>
     <string name="product_name_donation">Dotacja</string>
     <string name="product_name_pro">Pełna wersja</string>
