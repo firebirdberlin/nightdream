@@ -30,7 +30,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -89,13 +88,13 @@ public class NightDreamActivity extends BillingHelperActivity
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
+    private Context context = null;
     private ImageView alarmClockIcon;
     private ImageView radioIcon;
     private ImageView torchIcon;
     private BottomPanelLayout bottomPanelLayout;
     private ClockLayoutContainer clockLayoutContainer;
     private boolean screenWasOn = false;
-    private static Context context = null;
     private float last_ambient = 4.0f;
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
