@@ -22,6 +22,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.R;
@@ -56,7 +58,7 @@ public class ClockLayout extends LinearLayout {
     private WeatherLayout weatherLayout = null;
     private WeatherLayout weatherLayout2 = null;
     private FlexboxLayout notificationLayout = null;
-    private MediaControlLayout mediaStyleLayout = null;
+    private ConstraintLayout mediaStyleLayout = null;
     private View divider = null;
     private boolean showDivider = true;
     private boolean mirrorText = false;
@@ -210,11 +212,6 @@ public class ClockLayout extends LinearLayout {
         if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setSecondaryColor(color);
-        }
-
-        if (mediaStyleLayout != null) {
-            mediaStyleLayout.setColor(color);
-            mediaStyleLayout.invalidate();
         }
 
         Utility.colorizeView(calendarView, color, PorterDuff.Mode.MULTIPLY);
