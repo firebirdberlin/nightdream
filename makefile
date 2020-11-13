@@ -23,8 +23,9 @@ uninstall:
 	adb $(OPT) uninstall com.firebirdberlin.nightdream
 
 clean:
-	ant -f Pro_build.xml clean
 	find . -name "*.sw*" -exec rm {} \;
+	rm -rf build/*
+
 
 gitclean:
 	git branch -a --merged remotes/origin/master | grep -v master | grep "remotes/origin/" | cut -d "/" -f 3 | xargs -n 1 git push --delete origin
