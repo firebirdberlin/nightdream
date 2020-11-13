@@ -47,10 +47,18 @@
         android:visibility="gone"
         android:translationY="0px" />
 
-    <include
-        layout="@layout/notification_mediacontrol_bar"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notification_mediacontrol_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp" />
-    <include layout="@layout/notification_bar"/>
+        android:layout_weight="19">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_weight="1"
+        layout="@layout/notification_bar" />
+
 </LinearLayout>
