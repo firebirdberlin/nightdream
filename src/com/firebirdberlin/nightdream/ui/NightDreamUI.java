@@ -617,6 +617,10 @@ public class NightDreamUI {
                     runningTask.execute(preloadBackgroundImageFile);
                     parentLayout.postDelayed(initSlideshowBackground, 500);
                     handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
+                } else {
+                    preloadBackgroundImage = null;
+                    preloadBackgroundImageFile = null;
+                    setupBackgroundImage();
                 }
                 break;
             default:

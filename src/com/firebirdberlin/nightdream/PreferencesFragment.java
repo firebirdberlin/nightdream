@@ -825,6 +825,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("backgroundEXIF", on);
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             showPreference("chooseDirectoryBackgroundImage", on);
+            Preference preference = findPreference("chooseDirectoryBackgroundImage");
+            preference.setSummary(settings.getdirectoryBackgroundImageURI().toString());
         }
 
         on = selection.equals("3") || selection.equals(("4"));
