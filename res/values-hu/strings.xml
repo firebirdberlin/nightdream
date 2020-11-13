@@ -166,8 +166,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">A képernyőzár funkciónak szüksége van az eszköz rendszergazdájának engedélyére. Az alkalmazás eltávolításához kérjük, kapcsolja ki ezt a funkciót.</string>
     <string name="useDeviceLockExplanation">Zárja le az eszközt, amíg az alkalmazás aktív. Az alkalmazás eltávolításához kérjük, vonja vissza ezt az engedélyt.</string>
     <string name="useDeviceLock">Lezárja a készüléket</string>
+    <string name="weather">Időjárás</string>
     <string name="weather_calculation_time">Időjárás számítási idő</string>
     <string name="weather_city_id_title">Város azonosítója</string>
     <string name="weather_info_title">Információ</string>
-    <string name="weather">Időjárás</string>
 </resources>
