@@ -936,7 +936,8 @@ public class NightDreamUI {
         }
         Log.d(TAG, "loadBackgroundImageFiles()");
         File path = settings.getBackgroundImageDir();
-        files = Utility.listFiles(path, ".jpg");
+        files = Utility.listFiles(path, ".png");
+        files.addAll(Utility.listFiles(path, ".jpg"));
     }
 
     private Drawable loadBackgroundImage() {
@@ -1672,6 +1673,111 @@ public class NightDreamUI {
                 exifLayoutContainer.setVisibility(View.GONE);
             }
         }
+    }
+
+    private Bitmap imageFilter(Bitmap oldBackgroundBitmap ){
+        if ( (settings.background_filter == 1) || (settings.getBackgroundMode() != Settings.BACKGROUND_SLIDESHOW) ) {
+            return oldBackgroundBitmap;
+        }
+
+        Bitmap newBackgroundBitmap = oldBackgroundBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        int imageHeight = newBackgroundBitmap.getHeight();
+        int imageWidth = newBackgroundBitmap.getWidth();
+
+        Canvas canvas = new Canvas(newBackgroundBitmap);
+
+        Paint paint = new Paint();
+
+        switch (settings.background_filter) {
+            case 2:
+                //filter: grey
+                paint.setColorFilter(new ColorMatrixColorFilter(
+                        new ColorMatrix(new float[]
+                                {
+                                        0.5f, 0.5f, 0.5f, 0f, 0f,
+                                        0.5f, 0.5f, 0.5f, 0f, 0f,
+                                        0.5f, 0.5f, 0.5f, 0f, 0f,
+                                        0f, 0f, 0f, 1f, 0f
+                                })
+                ));
+                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                break;
+
+            case 3:
+                //filter: sepia
+                paint.setColorFilter(new ColorMatrixColorFilter(
+                        new ColorMatrix(new float[]
+                                {
+                                        0.5f, 0.5f, 0.5f, 0f, 40f,
+                                        0.5f, 0.5f, 0.5f, 0f, 0f,
+                                        0.5f, 0.5f, 0.5f, 0f, 20f,
+                                        0f, 0f, 0f, 1f, 0f
+                                })
+                ));
+
+                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                break;
+
+            case 4:
+                //filter: invert
+                paint.setColorFilter(new ColorMatrixColorFilter(
+                        new ColorMatrix(new float[]
+                                {
+                                        -1f,  0f,  0f,  0f, 255f,
+                                        0f, -1f,  0f,  0f, 255f,
+                                        0f,  0f, -1f,  0f, 255f,
+                                        0f,  0f,  0f,  1f,   0f
+                                })
+                ));
+
+                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                break;
+
+            case 5:
+                //filter: contrast
+                paint.setColorFilter(new ColorMatrixColorFilter(
+                        new ColorMatrix(new float[]
+                                {
+                                        3f, 0f, 0f, 0f, -255f,
+                                        0f, 3f, 0f, 0f, -255f,
+                                        0f, 0f, 3f, 0f, -255f,
+                                        0f, 0f, 0f, 1f, 0f
+                                })
+                ));
+
+                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                break;
+
+            case 6:
+                //filter: sketch
+                for (int i = 0; i < imageWidth; i++) {
+
+                    for (int j = 0; j < imageHeight; j++) {
+                        int oldPixel = oldBackgroundBitmap.getPixel(i, j);
+
+                        int oldRed = Color.red(oldPixel);
+                        int oldBlue = Color.blue(oldPixel);
+                        int oldGreen = Color.green(oldPixel);
+                        int oldAlpha = Color.alpha(oldPixel);
+
+                        int newRed = 0;
+                        int newBlue = 0;
+                        int newGreen = 0;
+
+                        if (((oldRed + oldBlue + oldGreen) / 3) > 150) {
+                            newRed = newBlue = newGreen = 255;
+                        } else if (((oldRed + oldBlue + oldGreen) / 3) > 100) {
+                            newRed = newBlue = newGreen = 150;
+                        }
+
+                        int newPixel = Color.argb(oldAlpha, newRed, newGreen, newBlue);
+                        newBackgroundBitmap.setPixel(i, j, newPixel);
+                    }
+                }
+                break;
+        }
+
+        return newBackgroundBitmap;
     }
 
     private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
