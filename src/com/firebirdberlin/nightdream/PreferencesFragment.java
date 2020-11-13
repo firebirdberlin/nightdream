@@ -48,7 +48,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String PREFS_KEY = "NightDream preferences";
     private static int RESULT_LOAD_IMAGE = 1;
     private static int RESULT_LOAD_IMAGE_KITKAT = 4;
-    private static int RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP = 4;
+    private static int RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP = 5;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
     Snackbar snackbar;
