@@ -22,7 +22,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -611,7 +610,7 @@ public class NightDreamUI {
         switch (settings.getBackgroundMode()) {
             case Settings.BACKGROUND_SLIDESHOW:
                 loadBackgroundImageFiles();
-                if (files.size() > 0) {
+                if (files != null && files.size() > 0) {
                     preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
                     AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
                     runningTask.execute(preloadBackgroundImageFile);
@@ -932,7 +931,7 @@ public class NightDreamUI {
             return;
         }
         Log.d(TAG, "loadBackgroundImageFiles()");
-        File path = settings.getdirectoryBackgroundImageURI();
+        File path = settings.getBackgroundImageDir();
         files = Utility.listFiles(path, ".jpg");
     }
 
