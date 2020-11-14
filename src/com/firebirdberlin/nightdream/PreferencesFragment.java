@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,8 @@ import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.CityIDPreference;
 import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
@@ -601,7 +604,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         if (requestCode == RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP && resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
-            settings.setDirectoryBackgroundImageURI(uri.getPath());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getContext().getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                settings.setBackgroundImageDir(uri.getPath());
+            }
         }
 
     }
@@ -645,11 +651,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void selectDirectoryBackgroundImage() {
-        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                File dir = settings.getBackgroundImageDir();
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(dir).toString());
+            }
+
             startActivityForResult(Intent.createChooser(intent, "Choose directory"), RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP);
-         }
+        }
     }
 
 
@@ -826,7 +839,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             showPreference("chooseDirectoryBackgroundImage", on);
             Preference preference = findPreference("chooseDirectoryBackgroundImage");
-            preference.setSummary(settings.getdirectoryBackgroundImageURI().toString());
+            if (preference != null) {
+                preference.setSummary(settings.getBackgroundImageDir().toString());
+            }
         }
 
         on = selection.equals("3") || selection.equals(("4"));

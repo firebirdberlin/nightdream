@@ -149,7 +149,6 @@ public class Settings {
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
     public String backgroundImageURI = "";
-    private String directoryBackgroundImageURI = "";
     public Typeface typeface;
     public String dateFormat;
     public String timeFormat;
@@ -337,7 +336,6 @@ public class Settings {
         editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
         editor.putBoolean("purchasedDonation", donationIsPurchased);
         editor.apply();
-        Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
     }
 
     public String getWeatherProviderString() {
@@ -404,7 +402,6 @@ public class Settings {
         scheduledAutoStartChargerRequired = settings.getBoolean("scheduledAutoStartChargerRequired", true);
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
-        directoryBackgroundImageURI = settings.getString("directoryBackgroundImageURI", "");
         final String defaultColorString = "#33B5E5";
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
@@ -937,19 +934,24 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public void setDirectoryBackgroundImageURI(String uri) {
+    public void setBackgroundImageDir(String uri) {
         clearBackgroundImageCache();
-        String[] path = uri.split(":");
-        directoryBackgroundImageURI = path[1];
-        settings.edit().putString("directoryBackgroundImageURI", path[1]).apply();
+        String dir = "";
+        try {
+            String[] path = uri.split(":");
+            dir = path[1];
+        } catch (IndexOutOfBoundsException ignore) {
+        }
+        settings.edit().putString("backgroundImageDir", dir).apply();
     }
 
 
-    public File getdirectoryBackgroundImageURI() {
-        if (directoryBackgroundImageURI.equals("")) {
-            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //+ "/Camera");
+    public File getBackgroundImageDir() {
+        String dir = settings.getString("backgroundImageDir", "");
+        if (dir.equals("")) {
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         } else {
-            return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + directoryBackgroundImageURI);
+            return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dir);
         }
     }
 
@@ -1013,7 +1015,6 @@ public class Settings {
     public boolean isAlwaysOnAllowed() {
         Calendar now = Calendar.getInstance();
         boolean isAllowed = true;
-        Log.d(TAG, String.format("batteryTimeout : %d", batteryTimeout));
         if (batteryTimeout > 0 && nextAlwaysOnTime > 0L) {
             Calendar alwaysOnTime = Calendar.getInstance();
             alwaysOnTime.setTimeInMillis(nextAlwaysOnTime);
@@ -1267,7 +1268,6 @@ public class Settings {
     private void setFavoriteRadioStations(FavoriteRadioStations stations) {
         try {
             String json = stations.toJson();
-            Log.i(TAG, json);
             SharedPreferences.Editor prefEditor = settings.edit();
             prefEditor.putString(FAVORITE_RADIO_STATIONS_KEY, json);
             prefEditor.commit();
@@ -1277,7 +1277,6 @@ public class Settings {
     }
 
     public void persistFavoriteRadioStation(RadioStation station, int stationIndex) {
-        Log.i(TAG, "setPersistentFavoriteRadioStation index=" + stationIndex);
         FavoriteRadioStations stations = getFavoriteRadioStations(settings);
         stations.set(stationIndex, station);
         setFavoriteRadioStations(stations);
