@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -335,7 +336,6 @@ public class Settings {
         editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
         editor.putBoolean("purchasedDonation", donationIsPurchased);
         editor.apply();
-        Log.i(TAG, String.format("purchasedWeatherData = %b", weatherIsPurchased));
     }
 
     public String getWeatherProviderString() {
@@ -934,6 +934,28 @@ public class Settings {
         prefEditor.apply();
     }
 
+    public void setBackgroundImageDir(String uri) {
+        clearBackgroundImageCache();
+        String dir = "";
+        try {
+            String[] path = uri.split(":");
+            dir = path[1];
+        } catch (IndexOutOfBoundsException ignore) {
+        }
+        settings.edit().putString("backgroundImageDir", dir).apply();
+    }
+
+
+    public File getBackgroundImageDir() {
+        String dir = settings.getString("backgroundImageDir", "");
+        if (dir.equals("")) {
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        } else {
+            return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dir);
+        }
+    }
+
+
     public void setBackgroundImageURI(String uri) {
         clearBackgroundImageCache();
         backgroundImageURI = uri;
@@ -993,7 +1015,6 @@ public class Settings {
     public boolean isAlwaysOnAllowed() {
         Calendar now = Calendar.getInstance();
         boolean isAllowed = true;
-        Log.d(TAG, String.format("batteryTimeout : %d", batteryTimeout));
         if (batteryTimeout > 0 && nextAlwaysOnTime > 0L) {
             Calendar alwaysOnTime = Calendar.getInstance();
             alwaysOnTime.setTimeInMillis(nextAlwaysOnTime);
@@ -1247,7 +1268,6 @@ public class Settings {
     private void setFavoriteRadioStations(FavoriteRadioStations stations) {
         try {
             String json = stations.toJson();
-            Log.i(TAG, json);
             SharedPreferences.Editor prefEditor = settings.edit();
             prefEditor.putString(FAVORITE_RADIO_STATIONS_KEY, json);
             prefEditor.commit();
@@ -1257,7 +1277,6 @@ public class Settings {
     }
 
     public void persistFavoriteRadioStation(RadioStation station, int stationIndex) {
-        Log.i(TAG, "setPersistentFavoriteRadioStation index=" + stationIndex);
         FavoriteRadioStations stations = getFavoriteRadioStations(settings);
         stations.set(stationIndex, station);
         setFavoriteRadioStations(stations);
