@@ -851,6 +851,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
         showPreference("purchaseDesignPackageBackground", selection.equals("4") && !isPurchasedWeather);
+        boolean shallEnable = !selection.equals("4") || isPurchasedWeather;
+        enablePreference("slideshowStyle", shallEnable);
+        enablePreference("backgroundImageDuration", shallEnable);
+        enablePreference("backgroundImageZoomIn", shallEnable);
+        enablePreference("backgroundImageFadeIn", shallEnable);
+        enablePreference("backgroundImageMoveIn", shallEnable);
+        enablePreference("backgroundMovein", shallEnable);
+        enablePreference("backgroundEXIF", shallEnable);
+        enablePreference("chooseDirectoryBackgroundImage", shallEnable);
+        enablePreference("slideshowStyle", shallEnable);
+        enablePreference("hideBackgroundImage", shallEnable);
+        enablePreference("autoAccentColor", shallEnable);
     }
 
     private void setupNightModePreferences(SharedPreferences prefs) {
