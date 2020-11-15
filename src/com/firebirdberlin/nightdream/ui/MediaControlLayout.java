@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -41,9 +42,9 @@ public class MediaControlLayout extends ViewModel {
 
     private NotificationMediacontrolBinding mediacontrolBinding;
 
-    public MediaControlLayout(Context mContext) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        mediacontrolBinding = NotificationMediacontrolBinding.inflate(inflater);
+    public MediaControlLayout(ConstraintLayout mediaStyleContainer) {
+        LayoutInflater inflater = LayoutInflater.from(mediaStyleContainer.getContext());
+        mediacontrolBinding = NotificationMediacontrolBinding.inflate(inflater, mediaStyleContainer, false);
         mediacontrolBinding.setModel(this);
     }
 

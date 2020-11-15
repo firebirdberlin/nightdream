@@ -168,7 +168,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         View clockLayout = contentView.findViewById(R.id.clockLayout);
 
         ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
-        MediaControlLayout mediaControlLayout = new MediaControlLayout(context);
+        MediaControlLayout mediaControlLayout = new MediaControlLayout(mediaStyleContainer);
         mediaStyleContainer.removeAllViews();
         mediaStyleContainer.addView(mediaControlLayout.getView());
         mediaControlLayout.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
