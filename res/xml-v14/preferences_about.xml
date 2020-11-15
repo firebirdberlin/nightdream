@@ -14,14 +14,15 @@
         app:title="NightDream">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream"
+            android:data="https://firebirdberlin.github.io/nightdream/"
             />
     </de.firebirdberlin.preference.VersionPreference>
 
     <Preference
         app:iconSpaceReserved="false"
         app:icon="@drawable/ic_faq"
-        app:title="FAQ">
+        app:title="FAQ"
+        app:summary="@string/frequently_asked_questions">
         <intent
             android:action="android.intent.action.VIEW"
             android:data="https://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
@@ -127,7 +128,6 @@
         </Preference>
     </PreferenceCategory>
 
-
     <PreferenceCategory
         app:iconSpaceReserved="false"
         android:layout="@layout/preferences_category"
@@ -137,7 +137,6 @@
             app:enabled="true"
             app:key="credits"
             app:selectable="false"
-            app:summary="stefan.fruhner@googlemail.com"
             app:title="Stefan Fruhner (2020)"
             app:enableCopying="true"/>
 

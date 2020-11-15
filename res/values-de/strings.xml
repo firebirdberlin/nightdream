@@ -146,6 +146,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
     <string name="flashlight">Taschenlampe</string>
     <string name="forecast">5-Tage-Vorhersage</string>
+    <string name="frequently_asked_questions">Häufig gestellte Fragen</string>
     <string name="gift_for_donors">Geschenk für Ihre Spende</string>
     <string name="hand_shape_arc">Bogen</string>
     <string name="hand_shape_bar">Balken</string>
