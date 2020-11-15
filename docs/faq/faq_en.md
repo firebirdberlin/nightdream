@@ -4,6 +4,13 @@
 
 [> deutsch](faq_de.md)
 
+## Where do I find support ?
+
+If your question is not listed here, please try to post it to the public mailing list
+<MAILTO: night-clock@googlegroups.com>:
+https://groups.google.com/d/forum/night-clock.
+
+
 ## Table of Contents
 
 - [Ads](#ads)
@@ -18,10 +25,6 @@
 - [Widget](#widget)
 - [Slideshow](#slideshow)
 
-## Where do I find support ?
-
-If your question is not listed here, please try to post it to the public mailing list at
-https://groups.google.com/d/forum/night-clock.
 
 ## Ads
 

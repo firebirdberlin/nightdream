@@ -4,7 +4,15 @@
 
 [> english](faq_en.md)
 
-# Inhaltsverzeichnis
+
+## Wo finde ich Hilfe ?
+
+Wenn Ihre Frage hier nicht beantwortet wird, dann stellen Sie diese bitte auf
+der öffentlichen Mailingliste <MAILTO: night-clock@googlegroups.com>:
+https://groups.google.com/d/forum/night-clock.
+
+
+## Inhaltsverzeichnis
 
  - [Werbung](#werbung)
  - [In-App Käufe](#in-app-käufe)
@@ -17,12 +25,6 @@
  - [Helligkeitseinstellungen](#helligkeitseinstellungen)
  - [Widget](#widget)
  - [Slideshow](#slideshow)
-
-## Wo finde ich Hilfe ?
-
-Wenn Ihre Frage hier nicht beantwortet wird, dann stellen Sie diese bitte auf 
-der öffentlichen Mailingliste:
-https://groups.google.com/d/forum/night-clock. 
 
 ## Werbung
 
