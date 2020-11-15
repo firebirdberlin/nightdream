@@ -6,10 +6,9 @@
 
 ## Where do I find support ?
 
-If your question is not listed here, please try to post it to the public mailing list
-<MAILTO: night-clock@googlegroups.com>:
-https://groups.google.com/d/forum/night-clock.
-
+If your question is not listed here, please try to post it to the
+![public mailing list](https://groups.google.com/d/forum/night-clock)
+ ![night-clock@googlegroups.com](night-clock@googlegroups.com).
 
 ## Table of Contents
 
