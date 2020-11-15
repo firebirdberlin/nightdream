@@ -383,6 +383,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("purchaseActions4");
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseDesignPackage");
+        initPurchasePreference("purchaseDesignPackageBackground");
     }
 
     @Override
