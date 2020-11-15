@@ -8,8 +8,8 @@
 ## Wo finde ich Hilfe ?
 
 Wenn Ihre Frage hier nicht beantwortet wird, dann stellen Sie diese bitte auf
-der öffentlichen ![Mailingliste](https://groups.google.com/d/forum/night-clock)
- ![night-clock@googlegroups.com](night-clock@googlegroups.com).
+der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock)
+ [night-clock@googlegroups.com](night-clock@googlegroups.com).
 
 
 ## Inhaltsverzeichnis
