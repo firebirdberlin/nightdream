@@ -160,6 +160,7 @@ public class Settings {
     public double NOISE_AMPLITUDE_WAKE = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
+    private boolean purchasedDonation = false;
     public int clockLayout;
     boolean autostartForNotifications = true;
     boolean showBatteryWarning = true;
@@ -168,7 +169,6 @@ public class Settings {
     private boolean radioStreamActivateWiFi = false;
     private int background_mode = 1;
     private long nextAlwaysOnTime = 0L;
-    private boolean purchasedDonation = false;
     private Context mContext;
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
