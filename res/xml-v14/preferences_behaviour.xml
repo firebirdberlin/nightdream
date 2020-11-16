@@ -12,13 +12,6 @@
         app:summary="@string/doubleTapToFinishSummary"
         app:title="@string/doubleTapToFinishTitle" />
 
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="false"
-        app:key="speakTime"
-        app:summary="@string/speakTimeSummary"
-        app:title="@string/speakTimeTitle" />
-
     <ListPreference
         app:iconSpaceReserved="false"
         app:defaultValue="1"
@@ -63,6 +56,13 @@
         app:key="purchaseActions2"
         app:isPreferenceVisible="false"
         app:title="@string/purchaseActions" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="speakTime"
+        app:summary="@string/speakTimeSummary"
+        app:title="@string/speakTimeTitle" />
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"

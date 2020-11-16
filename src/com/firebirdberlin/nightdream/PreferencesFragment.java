@@ -281,6 +281,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("expert_screen", isPurchasedActions);
         enablePreference("scheduled_autostart_screen", isPurchasedActions);
         enablePreference("activateDoNotDisturb", isPurchasedActions);
+        enablePreference("speakTime", isPurchasedActions);
         enablePreference("useDeviceLock", isPurchasedActions);
         enablePreference("category_notifications", isPurchasedActions);
 
