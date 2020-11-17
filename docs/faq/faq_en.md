@@ -23,6 +23,8 @@ If your question is not listed here, please try to post it to the
 - [Brightness settings](#brightness-settings)
 - [Widget](#widget)
 - [Slideshow](#slideshow)
+- [Speak the current time](#speak-the-current-time)
+- [Notifications](#notifications)
 
 
 ## Ads
@@ -84,6 +86,19 @@ the donation unlocks a calendar view.
 ### How can I change the clock size ?
 
 Using a two-finger pinch gesture you can freely resize the clock layout.
+
+### How can I change the position of the clock ?
+
+With a long press on the clock a frame is displayed and the clock can be freely positioned on the screen.
+The position is automatically saved as soon as the clock is released.
+
+### The clock automatically changes its position 
+
+The app offers two different options for screen protection:
+- move the clock around
+- fade the clock
+If an automatic change of position of the clock is not desired, the screen protection can be changed 
+or disabled in the options.
 
 ### The interface is locked
 
@@ -289,14 +304,66 @@ can disable and re-enable the autostart of the app. This triggers the start of t
 
 ### Which pictures are shown in the slideshow
 
-The app shows all images in JPG format that were taken with the camera or are in this directory.
+The app shows all images in JPG format.
 Videos or images in any other format are not displayed.
 It is currently not possible to select individual images for the slideshow.
+
+### How can I choose a selection of images
+
+For Android Lollipop (version 5.0) and above a folder can be selected for display.
+It is currently not possible to select individual images for the slide show.
+It is recommended to create your own folder and copy the images you like for the slide show into this folder.
+For Android Versions below Lollipop the device's photo directory is selected automatically.
+
+### The slide show appears with a delay at app startup
+
+The loading of the individual images takes place in the background to ensure smooth operation of the app.
+On older devices or large images it may take some time before the image is ready to be displayed.
+In this case please try to reduce the size of the problematic image.
+
+### How can cloud storage be accessed?
+
+It is currently not possible access to any cloud storage.
 
 ### Only a black screen is displayed
 
 Please check if there are pictures in JPG format on the device. 
 The option * Hide the background image in night mode * may be activated. 
 If so, a black background is shown instead of a slideshow during the night.
+
+### EXIF informations are not displayed
+
+Please check whether EXIF information is included in the displayed JPG image.
+To determine the location from the EXIF information the Google Play Services are required.
+Some Android distributions may not have these preinstalled.
+
+## Speak the current time
+
+### The current time is not read out
+
+The app requires an installed text-to-speech engine (TTS) to read the current time.
+Please check in the device settings whether this is installed and activated on your device.
+
+### How can the language be changed?
+
+The selected language depends on the language of your device and cannot be changed in the app.
+
+## Notifications
+
+### What is the media control?
+
+The media control makes it possible to take control of external music players which are controlled 
+through the notification center.
+
+### How do I activate the media control?
+
+The media control can be activated in the app under settings / notifications.
+If a compatible app is running in the background (e.g. Google Play Music, Spotify, Amazon Music, 
+Pulsar, MyBob etc.) the media control is displayed below the clock.
+
+### The media control is not displayed
+
+There are some apps that do not use the standard Android interfaces for music control.
+These apps cannot be viewed and controlled via the media controls.
 
 [Top](#table-of-contents)

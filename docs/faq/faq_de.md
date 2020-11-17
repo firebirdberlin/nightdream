@@ -24,7 +24,7 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
  - [Nachtmodus](#nachtmodus)
  - [Helligkeitseinstellungen](#helligkeitseinstellungen)
  - [Widget](#widget)
- - [Slideshow](#slideshow)
+ - [Diashow](#diahow)
  - [Aktuelle Uhrzeit vorlesen](#aktuelle-uhrzeit-vorlesen)
  - [Benachrichtigungen](#benachrichtigungen)
 
@@ -81,14 +81,14 @@ Mit einer Zwei-Finger-Pinch-Geste können Sie die Größe des Uhr-Layouts frei �
 
 ### Wie kann ich die Position der Uhr ändern ?
 
-Durch langes drücken auf die Uhr erscheint ein grüner Rahmen und die Uhr kann frei auf dem Bildschirm positioniert werden.
-Die gewünschte Position wird automatisch gespeichert, sobald die Uhr wieder freigelassen wird.
+Durch langes Drücken auf die Uhr erscheint ein Rahmen und die Uhr kann frei auf dem Bildschirm positioniert werden.
+Die Position wird automatisch gespeichert, sobald die Uhr losgelassen wird.
 
 ### Die Uhr verändert automatisch die Position
 
 Die App bietet zwei unterschiedliche Optionen zum Bildschirmschutz an: 
 - Uhr bewegen
-- Uhr automatisch ein und ausblenden
+- Uhr automatisch ein- und ausblenden
 Falls eine automatische Positionsänderung der Uhr nicht gewünscht ist, kann der Bildschirmschutz in 
 den Optionen um- oder ausgestellt werden. 
 
@@ -297,25 +297,25 @@ Falls dieser Dienst nicht ordnungsgemäß ausgeführt wird (oder vom Android-Sys
 wird das Widget nicht mehr aktualisiert. Wenn Sie diesen Dienst (wieder) aktivieren möchten, können Sie den Autostart 
 der App deaktivieren und wieder aktivieren. Dies löst den Start des Dienstes erneut aus.
 
-## Slideshow
+## Diashow
 
-### Welche Bilder werden in der Slideshow angezeigt
+### Welche Bilder werden in der Diashow angezeigt
 
 Die App zeigt alle Bilder im JPG - Format an.
 Videos oder Bilder in einem anderen Format werden nicht angezeigt.
 
 ### Wie kann eine Auswahl der Bilder vorgenommen werden 
 
-Ab Android KitKat (Version 4.4) kann ein Ordner zur Anzeige ausgewählt werden.
-Eine Auswahl einzelner Bilder für die Slideshow einzustellen ist aktuell nicht möglich.
-Es wird empfohlen einen eigenen Ordner anzulegen und in diesen die gewünschten Bilder für die Slideshow zu kopieren.
-Bei Android Versionen vor KitKat wird automatisch das Foto-Verzeichnis des Geräts ausgewählt.
+Ab Android Lollipop (Version 5.0) kann ein Ordner zur Anzeige ausgewählt werden.
+Eine Auswahl einzelner Bilder für die Diashow einzustellen ist aktuell nicht möglich.
+Es wird empfohlen einen eigenen Ordner anzulegen und in diesen die gewünschten Bilder für die Diashow zu kopieren.
+Bei Android Versionen vor Lollipop wird automatisch das Foto-Verzeichnis des Geräts ausgewählt.
 
 ### Wie kann auf einen Cloudspeicher zugegriffen werden?
 
 Aktuell ist es nicht möglich auf einen Cloudspeicher zuzugreifen.
 
-### Beim Starten der App erscheint die Slideshow mit Verzögerung
+### Beim Starten der App erscheint die Diashow mit Verzögerung
 
 Das Laden der einzelnen Bilder erfolgt im Hintergrund um eine flüssige Bedienung der App zu gewährleisten.
 Auf älteren Geräten oder bei großen Bildern kann es einige Zeit in Anspruch nehmen bis das Bild zur Anzeige bereit steht.
@@ -355,10 +355,10 @@ Benachrichtigungszentrale ermöglichen direkt über die App zu steuern.
 ### Wie aktiviere ich die Mediensteuerung?
 
 Die Mediensteuerung kann in der App unter Einstellungen / Benachrichtigungen aktiviert werden.
-Falls eine kompatible App im Hintergrund läuft (z.B. Google Play Music, Pulsar, MyBob etc.) wird die 
+Falls eine kompatible App im Hintergrund läuft (z.B. Google Play Music, Spotify, Amazon Music, Pulsar, MyBob etc.) wird die 
 Steuerung unterhalb der Uhr angezeigt.
 
 ### Die Mediensteuerung wird nicht angezeigt 
 
-Es gibt einige Apps, die nicht auf die Android standard Schnittstellen zur Musiksteuerung zurückgreifen.
+Es gibt einige Apps, die nicht auf die Android Standardschnittstellen zur Musiksteuerung zurückgreifen.
 Diese Apps können leider nicht über die Mediensteuerung angezeigt und gesteuert werden.
