@@ -30,6 +30,9 @@ import java.util.ArrayList;
 
 public class MediaControlLayout extends ViewModel {
     private static String TAG = "MediaControlLayout";
+    private int color = 0;
+    private Drawable smallAppIcon;
+
     private final MutableLiveData<Drawable> smallIcon = new MediatorLiveData<>();
     private final MutableLiveData<Drawable> largeIcon = new MediatorLiveData<>();
     private final MutableLiveData<Integer> textColor = new MediatorLiveData<>();
@@ -50,6 +53,20 @@ public class MediaControlLayout extends ViewModel {
 
     public View getView() {
         return mediacontrolBinding.getRoot();
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+        setColor();
+    }
+
+    private void setColor() {
+        this.textColor.setValue(this.color);
+        this.smallIcon.getValue().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+
+        for (int i = 0; i <  this.actionImage.getValue().size(); i++) {
+            this.actionImage.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
     public LiveData<Drawable> getSmallIcon() {
@@ -90,8 +107,7 @@ public class MediaControlLayout extends ViewModel {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, Intent intent, Drawable smallIcon) {
-        Log.e(TAG, "setupFromNotificationIntent");
-        NightDreamUI nightDreamUI = new NightDreamUI(context, NightDreamActivity.window );
+        Log.d(TAG, "setupFromNotificationIntent");
 
         String template = intent.getStringExtra("template");
         if (template != null && !template.contains("MediaStyle")) {
@@ -99,7 +115,7 @@ public class MediaControlLayout extends ViewModel {
         }
 
         assert smallIcon != null;
-        smallIcon.setColorFilter(nightDreamUI.getSecondaryColor(), PorterDuff.Mode.SRC_ATOP);
+        smallIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
 
         Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
 
@@ -125,12 +141,12 @@ public class MediaControlLayout extends ViewModel {
                     Icon icon = action.getIcon();
                     if (icon != null) {
                         notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
-                        notificationDrawableIcon.setColorFilter(nightDreamUI.getSecondaryColor(), PorterDuff.Mode.SRC_ATOP);
+                        notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                     }
                 } else {
                     int iconResId = action.icon;
                     notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
-                    notificationDrawableIcon.setColorFilter(nightDreamUI.getSecondaryColor(), PorterDuff.Mode.SRC_ATOP);
+                    notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                 }
                 notificationActionImage.add(notificationDrawableIcon);
 
@@ -149,7 +165,6 @@ public class MediaControlLayout extends ViewModel {
         }
 
         this.smallIcon.setValue(smallIcon);
-        this.textColor.setValue(nightDreamUI.getSecondaryColor());
         this.appName.setValue(intent.getStringExtra("applicationName"));
         this.timeStamp.setValue(intent.getStringExtra("postTimestamp"));
         this.title.setValue(intent.getStringExtra("title"));
@@ -157,5 +172,6 @@ public class MediaControlLayout extends ViewModel {
         this.largeIcon.setValue(new BitmapDrawable(context.getResources(), coverBitmap));
         this.actionImage.setValue(notificationActionImage);
         this.actionIntent.setValue(notificationActionClick);
+        setColor();
     }
 }

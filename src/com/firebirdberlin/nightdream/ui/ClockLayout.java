@@ -23,12 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 import com.firebirdberlin.nightdream.mNotificationListener;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -212,6 +214,14 @@ public class ClockLayout extends LinearLayout {
         if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setSecondaryColor(color);
+        }
+
+        View boundView = mediaStyleLayout.getChildAt(0);
+        NotificationMediacontrolBinding mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
+
+        if (mediaControlLayoutBinding != null) {
+            mediaControlLayoutBinding.getModel().setColor(color);
+            mediaControlLayoutBinding.invalidateAll();
         }
 
         Utility.colorizeView(calendarView, color, PorterDuff.Mode.MULTIPLY);

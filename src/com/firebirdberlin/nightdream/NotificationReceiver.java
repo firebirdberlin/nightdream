@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.ui.ExifView;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
+import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.google.android.flexbox.FlexboxLayout;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -172,6 +173,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         mediaStyleContainer.removeAllViews();
         mediaStyleContainer.addView(mediaControlLayout.getView());
         mediaControlLayout.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
+        NightDreamUI nightDreamUI = new NightDreamUI(context, NightDreamActivity.window );
+        mediaControlLayout.setColor(nightDreamUI.getSecondaryColor());
 
         clockLayout.postDelayed(new Runnable() {
             @Override
