@@ -97,7 +97,7 @@ The position is automatically saved as soon as the clock is released.
 The app offers two different options for screen protection:
 - move the clock around
 - fade the clock
-If an automatic change of position of the clock is not desired, the screen protection can be changed 
+If an automatic change of position of the clock is not desired, the screen protection mode can be changed 
 or disabled in the options.
 
 ### The interface is locked
@@ -308,9 +308,9 @@ The app shows all images in JPG format.
 Videos or images in any other format are not displayed.
 It is currently not possible to select individual images for the slideshow.
 
-### How can I choose a selection of images
+### How can I select images
 
-For Android Lollipop (version 5.0) and above a folder can be selected for display.
+For Android Lollipop (version 5.0) and above a folder can be selected for displaying images.
 It is currently not possible to select individual images for the slide show.
 It is recommended to create your own folder and copy the images you like for the slide show into this folder.
 For Android Versions below Lollipop the device's photo directory is selected automatically.
@@ -331,7 +331,7 @@ Please check if there are pictures in JPG format on the device.
 The option * Hide the background image in night mode * may be activated. 
 If so, a black background is shown instead of a slideshow during the night.
 
-### EXIF informations are not displayed
+### EXIF information is not displayed
 
 Please check whether EXIF information is included in the displayed JPG image.
 To determine the location from the EXIF information the Google Play Services are required.
@@ -346,7 +346,7 @@ Please check in the device settings whether this is installed and activated on y
 
 ### How can the language be changed?
 
-The selected language depends on the language of your device and cannot be changed in the app.
+The selected language depends on the language of your device and cannot be changed within the app.
 
 ## Notifications
 
@@ -357,7 +357,7 @@ through the notification center.
 
 ### How do I activate the media control?
 
-The media control can be activated in the app under settings / notifications.
+The media control notifications can be activated in the app preferences in the notifications section.
 If a compatible app is running in the background (e.g. Google Play Music, Spotify, Amazon Music, 
 Pulsar, MyBob etc.) the media control is displayed below the clock.
 

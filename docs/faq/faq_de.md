@@ -24,7 +24,7 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
  - [Nachtmodus](#nachtmodus)
  - [Helligkeitseinstellungen](#helligkeitseinstellungen)
  - [Widget](#widget)
- - [Diashow](#diahow)
+ - [Diashow](#diashow)
  - [Aktuelle Uhrzeit vorlesen](#aktuelle-uhrzeit-vorlesen)
  - [Benachrichtigungen](#benachrichtigungen)
 
@@ -330,7 +330,7 @@ Im Nachtmodus wird dann nur ein schwarzer Hintergrund statt der Diashow angezeig
 ### EXIF Informationen werden nicht angezeigt
 
 Bitte prüfen Sie, ob in dem angezeigten JPG - Bild EXIF Informationen eingetragen sind.
-Zur Bestimmung der Ortsposition aus den EXIF Informationen werden die Google Play Services benötigt.
+Zur Bestimmung des Standortes aus den EXIF Informationen werden die Google Play Services benötigt.
 Bei einigen Android Distributionen sind diese ggf. nicht vorinstalliert.
 
 ## Aktuelle Uhrzeit vorlesen
