@@ -24,7 +24,9 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
  - [Nachtmodus](#nachtmodus)
  - [Helligkeitseinstellungen](#helligkeitseinstellungen)
  - [Widget](#widget)
- - [Slideshow](#slideshow)
+ - [Diashow](#diashow)
+ - [Aktuelle Uhrzeit vorlesen](#aktuelle-uhrzeit-vorlesen)
+ - [Benachrichtigungen](#benachrichtigungen)
 
 ## Werbung
 
@@ -76,6 +78,19 @@ Aufmerksamkeit gibt es eine exklusive Überraschung: ein Retro-Flipkarten Design
 ### Wie kann ich die Größe der Uhr ändern ?
 
 Mit einer Zwei-Finger-Pinch-Geste können Sie die Größe des Uhr-Layouts frei ändern.
+
+### Wie kann ich die Position der Uhr ändern ?
+
+Durch langes Drücken auf die Uhr erscheint ein Rahmen und die Uhr kann frei auf dem Bildschirm positioniert werden.
+Die Position wird automatisch gespeichert, sobald die Uhr losgelassen wird.
+
+### Die Uhr verändert automatisch die Position
+
+Die App bietet zwei unterschiedliche Optionen zum Bildschirmschutz an: 
+- Uhr bewegen
+- Uhr automatisch ein- und ausblenden
+Falls eine automatische Positionsänderung der Uhr nicht gewünscht ist, kann der Bildschirmschutz in 
+den Optionen um- oder ausgestellt werden. 
 
 ### Die Oberfläche ist gesperrt
 
@@ -282,16 +297,68 @@ Falls dieser Dienst nicht ordnungsgemäß ausgeführt wird (oder vom Android-Sys
 wird das Widget nicht mehr aktualisiert. Wenn Sie diesen Dienst (wieder) aktivieren möchten, können Sie den Autostart 
 der App deaktivieren und wieder aktivieren. Dies löst den Start des Dienstes erneut aus.
 
-## Slideshow
+## Diashow
 
-### Welche Bilder werden in der Slideshow angezeigt
+### Welche Bilder werden in der Diashow angezeigt
 
-Die App zeigt alle Bilder im JPG - Format an, die mit der Kamera aufgenommen wurden bzw. im Foto-Verzeichnis liegen. 
+Die App zeigt alle Bilder im JPG - Format an.
 Videos oder Bilder in einem anderen Format werden nicht angezeigt.
-Aktuell ist es nicht möglich eine Auswahl einzelner Bilder für die Slideshow einzustellen.
+
+### Wie kann eine Auswahl der Bilder vorgenommen werden 
+
+Ab Android Lollipop (Version 5.0) kann ein Ordner zur Anzeige ausgewählt werden.
+Eine Auswahl einzelner Bilder für die Diashow einzustellen ist aktuell nicht möglich.
+Es wird empfohlen einen eigenen Ordner anzulegen und in diesen die gewünschten Bilder für die Diashow zu kopieren.
+Bei Android Versionen vor Lollipop wird automatisch das Foto-Verzeichnis des Geräts ausgewählt.
+
+### Wie kann auf einen Cloudspeicher zugegriffen werden?
+
+Aktuell ist es nicht möglich auf einen Cloudspeicher zuzugreifen.
+
+### Beim Starten der App erscheint die Diashow mit Verzögerung
+
+Das Laden der einzelnen Bilder erfolgt im Hintergrund um eine flüssige Bedienung der App zu gewährleisten.
+Auf älteren Geräten oder bei großen Bildern kann es einige Zeit in Anspruch nehmen bis das Bild zur Anzeige bereit steht.
+Bitte versuchen Sie in diesem Fall die Größe des problematischen Bildes zu reduzieren. 
 
 ### Es wird nur ein schwarzer Bildschirm angezeigt
 
-Bitte prüfen Sie, ob auf dem Gerät Bilder im JPG - Format vorliegen.
+Bitte prüfen Sie, ob im dem anzuzeigenden Ordner Bilder im JPG - Format vorliegen.
 Möglicherweise ist die Option *Ausblenden - Das Hintergrundbild soll im Nachtmodus ausgeblendet werden* aktiv. 
 Im Nachtmodus wird dann nur ein schwarzer Hintergrund statt der Diashow angezeigt.
+
+### EXIF Informationen werden nicht angezeigt
+
+Bitte prüfen Sie, ob in dem angezeigten JPG - Bild EXIF Informationen eingetragen sind.
+Zur Bestimmung des Standortes aus den EXIF Informationen werden die Google Play Services benötigt.
+Bei einigen Android Distributionen sind diese ggf. nicht vorinstalliert.
+
+## Aktuelle Uhrzeit vorlesen
+
+### Die aktuelle Uhrzeit wird nicht vorgelesen
+
+Die App benötigt eine installierte Text-to-Speech Engine (TTS) um die aktuelle Uhrzeit vorzulesen.
+Bitte prüfen Sie in den Einstellungen des Geräts ob diese auf Ihrem Gerät installiert und aktiviert ist. 
+
+### Wie kann die Sprache umgestellt werden?
+
+Die ausgewählte Sprache ist abhängig von der in den Einstellungen ausgewählten Sprache Ihres Geräts und 
+kann nicht in der App umgestellt werden.
+
+## Benachrichtigungen
+
+### Was ist die Mediensteuerung?
+
+Durch die Mediensteuerung ist es möglich externe Musik Player, welche eine Musiksteuerung über die 
+Benachrichtigungszentrale ermöglichen direkt über die App zu steuern.
+
+### Wie aktiviere ich die Mediensteuerung?
+
+Die Mediensteuerung kann in der App unter Einstellungen / Benachrichtigungen aktiviert werden.
+Falls eine kompatible App im Hintergrund läuft (z.B. Google Play Music, Spotify, Amazon Music, Pulsar, MyBob etc.) wird die 
+Steuerung unterhalb der Uhr angezeigt.
+
+### Die Mediensteuerung wird nicht angezeigt 
+
+Es gibt einige Apps, die nicht auf die Android Standardschnittstellen zur Musiksteuerung zurückgreifen.
+Diese Apps können leider nicht über die Mediensteuerung angezeigt und gesteuert werden.
