@@ -156,8 +156,8 @@
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="2dp"
                             android:onClick="@{model.actionIntent.size() >= 1 ? model.actionIntent.get(0) : null}"
-                            android:src="@{model.actionImage.size() >= 1 ? model.actionImage.get(0) : null}"
-                            android:visibility="@{model.actionImage.size() >= 1  ? View.VISIBLE : View.GONE}"
+                            android:src="@{model.actionImages.size() >= 1 ? model.actionImages.get(0) : null}"
+                            android:visibility="@{model.actionImages.size() >= 1  ? View.VISIBLE : View.GONE}"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -168,8 +168,8 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="2dp"
                             android:onClick="@{model.actionIntent.size() >= 2 ? model.actionIntent.get(1) : null}"
-                            android:src="@{model.actionImage.size() >= 2 ? model.actionImage.get(1) : null}"
-                            android:visibility="@{model.actionImage.size() >= 2  ? View.VISIBLE : View.GONE}"
+                            android:src="@{model.actionImages.size() >= 2 ? model.actionImages.get(1) : null}"
+                            android:visibility="@{model.actionImages.size() >= 2  ? View.VISIBLE : View.GONE}"
                             app:layout_constraintStart_toEndOf="@+id/notify_actionview1"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -180,8 +180,8 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="2dp"
                             android:onClick="@{model.actionIntent.size() >= 3 ? model.actionIntent.get(2) : null}"
-                            android:src="@{model.actionImage.size() >= 3 ? model.actionImage.get(2) : null}"
-                            android:visibility="@{model.actionImage.size() >= 3  ? View.VISIBLE : View.GONE}"
+                            android:src="@{model.actionImages.size() >= 3 ? model.actionImages.get(2) : null}"
+                            android:visibility="@{model.actionImages.size() >= 3  ? View.VISIBLE : View.GONE}"
                             app:layout_constraintStart_toEndOf="@+id/notify_actionview2"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -192,8 +192,8 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="2dp"
                             android:onClick="@{model.actionIntent.size() >= 4 ? model.actionIntent.get(3) : null}"
-                            android:src="@{model.actionImage.size() >= 4 ? model.actionImage.get(3) : null }"
-                            android:visibility="@{model.actionImage.size() >= 4  ? View.VISIBLE : View.GONE}"
+                            android:src="@{model.actionImages.size() >= 4 ? model.actionImages.get(3) : null }"
+                            android:visibility="@{model.actionImages.size() >= 4  ? View.VISIBLE : View.GONE}"
                             app:layout_constraintStart_toEndOf="@+id/notify_actionview3"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -205,8 +205,8 @@
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="8dp"
                             android:onClick="@{model.actionIntent.size() == 5 ? model.actionIntent.get(4) : null}"
-                            android:src="@{model.actionImage.size() == 5 ? model.actionImage.get(4) : null }"
-                            android:visibility="@{model.actionImage.size() == 5  ? View.VISIBLE : View.GONE}"
+                            android:src="@{model.actionImages.size() == 5 ? model.actionImages.get(4) : null }"
+                            android:visibility="@{model.actionImages.size() == 5  ? View.VISIBLE : View.GONE}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/notify_actionview4"
                             app:layout_constraintTop_toTopOf="parent" />

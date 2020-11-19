@@ -17,7 +17,9 @@ import android.widget.ImageView;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
 
+import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 import com.firebirdberlin.nightdream.ui.ExifView;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -169,12 +171,21 @@ public class NotificationReceiver extends BroadcastReceiver {
         View clockLayout = contentView.findViewById(R.id.clockLayout);
 
         ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
-        MediaControlLayout mediaControlLayout = new MediaControlLayout(mediaStyleContainer);
-        mediaStyleContainer.removeAllViews();
-        mediaStyleContainer.addView(mediaControlLayout.getView());
-        mediaControlLayout.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
-        NightDreamUI nightDreamUI = new NightDreamUI(context, NightDreamActivity.window );
-        mediaControlLayout.setColor(nightDreamUI.getSecondaryColor());
+
+        if (mediaStyleContainer != null) {
+            View boundView = mediaStyleContainer.getChildAt(0);
+            NotificationMediacontrolBinding mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
+
+            if (mediaControlLayoutBinding != null) {
+                mediaControlLayoutBinding.getModel().setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
+                mediaControlLayoutBinding.invalidateAll();
+            } else {
+                MediaControlLayout mediaControlLayout = new MediaControlLayout(mediaStyleContainer);
+                mediaStyleContainer.removeAllViews();
+                mediaStyleContainer.addView(mediaControlLayout.getView());
+                mediaControlLayout.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
+            }
+        }
 
         clockLayout.postDelayed(new Runnable() {
             @Override

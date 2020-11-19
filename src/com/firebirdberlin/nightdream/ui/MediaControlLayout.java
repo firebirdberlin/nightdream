@@ -40,7 +40,7 @@ public class MediaControlLayout extends ViewModel {
     private final MutableLiveData<String> timeStamp = new MediatorLiveData<>();
     private final MutableLiveData<String> title = new MediatorLiveData<>();
     private final MutableLiveData<String> text = new MediatorLiveData<>();
-    private final MutableLiveData<ArrayList<Drawable>> actionImage = new MediatorLiveData<>();
+    private final MutableLiveData<ArrayList<Drawable>> actionImages = new MediatorLiveData<>();
     private final MutableLiveData<ArrayList<View.OnClickListener>> actionIntent = new MediatorLiveData<>();
 
     private NotificationMediacontrolBinding mediacontrolBinding;
@@ -62,10 +62,15 @@ public class MediaControlLayout extends ViewModel {
 
     private void setColor() {
         this.textColor.setValue(this.color);
-        this.smallIcon.getValue().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
 
-        for (int i = 0; i <  this.actionImage.getValue().size(); i++) {
-            this.actionImage.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        if (this.smallIcon.getValue() != null) {
+            this.smallIcon.getValue().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
+
+        if (this.actionImages.getValue() != null) {
+            for (int i = 0; i < this.actionImages.getValue().size(); i++) {
+                this.actionImages.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+            }
         }
     }
 
@@ -97,8 +102,8 @@ public class MediaControlLayout extends ViewModel {
         return text;
     }
 
-    public LiveData<ArrayList<Drawable>> getActionImage() {
-        return actionImage;
+    public LiveData<ArrayList<Drawable>> getActionImages() {
+        return actionImages;
     }
 
     public LiveData<ArrayList<View.OnClickListener>> getActionIntent() {
@@ -119,7 +124,7 @@ public class MediaControlLayout extends ViewModel {
 
         Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
 
-        ArrayList<Drawable> notificationActionImage = new ArrayList<>();
+        ArrayList<Drawable> notificationActionImages = new ArrayList<>();
         ArrayList<View.OnClickListener> notificationActionClick = new ArrayList<>();
 
         Context remotePackageContext = null;
@@ -148,7 +153,7 @@ public class MediaControlLayout extends ViewModel {
                     notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
                     notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                 }
-                notificationActionImage.add(notificationDrawableIcon);
+                notificationActionImages.add(notificationDrawableIcon);
 
                 notificationActionClick.add(
                     new View.OnClickListener() {
@@ -170,7 +175,7 @@ public class MediaControlLayout extends ViewModel {
         this.title.setValue(intent.getStringExtra("title"));
         this.text.setValue(intent.getStringExtra("text"));
         this.largeIcon.setValue(new BitmapDrawable(context.getResources(), coverBitmap));
-        this.actionImage.setValue(notificationActionImage);
+        this.actionImages.setValue(notificationActionImages);
         this.actionIntent.setValue(notificationActionClick);
         setColor();
     }

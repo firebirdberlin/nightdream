@@ -216,12 +216,14 @@ public class ClockLayout extends LinearLayout {
             layout.setSecondaryColor(color);
         }
 
-        View boundView = mediaStyleLayout.getChildAt(0);
-        NotificationMediacontrolBinding mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
+        if (mediaStyleLayout != null) {
+            View boundView = mediaStyleLayout.getChildAt(0);
+            NotificationMediacontrolBinding mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
 
-        if (mediaControlLayoutBinding != null) {
-            mediaControlLayoutBinding.getModel().setColor(color);
-            mediaControlLayoutBinding.invalidateAll();
+            if (mediaControlLayoutBinding != null) {
+                mediaControlLayoutBinding.getModel().setColor(color);
+                mediaControlLayoutBinding.invalidateAll();
+            }
         }
 
         Utility.colorizeView(calendarView, color, PorterDuff.Mode.MULTIPLY);
