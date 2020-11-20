@@ -1216,13 +1216,13 @@ public class NightDreamUI {
         float scaledWidth = clockLayout.getScaledWidth();
         float scaledHeight = clockLayout.getScaledHeight();
 
-        float rxpos = w - scaledWidth;
-        float rypos = h - scaledHeight;
+        int rxpos = (int) (w - scaledWidth);
+        int rypos = (int) (h - scaledHeight);
 
         // determine a random position
         Random random = new Random();
-        int i1 = (rxpos > 0) ? random.nextInt((int) rxpos) : 0;
-        int i2 = (rypos > 0) ? random.nextInt((int) rypos) : 0;
+        int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
+        int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
 
         i1 -= (clockLayout.getWidth() - scaledWidth) / 2;
         i2 -= (clockLayout.getHeight() - scaledHeight) / 2;
