@@ -46,7 +46,7 @@ public class ExifView {
 
             ExifInterface exif = new ExifInterface(file);
 
-            String tagDateTime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+            String tagDateTime = exif.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
             if (tagDateTime != null) {
                 String[] exifDateTime = tagDateTime.split(" ");
                 String[] exifDateSplit = exifDateTime[0].split(":");
