@@ -7,37 +7,49 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 
-public class MediaControlLayout extends LinearLayout {
+import java.util.ArrayList;
+
+public class MediaControlLayout extends ViewModel {
     private static String TAG = "MediaControlLayout";
-
     private int color = 0;
-    private View mediaStyleControl;
-    private Drawable smallAppIcon;
+    private final MutableLiveData<Drawable> smallIcon = new MediatorLiveData<>();
+    private final MutableLiveData<Drawable> largeIcon = new MediatorLiveData<>();
+    private final MutableLiveData<Integer> textColor = new MediatorLiveData<>();
+    private final MutableLiveData<String> appName = new MediatorLiveData<>();
+    private final MutableLiveData<String> timeStamp = new MediatorLiveData<>();
+    private final MutableLiveData<String> title = new MediatorLiveData<>();
+    private final MutableLiveData<String> text = new MediatorLiveData<>();
+    private final MutableLiveData<ArrayList<Drawable>> actionImages = new MediatorLiveData<>();
+    private final MutableLiveData<ArrayList<View.OnClickListener>> actionIntent = new MediatorLiveData<>();
 
-    public MediaControlLayout(Context context) {
-        super(context);
+    private NotificationMediacontrolBinding mediacontrolBinding;
+
+    public MediaControlLayout(ConstraintLayout mediaStyleContainer) {
+        LayoutInflater inflater = LayoutInflater.from(mediaStyleContainer.getContext());
+        mediacontrolBinding = NotificationMediacontrolBinding.inflate(inflater, mediaStyleContainer, false);
+        mediacontrolBinding.setModel(this);
     }
 
-    public MediaControlLayout(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+    public View getView() {
+        return mediacontrolBinding.getRoot();
     }
 
     public void setColor(int color) {
@@ -46,73 +58,72 @@ public class MediaControlLayout extends LinearLayout {
     }
 
     private void setColor() {
-        if (mediaStyleControl == null) return;
-        //set all TextView colors
-        ConstraintLayout mediaControl = mediaStyleControl.findViewById(R.id.notify);
-        if (mediaControl != null) {
-            for (int x = 0; x < mediaControl.getChildCount(); x++) {
-                if (mediaControl.getChildAt(x) instanceof TextView) {
-                    ((TextView) mediaControl.getChildAt(x)).setTextColor(color);
-                }
-            }
+        this.textColor.setValue(this.color);
+
+        if (this.smallIcon.getValue() != null) {
+            this.smallIcon.getValue().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
-        if (smallAppIcon != null) {
-            smallAppIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        }
-        ConstraintLayout actionImages = mediaStyleControl.findViewById(R.id.notify_action_images);
-        if (actionImages != null) {
-            for (int x = 0; x < actionImages.getChildCount(); x++) {
-                if (actionImages.getChildAt(x) instanceof ImageView) {
-                    ImageView v = (ImageView) actionImages.getChildAt(x);
-                    v.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                }
+
+        if (this.actionImages.getValue() != null) {
+            for (int i = 0; i < this.actionImages.getValue().size(); i++) {
+                this.actionImages.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
             }
         }
     }
 
+    public LiveData<Drawable> getSmallIcon() {
+        return smallIcon;
+    }
+
+    public LiveData<Drawable> getLargeIcon() {
+        return largeIcon;
+    }
+
+    public LiveData<Integer> getTextColor() {
+        return textColor;
+    }
+
+    public LiveData<String> getAppName() {
+        return appName;
+    }
+
+    public LiveData<String> getTimeStamp() {
+        return timeStamp;
+    }
+
+    public LiveData<String> getTitle() {
+        return title;
+    }
+
+    public LiveData<String> getText() {
+        return text;
+    }
+
+    public LiveData<ArrayList<Drawable>> getActionImages() {
+        return actionImages;
+    }
+
+    public LiveData<ArrayList<View.OnClickListener>> getActionIntent() {
+        return actionIntent;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, Intent intent, Drawable smallIcon) {
+        Log.d(TAG, "setupFromNotificationIntent");
+
         String template = intent.getStringExtra("template");
         if (template != null && !template.contains("MediaStyle")) {
             return;
         }
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mediaStyleControl = inflater.inflate(R.layout.notification_mediacontrol, null);
-        ImageView largeIconImageView = mediaStyleControl.findViewById(R.id.notify_largeicon);
 
-        ImageView notificationMessageBitmap = mediaStyleControl.findViewById(R.id.notify_smallicon);
         assert smallIcon != null;
-        smallAppIcon = smallIcon;
-        notificationMessageBitmap.setImageDrawable(smallIcon);
-
-        TextView appName = mediaStyleControl.findViewById(R.id.notify_appname);
-        appName.setText(intent.getStringExtra("applicationName"));
-
-        TextView timestamp = mediaStyleControl.findViewById(R.id.notify_timestamp);
-        timestamp.setText(intent.getStringExtra("postTimestamp"));
-
-        TextView title = mediaStyleControl.findViewById(R.id.notify_title);
-        title.setText(intent.getStringExtra("title"));
-
-        TextView ntext = mediaStyleControl.findViewById(R.id.notify_text);
-        ntext.setText(intent.getStringExtra("text"));
+        smallIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
 
         Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
-        largeIconImageView.setImageBitmap(coverBitmap);
-        mediaStyleControl.findViewById(R.id.notification_control).setVisibility(View.VISIBLE);
 
-        ImageView[] notificationActionImages = new ImageView[5];
-        notificationActionImages[0] = mediaStyleControl.findViewById(R.id.notify_actionview1);
-        notificationActionImages[1] = mediaStyleControl.findViewById(R.id.notify_actionview2);
-        notificationActionImages[2] = mediaStyleControl.findViewById(R.id.notify_actionview3);
-        notificationActionImages[3] = mediaStyleControl.findViewById(R.id.notify_actionview4);
-        notificationActionImages[4] = mediaStyleControl.findViewById(R.id.notify_actionview5);
+        ArrayList<Drawable> notificationActionImages = new ArrayList<>();
+        ArrayList<View.OnClickListener> notificationActionClick = new ArrayList<>();
 
-        for (ImageView ActionImage : notificationActionImages) {
-            ActionImage.setVisibility(View.GONE);
-        }
-
-        int positionAction = 0;
         Context remotePackageContext = null;
         try {
             remotePackageContext =
@@ -132,29 +143,37 @@ public class MediaControlLayout extends LinearLayout {
                     Icon icon = action.getIcon();
                     if (icon != null) {
                         notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
+                        notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                     }
                 } else {
                     int iconResId = action.icon;
                     notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
+                    notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                 }
-                notificationActionImages[positionAction].setImageDrawable(notificationDrawableIcon);
-                notificationActionImages[positionAction].setVisibility(View.VISIBLE);
-                notificationActionImages[positionAction].setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        try {
-                            action.actionIntent.send();
-                        } catch (PendingIntent.CanceledException ex) {
-                            Log.e(TAG, "MediaStyle - Notification set actionIntent");
+                notificationActionImages.add(notificationDrawableIcon);
+
+                notificationActionClick.add(
+                        new View.OnClickListener() {
+                            public void onClick(View v) {
+                                try {
+                                    action.actionIntent.send();
+                                } catch (PendingIntent.CanceledException ex) {
+                                    Log.e(TAG, "MediaStyle - Notification set actionIntent");
+                                }
+                            }
                         }
-                    }
-                });
-                positionAction++;
+                );
             }
         }
 
-        removeAllViews();
-        addView(mediaStyleControl);
-        setVisibility(View.VISIBLE);
+        this.smallIcon.setValue(smallIcon);
+        this.appName.setValue(intent.getStringExtra("applicationName"));
+        this.timeStamp.setValue(intent.getStringExtra("postTimestamp"));
+        this.title.setValue(intent.getStringExtra("title"));
+        this.text.setValue(intent.getStringExtra("text"));
+        this.largeIcon.setValue(new BitmapDrawable(context.getResources(), coverBitmap));
+        this.actionImages.setValue(notificationActionImages);
+        this.actionIntent.setValue(notificationActionClick);
         setColor();
     }
 }
