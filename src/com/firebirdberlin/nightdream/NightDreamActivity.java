@@ -865,16 +865,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private void triggerAlwaysOnTimeout() {
         handler.removeCallbacks(alwaysOnTimeout);
         boolean isCharging = Utility.isCharging(this);
-        Log.d(TAG, "triggerAlwaysOnTimeout");
-        if ((!isCharging && mySettings.batteryTimeout > 0) ||
-                (isCharging && mode == 0)) {
-            long timeout = 60000 * mySettings.batteryTimeout;
-
-            if (isCharging) {
-                timeout = MINIMUM_APP_RUN_TIME_MILLIS;
-            }
-
-            Log.d(TAG, "triggerAlwaysOnTimeout " + (timeout / 1000) + " seconds");
+        if ((!isCharging && mySettings.batteryTimeout > 0) || (isCharging && mode == 0)) {
             handler.postDelayed(alwaysOnTimeout, 60000 * mySettings.batteryTimeout);
         }
     }

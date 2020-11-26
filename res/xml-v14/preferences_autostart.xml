@@ -62,7 +62,7 @@
 
         <ListPreference
             app:iconSpaceReserved="false"
-            app:defaultValue="4"
+            app:defaultValue="5"
             app:entries="@array/batteryTimeout"
             app:useSimpleSummaryProvider="true"
             app:entryValues="@array/batteryTimeoutValues"
