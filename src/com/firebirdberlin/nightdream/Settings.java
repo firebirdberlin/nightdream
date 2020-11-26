@@ -160,12 +160,12 @@ public class Settings {
     public double NOISE_AMPLITUDE_WAKE = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public boolean purchasedWeatherData = false;
-    private boolean purchasedDonation = false;
     public int clockLayout;
     boolean autostartForNotifications = true;
     boolean showBatteryWarning = true;
-    int batteryTimeout = -1;
+    int batteryTimeout = 5;
     SharedPreferences settings;
+    private boolean purchasedDonation = false;
     private boolean radioStreamActivateWiFi = false;
     private int background_mode = 1;
     private long nextAlwaysOnTime = 0L;
@@ -463,7 +463,7 @@ public class Settings {
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
         weatherCityID = settings.getString("weatherCityID", "");
-        batteryTimeout = Integer.parseInt(settings.getString("batteryTimeout", "-1"));
+        batteryTimeout = getBatteryTimeoutMinutes();
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE *= sensitivity;
@@ -500,6 +500,10 @@ public class Settings {
         for (String weekday : scheduledAutostartWeekdaysStrings) {
             scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
         }
+    }
+
+    int getBatteryTimeoutMinutes() {
+        return Integer.parseInt(settings.getString("batteryTimeout", "5"));
     }
 
     ScreenProtectionModes getScreenProtection() {
@@ -934,6 +938,15 @@ public class Settings {
         prefEditor.apply();
     }
 
+    public File getBackgroundImageDir() {
+        String dir = settings.getString("backgroundImageDir", "");
+        if (dir.equals("")) {
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        } else {
+            return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dir);
+        }
+    }
+
     public void setBackgroundImageDir(String uri) {
         clearBackgroundImageCache();
         String dir = "";
@@ -944,17 +957,6 @@ public class Settings {
         }
         settings.edit().putString("backgroundImageDir", dir).apply();
     }
-
-
-    public File getBackgroundImageDir() {
-        String dir = settings.getString("backgroundImageDir", "");
-        if (dir.equals("")) {
-            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        } else {
-            return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dir);
-        }
-    }
-
 
     public void setBackgroundImageURI(String uri) {
         clearBackgroundImageCache();
@@ -1026,7 +1028,7 @@ public class Settings {
     public void setPositionClock(float x, float y, int orientation) {
 
         SharedPreferences.Editor editor = settings.edit();
-        switch(orientation) {
+        switch (orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 editor.putInt("xPositionLandscape", (int) x);
                 editor.putInt("yPositionLandscape", (int) y);
@@ -1044,7 +1046,7 @@ public class Settings {
     }
 
     public Point getClockPosition(int orientation) {
-        switch(orientation){
+        switch (orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 if (settings.contains("xPositionLandscape")) {
                     int x = settings.getInt("xPositionLandscape", 0);
