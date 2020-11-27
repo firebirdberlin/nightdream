@@ -704,7 +704,7 @@ public class NightDreamUI {
         int clockLayoutId = settings.getClockLayoutID(false);
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
-        clockLayout.setPrimaryColor(accentColor, glowRadius, accentColor, textureId);
+        clockLayout.setPrimaryColor(accentColor, glowRadius, accentColor, textureId, true);
         clockLayout.setSecondaryColor(textColor);
 
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();

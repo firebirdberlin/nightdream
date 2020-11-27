@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -24,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
@@ -66,6 +69,7 @@ public class ClockLayout extends LinearLayout {
     private boolean mirrorText = false;
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
+    private int oldPrimaryColor = 0;
 
     public ClockLayout(Context context) {
         super(context);
@@ -154,14 +158,40 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    public void setPrimaryColor(int color, int glowRadius, int glowColor, int textureId) {
+    @SuppressLint("RestrictedApi")
+    public void setPrimaryColor(
+            int color, final int glowRadius, final int glowColor, final int textureId,
+            boolean animated
+    ) {
+        if (animated) {
+            ValueAnimator anim = new ValueAnimator();
+            anim.setIntValues(oldPrimaryColor, color);
+            anim.setEvaluator(new ArgbEvaluator());
+            oldPrimaryColor = color;
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    Integer animatedColor = (Integer) valueAnimator.getAnimatedValue();
+                    if (animatedColor == null) return;
+                    setPrimaryColor(animatedColor);
+                }
+            });
+            anim.setDuration(1000);
+            anim.start();
+        } else {
+            setPrimaryColor(color);
+        }
+
+        applyTexture(clock, glowRadius, glowColor, textureId);
+        applyTexture(clock_ampm, glowRadius, glowColor, textureId);
+    }
+
+    private void setPrimaryColor(int color) {
         if (clock != null) {
             clock.setTextColor(color);
-            applyTexture(clock, glowRadius, glowColor, textureId);
         }
         if (clock_ampm != null) {
             clock_ampm.setTextColor(color);
-            applyTexture(clock_ampm, glowRadius, glowColor, textureId);
         }
         if (analog_clock != null) {
             analog_clock.setPrimaryColor(color);
@@ -695,6 +725,7 @@ public class ClockLayout extends LinearLayout {
             weatherLayout2.update(entry);
         }
     }
+
     public void getScaledSize(int[] size) {
         size[0] = Math.abs((int) (getWidth() * getScaleX()));
         size[1] = Math.abs((int) (getHeight() * getScaleY()));
@@ -703,6 +734,7 @@ public class ClockLayout extends LinearLayout {
     public float getScaledWidth() {
         return getWidth() * getScaleX();
     }
+
     public float getScaledHeight() {
         return getHeight() * getScaleY();
     }
