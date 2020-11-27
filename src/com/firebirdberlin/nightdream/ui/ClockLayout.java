@@ -159,59 +159,51 @@ public class ClockLayout extends LinearLayout {
     }
 
     @SuppressLint("RestrictedApi")
-    public void setPrimaryColor(int color, int glowRadius, int glowColor, int textureId) {
-        ValueAnimator anim = new ValueAnimator();
-        anim.setIntValues(oldPrimaryColor, color);
-        anim.setEvaluator(new ArgbEvaluator());
-        oldPrimaryColor = color;
-
-        if (clock != null) {
-            applyTexture(clock, glowRadius, glowColor, textureId);
+    public void setPrimaryColor(
+            int color, final int glowRadius, final int glowColor, final int textureId,
+            boolean animated
+    ) {
+        if (animated) {
+            ValueAnimator anim = new ValueAnimator();
+            anim.setIntValues(oldPrimaryColor, color);
+            anim.setEvaluator(new ArgbEvaluator());
+            oldPrimaryColor = color;
             anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    clock.setTextColor((Integer)valueAnimator.getAnimatedValue());
+                    Integer animatedColor = (Integer) valueAnimator.getAnimatedValue();
+                    if (animatedColor == null) return;
+                    setPrimaryColor(animatedColor);
                 }
             });
+            anim.setDuration(1000);
+            anim.start();
+        } else {
+            setPrimaryColor(color);
+        }
+
+        applyTexture(clock, glowRadius, glowColor, textureId);
+        applyTexture(clock_ampm, glowRadius, glowColor, textureId);
+    }
+
+    private void setPrimaryColor(int color) {
+        if (clock != null) {
+            clock.setTextColor(color);
         }
         if (clock_ampm != null) {
-            applyTexture(clock_ampm, glowRadius, glowColor, textureId);
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    clock_ampm.setTextColor((Integer)valueAnimator.getAnimatedValue());
-                }
-            });
+            clock_ampm.setTextColor(color);
         }
         if (analog_clock != null) {
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    analog_clock.setPrimaryColor((Integer)valueAnimator.getAnimatedValue());
-                }
-            });
+            analog_clock.setPrimaryColor(color);
         }
 
         if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
-            final CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    layout.setPrimaryColor((Integer)valueAnimator.getAnimatedValue());
-                }
-            });
+            CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
+            layout.setPrimaryColor(color);
         }
         if (calendarView != null) {
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    calendarView.setSelectionColor((Integer)valueAnimator.getAnimatedValue());
-                }
-            });
+            calendarView.setSelectionColor(color);
         }
-
-        anim.setDuration(1000);
-        anim.start();
     }
 
     void applyTexture(TextView view, int glowRadius, int glowColor, int resId) {
@@ -733,6 +725,7 @@ public class ClockLayout extends LinearLayout {
             weatherLayout2.update(entry);
         }
     }
+
     public void getScaledSize(int[] size) {
         size[0] = Math.abs((int) (getWidth() * getScaleX()));
         size[1] = Math.abs((int) (getHeight() * getScaleY()));
@@ -741,6 +734,7 @@ public class ClockLayout extends LinearLayout {
     public float getScaledWidth() {
         return getWidth() * getScaleX();
     }
+
     public float getScaledHeight() {
         return getHeight() * getScaleY();
     }
