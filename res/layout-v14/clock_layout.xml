@@ -32,9 +32,9 @@
             android:translationY="0sp"
             custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="h:mm"
-            custom:format24Hr="HH:mm"/>
-        <com.firebirdberlin.nightdream.CustomDigitalClock
-            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            custom:format24Hr="HH:mm" />
+
+        <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/clock_ampm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,14 +91,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_mediacontrol_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
+        layout="@layout/notification_bar"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:layout_marginTop="2dp"
-        layout="@layout/notification_bar" />
+        android:layout_marginTop="2dp" />
 
 </LinearLayout>
