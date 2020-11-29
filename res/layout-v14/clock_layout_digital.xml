@@ -120,8 +120,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_mediacontrol_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="19">
+        android:layout_height="wrap_content">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
