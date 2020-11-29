@@ -39,7 +39,6 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
                     android:src="@{model.smallIcon}"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -52,7 +51,6 @@
                     android:layout_width="29dp"
                     android:layout_height="10dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:text="@{model.appName}"
                     android:textColor="@{model.textColor}"
                     android:textSize="8sp"
@@ -64,7 +62,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:text="@{model.timeStamp}"
                     android:textColor="@{model.textColor}"
                     android:textSize="8sp"
@@ -72,39 +69,39 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/notify_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@{model.title}"
-                    android:textColor="@{model.textColor}"
-                    android:textSize="10sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/notify_smallicon" />
-
-                <TextView
                     android:id="@+id/notify_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@{model.text}"
                     android:textColor="@{model.textColor}"
                     android:textSize="10sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/notify_title"
+                    app:layout_constraintEnd_toStartOf="@+id/notify_largeicon"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/notify_title"
+                    app:layout_constraintTop_toBottomOf="@+id/notify_smallicon"
                     app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/notify_title"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@{model.title}"
+                    android:textColor="@{model.textColor}"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toTopOf="@id/notify_actions_images"
+                    app:layout_constraintEnd_toStartOf="@+id/notify_largeicon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/notify_text"/>
 
                 <ImageView
                     android:id="@+id/notify_largeicon"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
                     android:src="@{model.largeIcon}"
-                    app:layout_constraintBottom_toTopOf="@id/notify_actions_images"
                     app:layout_constraintEnd_toEndOf="@id/notify_actions_images"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -114,11 +111,11 @@
                     android:layout_height="wrap_content"
 
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/notify_text">
+                    app:layout_constraintTop_toBottomOf="@id/notify_largeicon">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -128,7 +125,6 @@
                             android:id="@+id/notify_actionview1"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_marginTop="2dp"
                             android:onClick="@{model.actionIntent.size() >= 1 ? model.actionIntent.get(0) : null}"
                             android:src="@{model.actionImages.size() >= 1 ? model.actionImages.get(0) : null}"
                             android:visibility="@{model.actionImages.size() >= 1  ? View.VISIBLE : View.GONE}"
@@ -140,7 +136,6 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginStart="8dp"
-                            android:layout_marginTop="2dp"
                             android:layout_marginEnd="8dp"
                             android:onClick="@{model.actionIntent.size() >= 2 ? model.actionIntent.get(1) : null}"
                             android:src="@{model.actionImages.size() >= 2 ? model.actionImages.get(1) : null}"
@@ -154,7 +149,6 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginStart="8dp"
-                            android:layout_marginTop="2dp"
                             android:layout_marginEnd="8dp"
                             android:onClick="@{model.actionIntent.size() >= 3 ? model.actionIntent.get(2) : null}"
                             android:src="@{model.actionImages.size() >= 3 ? model.actionImages.get(2) : null}"
@@ -168,7 +162,6 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginStart="8dp"
-                            android:layout_marginTop="2dp"
                             android:layout_marginEnd="8dp"
                             android:onClick="@{model.actionIntent.size() >= 4 ? model.actionIntent.get(3) : null}"
                             android:src="@{model.actionImages.size() >= 4 ? model.actionImages.get(3) : null }"
@@ -181,7 +174,6 @@
                             android:id="@+id/notify_actionview5"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_marginTop="2dp"
                             android:onClick="@{model.actionIntent.size() == 5 ? model.actionIntent.get(4) : null}"
                             android:src="@{model.actionImages.size() == 5 ? model.actionImages.get(4) : null }"
                             android:visibility="@{model.actionImages.size() == 5  ? View.VISIBLE : View.GONE}"
