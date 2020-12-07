@@ -105,7 +105,9 @@ public class WeatherLocationDialogFragment extends DialogFragment
         queryText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Log.i(TAG, actionId + " " +  event);
+                if (event == null) {
+                    return false;
+                }
                 if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     startSearch();
                     return true;
