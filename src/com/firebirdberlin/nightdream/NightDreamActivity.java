@@ -88,7 +88,7 @@ public class NightDreamActivity extends BillingHelperActivity
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
-    private Context context = null;
+    private static Context context = null;
     private ImageView alarmClockIcon;
     private ImageView radioIcon;
     private ImageView torchIcon;
@@ -943,5 +943,9 @@ public class NightDreamActivity extends BillingHelperActivity
                 isChargingWireless = stats.reference.isChargingWireless;
             }
         }
+    }
+
+    public static Context getContext(){
+        return NightDreamActivity.context;
     }
 }

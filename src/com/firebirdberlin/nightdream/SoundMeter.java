@@ -16,6 +16,7 @@
 
 package com.firebirdberlin.nightdream;
 
+import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -45,11 +47,15 @@ public class SoundMeter {
 
     public boolean start() {
         if (mRecorder == null) {
+            Context context = NightDreamActivity.getContext();
+            File file = new File(String.valueOf(context.getCacheDir()));
+            Log.d(TAG,"CacheDir: "+context.getCacheDir());
+
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setOutputFile("/dev/null");
+            mRecorder.setOutputFile(file.getAbsoluteFile() + "/demoAudio.mp3");
             mRecorder.setOnErrorListener(errorListener);
             mRecorder.setOnInfoListener(infoListener);
         }
