@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RadioStation {
-
     private static final String JSON_UUID = "id";
     private static final String JSON_NAME = "name";
     private static final String JSON_COUNTRY = "country";
@@ -32,7 +31,11 @@ public class RadioStation {
 
     public static RadioStation fromJsonObj(JSONObject jsonStation) throws JSONException {
         RadioStation station = new RadioStation();
-        station.uuid = jsonStation.getString(JSON_UUID);
+        try {
+            station.uuid = jsonStation.getString(JSON_UUID);
+        } catch (JSONException e) {
+            station.uuid = "";
+        }
         station.name = jsonStation.getString(JSON_NAME);
         station.countryCode = jsonStation.getString(JSON_COUNTRY);
         station.stream = jsonStation.getString(JSON_STREAM);
@@ -79,7 +82,6 @@ public class RadioStation {
         jsonStation.put(JSON_USER_DEFINED_STREAM_URL, isUserDefinedStreamUrl);
         jsonStation.put(JSON_MUTE_DELAY_MILLIS, muteDelayInMillis);
         //jsonStation.put(JSON_STATUS, isOnline);
-
         return jsonStation;
     }
 }

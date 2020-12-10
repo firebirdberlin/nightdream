@@ -132,7 +132,7 @@ public class NightModeListener extends Service {
         @Override
         public void run() {
             soundmeter = null;
-            soundmeter = new SoundMeter(true);
+            soundmeter = new SoundMeter(getApplicationContext());
             boolean result = soundmeter.start();
             error_on_microphone = !result;
             handler.postDelayed(getAmplitude, measurementMillis);
