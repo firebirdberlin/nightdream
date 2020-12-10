@@ -600,7 +600,7 @@ public class NightDreamUI {
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
         if (settings.useAmbientNoiseDetection()) {
-            soundmeter = new SoundMeter(isDebuggable);
+            soundmeter = new SoundMeter(mContext);
         } else {
             soundmeter = null;
         }
