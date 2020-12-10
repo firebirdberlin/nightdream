@@ -350,6 +350,7 @@ public class RadioStreamManualInputDialog {
 
     private RadioStation createRadioStation(String name, String streamUrl, int bitrate, int secondsToMute) {
         RadioStation station = new RadioStation();
+        station.uuid = "";
         station.isUserDefinedStreamUrl = true;
         station.isOnline = true;
         station.name = name;
