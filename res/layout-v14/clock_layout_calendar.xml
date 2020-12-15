@@ -32,8 +32,7 @@
             android:translationY="0sp"
             custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="h:mm"
-            custom:format24Hr="HH:mm"
-            />
+            custom:format24Hr="HH:mm" />
 
         <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/clock_ampm"
@@ -56,7 +55,7 @@
     <!--
         divider
     -->
-<!--
+    <!--
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -66,26 +65,24 @@
         android:background="#C2C2C2" />
 -->
 
-<!--
+    <!--
     calendar
 -->
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/calendarView"
-        android:background="@drawable/outline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/outline"
         android:clickable="false"
         android:scaleX="0.95"
         android:scaleY="0.95"
         app:mcv_allowClickDaysOutsideCurrentMonth="false"
+        app:mcv_calendarMode="month"
         app:mcv_dateTextAppearance="@style/TextAppearance.MaterialCalendarWidgetDate"
         app:mcv_headerTextAppearance="@style/TextAppearance.MaterialCalendarWidgetHeader"
-        app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidgetWeekDay"
-        app:mcv_calendarMode="month"
         app:mcv_showOtherDates="defaults"
         app:mcv_tileHeight="16sp"
-        />
+        app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidgetWeekDay" />
 
     <!--
         divider
@@ -100,8 +97,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_mediacontrol_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="19">
+        android:layout_height="wrap_content">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
