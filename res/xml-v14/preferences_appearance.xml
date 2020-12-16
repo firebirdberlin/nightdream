@@ -163,6 +163,16 @@
             app:useSimpleSummaryProvider="true"
             app:isPreferenceVisible="false"/>
 
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="1"
+            app:title="@string/background_image_filter"
+            app:entries="@array/backgroundImageFilterMode"
+            app:entryValues="@array/backgroundImageFilterModeValues"
+            app:key="backgroundImageFilter"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="false"/>
+
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             app:defaultValue="true"
