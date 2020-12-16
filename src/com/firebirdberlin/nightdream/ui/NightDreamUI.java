@@ -1654,68 +1654,38 @@ public class NightDreamUI {
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
-    private final class getExifInformation extends AsyncTask<File, Integer, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(File... params) {
-            return exifView.getExifView(mContext, params[0], getSecondaryColor());
+    private Bitmap imageFilter(Bitmap bitmap) {
+        if ((settings.background_filter == 1) || (settings.getBackgroundMode() != Settings.BACKGROUND_SLIDESHOW)) {
+            return bitmap;
         }
 
-        @Override
-        protected void onProgressUpdate(Integer... params) {
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                exifLayoutContainer.setVisibility(View.VISIBLE);
-            } else {
-                exifLayoutContainer.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    private Bitmap imageFilter(Bitmap oldBackgroundBitmap ){
-        if ( (settings.background_filter == 1) || (settings.getBackgroundMode() != Settings.BACKGROUND_SLIDESHOW) ) {
-            return oldBackgroundBitmap;
-        }
-
-        Bitmap newBackgroundBitmap = oldBackgroundBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap newBackgroundBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         int imageHeight = newBackgroundBitmap.getHeight();
         int imageWidth = newBackgroundBitmap.getWidth();
 
         Canvas canvas = new Canvas(newBackgroundBitmap);
-
         Paint paint = new Paint();
 
         switch (settings.background_filter) {
             case 2:
                 //filter: grey
-                paint.setColorFilter(new ColorMatrixColorFilter(
-                        new ColorMatrix(new float[]
-                                {
-                                        0.5f, 0.5f, 0.5f, 0f, 0f,
-                                        0.5f, 0.5f, 0.5f, 0f, 0f,
-                                        0.5f, 0.5f, 0.5f, 0f, 0f,
-                                        0f, 0f, 0f, 1f, 0f
-                                })
-                ));
-                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                final ColorMatrix matrixGray = new ColorMatrix();
+                matrixGray.setSaturation(0);
+
+                paint.setColorFilter(new ColorMatrixColorFilter(matrixGray));
+                canvas.drawBitmap(bitmap, 0, 0, paint);
                 break;
 
             case 3:
                 //filter: sepia
-                paint.setColorFilter(new ColorMatrixColorFilter(
-                        new ColorMatrix(new float[]
-                                {
-                                        0.5f, 0.5f, 0.5f, 0f, 40f,
-                                        0.5f, 0.5f, 0.5f, 0f, 0f,
-                                        0.5f, 0.5f, 0.5f, 0f, 20f,
-                                        0f, 0f, 0f, 1f, 0f
-                                })
-                ));
+                final ColorMatrix matrixA = new ColorMatrix();
+                final ColorMatrix matrixB = new ColorMatrix();
+                matrixA.setSaturation(0);
+                matrixB.setScale(1f, .80f, .52f, 1.0f);
+                matrixA.setConcat(matrixB, matrixA);
 
-                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                paint.setColorFilter(new ColorMatrixColorFilter(matrixA));
+                canvas.drawBitmap(bitmap, 0, 0, paint);
                 break;
 
             case 4:
@@ -1723,14 +1693,14 @@ public class NightDreamUI {
                 paint.setColorFilter(new ColorMatrixColorFilter(
                         new ColorMatrix(new float[]
                                 {
-                                        -1f,  0f,  0f,  0f, 255f,
-                                        0f, -1f,  0f,  0f, 255f,
-                                        0f,  0f, -1f,  0f, 255f,
-                                        0f,  0f,  0f,  1f,   0f
+                                        -1f, 0f, 0f, 0f, 255f,
+                                        0f, -1f, 0f, 0f, 255f,
+                                        0f, 0f, -1f, 0f, 255f,
+                                        0f, 0f, 0f, 1f, 0f
                                 })
                 ));
 
-                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                canvas.drawBitmap(bitmap, 0, 0, paint);
                 break;
 
             case 5:
@@ -1745,7 +1715,7 @@ public class NightDreamUI {
                                 })
                 ));
 
-                canvas.drawBitmap(oldBackgroundBitmap, 0, 0, paint);
+                canvas.drawBitmap(bitmap, 0, 0, paint);
                 break;
 
             case 6:
@@ -1753,7 +1723,7 @@ public class NightDreamUI {
                 for (int i = 0; i < imageWidth; i++) {
 
                     for (int j = 0; j < imageHeight; j++) {
-                        int oldPixel = oldBackgroundBitmap.getPixel(i, j);
+                        int oldPixel = bitmap.getPixel(i, j);
 
                         int oldRed = Color.red(oldPixel);
                         int oldBlue = Color.blue(oldPixel);
@@ -1778,6 +1748,27 @@ public class NightDreamUI {
         }
 
         return newBackgroundBitmap;
+    }
+
+    private final class getExifInformation extends AsyncTask<File, Integer, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(File... params) {
+            return exifView.getExifView(mContext, params[0], getSecondaryColor());
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... params) {
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                exifLayoutContainer.setVisibility(View.VISIBLE);
+            } else {
+                exifLayoutContainer.setVisibility(View.GONE);
+            }
+        }
     }
 
     private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
