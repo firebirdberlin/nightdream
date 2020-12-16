@@ -147,6 +147,7 @@ public class Settings {
     public long sleepTimeInMillis = 0L; // 5 min
     public long snoozeTimeInMillis = 300000; // 5 min
     public long autoSnoozeTimeInMillis = 120000; // 2 min
+    public int autoSnoozeCycles = 2;
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
     public String backgroundImageURI = "";
@@ -446,6 +447,7 @@ public class Settings {
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
         snoozeTimeInMillis = 60000L * settings.getInt("snoozeTimeInMinutes", 5);
         autoSnoozeTimeInMillis = 60000L * settings.getInt("autoSnoozeTimeInMinutes", 2);
+        autoSnoozeCycles = settings.getInt("autoSnoozeCycles", 2);
 
         String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
         sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);

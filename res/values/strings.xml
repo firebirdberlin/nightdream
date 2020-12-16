@@ -320,7 +320,8 @@ OR
     <string name="slideshow_style">Style</string>
     <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="snoozeTime">Snooze time</string>
-    <string name="snoozeAfter">Auto snooze after</string>
+    <string name="snoozeAfter">Auto snooze or auto stop after</string>
+    <string name="snoozeCycles">Auto snooze cycles before auto stop</string>
     <string name="speakTime">It is</string>
     <string name="speakTimeSummary">Speaks the current time on long pressing the screen.</string>
     <string name="speakTimeTitle">Speak the current time</string>
