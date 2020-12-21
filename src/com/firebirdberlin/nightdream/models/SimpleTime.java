@@ -33,6 +33,7 @@ public class SimpleTime {
     public String soundUri;
     public Long nextEventAfter = null;
     public boolean vibrate = false;
+    public int numAutoSnoozeCycles = 0;
 
     public SimpleTime() {
 
@@ -80,6 +81,7 @@ public class SimpleTime {
         this.nextEventAfter = bundle.getLong("nextEventAfter");
         this.radioStationIndex = bundle.getInt("radioStationIndex", -1);
         this.vibrate = bundle.getBoolean("vibrate", false);
+        this.numAutoSnoozeCycles = bundle.getInt("numAutoSnoozeCycles", 0);
     }
 
     public static SimpleTime getNextFromList(List<SimpleTime> entries) {
@@ -157,6 +159,7 @@ public class SimpleTime {
         bundle.putString("soundUri", this.soundUri);
         bundle.putInt("radioStationIndex", this.radioStationIndex);
         bundle.putBoolean("vibrate", this.vibrate);
+        bundle.putInt("numAutoSnoozeCycles", this.numAutoSnoozeCycles);
         if (this.nextEventAfter != null) {
             bundle.putLong("nextEventAfter", this.nextEventAfter);
         }

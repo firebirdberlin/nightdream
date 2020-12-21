@@ -161,7 +161,10 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void snoozeAlarm() {
+        snoozeAlarm(false);
+    }
 
+    private void snoozeAlarm(boolean isAutoSnooze) {
         SimpleTime currentAlarm = getCurrentlyActiveAlarm();
         stopAlarm(false);
 
@@ -171,6 +174,7 @@ public class AlarmHandlerService extends IntentService {
         time.soundUri = (currentAlarm != null) ? currentAlarm.soundUri : null;
         time.radioStationIndex = (currentAlarm != null) ? currentAlarm.radioStationIndex : -1;
         time.vibrate = (currentAlarm != null) ? currentAlarm.vibrate : false;
+        time.numAutoSnoozeCycles = (isAutoSnooze) ? currentAlarm.numAutoSnoozeCycles + 1 : 0;
         SqliteIntentService.snooze(context, time);
     }
 
