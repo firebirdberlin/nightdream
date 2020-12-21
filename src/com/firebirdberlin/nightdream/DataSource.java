@@ -81,6 +81,7 @@ public class DataSource {
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_NEXT_EVENT_AFTER, time.nextEventAfter);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_RADIO_STATION_INDEX, time.radioStationIndex);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_VIBRATE, time.vibrate);
+        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES, time.numAutoSnoozeCycles);
         return values;
     }
 
@@ -152,7 +153,8 @@ public class DataSource {
                 SQLiteDBHelper.AlarmEntry.COLUMN_ALARM_SOUND_URI,
                 SQLiteDBHelper.AlarmEntry.COLUMN_NEXT_EVENT_AFTER,
                 SQLiteDBHelper.AlarmEntry.COLUMN_RADIO_STATION_INDEX,
-                SQLiteDBHelper.AlarmEntry.COLUMN_VIBRATE
+                SQLiteDBHelper.AlarmEntry.COLUMN_VIBRATE,
+                SQLiteDBHelper.AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES
         };
 
         return db.query(SQLiteDBHelper.AlarmEntry.TABLE_NAME, projection, where, whereArgs,
@@ -172,6 +174,7 @@ public class DataSource {
         time.nextEventAfter = cursor.getLong(7);
         time.radioStationIndex = cursor.getInt(8);
         time.vibrate = (cursor.getInt(9) == 1);
+        time.numAutoSnoozeCycles = cursor.getInt(10);
         return time;
     }
 
