@@ -15,7 +15,7 @@ import org.json.JSONException;
 public class SQLiteDBHelper extends SQLiteOpenHelper {
     Context context;
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "sqlite.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + AlarmEntry.TABLE_NAME + " (" +
@@ -28,7 +28,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                     AlarmEntry.COLUMN_ALARM_SOUND_URI + " text, " +
                     AlarmEntry.COLUMN_NEXT_EVENT_AFTER + " INTEGER DEFAULT NULL, " +
                     AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1, " +
-                    AlarmEntry.COLUMN_VIBRATE + " INTEGER DEFAULT 0" +
+                    AlarmEntry.COLUMN_VIBRATE + " INTEGER DEFAULT 0, " +
+                    AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0" +
                     ")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + AlarmEntry.TABLE_NAME;
@@ -72,11 +73,15 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         if (newVersion >= 6 && oldVersion < 6) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_VIBRATE + " INTEGER DEFAULT 0");
         }
+
+        if (newVersion >= 7 && oldVersion < 7) {
+            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0");
+        }
     }
 
     private void updateAlarmClockRadioStation(SQLiteDatabase db) {
         // do the migration for alarms
-        // this function can be reomoved when versions <= 1.9.5 are no longer relevant
+        // this function can be removed when versions <= 1.9.5 are no longer relevant
         SharedPreferences prefs = context.getSharedPreferences(Settings.PREFS_KEY, 0);
         boolean useRadioAlarmClock = prefs.getBoolean("useRadioAlarmClock", false);
         if (!useRadioAlarmClock) return;
@@ -140,6 +145,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_ALARM_SOUND_URI = "alarmSoundUri";
         public static final String COLUMN_NEXT_EVENT_AFTER = "nextEventAfter";
         public static final String COLUMN_RADIO_STATION_INDEX = "radioStationIndex";
+        public static final String COLUMN_NUM_AUTO_SNOOZE_CYCLES = "numAutoSnoozeCycles";
         public static final String COLUMN_VIBRATE = "vibrate";
     }
 }
