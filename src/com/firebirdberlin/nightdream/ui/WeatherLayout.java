@@ -16,8 +16,8 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherLayout extends LinearLayout {
     private static final String TAG = "WeatherLayout";
-    private Context context;
     private static String NAMESPACE = "weather";
+    private Context context;
     private DirectionIconView iconWindDirection = null;
     private TextView iconText = null;
     private TextView iconWind = null;
@@ -32,23 +32,17 @@ public class WeatherLayout extends LinearLayout {
     private int maxWidth = -1;
     private int minFontSizePx = -1;
     private int maxFontSizePx = -1;
-
-    public void setIconSizeFactor(int iconSizeFactor) {
-        this.iconSizeFactor = iconSizeFactor;
-    }
-
     private int iconSizeFactor = 1;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private boolean isVertical = false;
+    private int iconHeight = -1;
 
     public WeatherLayout(Context context) {
         super(context);
         this.context = context;
         init();
     }
-
-    private int iconHeight = -1;
 
     public WeatherLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -69,6 +63,10 @@ public class WeatherLayout extends LinearLayout {
         if (value == null) value = defaultValue;
 
         return value;
+    }
+
+    public void setIconSizeFactor(int iconSizeFactor) {
+        this.iconSizeFactor = iconSizeFactor;
     }
 
     public void setTemperature(boolean on, boolean showApparentTemperature, int unit) {
@@ -198,18 +196,18 @@ public class WeatherLayout extends LinearLayout {
         if (code.equals("02n")) return "I";
         if (code.equals("03d")) return "N";
         if (code.equals("03n")) return "N";
-        if (code.equals("04d") ) return "Y";
-        if (code.equals("04n") ) return "Y";
-        if (code.equals("09d") ) return "R";
-        if (code.equals("09n") ) return "R";
-        if (code.equals("10d") ) return "Q";
-        if (code.equals("10n") ) return "Q";
-        if (code.equals("11d") ) return "0";
-        if (code.equals("11n") ) return "0";
-        if (code.equals("13d") ) return "W";
-        if (code.equals("13n") ) return "W";
-        if (code.equals("50d") ) return "M";
-        if (code.equals("50n") ) return "M";
+        if (code.equals("04d")) return "Y";
+        if (code.equals("04n")) return "Y";
+        if (code.equals("09d")) return "R";
+        if (code.equals("09n")) return "R";
+        if (code.equals("10d")) return "Q";
+        if (code.equals("10n")) return "Q";
+        if (code.equals("11d")) return "0";
+        if (code.equals("11n")) return "0";
+        if (code.equals("13d")) return "W";
+        if (code.equals("13n")) return "W";
+        if (code.equals("50d")) return "M";
+        if (code.equals("50n")) return "M";
         // darksky
         if (code.equals("clear-day")) return "B";
         if (code.equals("clear-night")) return "C";

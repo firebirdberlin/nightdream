@@ -477,25 +477,35 @@ public class ClockLayout extends LinearLayout {
             clock.setMaxWidth((int) (widthFactorClock * parentWidth));
             clock.setMaxFontSizesInSp(minFontSize, maxFontSizeClock);
         }
+        int dateTextSize = -1;
         if (date != null) {
             date.setMaxWidth((int) (widthFactorClock * parentWidth));
             date.setMaxFontSizesInSp(minFontSize, maxFontSize);
+            dateTextSize = (int) date.getTextSize();
         }
         int iconHeight = -1;
         if (weatherLayout != null) {
             weatherLayout.setMaxWidth((int) (widthFactor * parentWidth));
-            //weatherLayout.setMaxFontSizesInSp(minFontSize, maxFontSize);
             weatherLayout.setIconSizeFactor(weatherIconSizeFactor);
-            weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+            if (dateTextSize > 0) {
+                weatherLayout.setTypeface(date.getTypeface());
+                weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateTextSize);
+            } else {
+                weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+            }
             weatherLayout.update();
             iconHeight = weatherLayout.getIconHeight();
         }
         if (weatherLayout2 != null) {
             weatherLayout2.setMaxWidth((int) (widthFactor * parentWidth));
-            weatherLayout2.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
             weatherLayout2.setIconSizeFactor(weatherIconSizeFactor);
+            if (dateTextSize > 0) {
+                weatherLayout2.setTypeface(date.getTypeface());
+                weatherLayout2.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateTextSize);
+            } else {
+                weatherLayout2.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+            }
             weatherLayout2.setIconHeight(iconHeight);
-            //weatherLayout2.setMaxFontSizesInSp(minFontSize, maxFontSize);
             weatherLayout2.update();
         }
     }

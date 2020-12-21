@@ -104,7 +104,8 @@
 
         </com.google.android.flexbox.FlexboxLayout>
 
-        <com.firebirdberlin.nightdream.ui.WeatherLayout xmlns:weather="weather"
+        <com.firebirdberlin.nightdream.ui.WeatherLayout
+            xmlns:weather="weather"
             android:id="@+id/weatherLayout2"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
