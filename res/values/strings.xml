@@ -237,6 +237,7 @@ OR
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
+    <string name="pollen">Pollen</string>
     <string name="power_source">power source</string>
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>

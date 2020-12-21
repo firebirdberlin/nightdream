@@ -106,6 +106,7 @@ android {
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
         targetSdkVersion 29
+        vectorDrawables.useSupportLibrary = true
     }
     buildFeatures {
         dataBinding true
