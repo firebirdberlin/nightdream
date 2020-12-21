@@ -547,6 +547,9 @@ public class NightDreamActivity extends BillingHelperActivity
         // after the dream has ended
         //audiomanage.setRingerMode(currentRingerMode);
 
+        if (textToSpeech != null) {
+            textToSpeech.shutdown();
+        }
         nightModeReceiver = null;
         broadcastReceiver = null;
         powerSupplyReceiver = null;
