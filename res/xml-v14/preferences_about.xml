@@ -209,6 +209,17 @@ vi - Phong Nguyen"/>
         <Preference
             app:iconSpaceReserved="false"
             app:key="about_roboto"
+            app:summary="Flaticon"
+            app:title="Icons">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com" />
+        </Preference>
+
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_roboto"
             app:summary="by Christian Robertson"
             app:title="Roboto Font">
             <intent

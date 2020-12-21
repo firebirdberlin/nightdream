@@ -96,6 +96,12 @@
         weather:content="location"
         />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pollen_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!--
         Notifications
     -->
