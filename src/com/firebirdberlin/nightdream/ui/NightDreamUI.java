@@ -51,8 +51,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Graphics;
+import com.firebirdberlin.nightdream.HttpReader;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.NightDreamActivity;
+import com.firebirdberlin.nightdream.Pollen;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
@@ -67,9 +69,7 @@ import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
-
 import org.greenrobot.eventbus.Subscribe;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -112,6 +112,8 @@ public class NightDreamUI {
     private ConstraintLayout exifLayoutContainer;
     private ClockLayoutContainer clockLayoutContainer;
     private ClockLayout clockLayout;
+    private ConstraintLayout pollenContainer;
+    Pollen pollen = new Pollen();
     private FlexboxLayout notificationStatusBar;
     private FlexboxLayout sidePanel;
     private final Runnable setupSidePanel = new Runnable() {
@@ -337,6 +339,7 @@ public class NightDreamUI {
             showAlarmClock();
 
             clockLayout.postDelayed(zoomIn, 500);
+
         }
     };
     private boolean shallMoveClock = false;
@@ -481,6 +484,7 @@ public class NightDreamUI {
         clockLayout = rootView.findViewById(R.id.clockLayout);
         clockLayoutContainer = rootView.findViewById(R.id.clockLayoutContainer);
         exifLayoutContainer = rootView.findViewById(R.id.containerExifView);
+
         mainFrame = rootView.findViewById(R.id.main_frame);
         menuIcon = rootView.findViewById(R.id.burger_icon);
         nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
@@ -613,6 +617,19 @@ public class NightDreamUI {
         postFadeAnimation();
     }
 
+    //pollen
+    private void pollenCount(){
+        if (settings.showWeather && settings.showPollen) {
+            pollenContainer = clockLayout.findViewById(R.id.pollen_container);
+
+            if (pollenContainer != null) {
+                new PollenCount(mContext, pollenContainer, pollen).execute();
+            } else {
+                Log.e(TAG, "pollenContainer not found");
+            }
+        }
+    }
+
     private void initBackground() {
         preloadBackgroundImage = null;
         preloadBackgroundImageFile = null;
@@ -658,6 +675,7 @@ public class NightDreamUI {
         if (!entry.isValid()) {
             clockLayout.clearWeather();
         }
+        pollenCount();
     }
 
     public void setupClockLayout() {

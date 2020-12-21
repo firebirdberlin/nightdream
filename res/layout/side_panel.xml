@@ -48,7 +48,6 @@
             app:srcCompat="@drawable/ic_cloud"
             android:visibility="visible" />
 
-
         <ImageView
             android:id="@+id/night_mode_icon"
             android:layout_width="wrap_content"
@@ -59,6 +58,7 @@
             android:padding="5dp"
             app:srcCompat="@drawable/ic_sun"
             android:focusable="true" />
+
         <ImageView
             android:id="@+id/torch_icon"
             android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
             android:focusable="true"
             android:onClick="onRadioClick"
             android:padding="5dp"
-            android:src="@drawable/ic_radio"
+            app:srcCompat="@drawable/ic_radio"
             android:visibility="visible" />
 
 </com.google.android.flexbox.FlexboxLayout>
