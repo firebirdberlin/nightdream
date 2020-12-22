@@ -667,6 +667,7 @@ public class NightDreamUI {
                 settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit
         );
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
+        clockLayout.setWeatherLocation(false);
 
         clockLayout.setShowDivider(settings.getShowDivider(layoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
