@@ -147,7 +147,8 @@
             app:selectable="false"
             app:summary="
 Martin Poschmann\n
-Michael Groth"
+Michael Groth\n
+Lukas Bauer"
             app:title="@string/credits_pull_requests" />
 
         <Preference
