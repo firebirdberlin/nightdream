@@ -321,6 +321,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="slideshow_style">Stil</string>
     <string name="snoozeTime">Schlummerzeit</string>
     <string name="snoozeAfter">Automatisch schlummern nach</string>
+    <string name="snoozeCycles">Maximale Wiederholungen der Schlummerfunktion vor Auto-Stopp</string>
     <string name="speakTime">Es ist</string>
     <string name="speakTimeSummary">Aktuelle Uhrzeit vorlesen lassen durch langes Drücken auf den Bildschirm.</string>
     <string name="speakTimeTitle">Aktuelle Uhrzeit vorlesen</string>
