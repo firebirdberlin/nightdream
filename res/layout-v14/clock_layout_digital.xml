@@ -14,18 +14,17 @@
         app:flexWrap="nowrap"
         app:justifyContent="space_between">
 
-        <com.firebirdberlin.nightdream.ui.WeatherLayout xmlns:weather="weather"
+        <com.firebirdberlin.nightdream.ui.WeatherLayout
+            xmlns:weather="weather"
             android:id="@+id/weatherLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
             android:layout_marginEnd="6dp"
-            android:layout_marginRight="6dp"
             app:layout_flexBasisPercent="15%"
             weather:content="icon|temperature"
-            weather:orientation="vertical"
-            />
+            weather:orientation="vertical"/>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
@@ -111,7 +110,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginStart="6dp"
-            android:layout_marginLeft="6dp"
             android:visibility="gone"
             app:layout_flexBasisPercent="15%"
             weather:content="wind"

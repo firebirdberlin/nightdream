@@ -61,7 +61,7 @@ public class ClockLayout extends LinearLayout {
     private CustomAnalogClock analog_clock = null;
     private AutoAdjustTextView date = null;
     private WeatherLayout weatherLayout = null;
-    private WeatherLayout weatherLayout2 = null;
+    WeatherLayout[] weatherLayouts = {null, null};
     private FlexboxLayout notificationLayout = null;
     private ConstraintLayout mediaStyleLayout = null;
     private View divider = null;
@@ -129,7 +129,9 @@ public class ClockLayout extends LinearLayout {
         clock_ampm = findViewById(R.id.clock_ampm);
         date = findViewById(R.id.date);
         weatherLayout = findViewById(R.id.weatherLayout);
-        weatherLayout2 = findViewById(R.id.weatherLayout2);
+        weatherLayouts[0] = findViewById(R.id.weatherLayout);;
+        weatherLayouts[1] = findViewById(R.id.weatherLayout2);
+
         divider = findViewById(R.id.divider);
         analog_clock = findViewById(R.id.analog_clock);
         notificationLayout = findViewById(R.id.notificationbar);
@@ -228,11 +230,10 @@ public class ClockLayout extends LinearLayout {
         if (date != null) {
             date.setTextColor(color);
         }
-        if (weatherLayout != null) {
-            weatherLayout.setColor(color);
-        }
-        if (weatherLayout2 != null) {
-            weatherLayout2.setColor(color);
+        for (WeatherLayout layout : weatherLayouts) {
+            if (layout != null) {
+                layout.setColor(color);
+            }
         }
         if (divider != null) {
             divider.setBackgroundColor(color);
@@ -261,15 +262,18 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void setTemperature(boolean on, boolean withApparentTemperature, int unit) {
-        if (weatherLayout == null) return;
-        weatherLayout.setTemperature(on, withApparentTemperature, unit);
+        for (WeatherLayout layout : weatherLayouts) {
+            if (layout != null) {
+                layout.setTemperature(on, withApparentTemperature, unit);
+            }
+        }
     }
 
     public void setWindSpeed(boolean on, int unit) {
-        if (layoutId == LAYOUT_ID_DIGITAL2 && weatherLayout2 != null) {
-            weatherLayout2.setWindSpeed(on, unit);
-        } else {
-            weatherLayout.setWindSpeed(on, unit);
+        for (WeatherLayout layout : weatherLayouts) {
+            if (layout != null) {
+                layout.setWindSpeed(on, unit);
+            }
         }
     }
 
@@ -289,9 +293,10 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void showWeather(boolean on) {
-        weatherLayout.setVisibility((on) ? View.VISIBLE : View.GONE);
-        if (weatherLayout2 != null) {
-            weatherLayout2.setVisibility((on) ? View.VISIBLE : View.GONE);
+        for (WeatherLayout layout : weatherLayouts) {
+            if (layout != null) {
+                layout.setVisibility((on) ? View.VISIBLE : View.GONE);
+            }
         }
         toggleDivider();
     }
@@ -483,30 +488,24 @@ public class ClockLayout extends LinearLayout {
             date.setMaxFontSizesInSp(minFontSize, maxFontSize);
             dateTextSize = (int) date.getTextSize();
         }
+
         int iconHeight = -1;
-        if (weatherLayout != null) {
-            weatherLayout.setMaxWidth((int) (widthFactor * parentWidth));
-            weatherLayout.setIconSizeFactor(weatherIconSizeFactor);
+        for (WeatherLayout layout: weatherLayouts) {
+            if (layout == null) continue;
+            layout.setMaxWidth((int) (widthFactor * parentWidth));
+            layout.setIconSizeFactor(weatherIconSizeFactor);
             if (dateTextSize > 0) {
-                weatherLayout.setTypeface(date.getTypeface());
-                weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateTextSize);
+                layout.setTypeface(date.getTypeface());
+                layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateTextSize);
             } else {
-                weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+                layout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
             }
-            weatherLayout.update();
-            iconHeight = weatherLayout.getIconHeight();
-        }
-        if (weatherLayout2 != null) {
-            weatherLayout2.setMaxWidth((int) (widthFactor * parentWidth));
-            weatherLayout2.setIconSizeFactor(weatherIconSizeFactor);
-            if (dateTextSize > 0) {
-                weatherLayout2.setTypeface(date.getTypeface());
-                weatherLayout2.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateTextSize);
+            if (iconHeight < 0) {
+                iconHeight = layout.getIconHeight();
             } else {
-                weatherLayout2.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+                layout.setIconHeight(iconHeight);
             }
-            weatherLayout2.setIconHeight(iconHeight);
-            weatherLayout2.update();
+            layout.update();
         }
     }
 
@@ -723,16 +722,18 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void clearWeather() {
-        if (weatherLayout == null) return;
-        weatherLayout.clear();
+        for (WeatherLayout layout : weatherLayouts) {
+            if (layout != null) {
+                layout.clear();
+            }
+        }
     }
 
     public void update(WeatherEntry entry) {
-        if (weatherLayout != null) {
-            weatherLayout.update(entry);
-        }
-        if (weatherLayout2 != null) {
-            weatherLayout2.update(entry);
+        for (WeatherLayout layout : weatherLayouts) {
+            if (layout != null) {
+                layout.update(entry);
+            }
         }
     }
 

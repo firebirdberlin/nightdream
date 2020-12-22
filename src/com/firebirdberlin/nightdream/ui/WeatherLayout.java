@@ -37,6 +37,7 @@ public class WeatherLayout extends LinearLayout {
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private boolean isVertical = false;
     private int iconHeight = -1;
+    private String content = "icon|temperature|wind";
 
     public WeatherLayout(Context context) {
         super(context);
@@ -47,14 +48,22 @@ public class WeatherLayout extends LinearLayout {
     public WeatherLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        String content = getAttributeStringValue(attrs, NAMESPACE, "content", "icon");
+        String content = getAttributeStringValue(attrs, NAMESPACE, "content", "icon|temperature|wind");
         String orientation = getAttributeStringValue(attrs, NAMESPACE, "orientation", "horizontal");
+        this.content = content;
         showIcon = content.contains("icon");
         showWindSpeed = content.contains("wind");
         showTemperature = content.contains("temperature");
         isVertical = "vertical".equals(orientation);
         init();
     }
+
+    @Override
+    public void setOrientation(int orientation) {
+        isVertical = orientation == LinearLayout.VERTICAL;
+        setViewVisibility();
+    }
+
 
     private static String getAttributeStringValue(
             AttributeSet attrs, String namespace, String name, String defaultValue
@@ -70,6 +79,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTemperature(boolean on, boolean showApparentTemperature, int unit) {
+        on = content.contains("temperature") && on;
         this.showTemperature = on;
         this.showApparentTemperature = showApparentTemperature;
         this.temperatureUnit = unit;
@@ -77,12 +87,18 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setWindSpeed(boolean on, int unit) {
+        on = content.contains("wind") && on;
         this.showWindSpeed = on;
         this.speedUnit = unit;
 
         iconWind.setVisibility((on) ? View.VISIBLE : View.GONE);
         iconWindDirection.setVisibility((on) ? View.VISIBLE : View.GONE);
         windText.setVisibility((on) ? View.VISIBLE : View.GONE);
+    }
+
+    public void setIcon(boolean on) {
+        on = content.contains("icon") && on;
+        iconText.setVisibility((on) ? View.VISIBLE : View.GONE);
     }
 
     private void init() {
@@ -181,8 +197,8 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTextSize(int unit, int size) {
-        iconText.setTextSize(unit, isVertical ? (iconSizeFactor * size) : size);
-        iconWind.setTextSize(unit, isVertical ? this.iconSizeFactor * size : size);
+        iconText.setTextSize(unit, iconSizeFactor * size);
+        iconWind.setTextSize(unit, iconSizeFactor * size);
         windText.setTextSize(unit, size);
         temperatureText.setTextSize(unit, size);
         invalidate();
