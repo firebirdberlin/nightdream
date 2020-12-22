@@ -78,11 +78,11 @@
         <de.firebirdberlin.preference.InlineSeekBarPreference
             app:iconSpaceReserved="false"
             xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-            app:defaultValue="2"
+            app:defaultValue="20"
             app:key="autoSnoozeCycles"
             app:title="@string/snoozeCycles"
             seekbar:interval="1"
-            seekbar:max="10"
+            seekbar:max="20"
             seekbar:min="0"
             seekbar:unitsLeft=""
             seekbar:unitsRight=""/>
