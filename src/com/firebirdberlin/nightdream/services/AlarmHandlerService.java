@@ -104,12 +104,6 @@ public class AlarmHandlerService extends IntentService {
         return i;
     }
 
-    public static Intent getAutoSnoozeIntent(Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_AUTOSNOOZE_ALARM);
-        return i;
-    }
-
     public static Intent getSkipIntent(Context context, SimpleTime next) {
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.putExtras(next.toBundle());
