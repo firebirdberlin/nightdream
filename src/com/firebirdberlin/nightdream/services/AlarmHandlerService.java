@@ -28,7 +28,6 @@ public class AlarmHandlerService extends IntentService {
     private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
     private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
     private static String ACTION_AUTOSNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_AUTOSNOOZE_ALARM";
-    private static int autoSnoozeCycleCount = 0;
     private Context context = null;
     private Settings settings;
 
@@ -120,16 +119,15 @@ public class AlarmHandlerService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        SimpleTime currentAlarm = getCurrentlyActiveAlarm();
         context = this;
         settings = new Settings(this);
         Log.d(TAG, TAG + " started");
         String action = intent.getAction();
 
         if (ACTION_STOP_ALARM.equals(action) ) {
-            autoSnoozeCycleCount = 0;
             stopAlarm();
         } else if (ACTION_SKIP_ALARM.equals(action)) {
-            autoSnoozeCycleCount = 0;
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 SimpleTime time = new SimpleTime(bundle);
@@ -138,12 +136,10 @@ public class AlarmHandlerService extends IntentService {
         } else if (ACTION_SNOOZE_ALARM.equals(action) ) {
             snoozeAlarm();
         } else if (ACTION_AUTOSNOOZE_ALARM.equals(action) ) {
-            if (autoSnoozeCycleCount == settings.autoSnoozeCycles) {
-                autoSnoozeCycleCount = 0;
+            if (currentAlarm.numAutoSnoozeCycles == settings.autoSnoozeCycles) {
                 stopAlarm();
             } else {
-                autoSnoozeCycleCount += 1;
-                snoozeAlarm();
+                snoozeAlarm(true);
             }
         }
     }
