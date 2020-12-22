@@ -50,6 +50,16 @@
             android:layout_gravity="center"
             android:visibility="gone"
             />
+
+        <com.firebirdberlin.nightdream.ui.WeatherLayout
+            xmlns:weather="weather"
+            android:id="@+id/weatherLayout2"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            weather:content="location"
+            />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
