@@ -78,7 +78,7 @@ public class AlarmHandlerService extends IntentService {
         context.startService(i);
     }
 
-    public static void autosnooze(final Context context) {
+    public static void autoSnooze(final Context context) {
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_AUTOSNOOZE_ALARM);
         context.startService(i);

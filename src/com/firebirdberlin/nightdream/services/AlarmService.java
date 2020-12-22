@@ -213,7 +213,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     }
     private void timeout() {
         handler.removeCallbacks(fadeIn);
-        AlarmHandlerService.autosnooze(context);
+        AlarmHandlerService.autoSnooze(context);
     }
 
 
