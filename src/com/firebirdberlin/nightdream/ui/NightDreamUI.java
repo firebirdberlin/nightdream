@@ -51,18 +51,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.HttpReader;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.databinding.PollenCountBinding;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
@@ -614,52 +611,14 @@ public class NightDreamUI {
         }
     }
 
+    //pollen
     private void pollenCount(){
-        //pollen
         pollenContainer = clockLayout.findViewById(R.id.pollen_container);
 
         if (pollenContainer != null) {
-            new getPollen().execute();
-        }
-        else {
-            Log.e(TAG, "pollenContainer not found: " + pollenContainer);
-        }
-    }
-
-    private class getPollen extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Log.d(TAG, "Downloading pollen data");
-            Toast.makeText(mContext,"Downloading Pollen Data",Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        protected String doInBackground(String... arg0) {
-            String jsonStr;
-
-            HttpReader hr = new HttpReader();
-            jsonStr = hr.readUrl("https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json");
-
-            Log.d(TAG, "Response from pollen url: " + jsonStr);
-
-            return jsonStr;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            View boundView = pollenContainer.getChildAt(0);
-            PollenCountBinding pollencountBinding = DataBindingUtil.getBinding(boundView);
-
-            if (pollencountBinding != null) {
-                pollencountBinding.getModel().setupFromJSON(mContext, result);
-                pollencountBinding.invalidateAll();
-            }else {
-                PollenLayout pollenLayout = new PollenLayout(pollenContainer);
-                pollenContainer.removeAllViews();
-                pollenContainer.addView(pollenLayout.getView());
-                pollenLayout.setupFromJSON(mContext, result);
-            }
+            new PollenCount(mContext, pollenContainer).execute();
+        } else {
+            Log.e(TAG, "pollenContainer not found");
         }
     }
 
