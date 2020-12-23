@@ -381,55 +381,7 @@ public class ClockLayout extends LinearLayout {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             updateDigitalClock2(config, parentWidth);
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
-            setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            setMinimumWidth(7 * Utility.dpToPx(context, 20));
-            if (displayInWidget) {
-                updateDigitalClockInWidget(parentWidth, parentHeight);
-                if (calendarView != null) {
-                    // TODO unhide the calendarview
-                    calendarView.setVisibility(GONE);
-                }
-            } else {
-                float sizeFactor = 0.8f;
-                if (clock != null) {
-                    clock.setMaxWidth((int) (sizeFactor * parentWidth));
-                    clock.setMaxFontSizesInSp(minFontSize, 60.f);
-                }
-
-                float fontSize = -1;
-                for (WeatherLayout layout : weatherLayouts) {
-                    if (layout != null && layout.getVisibility() == VISIBLE) {
-                        if (fontSize == -1 ) {
-                            layout.setMaxWidth((int) (sizeFactor * parentWidth));
-                            layout.setMaxFontSizesInSp(6.f, 20.f);
-                        } else {
-                            layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) fontSize);
-                        }
-                        layout.update();
-                        layout.invalidate(); // must invalidate to get correct getHeightOfView below
-                        fontSize = layout.getTextSize();
-                    }
-                }
-
-                if (calendarView != null) {
-                    Calendar now = Calendar.getInstance();
-                    try {
-                        Calendar selected = calendarView.getCurrentDate().getCalendar();
-                        if (selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
-                            calendarView.setCurrentDate(now);
-                            calendarView.setSelectedDate(now);
-                        }
-                    } catch (NullPointerException ignored) {
-                    }
-
-                    calendarView.setMinimumWidth((int) (0.9 * parentWidth));
-                    now.setMinimalDaysInFirstWeek(1);
-                    int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
-                    int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
-                    calendarView.getLayoutParams().height = height;
-                }
-            }
-
+            updateDigitalClockCalendar(config, displayInWidget, parentWidth, parentHeight, minFontSize);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             updateDigitalFlipClock(parentWidth);
         } else if (layoutId == LAYOUT_ID_ANALOG) {
@@ -599,6 +551,58 @@ public class ClockLayout extends LinearLayout {
                 layout.update();
                 layout.invalidate();
                 fontSize = layout.getTextSize();
+            }
+        }
+    }
+
+    void updateDigitalClockCalendar(final Configuration config, boolean displayInWidget, int parentWidth, int parentHeight, float minFontSize) {
+        setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        setMinimumWidth(7 * Utility.dpToPx(context, 20));
+        if (displayInWidget) {
+            updateDigitalClockInWidget(parentWidth, parentHeight);
+            if (calendarView != null) {
+                // TODO unhide the calendarview
+                calendarView.setVisibility(GONE);
+            }
+        } else {
+
+            float sizeFactor = 0.8f;
+            if (clock != null) {
+                clock.setMaxWidth((int) (sizeFactor * parentWidth));
+                clock.setMaxFontSizesInSp(minFontSize, 60.f);
+            }
+
+            float fontSize = -1;
+            for (WeatherLayout layout : weatherLayouts) {
+                if (layout != null && layout.getVisibility() == VISIBLE) {
+                    if (fontSize == -1 ) {
+                        layout.setMaxWidth((int) (sizeFactor * parentWidth));
+                        layout.setMaxFontSizesInSp(6.f, 20.f);
+                    } else {
+                        layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) fontSize);
+                    }
+                    layout.update();
+                    layout.invalidate(); // must invalidate to get correct getHeightOfView below
+                    fontSize = layout.getTextSize();
+                }
+            }
+
+            if (calendarView != null) {
+                Calendar now = Calendar.getInstance();
+                try {
+                    Calendar selected = calendarView.getCurrentDate().getCalendar();
+                    if (selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
+                        calendarView.setCurrentDate(now);
+                        calendarView.setSelectedDate(now);
+                    }
+                } catch (NullPointerException ignored) {
+                }
+
+                calendarView.setMinimumWidth((int) (0.9 * parentWidth));
+                now.setMinimalDaysInFirstWeek(1);
+                int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
+                int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
+                calendarView.getLayoutParams().height = height;
             }
         }
     }

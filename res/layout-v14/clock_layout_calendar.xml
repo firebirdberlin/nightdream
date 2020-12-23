@@ -53,21 +53,8 @@
 
 
     <!--
-        divider
-    -->
-    <!--
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:background="#C2C2C2" />
--->
-
-    <!--
     calendar
--->
+    -->
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
@@ -85,7 +72,7 @@
         app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidgetWeekDay" />
 
     <!--
-        divider
+        weather
     -->
     <com.firebirdberlin.nightdream.ui.WeatherLayout
         android:id="@+id/weatherLayout"
