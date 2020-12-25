@@ -20,9 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
-import com.firebirdberlin.nightdream.ui.ExifView;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
-import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.google.android.flexbox.FlexboxLayout;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -184,6 +182,10 @@ public class NotificationReceiver extends BroadcastReceiver {
                 mediaStyleContainer.removeAllViews();
                 mediaStyleContainer.addView(mediaControlLayout.getView());
                 mediaControlLayout.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
+                boundView = mediaStyleContainer.getChildAt(0);
+                mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
+                mediaControlLayoutBinding.getModel().setColor(color);
+                mediaControlLayoutBinding.invalidateAll();
             }
         }
 
