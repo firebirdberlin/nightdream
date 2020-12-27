@@ -56,6 +56,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.NightDreamActivity;
+import com.firebirdberlin.nightdream.Pollen;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.SoundMeter;
@@ -114,6 +115,7 @@ public class NightDreamUI {
     private ClockLayoutContainer clockLayoutContainer;
     private ClockLayout clockLayout;
     private ConstraintLayout pollenContainer;
+    Pollen pollen = new Pollen();
     private FlexboxLayout notificationStatusBar;
     private FlexboxLayout sidePanel;
     private final Runnable setupSidePanel = new Runnable() {
@@ -616,7 +618,7 @@ public class NightDreamUI {
         pollenContainer = clockLayout.findViewById(R.id.pollen_container);
 
         if (pollenContainer != null) {
-            new PollenCount(mContext, pollenContainer).execute();
+            new PollenCount(mContext, pollenContainer, pollen).execute();
         } else {
             Log.e(TAG, "pollenContainer not found");
         }
