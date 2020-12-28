@@ -86,6 +86,7 @@ public class Settings {
     public boolean showApparentTemperature = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
+    public boolean showPollen = false;
     public boolean useDeviceLock = false;
     public boolean stopAlarmOnTap = true;
     public boolean stopAlarmOnLongPress = false;
@@ -445,6 +446,7 @@ public class Settings {
         showApparentTemperature = settings.getBoolean("showApparentTemperature", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
+        showPollen = settings.getBoolean("showPollen", false);
         snoozeTimeInMillis = 60000L * settings.getInt("snoozeTimeInMinutes", 5);
         autoSnoozeTimeInMillis = 60000L * settings.getInt("autoSnoozeTimeInMinutes", 2);
         autoSnoozeCycles = settings.getInt("autoSnoozeCycles", 20);

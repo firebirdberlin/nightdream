@@ -615,12 +615,14 @@ public class NightDreamUI {
 
     //pollen
     private void pollenCount(){
-        pollenContainer = clockLayout.findViewById(R.id.pollen_container);
+        if (settings.showPollen) {
+            pollenContainer = clockLayout.findViewById(R.id.pollen_container);
 
-        if (pollenContainer != null) {
-            new PollenCount(mContext, pollenContainer, pollen).execute();
-        } else {
-            Log.e(TAG, "pollenContainer not found");
+            if (pollenContainer != null) {
+                new PollenCount(mContext, pollenContainer, pollen).execute();
+            } else {
+                Log.e(TAG, "pollenContainer not found");
+            }
         }
     }
 

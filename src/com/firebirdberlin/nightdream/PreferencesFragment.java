@@ -367,15 +367,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
                     }
                     break;
+                case "pollen":
+                    setPreferencesFromResource(R.xml.preferences_pollen, rootKey);
+                    break;
                 case "about":
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
                     break;
                 default:
-                    setPreferencesFromResource(R.xml.preferences, rootKey);
+                  //  setPreferencesFromResource(R.xml.preferences, null);
                     break;
             }
         } else {
-            setPreferencesFromResource(R.xml.preferences, rootKey);
+            setPreferencesFromResource(R.xml.preferences, null);
         }
 
         initPurchasePreference("purchaseActions");
@@ -462,6 +465,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 hidePreference("showMediaStyleNotification");
             }
+
+        } else if ("pollen".equals(rootKey)) {
+
 
         } else if ("about".equals(rootKey)) {
 

@@ -52,6 +52,12 @@
         app:title="@string/notifications"/>
 
     <Preference
+        app:icon="@drawable/ic_pollen"
+        app:key="pollen"
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+        app:title="@string/pollen"/>
+
+    <Preference
         app:icon="@drawable/ic_about"
         app:key="about"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"

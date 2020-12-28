@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:icon="@drawable/ic_pollen"
+    app:key="pollen"
+    app:title="@string/pollen">
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="showPollen"
+        app:summary=""
+        app:title="@string/showPollen" />
+
+</PreferenceScreen>
