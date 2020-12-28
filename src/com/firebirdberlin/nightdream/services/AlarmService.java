@@ -93,7 +93,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
 
     public void stopAlarm() {
-        handler.removeCallbacks(timeout);
         handler.removeCallbacks(fadeOutStartDelay);
         handler.removeCallbacks(fadeOut);
         handler.removeCallbacks(fadeIn);
@@ -109,7 +108,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         @Override
         public void run() {
             AlarmPlay();
-            setTimeoutOrFadeOut();
+            setTimerForFadeOut();
         }
     };
 
@@ -127,17 +126,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     };
 
-    private Runnable timeout = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(timeout);
-            handler.removeCallbacks(fadeOutStartDelay);
-            handler.removeCallbacks(fadeOut);
-            handler.removeCallbacks(fadeIn);
-            AlarmHandlerService.autoSnooze(context);
-        }
-    };
-
     private Runnable fadeOut = new Runnable() {
         @Override
         public void run() {
@@ -150,7 +138,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 handler.postDelayed(fadeOut, fadeOutDelay);
             } else {
                 cancelTimeoutOnCompletion = false;
-                handler.post(timeout);
+                timeout();
             }
         }
     };
@@ -164,7 +152,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     };
 
-    private void setTimeoutOrFadeOut() {
+    private void setTimerForFadeOut() {
         long duration = mMediaPlayer.getDuration();
         long adjustedAutoSnoozeTimeInMillis = duration * (long)Math.ceil((float)settings.autoSnoozeTimeInMillis / (float)duration);
         if (adjustedAutoSnoozeTimeInMillis > 1.5 * settings.autoSnoozeTimeInMillis) {
@@ -172,7 +160,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             handler.postDelayed(fadeOutStartDelay, settings.autoSnoozeTimeInMillis);
         } else {
             cancelTimeoutOnCompletion = true; // Set a backup timeout for handling alarm tones with ANDROID_LOOP meta tag where onCompletion is never triggered. Cancel the timeout in onCompletion.
-            handler.postDelayed(timeout, adjustedAutoSnoozeTimeInMillis);
+            handler.postDelayed(fadeOutStartDelay, adjustedAutoSnoozeTimeInMillis);
         }
     };
 
@@ -205,7 +193,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
 
                 AlarmPlay();
-                setTimeoutOrFadeOut();
+                setTimerForFadeOut();
             }
         }
 
@@ -255,11 +243,11 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         long now = System.currentTimeMillis();
         if (now - startTime > settings.autoSnoozeTimeInMillis) {
-            handler.post(timeout);
+            timeout();
         } else {
             mMediaPlayer.stop();
             if (cancelTimeoutOnCompletion) {
-                handler.removeCallbacks(timeout);
+                handler.removeCallbacks(fadeOutStartDelay);
                 cancelTimeoutOnCompletion = false;
             }
             try {
@@ -271,6 +259,13 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             }
             mMediaPlayer.start();
         }
+    }
+
+    private void timeout() {
+        handler.removeCallbacks(fadeOutStartDelay);
+        handler.removeCallbacks(fadeOut);
+        handler.removeCallbacks(fadeIn);
+        AlarmHandlerService.autoSnooze(context);
     }
 
     public void AlarmPlay() {
@@ -304,7 +299,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         if (! result ) {
             Log.e(TAG, "Could not set the data source !");
-            handler.removeCallbacks(timeout);
             handler.removeCallbacks(fadeOutStartDelay);
             handler.removeCallbacks(fadeOut);
             handler.removeCallbacks(fadeIn);
