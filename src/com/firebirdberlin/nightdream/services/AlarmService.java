@@ -42,9 +42,11 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private int currentAlarmVolume = -1;
     private Context context;
     private SimpleTime alarmTime = null;
+    private static int FADEOUT_TIME_MILLIS = 10000;
     VibrationHandler vibrator = null;
     long startTime = 0;
     long fadeInDelay = 150;
+    long fadeOutDelay = 150;
     int maxVolumePercent = 100;
 
     @Override
@@ -90,6 +92,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
 
     public void stopAlarm() {
+        handler.removeCallbacks(timeout);
+        handler.removeCallbacks(fadeOutStartDelay);
+        handler.removeCallbacks(fadeOut);
         handler.removeCallbacks(fadeIn);
         AlarmStop();
         restoreVolume();
@@ -103,6 +108,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         @Override
         public void run() {
             AlarmPlay();
+            setTimeoutOrFadeOut();
         }
     };
 
@@ -117,6 +123,50 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
                 handler.postDelayed(fadeIn, fadeInDelay);
             }
+        }
+    };
+
+    private Runnable timeout = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeOutStartDelay);
+            handler.removeCallbacks(fadeOut);
+            handler.removeCallbacks(fadeIn);
+            AlarmHandlerService.autoSnooze(context);
+        }
+    };
+
+    private Runnable fadeOut = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeOut);
+            if ( mMediaPlayer == null ) return;
+            currentVolume -= 0.01;
+            if ( currentVolume > 0.) {
+                Log.i(TAG, String.format("fadeOut: currentVolume = %3.2f", currentVolume));
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeOut, fadeOutDelay);
+            } else {
+                handler.post(timeout);
+            }
+        }
+    };
+
+    private Runnable fadeOutStartDelay = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeOutStartDelay);
+            fadeOutDelay = FADEOUT_TIME_MILLIS / maxVolumePercent;
+            handler.post(fadeOut);
+        }
+    };
+
+    private void setTimeoutOrFadeOut() {
+        long duration = mMediaPlayer.getDuration();
+        long adjustedAutoSnoozeTimeInMillis = duration * (long)Math.ceil((float)settings.autoSnoozeTimeInMillis / (float)duration);
+        if (adjustedAutoSnoozeTimeInMillis > 1.5 * settings.autoSnoozeTimeInMillis) {
+            handler.postDelayed(fadeOutStartDelay, settings.autoSnoozeTimeInMillis);
         }
     };
 
@@ -149,6 +199,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
 
                 AlarmPlay();
+                setTimeoutOrFadeOut();
             }
         }
 
@@ -198,7 +249,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         long now = System.currentTimeMillis();
         if (now - startTime > settings.autoSnoozeTimeInMillis) {
-            timeout();
+            handler.post(timeout);
         } else {
             mMediaPlayer.stop();
             try {
@@ -211,11 +262,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             mMediaPlayer.start();
         }
     }
-    private void timeout() {
-        handler.removeCallbacks(fadeIn);
-        AlarmHandlerService.autoSnooze(context);
-    }
-
 
     public void AlarmPlay() {
         AlarmStop();
@@ -248,6 +294,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         if (! result ) {
             Log.e(TAG, "Could not set the data source !");
+            handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeOutStartDelay);
+            handler.removeCallbacks(fadeOut);
             handler.removeCallbacks(fadeIn);
             AlarmStop();
             handler.postDelayed(retry, 10000);
