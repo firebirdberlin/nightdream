@@ -42,6 +42,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private int currentAlarmVolume = -1;
     private Context context;
     private SimpleTime alarmTime = null;
+    private boolean cancelTimeoutOnCompletion = false;
     private static int FADEOUT_TIME_MILLIS = 10000;
     VibrationHandler vibrator = null;
     long startTime = 0;
@@ -148,6 +149,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
                 handler.postDelayed(fadeOut, fadeOutDelay);
             } else {
+                cancelTimeoutOnCompletion = false;
                 handler.post(timeout);
             }
         }
@@ -166,7 +168,11 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         long duration = mMediaPlayer.getDuration();
         long adjustedAutoSnoozeTimeInMillis = duration * (long)Math.ceil((float)settings.autoSnoozeTimeInMillis / (float)duration);
         if (adjustedAutoSnoozeTimeInMillis > 1.5 * settings.autoSnoozeTimeInMillis) {
+            cancelTimeoutOnCompletion = false;
             handler.postDelayed(fadeOutStartDelay, settings.autoSnoozeTimeInMillis);
+        } else {
+            cancelTimeoutOnCompletion = true; // Set a backup timeout for handling alarm tones with ANDROID_LOOP meta tag where onCompletion is never triggered. Cancel the timeout in onCompletion.
+            handler.postDelayed(timeout, adjustedAutoSnoozeTimeInMillis);
         }
     };
 
@@ -252,6 +258,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             handler.post(timeout);
         } else {
             mMediaPlayer.stop();
+            if (cancelTimeoutOnCompletion) {
+                handler.removeCallbacks(timeout);
+                cancelTimeoutOnCompletion = false;
+            }
             try {
                 mMediaPlayer.prepare();
             } catch (IOException e) {
