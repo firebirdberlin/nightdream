@@ -148,7 +148,9 @@ public class ClockLayoutPreviewPreference extends Preference {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setupPreferencesFragment(final int clockLayoutID, final Settings settings) {
         preferencesContainer.removeAllViews();
-        if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL || clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL2 || clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL3) {
+        if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL
+                || clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL2
+                || clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL3) {
             CustomDigitalClockPreferencesLayout prefs =
                     new CustomDigitalClockPreferencesLayout(context, settings, getActivity(), clockLayoutID);
             prefs.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
@@ -297,6 +299,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                 layoutID != ClockLayout.LAYOUT_ID_ANALOG
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL2
+                        && layoutID != ClockLayout.LAYOUT_ID_DIGITAL3
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_FLIP
                         && layoutID != ClockLayout.LAYOUT_ID_CALENDAR
         );

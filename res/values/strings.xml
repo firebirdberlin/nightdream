@@ -113,8 +113,8 @@ OR
     <string name="clock_layout_analog">analog clock</string>
     <string name="clock_layout_calendar">digital clock with calendar</string>
     <string name="clock_layout_digital">digital clock</string>
-    <string name="clock_layout_digital2">digital clock with large weather icons</string>
-    <string name="clock_layout_digital3">digital clock with large weather icons (new)</string>
+    <string name="clock_layout_digital2">digital clock with weather</string>
+    <string name="clock_layout_digital3">digital clock with weather (2)</string>
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_digit_analog">analog clock with digits</string>
     <string name="clock_layout_digital_flip">digital flip clock</string>

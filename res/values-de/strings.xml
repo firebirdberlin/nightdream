@@ -115,8 +115,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_calendar">Digitaluhr mit Kalender</string>
     <string name="clock_layout_digit_analog">Analoguhr mit Ziffern</string>
     <string name="clock_layout_digital">Digitaluhr</string>
-    <string name="clock_layout_digital2">Digitaluhr mit großen Wettericons</string>
-    <string name="clock_layout_digital3">Digitaluhr mit großen Wettericons (neu)</string>
+    <string name="clock_layout_digital2">Digitaluhr mit Wetter</string>
+    <string name="clock_layout_digital3">Digitaluhr mit Wetter (2)</string>
     <string name="clock_layout_digital_flip">Flip-Clock</string>
     <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
     <string name="clock_layout_mirror_text">Text spiegeln</string>
