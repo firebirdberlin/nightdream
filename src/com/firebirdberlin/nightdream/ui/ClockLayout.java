@@ -71,6 +71,7 @@ public class ClockLayout extends LinearLayout {
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
     private int oldPrimaryColor = 0;
+    private int dateInvisibilityMethod = GONE;
 
     public ClockLayout(Context context) {
         super(context);
@@ -86,16 +87,18 @@ public class ClockLayout extends LinearLayout {
         if (getChildCount() > 0) {
             removeAllViews();
         }
-
+        dateInvisibilityMethod = (
+                layoutId == LAYOUT_ID_DIGITAL2 || layoutId == LAYOUT_ID_DIGITAL3
+        ) ? INVISIBLE : GONE;
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
         } else if (layoutId == LAYOUT_ID_DIGITAL2) {
-            child = inflater.inflate(R.layout.clock_layout_digital, null);
-        } else if (layoutId == LAYOUT_ID_DIGITAL3) {
             child = inflater.inflate(R.layout.clock_layout_digital2, null);
+        } else if (layoutId == LAYOUT_ID_DIGITAL3) {
+            child = inflater.inflate(R.layout.clock_layout_digital3, null);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
@@ -299,7 +302,7 @@ public class ClockLayout extends LinearLayout {
 
     public void showDate(boolean on) {
         if (date != null) {
-            date.setVisibility((on) ? View.VISIBLE : View.GONE);
+            date.setVisibility((on) ? View.VISIBLE : dateInvisibilityMethod);
         }
         toggleDivider();
     }
@@ -443,52 +446,6 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    void updateDigitalClock3(final Configuration config, int parentWidth) {
-        final float minFontSize = 10.f; // in sp
-        float widthFactorClock;
-        float maxFontSizeClock;
-        float widthFactor;
-        float maxFontSize;
-
-        switch (config.orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                widthFactorClock = 0.20f;
-                maxFontSizeClock = 100.f;
-                widthFactor = 0.15f;
-                maxFontSize = 15.f;
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-                widthFactorClock = 0.25f;
-                maxFontSizeClock = 100.f;
-                widthFactor = 0.25f;
-                maxFontSize = 10.f;
-                break;
-            default:
-                widthFactorClock = 0.25f;
-                maxFontSizeClock = 100.f;
-                widthFactor = 0.15f;
-                maxFontSize = 10.f;
-        }
-
-        if (clock != null) {
-            clock.setMaxWidth((int) (widthFactorClock * parentWidth));
-            clock.setMaxFontSizesInSp(minFontSize, maxFontSizeClock);
-        }
-        if (date != null) {
-            date.setMaxWidth((int) (widthFactorClock * parentWidth));
-            date.setMaxFontSizesInSp(minFontSize, maxFontSize);
-        }
-        int iconHeight = -1;
-        if (weatherLayout != null) {
-            weatherLayout.setMaxWidth((int) (widthFactor * parentWidth));
-            weatherLayout.setIconSizeFactor(weatherIconSizeFactor);
-            weatherLayout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
-            weatherLayout.update();
-            iconHeight = weatherLayout.getIconHeight();
-        }
-    }
-
-
     void updateDigitalClock2(final Configuration config, int parentWidth) {
         final float minFontSize = 12.f; // in sp
         float widthFactorClock = 0.25f;
@@ -526,6 +483,40 @@ public class ClockLayout extends LinearLayout {
             layout.update();
         }
     }
+
+    void updateDigitalClock3(final Configuration config, int parentWidth) {
+        float maxWidth = 0.4f * parentWidth;
+
+        if (clock != null) {
+            clock.setMaxWidth((int) maxWidth);
+            clock.setMaxFontSizesInSp(10.f, 100.f);
+        }
+        if (date != null) {
+            date.setMaxWidth((int) maxWidth);
+            date.setMaxFontSizesInSp(10.f, 20.f);
+        }
+
+        clock.invalidate();
+        date.invalidate();
+
+        if (weatherLayout != null) {
+            weatherLayout.setMaxWidth((int) maxWidth);
+            float textSize = (float) Utility.pixelsToDp(context, clock.getTextSize());
+            weatherLayout.setMaxFontSizesInSp(10.f, textSize);
+            weatherLayout.setTypeface(clock.getTypeface());
+            weatherLayout.update();
+        }
+        for (int i = 1; i < weatherLayouts.length; i++) {
+            WeatherLayout layout = weatherLayouts[i];
+            if (layout != null) {
+                layout.setLocation(true);
+                layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) date.getTextSize());
+                layout.setTypeface(date.getTypeface());
+                layout.update();
+            }
+        }
+    }
+
 
 
     void updateDigitalClockInWidget(int parentWidth, int parentHeight) {

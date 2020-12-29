@@ -48,9 +48,18 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        int resId = layoutId == ClockLayout.LAYOUT_ID_DIGITAL
-                ? R.layout.custom_digital_clock_preferences_layout
-                : R.layout.custom_digital_clock_preferences_layout2;
+        int resId = R.layout.custom_digital_clock_preferences_layout;
+        switch (layoutId) {
+            case ClockLayout.LAYOUT_ID_DIGITAL:
+                resId = R.layout.custom_digital_clock_preferences_layout;
+                break;
+            case ClockLayout.LAYOUT_ID_DIGITAL2:
+                resId = R.layout.custom_digital_clock_preferences_layout2;
+                break;
+            case ClockLayout.LAYOUT_ID_DIGITAL3:
+                resId = R.layout.custom_digital_clock_preferences_layout3;
+                break;
+        }
         View child = inflater.inflate(resId, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);

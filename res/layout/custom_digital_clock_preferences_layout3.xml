@@ -63,25 +63,6 @@
         android:paddingRight="16dp"
         android:paddingTop="28dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/decoration_weather_icon_size"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="16sp" />
-
-    <SeekBar
-        android:id="@+id/weatherIconSizeFactor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="4"
-        android:paddingBottom="28dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="28dp" />
-
     <Switch
         android:id="@+id/switch_show_seconds"
         android:layout_width="match_parent"

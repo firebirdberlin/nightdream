@@ -14,17 +14,6 @@
         app:flexWrap="nowrap"
         app:justifyContent="space_between">
 
-        <com.firebirdberlin.nightdream.ui.WeatherLayout
-            xmlns:weather="weather"
-            android:id="@+id/weatherLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginEnd="6dp"
-            app:layout_flexBasisPercent="15%"
-            weather:content="icon|temperature"
-            weather:orientation="vertical"/>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
@@ -103,28 +92,38 @@
 
         </com.google.android.flexbox.FlexboxLayout>
 
-        <com.firebirdberlin.nightdream.ui.WeatherLayout
-            xmlns:weather="weather"
-            android:id="@+id/weatherLayout2"
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginStart="6dp"
-            android:visibility="gone"
-            app:layout_flexBasisPercent="15%"
-            weather:content="wind"
-            weather:orientation="vertical" />
+            app:alignContent="center"
+            app:alignItems="center"
+            app:flexDirection="column"
+            app:flexWrap="nowrap"
+            app:justifyContent="flex_end">
+            <com.firebirdberlin.nightdream.ui.WeatherLayout
+                xmlns:weather="weather"
+                android:id="@+id/weatherLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="6dp"
+                android:visibility="gone"
+                app:layout_flexBasisPercent="15%"
+                weather:content="icon|temperature"
+                weather:orientation="horizontal" />
+
+                <com.firebirdberlin.nightdream.ui.WeatherLayout
+                    xmlns:weather="weather"
+                    android:id="@+id/weatherLayout2"
+                    android:layout_gravity="bottom"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    weather:content="wind|location"
+                    />
+        </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 
-    <com.firebirdberlin.nightdream.ui.WeatherLayout
-        xmlns:weather="weather"
-        android:id="@+id/weatherLayout3"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        weather:content="location"
-        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_mediacontrol_bar"
