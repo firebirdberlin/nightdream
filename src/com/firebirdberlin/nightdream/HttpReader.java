@@ -51,7 +51,7 @@ public class HttpReader {
         } catch (IOException e) {
             Log.e(TAG, "IOException: " + e.getMessage());
         } catch (Exception e) {
-            Log.e(TAG, "Exception: " + e.getMessage());
+            Log.e(TAG, "Exception: " + e);
         }
 
         return urlStr;

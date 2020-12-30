@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +29,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
@@ -367,9 +369,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
                     }
                     break;
-                case "pollen":
-                    setPreferencesFromResource(R.xml.preferences_pollen, rootKey);
-                    break;
                 case "about":
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
                     break;
@@ -465,10 +464,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 hidePreference("showMediaStyleNotification");
             }
-
-        } else if ("pollen".equals(rootKey)) {
-
-
         } else if ("about".equals(rootKey)) {
 
             Preference recommendApp = findPreference("recommendApp");

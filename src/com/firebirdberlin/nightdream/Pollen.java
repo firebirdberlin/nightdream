@@ -15,17 +15,21 @@ public class Pollen {
     private static String TAG = "PollenObject";
 
     private ArrayList<HashMap<String, String>> pollenList;
+    private ArrayList<HashMap<String, String>> pollenAreaList;
     private String nextUpdate;
+    private String postCode = "";
 
     public Pollen () {
     }
 
-    public boolean setupPollen (String result) {
+    public boolean setupPollen (String result, String area) {
 
         Log.d(TAG, "result: "+result);
 
         ArrayList<HashMap<String, String>> pollenList;
+        ArrayList<HashMap<String, String>> pollenAreaList;
         pollenList = new ArrayList<>();
+        pollenAreaList = new ArrayList<>();
 
         if (result != null) {
             try {
@@ -37,8 +41,11 @@ public class Pollen {
                 for (int i = 0; i < content.length(); i++) {
                     JSONObject c = content.getJSONObject(i);
                     String partregion_name = c.getString("partregion_name");
+                    HashMap<String, String> pollenAreaTmp = new HashMap<>();
+                    pollenAreaTmp.put(partregion_name , partregion_name );
+                    pollenAreaList.add(pollenAreaTmp);
 
-                    if (partregion_name.equals("Rhein.-Westfäl. Tiefland")) {
+                    if (!area.isEmpty() && partregion_name.equals(area)) {
                         JSONObject pollen = c.getJSONObject("Pollen");
 
                         HashMap<String, String> pollenTmp = new HashMap<>();
@@ -70,6 +77,10 @@ public class Pollen {
                     }
                     this.pollenList = new ArrayList<>();
                     this.pollenList.addAll(pollenList);
+
+                    this.pollenAreaList = new ArrayList<>();
+                    this.pollenAreaList.addAll(pollenAreaList);
+
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -86,8 +97,20 @@ public class Pollen {
         return this.pollenList;
     };
 
+    public ArrayList<HashMap<String, String>> getPollenAreaList (){
+        return this.pollenAreaList;
+    };
+
     public String getNextUpdate () {
         return nextUpdate;
+    }
+
+    public String getPostCode () {
+        return postCode;
+    }
+
+    public void setPostCode (String postCode) {
+         this.postCode = postCode;
     }
 
 }

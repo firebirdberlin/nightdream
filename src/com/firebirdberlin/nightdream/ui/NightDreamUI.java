@@ -333,7 +333,7 @@ public class NightDreamUI {
             showAlarmClock();
 
             clockLayout.postDelayed(zoomIn, 500);
-            pollenCount();
+
         }
     };
     private boolean shallMoveClock = false;
@@ -615,7 +615,7 @@ public class NightDreamUI {
 
     //pollen
     private void pollenCount(){
-        if (settings.showPollen) {
+        if (settings.showWeather && settings.showPollen) {
             pollenContainer = clockLayout.findViewById(R.id.pollen_container);
 
             if (pollenContainer != null) {
@@ -669,6 +669,7 @@ public class NightDreamUI {
         if (entry.timestamp == -1L || diff > 8 * 60 * 60 * 1000) {
             clockLayout.clearWeather();
         }
+        pollenCount();
     }
 
     public void setupClockLayout() {
