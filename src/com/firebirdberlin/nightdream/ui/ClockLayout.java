@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -87,9 +88,7 @@ public class ClockLayout extends LinearLayout {
         if (getChildCount() > 0) {
             removeAllViews();
         }
-        dateInvisibilityMethod = (
-                layoutId == LAYOUT_ID_DIGITAL2 || layoutId == LAYOUT_ID_DIGITAL3
-        ) ? INVISIBLE : GONE;
+        dateInvisibilityMethod = (layoutId == LAYOUT_ID_DIGITAL2) ? INVISIBLE : GONE;
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child;
@@ -244,7 +243,13 @@ public class ClockLayout extends LinearLayout {
         }
         if (divider != null) {
             divider.setBackgroundColor(color);
+        } else {
+            View v = findViewWithTag("divider");
+            if (v != null) {
+                v.setBackgroundColor(color);
+            }
         }
+
         if (analog_clock != null) {
             analog_clock.setSecondaryColor(color);
         }
@@ -388,7 +393,7 @@ public class ClockLayout extends LinearLayout {
             updateDigitalClock2(config, parentWidth);
         } else if (layoutId == LAYOUT_ID_DIGITAL3) {
             setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            updateDigitalClock3(config, parentWidth);
+            updateDigitalClock3(displayInWidget, parentWidth);
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
             updateDigitalClockCalendar(config, displayInWidget, parentWidth, parentHeight, minFontSize);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
@@ -484,7 +489,7 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
-    void updateDigitalClock3(final Configuration config, int parentWidth) {
+    void updateDigitalClock3(final boolean displayInWidget, int parentWidth) {
         float maxWidth = 0.4f * parentWidth;
 
         if (clock != null) {
@@ -510,14 +515,20 @@ public class ClockLayout extends LinearLayout {
             WeatherLayout layout = weatherLayouts[i];
             if (layout != null) {
                 layout.setLocation(true);
-                layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) date.getTextSize());
+                float textSize = (float) Utility.pixelsToDp(context, date.getTextSize());
+                layout.setMaxWidth((int) maxWidth/2);
+                layout.setMaxFontSizesInSp(10.f, textSize);
                 layout.setTypeface(date.getTypeface());
                 layout.update();
             }
         }
+
+        View container = findViewById(R.id.grid_layout);
+        View divider = findViewWithTag("divider");
+        int height = (displayInWidget) ? Utility.getHeightOfView(this): container.getHeight();
+        divider.getLayoutParams().height = height;
+        divider.invalidate();
     }
-
-
 
     void updateDigitalClockInWidget(int parentWidth, int parentHeight) {
         setPadding(15, 15, 15, 15);
