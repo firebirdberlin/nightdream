@@ -123,13 +123,37 @@ public class Pollen {
         if (isBetween(area, 17, 19)){
             return 20;
         }
+        //Westl. Niedersachsen und Bremen
+        if (isBetween(area, 26, 29)){
+            return 31;
+        }
+        //Östl. Niedersachsen
+        if (isBetween(area, 30, 31) || isBetween(area, 34, 38) ){
+            return 32;
+        }
         //Rhein.-Westfäl. Tiefland
         if (isBetween(area, 40, 53)){
             return 41;
         }
+        //Ostwestfalen
+        if (isBetween(area, 32, 33) || isBetween(area, 58, 59) ){
+            return 42;
+        }
+        //Mittelgebirge NRW
+        if (isBetween(area, 57, 57)){
+            return 43;
+        }
         //Brandenburg und Berlin
         if (isBetween(area, 10, 16) || area == 39){
             return 50;
+        }
+        //Tiefland Sachsen-Anhalt
+        if (isBetween(area, 1, 5) || area == 7){
+            return 61;
+        }
+        //Harz
+        if (isBetween(area, 6, 6)){
+            return 62;
         }
 
         return -1;
