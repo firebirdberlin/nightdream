@@ -22,7 +22,7 @@ public class Pollen {
     public Pollen () {
     }
 
-    public boolean setupPollen (String result, String area) {
+    public boolean setupPollen (String result, String plz) {
 
         Log.d(TAG, "result: "+result);
 
@@ -31,7 +31,10 @@ public class Pollen {
         pollenList = new ArrayList<>();
         pollenAreaList = new ArrayList<>();
 
-        if (result != null) {
+        Integer area = plzToArea(Integer.parseInt(plz.substring(0,2)));
+        Log.d(TAG, "pollen area: "+area);
+
+        if (result != null && area != -1) {
             try {
                 JSONObject jsonObj = new JSONObject(result);
                 this.nextUpdate = jsonObj.getString("next_update");
@@ -40,12 +43,19 @@ public class Pollen {
 
                 for (int i = 0; i < content.length(); i++) {
                     JSONObject c = content.getJSONObject(i);
-                    String partregion_name = c.getString("partregion_name");
+                    String region_name = c.getString("partregion_name");
+                    int region_ID = c.getInt("partregion_id");
+
+                    if (region_ID == -1){
+                        region_ID = c.getInt("region_id");
+                        region_name = c.getString("region_name");
+                    }
+
                     HashMap<String, String> pollenAreaTmp = new HashMap<>();
-                    pollenAreaTmp.put(partregion_name , partregion_name );
+                    pollenAreaTmp.put(region_name , Integer.toString(region_ID));
                     pollenAreaList.add(pollenAreaTmp);
 
-                    if (!area.isEmpty() && partregion_name.equals(area)) {
+                    if (region_ID == area) {
                         JSONObject pollen = c.getJSONObject("Pollen");
 
                         HashMap<String, String> pollenTmp = new HashMap<>();
@@ -91,6 +101,38 @@ public class Pollen {
             return false;
         }
         return true;
+    }
+
+    private static boolean isBetween(int x, int lower, int upper) {
+        return lower <= x && x <= upper;
+    }
+
+    private Integer plzToArea (Integer area)
+    {
+        Log.d(TAG, "pollen plzto area: "+area);
+
+        //Inseln und Marschen
+        if (isBetween(area, 25, 25)){
+            return 11;
+        }
+        //Geest, Schleswig-Holstein und Hamburg plz 20 -24
+        if (isBetween(area, 20, 24)){
+            return 12;
+        }
+        //Mecklenburg-Vorpommern
+        if (isBetween(area, 17, 19)){
+            return 20;
+        }
+        //Rhein.-Westfäl. Tiefland
+        if (isBetween(area, 40, 53)){
+            return 41;
+        }
+        //Brandenburg und Berlin
+        if (isBetween(area, 10, 16) || area == 39){
+            return 50;
+        }
+
+        return -1;
     }
 
     public ArrayList<HashMap<String, String>> getPollenList (){

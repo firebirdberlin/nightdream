@@ -30,7 +30,7 @@ public class PollenCount extends AsyncTask<String, Void, String> {
     private WeakReference<ConstraintLayout> pollenContainer;
     private Settings settings;
     private WeatherEntry weather;
-
+    private String postCode = "";
 
     public PollenCount(Context mContext, ConstraintLayout pollenContainer, Pollen pollen) {
         this.mContext = new WeakReference<>(mContext);
@@ -48,10 +48,11 @@ public class PollenCount extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... arg0) {
         Log.d(TAG, "doInBackground");
         weather = settings.weatherEntry;
-        String postCode = "";
 
         Geocoder geoCoder = new Geocoder(mContext.get(), Locale.getDefault());
         List<Address> address = null;
+
+        Log.d(TAG, "pollen lon: "+weather.lon);
 
         try {
             address = geoCoder.getFromLocation(weather.lat, weather.lon, 1);
@@ -94,7 +95,7 @@ public class PollenCount extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
 
         if (!result.isEmpty()) {
-            pollen.setupPollen(result, "Rhein.-Westfäl. Tiefland");
+            pollen.setupPollen(result, postCode);
         }
 
         View boundView = pollenContainer.get().getChildAt(0);
@@ -112,5 +113,4 @@ public class PollenCount extends AsyncTask<String, Void, String> {
             }
         }
     }
-
 }
