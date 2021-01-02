@@ -24,7 +24,7 @@ public class Pollen {
 
     public boolean setupPollen (String result, String plz) {
 
-        Log.d(TAG, "Pollensetup - "+result);
+        Log.d(TAG, "Pollensetup");
 
         ArrayList<HashMap<String, String>> pollenList;
         ArrayList<HashMap<String, String>> pollenAreaList;

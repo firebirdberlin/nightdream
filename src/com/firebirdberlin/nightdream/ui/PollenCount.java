@@ -81,7 +81,7 @@ public class PollenCount extends AsyncTask<String, Void, String> {
             }
         }
 
-        if (new Date().after(nextUpdate) || !postCode.equals(pollen.getPostCode())) {
+        if ((new Date().after(nextUpdate) || !postCode.equals(pollen.getPostCode())) && !postCode.isEmpty()) {
             Log.d(TAG, "Downloading pollen data");
 
             HttpReader hr = new HttpReader();
@@ -98,7 +98,7 @@ public class PollenCount extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
 
-        if (result != null && !result.isEmpty()) {
+        if (result != null && !result.isEmpty() && !postCode.isEmpty()) {
             pollen.setupPollen(result, postCode);
         }
 
