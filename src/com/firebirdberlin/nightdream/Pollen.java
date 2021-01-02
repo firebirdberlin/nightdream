@@ -24,7 +24,7 @@ public class Pollen {
 
     public boolean setupPollen (String result, String plz) {
 
-        Log.d(TAG, "result: "+result);
+        Log.d(TAG, "Pollensetup - "+result);
 
         ArrayList<HashMap<String, String>> pollenList;
         ArrayList<HashMap<String, String>> pollenAreaList;
@@ -32,7 +32,7 @@ public class Pollen {
         pollenAreaList = new ArrayList<>();
 
         Integer area = plzToArea(Integer.parseInt(plz.substring(0,2)));
-        Log.d(TAG, "pollen area: "+area);
+        Log.d(TAG, "Area: "+area);
 
         if (result != null && area != -1) {
             try {
@@ -109,8 +109,6 @@ public class Pollen {
 
     private Integer plzToArea (Integer area)
     {
-        Log.d(TAG, "pollen plzto area: "+area);
-
         //Inseln und Marschen
         if (isBetween(area, 25, 25)){
             return 11;
@@ -128,34 +126,97 @@ public class Pollen {
             return 31;
         }
         //Östl. Niedersachsen
-        if (isBetween(area, 30, 31) || isBetween(area, 34, 38) ){
+        if (isBetween(area, 30, 31) || isBetween(area, 37, 38) ){
             return 32;
         }
         //Rhein.-Westfäl. Tiefland
-        if (isBetween(area, 40, 53)){
+        if (isBetween(area, 40, 52)){
             return 41;
         }
         //Ostwestfalen
-        if (isBetween(area, 32, 33) || isBetween(area, 58, 59) ){
+        if (isBetween(area, 32, 33) || isBetween(area, 57, 59) ){
             return 42;
         }
         //Mittelgebirge NRW
-        if (isBetween(area, 57, 57)){
+        if (isBetween(area, 53, 53)){
             return 43;
         }
         //Brandenburg und Berlin
-        if (isBetween(area, 10, 16) || area == 39){
+        if (isBetween(area, 10, 16)){
             return 50;
         }
         //Tiefland Sachsen-Anhalt
-        if (isBetween(area, 1, 5) || area == 7){
+        if (area == 39){
             return 61;
         }
         //Harz
         if (isBetween(area, 6, 6)){
             return 62;
         }
-
+        //Tiefland Thüringen
+        if (area == 4 || area == 7 || area == 99){
+            return 71;
+        }
+        //Mittelgebirge Thüringen
+        if (area == 8){
+            return 72;
+        }
+        //Tiefland Sachsen
+        if (isBetween(area, 2, 3)){
+            return 81;
+        }
+        //Mittelgebirge Sachsen
+        if (area == 9){
+            return 82;
+        }
+        //Nordhessen und hess. Mittelgebirge
+        if (isBetween(area, 34, 36)){
+            return 91;
+        }
+        //Rhein-Main
+        if (isBetween(area, 60, 65) || isBetween(area,68,69)){
+            return 92;
+        }
+        //Rhein, Pfalz, Nahe und Mosel
+        if (isBetween(area, 54, 56)){
+            return 101;
+        }
+        //Mittelgebirgsbereich Rheinland-Pfalz
+        if (area == 67){
+            return 102;
+        }
+        //Saarland
+        if (area == 66){
+            return 103;
+        }
+        //Oberrhein und unteres Neckartal
+        if (isBetween(area, 76, 77) || area == 79){
+            return 111;
+        }
+        //Hohenlohe/mittlerer Neckar/Oberschwaben
+        if (area == 78 || area == 88) {
+            return 112;
+        }
+        // Mittelgebirge Baden-Württemberg
+        if (isBetween(area, 70, 75)){
+            return 113;
+        }
+        //Allgäu/Oberbayern/Bay. Wald
+        if (area == 94) {
+            return 121;
+        }
+        //Donauniederungen
+        if (isBetween(area, 80, 87) || area == 89){
+            return 122;
+        }
+        //Bayern nördl. der Donau, o. Bayr. Wald, o. Mainfranken
+        if (isBetween(area, 90, 93) || isBetween(area, 95, 96) ){
+            return 123;
+        }
+        //Mainfranken
+        if (isBetween(area, 97, 98) ){
+            return 124;
+        }
         return -1;
     }
 

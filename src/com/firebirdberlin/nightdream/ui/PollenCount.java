@@ -52,16 +52,20 @@ public class PollenCount extends AsyncTask<String, Void, String> {
         Geocoder geoCoder = new Geocoder(mContext.get(), Locale.getDefault());
         List<Address> address = null;
 
-        Log.d(TAG, "pollen lon: "+weather.lon);
-
         try {
             address = geoCoder.getFromLocation(weather.lat, weather.lon, 1);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         if (address != null && address.size() > 0) {
-            postCode = address.get(0).getPostalCode();
+            if (address.get(0).getCountryCode().equals("DE")) {
+                postCode = address.get(0).getPostalCode();
+            }else{
+                postCode = "";
+            }
+
             Log.d(TAG, "pollen plz: " + postCode);
+            Log.d(TAG, "pollen countrycode: " + address.get(0).getCountryCode());
         }
 
         String jsonStr = "";
@@ -94,7 +98,7 @@ public class PollenCount extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
 
-        if (!result.isEmpty()) {
+        if (result != null && !result.isEmpty()) {
             pollen.setupPollen(result, postCode);
         }
 
