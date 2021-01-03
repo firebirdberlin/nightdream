@@ -64,26 +64,26 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/windText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:ellipsize="none"
+            android:id="@+id/windText"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingStart="5sp"
             android:singleLine="true"
             android:text=""
             android:textSize="20sp"
-            android:paddingStart="5sp"
             android:textStyle="bold"
             tools:ignore="RtlSymmetry" />
 
 
         <TextView
-            android:id="@+id/locationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:ellipsize="none"
+            android:id="@+id/locationText"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingStart="5sp"
             android:singleLine="true"
             android:textSize="20sp"
-            android:paddingStart="5sp"
-            android:textStyle=""
+            android:textStyle="bold"
             tools:ignore="RtlSymmetry" />
 </LinearLayout>
