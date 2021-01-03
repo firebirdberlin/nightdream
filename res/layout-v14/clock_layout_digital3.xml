@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:layout_gravity="center"
     android:orientation="vertical">
 
     <GridLayout
         android:id="@+id/grid_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3"
         android:rowCount="2"
@@ -20,6 +21,7 @@
         <LinearLayout
             android:id="@+id/time_layout"
             android:layout_width="wrap_content"
+            android:layout_columnWeight="100"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal"
@@ -69,9 +71,9 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom|center_horizontal"
             android:ellipsize="none"
-            android:paddingTop="5dp"
+            android:paddingTop="6dp"
             android:singleLine="true"
             android:text="Sun, 30. October 2016"
             android:textColor="#C2C2C2"
@@ -91,27 +93,37 @@
             android:layout_marginBottom="0dp"
             android:layout_marginTop="0dp"
             android:background="#C2C2C2"
+            android:layout_columnWeight="1"
             android:layout_rowSpan="2"
             android:tag="divider"
             />
 
-        <com.firebirdberlin.nightdream.ui.WeatherLayout
-            xmlns:weather="weather"
-            android:id="@+id/weatherLayout"
+        <LinearLayout
+            android:id="@+id/weather_container"
             android:layout_width="wrap_content"
+            android:layout_columnWeight="100"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_height="match_parent"
-            android:layout_marginStart="6dp"
-            android:visibility="gone"
-            app:layout_flexBasisPercent="15%"
-            weather:content="icon|temperature"
-            weather:cycle="true"
-            weather:orientation="horizontal" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="0px">
+            <com.firebirdberlin.nightdream.ui.WeatherLayout
+                xmlns:weather="weather"
+                android:id="@+id/weatherLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_flexBasisPercent="15%"
+                weather:content="icon|temperature|wind"
+                weather:cycle="true"
+                weather:orientation="horizontal" />
+        </LinearLayout>
 
         <com.firebirdberlin.nightdream.ui.WeatherLayout
             xmlns:weather="weather"
             android:id="@+id/weatherLayout2"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom|center_horizontal"
+            android:paddingTop="6dp"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:visibility="gone"
