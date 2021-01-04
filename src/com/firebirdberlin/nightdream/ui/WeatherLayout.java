@@ -1,8 +1,12 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +18,20 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+
 public class WeatherLayout extends LinearLayout {
     private static final String TAG = "WeatherLayout";
+    private static final String NAMESPACE = "weather";
+    TimeReceiver timeReceiver;
     private Context context;
-    private static String NAMESPACE = "weather";
     private DirectionIconView iconWindDirection = null;
     private TextView iconText = null;
     private TextView iconWind = null;
     private TextView temperatureText = null;
+    private TextView locationText = null;
     private TextView windText = null;
     private LinearLayout container = null;
     private boolean showApparentTemperature = false;
@@ -29,18 +39,18 @@ public class WeatherLayout extends LinearLayout {
     private boolean showIcon = false;
     private boolean showWindSpeed = false;
     private boolean showTemperature = false;
+    private boolean showLocation = false;
+    private boolean cycle = false;
     private int maxWidth = -1;
     private int minFontSizePx = -1;
     private int maxFontSizePx = -1;
-
-    public void setIconSizeFactor(int iconSizeFactor) {
-        this.iconSizeFactor = iconSizeFactor;
-    }
-
     private int iconSizeFactor = 1;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private boolean isVertical = false;
+    private int iconHeight = -1;
+    private String content = "icon|temperature|wind";
+    private HashSet<String> cycleItems = new HashSet<>();
 
     public WeatherLayout(Context context) {
         super(context);
@@ -48,17 +58,20 @@ public class WeatherLayout extends LinearLayout {
         init();
     }
 
-    private int iconHeight = -1;
-
     public WeatherLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        String content = getAttributeStringValue(attrs, NAMESPACE, "content", "icon");
+        String content = getAttributeStringValue(attrs, NAMESPACE, "content", "icon|temperature|wind");
         String orientation = getAttributeStringValue(attrs, NAMESPACE, "orientation", "horizontal");
+        String cycle_condition = getAttributeStringValue(attrs, NAMESPACE, "cycle", "false");
+        this.content = content;
         showIcon = content.contains("icon");
         showWindSpeed = content.contains("wind");
         showTemperature = content.contains("temperature");
+        showLocation = content.contains("location");
         isVertical = "vertical".equals(orientation);
+        cycle = "true".equals(cycle_condition);
+        cycleItems.add("temperature");
         init();
     }
 
@@ -71,20 +84,52 @@ public class WeatherLayout extends LinearLayout {
         return value;
     }
 
+    @Override
+    public void setOrientation(int orientation) {
+        isVertical = orientation == LinearLayout.VERTICAL;
+        setViewVisibility();
+    }
+
+    public void setIconSizeFactor(int iconSizeFactor) {
+        this.iconSizeFactor = iconSizeFactor;
+    }
+
     public void setTemperature(boolean on, boolean showApparentTemperature, int unit) {
+        on = content.contains("temperature") && on;
         this.showTemperature = on;
         this.showApparentTemperature = showApparentTemperature;
         this.temperatureUnit = unit;
-        temperatureText.setVisibility((on) ? View.VISIBLE : View.GONE);
+        if (on) {
+            cycleItems.add("temperature");
+        } else {
+            cycleItems.remove("temperature");
+        }
     }
 
     public void setWindSpeed(boolean on, int unit) {
+        on = content.contains("wind") && on;
         this.showWindSpeed = on;
         this.speedUnit = unit;
+        if (on) {
+            cycleItems.add("wind");
+        } else {
+            cycleItems.remove("wind");
+        }
+    }
 
-        iconWind.setVisibility((on) ? View.VISIBLE : View.GONE);
-        iconWindDirection.setVisibility((on) ? View.VISIBLE : View.GONE);
-        windText.setVisibility((on) ? View.VISIBLE : View.GONE);
+    public void setIcon(boolean on) {
+        showIcon = content.contains("icon") && on;
+    }
+
+    public void setLocation(boolean on) {
+        on = content.contains("location") && on;
+        showLocation = on;
+        locationText.setVisibility((on) ? View.VISIBLE : View.GONE);
+        if (on) {
+            cycleItems.add("location");
+        } else {
+            cycleItems.remove("location");
+        }
     }
 
     private void init() {
@@ -98,6 +143,7 @@ public class WeatherLayout extends LinearLayout {
         iconWind = findViewById(R.id.iconWind);
         iconWindDirection = findViewById(R.id.iconWindDirection);
         temperatureText = findViewById(R.id.temperatureText);
+        locationText = findViewById(R.id.locationText);
         windText = findViewById(R.id.windText);
 
         Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
@@ -111,14 +157,40 @@ public class WeatherLayout extends LinearLayout {
         this.maxWidth = width;
     }
 
-    void setViewVisibility() {
+    public void setViewVisibility() {
         container.setOrientation(isVertical ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
-        iconWind.setVisibility((showWindSpeed) ? View.VISIBLE : View.GONE);
-        iconWindDirection.setVisibility((showWindSpeed) ? View.VISIBLE : View.GONE);
-        windText.setVisibility((showWindSpeed) ? View.VISIBLE : View.GONE);
+        if (cycle) {
+            ArrayList<String> items = new ArrayList<>(cycleItems);
+            Calendar cal = Calendar.getInstance();
+            int itemId = cal.get(Calendar.MINUTE) % items.size();
+            String item = items.get(itemId);
 
-        temperatureText.setVisibility((showTemperature) ? View.VISIBLE : View.GONE);
-        iconText.setVisibility((showIcon) ? View.VISIBLE : View.GONE);
+            boolean on = "temperature".equals(item);
+            iconText.setVisibility(on ? View.VISIBLE : View.GONE);
+            temperatureText.setVisibility(on ? View.VISIBLE : View.GONE);
+
+            on = "wind".equals(item);
+            if (weatherEntry != null) {
+                iconWind.setVisibility((!on || weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
+                iconWindDirection.setVisibility((on && weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
+                windText.setVisibility(on ? View.VISIBLE : View.GONE);
+            }
+
+            on = "location".equals(item);
+            locationText.setVisibility(on ? View.VISIBLE : View.GONE);
+        } else {
+            iconText.setVisibility((showIcon) ? View.VISIBLE : View.GONE);
+
+            if (weatherEntry != null) {
+                iconWind.setVisibility((!showWindSpeed || weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
+                iconWindDirection.setVisibility((showWindSpeed && weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
+                windText.setVisibility(showWindSpeed ? View.VISIBLE : View.GONE);
+            }
+
+            temperatureText.setVisibility((showTemperature) ? View.VISIBLE : View.GONE);
+
+            locationText.setVisibility((showLocation) ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void clear() {
@@ -126,11 +198,13 @@ public class WeatherLayout extends LinearLayout {
         iconWind.setText("");
         iconWindDirection.setDirection(DirectionIconView.INVALID);
         temperatureText.setText("");
+        locationText.setText("");
         windText.setText("");
 
         iconText.invalidate();
         iconWind.invalidate();
         iconWindDirection.invalidate();
+        locationText.invalidate();
         temperatureText.invalidate();
         windText.invalidate();
     }
@@ -138,11 +212,12 @@ public class WeatherLayout extends LinearLayout {
     public void setTypeface(Typeface typeface) {
         temperatureText.setTypeface(typeface);
         windText.setTypeface(typeface);
+        locationText.setTypeface(typeface);
     }
 
     public void setMaxFontSizesInSp(float minSize, float maxSize) {
-        this.minFontSizePx = (int) Utility.spToPx(context, minSize);
-        this.maxFontSizePx = (int) Utility.spToPx(context, maxSize);
+        this.minFontSizePx = Utility.spToPx(context, minSize);
+        this.maxFontSizePx = Utility.spToPx(context, maxSize);
     }
 
     public void setColor(int color) {
@@ -158,6 +233,9 @@ public class WeatherLayout extends LinearLayout {
         if (temperatureText != null) {
             temperatureText.setTextColor(color);
         }
+        if (locationText != null) {
+            locationText.setTextColor(color);
+        }
         if (windText != null) {
             windText.setTextColor(color);
         }
@@ -168,10 +246,9 @@ public class WeatherLayout extends LinearLayout {
         if (iconText == null || temperatureText == null) return;
         long age = entry.ageMillis();
         if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
-
             iconText.setText(iconToText(entry.weatherIcon));
-
             temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
+            locationText.setText(entry.cityName);
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(entry.formatWindText(speedUnit));
@@ -183,11 +260,16 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTextSize(int unit, int size) {
-        iconText.setTextSize(unit, isVertical ? (iconSizeFactor * size) : size);
-        iconWind.setTextSize(unit, isVertical ? this.iconSizeFactor * size : size);
+        iconText.setTextSize(unit, iconSizeFactor * size);
+        iconWind.setTextSize(unit, iconSizeFactor * size);
         windText.setTextSize(unit, size);
         temperatureText.setTextSize(unit, size);
+        locationText.setTextSize(unit, size);
         invalidate();
+    }
+
+    public float getTextSize() {
+        return temperatureText.getTextSize();
     }
 
     private String iconToText(String code) {
@@ -198,18 +280,18 @@ public class WeatherLayout extends LinearLayout {
         if (code.equals("02n")) return "I";
         if (code.equals("03d")) return "N";
         if (code.equals("03n")) return "N";
-        if (code.equals("04d") ) return "Y";
-        if (code.equals("04n") ) return "Y";
-        if (code.equals("09d") ) return "R";
-        if (code.equals("09n") ) return "R";
-        if (code.equals("10d") ) return "Q";
-        if (code.equals("10n") ) return "Q";
-        if (code.equals("11d") ) return "0";
-        if (code.equals("11n") ) return "0";
-        if (code.equals("13d") ) return "W";
-        if (code.equals("13n") ) return "W";
-        if (code.equals("50d") ) return "M";
-        if (code.equals("50n") ) return "M";
+        if (code.equals("04d")) return "Y";
+        if (code.equals("04n")) return "Y";
+        if (code.equals("09d")) return "R";
+        if (code.equals("09n")) return "R";
+        if (code.equals("10d")) return "Q";
+        if (code.equals("10n")) return "Q";
+        if (code.equals("11d")) return "0";
+        if (code.equals("11n")) return "0";
+        if (code.equals("13d")) return "W";
+        if (code.equals("13n")) return "W";
+        if (code.equals("50d")) return "M";
+        if (code.equals("50n")) return "M";
         // darksky
         if (code.equals("clear-day")) return "B";
         if (code.equals("clear-night")) return "C";
@@ -228,13 +310,10 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void update() {
-        if (iconText == null || temperatureText == null) return;
+        setViewVisibility();
         adjustTextSize();
         temperatureText.invalidate();
-        if (this.showWindSpeed && weatherEntry != null) {
-            iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
-            iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
-        }
+        locationText.invalidate();
         windText.invalidate();
         iconText.invalidate();
         iconWind.invalidate();
@@ -274,25 +353,62 @@ public class WeatherLayout extends LinearLayout {
 
     public int measureText() {
         int textSize = 0;
-        textSize += showIcon ? measureText(iconText) : 0;
-        textSize += showTemperature ? measureText(temperatureText) : 0;
-        if (showWindSpeed) {
-            if (iconWindDirection != null) {
-                // temperatureText is used to determine the line height
-                textSize += measureText(temperatureText);
-            } else {
-                textSize += measureText(iconWind);
-            }
-            textSize += measureText(windText);
-        }
+        textSize += isVisible(iconText) ? measureText(iconText) : 0;
+        textSize += isVisible(temperatureText) ? measureText(temperatureText) : 0;
+        textSize += isVisible(locationText) ? measureText(locationText) : 0;
+        textSize += isVisible(windText) ? measureText(windText) : 0;
+        textSize += isVisible(iconWind) ? measureText(iconWind) : 0;
+
+        textSize += isVisible(iconWindDirection) ? measureText(temperatureText) : 0;
+        // temperatureText is used to determine the line height
 
         // add 10% for padding
         textSize += textSize / 10;
         return textSize;
     }
 
+    private boolean isVisible(View view) {
+        return view != null && view.getVisibility() == VISIBLE;
+    }
+
     private float measureText(TextView view) {
         String text = view.getText().toString();
         return view.getPaint().measureText(text);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        setTimeTick();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        unsetTimeTick();
+    }
+
+    void setTimeTick() {
+        timeReceiver = new TimeReceiver();
+        context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+    }
+
+    void unsetTimeTick() {
+        if (timeReceiver != null) {
+            try {
+                context.unregisterReceiver(timeReceiver);
+            } catch (IllegalArgumentException e) {
+                // receiver was not registered,
+            }
+            timeReceiver = null;
+        }
+    }
+
+    class TimeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent arg1) {
+            if (!cycle) unsetTimeTick();
+            update();
+        }
     }
 }
