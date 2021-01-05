@@ -647,6 +647,10 @@ public class NightDreamActivity extends BillingHelperActivity
         WeatherForecastActivity.start(this);
     }
 
+    public void onNotificationListClick(View v) {
+        NotificationListActivity.start(this);
+    }
+
     @SuppressWarnings("UnusedParameters")
     public void onAlarmClockClick(View v) {
         SetAlarmClockActivity.start(this);
@@ -951,7 +955,4 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
-    public static Context getAppContext() {
-        return NightDreamActivity.context;
-    }
 }
