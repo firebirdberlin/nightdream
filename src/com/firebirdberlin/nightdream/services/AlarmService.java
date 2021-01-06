@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.services;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
@@ -29,29 +30,86 @@ import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import java.io.IOException;
 
 public class AlarmService extends Service implements MediaPlayer.OnErrorListener,
-                                                     MediaPlayer.OnBufferingUpdateListener,
-                                                     MediaPlayer.OnCompletionListener {
-    private static String TAG = "NightDream.AlarmService";
-    final private Handler handler = new Handler();
-
+        MediaPlayer.OnBufferingUpdateListener,
+        MediaPlayer.OnCompletionListener {
     static public boolean isRunning = false;
+    private static final String TAG = "NightDream.AlarmService";
+    final private Handler handler = new Handler();
     PowerManager.WakeLock wakelock;
+    VibrationHandler vibrator = null;
+    long startTime = 0;
+    long fadeInDelay = 150;
+    long fadeOutDelay = 150;
+    int maxVolumePercent = 100;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private float currentVolume = 0.f;
     private int currentAlarmVolume = -1;
     private Context context;
     private SimpleTime alarmTime = null;
-    private boolean cancelTimeoutOnCompletion = false;
-    private static int FADEOUT_TIME_MILLIS = 10000;
-    VibrationHandler vibrator = null;
-    long startTime = 0;
-    long fadeInDelay = 150;
-    long fadeOutDelay = 150;
-    int maxVolumePercent = 100;
+    private final Runnable fadeIn = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeIn);
+            if (mMediaPlayer == null) return;
+            currentVolume += 0.01;
+            if (currentVolume < maxVolumePercent / 100.) {
+                Log.i(TAG, String.format("fadeIn: currentVolume = %3.2f", currentVolume));
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeIn, fadeInDelay);
+            }
+        }
+    };
+    private final Runnable retry = new Runnable() {
+        @Override
+        public void run() {
+            AlarmPlay();
+            setTimerForFadeOut();
+        }
+    };
+    private final Runnable fadeOut = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeOut);
+            if (mMediaPlayer == null) return;
+            currentVolume -= 0.01;
+            if (currentVolume > 0.) {
+                Log.i(TAG, String.format("fadeOut: currentVolume = %3.2f", currentVolume));
+                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                handler.postDelayed(fadeOut, fadeOutDelay);
+            } else {
+                autoSnooze();
+            }
+        }
+    };
 
+    public static void startAlarm(Context context, SimpleTime alarmTime) {
+        if (AlarmService.isRunning) return;
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("start alarm", true);
+        if (alarmTime != null) {
+            i.putExtras(alarmTime.toBundle());
+        }
+
+        Utility.startForegroundService(context, i);
+    }
+
+    public static void stop(Context context) {
+        if (!AlarmService.isRunning) return;
+        Intent i = getStopIntent(context);
+        context.startService(i);
+    }
+
+    private static Intent getStopIntent(Context context) {
+        Intent i = new Intent(context, AlarmService.class);
+        i.putExtra("stop alarm", true);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return i;
+    }
+
+    @SuppressLint("InvalidWakeLockTag")
     @Override
-    public void onCreate(){
+    public void onCreate() {
         startForeground();
         context = this;
         vibrator = new VibrationHandler(this);
@@ -67,33 +125,19 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         return null;
     }
 
-    public static void startAlarm(Context context, SimpleTime alarmTime) {
-        if (AlarmService.isRunning) return;
-        Intent i = new Intent(context, AlarmService.class);
-        i.putExtra("start alarm", true);
-        if (alarmTime != null) {
-            i.putExtras(alarmTime.toBundle());
-        }
-
-        Utility.startForegroundService(context, i);
-    }
-
-
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         Log.d(TAG, "onDestroy() called.");
 
         handler.removeCallbacks(fadeIn);
         isRunning = false;
 
-        if (wakelock.isHeld()){
+        if (wakelock.isHeld()) {
             wakelock.release();
         }
     }
 
-
     public void stopAlarm() {
-        handler.removeCallbacks(fadeOutStartDelay);
         handler.removeCallbacks(fadeOut);
         handler.removeCallbacks(fadeIn);
         AlarmStop();
@@ -104,65 +148,19 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         stopSelf();
     }
 
-    private Runnable retry = new Runnable() {
-        @Override
-        public void run() {
-            AlarmPlay();
-            setTimerForFadeOut();
-        }
-    };
-
-    private Runnable fadeIn = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(fadeIn);
-            if ( mMediaPlayer == null ) return;
-            currentVolume += 0.01;
-            if ( currentVolume < maxVolumePercent / 100.) {
-                Log.i(TAG, String.format("fadeIn: currentVolume = %3.2f", currentVolume));
-                mMediaPlayer.setVolume(currentVolume, currentVolume);
-                handler.postDelayed(fadeIn, fadeInDelay);
-            }
-        }
-    };
-
-    private Runnable fadeOut = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(fadeOut);
-            if ( mMediaPlayer == null ) return;
-            currentVolume -= 0.01;
-            if ( currentVolume > 0.) {
-                Log.i(TAG, String.format("fadeOut: currentVolume = %3.2f", currentVolume));
-                mMediaPlayer.setVolume(currentVolume, currentVolume);
-                handler.postDelayed(fadeOut, fadeOutDelay);
-            } else {
-                cancelTimeoutOnCompletion = false;
-                timeout();
-            }
-        }
-    };
-
-    private Runnable fadeOutStartDelay = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(fadeOutStartDelay);
-            fadeOutDelay = FADEOUT_TIME_MILLIS / maxVolumePercent;
-            handler.post(fadeOut);
-        }
-    };
-
     private void setTimerForFadeOut() {
         long duration = mMediaPlayer.getDuration();
-        long adjustedAutoSnoozeTimeInMillis = duration * (long)Math.ceil((float)settings.autoSnoozeTimeInMillis / (float)duration);
-        if (adjustedAutoSnoozeTimeInMillis > 1.5 * settings.autoSnoozeTimeInMillis) {
-            cancelTimeoutOnCompletion = false;
-            handler.postDelayed(fadeOutStartDelay, settings.autoSnoozeTimeInMillis);
+        float percentage = duration / (float) settings.autoSnoozeTimeInMillis;
+        if (percentage > 1.5f) {
+            // Long tracks shall be stopped before the end
+            handler.postDelayed(fadeOut, settings.autoSnoozeTimeInMillis);
         } else {
-            cancelTimeoutOnCompletion = true; // Set a backup timeout for handling alarm tones with ANDROID_LOOP meta tag where onCompletion is never triggered. Cancel the timeout in onCompletion.
-            handler.postDelayed(fadeOutStartDelay, adjustedAutoSnoozeTimeInMillis);
+            // Short tracks shall be completed via onCompletion
+            // Some files define ANDROID_LOOP which causes onCompletion never to be called.
+            // That's why we need a backup strategy for auto snooze.
+            handler.postDelayed(fadeOut, (long) Math.ceil(1.5f * settings.autoSnoozeTimeInMillis));
         }
-    };
+    }
 
     public void setVolume(int volume) {
         Log.i(TAG, String.format("setVolume(%d)", volume));
@@ -191,6 +189,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
                 setVolume(settings.alarmVolume);
                 maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
                 fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
+                int FADEOUT_TIME_MILLIS = 10000;
+                fadeOutDelay = FADEOUT_TIME_MILLIS / maxVolumePercent;
 
                 AlarmPlay();
                 setTimerForFadeOut();
@@ -228,28 +228,25 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e(TAG, "MediaPlayer.error: " + String.valueOf(what) + " " + String.valueOf(extra));
+        Log.e(TAG, "MediaPlayer.error: " + what + " " + extra);
         return false;
     }
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        Log.e(TAG, "onBufferingUpdate " + String.valueOf(percent));
+        Log.e(TAG, "onBufferingUpdate " + percent);
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        Log.e(TAG, "onCompletion ");
+        Log.i(TAG, "onCompletion ");
+        handler.removeCallbacks(fadeOut);
 
         long now = System.currentTimeMillis();
         if (now - startTime > settings.autoSnoozeTimeInMillis) {
-            timeout();
-        } else {
+            autoSnooze();
+        } else { // restart
             mMediaPlayer.stop();
-            if (cancelTimeoutOnCompletion) {
-                handler.removeCallbacks(fadeOutStartDelay);
-                cancelTimeoutOnCompletion = false;
-            }
             try {
                 mMediaPlayer.prepare();
             } catch (IOException e) {
@@ -261,8 +258,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     }
 
-    private void timeout() {
-        handler.removeCallbacks(fadeOutStartDelay);
+    private void autoSnooze() {
         handler.removeCallbacks(fadeOut);
         handler.removeCallbacks(fadeIn);
         AlarmHandlerService.autoSnooze(context);
@@ -292,14 +288,13 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         boolean result;
         Uri soundUri = getAlarmToneUri();
         result = setDataSource(soundUri);
-        if (! result ) {
+        if (!result) {
             soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             result = setDataSource(soundUri);
         }
 
-        if (! result ) {
+        if (!result) {
             Log.e(TAG, "Could not set the data source !");
-            handler.removeCallbacks(fadeOutStartDelay);
             handler.removeCallbacks(fadeOut);
             handler.removeCallbacks(fadeIn);
             AlarmStop();
@@ -315,7 +310,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
 
-        if ( settings.alarmFadeIn ) {
+        if (settings.alarmFadeIn) {
             currentVolume = 0.f;
             // mute mediaplayer volume immediately, before it starts playing
             if (mMediaPlayer != null) {
@@ -331,10 +326,10 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
     }
 
-    private void AlarmStop(){
+    private void AlarmStop() {
         vibrator.stopVibration();
-        if (mMediaPlayer != null){
-            if(mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null) {
+            if (mMediaPlayer.isPlaying()) {
                 Log.i(TAG, "AlarmStop()");
                 mMediaPlayer.stop();
             }
@@ -342,7 +337,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             mMediaPlayer = null;
         }
     }
-
 
     public Uri getAlarmToneUri() {
         if (alarmTime != null && alarmTime.soundUri != null) {
@@ -355,18 +349,5 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         }
 
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-    }
-
-    public static void stop(Context context) {
-        if ( ! AlarmService.isRunning ) return;
-        Intent i = getStopIntent(context);
-        context.startService(i);
-    }
-
-    private static Intent getStopIntent(Context context) {
-        Intent i = new Intent(context, AlarmService.class);
-        i.putExtra("stop alarm", true);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        return i;
     }
 }
