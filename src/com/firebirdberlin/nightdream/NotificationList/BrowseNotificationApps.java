@@ -1,35 +1,24 @@
 package com.firebirdberlin.nightdream.NotificationList;
 
-
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebirdberlin.nightdream.NotificationListActivity;
 import com.firebirdberlin.nightdream.R;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationAppsViewHolder> {
 
     public static String TAG = "BrowseNotificationApps";
-    private SharedPreferences sharedPreferences;
-    private boolean started = false;
-    private Handler handler = new Handler();
-    private HashMap<String, Drawable> appicon = new HashMap<>();
 
     private List<NotificationApp> notificationapplist;
     private Activity context;
@@ -44,9 +33,6 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
     public NotificationAppsViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
 
         Log.d(TAG, "onCreateViewHolder started");
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        //notifyinformation = sharedPreferences.getBoolean("notifyinformation", true);
 
         // Inflate view from notify_item_layout.xml
         View recyclerViewItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_list_apps, parent, false);
@@ -64,10 +50,6 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
                     Intent intent = new Intent(context, NotificationActivity.class);
                     intent.putExtra("packagename", packagename);
                     context.startActivityForResult(intent, 1);
-                    //Intent intent = new Intent(context, NotificationService.class);
-                    // intent.putExtra("command", "getnotificationlist");
-                    //starting service
-                    // context.startService(intent);
                 }
             }
         });

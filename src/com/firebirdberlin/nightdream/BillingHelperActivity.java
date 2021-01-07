@@ -65,7 +65,7 @@ public abstract class BillingHelperActivity
     SharedPreferences preferences;
 
     public boolean isPurchased(String sku) {
-        if (!Utility.isEmulator()) {
+        if (Utility.isEmulator()) {
             return true;
         }
         if (purchases != null) {

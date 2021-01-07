@@ -14,12 +14,9 @@ import java.util.List;
 public class NotificationAppShowList {
 
     private List<NotificationApp> notificationappshowlist = new ArrayList<NotificationApp>();
-    private SharedPreferences sharedPreferences;
 
     public NotificationAppShowList(List<NotificationApp> notificationappshowlist, Context context) {
         this.notificationappshowlist.addAll(notificationappshowlist);
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public List<NotificationApp> get_notificationappshowlist(){return this.notificationappshowlist;}

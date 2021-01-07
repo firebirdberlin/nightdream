@@ -33,7 +33,6 @@ import com.firebirdberlin.nightdream.NotificationList.CustomRecyclerViewAdapter;
 import com.firebirdberlin.nightdream.NotificationList.Notification;
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import com.firebirdberlin.nightdream.NotificationList.NotificationAppShowList;
-import com.firebirdberlin.nightdream.NotificationList.NotificationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,18 +41,13 @@ public class NotificationListActivity extends AppCompatActivity implements Share
 
     public static String TAG = "NotificationListActivity";
     private RecyclerView recyclerView;
-    private CustomRecyclerViewAdapter adapterinfo;
     private BrowseNotificationApps adapter;
-    private RemoteViews notificationLayouttest;
-    private View notificationLayouttestview;
 
     private static Context context;
     private SharedPreferences sharedPreferences;
 
-    List<Notification> notificationlist = new ArrayList<>();
     List<NotificationApp> notificationapplist = new ArrayList<>();
     NotificationAppShowList notificationappshowlist;
-    private static NotificationReceiver nReceiver;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, NotificationListActivity.class);

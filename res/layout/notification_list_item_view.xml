@@ -31,258 +31,153 @@
             android:layout_marginEnd="2dp"
             android:layout_marginBottom="16dp"
             android:minWidth="300dp"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/notify_informations"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/notify_background2"
-                android:layout_width="fill_parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/notify"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="visible"
-                tools:visibility="visible">
+                android:layout_weight="10"
+                android:visibility="visible">
 
-                <LinearLayout
-                    android:id="@+id/notify_background"
-                    android:layout_width="fill_parent"
+                <ImageView
+                    android:id="@+id/notify_smallicon"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/ic_about" />
+
+                <TextView
+                    android:id="@+id/notify_appname"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:visibility="visible"
-                    tools:visibility="visible">
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="AppName"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/notify_smallicon"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/notify"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="10"
-                        android:visibility="visible"
-                        tools:visibility="visible">
-
-                        <ImageView
-                            android:id="@+id/notify_smallicon"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"
-                            tools:srcCompat="@tools:sample/avatars" />
-
-                        <TextView
-                            android:id="@+id/notify_appname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="15dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="Appname"
-                            android:textSize="12sp"
-                            app:layout_constraintStart_toEndOf="@+id/notify_smallicon"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/notify_timestamp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="15dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="Time"
-                            android:textSize="12sp"
-                            app:layout_constraintStart_toEndOf="@+id/notify_appname"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/notify_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="Title"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/notify_smallicon" />
-
-                        <TextView
-                            android:id="@+id/notify_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="Text"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/notify_title"
-                            app:layout_constraintVertical_bias="0.0" />
-
-                        <FrameLayout
-                            android:id="@+id/notify_actions_images"
-                            android:layout_width="245dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="8dp"
-
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/notify_text"
-                            app:layout_constraintVertical_bias="1.0">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="40dp">
-
-                                <ImageView
-                                    android:id="@+id/notify_actionview2"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    android:layout_marginStart="16dp"
-                                    android:layout_marginTop="8dp"
-                                    app:layout_constraintStart_toEndOf="@+id/notify_actionview1"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:srcCompat="@android:drawable/btn_dialog" />
-
-                                <ImageView
-                                    android:id="@+id/notify_actionview1"
-
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    android:layout_marginStart="8dp"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="16dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintVertical_bias="0.0"
-                                    app:srcCompat="@android:drawable/btn_dialog" />
-
-                                <ImageView
-                                    android:id="@+id/notify_actionview3"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    android:layout_marginStart="16dp"
-                                    android:layout_marginTop="8dp"
-                                    app:layout_constraintStart_toEndOf="@+id/notify_actionview2"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:srcCompat="@android:drawable/btn_dialog" />
-
-                                <ImageView
-                                    android:id="@+id/notify_actionview4"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    android:layout_marginStart="16dp"
-                                    android:layout_marginTop="8dp"
-                                    app:layout_constraintStart_toEndOf="@+id/notify_actionview3"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:srcCompat="@android:drawable/btn_dialog" />
-
-                                <ImageView
-                                    android:id="@+id/notify_actionview5"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    android:layout_marginStart="16dp"
-                                    android:layout_marginTop="8dp"
-                                    app:layout_constraintStart_toEndOf="@+id/notify_actionview4"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:srcCompat="@android:drawable/btn_dialog" />
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        </FrameLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/notify2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:visibility="visible"
-                        tools:visibility="visible">
-
-                        <ImageView
-                            android:id="@+id/notify_largeicon"
-                            android:layout_width="62dp"
-                            android:layout_height="62dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:srcCompat="@tools:sample/avatars" />
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/notify3"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/notify_timestamp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="visible"
-                    tools:visibility="visible">
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="TimeStamp"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/notify_appname"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/notify_largepicture"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginBottom="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_about" />
+                <TextView
+                    android:id="@+id/notify_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Title"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@+id/notify_text"
+                    app:layout_constraintEnd_toStartOf="@+id/notify_largeicon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/notify_smallicon"/>
 
-                    <TextView
-                        android:id="@+id/notify_actiontext1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="15dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="ActionText1"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/notify_largepicture" />
+                <TextView
+                    android:id="@+id/notify_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Text"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@+id/notify_largeicon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/notify_title" />
 
-                    <TextView
-                        android:id="@+id/notify_actiontext2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="15dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="7dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="ActionText2"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/notify_actiontext3"
-                        app:layout_constraintStart_toEndOf="@+id/notify_actiontext1"
-                        app:layout_constraintTop_toBottomOf="@id/notify_largepicture"
-                        app:layout_constraintVertical_bias="0.015" />
+                <ImageView
+                    android:id="@+id/notify_largeicon"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_about" />
 
-                    <TextView
-                        android:id="@+id/notify_actiontext3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="15dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="ActionText3"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/notify_actiontext2"
-                        app:layout_constraintTop_toBottomOf="@id/notify_largepicture"
-                        app:layout_constraintVertical_bias="0.015" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/notify_largepicture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/notify_actiontext1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/notify_text"
+                    app:srcCompat="@drawable/ic_about" />
+
+                <TextView
+                    android:id="@+id/notify_actiontext1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="ActionText1"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/notify_largepicture" />
+
+                <TextView
+                    android:id="@+id/notify_actiontext2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="ActionText2"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/notify_actiontext3"
+                    app:layout_constraintStart_toEndOf="@+id/notify_actiontext1"
+                    app:layout_constraintTop_toBottomOf="@id/notify_largepicture" />
+
+                <TextView
+                    android:id="@+id/notify_actiontext3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="ActionText3"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/notify_actiontext2"
+                    app:layout_constraintTop_toBottomOf="@id/notify_largepicture" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <FrameLayout
                 android:id="@+id/notify_remoteview"
@@ -296,63 +191,6 @@
             </FrameLayout>
 
         </androidx.cardview.widget.CardView>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/notify_informations"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notify_cardview">
-
-            <TextView
-                android:id="@+id/notify_time_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:scrollHorizontally="false"
-                android:text="Time"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/notify_icon_view"
-                android:layout_width="57dp"
-                android:layout_height="58dp"
-
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:contentDescription="testbild"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/notify_time_view"
-                tools:srcCompat="@tools:sample/avatars" />
-
-            <ImageView
-                android:id="@+id/notify_largeicon_view"
-                android:layout_width="102dp"
-                android:layout_height="58dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toEndOf="@+id/notify_icon_view"
-                app:layout_constraintTop_toBottomOf="@+id/notify_time_view"
-                tools:srcCompat="@tools:sample/avatars" />
-
-            <TextView
-                android:id="@+id/notify_text_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="Notification Information"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/notify_largeicon_view" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

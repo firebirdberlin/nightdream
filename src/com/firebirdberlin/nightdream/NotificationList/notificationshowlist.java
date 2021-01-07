@@ -25,11 +25,11 @@ public class notificationshowlist {
     public void clear_notificationshowlist(){notificationshowlist.clear(); }
 
     private boolean check_clearable(Notification notify){
-        if (sharedPreferences.getBoolean("shownotclearable", true)) {
+        if (sharedPreferences.getBoolean("shownotclearable", false)) {
             return true;
         }
         else {
-            return !notify.get_notification_clearable() == sharedPreferences.getBoolean("shownotclearable", true);
+            return !notify.get_notification_clearable() == sharedPreferences.getBoolean("shownotclearable", false);
         }
     }
 
@@ -46,7 +46,6 @@ public class notificationshowlist {
         clear_notificationshowlist();
 
         for (int index = 0; index < notificationlist.size(); index++) {
-
             if (check_clearable(notificationlist.get(index)) && check_packagename(notificationlist.get(index), packagename)) {
                 notificationlist.get(index).set_notification_child_id(index);
                 notificationshowlist.add(notificationlist.get(index));

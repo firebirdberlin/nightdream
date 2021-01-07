@@ -32,9 +32,11 @@
         android:background="#FF9800"
         android:text="Footer"
         android:textAlignment="center"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycleview" />
+        app:layout_constraintTop_toBottomOf="@+id/recycleview"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
@@ -22,7 +23,6 @@ public class Notification implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected Notification(Parcel in) {
-        notification_picture = in.readParcelable(Bitmap.class.getClassLoader());
         notification_bigpicture = in.readParcelable(Bitmap.class.getClassLoader());
         notification_time = in.readString();
         notification_posttimestamp = in.readString();
@@ -41,6 +41,7 @@ public class Notification implements Parcelable {
         notification_package = in.readString();
         notification_clearable = in.readByte() != 0;
         notification_child_id = in.readInt();
+        notification_color = in.readInt();
     }
 
     public static final Creator<Notification> CREATOR = new Creator<Notification>() {
@@ -62,7 +63,6 @@ public class Notification implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(notification_picture, i);
         parcel.writeParcelable(notification_bigpicture, i);
         parcel.writeString(notification_time);
         parcel.writeString(notification_posttimestamp);
@@ -81,15 +81,15 @@ public class Notification implements Parcelable {
         parcel.writeString(notification_package);
         parcel.writeByte((byte) (notification_clearable ? 1 : 0));
         parcel.writeInt(notification_child_id);
+        parcel.writeInt(notification_color);
     }
 
-    private Bitmap notification_picture;
+    public static String TAG = "Notification";
     private Bitmap notification_bigpicture;
     private String notification_time;
     private String notification_posttimestamp;
     private String notification_posttime;
     private String notification_applicationname;
-    private Spanned notification_htmltext;
     private String notification_text;
     private String notification_textbig;
     private String notification_summarytext;
@@ -108,19 +108,17 @@ public class Notification implements Parcelable {
     private String notification_package;
     private boolean notification_clearable;
     private int notification_child_id;
+    private Integer notification_color;
 
     public Notification(Context context, Intent intent) {
-
         this.notification_posttimestamp=  intent.getStringExtra("posttimestamp");
         this.notification_time=  intent.getStringExtra("timestamp");
         this.notification_posttime=  intent.getStringExtra("posttime");
         this.notification_template=  intent.getStringExtra("template");
-        this.notification_htmltext= Html.fromHtml((String) intent.getStringExtra("htmltext"),Html.FROM_HTML_MODE_LEGACY);
         this.notification_messages= Html.fromHtml((String) intent.getStringExtra("messages"),Html.FROM_HTML_MODE_LEGACY);
         this.notification_text= (String) intent.getStringExtra("text");
         this.notification_textbig= (String) intent.getStringExtra("textbig");
         this.notification_summarytext= (String) intent.getStringExtra("summarytext");
-        this.notification_picture= (Bitmap) intent.getParcelableExtra("bitmap");
         this.notification_bigpicture= (Bitmap) intent.getParcelableExtra("bigpicture");
         this.notification_remoteview = (RemoteViews) intent.getParcelableExtra("view");
         this.notification_applicationname = (String) intent.getStringExtra("applicationname");
@@ -130,6 +128,7 @@ public class Notification implements Parcelable {
         this.notification_package = (String) intent.getStringExtra("package");
         this.notification_contentintent= (PendingIntent) intent.getParcelableExtra("contentintent");
         this.notification_clearable = (Boolean) intent.getBooleanExtra("clearable", true);
+        this.notification_color = (Integer) intent.getIntExtra("color",0);
 
         //RemoteView to View
         FrameLayout CONTAINER = new FrameLayout(context);
@@ -139,11 +138,7 @@ public class Notification implements Parcelable {
             CONTAINER.addView(view);
             this.notification_cardview = CONTAINER;
         } catch (Exception ex) {
-            /*Button yourButton = new Button(context);
-            //do stuff like add text and listeners.
-
-            CONTAINER.addView(yourButton);
-            this.notification_cardview = CONTAINER;*/
+            Log.e(TAG,ex.toString());
         }
 
         //BigRemoteView to View
@@ -154,7 +149,7 @@ public class Notification implements Parcelable {
             CONTAINER.addView(view);
             this.notification_bigcardview = CONTAINER;
         } catch (Exception ex) {
-
+            Log.e(TAG,ex.toString());
         }
 
         //get drawable SmallIcon
@@ -184,10 +179,6 @@ public class Notification implements Parcelable {
 
     public String get_notification_template() {
         return notification_template;
-    }
-
-    public Spanned get_notification_htmltext() {
-        return notification_htmltext;
     }
 
     public Spanned get_notification_messages() {
@@ -224,10 +215,6 @@ public class Notification implements Parcelable {
         return notification_applicationname;
     }
 
-    public Bitmap get_notification_picture() {
-        return notification_picture;
-    }
-
     public Bitmap get_notification_bigpicture() {
         return notification_bigpicture;
     }
@@ -251,6 +238,8 @@ public class Notification implements Parcelable {
     }
 
     public int get_notification_child_id(){return notification_child_id;}
+
+    public int get_notification_color(){return notification_color;}
 
     public void set_notification_child_id(int notification_child_id){this.notification_child_id = notification_child_id;}
 

@@ -5,8 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -648,7 +646,9 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onNotificationListClick(View v) {
-        NotificationListActivity.start(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NotificationListActivity.start(this);
+        }
     }
 
     @SuppressWarnings("UnusedParameters")
