@@ -473,9 +473,9 @@ public class mNotificationListener extends NotificationListenerService {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void getNotificationListData() {
-        Log.d(TAG, "notificationList");
+        Log.d(TAG, "getNotificationListData");
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         groupSimilarNotifications = false;
         notificationapplist.clear();
@@ -534,12 +534,15 @@ public class mNotificationListener extends NotificationListenerService {
             msgrcv.putExtra("iconresid", getIconId(sbn.getNotification()));
 
             //get large icon from notification
-            Icon largeIcon;
-            largeIcon = sbn.getNotification().getLargeIcon();
-            if (largeIcon != null) {
-                Bitmap largeiconbitmap = drawableToBitMap(largeIcon.loadDrawable(context));
-
-                msgrcv.putExtra("largeicon", largeIcon);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Icon largeIcon;
+                largeIcon = sbn.getNotification().getLargeIcon();
+                if (largeIcon != null) {
+                    Bitmap largeiconbitmap = drawableToBitMap(largeIcon.loadDrawable(context));
+                    msgrcv.putExtra("largeiconbitmap", largeiconbitmap);
+                }
+            } else {
+                Bitmap largeiconbitmap = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
                 msgrcv.putExtra("largeiconbitmap", largeiconbitmap);
             }
 
@@ -652,7 +655,6 @@ public class mNotificationListener extends NotificationListenerService {
                         } else {
                             notification_messages.append("<br>").append(message.getPerson().getName()).append("<br> ").append(message.getText());
                         }
-
                         lastPerson = message.getPerson().getName().toString();
                     }
                 }

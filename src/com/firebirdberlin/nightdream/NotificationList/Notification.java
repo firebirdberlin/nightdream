@@ -45,6 +45,7 @@ public class Notification implements Parcelable {
     }
 
     public static final Creator<Notification> CREATOR = new Creator<Notification>() {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public Notification createFromParcel(Parcel in) {
             return new Notification(in);
@@ -115,7 +116,11 @@ public class Notification implements Parcelable {
         this.notification_time=  intent.getStringExtra("timestamp");
         this.notification_posttime=  intent.getStringExtra("posttime");
         this.notification_template=  intent.getStringExtra("template");
-        this.notification_messages= Html.fromHtml((String) intent.getStringExtra("messages"),Html.FROM_HTML_MODE_LEGACY);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.notification_messages = Html.fromHtml((String) intent.getStringExtra("messages"), Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            this.notification_messages = Html.fromHtml((String) intent.getStringExtra("messages"), null, null);
+        }
         this.notification_text= (String) intent.getStringExtra("text");
         this.notification_textbig= (String) intent.getStringExtra("textbig");
         this.notification_summarytext= (String) intent.getStringExtra("summarytext");
@@ -158,11 +163,17 @@ public class Notification implements Parcelable {
             this.notification_drawableicon = ContextCompat.getDrawable(remotePackageContext, (int) intent.getIntExtra("iconresid",0));
 
         }catch (Exception ex){
-
+            Log.e(TAG,ex.toString());
         }
 
         this.notification_bitmaplargeicon = (Bitmap) intent.getParcelableExtra("largeiconbitmap");
-        this.notification_textlines = Html.fromHtml((String) intent.getStringExtra("textlines"),Html.FROM_HTML_MODE_LEGACY);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.notification_textlines = Html.fromHtml((String) intent.getStringExtra("textlines"), Html.FROM_HTML_MODE_LEGACY);
+        }
+        else {
+            this.notification_textlines = Html.fromHtml((String) intent.getStringExtra("textlines"), null, null);
+        }
 
         notification_child_id = -1;
     }

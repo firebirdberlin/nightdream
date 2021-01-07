@@ -646,7 +646,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onNotificationListClick(View v) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             NotificationListActivity.start(this);
         }
     }
