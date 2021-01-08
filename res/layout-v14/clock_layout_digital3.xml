@@ -67,7 +67,8 @@
         <!--
             Date
         -->
-        <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+        <com.firebirdberlin.nightdream.CustomDigitalClock
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,6 +94,7 @@
             android:layout_marginBottom="0dp"
             android:layout_marginTop="0dp"
             android:background="#C2C2C2"
+            android:layout_gravity="center_vertical"
             android:layout_columnWeight="1"
             android:layout_rowSpan="2"
             android:tag="divider"
@@ -105,8 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="0px">
+            android:orientation="horizontal" >
             <com.firebirdberlin.nightdream.ui.WeatherLayout
                 xmlns:weather="weather"
                 android:id="@+id/weatherLayout"

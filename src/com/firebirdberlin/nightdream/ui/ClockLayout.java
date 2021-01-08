@@ -518,6 +518,7 @@ public class ClockLayout extends LinearLayout {
         if (weatherLayout != null) {
             float textSize = (float) Utility.pixelsToDp(context, clock.getTextSize());
             weatherLayout.setMaxWidth((int) (maxWidth));
+            weatherLayout.setMaxHeight((Utility.getHeightOfView(clock)));
             weatherLayout.setMaxFontSizesInSp(10.f, textSize);
             weatherLayout.setTypeface(typeface);
             weatherLayout.update();
@@ -534,10 +535,24 @@ public class ClockLayout extends LinearLayout {
             }
         }
 
-        View container = findViewById(R.id.grid_layout);
+        if (displayInWidget) {
+            setDividerHeight(Utility.getHeightOfView(this));
+        } else {
+            final View container = findViewById(R.id.grid_layout);
+            container.post(new Runnable() {
+                @Override
+                public void run() {
+                    setDividerHeight((int) (.85f * container.getHeight()));
+                }
+            });
+        }
+        requestLayout();
+    }
+
+    void setDividerHeight(int height) {
         View divider = findViewWithTag("divider");
-        int height = (displayInWidget) ? Utility.getHeightOfView(this) : container.getHeight();
         divider.getLayoutParams().height = height;
+        divider.setVisibility(VISIBLE);
         divider.invalidate();
     }
 

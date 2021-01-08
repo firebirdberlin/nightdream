@@ -27,7 +27,6 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
-import com.firebirdberlin.nightdream.services.WeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -64,13 +63,19 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return new ViewInfo(container, widthPixel, heightPixel);
     }
 
-    private static void updateClockLayoutSettings(Context context, ClockLayout clockLayout,
-                                                  Dimension widgetDimension) {
-        boolean showAdditionalLines = widgetDimension.height >= 130 && widgetDimension.width >= 130;
+    private static void updateClockLayoutSettings(
+            Context context, ClockLayout clockLayout, Dimension widgetDimension
+    ) {
         Settings settings = new Settings(context);
         int clockLayoutId = settings.getClockLayoutID(false);
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
+
+        boolean showWeather = widgetDimension.height >= 130 && widgetDimension.width >= 130;
+        boolean showDate = widgetDimension.height >= 130 && widgetDimension.width >= 130;
+        if (clockLayoutId == ClockLayout.LAYOUT_ID_DIGITAL3) {
+            showWeather = true;
+        }
 
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(clockLayoutId);
@@ -80,7 +85,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
         clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
-        clockLayout.showDate(showAdditionalLines && settings.showDate);
+        clockLayout.showDate(showDate && settings.showDate);
         clockLayout.setShowNotifications(false);
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
@@ -103,7 +108,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                     settings.temperatureUnit
             );
             clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
-            clockLayout.showWeather(showAdditionalLines && settings.showWeather);
+            clockLayout.showWeather(showWeather && settings.showWeather);
             clockLayout.setWeatherLocation(false);
             clockLayout.update(settings.weatherEntry);
         } else {
@@ -238,12 +243,13 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static class PrepareBitmapTask extends AsyncTask<Context, Void, RemoteViews> {
 
-        private AppWidgetManager appWidgetManager;
-        private int appWidgetId;
-        private WidgetDimension dimension;
+        private final AppWidgetManager appWidgetManager;
+        private final int appWidgetId;
+        private final WidgetDimension dimension;
 
-        PrepareBitmapTask(AppWidgetManager appWidgetManager, int appWidgetId,
-                          WidgetDimension dimension) {
+        PrepareBitmapTask(
+                AppWidgetManager appWidgetManager, int appWidgetId, WidgetDimension dimension
+        ) {
             super();
             this.appWidgetManager = appWidgetManager;
             this.appWidgetId = appWidgetId;
