@@ -1,15 +1,15 @@
 package com.firebirdberlin.nightdream;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Locale;
 
 
 
-public class UtilityTest extends TestCase {
-    public void testGetWeekdayStringsForLocaleDe() throws Exception {
+public class UtilityTest {
+    @Test
+    public void testGetWeekdayStringsForLocaleDe() {
         String[] weekdays = Utility.getWeekdayStringsForLocale(new Locale("de"));
 
         for (int i = 0; i < weekdays.length; i++) {
@@ -17,21 +17,23 @@ public class UtilityTest extends TestCase {
         }
 
         String[] expected = {"", "S", "M", "D", "M", "D", "F", "S"};
-        assertEquals(8, weekdays.length);
+        Assert.assertEquals(8, weekdays.length);
         Assert.assertArrayEquals(expected, weekdays);
     }
 
-    public void testGetWeekdayStringsForLocaleUs() throws Exception {
+    @Test
+    public void testGetWeekdayStringsForLocaleUs() {
         String[] weekdays = Utility.getWeekdayStringsForLocale(new Locale("us"));
         String[] expected = {"", "S", "M", "T", "W", "T", "F", "S"};
 
-        assertEquals(8, weekdays.length);
+        Assert.assertEquals(8, weekdays.length);
         Assert.assertArrayEquals(expected, weekdays);
     }
 
+    @Test
     public void testContainsAny() {
         String haystack = "haystack 0 1";
-        assertTrue(Utility.containsAny(haystack, " ", "0"));
-        assertFalse(Utility.containsAny(haystack, "3", "4", "z"));
+        Assert.assertTrue(Utility.containsAny(haystack, " ", "0"));
+        Assert.assertFalse(Utility.containsAny(haystack, "3", "4", "z"));
     }
 }
