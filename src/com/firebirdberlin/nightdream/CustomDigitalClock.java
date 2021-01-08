@@ -7,12 +7,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
 
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
@@ -158,13 +163,52 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         setSampleTime();
     }
 
-    void setSampleTime() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 22);
-        cal.set(Calendar.MINUTE, 55);
-        cal.set(Calendar.SECOND, 55);
-        String text = simpleDateFormat.format(cal.getTime());
+    public void setSampleTime() {
+        String text = getSampleText();
         setSampleText(text);
+    }
+
+    public String getSampleText() {
+        if (! Utility.containsAny(mFormat, "m", "h", "H")) {
+            return null;
+        }
+
+        Paint paint = getPaint();
+        float width = -1.f;
+        float tmp;
+
+        int h_tens_digit = 0;
+        for (int i = 0; i < 3 ; i++) {
+            tmp = paint.measureText(String.valueOf(i));
+            if (tmp > width) {
+                h_tens_digit = i;
+                width = tmp;
+            }
+        }
+        int m_tens_digit = h_tens_digit;
+        for (int i = 3; i < 7 ; i++) {
+            tmp = paint.measureText(String.valueOf(i));
+            if (tmp > width) {
+                m_tens_digit = i;
+                width = tmp;
+            }
+        }
+        int ones_digit = m_tens_digit;
+        for (int i = 7; i < 10 ; i++) {
+            tmp = paint.measureText(String.valueOf(i));
+            if (tmp > width) {
+                ones_digit = i;
+                width = tmp;
+            }
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, h_tens_digit * 10 + ones_digit);
+        cal.set(Calendar.MINUTE, m_tens_digit * 10 + ones_digit);
+        cal.set(Calendar.SECOND, m_tens_digit * 10 + ones_digit);
+        String text = simpleDateFormat.format(cal.getTime());
+        Log.i("CustomDigitalClock", "sample text: " + text);
+        return text;
     }
 
     public void setCustomFormat(String format) {
