@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +41,7 @@ public class WeatherLayout extends LinearLayout {
     private boolean showLocation = false;
     private boolean cycle = false;
     private int maxWidth = -1;
+    private int maxHeight = -1;
     private int minFontSizePx = -1;
     private int maxFontSizePx = -1;
     private int iconSizeFactor = 1;
@@ -155,6 +155,10 @@ public class WeatherLayout extends LinearLayout {
 
     public void setMaxWidth(int width) {
         this.maxWidth = width;
+    }
+
+    public void setMaxHeight(int height) {
+        this.maxHeight = height;
     }
 
     public void setViewVisibility() {
@@ -325,7 +329,7 @@ public class WeatherLayout extends LinearLayout {
         if (maxFontSizePx == -1 || minFontSizePx == -1) return;
         for (int size = minFontSizePx; size <= maxFontSizePx; size++) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            if (measureText() > maxWidth) {
+            if (measureText() > maxWidth || (maxHeight > 0 && measureTextHeight() > maxHeight)) {
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 1);
                 break;
             }
@@ -374,6 +378,10 @@ public class WeatherLayout extends LinearLayout {
     private float measureText(TextView view) {
         String text = view.getText().toString();
         return view.getPaint().measureText(text);
+    }
+
+    public int measureTextHeight() {
+        return Utility.getHeightOfView(this);
     }
 
     @Override

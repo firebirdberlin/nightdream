@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -16,8 +15,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
-
-import androidx.annotation.Nullable;
 
 import com.firebirdberlin.nightdream.ui.AutoAdjustTextView;
 
@@ -37,7 +34,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     private SimpleDateFormat simpleDateFormat;
     private FormatChangeObserver mFormatChangeObserver;
     private Handler handler;
-    private Runnable update = new Runnable() {
+    private final Runnable update = new Runnable() {
         @Override
         public void run() {
             updateTextView();
@@ -91,7 +88,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         }
 
         String text = simpleDateFormat.format(mCalendar.getTime());
-        if (text != getText() ) {
+        if (text != getText()) {
             setText(text);
             //invalidate();
         }
@@ -108,7 +105,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     }
 
     @Override
-    public void onAttachedToWindow(){
+    public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setTimeTick();
 
@@ -119,7 +116,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     }
 
     @Override
-    public void onDetachedFromWindow(){
+    public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (timeReceiver != null) {
             try {
@@ -151,10 +148,9 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     }
 
     private void setFormat() {
-        if (mCustom != null ) {
-           mFormat = mCustom;
-        } else
-        if (get24HourMode()) {
+        if (mCustom != null) {
+            mFormat = mCustom;
+        } else if (get24HourMode()) {
             mFormat = m24;
         } else {
             mFormat = m12;
@@ -169,7 +165,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     }
 
     public String getSampleText() {
-        if (! Utility.containsAny(mFormat, "m", "h", "H")) {
+        if (!Utility.containsAny(mFormat, "m", "h", "H")) {
             return null;
         }
 
@@ -178,7 +174,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         float tmp;
 
         int h_tens_digit = 0;
-        for (int i = 0; i < 3 ; i++) {
+        for (int i = 0; i < 3; i++) {
             tmp = paint.measureText(String.valueOf(i));
             if (tmp > width) {
                 h_tens_digit = i;
@@ -186,7 +182,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             }
         }
         int m_tens_digit = h_tens_digit;
-        for (int i = 3; i < 7 ; i++) {
+        for (int i = 3; i < 7; i++) {
             tmp = paint.measureText(String.valueOf(i));
             if (tmp > width) {
                 m_tens_digit = i;
@@ -194,7 +190,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             }
         }
         int ones_digit = m_tens_digit;
-        for (int i = 7; i < 10 ; i++) {
+        for (int i = 7; i < 10; i++) {
             tmp = paint.measureText(String.valueOf(i));
             if (tmp > width) {
                 ones_digit = i;
@@ -229,6 +225,28 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         updateTextView();
     }
 
+    @Override
+    public void invalidate() {
+        if (capitalize) {
+            String text = capitalize(getText().toString());
+            setText(text);
+        }
+        super.invalidate();
+    }
+
+    private String capitalize(String input) {
+        if (input == null) {
+            return null;
+        }
+        if (input.length() > 1) {
+            return input.substring(0, 1).toUpperCase() + input.substring(1);
+        } else if (input.length() > 0) {
+            return input.substring(0, 1).toUpperCase();
+        }
+
+        return input;
+    }
+
     class TimeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent arg1) {
@@ -245,28 +263,5 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         public void onChange(boolean selfChange) {
             setFormat();
         }
-    }
-
-    @Override
-    public void invalidate() {
-        if (capitalize) {
-            String text = capitalize(getText().toString());
-            setText(text);
-        }
-        super.invalidate();
-    }
-
-    private String capitalize(String input) {
-        if (input == null) {
-            return null;
-        }
-        if (input.length() > 1 ) {
-            return input.substring(0, 1).toUpperCase() + input.substring(1);
-        } else
-        if (input.length() > 0 ) {
-            return input.substring(0, 1).toUpperCase();
-        }
-
-        return input;
     }
 }

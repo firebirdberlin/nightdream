@@ -86,7 +86,7 @@ public class AutoAdjustTextView extends AppCompatTextView {
             paint.setTextSize(Utility.spToPx(getContext(), size));
             if (measureText(paint) > maxWidth ||
                     (maxHeight > -1 && measureTextHeight(paint) > maxHeight)) {
-                return size - 1;
+                return size;
             }
         }
         return maxFontSizeSp;
