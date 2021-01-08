@@ -1,12 +1,13 @@
 package com.firebirdberlin.nightdream.models;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class SimpleTimeTest extends TestCase {
+public class SimpleTimeTest {
 
     private Calendar getReference(int hour, int minute) {
         Calendar reference = Calendar.getInstance();
@@ -20,102 +21,113 @@ public class SimpleTimeTest extends TestCase {
         return reference;
     }
 
-    public void testAddRecurringDay() throws Exception {
+    @Test
+    public void testAddRecurringDay() {
         SimpleTime time = new SimpleTime(13, 25);
-        assertFalse(time.isRecurring());
+        Assert.assertFalse(time.isRecurring());
 
         time.addRecurringDay(2);
 
-        assertTrue(time.isRecurring());
+        Assert.assertTrue(time.isRecurring());
 
-        assertEquals(true, time.hasDay(2));
-        assertEquals(false, time.hasDay(1));
-        assertEquals(false, time.hasDay(3));
-        assertEquals(false, time.hasDay(4));
-        assertEquals(false, time.hasDay(5));
-        assertEquals(false, time.hasDay(6));
-        assertEquals(false, time.hasDay(7));
+        Assert.assertEquals(true, time.hasDay(2));
+        Assert.assertEquals(false, time.hasDay(1));
+        Assert.assertEquals(false, time.hasDay(3));
+        Assert.assertEquals(false, time.hasDay(4));
+        Assert.assertEquals(false, time.hasDay(5));
+        Assert.assertEquals(false, time.hasDay(6));
+        Assert.assertEquals(false, time.hasDay(7));
     }
 
-    public void testRemoveRecurringDay() throws Exception {
+    @Test
+    public void testRemoveRecurringDay() {
         SimpleTime time = new SimpleTime(13, 25);
         time.addRecurringDay(2);
         time.removeRecurringDay(2);
-        assertFalse(time.isRecurring());
-        assertEquals(false, time.hasDay(1));
-        assertEquals(false, time.hasDay(2));
-        assertEquals(false, time.hasDay(3));
-        assertEquals(false, time.hasDay(4));
-        assertEquals(false, time.hasDay(5));
-        assertEquals(false, time.hasDay(6));
-        assertEquals(false, time.hasDay(7));
+        Assert.assertFalse(time.isRecurring());
+        Assert.assertEquals(false, time.hasDay(1));
+        Assert.assertEquals(false, time.hasDay(2));
+        Assert.assertEquals(false, time.hasDay(3));
+        Assert.assertEquals(false, time.hasDay(4));
+        Assert.assertEquals(false, time.hasDay(5));
+        Assert.assertEquals(false, time.hasDay(6));
+        Assert.assertEquals(false, time.hasDay(7));
     }
 
-    public void testGetNextAlarmTime() throws Exception {
+    @Test
+    public void testGetNextAlarmTime() {
         SimpleTime time = new SimpleTime(13, 25);
         Calendar reference = getReference(12, 00);
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1507289100000L, next.getTimeInMillis());
+        Assert.assertEquals(1507289100000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeTomorrow() throws Exception {
+    @Test
+    public void testGetNextAlarmTimeTomorrow() {
         SimpleTime time = new SimpleTime(13, 25);
         Calendar reference = getReference(14, 00);
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1507375500000L, next.getTimeInMillis());
+        Assert.assertEquals(1507375500000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeRecurring() throws Exception {
+    @Test
+    public void testGetNextAlarmTimeRecurring() {
         Calendar reference = getReference(12, 00);
         SimpleTime time = new SimpleTime(13, 25, SimpleTime.TUESDAY | SimpleTime.WEDNESDAY);
 
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1507634700000L, next.getTimeInMillis());
+        Assert.assertEquals(1507634700000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeRecurring__TuesdayIsMuted() throws Exception {
+    @Test
+    public void testGetNextAlarmTimeRecurring__TuesdayIsMuted() {
         Calendar reference = getReference(12, 00);
         SimpleTime time = new SimpleTime(13, 25, SimpleTime.TUESDAY | SimpleTime.WEDNESDAY);
         time.nextEventAfter = 1507634700000L;
 
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1507721100000L, next.getTimeInMillis());
+        Assert.assertEquals(1507721100000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeRecurring__WednesdayIsMutedAsWell() throws Exception {
+    @Test
+    public void testGetNextAlarmTimeRecurring__WednesdayIsMutedAsWell() {
         Calendar reference = getReference(12, 00);
         SimpleTime time = new SimpleTime(13, 25, SimpleTime.TUESDAY | SimpleTime.WEDNESDAY);
         time.nextEventAfter = 1507721100000L;
 
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1508239500000L, next.getTimeInMillis());
+        Assert.assertEquals(1508239500000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeRecurring2() throws Exception {
+    @Test
+    public void testGetNextAlarmTimeRecurring2() {
         Calendar reference = getReference(12, 00);
         SimpleTime time = new SimpleTime(13, 25, SimpleTime.TUESDAY | SimpleTime.SATURDAY);
 
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1507375500000L, next.getTimeInMillis());
+        Assert.assertEquals(1507375500000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeRecurringToday() throws Exception {
+    @Test
+    public void testGetNextAlarmTimeRecurringToday() {
         Calendar reference = getReference(12, 00);
         SimpleTime time = new SimpleTime(13, 25, SimpleTime.FRIDAY | SimpleTime.SATURDAY);
 
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1507289100000L, next.getTimeInMillis());
+        Assert.assertEquals(1507289100000L, next.getTimeInMillis());
     }
 
-    public void testGetNextAlarmTimeRecurringSameWeekDay() throws Exception {
+    @Test
+    public void testGetNextAlarmTimeRecurringSameWeekDay() {
         Calendar reference = getReference(14, 00);
         SimpleTime time = new SimpleTime(13, 25, SimpleTime.FRIDAY);
 
         Calendar next = time.getNextAlarmTime(reference);
-        assertEquals(1507893900000L, next.getTimeInMillis());
+        Assert.assertEquals(1507893900000L, next.getTimeInMillis());
     }
 
-    public void testGetNextFromList() throws Exception {
+    @Test
+    public void testGetNextFromList() {
         List<SimpleTime> times = Arrays.asList(
                 new SimpleTime(10, 20, SimpleTime.TUESDAY | SimpleTime.FRIDAY),
                 new SimpleTime(13, 25, SimpleTime.MONDAY | SimpleTime.WEDNESDAY)
@@ -126,18 +138,19 @@ public class SimpleTimeTest extends TestCase {
 
         Calendar reference = getReference(14, 00);
         SimpleTime result = SimpleTime.getNextFromList(times, reference);
-        assertEquals(times.get(1), result);
+        Assert.assertEquals(times.get(1), result);
 
         Calendar reference2 = getReference(10, 00);
         SimpleTime result2 = SimpleTime.getNextFromList(times, reference2);
-        assertEquals(times.get(0), result2);
+        Assert.assertEquals(times.get(0), result2);
     }
 
-    public void testGetNextFromListReturnNull() throws Exception {
+    @Test
+    public void testGetNextFromListReturnNull() {
         List<SimpleTime> times = Arrays.asList();
         Calendar reference = getReference(14, 00);
         SimpleTime result = SimpleTime.getNextFromList(times, reference);
-        assertEquals(null, result);
+        Assert.assertEquals(null, result);
     }
 
 }
