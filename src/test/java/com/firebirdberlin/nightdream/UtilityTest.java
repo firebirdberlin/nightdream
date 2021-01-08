@@ -4,15 +4,12 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import java.util.Arrays;
 import java.util.Locale;
-import java.util.Map;
 
-/**
- * Created by stefan on 29.10.17.
- */
+
+
 public class UtilityTest extends TestCase {
-    public void testGetWeekdayStringsforLocaleDe() throws Exception {
+    public void testGetWeekdayStringsForLocaleDe() throws Exception {
         String[] weekdays = Utility.getWeekdayStringsForLocale(new Locale("de"));
 
         for (int i = 0; i < weekdays.length; i++) {
@@ -24,7 +21,7 @@ public class UtilityTest extends TestCase {
         Assert.assertArrayEquals(expected, weekdays);
     }
 
-    public void testGetWeekdayStringsforLocaleUs() throws Exception {
+    public void testGetWeekdayStringsForLocaleUs() throws Exception {
         String[] weekdays = Utility.getWeekdayStringsForLocale(new Locale("us"));
         String[] expected = {"", "S", "M", "T", "W", "T", "F", "S"};
 
@@ -32,4 +29,9 @@ public class UtilityTest extends TestCase {
         Assert.assertArrayEquals(expected, weekdays);
     }
 
+    public void testContainsAny() {
+        String haystack = "haystack 0 1";
+        assertTrue(Utility.containsAny(haystack, " ", "0"));
+        assertFalse(Utility.containsAny(haystack, "3", "4", "z"));
+    }
 }

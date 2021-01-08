@@ -379,6 +379,15 @@ public class Utility {
         return false;
     }
 
+    public static boolean containsAny(String haystack, String... needles) {
+        for (String needle : needles) {
+            if (haystack.contains(needle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void hideSystemUI(Context context) {
         hideSystemUI(((AppCompatActivity) context).getWindow());
     }

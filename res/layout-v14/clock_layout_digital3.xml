@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:layout_gravity="center"
+    android:padding="6dp"
     android:orientation="vertical">
 
     <GridLayout
@@ -24,6 +25,7 @@
             android:layout_columnWeight="100"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="horizontal"
             android:padding="0px">
 
@@ -32,7 +34,6 @@
                 android:id="@+id/clock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:clickable="true"
                 android:ellipsize="none"
                 android:focusable="true"
@@ -51,7 +52,6 @@
                 android:id="@+id/clock_ampm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:clickable="true"
                 android:ellipsize="none"
                 android:focusable="true"

@@ -658,11 +658,11 @@ public class NightDreamUI {
     public void setupClockLayout() {
         int layoutId = settings.getClockLayoutID(false);
         clockLayout.setLayout(layoutId);
-        clockLayout.setDateFormat(settings.dateFormat);
+        clockLayout.setTypeface(settings.typeface);
 
+        clockLayout.setDateFormat(settings.dateFormat);
         String timeFormat = settings.getTimeFormat(layoutId);
         clockLayout.setTimeFormat(timeFormat, settings.is24HourFormat());
-        clockLayout.setTypeface(settings.typeface);
         clockLayout.setTemperature(
                 settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit
         );
