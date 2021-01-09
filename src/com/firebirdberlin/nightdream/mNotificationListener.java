@@ -644,18 +644,20 @@ public class mNotificationListener extends NotificationListenerService {
             try {
                 String lastPerson = "";
                 NotificationCompat.MessagingStyle activeStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(sbn.getNotification());
-                assert activeStyle != null;
-                for (NotificationCompat.MessagingStyle.Message message : activeStyle.getMessages()) {
-                    assert message.getPerson() != null;
-                    if (lastPerson.contentEquals(message.getPerson().getName())) {
-                        notification_messages.append("<br>").append(message.getText());
-                    } else {
-                        if (notification_messages.toString().equals("")) {
-                            notification_messages = new StringBuilder(message.getPerson().getName() + "<br> " + message.getText());
-                        } else {
-                            notification_messages.append("<br>").append(message.getPerson().getName()).append("<br> ").append(message.getText());
+                if(activeStyle != null) {
+                    for (NotificationCompat.MessagingStyle.Message message : activeStyle.getMessages()) {
+                        if (message.getPerson() != null && message.getPerson().getName() != null) {
+                            if (lastPerson.contentEquals(message.getPerson().getName())) {
+                                notification_messages.append("<br>").append(message.getText());
+                            } else {
+                                if (notification_messages.toString().equals("")) {
+                                    notification_messages = new StringBuilder(message.getPerson().getName() + "<br> " + message.getText());
+                                } else {
+                                    notification_messages.append("<br>").append(message.getPerson().getName()).append("<br> ").append(message.getText());
+                                }
+                                lastPerson = message.getPerson().getName().toString();
+                            }
                         }
-                        lastPerson = message.getPerson().getName().toString();
                     }
                 }
             } catch (Exception ex) {

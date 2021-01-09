@@ -137,24 +137,20 @@ public class Notification implements Parcelable {
 
         //RemoteView to View
         FrameLayout CONTAINER = new FrameLayout(context);
-        try {
-            RemoteViews notificationRemoteView = (RemoteViews) intent.getParcelableExtra("view");
+        RemoteViews notificationRemoteView = (RemoteViews) intent.getParcelableExtra("view");
+        if (notificationRemoteView != null) {
             View view = notificationRemoteView.apply(context, CONTAINER);
             CONTAINER.addView(view);
             this.notification_cardview = CONTAINER;
-        } catch (Exception ex) {
-            Log.e(TAG,ex.toString());
         }
 
         //BigRemoteView to View
         CONTAINER = new FrameLayout(context);
-        try {
-            RemoteViews notificationRemoteView = (RemoteViews) intent.getParcelableExtra("bigview");
-            View view = notificationRemoteView.apply(context, CONTAINER);
+        RemoteViews notificationRemoteBigView = (RemoteViews) intent.getParcelableExtra("bigview");
+        if (notificationRemoteBigView != null) {
+            View view = notificationRemoteBigView.apply(context, CONTAINER);
             CONTAINER.addView(view);
             this.notification_bigcardview = CONTAINER;
-        } catch (Exception ex) {
-            Log.e(TAG,ex.toString());
         }
 
         //get drawable SmallIcon
