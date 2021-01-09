@@ -2,49 +2,36 @@ package com.firebirdberlin.nightdream;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.RemoteViews;
-
-import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.firebirdberlin.nightdream.NotificationList.BrowseNotificationApps;
-import com.firebirdberlin.nightdream.NotificationList.CustomRecyclerViewAdapter;
-import com.firebirdberlin.nightdream.NotificationList.Notification;
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import com.firebirdberlin.nightdream.NotificationList.NotificationAppShowList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationListActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class NotificationListActivity extends AppCompatActivity {
 
     public static String TAG = "NotificationListActivity";
     private RecyclerView recyclerView;
     private BrowseNotificationApps adapter;
 
     private static Context context;
-    private SharedPreferences sharedPreferences;
 
     List<NotificationApp> notificationapplist = new ArrayList<>();
     NotificationAppShowList notificationappshowlist;
@@ -67,17 +54,13 @@ public class NotificationListActivity extends AppCompatActivity implements Share
 
         setContentView(R.layout.notification_list_layout);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
         isaccessgranted();
 
         //Adapter init
-        //adapter = new CustomRecyclerViewAdapter(this, notificationlist);
         adapter = new BrowseNotificationApps(this, notificationapplist);
 
         //recycleview init
-        this.recyclerView = (RecyclerView) this.findViewById(R.id.recycleview);
+        this.recyclerView = this.findViewById(R.id.recycleview);
         recyclerView.setAdapter(adapter);
 
         // RecyclerView scroll vertical
@@ -95,15 +78,24 @@ public class NotificationListActivity extends AppCompatActivity implements Share
     }
 
     //access granted to notification policity
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void isaccessgranted() {
-        NotificationManager n = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (!n.isNotificationPolicyAccessGranted()) {
+        Log.d(TAG, "isaccessgranted");
+        boolean isGranted;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NotificationManager n = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            isGranted = n.isNotificationPolicyAccessGranted();
+        }
+        else {
+            isGranted = mNotificationListener.running;
+        }
+
+        if (!isGranted) {
             new AlertDialog.Builder(NotificationListActivity.this)
-                    .setTitle("Notification access")
-                    .setMessage("Notification access not granted.")
+                    .setTitle(R.string.showNotificationsAccessNotGranted)
+                    .setMessage(R.string.showNotificationsAlertText)
 
                     // Specifying a listener allows you to take an action before dismissing the dialog.
                     // The dialog is automatically dismissed when a dialog button is clicked.
@@ -117,9 +109,6 @@ public class NotificationListActivity extends AppCompatActivity implements Share
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
-        }
-        else {
-            return;
         }
     }
 
@@ -136,13 +125,7 @@ public class NotificationListActivity extends AppCompatActivity implements Share
                 }
             }
 
-            if ( intent.hasExtra("serviceMessage")) {
-                String message = intent.getStringExtra("serviceMessage");
-                Toast.makeText(NotificationListActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-
             notificationapplist = intent.getParcelableArrayListExtra("notificationapplist");
-            // Toast.makeText(MainActivity.this, "test:" + notificationapplist, Toast.LENGTH_SHORT).show();
             if (notificationapplist != null) {
                 notificationappshowlist.change_notificationsapphowlist(notificationapplist);
             }
@@ -155,26 +138,9 @@ public class NotificationListActivity extends AppCompatActivity implements Share
         return NotificationListActivity.context;
     }
 
-     //listen for changes in SharedPreferences
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-        switch (key) {
-            case "showongoing":
-            case "shownotclearable":
-                notificationappshowlist.change_notificationsapphowlist(notificationapplist);
-                break;
-        }
-
-        //adapter.updateData(notificationshowlist.get_notificationshowlist());
-        adapter.updateData(notificationappshowlist.get_notificationappshowlist());
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Toast.makeText(this, "Return to Sender", Toast.LENGTH_SHORT).show();
-       // Intent intent = new Intent(getApplicationContext(), NotificationService.class);
         Intent intent = new Intent(getApplicationContext(), mNotificationListener.class);
         intent.putExtra("command", "getnotificationapplist");
         //starting service
@@ -184,14 +150,12 @@ public class NotificationListActivity extends AppCompatActivity implements Share
     @Override
     public void onDestroy() {
 
-        try{
-            if(onNotice!=null)
+        try {
+            if (onNotice != null)
                 unregisterReceiver(onNotice);
-
-        }catch(Exception e){}
+        }catch (Exception ex){}
 
         super.onDestroy();
     }
-
 
 }

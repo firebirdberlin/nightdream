@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.NotificationList;
 
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -117,27 +116,27 @@ public class Notification implements Parcelable {
         this.notification_posttime=  intent.getStringExtra("posttime");
         this.notification_template=  intent.getStringExtra("template");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.notification_messages = Html.fromHtml((String) intent.getStringExtra("messages"), Html.FROM_HTML_MODE_LEGACY);
+            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), Html.FROM_HTML_MODE_LEGACY);
         } else {
-            this.notification_messages = Html.fromHtml((String) intent.getStringExtra("messages"), null, null);
+            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), null, null);
         }
-        this.notification_text= (String) intent.getStringExtra("text");
-        this.notification_textbig= (String) intent.getStringExtra("textbig");
-        this.notification_summarytext= (String) intent.getStringExtra("summarytext");
-        this.notification_bigpicture= (Bitmap) intent.getParcelableExtra("bigpicture");
-        this.notification_remoteview = (RemoteViews) intent.getParcelableExtra("view");
-        this.notification_applicationname = (String) intent.getStringExtra("applicationname");
-        this.notification_title = (String) intent.getStringExtra("title");
-        this.notification_titlebig = (String) intent.getStringExtra("titlebig");
+        this.notification_text= intent.getStringExtra("text");
+        this.notification_textbig= intent.getStringExtra("textbig");
+        this.notification_summarytext= intent.getStringExtra("summarytext");
+        this.notification_bigpicture= intent.getParcelableExtra("bigpicture");
+        this.notification_remoteview = intent.getParcelableExtra("view");
+        this.notification_applicationname = intent.getStringExtra("applicationname");
+        this.notification_title = intent.getStringExtra("title");
+        this.notification_titlebig = intent.getStringExtra("titlebig");
         this.notification_action = (android.app.Notification.Action[]) intent.getParcelableArrayExtra("action");
-        this.notification_package = (String) intent.getStringExtra("package");
-        this.notification_contentintent= (PendingIntent) intent.getParcelableExtra("contentintent");
-        this.notification_clearable = (Boolean) intent.getBooleanExtra("clearable", true);
-        this.notification_color = (Integer) intent.getIntExtra("color",0);
+        this.notification_package = intent.getStringExtra("package");
+        this.notification_contentintent= intent.getParcelableExtra("contentintent");
+        this.notification_clearable = intent.getBooleanExtra("clearable", true);
+        this.notification_color = intent.getIntExtra("color",0);
 
         //RemoteView to View
         FrameLayout CONTAINER = new FrameLayout(context);
-        RemoteViews notificationRemoteView = (RemoteViews) intent.getParcelableExtra("view");
+        RemoteViews notificationRemoteView = intent.getParcelableExtra("view");
         if (notificationRemoteView != null) {
             View view = notificationRemoteView.apply(context, CONTAINER);
             CONTAINER.addView(view);
@@ -146,7 +145,7 @@ public class Notification implements Parcelable {
 
         //BigRemoteView to View
         CONTAINER = new FrameLayout(context);
-        RemoteViews notificationRemoteBigView = (RemoteViews) intent.getParcelableExtra("bigview");
+        RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigview");
         if (notificationRemoteBigView != null) {
             View view = notificationRemoteBigView.apply(context, CONTAINER);
             CONTAINER.addView(view);
@@ -155,20 +154,20 @@ public class Notification implements Parcelable {
 
         //get drawable SmallIcon
         try{
-            Context remotePackageContext = context.getApplicationContext().createPackageContext((String) intent.getStringExtra("package"), 0);
-            this.notification_drawableicon = ContextCompat.getDrawable(remotePackageContext, (int) intent.getIntExtra("iconresid",0));
+            Context remotePackageContext = context.getApplicationContext().createPackageContext(intent.getStringExtra("package"), 0);
+            this.notification_drawableicon = ContextCompat.getDrawable(remotePackageContext, intent.getIntExtra("iconresid",0));
 
         }catch (Exception ex){
             Log.e(TAG,ex.toString());
         }
 
-        this.notification_bitmaplargeicon = (Bitmap) intent.getParcelableExtra("largeiconbitmap");
+        this.notification_bitmaplargeicon = intent.getParcelableExtra("largeiconbitmap");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.notification_textlines = Html.fromHtml((String) intent.getStringExtra("textlines"), Html.FROM_HTML_MODE_LEGACY);
+            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textlines"), Html.FROM_HTML_MODE_LEGACY);
         }
         else {
-            this.notification_textlines = Html.fromHtml((String) intent.getStringExtra("textlines"), null, null);
+            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textlines"), null, null);
         }
 
         notification_child_id = -1;

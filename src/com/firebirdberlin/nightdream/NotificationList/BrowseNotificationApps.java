@@ -88,7 +88,6 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
             holder.appicon.setImageResource(R.mipmap.ic_launcher);
         }
 
-
         holder.name.setVisibility(View.VISIBLE);
         holder.name.setText(notifyapp.get_notificationapp_name());
         holder.time.setText(notifyapp.get_notificationapp_time());

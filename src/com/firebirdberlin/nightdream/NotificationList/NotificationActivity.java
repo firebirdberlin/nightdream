@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -21,12 +20,12 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.mNotificationListener;
 
 
-public class NotificationActivity  extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class NotificationActivity  extends AppCompatActivity {
 
     public static String TAG = "NotificationListActivity";
     private RecyclerView recyclerView;
     private CustomRecyclerViewAdapter adapter;
-    List<Notification> notificationlist = new ArrayList<Notification>();
+    List<Notification> notificationlist = new ArrayList<>();
     notificationshowlist notificationshowlist;
     String packagename;
 
@@ -39,8 +38,6 @@ public class NotificationActivity  extends AppCompatActivity implements SharedPr
             packagename = intent.getStringExtra("packagename");
         }
 
-        //Toast.makeText(this, "OnClick: "+packagename , Toast.LENGTH_LONG).show();
-
         Log.d(TAG,"NotificationActivity started");
         notificationshowlist = new notificationshowlist(notificationlist, getApplicationContext());
 
@@ -50,7 +47,7 @@ public class NotificationActivity  extends AppCompatActivity implements SharedPr
         adapter = new CustomRecyclerViewAdapter(this, notificationlist);
 
         //recycleview init
-        this.recyclerView = (RecyclerView) this.findViewById(R.id.recycleview);
+        this.recyclerView = this.findViewById(R.id.recycleview);
         recyclerView.setAdapter(adapter);
 
         // RecyclerView scroll vertical
@@ -59,7 +56,6 @@ public class NotificationActivity  extends AppCompatActivity implements SharedPr
 
         LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, new IntentFilter("Notification.Action.notificationlist"));
 
-        //Intent intentstart = new Intent(getApplicationContext(), NotificationService.class);
         Intent intentstart = new Intent(getApplicationContext(), mNotificationListener.class);
         intentstart.putExtra("command", "getnotificationlist");
         //starting service
@@ -83,18 +79,13 @@ public class NotificationActivity  extends AppCompatActivity implements SharedPr
     };
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-
-    }
-
-    @Override
     public void onDestroy() {
 
-        try{
+        try {
             if(onNotice!=null)
                 unregisterReceiver(onNotice);
-
-        }catch(Exception e){}
+        }
+        catch (Exception ex ){}
 
         super.onDestroy();
     }

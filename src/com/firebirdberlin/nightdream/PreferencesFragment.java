@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.CheckBoxPreference;
@@ -173,7 +174,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Preference preference = findPreference("showNotification");
 
             if (preference != null) {
-                if (!mNotificationListener.running) {
+                if (!isNotificationAccessGranted()) {
                     preference.setSummary(getString(R.string.showNotificationsAccessNotGranted));
                     preference.setEnabled(false);
                 } else {
@@ -184,6 +185,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
     };
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    boolean isNotificationAccessGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NotificationManager n = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            return n.isNotificationPolicyAccessGranted();
+        } else {
+            return mNotificationListener.running;
+        }
+    }
 
     @SuppressWarnings("deprecation")
     @Override
@@ -352,7 +363,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
 
                         if (showNotificationPreference != null) {
-                            if (!mNotificationListener.running) {
+
+                            if (!isNotificationAccessGranted()) {
                                 showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessNotGranted));
                                 showNotificationPreference.setEnabled(false);
 

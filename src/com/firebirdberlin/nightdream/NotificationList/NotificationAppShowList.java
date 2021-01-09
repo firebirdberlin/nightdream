@@ -2,10 +2,6 @@ package com.firebirdberlin.nightdream.NotificationList;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.preference.PreferenceManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +9,7 @@ import java.util.List;
 
 public class NotificationAppShowList {
 
-    private List<NotificationApp> notificationappshowlist = new ArrayList<NotificationApp>();
+    private List<NotificationApp> notificationappshowlist = new ArrayList<>();
 
     public NotificationAppShowList(List<NotificationApp> notificationappshowlist, Context context) {
         this.notificationappshowlist.addAll(notificationappshowlist);
@@ -22,7 +18,6 @@ public class NotificationAppShowList {
     public List<NotificationApp> get_notificationappshowlist(){return this.notificationappshowlist;}
 
     public void clear_notificationappshowlist(){notificationappshowlist.clear(); }
-
 
     public void change_notificationsapphowlist(List<NotificationApp> notificationapplist) {
 

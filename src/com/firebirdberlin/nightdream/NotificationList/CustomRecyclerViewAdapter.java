@@ -99,7 +99,6 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
         holder.notificationAppname.setText(notify.get_notification_applicationname() );
         holder.notificationpostTimeView.setText(notify.get_notification_posttime() );
         holder.notificationTitle.setText(notify.get_notification_title());
-
         holder.notificationText.setText(notify.get_notification_text());
 
         //get actions
@@ -215,8 +214,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
                 //try to set a custom view without style
                 holder.itemView.findViewById(R.id.notify_remoteview);
 
-                for(int index = 0; index < ((ViewGroup) holder.notificationRemoteView).getChildCount(); index++) {
-                    View nextChild = ((ViewGroup) holder.notificationRemoteView).getChildAt(index);
+                for(int index = 0; index < holder.notificationRemoteView.getChildCount(); index++) {
+                    View nextChild = holder.notificationRemoteView.getChildAt(index);
                     holder.notificationRemoteView.removeView(nextChild);
                 }
 

@@ -49,11 +49,11 @@ public class NotificationApp implements Parcelable {
 
     public NotificationApp(Context context, Intent intent) {
 
-        this.notificationapp_picture = (Bitmap) intent.getParcelableExtra("bitmap");
+        this.notificationapp_picture = intent.getParcelableExtra("bitmap");
         this.notificationapp_time =  intent.getStringExtra("timestamp");
         this.notificationapp_name =  intent.getStringExtra("name");
         this.notificationapp_timestamp =  intent.getStringExtra("posttimestamp");
-        this.notificationapp_package = (String) intent.getStringExtra("package");
+        this.notificationapp_package = intent.getStringExtra("package");
     }
 
     public Bitmap get_notificationapp_picture() {

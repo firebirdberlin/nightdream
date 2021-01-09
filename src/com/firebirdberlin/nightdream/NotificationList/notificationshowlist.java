@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class notificationshowlist {
-    private List<Notification> notificationshowlist = new ArrayList<Notification>();
+    private List<Notification> notificationshowlist = new ArrayList<>();
 
     private SharedPreferences sharedPreferences;
 

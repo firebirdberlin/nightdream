@@ -202,7 +202,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showNotifications">Benachrichtigungen anzeigen</string>
     <string name="showNotificationsAccessGranted">Benachrichtigungszugriff erteilt</string>
     <string name="showNotificationsAccessNotGranted">Benachrichtigungszugriff nicht erteilt!</string>
-    <string name="showNotificationsAlertText">Um Benachrichtigungen anzuzeigen, muss die Berechtigung erteilt in den Android-Einstellungen erteilt werden.</string>
+    <string name="showNotificationsAlertText">Um Benachrichtigungen anzuzeigen, muss die Berechtigung in den Android-Einstellungen erteilt werden.</string>
     <string name="notifications_options">Benachrichtigungsoptionen</string>
     <string name="notification_channel_desc_alarms">Benachrichtigung, die einen aktiven Weckalarm anzeigt.</string>
     <string name="notification_channel_desc_devmsg">Benachrichtigungen, die die Nachtuhr betreffen.</string>
