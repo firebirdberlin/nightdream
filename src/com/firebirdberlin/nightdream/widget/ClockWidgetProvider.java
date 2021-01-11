@@ -99,9 +99,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
 
         // update weather date if not outdated
-        if (settings.weatherEntry != null
-                && settings.weatherEntry.timestamp > -1L
-                && settings.weatherEntry.ageMillis() <= 8 * 60 * 60 * 1000) {
+        if (settings.weatherEntry != null && settings.weatherEntry.isValid()) {
             clockLayout.setTemperature(
                     settings.showTemperature,
                     settings.showApparentTemperature,

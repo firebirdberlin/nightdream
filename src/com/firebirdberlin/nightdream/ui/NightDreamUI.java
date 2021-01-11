@@ -649,8 +649,7 @@ public class NightDreamUI {
 
         // handle outdated weather data
         WeatherEntry entry = settings.weatherEntry;
-        long diff = entry.ageMillis();
-        if (entry.timestamp == -1L || diff > 8 * 60 * 60 * 1000) {
+        if (!entry.isValid()) {
             clockLayout.clearWeather();
         }
     }
