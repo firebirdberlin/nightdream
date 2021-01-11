@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -66,6 +67,7 @@ public class ClockLayout extends LinearLayout {
     private ConstraintLayout mediaStyleLayout = null;
     private View divider = null;
     private boolean showDivider = true;
+    private boolean showWeather = false;
     private boolean mirrorText = false;
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
@@ -311,6 +313,7 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void showWeather(boolean on) {
+        this.showWeather = on;
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null) {
                 layout.setVisibility((on) ? View.VISIBLE : View.GONE);
@@ -488,7 +491,11 @@ public class ClockLayout extends LinearLayout {
 
     void updateDigitalClock3(final boolean displayInWidget, int parentWidth) {
         float maxWidth = 0.4f * parentWidth;
-        setSize(parentWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        setSize(
+                showWeather ? parentWidth : LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
 
         {
             View v = findViewById(R.id.time_layout);
@@ -498,9 +505,12 @@ public class ClockLayout extends LinearLayout {
 
         {
             View v = findViewById(R.id.weather_container);
-            v.getLayoutParams().width = (int) maxWidth;
+            v.getLayoutParams().width = showWeather ? (int) maxWidth : 0;
             v.requestLayout();
+            View divider = findViewWithTag("divider");
+            divider.setVisibility(showWeather ? View.VISIBLE : View.GONE);
         }
+
         Typeface typeface = clock.getTypeface();
         if (clock != null) {
             clock.setMaxWidth((int) maxWidth);
@@ -550,9 +560,11 @@ public class ClockLayout extends LinearLayout {
     }
 
     void setDividerHeight(int height) {
+        if (!showWeather) {
+            return;
+        }
         View divider = findViewWithTag("divider");
         divider.getLayoutParams().height = height;
-        divider.setVisibility(VISIBLE);
         divider.invalidate();
     }
 

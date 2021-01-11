@@ -131,4 +131,8 @@ public class WeatherEntry {
         }
     }
 
+    public boolean isValid() {
+        long age = ageMillis();
+        return (timestamp > -1L && age < 8 * 60 * 60 * 1000);
+    }
 }

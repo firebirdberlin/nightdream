@@ -248,8 +248,7 @@ public class WeatherLayout extends LinearLayout {
     public void update(WeatherEntry entry) {
         this.weatherEntry = entry;
         if (iconText == null || temperatureText == null) return;
-        long age = entry.ageMillis();
-        if (entry.timestamp > -1L && age < 8 * 60 * 60 * 1000) {
+        if (shallBeVisible()) {
             iconText.setText(iconToText(entry.weatherIcon));
             temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
             locationText.setText(entry.cityName);
@@ -373,6 +372,11 @@ public class WeatherLayout extends LinearLayout {
 
     private boolean isVisible(View view) {
         return view != null && view.getVisibility() == VISIBLE;
+    }
+
+    public boolean shallBeVisible() {
+        if (weatherEntry == null) return false;
+        return weatherEntry.isValid();
     }
 
     private float measureText(TextView view) {
