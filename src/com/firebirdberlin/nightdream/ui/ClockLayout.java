@@ -21,7 +21,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -518,7 +517,7 @@ public class ClockLayout extends LinearLayout {
         }
         if (date != null) {
             date.setMaxWidth((int) maxWidth);
-            date.setMaxFontSizesInSp(10.f, 20.f);
+            date.setMaxFontSizesInSp(10.f, 40.f);
             date.setTypeface(typeface);
         }
 

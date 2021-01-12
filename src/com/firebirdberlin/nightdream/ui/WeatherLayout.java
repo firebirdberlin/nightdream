@@ -40,6 +40,7 @@ public class WeatherLayout extends LinearLayout {
     private boolean showTemperature = false;
     private boolean showLocation = false;
     private boolean cycle = false;
+    private boolean indicateEmptyState = false;
     private int maxWidth = -1;
     private int maxHeight = -1;
     private int minFontSizePx = -1;
@@ -50,7 +51,7 @@ public class WeatherLayout extends LinearLayout {
     private boolean isVertical = false;
     private int iconHeight = -1;
     private String content = "icon|temperature|wind";
-    private HashSet<String> cycleItems = new HashSet<>();
+    private final HashSet<String> cycleItems = new HashSet<>();
 
     public WeatherLayout(Context context) {
         super(context);
@@ -63,14 +64,14 @@ public class WeatherLayout extends LinearLayout {
         this.context = context;
         String content = getAttributeStringValue(attrs, NAMESPACE, "content", "icon|temperature|wind");
         String orientation = getAttributeStringValue(attrs, NAMESPACE, "orientation", "horizontal");
-        String cycle_condition = getAttributeStringValue(attrs, NAMESPACE, "cycle", "false");
+        cycle = attrs.getAttributeBooleanValue(NAMESPACE, "cycle", false);
+        indicateEmptyState = attrs.getAttributeBooleanValue(NAMESPACE, "indicateEmpty", false);
         this.content = content;
         showIcon = content.contains("icon");
         showWindSpeed = content.contains("wind");
         showTemperature = content.contains("temperature");
         showLocation = content.contains("location");
         isVertical = "vertical".equals(orientation);
-        cycle = "true".equals(cycle_condition);
         cycleItems.add("temperature");
         init();
     }
@@ -198,12 +199,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void clear() {
-        iconText.setText("");
-        iconWind.setText("");
+        iconText.setText(indicateEmptyState ? ")" : "");
+        iconWind.setText(indicateEmptyState ? ")" : "");
+        iconWindDirection.setVisibility(VISIBLE);
         iconWindDirection.setDirection(DirectionIconView.INVALID);
-        temperatureText.setText("");
-        locationText.setText("");
-        windText.setText("");
+        iconWindDirection.setVisibility(INVISIBLE);
+        temperatureText.setText(indicateEmptyState ? "..." : "");
+        locationText.setText(indicateEmptyState ? "..." : "");
+        windText.setText(indicateEmptyState ? "..." : "");
 
         iconText.invalidate();
         iconWind.invalidate();
