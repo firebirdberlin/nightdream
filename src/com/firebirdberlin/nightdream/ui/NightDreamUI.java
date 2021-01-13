@@ -28,6 +28,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
+import android.renderscript.Type;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -1768,6 +1773,21 @@ public class NightDreamUI {
                         newBackgroundBitmap.setPixel(i, j, newPixel);
                     }
                 }
+                break;
+            case 7:
+                //blur effect
+                float blurRadius = 7.5f;
+
+                bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+                RenderScript rs = RenderScript.create(mContext);
+                ScriptIntrinsicBlur scriptIntrinsicBlur = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+                Allocation allocationIn = Allocation.createFromBitmap(rs, bitmap);
+                Allocation allocationOut = Allocation.createFromBitmap(rs, newBackgroundBitmap);
+                scriptIntrinsicBlur.setRadius(blurRadius);
+                scriptIntrinsicBlur.setInput(allocationIn);
+                scriptIntrinsicBlur.forEach(allocationOut);
+                allocationOut.copyTo(newBackgroundBitmap);
+
                 break;
         }
 

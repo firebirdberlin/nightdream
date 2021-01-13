@@ -75,6 +75,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_filter_invert">Invertiert</string>
     <string name="background_image_filter_contrast">Kontrast</string>
     <string name="background_image_filter_sketch">Skizze</string>
+    <string name="background_image_filter_blur">Verschwommen</string>
     <string name="background_auto_accent_color">Automatische Farbauswahl</string>
     <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen</string>
     <string name="background_black">Schwarz</string>
