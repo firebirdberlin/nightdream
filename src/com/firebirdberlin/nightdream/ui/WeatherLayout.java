@@ -199,8 +199,8 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void clear() {
-        iconText.setText(indicateEmptyState ? ")" : "");
-        iconWind.setText(indicateEmptyState ? ")" : "");
+        iconText.setText("");
+        iconWind.setText("");
         iconWindDirection.setVisibility(VISIBLE);
         iconWindDirection.setDirection(DirectionIconView.INVALID);
         iconWindDirection.setVisibility(INVISIBLE);
@@ -258,7 +258,6 @@ public class WeatherLayout extends LinearLayout {
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(entry.formatWindText(speedUnit));
-
             update();
         } else {
             clear();

@@ -643,6 +643,7 @@ public class NightDreamUI {
     }
 
     private void updateWeatherData() {
+        Log.i(TAG, "updateWeatherData()");
         if (!settings.showWeather) return;
 
         DownloadWeatherService.start(mContext);
