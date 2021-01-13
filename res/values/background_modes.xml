@@ -57,6 +57,7 @@
         <item>4</item>
         <item>5</item>
         <item>6</item>
+        <item>7</item>
     </string-array>
 
     <string-array name="backgroundImageFilterMode">
@@ -66,6 +67,7 @@
         <item>@string/background_image_filter_invert</item>
         <item>@string/background_image_filter_contrast</item>
         <item>@string/background_image_filter_sketch</item>
+        <item>@string/background_image_filter_blur</item>
     </string-array>
 
     <string-array name="decorationStyles">
