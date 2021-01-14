@@ -22,10 +22,16 @@
         app:title="@string/handle_power"/>
 
     <Preference
-        app:icon="@drawable/ic_appearance"
-        app:key="appearance"
+        app:icon="@drawable/ic_clock_icon"
+        app:key="clock"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-        app:title="@string/appearance"/>
+        app:title="@string/clock"/>
+
+    <Preference
+        app:icon="@drawable/ic_background"
+        app:key="background"
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+        app:title="@string/background"/>
 
     <Preference
         app:icon="@drawable/ic_brightness"
@@ -57,6 +63,16 @@
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
         app:title="@string/about"
         />
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_faq"
+        app:title="FAQ"
+        app:summary="@string/frequently_asked_questions">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
+    </Preference>
 
     <!-- Add an empty preference so that we have space to show a snackbar at the bottom -->
     <Preference
