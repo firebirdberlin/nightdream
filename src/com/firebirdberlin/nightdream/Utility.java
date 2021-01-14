@@ -859,4 +859,18 @@ public class Utility {
         }
         return null;
     }
+
+    public static long millisToTimeTick(long lowerThreshold) {
+        return millisUntil(60000, lowerThreshold);
+    }
+
+    public static long millisUntil(long unit, long lowerThreshold) {
+        long now = java.lang.System.currentTimeMillis();
+        long millis = unit - now % unit;
+        Log.i("Utility", "millisUntil("+unit+") = " + millis);
+        if (millis < lowerThreshold) {
+            return millis + unit;
+        }
+        return millis;
+    }
 }
