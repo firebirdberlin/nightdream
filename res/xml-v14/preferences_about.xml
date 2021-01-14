@@ -20,17 +20,6 @@
 
     <Preference
         app:iconSpaceReserved="false"
-        app:icon="@drawable/ic_faq"
-        app:title="FAQ"
-        app:summary="@string/frequently_asked_questions">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="https://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
-
-    </Preference>
-
-    <Preference
-        app:iconSpaceReserved="false"
         app:icon="@drawable/ic_share"
         app:key="recommendApp"
         app:title="@string/recommend"/>
