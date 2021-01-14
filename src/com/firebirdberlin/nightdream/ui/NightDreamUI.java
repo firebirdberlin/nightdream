@@ -217,16 +217,22 @@ public class NightDreamUI {
         @Override
         public void run() {
             setAlpha(brightnessProgress, 0.f, 2000);
-            handler.postDelayed(hideBrightnessView, 2010);
+            postDelayed(hideBrightnessView, 2010);
         }
     };
     private Runnable backgroundChange = new Runnable() {
         @Override
         public void run() {
             setupBackgroundImage();
-            handler.postDelayed(this, 15000 * settings.backgroundImageDuration);
+            postBackgroundImageChange();
         }
     };
+    private void postBackgroundImageChange() {
+        long delay = Utility.millisUntil(
+                15000 * settings.backgroundImageDuration, 10000
+        ) - 750;
+        postDelayed(backgroundChange, delay);
+    }
     private Runnable fadeClock = new Runnable() {
         @Override
         public void run() {
@@ -237,14 +243,11 @@ public class NightDreamUI {
                 alpha.setFillAfter(true);
 
                 AnimationSet animationSet = new AnimationSet(true);
-
                 animationSet.addAnimation(alpha);
 
                 animationSet.setAnimationListener(new Animation.AnimationListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
+                    public void onAnimationStart(Animation animation) {}
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
@@ -256,19 +259,24 @@ public class NightDreamUI {
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
+                    public void onAnimationRepeat(Animation animation) {}
                 });
                 clockLayoutContainer.startAnimation(animationSet);
-                handler.postDelayed(this, 30000);
+                postFadeAnimation();
             }
         }
     };
+
+    private void postFadeAnimation() {
+        long delay = Utility.millisUntil(30000, 10000) - 2000;
+        postDelayed(fadeClock, delay);
+    }
+
     // move the clock randomly around
     private Runnable moveAround = new Runnable() {
         @Override
         public void run() {
+            Log.i(TAG, "moveAround.run()");
             removeCallbacks(hideBrightnessLevel);
             hideSystemUI();
             setupScreenAnimation();
@@ -278,7 +286,7 @@ public class NightDreamUI {
 
             updateWeatherData();
 
-            handler.postDelayed(this, 60000);
+            postDelayed(this, Utility.millisToTimeTick(20000));
         }
     };
     private Runnable hideAlarmClock = new Runnable() {
@@ -567,8 +575,7 @@ public class NightDreamUI {
 
     public void onStart() {
         Log.d(TAG, "onStart()");
-        handler.postDelayed(moveAround, 30000);
-        handler.postDelayed(fadeClock, 30000);
+        postDelayed(moveAround, Utility.millisToTimeTick(20000));
     }
 
     public void onResume() {
@@ -608,6 +615,7 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
+        postFadeAnimation();
     }
 
     private void initBackground() {
@@ -619,7 +627,7 @@ public class NightDreamUI {
                     AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
                     runningTask.execute(preloadBackgroundImageFile);
                     parentLayout.postDelayed(initSlideshowBackground, 500);
-                    handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
+                    postBackgroundImageChange();
                 } else {
                     preloadBackgroundImage = null;
                     preloadBackgroundImageFile = null;
@@ -861,8 +869,9 @@ public class NightDreamUI {
         if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
 
             if (settings.background_fadein) {
-                Animation alpha = AnimationUtils.loadAnimation(mContext.getApplicationContext(),
-                        R.anim.fade_in);
+                Animation alpha = AnimationUtils.loadAnimation(
+                        mContext.getApplicationContext(), R.anim.fade_in
+                );
                 animationSet.addAnimation(alpha);
             }
 
@@ -871,20 +880,24 @@ public class NightDreamUI {
 
                 switch (settings.background_movein_style) {
                     case 1:
-                        translate = AnimationUtils.loadAnimation(mContext.getApplicationContext(),
-                                R.anim.move_in_top);
+                        translate = AnimationUtils.loadAnimation(
+                                mContext.getApplicationContext(), R.anim.move_in_top
+                        );
                         break;
                     case 2:
-                        translate = AnimationUtils.loadAnimation(mContext.getApplicationContext(),
-                                R.anim.move_in_right);
+                        translate = AnimationUtils.loadAnimation(
+                                mContext.getApplicationContext(), R.anim.move_in_right
+                        );
                         break;
                     case 3:
-                        translate = AnimationUtils.loadAnimation(mContext.getApplicationContext(),
-                                R.anim.move_in_bottom);
+                        translate = AnimationUtils.loadAnimation(
+                                mContext.getApplicationContext(), R.anim.move_in_bottom
+                        );
                         break;
                     case 4:
-                        translate = AnimationUtils.loadAnimation(mContext.getApplicationContext(),
-                                R.anim.move_in_left);
+                        translate = AnimationUtils.loadAnimation(
+                                mContext.getApplicationContext(), R.anim.move_in_left
+                        );
                         break;
                 }
                 if (translate != null) {
@@ -894,8 +907,7 @@ public class NightDreamUI {
 
             if (settings.background_zoomin) {
                 Animation animZoomIn = AnimationUtils.loadAnimation(
-                        mContext.getApplicationContext(),
-                        R.anim.zoom_in
+                        mContext.getApplicationContext(), R.anim.zoom_in
                 );
                 animZoomIn.setDuration(50000 * settings.backgroundImageDuration);
                 animationSet.addAnimation(animZoomIn);
@@ -911,12 +923,10 @@ public class NightDreamUI {
                 }
 
                 @Override
-                public void onAnimationEnd(Animation animation) {
-                }
+                public void onAnimationEnd(Animation animation) {}
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
+                public void onAnimationRepeat(Animation animation) {}
             });
         }
 
@@ -1149,13 +1159,18 @@ public class NightDreamUI {
                 Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
                 setClockPosition(newConfig);
 
-                handler.postDelayed(moveAround, 60000);
-                handler.postDelayed(backgroundChange, 15000 * settings.backgroundImageDuration);
+                postDelayed(moveAround, Utility.millisToTimeTick(20000));
+                postBackgroundImageChange();
                 sidePanel.post(setupSidePanel);
             }
         };
 
         clockLayout.postDelayed(fixConfig, 200);
+    }
+
+    private void postDelayed(Runnable runnable, long delayMillis){
+        handler.removeCallbacks(runnable);
+        handler.postDelayed(runnable, delayMillis);
     }
 
     private void setupScreenAnimation() {
