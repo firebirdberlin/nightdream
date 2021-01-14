@@ -82,7 +82,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    if (isAdded() && "appearance".equals(rootKey)) {
+                    if (isAdded() && "clock".equals(rootKey)) {
                         View v = getView();
                         if (v != null) {
                             v.post(
@@ -328,8 +328,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 case "autostart":
                     setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
                     break;
-                case "appearance":
-                    setPreferencesFromResource(R.xml.preferences_appearance, rootKey);
+                case "clock":
+                    setPreferencesFromResource(R.xml.preferences_clock, rootKey);
+                    break;
+                case "background":
+                    setPreferencesFromResource(R.xml.preferences_background, rootKey);
                     break;
                 case "brightness":
                     setPreferencesFromResource(R.xml.preferences_brightness, rootKey);
@@ -371,11 +374,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
                     break;
                 default:
-                    setPreferencesFromResource(R.xml.preferences, rootKey);
+                    setPreferencesFromResource(R.xml.preferences, null);
                     break;
             }
         } else {
-            setPreferencesFromResource(R.xml.preferences, rootKey);
+            setPreferencesFromResource(R.xml.preferences, null);
         }
 
         initPurchasePreference("purchaseActions");
@@ -427,7 +430,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
-        } else if ("appearance".equals(rootKey)) {
+        } else if ("background".equals(rootKey)) {
             setupBackgroundImageControls(prefs);
             Preference chooseImage = findPreference("chooseBackgroundImage");
             chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
