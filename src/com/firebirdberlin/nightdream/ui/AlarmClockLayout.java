@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentManager;
@@ -48,7 +49,7 @@ public class AlarmClockLayout extends LinearLayout {
     private Context context;
     private String timeFormat = "h:mm";
     private String dateFormat;
-    private View mainLayout = null;
+    private ConstraintLayout mainLayout = null;
     private SimpleTime alarmClockEntry = null;
     private TextView timeView = null;
     private TextView textViewSound = null;
@@ -56,8 +57,8 @@ public class AlarmClockLayout extends LinearLayout {
     private TextView textViewVibrate = null;
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
-    private LinearLayout layoutDays = null;
-    private LinearLayout secondaryLayout = null;
+    private ConstraintLayout layoutDays = null;
+    private ConstraintLayout secondaryLayout = null;
     private Button buttonDelete = null;
     private Switch switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
@@ -166,7 +167,7 @@ public class AlarmClockLayout extends LinearLayout {
         checkBoxIsRepeating = findViewById(R.id.checkBoxIsRepeating);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            LinearLayout middle = findViewById(R.id.middle_top);
+            ConstraintLayout middle = findViewById(R.id.middle);
             LayoutTransition layoutTransition = middle.getLayoutTransition();
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         }
