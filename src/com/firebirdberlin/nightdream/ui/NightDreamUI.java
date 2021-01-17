@@ -87,6 +87,7 @@ public class NightDreamUI {
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private static String TAG = "NightDreamUI";
     final private Handler handler = new Handler();
+    final private Drawable bgtransparent= new ColorDrawable(Color.parseColor("#00000000"));
     final private Drawable bgblack = new ColorDrawable(Color.BLACK);
     private int screen_alpha_animation_duration = 3000;
     private int screen_transition_animation_duration = 10000;
@@ -767,6 +768,12 @@ public class NightDreamUI {
             switch (settings.getBackgroundMode()) {
                 case Settings.BACKGROUND_BLACK: {
                     bgshape = bgblack;
+                    break;
+                }
+                case Settings.BACKGROUND_TRANSPARENT: {
+                    background_images[0].setImageDrawable(bgtransparent);
+                    background_images[1].setImageDrawable(bgtransparent);
+                    bgshape = bgtransparent;
                     break;
                 }
                 case Settings.BACKGROUND_GRADIENT: {
