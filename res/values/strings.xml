@@ -78,6 +78,7 @@ OR
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
     <string name="background_slideshow">Slide show</string>
+    <string name="background_transparent">Transparent</string>
     <string name="background_image_duration">Image change every</string>
     <string name="seconds_60">60 seconds</string>
     <string name="seconds_30">30 seconds</string>

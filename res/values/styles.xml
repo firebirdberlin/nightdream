@@ -5,7 +5,8 @@
     <style name="ActivityTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/customBackgroundColor</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="PreferencesTheme" parent="Theme.AppCompat">
