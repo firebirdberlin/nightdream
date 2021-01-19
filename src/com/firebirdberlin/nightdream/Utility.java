@@ -388,6 +388,15 @@ public class Utility {
         return false;
     }
 
+    public static boolean equalsAny(String haystack, String... needles) {
+        for (String needle : needles) {
+            if (needle.equals(haystack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void hideSystemUI(Context context) {
         hideSystemUI(((AppCompatActivity) context).getWindow());
     }
