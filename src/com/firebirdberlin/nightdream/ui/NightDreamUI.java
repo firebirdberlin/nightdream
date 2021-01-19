@@ -87,16 +87,15 @@ public class NightDreamUI {
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private static String TAG = "NightDreamUI";
     final private Handler handler = new Handler();
-    final private Drawable bgtransparent= new ColorDrawable(Color.parseColor("#00000000"));
-    final private Drawable bgblack = new ColorDrawable(Color.BLACK);
+    final private Drawable colorTransparent = new ColorDrawable(Color.TRANSPARENT);
+    final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
     private int screen_alpha_animation_duration = 3000;
     private int screen_transition_animation_duration = 10000;
     private int mode = 2;
-    private boolean isDebuggable;
     private boolean controlsVisible = false;
     private Context mContext;
     private FrameLayout mainFrame;
-    private Drawable bgshape = bgblack;
+    private Drawable bgshape = colorBlack;
     private AlarmClock alarmClock;
 
     private ConstraintLayout parentLayout;
@@ -535,7 +534,6 @@ public class NightDreamUI {
         AudioManage = new mAudioManager(context);
 
         checkForReviewRequest();
-        isDebuggable = Utility.isDebuggable(context);
         clockLayoutContainer.setClockLayout(clockLayout);
     }
 
@@ -587,13 +585,12 @@ public class NightDreamUI {
 
         vibrantColor = 0;
         vibrantColorDark = 0;
+        mainFrame.setBackgroundColor(0);
         this.locked = settings.isUIlocked;
 
         removeCallbacks(backgroundChange);
         background_images[0].clearAnimation();
-        background_images[0].setImageDrawable(bgblack);
         background_images[1].clearAnimation();
-        background_images[1].setImageDrawable(bgblack);
         lastAnimationTime = 0L;
         setScreenOrientation(settings.screenOrientation);
         initSidePanel();
@@ -620,6 +617,8 @@ public class NightDreamUI {
     }
 
     private void initBackground() {
+        preloadBackgroundImage = null;
+        preloadBackgroundImageFile = null;
         switch (settings.getBackgroundMode()) {
             case Settings.BACKGROUND_SLIDESHOW:
                 loadBackgroundImageFiles();
@@ -769,19 +768,22 @@ public class NightDreamUI {
 
     private void setupBackgroundImage() {
         if (mode == 0) return;
-        bgshape = bgblack;
+        bgshape = colorBlack;
         exifLayoutContainer.setVisibility(View.GONE);
-
+        background_images[0].setImageDrawable(colorBlack);
+        background_images[1].setImageDrawable(colorBlack);
         if (!Utility.isLowRamDevice(mContext)) {
             switch (settings.getBackgroundMode()) {
                 case Settings.BACKGROUND_BLACK: {
-                    bgshape = bgblack;
+                    background_images[0].setImageDrawable(colorBlack);
+                    background_images[1].setImageDrawable(colorBlack);
+                    bgshape = colorBlack;
                     break;
                 }
                 case Settings.BACKGROUND_TRANSPARENT: {
-                    background_images[0].setImageDrawable(bgtransparent);
-                    background_images[1].setImageDrawable(bgtransparent);
-                    bgshape = bgtransparent;
+                    background_images[0].setImageDrawable(colorTransparent);
+                    background_images[1].setImageDrawable(colorTransparent);
+                    bgshape = colorTransparent;
                     break;
                 }
                 case Settings.BACKGROUND_GRADIENT: {
@@ -810,10 +812,9 @@ public class NightDreamUI {
         }
 
         if (settings.hideBackgroundImage && mode == 0) {
-            background_images[background_image_active].setImageDrawable(bgblack);
+            background_images[background_image_active].setImageDrawable(colorBlack);
             exifLayoutContainer.setVisibility(View.GONE);
         } else {
-
             background_image_active = (background_image_active + 1) % 2;
 
             switch (settings.slideshowStyle) {
@@ -1403,7 +1404,7 @@ public class NightDreamUI {
             if (settings.muteRinger) AudioManage.setRingerModeSilent();
             setColor();
             if (settings.hideBackgroundImage) {
-                background_images[background_image_active].setImageDrawable(bgblack);
+                background_images[background_image_active].setImageDrawable(colorBlack);
                 exifLayoutContainer.setVisibility(View.GONE);
             }
         } else if ((new_mode != 0) && (current_mode == 0)) {

@@ -2,18 +2,18 @@
 <resources>
      <string-array name="backgroundModeValues">
          <item>1</item>
+         <item>5</item>
          <item>2</item>
          <item>3</item>
          <item>4</item>
-         <item>5</item>
      </string-array>
 
     <string-array name="backgroundModes">
         <item>@string/background_black</item>
+        <item>@string/background_transparent</item>
         <item>@string/background_gradient</item>
         <item>@string/background_image</item>
         <item>@string/background_slideshow</item>
-        <item>@string/background_transparent</item>
     </string-array>
 
     <string-array name="backgroundImageDurationValues">

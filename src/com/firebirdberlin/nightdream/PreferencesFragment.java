@@ -847,10 +847,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
 
-        on = selection.equals("3") || selection.equals(("4"));
-        showPreference("slideshowStyle", on);
-        showPreference("hideBackgroundImage", on);
+        on = Utility.equalsAny(selection, "3", "4");
         showPreference("autoAccentColor", on);
+        showPreference("slideshowStyle", on);
+        showPreference("hideBackgroundImage", Utility.equalsAny(selection, "3", "4", "5"));
 
         boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
         showPreference("purchaseDesignPackageBackground", selection.equals("4") && !isPurchasedWeather);
@@ -865,7 +865,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("backgroundMovein", shallEnable);
         enablePreference("chooseDirectoryBackgroundImage", shallEnable);
         enablePreference("hideBackgroundImage", shallEnable);
-        enablePreference("slideshowStyle", shallEnable);
         enablePreference("slideshowStyle", shallEnable);
     }
 
