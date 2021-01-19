@@ -323,7 +323,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
 
         if (rootKey != null) {
-
             switch (rootKey) {
                 case "autostart":
                     setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
@@ -537,6 +536,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setupDaydreamPreferences();
             setupTranslationRequest();
             setupNotificationCategory();
+            setupBackgroundCategory();
         }
 
 
@@ -586,6 +586,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             hidePreference("notifications");
         } else {
             showPreference("notifications");
+        }
+    }
+
+    private void setupBackgroundCategory() {
+        if (Utility.isLowRamDevice(mContext)) {
+            hidePreference("background");
+        } else {
+            showPreference("background");
         }
     }
 
@@ -827,9 +835,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupBackgroundImageControls(SharedPreferences prefs) {
-        if (!Utility.isLowRamDevice(mContext)) {
-            showPreference("preference_category_background");
-        }
         String selection = prefs.getString("backgroundMode", "1");
 
         showPreference("chooseBackgroundImage", selection.equals("3"));
