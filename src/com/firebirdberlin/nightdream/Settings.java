@@ -50,6 +50,7 @@ public class Settings {
     public final static int BACKGROUND_GRADIENT = 2;
     public final static int BACKGROUND_IMAGE = 3;
     public final static int BACKGROUND_SLIDESHOW = 4;
+    public final static int BACKGROUND_TRANSPARENT = 5;
     public final static int SLIDESHOW_STYLE_CROPPED = 1;
     public final static int SLIDESHOW_STYLE_CENTER = 2;
     public final static int SLIDESHOW_STYLE_ANIMATED = 3;
