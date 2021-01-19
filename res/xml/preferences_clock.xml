@@ -1,0 +1,61 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:key="clock"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/clock">
+
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseDesignPackage"
+        app:isPreferenceVisible="false"
+        app:title="@string/purchaseWeatherData" />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:useSimpleSummaryProvider="true"
+        app:defaultValue="0"
+        app:entries="@array/clockLayout"
+        app:entryValues="@array/clockLayoutValues"
+        app:key="clockLayout"
+        app:title="@string/clock_layout" />
+
+    <com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference
+        app:iconSpaceReserved="false"
+        android:layout_gravity="center"
+        android:gravity="center"
+        app:key="clockLayoutPreview"
+        app:selectable="false"
+        app:title="@string/preview" />
+
+    <com.firebirdberlin.nightdream.ui.ColorSelectionPreference
+        app:iconSpaceReserved="false"
+        android:descendantFocusability="afterDescendants"
+        app:key="colorSelection"
+        app:selectable="true"
+        app:title="@string/colors"
+        />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="showDate"
+        app:title="@string/show_date" />
+
+    <com.firebirdberlin.nightdream.DateFormatPreference
+        app:iconSpaceReserved="false"
+        app:dependency="showDate"
+        app:key="dateFormat"
+        app:title="@string/date_format" />
+
+    <com.firebirdberlin.nightdream.DateFormatPreference
+        app:iconSpaceReserved="false"
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        app:key="timeFormat"
+        app:title="@string/timeFormat"
+        custom:formatType="time" />
+
+
+</PreferenceScreen>

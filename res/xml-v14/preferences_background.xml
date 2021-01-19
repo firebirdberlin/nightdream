@@ -1,0 +1,129 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:key="background"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/background">
+
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:entries="@array/backgroundModes"
+        app:entryValues="@array/backgroundModeValues"
+        app:key="backgroundMode"
+        app:title="@string/background"
+        app:useSimpleSummaryProvider="true"/>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseDesignPackageBackground"
+        app:isPreferenceVisible="false"
+        app:title="@string/purchaseWeatherData" />
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:key="chooseBackgroundImage"
+        app:title="@string/background_image_select"
+        app:isPreferenceVisible="false"/>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:key="chooseDirectoryBackgroundImage"
+        app:title="@string/directory_background_image_select"
+        app:isPreferenceVisible="false"/>
+
+    <ListPreference
+        app:defaultValue="1"
+        app:entries="@array/slideshowStyles"
+        app:entryValues="@array/slideshowStyleValues"
+        app:iconSpaceReserved="false"
+        app:key="slideshowStyle"
+        app:title="@string/slideshow_style"
+        app:useSimpleSummaryProvider="true" />
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="backgroundEXIF"
+        app:title="@string/background_exif"
+        app:summary="@string/background_exif_summary"
+        app:isPreferenceVisible="false"
+        />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="4"
+        app:entries="@array/backgroundImageDuration"
+        app:entryValues="@array/backgroundImageDurationValues"
+        app:key="backgroundImageDuration"
+        app:title="@string/background_image_duration"
+        app:useSimpleSummaryProvider="true"
+        app:isPreferenceVisible="false"/>
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="backgroundImageZoomIn"
+        app:title="@string/background_zoomin"
+        app:summary="@string/background_zoomin_summary"
+        app:isPreferenceVisible="false"
+        />
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="backgroundImageFadeIn"
+        app:title="@string/background_fadein"
+        app:summary="@string/background_fadein_summary"
+        app:isPreferenceVisible="false"
+        />
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="backgroundImageMoveIn"
+        app:title="@string/background_movein"
+        app:isPreferenceVisible="false"
+        />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:entries="@array/backgroundMovein"
+        app:entryValues="@array/backgroundMoveinValues"
+        app:key="backgroundMovein"
+        app:dependency="backgroundImageMoveIn"
+        app:title="@string/background_movein_direction"
+        app:useSimpleSummaryProvider="true"
+        app:isPreferenceVisible="false"/>
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:title="@string/background_image_filter"
+        app:entries="@array/backgroundImageFilterMode"
+        app:entryValues="@array/backgroundImageFilterModeValues"
+        app:key="backgroundImageFilter"
+        app:useSimpleSummaryProvider="true"
+        app:isPreferenceVisible="false"/>
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="autoAccentColor"
+        app:title="@string/background_auto_accent_color"
+        app:summary="@string/background_auto_accent_summary"
+        app:isPreferenceVisible="false"
+        />
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="hideBackgroundImage"
+        app:summary="@string/hide_background_image_in_night_mode_summary"
+        app:title="@string/hide_background_image_in_night_mode"
+        app:isPreferenceVisible="false"
+        />
+
+</PreferenceScreen>

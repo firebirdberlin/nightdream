@@ -110,6 +110,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Akzentfarbe</string>
     <string name="choose_secondary_color">Textfarbe</string>
     <string name="clear">löschen</string>
+    <string name="clock">Uhr</string>
     <string name="clock_hands">Zeiger</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_analog">Analoguhr</string>
