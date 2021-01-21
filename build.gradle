@@ -107,6 +107,8 @@ android {
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
         targetSdkVersion 29
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
     }
     buildFeatures {
         dataBinding true
