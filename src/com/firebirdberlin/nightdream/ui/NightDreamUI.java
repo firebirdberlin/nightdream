@@ -13,11 +13,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,11 +24,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
-import android.renderscript.Type;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -59,6 +50,7 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
@@ -775,8 +767,6 @@ public class NightDreamUI {
         if (mode == 0) return;
         bgshape = colorBlack;
         exifLayoutContainer.setVisibility(View.GONE);
-        background_images[0].setImageDrawable(colorBlack);
-        background_images[1].setImageDrawable(colorBlack);
         if (!Utility.isLowRamDevice(mContext)) {
             switch (settings.getBackgroundMode()) {
                 case Settings.BACKGROUND_BLACK: {
@@ -1004,7 +994,7 @@ public class NightDreamUI {
             BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
 
             // Calculate inSampleSize
-            options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+            options.inSampleSize = Graphics.calculateInSampleSize(options, display.x, display.y);
 
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
@@ -1035,7 +1025,7 @@ public class NightDreamUI {
         BitmapFactory.decodeFile(path, options);
 
         // Calculate inSampleSize
-        options.inSampleSize = Utility.calculateInSampleSize(options, display.x, display.y);
+        options.inSampleSize = Graphics.calculateInSampleSize(options, display.x, display.y);
         //RGB565 to reduce memory consumption
         options.inPreferredConfig = Bitmap.Config.RGB_565;
 
@@ -1688,110 +1678,22 @@ public class NightDreamUI {
             return bitmap;
         }
 
-        Bitmap newBackgroundBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        int imageHeight = newBackgroundBitmap.getHeight();
-        int imageWidth = newBackgroundBitmap.getWidth();
-
-        Canvas canvas = new Canvas(newBackgroundBitmap);
-        Paint paint = new Paint();
-
         switch (settings.background_filter) {
             case 2:
-                //filter: grey
-                final ColorMatrix matrixGray = new ColorMatrix();
-                matrixGray.setSaturation(0);
-
-                paint.setColorFilter(new ColorMatrixColorFilter(matrixGray));
-                canvas.drawBitmap(bitmap, 0, 0, paint);
-                break;
-
+                return Graphics.desaturate(bitmap);
             case 3:
-                //filter: sepia
-                final ColorMatrix matrixA = new ColorMatrix();
-                final ColorMatrix matrixB = new ColorMatrix();
-                matrixA.setSaturation(0);
-                matrixB.setScale(1f, .80f, .52f, 1.0f);
-                matrixA.setConcat(matrixB, matrixA);
-
-                paint.setColorFilter(new ColorMatrixColorFilter(matrixA));
-                canvas.drawBitmap(bitmap, 0, 0, paint);
-                break;
-
+                return Graphics.sepia(bitmap);
             case 4:
-                //filter: invert
-                paint.setColorFilter(new ColorMatrixColorFilter(
-                        new ColorMatrix(new float[]
-                                {
-                                        -1f, 0f, 0f, 0f, 255f,
-                                        0f, -1f, 0f, 0f, 255f,
-                                        0f, 0f, -1f, 0f, 255f,
-                                        0f, 0f, 0f, 1f, 0f
-                                })
-                ));
-
-                canvas.drawBitmap(bitmap, 0, 0, paint);
-                break;
-
+                return Graphics.invert(bitmap);
             case 5:
-                //filter: contrast
-                paint.setColorFilter(new ColorMatrixColorFilter(
-                        new ColorMatrix(new float[]
-                                {
-                                        3f, 0f, 0f, 0f, -255f,
-                                        0f, 3f, 0f, 0f, -255f,
-                                        0f, 0f, 3f, 0f, -255f,
-                                        0f, 0f, 0f, 1f, 0f
-                                })
-                ));
-
-                canvas.drawBitmap(bitmap, 0, 0, paint);
-                break;
-
+                return Graphics.contrast(bitmap);
             case 6:
-                //filter: sketch
-                for (int i = 0; i < imageWidth; i++) {
-
-                    for (int j = 0; j < imageHeight; j++) {
-                        int oldPixel = bitmap.getPixel(i, j);
-
-                        int oldRed = Color.red(oldPixel);
-                        int oldBlue = Color.blue(oldPixel);
-                        int oldGreen = Color.green(oldPixel);
-                        int oldAlpha = Color.alpha(oldPixel);
-
-                        int newRed = 0;
-                        int newBlue = 0;
-                        int newGreen = 0;
-
-                        if (((oldRed + oldBlue + oldGreen) / 3) > 150) {
-                            newRed = newBlue = newGreen = 255;
-                        } else if (((oldRed + oldBlue + oldGreen) / 3) > 100) {
-                            newRed = newBlue = newGreen = 150;
-                        }
-
-                        int newPixel = Color.argb(oldAlpha, newRed, newGreen, newBlue);
-                        newBackgroundBitmap.setPixel(i, j, newPixel);
-                    }
-                }
-                break;
+                return Graphics.sketch(bitmap);
             case 7:
-                //blur effect
-                float blurRadius = 7.5f;
-
-                bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
-                RenderScript rs = RenderScript.create(mContext);
-                ScriptIntrinsicBlur scriptIntrinsicBlur = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-                Allocation allocationIn = Allocation.createFromBitmap(rs, bitmap);
-                Allocation allocationOut = Allocation.createFromBitmap(rs, newBackgroundBitmap);
-                scriptIntrinsicBlur.setRadius(blurRadius);
-                scriptIntrinsicBlur.setInput(allocationIn);
-                scriptIntrinsicBlur.forEach(allocationOut);
-                allocationOut.copyTo(newBackgroundBitmap);
-
-                break;
+                return Graphics.blur(mContext, bitmap);
         }
 
-        return newBackgroundBitmap;
+        return bitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 
     private final class getExifInformation extends AsyncTask<File, Integer, Boolean> {
