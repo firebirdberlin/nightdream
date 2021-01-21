@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 
 import android.animation.LayoutTransition;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,11 +19,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -42,44 +40,17 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.util.Calendar;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class AlarmClockLayout extends LinearLayout {
 
     private static final String TAG = "AlarmClockLayout";
-    private Context context;
+    private final Context context;
+    private final ToggleButton[] dayButtons = new ToggleButton[7];
+    private final int firstDayOfWeek = Utility.getFirstDayOfWeek();
     private String timeFormat = "h:mm";
     private String dateFormat;
     private ConstraintLayout mainLayout = null;
     private SimpleTime alarmClockEntry = null;
-    private TextView timeView = null;
-    private TextView textViewSound = null;
-    private TextView textViewRadio = null;
-    private TextView textViewVibrate = null;
-    private TextView textViewWhen = null;
-    private ImageView buttonDown = null;
-    private ConstraintLayout layoutDays = null;
-    private ConstraintLayout secondaryLayout = null;
-    private Button buttonDelete = null;
-    private Switch switchActive = null;
-    private CheckBox checkBoxIsRepeating = null;
-    private ToggleButton[] dayButtons = new ToggleButton[7];
-    private int firstdayOfWeek = Utility.getFirstDayOfWeek();
-    private FavoriteRadioStations radioStations;
-    private CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
-            new CheckBox.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
-                    if (!checked) {
-                        for (int d : SimpleTime.DAYS) {
-                            alarmClockEntry.removeRecurringDay(d);
-                            dayButtons[d - 1].setChecked(false);
-                        }
-                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
-                    }
-                }
-            };
-    private ToggleButton.OnClickListener dayButtonOnclickListener =
+    private final ToggleButton.OnClickListener dayButtonOnclickListener =
             new ToggleButton.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -95,13 +66,39 @@ public class AlarmClockLayout extends LinearLayout {
                     ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                 }
             };
-    private ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
+    private TextView timeView = null;
+    private TextView textViewSound = null;
+    private TextView textViewRadio = null;
+    private TextView textViewVibrate = null;
+    private TextView textViewWhen = null;
+    private ImageView buttonDown = null;
+    private ConstraintLayout layoutDays = null;
+    private final CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
+            new CheckBox.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
+                    if (!checked) {
+                        for (int d : SimpleTime.DAYS) {
+                            alarmClockEntry.removeRecurringDay(d);
+                            dayButtons[d - 1].setChecked(false);
+                        }
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    }
+                }
+            };
+    private ConstraintLayout secondaryLayout = null;
+    private Button buttonDelete = null;
+    private SwitchCompat switchActive = null;
+    private CheckBox checkBoxIsRepeating = null;
+    private final ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View view) {
             boolean gone = secondaryLayout.getVisibility() == View.GONE;
             showSecondaryLayout(gone);
         }
     };
+    private FavoriteRadioStations radioStations;
 
     public AlarmClockLayout(Context context) {
         super(context);
@@ -143,7 +140,8 @@ public class AlarmClockLayout extends LinearLayout {
         layoutDays.setVisibility(
                 (on && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
         );
-        mainLayout.setBackgroundColor(on ? Color.DKGRAY : Color.TRANSPARENT);
+
+        mainLayout.setBackgroundColor(on ? getResources().getColor(R.color.grey) : Color.TRANSPARENT);
     }
 
     private void init() {
@@ -166,11 +164,9 @@ public class AlarmClockLayout extends LinearLayout {
         switchActive = findViewById(R.id.enabled);
         checkBoxIsRepeating = findViewById(R.id.checkBoxIsRepeating);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            ConstraintLayout middle = findViewById(R.id.middle);
-            LayoutTransition layoutTransition = middle.getLayoutTransition();
-            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-        }
+        ConstraintLayout middle = findViewById(R.id.middle);
+        LayoutTransition layoutTransition = middle.getLayoutTransition();
+        layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
 
         dayButtons[0] = findViewById(R.id.dayButton1);
         dayButtons[1] = findViewById(R.id.dayButton2);
@@ -182,7 +178,7 @@ public class AlarmClockLayout extends LinearLayout {
 
         String[] weekdayStrings = Utility.getWeekdayStrings();
         for (int i : SimpleTime.DAYS) {
-            int idx = (i - 1 + firstdayOfWeek - 1) % 7 + 1;
+            int idx = (i - 1 + firstDayOfWeek - 1) % 7 + 1;
             ToggleButton button = dayButtons[i - 1];
             button.setTag(idx);
             button.setTextOn(weekdayStrings[idx]);
@@ -211,7 +207,7 @@ public class AlarmClockLayout extends LinearLayout {
 
         checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
         update();
-        switchActive.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+        switchActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 alarmClockEntry.isActive = isChecked;
@@ -285,7 +281,7 @@ public class AlarmClockLayout extends LinearLayout {
                 if (alarmClockEntry == null) return;
 
                 BillingHelperActivity billingHelperActivity = (BillingHelperActivity) context;
-                if (! billingHelperActivity.isPurchased(BillingHelperActivity.ITEM_WEB_RADIO) ) {
+                if (!billingHelperActivity.isPurchased(BillingHelperActivity.ITEM_WEB_RADIO)) {
                     billingHelperActivity.showPurchaseDialog();
                 } else {
                     FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
@@ -359,9 +355,9 @@ public class AlarmClockLayout extends LinearLayout {
             checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
 
 
-            for (int i = 0; i < dayButtons.length; i++) {
-                int day = (int) dayButtons[i].getTag();
-                dayButtons[i].setChecked(alarmClockEntry.hasDay(day));
+            for (ToggleButton dayButton : dayButtons) {
+                int day = (int) dayButton.getTag();
+                dayButton.setChecked(alarmClockEntry.hasDay(day));
             }
 
             String displayName;
