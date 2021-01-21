@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class MediaControlLayout extends ViewModel {
     private static String TAG = "MediaControlLayout";
-    private int color = 0;
+    private int color = -1543;
     private final MutableLiveData<Drawable> smallIcon = new MediatorLiveData<>();
     private final MutableLiveData<Drawable> largeIcon = new MediatorLiveData<>();
     private final MutableLiveData<Integer> textColor = new MediatorLiveData<>();
