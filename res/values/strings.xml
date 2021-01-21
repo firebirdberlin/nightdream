@@ -69,6 +69,7 @@ OR
     <string name="background_image_filter_invert">Invert</string>
     <string name="background_image_filter_contrast">Contrast</string>
     <string name="background_image_filter_sketch">Sketch</string>
+    <string name="background_image_filter_blur">Blur</string>
     <string name="background_auto_accent_color">Automatic color selection</string>
     <string name="background_auto_accent_summary">Automatically select an appropriate accent color.</string>
     <string name="background_black">Black</string>
