@@ -41,14 +41,14 @@ import java.util.List;
 
 public class SetAlarmClockActivity extends BillingHelperActivity {
     static final String TAG = "SetAlarmClockActivity";
+    final int MENU_ITEM_PREFERENCES = 3000;
+    private final HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
     private LinearLayout scrollView = null;
     private DataSource db = null;
     private String timeFormat = "h:mm";
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
-    private HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
     private FavoriteRadioStations radioStations = null;
-    final int MENU_ITEM_PREFERENCES = 3000;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -64,11 +64,10 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         setTheme(R.style.AlarmClockActivityTheme);
 
         scrollView = findViewById(R.id.scroll_view);
+
         // https://www.youtube.com/watch?v=55wLsaWpQ4g
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            LayoutTransition layoutTransition = scrollView.getLayoutTransition();
-            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-        }
+        LayoutTransition layoutTransition = scrollView.getLayoutTransition();
+        layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
     }
 
     @Override
@@ -84,13 +83,11 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //return super.onOptionsItemSelected(item);
 
-        switch (item.getItemId()) {
-            case MENU_ITEM_PREFERENCES:
-                AlarmsPreferenceActivity.start(this);
-                return true;
-            default:
-                return false;
+        if (item.getItemId() == MENU_ITEM_PREFERENCES) {
+            AlarmsPreferenceActivity.start(this);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -184,8 +181,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         // Bug Android 4.1: Dialog is submitted twice
                         // >> ignore second call to this method.
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-                                && !timePicker.isShown()) return;
+                        if (!timePicker.isShown()) return;
 
                         SimpleTime entry = null;
                         boolean isNew = (entry_id == null);
@@ -220,7 +216,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                         WakeUpReceiver.schedule(context, db);
                     }
                 },
-            hour, min, Utility.is24HourFormat(context));
+                hour, min, Utility.is24HourFormat(context));
         // fix broken dialog appearance on some devices
         mTimePicker.setTitle(null);
         mTimePicker.show();
@@ -240,24 +236,24 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         DatePickerDialog mDatePicker = new DatePickerDialog(
                 context,
                 new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                // Bug Android 4.1: Dialog is submitted twice
-                // >> ignore second call to this method.
-                if (!view.isShown()) return;
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        // Bug Android 4.1: Dialog is submitted twice
+                        // >> ignore second call to this method.
+                        if (!view.isShown()) return;
 
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, month);
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                cal.set(Calendar.HOUR_OF_DAY, 0);
-                cal.set(Calendar.MINUTE, 0);
-                cal.set(Calendar.SECOND, 0);
-                cal.set(Calendar.MILLISECOND, 0);
-                db.updateNextEventAfter(entry_id, cal.getTimeInMillis());
-                SqliteIntentService.scheduleAlarm(context);
-            }
-        }, year, month, dayOfMonth);
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.YEAR, year);
+                        cal.set(Calendar.MONTH, month);
+                        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        cal.set(Calendar.HOUR_OF_DAY, 0);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.MILLISECOND, 0);
+                        db.updateNextEventAfter(entry_id, cal.getTimeInMillis());
+                        SqliteIntentService.scheduleAlarm(context);
+                    }
+                }, year, month, dayOfMonth);
         mDatePicker.setTitle(R.string.alarmStartDate);
         mDatePicker.show();
     }
@@ -326,7 +322,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
         ArrayList<Integer> days = intent.getIntegerArrayListExtra(AlarmClock.EXTRA_DAYS);
         if (days != null) {
-            for (int day: days) {
+            for (int day : days) {
                 entry.addRecurringDay(day);
             }
         }

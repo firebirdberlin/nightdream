@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,235 +9,313 @@
     android:orientation="vertical"
     tools:targetApi="honeycomb">
 
-
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="false"
         android:background="@android:color/transparent"
-        android:paddingEnd="20dp"
-        android:paddingRight="20dp"
-        android:paddingStart="20dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/timeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-
+            android:layout_marginStart="8dp"
             android:fontFamily="sans-serif"
             android:text="09:00"
             android:textAppearance="@android:style/TextAppearance.Large"
             android:textSize="40sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText" />
 
-        <Switch
+        <TextView
+            android:id="@+id/textViewWhen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_weight="15"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="2dp"
+            android:lines="2"
+            android:maxLines="2"
+            android:text="@string/today"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            app:layout_constraintStart_toStartOf="@id/timeView"
+            app:layout_constraintTop_toBottomOf="@id/timeView" />
+
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/enabled"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="false"
             android:layout_centerVertical="true"
-            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:targetApi="ice_cream_sandwich" />
 
-        <RelativeLayout
-            android:id="@+id/middle"
+        <ImageView
+            android:id="@+id/button_down"
+            android:layout_width="41dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="5dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_expand" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/middle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:animationCache="true"
+        android:background="@color/grey"
+        android:backgroundTint="@color/grey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mainLayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/secondaryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/timeView"
-            android:animateLayoutChanges="true"
-            android:animationCache="true">
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/middle_top"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:animateLayoutChanges="true"
-                android:animationCache="false">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toTopOf="@id/layoutDays"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <CheckBox
+                    android:id="@+id/checkBoxIsRepeating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/repeat"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textViewWhen"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="15"
-                    android:gravity="center_vertical"
-                    android:lineSpacingExtra="2dp"
-                    android:lines="2"
-                    android:maxLines="2"
-                    android:text="@string/today"
-                    android:textAppearance="@android:style/TextAppearance.Small" />
-
-                <ImageView
-                    android:id="@+id/button_down"
+                    android:id="@+id/textViewVibrate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingBottom="5dp"
-                    android:paddingEnd="0dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="0dp"
-                    android:paddingStart="5dp"
-                    android:paddingTop="0dp"
-                    android:scaleX="0.7"
-                    android:scaleY="0.7"
-                    app:srcCompat="@drawable/ic_expand"
-                    android:visibility="visible" />
-            </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:drawableStartCompat="@drawable/ic_vibration" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
-                android:id="@+id/secondaryLayout"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutDays"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toTopOf="@id/layoutSound"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ToggleButton
+                    android:id="@+id/dayButton1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/style_day_button"
+                    android:textOff="M"
+                    android:textOn="M"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/dayButton2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/style_day_button"
+                    android:textOff="T"
+                    android:textOn="T"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/dayButton3"
+                    app:layout_constraintStart_toEndOf="@id/dayButton1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/style_day_button"
+                    android:textOff="W"
+                    android:textOn="W"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/dayButton4"
+                    app:layout_constraintStart_toEndOf="@id/dayButton2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton4"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/style_day_button"
+                    android:textOff="T"
+                    android:textOn="T"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/dayButton5"
+                    app:layout_constraintStart_toEndOf="@id/dayButton3"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton5"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/style_day_button"
+                    android:textOff="F"
+                    android:textOn="F"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/dayButton6"
+                    app:layout_constraintStart_toEndOf="@id/dayButton4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton6"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/style_day_button"
+                    android:textOff="S"
+                    android:textOn="S"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/dayButton7"
+                    app:layout_constraintStart_toEndOf="@id/dayButton5"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
+
+                <ToggleButton
+                    android:id="@+id/dayButton7"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/style_day_button"
+                    android:textOff="S"
+                    android:textOn="S"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/dayButton6"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutSound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/middle_top"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:animateLayoutChanges="false"
+                android:orientation="horizontal"
+                android:padding="6dp"
+                app:layout_constraintBottom_toTopOf="@id/button_delete"
+                app:layout_constraintStart_toStartOf="parent">
 
-                <com.google.android.flexbox.FlexboxLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:flexDirection="row"
-                    app:flexWrap="nowrap"
-                    app:justifyContent="space_between">
-
-                    <CheckBox
-                        android:id="@+id/checkBoxIsRepeating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/repeat" />
-
-                    <TextView
-                        android:id="@+id/textViewVibrate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_vibration"
-                        android:drawableLeft="@drawable/ic_vibration"
-                        android:drawablePadding="4dp"
-                        android:gravity="center"
-                        android:text=""
-                        android:textAppearance="@android:style/TextAppearance.Small" />
-                </com.google.android.flexbox.FlexboxLayout>
-
-                <LinearLayout
-                    android:id="@+id/layoutDays"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="false"
-                    android:orientation="horizontal">
-
-                    <ToggleButton
-                        android:id="@+id/dayButton1"
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textOff="M"
-                        android:textOn="M"
-                        tools:ignore="HardcodedText" />
-
-                    <ToggleButton
-                        android:id="@+id/dayButton2"
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textOff="T"
-                        android:textOn="T" />
-
-                    <ToggleButton
-                        android:id="@+id/dayButton3"
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textOff="W"
-                        android:textOn="W" />
-
-                    <ToggleButton
-                        android:id="@+id/dayButton4"
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textOff="T"
-                        android:textOn="T" />
-
-                    <ToggleButton
-                        android:id="@+id/dayButton5"
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textOff="F"
-                        android:textOn="F" />
-
-                    <ToggleButton
-                        android:id="@+id/dayButton6"
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textOff="S"
-                        android:textOn="S" />
-
-                    <ToggleButton
-                        android:id="@+id/dayButton7"
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textOff="S"
-                        android:textOn="S" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layoutSound"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="false"
-                    android:padding="6dp"
-                    android:paddingLeft="0dp"
-                    android:orientation="horizontal"
-                    android:paddingStart="0dp">
-
-                    <TextView
-                        android:id="@+id/textViewRadio"
-                        android:drawableLeft="@drawable/ic_radio_blue_24dp"
-                        android:drawablePadding="4dp"
-                        android:drawableStart="@drawable/ic_radio_blue_24dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="Radio station 1"
-                        android:textAppearance="@android:style/TextAppearance.Small" />
-                    <TextView
-                        android:id="@+id/textViewSound"
-                        android:drawableLeft="@drawable/ic_music_note_24dp"
-                        android:drawablePadding="4dp"
-                        android:drawableStart="@drawable/ic_music_note_24dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:paddingLeft="6dp"
-                        android:text="Alarm sound"
-                        android:paddingStart="6dp"
-                        android:textAppearance="@android:style/TextAppearance.Small" />
-
-                </LinearLayout>
-                <Button
-                    android:id="@+id/button_delete"
+                <TextView
+                    android:id="@+id/textViewRadio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_delete"
-                    android:drawableStart="@drawable/ic_delete"
-                    android:onClick="onButtonDeleteClick"
-                    android:text="@string/delete"
-                    tools:drawableLeft="@drawable/ic_delete" />
-            </LinearLayout>
+                    android:layout_marginTop="6dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="Radio station 1"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText"
+                    app:drawableStartCompat="@drawable/ic_radio_blue_24dp" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/textViewSound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="Alarm sound"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    app:layout_constraintStart_toEndOf="@id/textViewRadio"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText"
+                    app:drawableStartCompat="@drawable/ic_music_note_24dp" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
-</LinearLayout>
+            <Button
+                android:id="@+id/button_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_delete"
+                android:onClick="onButtonDeleteClick"
+                android:text="@string/delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:drawableLeft="@drawable/ic_delete" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
