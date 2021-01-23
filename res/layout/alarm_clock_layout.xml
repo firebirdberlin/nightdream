@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/timeView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -29,7 +29,8 @@
             android:text="09:00"
             android:textAppearance="@android:style/TextAppearance.Large"
             android:textSize="40sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_down"
+            app:layout_constraintStart_toEndOf="@+id/enabled"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText" />
 
@@ -38,7 +39,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
             android:layout_weight="15"
             android:gravity="center_vertical"
             android:lineSpacingExtra="2dp"
@@ -46,9 +46,10 @@
             android:maxLines="2"
             android:text="@string/today"
             android:textAppearance="@android:style/TextAppearance.Small"
+            app:layout_constraintEnd_toEndOf="@id/timeView"
             app:layout_constraintStart_toStartOf="@id/timeView"
             app:layout_constraintTop_toBottomOf="@id/timeView" />
-
+<!--
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/enabled"
             android:layout_width="wrap_content"
@@ -59,7 +60,28 @@
             android:layout_centerVertical="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:targetApi="ice_cream_sandwich" />
+            tools:targetApi="ice_cream_sandwich"
+            app:track="@drawable/ic_alarm_clock_icon"
+            android:thumb="@drawable/ic_alarm_clock_off_icon"/>
+-->
+        <ToggleButton
+            android:id="@+id/enabled"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/style_alarm_clock_button"
+            android:textOff=""
+            android:textOn=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
 
         <ImageView
             android:id="@+id/button_down"
@@ -74,8 +96,8 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_expand" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

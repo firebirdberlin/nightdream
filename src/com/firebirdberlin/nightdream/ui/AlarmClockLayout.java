@@ -89,7 +89,7 @@ public class AlarmClockLayout extends LinearLayout {
             };
     private ConstraintLayout secondaryLayout = null;
     private Button buttonDelete = null;
-    private SwitchCompat switchActive = null;
+    private ToggleButton switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
     private final ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
         @Override
