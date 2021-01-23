@@ -211,6 +211,14 @@ public class AlarmClockLayout extends LinearLayout {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 alarmClockEntry.isActive = isChecked;
+                if (isChecked) {
+                    timeView.setTextColor(getResources().getColor(R.color.white));
+                    textViewWhen.setTextColor(getResources().getColor(R.color.white));
+                }
+                else{
+                    timeView.setTextColor(getResources().getColor(R.color.material_grey));
+                    textViewWhen.setTextColor(getResources().getColor(R.color.material_grey));
+                }
                 ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
             }
         });
@@ -330,6 +338,14 @@ public class AlarmClockLayout extends LinearLayout {
             String text = Utility.formatTime(timeFormat, time);
             timeView.setText(text);
             switchActive.setChecked(alarmClockEntry.isActive);
+            if (alarmClockEntry.isActive) {
+                timeView.setTextColor(getResources().getColor(R.color.white));
+                textViewWhen.setTextColor(getResources().getColor(R.color.white));
+            }
+            else{
+                timeView.setTextColor(getResources().getColor(R.color.material_grey));
+                textViewWhen.setTextColor(getResources().getColor(R.color.material_grey));
+            }
 
             if (alarmClockEntry.isRecurring()) {
                 String textWhen = alarmClockEntry.getWeekDaysAsString();

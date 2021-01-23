@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:fontFamily="sans-serif"
             android:text="09:00"
             android:textAppearance="@android:style/TextAppearance.Large"
@@ -46,6 +46,7 @@
             android:maxLines="2"
             android:text="@string/today"
             android:textAppearance="@android:style/TextAppearance.Small"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@id/timeView"
             app:layout_constraintStart_toStartOf="@id/timeView"
             app:layout_constraintTop_toBottomOf="@id/timeView" />
@@ -72,6 +73,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="false"
             android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/style_alarm_clock_button"
@@ -98,7 +100,9 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_expand" />
+            app:srcCompat="@drawable/ic_expand"
+            android:contentDescription="more options"
+            tools:ignore="HardcodedText"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -152,14 +156,14 @@
                     android:gravity="center"
                     android:text=""
                     android:textAppearance="@android:style/TextAppearance.Small"
+                    app:drawableStartCompat="@drawable/ic_vibration"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:drawableStartCompat="@drawable/ic_vibration" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutDays"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 app:layout_constraintBottom_toTopOf="@id/layoutSound"
@@ -295,7 +299,7 @@
                 android:animateLayoutChanges="false"
                 android:orientation="horizontal"
                 android:padding="6dp"
-                app:layout_constraintBottom_toTopOf="@id/button_delete"
+                app:layout_constraintBottom_toTopOf="@id/layoutButton"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
@@ -307,10 +311,10 @@
                     android:gravity="center"
                     android:text="Radio station 1"
                     android:textAppearance="@android:style/TextAppearance.Small"
+                    app:drawableStartCompat="@drawable/ic_radio_blue_24dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="HardcodedText"
-                    app:drawableStartCompat="@drawable/ic_radio_blue_24dp" />
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/textViewSound"
@@ -321,23 +325,33 @@
                     android:gravity="center"
                     android:text="Alarm sound"
                     android:textAppearance="@android:style/TextAppearance.Small"
+                    app:drawableStartCompat="@drawable/ic_music_note_24dp"
                     app:layout_constraintStart_toEndOf="@id/textViewRadio"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="HardcodedText"
-                    app:drawableStartCompat="@drawable/ic_music_note_24dp" />
+                    tools:ignore="HardcodedText" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/button_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_delete"
-                android:onClick="onButtonDeleteClick"
-                android:text="@string/delete"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:drawableLeft="@drawable/ic_delete" />
+                app:layout_constraintStart_toStartOf="parent">
+
+                <Button
+                    android:id="@+id/button_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:drawableStart="@drawable/ic_delete"
+                    android:onClick="onButtonDeleteClick"
+                    android:text="@string/delete"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:drawableLeft="@drawable/ic_delete" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
