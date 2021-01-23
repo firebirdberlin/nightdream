@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentManager;
 
@@ -37,8 +39,10 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class AlarmClockLayout extends LinearLayout {
 
@@ -88,7 +92,9 @@ public class AlarmClockLayout extends LinearLayout {
                 }
             };
     private ConstraintLayout secondaryLayout = null;
-    private Button buttonDelete = null;
+    private ImageView imageViewDelete = null;
+    private Button butondelete = null;
+    private ToggleButton toggleActive = null;
     private SwitchCompat switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
     private final ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
@@ -115,7 +121,7 @@ public class AlarmClockLayout extends LinearLayout {
         this.dateFormat = dateFormat;
         this.radioStations = radioStations;
         init();
-        buttonDelete.setTag(entry);
+        imageViewDelete.setTag(entry);
         timeView.setTag(entry);
         textViewWhen.setTag(entry);
     }
@@ -148,7 +154,7 @@ public class AlarmClockLayout extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.alarm_clock_layout, null);
+        final View child = inflater.inflate(R.layout.alarm_clock_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
         mainLayout = findViewById(R.id.mainLayout);
@@ -159,9 +165,10 @@ public class AlarmClockLayout extends LinearLayout {
         textViewWhen = findViewById(R.id.textViewWhen);
         layoutDays = findViewById(R.id.layoutDays);
         buttonDown = findViewById(R.id.button_down);
-        buttonDelete = findViewById(R.id.button_delete);
+        imageViewDelete = findViewById(R.id.imageViewDelete);
         secondaryLayout = findViewById(R.id.secondaryLayout);
-        switchActive = findViewById(R.id.enabled);
+        toggleActive = findViewById(R.id.enabled);
+        switchActive = findViewById(R.id.enabledswitch);
         checkBoxIsRepeating = findViewById(R.id.checkBoxIsRepeating);
 
         ConstraintLayout middle = findViewById(R.id.middle);
@@ -187,30 +194,42 @@ public class AlarmClockLayout extends LinearLayout {
             button.setOnClickListener(dayButtonOnclickListener);
         }
 
-        Drawable icon = getResources().getDrawable(R.drawable.ic_delete);
-        Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
-        Drawable scaled = new BitmapDrawable(
-                getResources(),
-                Bitmap.createScaledBitmap(
-                        bitmap,
-                        (int) (0.6f * bitmap.getWidth()),
-                        (int) (0.6f * bitmap.getHeight()),
-                        true
-                )
-        );
-
-        buttonDelete.setCompoundDrawablesWithIntrinsicBounds(scaled, null, null, null);
-
         buttonDown.setImageResource(R.drawable.ic_expand);
         buttonDown.setSoundEffectsEnabled(false);
         buttonDown.setOnClickListener(buttonDownOnClickListener);
 
         checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
         update();
+        toggleActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                alarmClockEntry.isActive = isChecked;
+                if (isChecked) {
+                    switchActive.setChecked(true);
+                    Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                    snackbar.show();
+                }
+                else{
+                    switchActive.setChecked(false);
+                }
+                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                child.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+            }
+        });
         switchActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 alarmClockEntry.isActive = isChecked;
+                if (isChecked) {
+                    toggleActive.setChecked(true);
+                    Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                    snackbar.show();
+                }
+                else{
+                    toggleActive.setChecked(false);
+                }
                 ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
             }
         });
@@ -316,6 +335,38 @@ public class AlarmClockLayout extends LinearLayout {
                 setupVibrationIcon();
             }
         });
+
+    }
+
+    public String getAlarmToText() {
+        String returnString;
+        long timeToalarm = TimeUnit.MILLISECONDS.toMinutes(alarmClockEntry.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
+        int days = (int) TimeUnit.MINUTES.toDays(timeToalarm);
+        int hours = (int) (TimeUnit.MINUTES.toHours(timeToalarm) % TimeUnit.DAYS.toHours(1));
+        int minutes = (int) (timeToalarm % TimeUnit.HOURS.toMinutes(1));
+
+        if (days == 0 && hours == 0 && minutes == 0) {
+            returnString = getResources().getString(R.string.alarmClockTextNow);
+        }
+        else {
+            returnString = getResources().getString(R.string.alarmClockTextStart);
+
+            if (days > 0) {
+                returnString += getResources().getQuantityString(R.plurals.alarmClockTextday, days, days);
+            }
+
+            if (hours > 0) {
+                returnString += getResources().getQuantityString(R.plurals.alarmClockTexthour, hours, hours);
+            }
+
+            if (minutes > 0) {
+                returnString += getResources().getQuantityString(R.plurals.alarmClockTextminute, minutes, minutes);
+            }
+
+            returnString += getResources().getString(R.string.alarmClockTextEnd);
+        }
+
+        return returnString;
     }
 
     public void updateAlarmClockEntry(SimpleTime entry) {
@@ -329,6 +380,7 @@ public class AlarmClockLayout extends LinearLayout {
             Calendar time = alarmClockEntry.getCalendar();
             String text = Utility.formatTime(timeFormat, time);
             timeView.setText(text);
+            toggleActive.setChecked(alarmClockEntry.isActive);
             switchActive.setChecked(alarmClockEntry.isActive);
 
             if (alarmClockEntry.isRecurring()) {
@@ -369,19 +421,33 @@ public class AlarmClockLayout extends LinearLayout {
             }
             textViewSound.setText(displayName);
             setupVibrationIcon();
+            setupDeleteIcon();
         }
         invalidate();
     }
 
     void setupVibrationIcon() {
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_vibration);
-        drawable = DrawableCompat.wrap(drawable);
-        int color = (alarmClockEntry.vibrate)
-                ? ContextCompat.getColor(context, R.color.blue)
-                : ContextCompat.getColor(context, R.color.material_grey);
-        DrawableCompat.setTint(drawable, color);
-        DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
-        textViewVibrate.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_vibration,null);
+        if (drawable != null) {
+            drawable = DrawableCompat.wrap(drawable);
+            int color = (alarmClockEntry.vibrate)
+                    ? ContextCompat.getColor(context, R.color.blue)
+                    : ContextCompat.getColor(context, R.color.material_grey);
+            DrawableCompat.setTint(drawable, color);
+            DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+            textViewVibrate.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        }
+    }
+
+    void setupDeleteIcon() {
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_delete,null);
+        if (drawable != null) {
+            drawable = DrawableCompat.wrap(drawable);
+            int color = ContextCompat.getColor(context, R.color.blue);
+            DrawableCompat.setTint(drawable, color);
+            DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+            imageViewDelete.setImageDrawable(drawable);
+        }
     }
 
 }
