@@ -37,8 +37,11 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class AlarmClockLayout extends LinearLayout {
 
@@ -148,7 +151,7 @@ public class AlarmClockLayout extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.alarm_clock_layout, null);
+        final View child = inflater.inflate(R.layout.alarm_clock_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
         mainLayout = findViewById(R.id.mainLayout);
@@ -214,6 +217,9 @@ public class AlarmClockLayout extends LinearLayout {
                 if (isChecked) {
                     timeView.setTextColor(getResources().getColor(R.color.white));
                     textViewWhen.setTextColor(getResources().getColor(R.color.white));
+                    Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
+
+                    snackbar.show();
                 }
                 else{
                     timeView.setTextColor(getResources().getColor(R.color.material_grey));
@@ -324,6 +330,29 @@ public class AlarmClockLayout extends LinearLayout {
                 setupVibrationIcon();
             }
         });
+    }
+
+    public String getAlarmToText() {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(alarmClockEntry.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
+        long days = TimeUnit.MINUTES.toDays(minutes);
+        long hours = TimeUnit.MINUTES.toHours(minutes) % TimeUnit.DAYS.toHours(1);
+        minutes = minutes % TimeUnit.HOURS.toMinutes(1);
+
+        String returnString = getResources().getString(R.string.alarmClockTextStart);
+
+        if (days > 0) {
+            returnString += " "+days+" "+ context.getString(hours > 1 ? R.string.alarmClockTextdays : R.string.alarmClockTextday);
+        }
+
+        if (hours > 0) {
+            returnString += " "+hours+" "+ context.getString(hours > 1 ? R.string.alarmClockTexthours : R.string.alarmClockTexthour);
+        }
+
+        returnString += " "+minutes+" "+ context.getString(minutes > 1 ? R.string.alarmClockTextminutes : R.string.alarmClockTextminute);
+
+        returnString += " "+getResources().getString(R.string.alarmClockTextEnd);
+
+        return returnString;
     }
 
     public void updateAlarmClockEntry(SimpleTime entry) {

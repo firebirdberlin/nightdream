@@ -28,6 +28,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Schriftart hinzufügen</string>
     <string name="add_new_alarm">neuen Wecker hinzufügen</string>
     <string name="alarm">Wecker</string>
+    <string name="alarmClockTextStart">Dieser Wecker klingelt in</string>
+    <string name="alarmClockTextday">Tag</string>
+    <string name="alarmClockTextdays">Tage</string>
+    <string name="alarmClockTexthour">Stunde</string>
+    <string name="alarmClockTexthours">Stunden</string>
+    <string name="alarmClockTextminute">Minute</string>
+    <string name="alarmClockTextminutes">Minuten</string>
+    <string name="alarmClockTextEnd"></string>
     <string name="alarmFadeIn">ansteigende Lautstärke</string>
     <string name="alarmFadeInDurationSeconds">Dauer</string>
     <string name="alarmStartDate">Nächster Alarm am</string>

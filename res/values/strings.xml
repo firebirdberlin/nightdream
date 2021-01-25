@@ -28,6 +28,14 @@ OR
     <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="alarm">Alarm</string>
+    <string name="alarmClockTextStart">This alarm is set for </string>
+    <string name="alarmClockTextday">day</string>
+    <string name="alarmClockTextdays">days</string>
+    <string name="alarmClockTexthour">hour</string>
+    <string name="alarmClockTexthours">hours</string>
+    <string name="alarmClockTextminute">minute</string>
+    <string name="alarmClockTextminutes">minutes</string>
+    <string name="alarmClockTextEnd">from now.</string>
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmFadeInDurationSeconds">fade in duration</string>
     <string name="alarmStartDate">Next alarm on</string>
