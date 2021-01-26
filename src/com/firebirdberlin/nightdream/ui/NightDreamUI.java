@@ -663,8 +663,8 @@ public class NightDreamUI {
     public void setupClockLayout() {
         int layoutId = settings.getClockLayoutID(false);
         clockLayout.setLayout(layoutId);
+        clockLayout.setBackgroundTransparency(settings.clockBackgroundTransparency);
         clockLayout.setTypeface(settings.typeface);
-
         clockLayout.setDateFormat(settings.dateFormat);
         String timeFormat = settings.getTimeFormat(layoutId);
         clockLayout.setTimeFormat(timeFormat, settings.is24HourFormat());

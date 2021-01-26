@@ -859,6 +859,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("autoAccentColor", on);
         showPreference("slideshowStyle", on);
         showPreference("hideBackgroundImage", Utility.equalsAny(selection, "3", "4", "5"));
+        showPreference("clockBackgroundTransparency", !selection.equals("1"));
 
         boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
         showPreference("purchaseDesignPackageBackground", selection.equals("4") && !isPurchasedWeather);

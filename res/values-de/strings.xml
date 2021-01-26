@@ -124,6 +124,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
     <string name="clock_layout_mirror_text">Text spiegeln</string>
     <string name="clock_layout_modern_analog">moderne Analoguhr</string>
+    <string name="clockBackgroundTransparency">Transparenz des Hintergrundes</string>
     <string name="colors">Farben</string>
     <string name="confirm_reset">Zurücksetzen</string>
     <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
