@@ -126,4 +126,16 @@
         app:isPreferenceVisible="false"
         />
 
+    <de.firebirdberlin.preference.InlineSeekBarPreference
+        app:defaultValue="100"
+        app:iconSpaceReserved="false"
+        app:key="clockBackgroundTransparency"
+        app:title="@string/clockBackgroundTransparency"
+        seekbar:interval="1"
+        seekbar:max="255"
+        seekbar:min="0"
+        seekbar:unitsLeft=""
+        seekbar:unitsRight=""
+        xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
+
 </PreferenceScreen>

@@ -150,4 +150,11 @@ public class Graphics {
 
         return inSampleSize;
     }
+
+    public static int setColorWithAlpha(int color, int alpha) {
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
 }

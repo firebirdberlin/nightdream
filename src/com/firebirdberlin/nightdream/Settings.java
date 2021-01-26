@@ -115,6 +115,7 @@ public class Settings {
     public int alarmFadeInDurationSeconds = 10;
     public int slideshowStyle = 1;
     public int backgroundImageDuration = 4;
+    public int clockBackgroundTransparency = 4;
     public boolean fade_clock = false;
     public boolean background_zoomin = false;
     public boolean background_fadein = false;
@@ -389,6 +390,7 @@ public class Settings {
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
         slideshowStyle = Integer.parseInt(settings.getString("slideshowStyle", "1"));
         backgroundImageDuration = Integer.parseInt(settings.getString("backgroundImageDuration", "4"));
+        clockBackgroundTransparency = 255 - settings.getInt("clockBackgroundTransparency", 100);
         background_fadein = getBackgroundImageFadeIn();
         background_zoomin = getBackgroundImageZoomIn();
         background_movein = getBackgroundImageMoveIn();
