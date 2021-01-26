@@ -30,6 +30,7 @@ import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
 import com.firebirdberlin.nightdream.CustomAnalogClock;
 import com.firebirdberlin.nightdream.CustomDigitalClock;
+import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -72,6 +73,7 @@ public class ClockLayout extends LinearLayout {
     private int weatherIconSizeFactor = 3;
     private int oldPrimaryColor = 0;
     private int dateInvisibilityMethod = GONE;
+    private int backgroundTransparency = 100;
 
     public ClockLayout(Context context) {
         super(context);
@@ -81,6 +83,10 @@ public class ClockLayout extends LinearLayout {
     public ClockLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+    }
+
+    public void setBackgroundTransparency(int backgroundTransparency) {
+        this.backgroundTransparency = backgroundTransparency;
     }
 
     private void init() {
@@ -346,14 +352,12 @@ public class ClockLayout extends LinearLayout {
         if (shallHide) {
             setBackgroundColor(Color.parseColor("#00000000"));
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                GradientDrawable shape = new GradientDrawable();
-                shape.setCornerRadius(30);
-                shape.setColor(Color.parseColor("#44000000"));
-                setBackground(shape);
-            } else {
-                setBackgroundColor(Color.parseColor("#44000000"));
-            }
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(30);
+            int color = Color.parseColor("#44000000");
+            color = Graphics.setColorWithAlpha(color, backgroundTransparency);
+            shape.setColor(color);
+            setBackground(shape);
         }
     }
 
