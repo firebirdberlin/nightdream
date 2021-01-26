@@ -92,7 +92,8 @@ public class AlarmClockLayout extends LinearLayout {
             };
     private ConstraintLayout secondaryLayout = null;
     private Button buttonDelete = null;
-    private ToggleButton switchActive = null;
+    private ToggleButton toggleActive = null;
+    private SwitchCompat switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
     private final ImageView.OnClickListener buttonDownOnClickListener = new ImageView.OnClickListener() {
         @Override
@@ -164,7 +165,8 @@ public class AlarmClockLayout extends LinearLayout {
         buttonDown = findViewById(R.id.button_down);
         buttonDelete = findViewById(R.id.button_delete);
         secondaryLayout = findViewById(R.id.secondaryLayout);
-        switchActive = findViewById(R.id.enabled);
+        toggleActive = findViewById(R.id.enabled);
+        switchActive = findViewById(R.id.enabledswitch);
         checkBoxIsRepeating = findViewById(R.id.checkBoxIsRepeating);
 
         ConstraintLayout middle = findViewById(R.id.middle);
@@ -210,6 +212,25 @@ public class AlarmClockLayout extends LinearLayout {
 
         checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
         update();
+        toggleActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                alarmClockEntry.isActive = isChecked;
+                if (isChecked) {
+                    timeView.setTextColor(getResources().getColor(R.color.white));
+                    textViewWhen.setTextColor(getResources().getColor(R.color.white));
+                    switchActive.setChecked(true);
+                    Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
+                else{
+                    timeView.setTextColor(getResources().getColor(R.color.material_grey));
+                    textViewWhen.setTextColor(getResources().getColor(R.color.material_grey));
+                    switchActive.setChecked(false);
+                }
+                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+            }
+        });
         switchActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -217,11 +238,12 @@ public class AlarmClockLayout extends LinearLayout {
                 if (isChecked) {
                     timeView.setTextColor(getResources().getColor(R.color.white));
                     textViewWhen.setTextColor(getResources().getColor(R.color.white));
+                    toggleActive.setChecked(true);
                     Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
-
                     snackbar.show();
                 }
                 else{
+                    toggleActive.setChecked(false);
                     timeView.setTextColor(getResources().getColor(R.color.material_grey));
                     textViewWhen.setTextColor(getResources().getColor(R.color.material_grey));
                 }
@@ -333,24 +355,26 @@ public class AlarmClockLayout extends LinearLayout {
     }
 
     public String getAlarmToText() {
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(alarmClockEntry.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
-        long days = TimeUnit.MINUTES.toDays(minutes);
-        long hours = TimeUnit.MINUTES.toHours(minutes) % TimeUnit.DAYS.toHours(1);
-        minutes = minutes % TimeUnit.HOURS.toMinutes(1);
+        long timeToalarm = TimeUnit.MILLISECONDS.toMinutes(alarmClockEntry.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
+        int days = (int) TimeUnit.MINUTES.toDays(timeToalarm);
+        int hours = (int) (TimeUnit.MINUTES.toHours(timeToalarm) % TimeUnit.DAYS.toHours(1));
+        int minutes = (int) (timeToalarm % TimeUnit.HOURS.toMinutes(1));
 
         String returnString = getResources().getString(R.string.alarmClockTextStart);
 
         if (days > 0) {
-            returnString += " "+days+" "+ context.getString(hours > 1 ? R.string.alarmClockTextdays : R.string.alarmClockTextday);
+            returnString += getResources().getQuantityString(R.plurals.alarmClockTextday, days, days);
         }
 
         if (hours > 0) {
-            returnString += " "+hours+" "+ context.getString(hours > 1 ? R.string.alarmClockTexthours : R.string.alarmClockTexthour);
+            returnString += getResources().getQuantityString(R.plurals.alarmClockTexthour, hours, hours);
         }
 
-        returnString += " "+minutes+" "+ context.getString(minutes > 1 ? R.string.alarmClockTextminutes : R.string.alarmClockTextminute);
+        if (minutes > 0) {
+            returnString += getResources().getQuantityString(R.plurals.alarmClockTextminute, minutes, minutes);
+        }
 
-        returnString += " "+getResources().getString(R.string.alarmClockTextEnd);
+        returnString += getResources().getString(R.string.alarmClockTextEnd);
 
         return returnString;
     }
@@ -366,6 +390,7 @@ public class AlarmClockLayout extends LinearLayout {
             Calendar time = alarmClockEntry.getCalendar();
             String text = Utility.formatTime(timeFormat, time);
             timeView.setText(text);
+            toggleActive.setChecked(alarmClockEntry.isActive);
             switchActive.setChecked(alarmClockEntry.isActive);
             if (alarmClockEntry.isActive) {
                 timeView.setTextColor(getResources().getColor(R.color.white));
