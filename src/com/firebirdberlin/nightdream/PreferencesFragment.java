@@ -36,6 +36,7 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.CityIDPreference;
@@ -899,7 +900,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
         if (!isAdded()) return;
-        boolean on = isAutostartActivated(sharedPreferences);
+        boolean on = isAutostartActivated(sharedPreferences) || ClockWidgetProvider.hasWidgets(getContext());
         int newState = on ?
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
@@ -911,7 +912,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         PackageManager pm = mContext.getPackageManager();
         pm.setComponentEnabledSetting(
                 new ComponentName(mContext, ScreenWatcherService.class),
-                newState, PackageManager.DONT_KILL_APP
+                newState,
+                PackageManager.DONT_KILL_APP
         );
 
         if (on) {
