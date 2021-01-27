@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -40,7 +41,6 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class AlarmClockLayout extends LinearLayout {
@@ -221,6 +221,7 @@ public class AlarmClockLayout extends LinearLayout {
                     textViewWhen.setTextColor(getResources().getColor(R.color.white));
                     switchActive.setChecked(true);
                     Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
                     snackbar.show();
                 }
                 else{
@@ -229,6 +230,7 @@ public class AlarmClockLayout extends LinearLayout {
                     switchActive.setChecked(false);
                 }
                 ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                child.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             }
         });
         switchActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
@@ -240,6 +242,7 @@ public class AlarmClockLayout extends LinearLayout {
                     textViewWhen.setTextColor(getResources().getColor(R.color.white));
                     toggleActive.setChecked(true);
                     Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
                     snackbar.show();
                 }
                 else{
@@ -355,26 +358,32 @@ public class AlarmClockLayout extends LinearLayout {
     }
 
     public String getAlarmToText() {
+        String returnString;
         long timeToalarm = TimeUnit.MILLISECONDS.toMinutes(alarmClockEntry.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
         int days = (int) TimeUnit.MINUTES.toDays(timeToalarm);
         int hours = (int) (TimeUnit.MINUTES.toHours(timeToalarm) % TimeUnit.DAYS.toHours(1));
         int minutes = (int) (timeToalarm % TimeUnit.HOURS.toMinutes(1));
 
-        String returnString = getResources().getString(R.string.alarmClockTextStart);
-
-        if (days > 0) {
-            returnString += getResources().getQuantityString(R.plurals.alarmClockTextday, days, days);
+        if (days == 0 && hours == 0 && minutes == 0) {
+            returnString = getResources().getString(R.string.alarmClockTextNow);
         }
+        else {
+            returnString = getResources().getString(R.string.alarmClockTextStart);
 
-        if (hours > 0) {
-            returnString += getResources().getQuantityString(R.plurals.alarmClockTexthour, hours, hours);
+            if (days > 0) {
+                returnString += getResources().getQuantityString(R.plurals.alarmClockTextday, days, days);
+            }
+
+            if (hours > 0) {
+                returnString += getResources().getQuantityString(R.plurals.alarmClockTexthour, hours, hours);
+            }
+
+            if (minutes > 0) {
+                returnString += getResources().getQuantityString(R.plurals.alarmClockTextminute, minutes, minutes);
+            }
+
+            returnString += getResources().getString(R.string.alarmClockTextEnd);
         }
-
-        if (minutes > 0) {
-            returnString += getResources().getQuantityString(R.plurals.alarmClockTextminute, minutes, minutes);
-        }
-
-        returnString += getResources().getString(R.string.alarmClockTextEnd);
 
         return returnString;
     }

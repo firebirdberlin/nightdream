@@ -28,7 +28,7 @@ OR
     <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="alarm">Alarm</string>
-    <string name="alarmClockTextStart">This alarm is set for&#160;</string>
+    <string name="alarmClockTextStart">This alarm will ring in&#160;</string>
     <plurals name="alarmClockTextday">
         <item quantity="one">%1$s day&#160;</item>
         <item quantity="other">%1$s days&#160;</item>
@@ -41,7 +41,8 @@ OR
         <item quantity="one">%1$s minute&#160;</item>
         <item quantity="other">%1$s minutes&#160;</item>
     </plurals>
-    <string name="alarmClockTextEnd">from now.</string>
+    <string name="alarmClockTextEnd">&#160;</string>
+    <string name="alarmClockTextNow">This alarm will ring soon.</string>
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmFadeInDurationSeconds">fade in duration</string>
     <string name="alarmStartDate">Next alarm on</string>

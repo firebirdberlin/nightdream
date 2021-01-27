@@ -28,6 +28,7 @@ import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -163,13 +164,13 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 layout.showSecondaryLayout(true);
             }
             scrollView.addView(layout);
-            layout.update();
         }
         scrollView.invalidate();
     }
 
     public void onClickAddNewAlarm(View view) {
-        showTimePicker(7, 0, null);
+        Calendar timeNow = Calendar.getInstance();
+        showTimePicker(timeNow.get(Calendar.HOUR_OF_DAY), timeNow.get(Calendar.MINUTE), null);
     }
 
     private void showTimePicker(int hour, int min, final Long entry_id) {
@@ -208,10 +209,16 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                             if (entry_id == null) {
                                 entries.add(entry);
                                 update(entry.id);
+
+                                AlarmClockLayout layout = new AlarmClockLayout(context, entry, timeFormat, dateFormat,
+                                        radioStations);
+
+                                Snackbar snackbar = Snackbar.make(scrollView, layout.getAlarmToText(), Snackbar.LENGTH_LONG);
+                                snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                                snackbar.show();
                             } else {
                                 update();
                             }
-
                         }
                         WakeUpReceiver.schedule(context, db);
                     }
