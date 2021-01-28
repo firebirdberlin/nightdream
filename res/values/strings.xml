@@ -28,21 +28,6 @@ OR
     <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="alarm">Alarm</string>
-    <string name="alarmClockTextStart">This alarm will ring in&#160;</string>
-    <plurals name="alarmClockTextday">
-        <item quantity="one">%1$s day&#160;</item>
-        <item quantity="other">%1$s days&#160;</item>
-    </plurals>
-    <plurals name="alarmClockTexthour">
-        <item quantity="one">%1$s hour&#160;</item>
-        <item quantity="other">%1$s hours&#160;</item>
-    </plurals>
-    <plurals name="alarmClockTextminute">
-        <item quantity="one">%1$s minute&#160;</item>
-        <item quantity="other">%1$s minutes&#160;</item>
-    </plurals>
-    <string name="alarmClockTextEnd">&#160;</string>
-    <string name="alarmClockTextNow">This alarm will ring soon.</string>
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmFadeInDurationSeconds">fade in duration</string>
     <string name="alarmStartDate">Next alarm on</string>
@@ -302,6 +287,9 @@ OR
     <string name="recommend">Recommend app</string>
     <string name="export_preferences">Export app information</string>
     <string name="remaining">rem.</string>
+    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_now">This alarm will ring soon.</string>
+    <string name="remaining_alarm_time_start">This alarm will ring in&#160;</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="screenProtection">Screen burn protection</string>

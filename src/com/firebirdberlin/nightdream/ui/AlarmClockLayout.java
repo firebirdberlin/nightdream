@@ -3,10 +3,8 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.format.DateUtils;
@@ -42,7 +40,6 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 public class AlarmClockLayout extends LinearLayout {
 
@@ -112,8 +109,10 @@ public class AlarmClockLayout extends LinearLayout {
         init();
     }
 
-    public AlarmClockLayout(Context context, SimpleTime entry, String timeFormat, String dateFormat,
-                            FavoriteRadioStations radioStations) {
+    public AlarmClockLayout(
+            Context context, SimpleTime entry, String timeFormat, String dateFormat,
+            FavoriteRadioStations radioStations
+    ) {
         super(context);
         this.context = context;
         this.alarmClockEntry = entry;
@@ -200,39 +199,32 @@ public class AlarmClockLayout extends LinearLayout {
 
         checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
         update();
-        toggleActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
+        SwitchCompat.OnCheckedChangeListener checkedChangeListener = new SwitchCompat.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 alarmClockEntry.isActive = isChecked;
                 if (isChecked) {
                     switchActive.setChecked(true);
-                    Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
-                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
-                    snackbar.show();
-                }
-                else{
+                    toggleActive.setChecked(true);
+                    if (Utility.languageIs("de", "en")) {
+                        Snackbar snackbar = Snackbar.make(
+                                child,
+                                alarmClockEntry.getRemainingTimeString(context),
+                                Snackbar.LENGTH_LONG
+                        );
+                        snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                        snackbar.show();
+                    }
+                } else {
                     switchActive.setChecked(false);
+                    toggleActive.setChecked(false);
                 }
                 ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                 child.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             }
-        });
-        switchActive.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                alarmClockEntry.isActive = isChecked;
-                if (isChecked) {
-                    toggleActive.setChecked(true);
-                    Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
-                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
-                    snackbar.show();
-                }
-                else{
-                    toggleActive.setChecked(false);
-                }
-                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
-            }
-        });
+        };
+        toggleActive.setOnCheckedChangeListener(checkedChangeListener);
+        switchActive.setOnCheckedChangeListener(checkedChangeListener);
         timeView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -338,37 +330,6 @@ public class AlarmClockLayout extends LinearLayout {
 
     }
 
-    public String getAlarmToText() {
-        String returnString;
-        long timeToalarm = TimeUnit.MILLISECONDS.toMinutes(alarmClockEntry.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
-        int days = (int) TimeUnit.MINUTES.toDays(timeToalarm);
-        int hours = (int) (TimeUnit.MINUTES.toHours(timeToalarm) % TimeUnit.DAYS.toHours(1));
-        int minutes = (int) (timeToalarm % TimeUnit.HOURS.toMinutes(1));
-
-        if (days == 0 && hours == 0 && minutes == 0) {
-            returnString = getResources().getString(R.string.alarmClockTextNow);
-        }
-        else {
-            returnString = getResources().getString(R.string.alarmClockTextStart);
-
-            if (days > 0) {
-                returnString += getResources().getQuantityString(R.plurals.alarmClockTextday, days, days);
-            }
-
-            if (hours > 0) {
-                returnString += getResources().getQuantityString(R.plurals.alarmClockTexthour, hours, hours);
-            }
-
-            if (minutes > 0) {
-                returnString += getResources().getQuantityString(R.plurals.alarmClockTextminute, minutes, minutes);
-            }
-
-            returnString += getResources().getString(R.string.alarmClockTextEnd);
-        }
-
-        return returnString;
-    }
-
     public void updateAlarmClockEntry(SimpleTime entry) {
         this.alarmClockEntry = entry;
         update();
@@ -427,7 +388,7 @@ public class AlarmClockLayout extends LinearLayout {
     }
 
     void setupVibrationIcon() {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_vibration,null);
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vibration, null);
         if (drawable != null) {
             drawable = DrawableCompat.wrap(drawable);
             int color = (alarmClockEntry.vibrate)
@@ -440,7 +401,7 @@ public class AlarmClockLayout extends LinearLayout {
     }
 
     void setupDeleteIcon() {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_delete,null);
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete, null);
         if (drawable != null) {
             drawable = DrawableCompat.wrap(drawable);
             int color = ContextCompat.getColor(context, R.color.blue);

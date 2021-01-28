@@ -155,8 +155,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
 
             if (layout == null) {
-                layout = new AlarmClockLayout(this, entry, timeFormat, dateFormat,
-                        radioStations);
+                layout = new AlarmClockLayout(
+                        this, entry, timeFormat, dateFormat, radioStations
+                );
                 layoutHashMap.put(entry.id, layout);
             }
 
@@ -169,8 +170,8 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     public void onClickAddNewAlarm(View view) {
-        Calendar timeNow = Calendar.getInstance();
-        showTimePicker(timeNow.get(Calendar.HOUR_OF_DAY), timeNow.get(Calendar.MINUTE), null);
+        Calendar now = Calendar.getInstance();
+        showTimePicker(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), null);
     }
 
     private void showTimePicker(int hour, int min, final Long entry_id) {
@@ -210,12 +211,11 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                                 entries.add(entry);
                                 update(entry.id);
 
-                                AlarmClockLayout layout = new AlarmClockLayout(context, entry, timeFormat, dateFormat,
-                                        radioStations);
-
-                                Snackbar snackbar = Snackbar.make(scrollView, layout.getAlarmToText(), Snackbar.LENGTH_LONG);
-                                snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
-                                snackbar.show();
+                                if (Utility.languageIs("de", "en")) {
+                                    Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
+                                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                                    snackbar.show();
+                                }
                             } else {
                                 update();
                             }

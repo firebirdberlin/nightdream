@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="duration_days_relative_future">
+        <item quantity="one">%1$s day&#160;</item>
+        <item quantity="other">%1$s days&#160;</item>
+    </plurals>
+    <plurals name="duration_hours_relative_future">
+        <item quantity="one">%1$s hour&#160;</item>
+        <item quantity="other">%1$s hours&#160;</item>
+    </plurals>
+    <plurals name="duration_minutes_relative_future">
+        <item quantity="one">%1$s minute&#160;</item>
+        <item quantity="other">%1$s minutes&#160;</item>
+    </plurals>
+</resources>
