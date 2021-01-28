@@ -1,6 +1,10 @@
 package com.firebirdberlin.nightdream.models;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
+
+import com.firebirdberlin.nightdream.R;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -9,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 public class SimpleTime {
     public static int SUNDAY = 1;
@@ -274,6 +279,39 @@ public class SimpleTime {
             addRecurringDay(Calendar.THURSDAY);
             addRecurringDay(Calendar.FRIDAY);
         }
+    }
+
+    public String getRemainingTimeString(Context context) {
+        String returnString;
+        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(
+                getMillis() - System.currentTimeMillis()
+        );
+        int days = (int) TimeUnit.MINUTES.toDays(diffMinutes);
+        int hours = (int) (TimeUnit.MINUTES.toHours(diffMinutes) % TimeUnit.DAYS.toHours(1));
+        int minutes = (int) (diffMinutes % TimeUnit.HOURS.toMinutes(1));
+
+        Resources res = context.getResources();
+        if (days == 0 && hours == 0 && minutes == 0) {
+            returnString = res.getString(R.string.remaining_alarm_time_now);
+        } else {
+            returnString = res.getString(R.string.remaining_alarm_time_start);
+
+            if (days > 0) {
+                returnString += res.getQuantityString(R.plurals.duration_days_relative_future, days, days);
+            }
+
+            if (hours > 0) {
+                returnString += res.getQuantityString(R.plurals.duration_hours_relative_future, hours, hours);
+            }
+
+            if (minutes > 0) {
+                returnString += res.getQuantityString(R.plurals.duration_minutes_relative_future, minutes, minutes);
+            }
+
+            returnString += res.getString(R.string.remaining_alarm_time_end);
+        }
+
+        return returnString;
     }
 }
 

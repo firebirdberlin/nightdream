@@ -28,21 +28,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Schriftart hinzufügen</string>
     <string name="add_new_alarm">neuen Wecker hinzufügen</string>
     <string name="alarm">Wecker</string>
-    <string name="alarmClockTextStart">Dieser Wecker klingelt in&#160;</string>
-    <plurals name="alarmClockTextday">
-        <item quantity="one">%1$s Tag&#160;</item>
-        <item quantity="other">%1$s Tagen&#160;</item>
-    </plurals>
-    <plurals name="alarmClockTexthour">
-        <item quantity="one">%1$s Stunde&#160;</item>
-        <item quantity="other">%1$s Stunden&#160;</item>
-    </plurals>
-    <plurals name="alarmClockTextminute">
-        <item quantity="one">%1$s Minute&#160;</item>
-        <item quantity="other">%1$s Minuten&#160;</item>
-    </plurals>
-    <string name="alarmClockTextEnd">&#160;</string>
-    <string name="alarmClockTextNow">Dieser Wecker klingelt gleich.</string>
     <string name="alarmFadeIn">ansteigende Lautstärke</string>
     <string name="alarmFadeInDurationSeconds">Dauer</string>
     <string name="alarmStartDate">Nächster Alarm am</string>
@@ -302,6 +287,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Die App gefällt mir, schau sie dir doch auch mal an. Austesten kostet ja nichts…</string>
     <string name="export_preferences">Informationen zur App exportieren</string>
     <string name="remaining">übrig</string>
+    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_now">Dieser Wecker klingelt gleich.</string>
+    <string name="remaining_alarm_time_start">Dieser Wecker klingelt in&#160;</string>
     <string name="repeat">wiederholen</string>
     <string name="reset_to_defaults">Einstellungen zurücksetzen</string>
     <string name="screenProtection">Bildschirmschutz</string>
