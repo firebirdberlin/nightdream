@@ -382,14 +382,6 @@ public class AlarmClockLayout extends LinearLayout {
             timeView.setText(text);
             toggleActive.setChecked(alarmClockEntry.isActive);
             switchActive.setChecked(alarmClockEntry.isActive);
-            if (alarmClockEntry.isActive) {
-                timeView.setTextColor(getResources().getColor(R.color.white));
-                textViewWhen.setTextColor(getResources().getColor(R.color.white));
-            }
-            else{
-                timeView.setTextColor(getResources().getColor(R.color.material_grey));
-                textViewWhen.setTextColor(getResources().getColor(R.color.material_grey));
-            }
 
             if (alarmClockEntry.isRecurring()) {
                 String textWhen = alarmClockEntry.getWeekDaysAsString();
