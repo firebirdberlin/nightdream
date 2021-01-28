@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentManager;
 
@@ -91,7 +92,8 @@ public class AlarmClockLayout extends LinearLayout {
                 }
             };
     private ConstraintLayout secondaryLayout = null;
-    private Button buttonDelete = null;
+    private ImageView imageViewDelete = null;
+    private Button butondelete = null;
     private ToggleButton toggleActive = null;
     private SwitchCompat switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
@@ -119,7 +121,7 @@ public class AlarmClockLayout extends LinearLayout {
         this.dateFormat = dateFormat;
         this.radioStations = radioStations;
         init();
-        buttonDelete.setTag(entry);
+        imageViewDelete.setTag(entry);
         timeView.setTag(entry);
         textViewWhen.setTag(entry);
     }
@@ -163,7 +165,7 @@ public class AlarmClockLayout extends LinearLayout {
         textViewWhen = findViewById(R.id.textViewWhen);
         layoutDays = findViewById(R.id.layoutDays);
         buttonDown = findViewById(R.id.button_down);
-        buttonDelete = findViewById(R.id.button_delete);
+        imageViewDelete = findViewById(R.id.imageViewDelete);
         secondaryLayout = findViewById(R.id.secondaryLayout);
         toggleActive = findViewById(R.id.enabled);
         switchActive = findViewById(R.id.enabledswitch);
@@ -192,20 +194,6 @@ public class AlarmClockLayout extends LinearLayout {
             button.setOnClickListener(dayButtonOnclickListener);
         }
 
-        Drawable icon = getResources().getDrawable(R.drawable.ic_delete);
-        Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
-        Drawable scaled = new BitmapDrawable(
-                getResources(),
-                Bitmap.createScaledBitmap(
-                        bitmap,
-                        (int) (0.6f * bitmap.getWidth()),
-                        (int) (0.6f * bitmap.getHeight()),
-                        true
-                )
-        );
-
-        buttonDelete.setCompoundDrawablesWithIntrinsicBounds(scaled, null, null, null);
-
         buttonDown.setImageResource(R.drawable.ic_expand);
         buttonDown.setSoundEffectsEnabled(false);
         buttonDown.setOnClickListener(buttonDownOnClickListener);
@@ -217,16 +205,12 @@ public class AlarmClockLayout extends LinearLayout {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 alarmClockEntry.isActive = isChecked;
                 if (isChecked) {
-                    timeView.setTextColor(getResources().getColor(R.color.white));
-                    textViewWhen.setTextColor(getResources().getColor(R.color.white));
                     switchActive.setChecked(true);
                     Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
                     snackbar.show();
                 }
                 else{
-                    timeView.setTextColor(getResources().getColor(R.color.material_grey));
-                    textViewWhen.setTextColor(getResources().getColor(R.color.material_grey));
                     switchActive.setChecked(false);
                 }
                 ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
@@ -238,8 +222,6 @@ public class AlarmClockLayout extends LinearLayout {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 alarmClockEntry.isActive = isChecked;
                 if (isChecked) {
-                    timeView.setTextColor(getResources().getColor(R.color.white));
-                    textViewWhen.setTextColor(getResources().getColor(R.color.white));
                     toggleActive.setChecked(true);
                     Snackbar snackbar = Snackbar.make(child, getAlarmToText(), Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
@@ -247,8 +229,6 @@ public class AlarmClockLayout extends LinearLayout {
                 }
                 else{
                     toggleActive.setChecked(false);
-                    timeView.setTextColor(getResources().getColor(R.color.material_grey));
-                    textViewWhen.setTextColor(getResources().getColor(R.color.material_grey));
                 }
                 ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
             }
@@ -355,6 +335,7 @@ public class AlarmClockLayout extends LinearLayout {
                 setupVibrationIcon();
             }
         });
+
     }
 
     public String getAlarmToText() {
@@ -448,19 +429,33 @@ public class AlarmClockLayout extends LinearLayout {
             }
             textViewSound.setText(displayName);
             setupVibrationIcon();
+            setupDeleteIcon();
         }
         invalidate();
     }
 
     void setupVibrationIcon() {
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_vibration);
-        drawable = DrawableCompat.wrap(drawable);
-        int color = (alarmClockEntry.vibrate)
-                ? ContextCompat.getColor(context, R.color.blue)
-                : ContextCompat.getColor(context, R.color.material_grey);
-        DrawableCompat.setTint(drawable, color);
-        DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
-        textViewVibrate.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_vibration,null);
+        if (drawable != null) {
+            drawable = DrawableCompat.wrap(drawable);
+            int color = (alarmClockEntry.vibrate)
+                    ? ContextCompat.getColor(context, R.color.blue)
+                    : ContextCompat.getColor(context, R.color.material_grey);
+            DrawableCompat.setTint(drawable, color);
+            DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+            textViewVibrate.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        }
+    }
+
+    void setupDeleteIcon() {
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_delete,null);
+        if (drawable != null) {
+            drawable = DrawableCompat.wrap(drawable);
+            int color = ContextCompat.getColor(context, R.color.blue);
+            DrawableCompat.setTint(drawable, color);
+            DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+            imageViewDelete.setImageDrawable(drawable);
+        }
     }
 
 }

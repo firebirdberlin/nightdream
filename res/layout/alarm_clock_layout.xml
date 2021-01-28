@@ -338,17 +338,25 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <Button
-                    android:id="@+id/button_delete"
+                <ImageView
+                    android:id="@+id/imageViewDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:drawableStart="@drawable/ic_delete"
-                    android:onClick="onButtonDeleteClick"
-                    android:text="@string/delete"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/delete"
+                    android:drawablePadding="4dp"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:onClick="onDeleteClick"
+                    android:textAppearance="@android:style/TextAppearance.Small"
+                    app:drawableStartCompat="@drawable/ic_delete"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:drawableLeft="@drawable/ic_delete" />
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

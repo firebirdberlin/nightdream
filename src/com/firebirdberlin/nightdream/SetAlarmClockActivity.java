@@ -265,7 +265,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         mDatePicker.show();
     }
 
-    public void onButtonDeleteClick(View view) {
+    public void onDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
         db.delete(entry);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
