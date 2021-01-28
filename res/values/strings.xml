@@ -287,6 +287,9 @@ OR
     <string name="recommend">Recommend app</string>
     <string name="export_preferences">Export app information</string>
     <string name="remaining">rem.</string>
+    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_now">This alarm will ring soon.</string>
+    <string name="remaining_alarm_time_start">This alarm will ring in&#160;</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="screenProtection">Screen burn protection</string>
