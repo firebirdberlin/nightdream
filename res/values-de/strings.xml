@@ -287,6 +287,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Die App gefällt mir, schau sie dir doch auch mal an. Austesten kostet ja nichts…</string>
     <string name="export_preferences">Informationen zur App exportieren</string>
     <string name="remaining">übrig</string>
+    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_now">Dieser Wecker klingelt gleich.</string>
+    <string name="remaining_alarm_time_start">Dieser Wecker klingelt in&#160;</string>
     <string name="repeat">wiederholen</string>
     <string name="reset_to_defaults">Einstellungen zurücksetzen</string>
     <string name="screenProtection">Bildschirmschutz</string>

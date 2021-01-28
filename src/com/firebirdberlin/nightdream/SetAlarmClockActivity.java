@@ -28,6 +28,7 @@ import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -154,8 +155,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
 
             if (layout == null) {
-                layout = new AlarmClockLayout(this, entry, timeFormat, dateFormat,
-                        radioStations);
+                layout = new AlarmClockLayout(
+                        this, entry, timeFormat, dateFormat, radioStations
+                );
                 layoutHashMap.put(entry.id, layout);
             }
 
@@ -163,13 +165,13 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 layout.showSecondaryLayout(true);
             }
             scrollView.addView(layout);
-            layout.update();
         }
         scrollView.invalidate();
     }
 
     public void onClickAddNewAlarm(View view) {
-        showTimePicker(7, 0, null);
+        Calendar now = Calendar.getInstance();
+        showTimePicker(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), null);
     }
 
     private void showTimePicker(int hour, int min, final Long entry_id) {
@@ -208,10 +210,15 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                             if (entry_id == null) {
                                 entries.add(entry);
                                 update(entry.id);
+
+                                if (Utility.languageIs("de", "en")) {
+                                    Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
+                                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                                    snackbar.show();
+                                }
                             } else {
                                 update();
                             }
-
                         }
                         WakeUpReceiver.schedule(context, db);
                     }
@@ -258,7 +265,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         mDatePicker.show();
     }
 
-    public void onButtonDeleteClick(View view) {
+    public void onDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
         db.delete(entry);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
