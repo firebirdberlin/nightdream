@@ -4,47 +4,82 @@ Nachtuhr
 
 Short description:
 ------------------
-... eine Uhr für den Schreibtisch und eine Nachtuhr. Open Source und werbefrei.
+Radiowecker und Schreibtischuhr. Open Source und werbefrei.
 
 Long Description:
 ------------------
 
-Diese Uhr wird eingeblendet sobald Sie ihr Telefon aufladen und dient so als praktische Nachtuhr oder Schreibtischuhr. Die Helligkeit lässt sich manuell einstellen oder automatisch regeln - ganz wie Sie mögen. Wichtige Informationen, wie der Ladestand des Akkus und das Datum werden ebenfalls angezeigt. Für ungelesene Benachrichtigungen werden entsprechende Symbole eingeblendet. Im Nachtmodus ist das Display so dunkel wie möglich. Vollkommenes Schwarz wird nur auf AMOLED-Displays erreicht. Die Schriftgröße lässt sich über eine einfache 2-Finger-Zoom-Geste einstellen.
+Diese Uhr wird eingeblendet, sobald Sie ihr Telefon aufladen und dient so als
+praktische Nachtuhr oder Schreibtischuhr. Die Helligkeit lässt sich manuell
+einstellen oder automatisch regeln - ganz wie Sie mögen. Wichtige Informationen,
+wie der Ladestand des Akkus, das Datum oder neue Benachrichtigungen werden
+ebenfalls angezeigt. Im Nachtmodus ist das Display so dunkel wie möglich.
+Vollkommenes Schwarz wird nur auf AMOLED-Displays erreicht.
 
-Optional können Sie die aktuellen Wetterbedingungen anzeigen. Als Datenquelle wird OpenWeatherMap verwendet.
+Das Design kann an die Bedürfnisse angepasst werden. Farben und Schriftarten
+lassen sich einstellen. Die Größe der Uhr wird über eine einfache
+2-Finger-Zoom-Geste geändert. Die Position der Uhr lässt sich durch langes
+Drücken auf die Zeitanzeige verändern. Die Analogdesigns können beliebig
+personalisiert werden, der Hintergrund ebenfalls. Wählen Sie ein einfaches
+Schwarz für die Nutzung in der Nacht oder zeigen Sie das Wallpaper des
+Startbildschirms an (z.b. für Live-Hintergründe). Sie können ebenso Ihr
+persönliches Hinergrundbild einstellen. Eine besondere Funktion ist die Diashow.
+Somit können Sie ihr Gerät als digitalen Bilderrahmen verwenden. Wird die
+Uhrzeit am Rand positioniert und verkleinert, so wird der Blick auf Ihre Fotos
+frei.
 
-Sie können mit dieser App ihren Lieblingradiosender hören und diesen Sender als Wecker verwenden. Dazu muss die Option Schnellwecker aktiviert sein.
+Optional können Sie die aktuellen Wetterbedingungen anzeigen. In der
+Wettervorschau sehen Sie die Entwicklung der nächsten Tage. Als Datenquelle wird
+OpenWeatherMap verwendet.
+
+Sie können mit dieser App ihren Lieblingsradiosender hören und diesen Sender
+auch als Wecker verwenden. Senderspeicher erlauben das schnelle Wechseln
+zwischen mehreren Sendern.
 
 <b>Nachtmodus</b>
-Um nachts den Bildschirm abzuschalten, müssen Daydreams deaktiviert sein (Einstellungen > Display > DayDream). Die Uhr wird reaktiviert bei Licht bzw. sobald der Geräuschpegel im Raum einen bestimmten Wert überschreitet.
-
-<b>Schnellwecker</b>
-Mit einem Wisch von links unten wird der Wecker aktiviert. Die Horizontale stellt die Stunde ein, die Vertikale die Minuten. Ein Klick unten rechts löscht den Wecker wieder.
+Um nachts den Bildschirm abzuschalten, müssen Bildschirmschoner (Daydream)
+deaktiviert sein (Einstellungen > Display > DayDream). Die Uhr wird bei Licht
+reaktiviert bzw. sobald der Geräuschpegel im Raum einen bestimmten Wert
+überschreitet.
 
 <b>Benachrichtigungszugriff</b>
 Android 4.3+:
-Die Benachrichtigungen müssen aktiviert werden unter Einstellungen > Sicherheit > Benachrichtigungszugriff > NightDream aktivieren.
+Die Benachrichtigungen können Sie unter Einstellungen > Sicherheit
+> Benachrichtigungszugriff > NightDream aktivieren.
 
 Android 4.2 und kleiner:
 Einstellungen > Bedienungshilfen > NightDream
 
 <b>In-App Käufe</b>
-Dieses Projekt ist Open Source und das Produkt eines Android-Enthusiasten. Wenn Sie das Projekt unterstützen möchten, dann können Sie via In-App Kauf eine Spende an den Entwickler senden. Die Anzeige der Wetterdaten und die Funktion als Internetradio können in der App erworben werden.
+Dieses Projekt ist Open Source und das Produkt eines Android-Enthusiasten. Wenn
+Sie das Projekt unterstützen möchten, dann können Sie via In-App Kauf eine
+Spende an den Entwickler senden. Zuätzliche Designs, die Anzeige der Wetterdaten
+und die Funktion als Internetradio können in der App erworben werden.
 
 <b>Berechtigungen</b>
 
-<i>android.permission.MODIFY_AUDIO_SETTINGS : Audio-Einstellungen ändern</i>
+<i>android.permission.MODIFY_AUDIO_SETTINGS: Audio-Einstellungen ändern</i>
 
 Damit die Lautstärke nachts leise gestellt werden kann.
 
-<i>android.permission.RECORD_AUDIO : Audio aufnehmen</i>
+<i>android.permission.RECORD_AUDIO: Audio aufnehmen</i>
 
-Der Nachtmodus wird optional nur aktiviert, wenn es dunkel und hinreichend ruhig im Raum ist. Dazu wird die Lautstärke mit dem Mikrofon gemessen. Es werden keine Aufzeichnungen angefertigt. Bitte beachten Sie auch, dass die App nicht die Berechtigung besitzt mit dem Internet zu kommunizieren. Ihre Privatsphäre ist also sicher.
+Der Nachtmodus wird optional nur aktiviert, wenn es dunkel und hinreichend ruhig
+im Raum ist. Dazu wird die Lautstärke mit dem Mikrofon gemessen. Es werden keine
+Aufzeichnungen angefertigt. Ihre Privatsphäre ist also sicher.
 
-<i>android.permission.WAKE_LOCK : Standby-Modus deaktivieren</i>
+<i>android.permission.WAKE_LOCK: Standby-Modus deaktivieren</i>
 
-Die App darf das Gerät aus dem Schlaf aufwecken, also z.B. das Display einschalten und eingeschaltet lassen.
+Die App darf das Gerät aus dem Schlaf aufwecken, also z.B. das Display
+einschalten und eingeschaltet lassen.
 
-<i>android.permission.READ_EXTERNAL_STORAGE : Auf externen Speicher zugreifen</i>
+<i>android.permission.READ_EXTERNAL_STORAGE: Auf externen Speicher zugreifen</i>
 
-Diese Berechtigung wird benötigt, um Hintergrundbilder von SD-Karte lesen zu können.
+Diese Berechtigung wird benötigt, um Hintergrundbilder von SD-Karte lesen zu
+können.
+
+<b>Bildschirmsperre</b>
+
+Diese App nutzt die Berechtigung als Geräteadministrator, um den Bildschirm zur
+Laufzeit sperren zu können. Vor der Deinstallation muss diese Berechtigung
+entzogen werden.
