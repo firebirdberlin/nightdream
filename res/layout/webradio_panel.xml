@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/WebRadio"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/webradiopanelborder">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/WebRadioStationButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/web_radio_no_audio"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/web_radio_button1"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:background="@drawable/webradio_station_button"
+            android:tag="0"
+            android:text="1"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/web_radio_button2"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/webradio_station_button"
+            android:tag="1"
+            android:text="2"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/web_radio_button1"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/web_radio_button3"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/webradio_station_button"
+            android:tag="2"
+            android:text="3"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/web_radio_button2"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/web_radio_button4"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/webradio_station_button"
+            android:tag="3"
+            android:text="4"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/web_radio_button3"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/web_radio_button5"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/webradio_station_button"
+            android:tag="4"
+            android:text="5"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/web_radio_button4"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/web_radio_button6"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/webradio_station_button"
+            android:tag="5"
+            android:text="6"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/web_radio_button5"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/web_radio_no_audio"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_no_audio"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/web_radio_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="web_radio_text"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/web_radio_progress_bar"
+        app:layout_constraintStart_toEndOf="@+id/web_radio_sleep_timer"
+        app:layout_constraintTop_toBottomOf="@+id/WebRadioStationButtons"
+        tools:ignore="HardcodedText" />
+
+    <ProgressBar
+        android:id="@+id/web_radio_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/web_radio_media_route_button"
+        app:layout_constraintTop_toBottomOf="@+id/WebRadioStationButtons" />
+
+    <androidx.mediarouter.app.MediaRouteButton
+        android:id="@+id/web_radio_media_route_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:mediaRouteTypes="user"
+        android:visibility="visible"
+        app:alignContent="flex_end"
+        app:flexDirection="row"
+        app:justifyContent="flex_end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/web_radio_sleep_timer"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/web_radio_no_audio"
+        app:srcCompat="@drawable/ic_nightmode"
+        tools:ignore="ContentDescription" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
