@@ -3,36 +3,46 @@ package com.firebirdberlin.nightdream.ui;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.mediarouter.app.MediaRouteButton;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.gms.cast.framework.CastButtonFactory;
 
 public class WebRadioLayout extends RelativeLayout {
 
@@ -46,7 +56,6 @@ public class WebRadioLayout extends RelativeLayout {
     private boolean showConnectingHint = false;
     private boolean showMetaInfoOnNextUpdate = true;
     private ProgressBar spinner;
-    private WebRadioStationButtonsLayout webRadioButtons;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
     private UserInteractionObserver userInteractionObserver;
@@ -54,6 +63,11 @@ public class WebRadioLayout extends RelativeLayout {
     private int currentVolumme = -1;
     private int accentColor = -1;
     private int textColor = -1;
+    private Settings settings;
+    FavoriteRadioStations stations;
+    private boolean showSmallButtons = false;
+    private Integer activeStationIndex;
+    private MediaRouteButton mMediaRouteButton;
 
     public WebRadioLayout(Context context) {
         super(context);
@@ -63,41 +77,33 @@ public class WebRadioLayout extends RelativeLayout {
     public WebRadioLayout(final Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        setBackgroundResource(R.drawable.webradiopanelborder);
 
-        int padding = Utility.dpToPx(context, 6.f);
-        int paddingLarge = Utility.dpToPx(context, 40.f);
+        Point displaySize = Utility.getDisplaySize(context);
+        showSmallButtons = (displaySize.x <= 480);
 
-        initTextView(padding, paddingLarge);
-        initButtonSleepTimer(padding);
-        initSpinner(padding);
-        initWebRadioButtons(attrs);
+        settings = new Settings(context);
+        stations = settings.getFavoriteRadioStations();
 
-        initVolumeMutedIndicator(padding);
+        inflate(context,R.layout.webradio_panel,this);
+        volumeMutedIndicator = findViewById(R.id.web_radio_no_audio);
+        spinner = findViewById(R.id.web_radio_progress_bar);
+        textView = findViewById(R.id.web_radio_text_view);
+        buttonSleepTimer = findViewById(R.id.web_radio_sleep_timer);
 
-        addView(textView);
-        addView(buttonSleepTimer);
-        addView(spinner);
-        addView(volumeMutedIndicator);
-        addView(webRadioButtons);
+        mMediaRouteButton = (MediaRouteButton) findViewById(R.id.web_radio_media_route_button);
+        CastButtonFactory.setUpMediaRouteButton(context.getApplicationContext(), mMediaRouteButton);
 
-        webRadioButtons.startLastActiveRadioStream();
+        initButtons();
+        initVolumeMutedIndicator();
+        initSpinner();
+        initTextView();
+        initButtonSleepTimer();
+
+        startLastActiveRadioStream();
         updateText();
     }
 
-    private void initTextView(int padding, int paddingLarge) {
-        textView = new TextView(context);
-        textView.setId(R.id.web_radio_text_view); // id for placing spinner LEFT_OF this view
-        textView.setEllipsize(TextUtils.TruncateAt.END);
-        textView.setSingleLine(true);
-        textView.setPadding(paddingLarge, padding, paddingLarge, padding);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        textView.setLayoutParams(lp);
+    private void initTextView() {
 
         textView.setOnClickListener(new OnClickListener() {
             @Override
@@ -118,56 +124,20 @@ public class WebRadioLayout extends RelativeLayout {
         });
     }
 
-    private void initButtonSleepTimer(int padding) {
-        buttonSleepTimer = new ImageView(context);
-        buttonSleepTimer.setImageResource(R.drawable.ic_nightmode);
-
-        buttonSleepTimer.setPadding(padding, padding, padding, padding);
+    private void initButtonSleepTimer() {
         buttonSleepTimer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 showSleepTimerDialog();
             }
         });
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        buttonSleepTimer.setLayoutParams(lp);
     }
 
-    private void initSpinner(int padding) {
-        spinner = new ProgressBar(context, null, android.R.attr.progressBarStyleSmall);
-        spinner.setPadding(0, padding, 0, padding);
+    private void initSpinner() {
         spinner.setVisibility(View.VISIBLE);
-
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.LEFT_OF, textView.getId());
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        spinner.setLayoutParams(lp);
     }
 
-    private void initWebRadioButtons(AttributeSet attrs) {
-        webRadioButtons = new WebRadioStationButtonsLayout(context, attrs);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-        webRadioButtons.setLayoutParams(lp);
-    }
-
-    private void initVolumeMutedIndicator(int padding) {
-        volumeMutedIndicator = new ImageView(context);
-        volumeMutedIndicator.setImageResource(R.drawable.ic_no_audio);
-        volumeMutedIndicator.setPadding(padding, padding, padding, padding);
-
-        RelativeLayout.LayoutParams lp =
-                new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        volumeMutedIndicator.setLayoutParams(lp);
-
+    private void initVolumeMutedIndicator() {
         volumeMutedIndicator.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,6 +160,235 @@ public class WebRadioLayout extends RelativeLayout {
         });
 
         updateVolumeMutedIndicator();
+    }
+
+    public void initButtons () {
+        Log.d(TAG, "initButtons");
+        final int maxNumButtons = FavoriteRadioStations.getMaxNumEntries();
+
+        for (int i = 0; i < maxNumButtons; i++) {
+            int id = getResources().getIdentifier("web_radio_button"+(i+1), "id", context.getPackageName());
+            Button btn = (Button) findViewById(id); // get the element
+
+            btn.setOnLongClickListener(buttonOnLongClickListener);
+            btn.setOnClickListener(buttonOnClickListener);
+        }
+    }
+
+    private OnClickListener buttonOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            int index = Integer.parseInt((String) v.getTag());
+            Log.d(TAG,"buttonOnClickListener: "+index);
+
+            if (activeStationIndex != null && index == activeStationIndex) {
+                stopRadioStream();
+                activeStationIndex = null;
+                updateButtonState();
+            } else {
+                Settings.setLastActiveRadioStation(context, index);
+                startRadioStreamOrShowDialog(index);
+            }
+        }
+    };
+
+    private OnLongClickListener buttonOnLongClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(final View v) {
+            int stationIndex = Integer.parseInt((String) v.getTag());
+            showRadioStreamDialog(stationIndex);
+            return true;
+        }
+    };
+
+    public void startLastActiveRadioStream() {
+        if (RadioStreamService.isRunning) return;
+        if (stations == null) {
+            return;
+        }
+
+        if (stations.numAvailableStations() == 0) {
+            showRadioStreamDialog(0);
+            return;
+        }
+
+        int stationIndex = Settings.getLastActiveRadioStation(context);
+        //start radio stream
+        if (stations.get(stationIndex) != null) {
+            toggleRadioStreamState(stationIndex);
+        }
+    }
+
+    private void startRadioStreamOrShowDialog(final int stationIndex) {
+        RadioStation station = null;
+        if (stations != null) {
+            station = stations.get(stationIndex);
+        }
+        if (station != null) {
+            //start radio stream
+            toggleRadioStreamState(stationIndex);
+        } else {
+            showRadioStreamDialog(stationIndex);
+        }
+    }
+
+    private void showRadioStreamDialog(final int stationIndex) {
+        RadioStreamDialogListener listener = new RadioStreamDialogListener() {
+            @Override
+            public void onRadioStreamSelected(RadioStation station) {
+                // update station in settings
+                if (settings != null) {
+                    settings.persistFavoriteRadioStation(station, stationIndex);
+                    stations = settings.getFavoriteRadioStations();
+                }
+                toggleRadioStreamState(stationIndex);
+                hideSystemUI();
+            }
+
+            @Override
+            public void onCancel() {
+                hideSystemUI();
+            }
+
+            @Override
+            public void onDelete(int stationIndex) {
+                Log.i(TAG, "delete");
+                if (activeStationIndex != null && stationIndex == activeStationIndex) {
+                    stopRadioStream();
+                }
+                if (settings != null) {
+                    settings.deleteFavoriteRadioStation(stationIndex);
+                    stations = settings.getFavoriteRadioStations();
+                }
+                updateButtonState();
+                hideSystemUI();
+            }
+        };
+
+        RadioStation station = stations.get(stationIndex);
+        String preferredCountry = null;
+        if (station != null) {
+            preferredCountry = station.countryCode;
+        } else {
+            for (int i = 0; i < stations.numAvailableStations(); i++) {
+                RadioStation s = stations.get(i);
+                if (s == null) {
+                    continue;
+                }
+                preferredCountry = s.countryCode;
+            }
+        }
+        RadioStreamDialogFragment.showDialog(
+                (AppCompatActivity) getContext(), stationIndex, station, preferredCountry, listener
+        );
+    }
+
+    private void hideSystemUI() {
+        Utility.hideSystemUI(getContext());
+    }
+
+    private int lastButtonInUseIndex() {
+        int lastIndex = -1;
+        final int maxNumButtons = FavoriteRadioStations.getMaxNumEntries();
+        for (int i = 0; i < maxNumButtons; i++) {
+            if (stations != null && stations.get(i) != null) {
+                lastIndex = i;
+            }
+        }
+        return lastIndex;
+    }
+
+    public int setAlpha(int color, int alpha) {
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
+
+    private void updateButtonState() {
+        final int lastButtonInUseIndex = lastButtonInUseIndex();
+
+        final int maxNumButtons = FavoriteRadioStations.getMaxNumEntries();
+        for (int i = 0; i < maxNumButtons; i++) {
+            int id = getResources().getIdentifier("web_radio_button"+(i+1), "id", context.getPackageName());
+            Button b = findViewById(id); // get the element
+            b.setVisibility(i <= lastButtonInUseIndex + 1 ? VISIBLE : GONE);
+
+            final boolean active = (activeStationIndex != null && activeStationIndex == i);
+            int color = active ? accentColor : textColor;
+
+            if (active) {
+                // draw stop button: empty text, use shape containing additional "stop" shape
+                b.setText("");
+                b.setBackgroundResource(
+                        showSmallButtons
+                                ? R.drawable.webradio_station_stop_button_small
+                                : R.drawable.webradio_station_stop_button
+                );
+            } else {
+                b.setText(String.valueOf(i + 1));
+                b.setBackgroundResource(R.drawable.webradio_station_button);
+            }
+
+            Drawable border = b.getBackground();
+            if (stations != null && stations.get(i) == null) {
+                border.setAlpha(125);
+                color = setAlpha(color, 125);
+                b.setText(i <= lastButtonInUseIndex ? String.valueOf(i + 1) : "+");
+            } else {
+                border.setAlpha(255);
+                color = setAlpha(color, 255);
+            }
+            b.setTextColor(color);
+            border.setColorFilter((color == accentColor) ? new LightingColorFilter(accentColor, 1) :  new LightingColorFilter(textColor, 1));
+        }
+    }
+
+    private void stopRadioStream() {
+        if ( RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO ) {
+            RadioStreamService.stop(context);
+        }
+    }
+
+    public void setActiveStation(int stationIndex) {
+        activeStationIndex = stationIndex > -1 ? stationIndex : null;
+        updateButtonState();
+    }
+
+    private void toggleRadioStreamState(final int radioStationIndex) {
+        boolean wasAlreadyPlaying = false;
+        if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
+            RadioStreamService.stop(context);
+            wasAlreadyPlaying = true;
+        }
+
+        if (Utility.hasNetworkConnection(context)) {
+            // is stream was already playing before, don't ask again? (but what if user switched from wifi to 3g since stream start?)
+            if (Utility.hasFastNetworkConnection(context) || wasAlreadyPlaying) {
+                RadioStreamService.startStream(context, radioStationIndex);
+            } else {
+                new AlertDialog.Builder(context, R.style.DialogTheme)
+                        .setTitle(R.string.message_mobile_data_connection)
+                        .setMessage(R.string.message_mobile_data_connection_confirmation)
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                hideSystemUI();
+                            }
+                        })
+                        .setIcon(R.drawable.ic_attention)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                RadioStreamService.startStream(context, radioStationIndex);
+                                hideSystemUI();
+                            }
+                        })
+                        .show();
+            }
+
+        } else { // no network connection
+            Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -240,8 +439,13 @@ public class WebRadioLayout extends RelativeLayout {
     public void setCustomColor(int accentColor, int textColor) {
         this.accentColor = accentColor;
         this.textColor = textColor;
-        Drawable bg = getBackground();
-        bg.setColorFilter( accentColor, PorterDuff.Mode.MULTIPLY );
+        Drawable bg;
+
+        bg = ResourcesCompat.getDrawable(getResources(), R.drawable.webradiopanelborder, null);
+        if (bg != null) {
+            bg.setColorFilter(accentColor, PorterDuff.Mode.MULTIPLY);
+            setBackground(bg);
+        }
 
         buttonSleepTimer.setColorFilter(
                 RadioStreamService.isSleepTimeSet() ? accentColor : textColor,
@@ -253,9 +457,8 @@ public class WebRadioLayout extends RelativeLayout {
         );
         textView.setTextColor(textColor);
 
-        if (webRadioButtons != null) {
-            webRadioButtons.setCustomColor(accentColor, textColor);
-        }
+        updateButtonState();
+
         if (spinner != null) {
             Drawable drawable = spinner.getIndeterminateDrawable();
             if (drawable != null) {
@@ -307,7 +510,7 @@ public class WebRadioLayout extends RelativeLayout {
 
             if (radioStationIndex >= 0 && station != null) {
                 textView.setText(station.name);
-                webRadioButtons.setActiveStation(radioStationIndex);
+                setActiveStation(radioStationIndex);
             }
 
             if (showMetaInfoOnNextUpdate) {
@@ -316,19 +519,15 @@ public class WebRadioLayout extends RelativeLayout {
             }
         } else {
             textView.setText("");
-            webRadioButtons.clearActiveStation();
         }
         if (spinner != null) {
             spinner.setVisibility(showConnectingHint ? View.VISIBLE : View.GONE);
         }
-        webRadioButtons.invalidate();
         updateVolumeMutedIndicator();
         buttonSleepTimer.setVisibility(RadioStreamService.isRunning ? VISIBLE : INVISIBLE);
         volumeMutedIndicator.setVisibility(RadioStreamService.isRunning ? VISIBLE : INVISIBLE);
         showMetaInfoOnNextUpdate = false;
     }
-
-
 
     private Runnable resetDefaultText = new Runnable() {
         @Override
@@ -430,6 +629,7 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     private void updateVolumeMutedIndicatorVisibility() {
+        Log.d(TAG, "updateVolumeMutedIndicatorVisibility: "+volumeMutedIndicator );
         if (volumeMutedIndicator != null) {
             volumeMutedIndicator.setColorFilter(
                     isStreamMuted() ? accentColor : textColor,

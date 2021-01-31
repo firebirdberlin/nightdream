@@ -19,6 +19,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -61,9 +63,16 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
+import com.firebirdberlin.nightdream.ui.WebRadioLayout;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.gms.cast.framework.CastContext;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.SessionManager;
+import com.google.android.gms.cast.framework.SessionManagerListener;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -104,6 +113,10 @@ public class NightDreamActivity extends BillingHelperActivity
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
     private TextToSpeech textToSpeech;
+    public CastContext mCastContext;
+    private CastSession mCastSession;
+    private SessionManagerListener<CastSession> mSessionManagerListener;
+
 
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -237,6 +250,69 @@ public class NightDreamActivity extends BillingHelperActivity
         return intent;
     }
 
+    private void setupCastListener() {
+        mSessionManagerListener = new SessionManagerListener<CastSession>() {
+
+            @Override
+            public void onSessionEnded(CastSession session, int error) {
+                onApplicationDisconnected();
+            }
+
+            @Override
+            public void onSessionResumed(CastSession session, boolean wasSuspended) {
+                onApplicationConnected(session);
+            }
+
+            @Override
+            public void onSessionResumeFailed(CastSession session, int error) {
+                onApplicationDisconnected();
+            }
+
+            @Override
+            public void onSessionStarted(CastSession session, String sessionId) {
+                onApplicationConnected(session);
+            }
+
+            @Override
+            public void onSessionStartFailed(CastSession session, int error) {
+                onApplicationDisconnected();
+            }
+
+            @Override
+            public void onSessionStarting(CastSession session) {
+            }
+
+            @Override
+            public void onSessionEnding(CastSession session) {
+            }
+
+            @Override
+            public void onSessionResuming(CastSession session, String sessionId) {
+            }
+
+            @Override
+            public void onSessionSuspended(CastSession session, int reason) {
+            }
+
+            private void onApplicationConnected(CastSession castSession) {
+                mCastSession = castSession;
+                if (RadioStreamService.isRunning) {
+                    RadioStreamService.loadRemoteMediaListener(new RadioStreamService(), castSession, RadioStreamService.mMediaPlayer);
+                }
+            }
+
+            private void onApplicationDisconnected() {
+                if (RadioStreamService.isRunning) {
+                    FavoriteRadioStations stations = mySettings.getFavoriteRadioStations();
+                    if ((stations != null) && (stations.numAvailableStations() != 0)) {
+                        int stationIndex = Settings.getLastActiveRadioStation(context);
+                        RadioStreamService.startStream(context, stationIndex);
+                    }
+                }
+            }
+        };
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -249,6 +325,10 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
+
+        setupCastListener();
+        mCastContext = CastContext.getSharedInstance(this);
+        mCastSession = mCastContext.getSessionManager().getCurrentCastSession();
 
         // allow the app to be displayed above the keyguard
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -332,6 +412,10 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
+
+        mCastContext.getSessionManager().addSessionManagerListener(
+                mSessionManagerListener, CastSession.class);
+
         isRunning = true;
         resumeTime = System.currentTimeMillis();
         screenWasOn = false;
@@ -611,6 +695,13 @@ public class NightDreamActivity extends BillingHelperActivity
             if (RadioStreamService.isRunning) RadioStreamService.stop(this);
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
             setIconInactive(radioIcon);
+            RemoteMediaClient mRemoteMediaPlayer = mCastSession.getRemoteMediaClient();
+            if (mRemoteMediaPlayer != null) {
+                mRemoteMediaPlayer.stop();
+            }
+            RadioStreamService.isRunning = false;
+            SessionManager mSessionManager = mCastContext.getSessionManager();
+            mSessionManager.endCurrentSession(true);
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
             setIconActive(radioIcon);

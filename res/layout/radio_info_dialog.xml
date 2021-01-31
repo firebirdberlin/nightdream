@@ -19,17 +19,18 @@
         android:id="@+id/metaTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textIsSelectable="true"
         android:paddingBottom="8dp"
+        android:textIsSelectable="true"
         android:textSize="18sp"
         android:visibility="gone" />
+
     <TextView
         android:id="@+id/stationNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textIsSelectable="true"
         android:textSize="18sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
     <TextView
         android:id="@+id/genreText"
         android:layout_width="match_parent"
