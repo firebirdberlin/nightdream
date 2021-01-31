@@ -37,6 +37,12 @@ import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStrea
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaLoadRequestData;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.framework.CastContext;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -68,7 +74,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
     private long readyForPlaybackSince = 0L;
-    private MediaPlayer mMediaPlayer = null;
+    public static MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
@@ -78,6 +84,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private final IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
     private VibrationHandler vibrator = null;
+    CastSession castSession;
     private final Runnable fadeIn = new Runnable() {
         @Override
         public void run() {
@@ -312,8 +319,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } else {
             sleepTimeInMillis = 0L;
         }
-
-
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -456,7 +461,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     private void playStream() {
-        Log.i(TAG, "playStream()");
+        Log.i(TAG, "playStream() " + streamURL);
 
         stopPlaying();
         mMediaPlayer = new MediaPlayer();
@@ -496,6 +501,51 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
         }
+
+        //todo
+        Log.d(TAG, "start chromecast music");
+        castSession = CastContext.getSharedInstance(getApplicationContext()).getSessionManager()
+                .getCurrentCastSession();
+
+        loadRemoteMedia();
+    }
+
+    private MediaInfo getRemoteMediadata() {
+        Log.d(TAG, "getRemoteMediadata()");
+        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, radioStation.name);
+        //mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, "Test Artist");
+        return new MediaInfo.Builder(
+                streamURL)
+                .setContentType("audio/mp3")
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setMetadata(mediaMetadata)
+                .build();
+    }
+
+    public static void loadRemoteMediaListener(RadioStreamService myRadioStreamService, CastSession castSession, MediaPlayer mediaPlayer) {
+        Log.d(TAG, "loadRemoteMediaStatic()");
+        myRadioStreamService.castSession = castSession;
+        myRadioStreamService.mMediaPlayer = mediaPlayer;
+        myRadioStreamService.loadRemoteMedia();
+    }
+
+    public void loadRemoteMedia() {
+        Log.d(TAG, "loadRemoteMedia()");
+        if (castSession == null) {
+            Log.d(TAG, "loadRemoteMedia() castSession=null");
+            return;
+        }
+        RemoteMediaClient mRemoteMediaPlayer = castSession.getRemoteMediaClient();
+        if (mRemoteMediaPlayer == null) {
+            Log.d(TAG, "loadRemoteMedia() mRemoteMediaPlayer=null");
+            return;
+        }
+
+        mRemoteMediaPlayer.load(new MediaLoadRequestData.Builder()
+                .setMediaInfo(getRemoteMediadata()).build());
+
+        stopPlaying();
     }
 
     @Override
