@@ -15,7 +15,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -24,6 +23,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
@@ -82,6 +83,7 @@ import static android.content.Context.POWER_SERVICE;
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
+    private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private static String TAG = "NightDreamActivity";
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     private Context mContext;
@@ -128,7 +130,7 @@ public class Utility {
     }
 
     public static boolean isEmulator() {
-        Log.d(TAG, Build.FINGERPRINT + "|" + Build.MODEL +"|"+ Build.PRODUCT);
+        Log.d(TAG, Build.FINGERPRINT + "|" + Build.MODEL + "|" + Build.PRODUCT);
         return Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.startsWith("unknown")
                 || Build.MODEL.contains("google_sdk")
@@ -234,7 +236,7 @@ public class Utility {
                     return true;
                 } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                     return true;
-                }  else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)){
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
                     return true;
                 }
             }
@@ -255,7 +257,7 @@ public class Utility {
             if (capabilities != null) {
                 if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                     return true;
-                }  else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)){
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
                     return true;
                 }
             }
@@ -409,38 +411,6 @@ public class Utility {
 
         return size;
     }
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = mContext.getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
-    public void getSystemBrightnessMode() {
-        system_brightness_mode = System.getInt(mContext.getContentResolver(),
-                System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
-    }
-
-    public void setManualBrightnessMode() {
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-    }
-
-    public void setAutoBrightnessMode() {
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
-    }
-
-    public void restoreSystemBrightnessMode() {
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                system_brightness_mode);
-    }
-
-    private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public static void logToFile(Context context, String logFileName, String text) {
 
@@ -734,8 +704,8 @@ public class Utility {
 
     public static int getCameraPhotoOrientation(File imageFile) {
         try {
-        ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
-        return getCameraPhotoOrientation(exif);
+            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+            return getCameraPhotoOrientation(exif);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -752,7 +722,7 @@ public class Utility {
         return 0;
     }
 
-    private static int getCameraPhotoOrientation(ExifInterface exif){
+    private static int getCameraPhotoOrientation(ExifInterface exif) {
         int rotate = 0;
         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
@@ -807,7 +777,6 @@ public class Utility {
         //return p.getLightMutedColor(Color.RED);
     }
 
-
     public static int getScreenOrientation(Context context) {
         /*
         returns
@@ -857,5 +826,81 @@ public class Utility {
             return millis + unit;
         }
         return millis;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = mContext.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    public void getSystemBrightnessMode() {
+        system_brightness_mode = System.getInt(mContext.getContentResolver(),
+                System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+    }
+
+    public void setManualBrightnessMode() {
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+    }
+
+    public void setAutoBrightnessMode() {
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+    }
+
+    public void restoreSystemBrightnessMode() {
+        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
+                system_brightness_mode);
+    }
+
+    public static class GeoCoder {
+        private final Context context;
+        private final double lat;
+        private final double lon;
+        private final Address address;
+
+        public GeoCoder(Context context, double lat, double lon) {
+            this.context = context;
+            this.lat = lat;
+            this.lon = lon;
+            this.address = this.getFromLocation();
+        }
+
+        private Address getFromLocation() {
+            try {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                List<Address> addressList = geocoder.getFromLocation(lat, lon, 1);
+                if (addressList != null && addressList.size() > 0) {
+                    return addressList.get(0);
+                }
+            } catch (IOException ignored) {
+            }
+            return null;
+        }
+
+        public String getLocality() {
+            if (address == null) return "";
+            return address.getLocality();
+        }
+
+        public String getCountryName() {
+            if (address == null) return "";
+            return address.getCountryName();
+        }
+
+        public String getCountryCode() {
+            if (address == null) return "";
+            return address.getCountryCode();
+        }
+
+        public String getPostalCode() {
+            if (address == null) return "";
+            return address.getPostalCode();
+        }
     }
 }

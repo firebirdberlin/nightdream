@@ -1,24 +1,21 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.exifinterface.media.ExifInterface;
 
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.ExifViewBinding;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 public class ExifView {
-    private static String TAG = "ExifView";
-    private ExifViewBinding exifBinding;
+    private final static String TAG = "ExifView";
+    private final ExifViewBinding exifBinding;
 
     public ExifView(Context mContext) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -59,19 +56,12 @@ public class ExifView {
             if (tagGpsLatitude != null && tagGpsLongitude != null) {
                 String[] separatedLat = tagGpsLatitude.split(",");
                 String[] separatedLong = tagGpsLongitude.split(",");
+                double lat = convertArcMinToDegrees(separatedLat);
+                double lon = convertArcMinToDegrees(separatedLong);
 
-                Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
-
-                List<Address> addressList = geocoder.getFromLocation(
-                        convertArcMinToDegrees(separatedLat),
-                        convertArcMinToDegrees(separatedLong),
-                        1
-                );
-                if (addressList != null && addressList.size() > 0) {
-                    Address address = addressList.get(0);
-                    exifCity = address.getLocality();
-                    exifCountry = address.getCountryName();
-                }
+                Utility.GeoCoder geoCoder = new Utility.GeoCoder(mContext, lat, lon);
+                exifCity = geoCoder.getLocality();
+                exifCountry = geoCoder.getCountryName();
             }
 
             exifBinding.setExifDate(exifDate);
