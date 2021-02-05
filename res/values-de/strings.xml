@@ -242,7 +242,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_location_mode">Die Standortbestimmung ist zur Zeit deaktiviert.</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
-    <string name="pollen">Pollen</string>
     <string name="power_source">Stromquelle</string>
     <string name="preferences">Einstellungen</string>
     <string name="prev">vorheriges</string>
@@ -315,13 +314,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">Achtung: Es ist keine Stromquelle verbunden !</string>
     <string name="showBatteryWarningSummary">Beim Start eine Warnung anzeigen, falls keine Stromquelle angeschlossen ist.</string>
     <string name="showBatteryWarningTitle">Akkuwarnung</string>
+    <string name="showPollen">Pollenflug-Gefahrenindex anzeigen</string>
+    <string name="showPollenSummary">Datenquelle: Deutcher Wetterdienst</string>
     <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
     <string name="show_date">Datum anzeigen</string>
     <string name="show_divider">Trennlinie anzeigen</string>
-    <string name="showPollen">Pollen anzeigen</string>
-    <string name="show_temperature">Temperatur anzeigen</string>
     <string name="show_second_hand">Sekundenzeiger anzeigen</string>
     <string name="show_seconds">Sekunden anzeigen</string>
+    <string name="show_temperature">Temperatur anzeigen</string>
     <string name="show_weather">Wetter anzeigen</string>
     <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
     <string name="sleep_time_dialog_title">Sleep Timer</string>

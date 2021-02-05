@@ -134,6 +134,11 @@
             />
     </GridLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pollen_container"
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_mediacontrol_bar"

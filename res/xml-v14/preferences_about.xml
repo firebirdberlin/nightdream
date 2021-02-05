@@ -196,27 +196,6 @@ vi - Phong Nguyen"/>
                 android:data="http://www.radio-browser.info" />
         </Preference>
 
-        <!--<Preference-->
-        <!--app:icon="@drawable/ic_radio"-->
-        <!--app:key="about_dirble"-->
-        <!--app:summary="Dirble.com"-->
-        <!--app:title="@string/radio_stream">-->
-        <!--<intent-->
-        <!--app:action="android.intent.action.VIEW"-->
-        <!--app:data="http://www.dirble.com" />-->
-        <!--</Preference>-->
-
-        <Preference
-            app:iconSpaceReserved="false"
-            app:key="about_roboto"
-            app:summary="Flaticon"
-            app:title="Icons">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://www.flaticon.com" />
-        </Preference>
-
-
         <Preference
             app:iconSpaceReserved="false"
             app:key="about_roboto"
@@ -318,8 +297,93 @@ vi - Phong Nguyen"/>
                 android:data="https://www.needpix.com/photo/767841/seamless-tileable-texture-rust-rusty-old-fridge-rusted-oxidation-dilapidation"
                 />
         </Preference>
-
-
     </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:layout="@layout/preferences_category"
+        app:title="Pollen exposure icons">
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_ash"
+            app:key="about_flaticon_ash"
+            app:title="Icon made by Freepik from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/free-icon/american-mountain-ash_105468" />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_rye"
+            app:key="about_flaticon_rye"
+            app:title="Icon made by Freepik from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/free-icon/rye_99058" />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_alder"
+            app:key="about_flaticon_alder"
+            app:title="Icon made by Freepik from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/free-icon/alder_577440" />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_birch"
+            app:key="about_flaticon_birch"
+            app:title="Icon made by Freepik from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/free-icon/birch_577469" />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_ambrosia"
+            app:key="about_flaticon_ambrosia"
+            app:title="Icon made by Freepik from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/free-icon/leaf_859256"/>
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_grass"
+            app:key="about_flaticon_grass"
+            app:title="Icon made by Freepik from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/free-icon/grass_2950452"/>
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_hazelnut"
+            app:key="about_flaticon_hazelnut"
+            app:title="Icon made by Freepik from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/free-icon/hazelnut_2591373" />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_mugwort"
+            app:key="about_flaticon_mugwort"
+            app:title="Icon made by Smashicons from FlatIcon"
+            app:summary="flaticon.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.flaticon.com/de/kostenloses-icon/rosmarin_1237579"/>
+        </Preference>
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

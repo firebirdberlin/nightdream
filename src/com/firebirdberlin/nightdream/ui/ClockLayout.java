@@ -65,6 +65,7 @@ public class ClockLayout extends LinearLayout {
     private WeatherLayout weatherLayout = null;
     private FlexboxLayout notificationLayout = null;
     private ConstraintLayout mediaStyleLayout = null;
+    private ConstraintLayout pollenLayout = null;
     private View divider = null;
     private boolean showDivider = true;
     private boolean showWeather = false;
@@ -147,6 +148,7 @@ public class ClockLayout extends LinearLayout {
         analog_clock = findViewById(R.id.analog_clock);
         notificationLayout = findViewById(R.id.notificationbar);
         mediaStyleLayout = findViewById(R.id.notification_mediacontrol_bar);
+        pollenLayout = findViewById(R.id.pollen_container);
 
         if (calendarView != null) {
             calendarView.setTopbarVisible(true);
@@ -325,6 +327,13 @@ public class ClockLayout extends LinearLayout {
             }
         }
         toggleDivider();
+    }
+
+
+    public void showPollenExposure(boolean on) {
+        if (pollenLayout != null) {
+            pollenLayout.setVisibility((on) ? View.VISIBLE : GONE);
+        }
     }
 
     public void setShowNotifications(boolean on) {
@@ -650,19 +659,20 @@ public class ClockLayout extends LinearLayout {
 
     void updateDigitalClockCalendar(final Configuration config, boolean displayInWidget, int parentWidth, int parentHeight, float minFontSize) {
         setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        setMinimumWidth(7 * Utility.dpToPx(context, 20));
+        int minWidth = Utility.dpToPx(context, 200);
+        setMinimumWidth(minWidth);
         if (displayInWidget) {
-            updateDigitalClockInWidget(parentWidth, parentHeight);
             if (calendarView != null) {
                 // TODO unhide the calendarview
                 calendarView.setVisibility(GONE);
             }
+            updateDigitalClockInWidget(parentWidth, parentHeight);
         } else {
 
             float sizeFactor = 0.8f;
             if (clock != null) {
-                clock.setMaxWidth((int) (sizeFactor * parentWidth));
-                clock.setMaxFontSizesInSp(minFontSize, 60.f);
+                clock.setMaxWidth((int) (0.7f * minWidth));
+                clock.setMaxFontSizesInSp(minFontSize, 50);
             }
 
             float fontSize = -1;
@@ -745,6 +755,7 @@ public class ClockLayout extends LinearLayout {
         int additionalHeight = 0;
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? Utility.dpToPx(context, 24.f) : 0;
         additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? getHeightOf(mediaStyleLayout) : 0;
+        additionalHeight += pollenLayout.getVisibility() == VISIBLE ? pollenLayout.getHeight() : 0;
 
         int width = mediaStyleLayout.getVisibility() == VISIBLE ? LayoutParams.WRAP_CONTENT : widgetSize;
         setSize(width, widgetSize + additionalHeight);
@@ -821,6 +832,7 @@ public class ClockLayout extends LinearLayout {
 
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? getHeightOf(notificationLayout) : 0;
         additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? getHeightOf(mediaStyleLayout) : 0;
+        additionalHeight += pollenLayout.getVisibility() == VISIBLE ? pollenLayout.getHeight() : 0;
         setSize(LinearLayout.LayoutParams.WRAP_CONTENT, widgetSize + additionalHeight);
 
         int measuredHeight = Utility.getHeightOfView(this);
@@ -884,6 +896,7 @@ public class ClockLayout extends LinearLayout {
     }
 
     public void update(WeatherEntry entry) {
+        Log.i(TAG, "update(WeatherEntry) " + entry.cityName);
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null) {
                 layout.update(entry);

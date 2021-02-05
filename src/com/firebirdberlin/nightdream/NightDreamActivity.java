@@ -904,7 +904,8 @@ public class NightDreamActivity extends BillingHelperActivity
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
             if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
-                mySettings = new Settings(context);
+                // #TODO can this be deleted ?
+                //mySettings = new Settings(context);
             } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)
                     || Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setupRadioStreamUI();

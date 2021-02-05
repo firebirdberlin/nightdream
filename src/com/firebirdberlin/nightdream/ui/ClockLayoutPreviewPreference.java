@@ -130,6 +130,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setWeatherLocation(false);
         clockLayout.showWeather(settings.showWeather);
         clockLayout.setShowNotifications(false);
+        clockLayout.showPollenExposure(false);
 
         WeatherEntry entry = getWeatherEntry(settings);
         clockLayout.update(entry);
