@@ -359,7 +359,8 @@ public class Settings {
     }
 
     public void reload() {
-        AlarmToneUri = settings.getString("AlarmToneUri",
+        AlarmToneUri = settings.getString(
+                "AlarmToneUri",
                 android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString()
         );
         AlarmToneName = settings.getString("AlarmToneName", "");

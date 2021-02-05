@@ -60,7 +60,7 @@
         app:iconSpaceReserved="false"
         app:defaultValue="false"
         app:key="showPollen"
-        app:summary="Powered by DWD - Deutscher Wetterdienst"
+        app:summary="@string/showPollenSummary"
         app:dependency="showWeather"
         app:title="@string/showPollen" />
 

@@ -4,13 +4,13 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="model" type="com.firebirdberlin.nightdream.ui.PollenLayout" />
+        <variable name="model" type="com.firebirdberlin.nightdream.ui.PollenExposureLayout" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/pollen_control"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="24dp"
         app:flexDirection="row">
 
         <FrameLayout
