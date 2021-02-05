@@ -175,6 +175,27 @@ Wetterdaten werden möglicherweise aus mehreren Gründen nicht angezeigt.
      oder hohe Genauigkeit)
 * Das Netzwerk ist möglicherweise nicht verbunden. Überprüfen Sie Ihre Netzwerkverbindung.
 
+### Pollenvorhersage
+
+Die Pollenvorhersage ist nur in Deutschland verfügbar.
+
+Symbol                          | Bedeutung
+--------------------------------|-----------------------
+![Hasel](hazelnut.svg)          | Hasel
+![Gräser](grass.svg)            | Gräser
+![Ambrosia](ambrosia.svg)       | Ambrosia
+![Birke](birch.svg)             | Birke
+![Esche](ash.svg)               | Esche
+![Beifuss](mugwort.svg)         | Beifuss
+![Erle](alder.svg)              | Erle
+![Roggen](rye.svg)              | Roggen
+
+Der Gefahrenindex wird über den Farbwert dargestellt, wobei grau die niedrigste Belastung und 
+rot die höchste Belastung darstellt.
+
+![Farbwert](pollen-color-index.png)
+
+
 ## Web Radio
 
 ### So spielen Sie einen Radiostream ab
