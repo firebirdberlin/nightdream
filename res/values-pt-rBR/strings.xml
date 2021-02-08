@@ -203,7 +203,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferências</string>
     <string name="prev">Anterior</string>
     <string name="preview">Exemplo</string>
-<string name="product_description_weather">O upgrade inclui
+    <string name="product_description_weather">O upgrade inclui
 \n- linha de informação meteorológica mostrada abaixo do relógio
 \n- previsão meteorológica de 5 dias
 \n- mais estilos de relógio</string>

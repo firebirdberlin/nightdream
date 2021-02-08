@@ -29,10 +29,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Añadir nueva fuente</string>
     <string name="alarm">Alarma</string>
     <string name="alarmFadeIn">Volumen progresivo</string>
+    <string name="alarmFadeInDurationSeconds">Desvanecer en</string>
     <string name="alarmStartDate">Siguiente alarma en</string>
     <string name="alarmStartsFrom">Inicio alarma</string>
     <string name="alarmUpcoming">Próxima alarma</string>
     <string name="alarmVolume">Volumen de la alarma</string>
+    <string name="alarmVolumeReductionPercent">Bajar volumen en</string>
     <string name="allow_screen_off_summary">Apagar la pantalla durante la noche.</string>
     <string name="allow_screen_off">Apagar pantalla</string>
     <string name="always_on">Siempre encendido</string>
@@ -50,13 +52,29 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Hora de finalización</string>
     <string name="autostart_timerange_label_start">Hora de inicio</string>
     <string name="background">Fondo de pantalla</string>
+    <string name="background_zoomin">Animación de Zoom</string>
+    <string name="background_zoomin_summary">Amplíe automáticamente la imagen de fondo.</string>
+    <string name="background_fadein">Animación de Fundido</string>
+    <string name="background_fadein_summary">Fundido cruzado entre imágenes de fondo.</string>
+    <string name="background_movein">Animación de traducción</string>
+    <string name="background_movein_direction">Deslice la siguiente imagen de fondo en la pantalla desde</string>
+    <string name="background_movein_top">arriba</string>
+    <string name="background_movein_right">derecha</string>
+    <string name="background_movein_bottom">abajo</string>
+    <string name="background_movein_left">izquierda</string>
     <string name="background_auto_accent_color">Selección automática de color</string>
     <string name="background_auto_accent_summary">Seleccionar automáticamente un color de resalte adecuado</string>
     <string name="background_black">Negro</string>
+    <string name="background_exif">Mostrar información EXIF</string>
+    <string name="background_exif_summary">Mostrar información EXIF para la imagen de fondo actual</string>
     <string name="background_gradient">Gradiente</string>
     <string name="background_image">Imagen</string>
     <string name="background_image_select">Seleccionar una imagen</string>
     <string name="background_slideshow">Presentación de diapositivas</string>
+    <string name="background_image_duration">Cambiar la imagen cada</string>
+    <string name="seconds_60">60 segundos</string>
+    <string name="seconds_30">30 segundos</string>
+    <string name="seconds_15">15 segundos</string>
     <string name="backgroundServiceDialogTitle">Detener servicio en segundo plano</string>
     <string name="backgroundServiceDialogMessage">La detención del servicio en segundo plano deshabilitará el inicio automático y el modo de espera, así como la predicción de la batería. ¿Proceder?</string>
     <string name="backgroundServiceDialogMessageWidget">No es posible detener el servicio en segundo plano mientras está activo el widget. Retire los widgets y pruebe de nuevo.</string>
@@ -88,6 +106,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_analog">Analógico</string>
     <string name="clock_layout_calendar">Reloj digital con calendario</string>
     <string name="clock_layout_digital">Digital</string>
+    <string name="clock_layout_digital2">reloj digital con grandes iconos meteorológicos</string>
     <string name="clock_layout_elegant_analog">Relog analógico elegante</string>
     <string name="clock_layout_digit_analog">Reloj analógico con números</string>
     <string name="clock_layout_digital_flip">Voltear los dígitos del reloj</string>
@@ -112,6 +131,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_message_thank_you">¡Muchas gracias!</string>
     <string name="dialog_title_thank_you">Gracias</string>
     <string name="digit_emphasize_quarters">Resaltar los cuartos</string>
+    <string name="directory_background_image_select">Selecciona un directorio</string>
     <string name="decoration">Decoración</string>
     <string name="decoration_glow_effect">Efecto de brillo</string>
     <string name="decoration_style_copper">Cobre</string>
@@ -120,12 +140,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Minutero</string>
     <string name="decoration_style_labels">Números</string>
     <string name="decoration_style_rust">Óxido</string>
+    <string name="decoration_weather_icon_size">Tamaño de icono Meteorológico</string>
     <string name="donate">Donar</string>
     <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
     <string name="doubleTapToFinishTitle">Doble pulsación para salir</string>
     <string name="gift_for_donors">Obsequio para donantes</string>
     <string name="flashlight">Linterna</string>
     <string name="forecast">Previsión para 5 días</string>
+    <string name="frequently_asked_questions">preguntas y respuestas frecuentes</string>
     <string name="hand_shape_arc">Arco</string>
     <string name="hand_shape_bar">Barra</string>
     <string name="hand_shape_triangle">Triángulo</string>
@@ -175,6 +197,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_services">Notificar servicios en ejecución</string>
     <string name="notification_grouping_title">Agrupar notificaciones similares</string>
     <string name="notification_grouping_summary">Agrupar notificaciones de la misma aplicación usando el mismo icono</string>
+    <string name="notification_show_mediastyle_summary">Mostrar controles del reproductor multimedia</string>
+    <string name="notification_show_mediastyle_title">Controles Multimedia</string>
     <string name="notification_lowest_importance">Prioridad es mayor o igual que</string>
     <string name="notification_importance_min">Prioridad mínima</string>
     <string name="notification_importance_low">Prioridad baja</string>
@@ -185,6 +209,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notificationsInStatusBarTitle">Barra de estado</string>
     <string name="notificationsInStatusBarSummary">Mostrar notificaciones en la barra de estado si está activa, de otro modo, añadir una línea.</string>
     <string name="notificationListenerService">Servicio de atención a notificaciones</string>
+    <string name="showNotifications">Mostrar notificaciones</string>
+    <string name="showNotificationsAccessGranted">Acceso garantizado</string>
+    <string name="showNotificationsAccessNotGranted">Acceso no garantizado!</string>
+    <string name="showNotificationsAlertText">Se debe otorgar acceso a notificaciones para mostrarlas.</string>
+    <string name="notifications_options">Pociones de notificación</string>
     <string name="numbers">Números</string>
     <string name="numberStyleArabic">Arábigos</string>
     <string name="numberStyleRoman">Romanos</string>
@@ -205,7 +234,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferencias</string>
     <string name="prev">anterior</string>
     <string name="preview">Vista previa</string>
-<string name="product_description_weather">Una actualización a versión pro incluye:
+    <string name="product_description_weather">Una actualización a versión pro incluye:
 \n- Una linea de clima bajo el reloj
 \n- pronóstico de clima para 5 días
 \n- Modos de reloj adicionales </string>
@@ -243,10 +272,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_desc">Elige una aplicación para recomendarnos.</string>
     <string name="recommend_app_subject">Te recomiendo esta aplicación de un reloj de noche</string>
     <string name="recommend">Recomienda la aplicación</string>
+    <string name="export_preferences">Exportar información de la app</string>
     <string name="remaining">Restante</string>
     <string name="repeat">Repetir</string>
     <string name="reset_to_defaults">Reestablecer valores predeterminados</string>
+    <string name="screenProtection">Protector de pantalla</string>
+    <string name="screenProtectionNone">Ninguno</string>
     <string name="screenProtectionMove">Mover el reloj por la pantalla</string>
+    <string name="screenProtectionFade">Desvanecer el reloj</string>
     <string name="review_request">Por favor califica esta aplicación. ¡Gracias!</string>
     <string name="scheduledAutoStart">Encendido programado</string>
     <string name="scheduledAutoStartChargerRequired">Sólo durante la carga</string>
@@ -269,6 +302,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_date">Mostrar fecha</string>
     <string name="show_divider">Mostrar línea divisoria</string>
     <string name="show_temperature">Mostrar temperatura</string>
+    <string name="show_second_hand">mostrar segundero</string>
+    <string name="show_seconds">Mostrar segundos</string>
     <string name="show_weather">Mostrar clima local</string>
     <string name="show_wind_speed">Velocidad del viento</string>
     <string name="slideshow_center_crop">Recortar bordes</string>
@@ -278,6 +313,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Tiempo de desconexión</string>
     <string name="snoozeTime">Tiempo de aplazamiento</string>
     <string name="snoozeAfter">Autoaplazar despues de</string>
+    <string name="speakTime">Son las</string>
+    <string name="speakTimeSummary">Decir la hora actual en una pulsación larga de la pantalla</string>
+    <string name="speakTimeTitle">Decir la hora actual</string>
     <string name="speedUnit">Unidad de velocidad del viento</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">con pantalla encendida</string>
     <string name="standbyEnabledWhileDisconnectedSummary">¡Esta característica puede descargar tu batería rápidamente!</string>

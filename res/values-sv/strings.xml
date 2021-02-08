@@ -38,9 +38,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off_summary">Släck skärm på natten.</string>
     <string name="allow_screen_off">Släck skärm</string>
     <string name="always_on">Alltid på</string>
-    <string name="alwaysOnBatteryLevel">Batterinivå här ovan</string>
+    <string name="alwaysOnBatteryLevel">Batterinivå är över</string>
     <string name="alwaysOnStartWithLockedUI">Lås inställningar</string>
-    <string name="alwaysOnStartWithLockedUIDesc">När appen startas, lås automatiskt inställningar. Långt tryck på ikon för att låsa upp.</string>
+    <string name="alwaysOnStartWithLockedUIDesc">Lås automatiskt inställningar när appen starts. Långt tryck på ikon för att låsa upp.</string>
     <string name="ambient_noise">Känn av bakgrundsljud</string>
     <string name="ambient_noise_summary">Ska bakgrundsljud förhindra att nattklocka aktiveras?</string>
     <string name="appearance">Utseende</string>
@@ -81,7 +81,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceNotificationText">Bakgrundstjänst är aktiv.</string>
     <string name="backgroundServiceNotificationTextLocation">Platsinformation uppdateras.</string>
     <string name="backgroundServiceNotificationTextNightMode">Nattlägestjänst är aktiv.</string>
-    <string name="batteryTimeoutDescription">Tid kvar av batterikörning</string>
+    <string name="batteryTimeoutDescription">På batteri timeout</string>
     <string name="batteryTimeoutNever">Aldrig</string>
     <string name="batteryTimeout1min">1 minut</string>
     <string name="batteryTimeout2min">2 minuter</string>
@@ -96,10 +96,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="buy">Köp</string>
     <string name="buy_upgrade_summary">Uppgradera till pro-version nu.</string>
     <string name="category_handle_power">...och när enheten är ansluten till</string>
-    <string name="category_handle_power_autostart_time">Starta inom tidsram</string>
+    <string name="category_handle_power_autostart_time">Starta inom angiven tid</string>
     <string name="category_night_mode_display_management">Displayhantering</string>
     <string name="choose_alarm_sound">Alarmsignal</string>
-    <string name="choose_primary_color">Accentfärg</string>
+    <string name="choose_primary_color">Primär färg</string>
     <string name="choose_secondary_color">Textfärg</string>
     <string name="clear">rensa</string>
     <string name="clock_hands">Visare</string>
@@ -110,12 +110,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_elegant_analog">elegant analog klocka</string>
     <string name="clock_layout_digit_analog">analog klocka med siffror</string>
     <string name="clock_layout_digital_flip">digital flipp-klocka</string>
-    <string name="clock_layout">Layout</string>
+    <string name="clock_layout">Utseende</string>
     <string name="clock_layout_modern_analog">modern analog klocka</string>
     <string name="clock_layout_mirror_text">Spegelvänd text</string>
     <string name="colors">Färger</string>
     <string name="confirm_reset_question">Vill du verkligen återställa inställningarna?</string>
-    <string name="confirm_reset_question_layout">Vill du verkligen återställa utséende till orginal?</string>
+    <string name="confirm_reset_question_layout">Vill du verkligen återställa utseende till orginal?</string>
     <string name="confirm_reset">Återställ</string>
     <string name="contribute">Bidra</string>
     <string name="contribute_beta_channel">Erhåll betaversioner</string>
@@ -133,7 +133,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="digit_emphasize_quarters">Förstärk siffror varje kvart</string>
     <string name="directory_background_image_select">Välj en katalog</string>
     <string name="decoration">Dekoration</string>
-    <string name="decoration_glow_effect">Ljuseffekt</string>
+    <string name="decoration_glow_effect">Glödande ljuseffekt</string>
     <string name="decoration_style_copper">Koppar</string>
     <string name="decoration_style_gold">Guld</string>
     <string name="decoration_style_none">Ingen</string>
@@ -158,7 +158,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_desk">Skrivbordsdocka</string>
     <string name="handle_power_disconnection">Stoppa automatiskt</string>
     <string name="handle_power_disconnection_summary">Stäng av appen när strömkällan kopplas från.</string>
-    <string name="handle_power_disconnection_at_time_range_end">Vid slutet av angiven tid för autostart</string>
+    <string name="handle_power_disconnection_at_time_range_end">Vid slutet av angiven tid</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">Trådlös laddare</string>
     <string name="hide_background_image_in_night_mode">Dölj</string>
@@ -169,14 +169,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="location_time">lokal tid</string>
     <string name="manage_permissions">hantera rättigheter</string>
     <string name="maxBrightness">Högsta ljusstyrka</string>
-    <string name="maxBrightnessBattery">Högsta ljusstyrka på batteri</string>
+    <string name="maxBrightnessBattery">Högsta ljusstyrka vid batteridrift</string>
     <string name="message_mobile_data_connection_confirmation">Du är ansluten till ett mobilt nätverk, vill du streama radio?</string>
     <string name="message_mobile_data_connection">Mobilt nätverk anslutet</string>
     <string name="message_no_data_connection">Ingen datauppkoppling</string>
     <string name="message_stop_alarm_long_press">Långt tryck för att stänga alarm</string>
     <string name="minBrightness">Lägsta ljusstyrka</string>
     <string name="minute">minut</string>
-    <string name="mute_ringer">Tysta ringning</string>
+    <string name="mute_ringer">Ingen ringsignal</string>
     <string name="next">Nästa</string>
     <string name="night_mode_activation_auto">automatisk</string>
     <string name="night_mode_activation_manual">manuell</string>
@@ -199,7 +199,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_grouping_summary">Gruppera meddelanden tillhörande samma app som visar samma ikon.</string>
     <string name="notification_show_mediastyle_summary">Visa kontroller för mediaspelare</string>
     <string name="notification_show_mediastyle_title">Kontroller för mediaspelare</string>
-    <string name="notification_lowest_importance">Är viktigare eller lika viktig som</string>
+    <string name="notification_lowest_importance">Viktighet för meddelanden är högre eller lika som</string>
     <string name="notification_importance_min">lägsta</string>
     <string name="notification_importance_low">låg</string>
     <string name="notification_importance_default">förvald</string>
@@ -207,11 +207,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_importance_max">högsta</string>
     <string name="notifications">Meddelanden</string>
     <string name="notificationsInStatusBarTitle">Statusrad</string>
-    <string name="notificationsInStatusBarSummary">Visa meddelande på statusraden vid aktivering. Annars lägg till en extra rad.</string>
+    <string name="notificationsInStatusBarSummary">Visa meddelande på statusraden om aktiverat. Annars lägg till extra rad.</string>
     <string name="notificationListenerService">Tjänst för meddelande</string>
     <string name="showNotifications">Visa meddelande</string>
     <string name="showNotificationsAccessGranted">Tillträde beviljat</string>
-    <string name="showNotificationsAccessNotGranted">Tillträde beviljas ej!</string>
+    <string name="showNotificationsAccessNotGranted">Tillträde ej beviljat!</string>
     <string name="showNotificationsAlertText">Tillträde för meddelanden måste beviljas för att kunna visa meddelanden.</string>
     <string name="notifications_options">Meddelande alternativ</string>
     <string name="numbers">Siffror</string>
@@ -234,7 +234,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Förvalda</string>
     <string name="prev">Föregående</string>
     <string name="preview">Förhandsgranskning</string>
-<string name="product_description_weather">En uppgradering inkluderar\n\n-Visning av väderinformation under klockan\n-En 5 dagars väderprognos\n-Fler bakgrunder för klockan</string>
+    <string name="product_description_weather">En uppgradering inkluderar
+\n
+\n-Visning av väderinformation under klockan
+\n-En 5 dagars väderprognos
+\n-Fler bakgrunder för klockan</string>
     <string name="product_name_actions">Alltid på tillägg</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Fullständig version</string>
@@ -266,23 +270,23 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="reactivate_on_ambient_light_value">Belysningsgräns</string>
     <string name="reactivate_on_ambient_light_value_summary">Skärmen återaktiveras om belysningsgränsen överskrids.</string>
     <string name="reactivate_screen_on_noise">Väck vid bakgrundsljud.</string>
-    <string name="recommend_app_desc">Välj app att dela rekommendation i.</string>
+    <string name="recommend_app_desc">Välj app för att dela din rekommendation.</string>
     <string name="recommend_app_subject">Jag rekommenderar den här nattklocksappen till dig.</string>
     <string name="recommend">Rekommendera app</string>
     <string name="export_preferences">Exportera appens inställningar</string>
     <string name="remaining">återstående.</string>
     <string name="repeat">Upprepa</string>
     <string name="reset_to_defaults">Återställ grundinställningar</string>
-    <string name="screenProtection">Inbränningsskydd för skärm</string>
+    <string name="screenProtection">Skydd för skärminbränning</string>
     <string name="screenProtectionNone">Inget</string>
     <string name="screenProtectionMove">Flytta klockan</string>
     <string name="screenProtectionFade">Variera klockans ljus</string>
     <string name="review_request">Var vänlig att betygsätta den här appen. Tack!</string>
-    <string name="scheduledAutoStart">Schemalägg automatisk start</string>
+    <string name="scheduledAutoStart">Schemalagd automatisk start</string>
     <string name="scheduledAutoStartChargerRequired">bara när laddaren är ansluten</string>
-    <string name="scheduledAutoStartEnabledDesc">Schemalägg automatisk start till klockslag</string>
+    <string name="scheduledAutoStartEnabledDesc">Schemalägg automatisk start vid specifik tidpunkt.</string>
     <string name="scheduledAutoStartEnabledTitle">Schemalägg automatisk start</string>
-    <string name="scheduledAutoStartTimeRange">tid från/till</string>
+    <string name="scheduledAutoStartTimeRange">angiven tid</string>
     <string name="screen_orientation_automatic">automatisk</string>
     <string name="screen_orientation_landscape">landskap</string>
     <string name="screen_orientation_portrait">porträtt</string>
@@ -297,7 +301,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">Varning: Ingen strömkälla är ansluten</string>
     <string name="show_apparent_temperature">Inkludera temperatur</string>
     <string name="show_date">Visa datum</string>
-    <string name="show_divider">Visa delning</string>
+    <string name="show_divider">Visa delare</string>
     <string name="show_temperature">Visa temperatur</string>
     <string name="show_second_hand">Visa sekundvisare</string>
     <string name="show_seconds">Visa sekunder</string>
@@ -314,9 +318,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="speakTimeSummary">Säger klockslag vid långt tryck på skärmen</string>
     <string name="speakTimeTitle">Säg nuvarande klockslag</string>
     <string name="speedUnit">Enhet för vindhastighet</string>
-    <string name="standbyEnabledWhileDisconnectedScreepUpTitle">När skärmen är aktiv</string>
+    <string name="standbyEnabledWhileDisconnectedScreepUpTitle">När skärmen är påslagen</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Denna funktion förbrukar mycket batteritid!</string>
-    <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">Inom tidsram</string>
+    <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">Inom angiven tid</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Vänteläge vid urladdning.</string>
     <string name="style">Stil</string>
     <string name="temperatureUnit">Temperaturenhet</string>
@@ -350,6 +354,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">Sökningsplats</string>
     <string name="weather_current_location">Innevarande plats</string>
     <string name="weather_info_title">Information</string>
-    <string name="weekdays">Veckodag</string>
+    <string name="weekdays">Veckodagar</string>
     <string name="width">Bredd</string>
 </resources>
