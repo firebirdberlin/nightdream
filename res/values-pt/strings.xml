@@ -209,8 +209,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">preferências</string>
     <string name="prev">anterior</string>
     <string name="preview">Exemplo</string>
-<string name="product_description_weather">
-\nUma atualização inclui:
+    <string name="product_description_weather">Uma atualização inclui:
 \n-Uma linha do estado do tempo mostrada abaixo do relógio;
 \n-Previsão do tempo para 5 dias;
 \n-Mais mostradores de relógio.l</string>
