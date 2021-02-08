@@ -94,17 +94,13 @@ public class NightDreamUI {
     private FrameLayout mainFrame;
     private Drawable bgshape = colorBlack;
     private AlarmClock alarmClock;
-
     private ConstraintLayout parentLayout;
     private ExifView exifView;
     private ImageView[] background_images = new ImageView[2];
     private int background_image_active = 0;
-
     private ArrayList<File> files;
-
     private Bitmap preloadBackgroundImage;
     private File preloadBackgroundImageFile;
-
     private ImageView menuIcon;
     private ImageView nightModeIcon;
     private ImageView radioIcon;
@@ -224,12 +220,6 @@ public class NightDreamUI {
             postBackgroundImageChange();
         }
     };
-    private void postBackgroundImageChange() {
-        long delay = Utility.millisUntil(
-                15000 * settings.backgroundImageDuration, 10000
-        ) - 750;
-        postDelayed(backgroundChange, delay);
-    }
     private Runnable fadeClock = new Runnable() {
         @Override
         public void run() {
@@ -244,7 +234,8 @@ public class NightDreamUI {
 
                 animationSet.setAnimationListener(new Animation.AnimationListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {}
+                    public void onAnimationStart(Animation animation) {
+                    }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
@@ -256,19 +247,14 @@ public class NightDreamUI {
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {}
+                    public void onAnimationRepeat(Animation animation) {
+                    }
                 });
                 clockLayoutContainer.startAnimation(animationSet);
                 postFadeAnimation();
             }
         }
     };
-
-    private void postFadeAnimation() {
-        long delay = Utility.millisUntil(30000, 10000) - 2000;
-        postDelayed(fadeClock, delay);
-    }
-
     // move the clock randomly around
     private Runnable moveAround = new Runnable() {
         @Override
@@ -337,6 +323,7 @@ public class NightDreamUI {
             showAlarmClock();
 
             clockLayout.postDelayed(zoomIn, 500);
+
         }
     };
     private boolean shallMoveClock = false;
@@ -465,7 +452,6 @@ public class NightDreamUI {
             return false;
         }
     };
-
     @SuppressLint("ClickableViewAccessibility")
     public NightDreamUI(final Context context, Window window) {
         mContext = context;
@@ -481,6 +467,7 @@ public class NightDreamUI {
         clockLayout = rootView.findViewById(R.id.clockLayout);
         clockLayoutContainer = rootView.findViewById(R.id.clockLayoutContainer);
         exifLayoutContainer = rootView.findViewById(R.id.containerExifView);
+
         mainFrame = rootView.findViewById(R.id.main_frame);
         menuIcon = rootView.findViewById(R.id.burger_icon);
         nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
@@ -532,6 +519,18 @@ public class NightDreamUI {
 
         checkForReviewRequest();
         clockLayoutContainer.setClockLayout(clockLayout);
+    }
+
+    private void postBackgroundImageChange() {
+        long delay = Utility.millisUntil(
+                15000 * settings.backgroundImageDuration, 10000
+        ) - 750;
+        postDelayed(backgroundChange, delay);
+    }
+
+    private void postFadeAnimation() {
+        long delay = Utility.millisUntil(30000, 10000) - 2000;
+        postDelayed(fadeClock, delay);
     }
 
     private void enableMoveClock() {
@@ -648,8 +647,8 @@ public class NightDreamUI {
     }
 
     private void updateWeatherData() {
-        Log.i(TAG, "updateWeatherData()");
         if (!settings.showWeather) return;
+        Log.i(TAG, "updateWeatherData() 2");
 
         DownloadWeatherService.start(mContext);
 
@@ -657,6 +656,19 @@ public class NightDreamUI {
         WeatherEntry entry = settings.weatherEntry;
         if (!entry.isValid()) {
             clockLayout.clearWeather();
+        }
+    }
+
+    private void updatePollenExposure(WeatherEntry entry) {
+        if (settings.showWeather && settings.showPollen) {
+            ConstraintLayout pollenContainer = clockLayout.findViewById(R.id.pollen_container);
+
+            if (pollenContainer != null) {
+                Log.e(TAG, "pollenCount " + entry.cityName);
+                new PollenExposureUpdate(mContext, pollenContainer).execute(entry);
+            } else {
+                Log.e(TAG, "pollenContainer not found");
+            }
         }
     }
 
@@ -679,10 +691,12 @@ public class NightDreamUI {
         clockLayout.showDate(settings.showDate);
         clockLayout.showWeather(settings.showWeather);
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
+        clockLayout.showPollenExposure(settings.showWeather && settings.showPollen);
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
         clockLayout.update(settings.weatherEntry);
+        updatePollenExposure(settings.weatherEntry);
         setClockPosition(config);
     }
 
@@ -926,10 +940,12 @@ public class NightDreamUI {
                 }
 
                 @Override
-                public void onAnimationEnd(Animation animation) {}
+                public void onAnimationEnd(Animation animation) {
+                }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {
+                }
             });
         }
 
@@ -1118,6 +1134,7 @@ public class NightDreamUI {
     }
 
     public void onPause() {
+        PollenExposureUpdate.cancelUpdate();
         Utility.unregisterEventBus(this);
         if (lightSensorEventListener != null) {
             lightSensorEventListener.unregister();
@@ -1171,7 +1188,7 @@ public class NightDreamUI {
         clockLayout.postDelayed(fixConfig, 200);
     }
 
-    private void postDelayed(Runnable runnable, long delayMillis){
+    private void postDelayed(Runnable runnable, long delayMillis) {
         handler.removeCallbacks(runnable);
         handler.postDelayed(runnable, delayMillis);
     }
@@ -1779,6 +1796,7 @@ public class NightDreamUI {
                 Log.v(TAG, "Weather data updated");
                 settings.weatherEntry = settings.getWeatherEntry();
                 clockLayout.update(settings.weatherEntry);
+                updatePollenExposure(settings.weatherEntry);
                 ClockWidgetProvider.updateAllWidgets(context);
             } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 showAlarmClock();

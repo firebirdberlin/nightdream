@@ -17,20 +17,24 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">A proposito</string>
+    <string name="action_change">Cambia</string>
     <string name="action_skip">Salta</string>
     <string name="action_snooze">Postponi sveglia</string>
     <string name="action_stop">fermarsi</string>
     <string name="activateDoNotDisturb">Attiva DnD</string>
+    <string name="activateDoNotDisturbAllowPriority">Rendi prioritaria</string>
     <string name="activateDoNotDisturbSummary">Attiva la modalità non disturbare quando l\'app è attiva</string>
     <string name="add_new_alarm">Aggiungi nuova sveglia</string>
     <string name="add_custom_alarm_tone">Aggiungi un tono di allarme personalizzato</string>
     <string name="add_custom_font">Aggiungi un tipo di carattere personalizzato</string>
     <string name="alarm">Sveglia</string>
     <string name="alarmFadeIn">Volume incrementale</string>
+    <string name="alarmFadeInDurationSeconds">Durata dissolvenza iniziale</string>
     <string name="alarmStartDate">Prossimo allarme attivo</string>
     <string name="alarmStartsFrom">A da partire</string>
     <string name="alarmUpcoming">Sveglia imminente</string>
     <string name="alarmVolume">Volume</string>
+    <string name="alarmVolumeReductionPercent">Riduci volume del</string>
     <string name="allow_screen_off_summary">Spegni lo schermo durante la notte</string>
     <string name="allow_screen_off">Spegni lo schermo</string>
     <string name="always_on">Sempre acceso</string>
@@ -48,10 +52,29 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Ora di arresto</string>
     <string name="autostart_timerange_label_start">Ora di avvio</string>
     <string name="background">Sfondo</string>
+    <string name="background_zoomin">Animazione zoom</string>
+    <string name="background_zoomin_summary">Zoom automatico su foto di sfondo</string>
+    <string name="background_fadein">Animazione a dissolvenza incrociata</string>
+    <string name="background_fadein_summary">Dissolvenza incrociata fra immagini di sfondo</string>
+    <string name="background_movein">Animazione movimento</string>
+    <string name="background_movein_direction">L\'immagine di sfondo successiva scorre da</string>
+    <string name="background_movein_top">Alto</string>
+    <string name="background_movein_right">Destra</string>
+    <string name="background_movein_bottom">Basso</string>
+    <string name="background_movein_left">Sinistra</string>
+    <string name="background_auto_accent_color">Selezione colore automatica</string>
+    <string name="background_auto_accent_summary">Seleziona automaticamente il colore più appropriato</string>
     <string name="background_black">Nero</string>
+    <string name="background_exif">Mostra informazioni EXIF</string>
+    <string name="background_exif_summary">Mostra informazioni EXIF per lo sfondo corrente</string>
     <string name="background_gradient">Sfumatura</string>
     <string name="background_image">Immagine</string>
     <string name="background_image_select">Seleziona una immagine</string>
+    <string name="background_slideshow">Presentazione</string>
+    <string name="background_image_duration">L\'immagine cambia ogni</string>
+    <string name="seconds_60">60 secondi</string>
+    <string name="seconds_30">30 secondi</string>
+    <string name="seconds_15">15 secondi</string>
     <string name="backgroundServiceDialogTitle">Ferma servizio in background</string>
     <string name="backgroundServiceDialogMessage">L\'interruzione del servizio in background disabiliterà la modalità di avvio automatico e standby, nonché la previsione della batteria. Procedere ?</string>
     <string name="backgroundServiceDialogMessageWidget">Impossibile fermare il servizio in background finché un widget è attivo nella home. Rimuovi i widget e riprova.</string>
@@ -83,6 +106,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_analog">Orologio analogico</string>
     <string name="clock_layout_calendar">Orologio digitale con calendario</string>
     <string name="clock_layout_digital">Orologio digitale</string>
+    <string name="clock_layout_digital2">Orologio digitale con icone meteo grandi</string>
     <string name="clock_layout_elegant_analog">Orologio analogico elegante</string>
     <string name="clock_layout_digit_analog">Orologio analogico con numeri</string>
     <string name="clock_layout_digital_flip">Specchia l\'orologio digitale</string>
@@ -107,6 +131,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_message_thank_you">Grazie mille!</string>
     <string name="dialog_title_thank_you">Grazie</string>
     <string name="digit_emphasize_quarters">Evidenziare  quarti</string>
+    <string name="directory_background_image_select">Scegli una cartella d\'origine</string>
     <string name="decoration">Decorazioni</string>
     <string name="decoration_glow_effect">Effetto splendore</string>
     <string name="decoration_style_copper">Rame</string>
@@ -115,12 +140,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Lancetta minuti</string>
     <string name="decoration_style_labels">Numeri</string>
     <string name="decoration_style_rust">Ruggine</string>
+    <string name="decoration_weather_icon_size">Dimensioni icone meteo</string>
     <string name="donate">Dona</string>
     <string name="doubleTapToFinishSummary">Chiudi l\'app facendo doppio tap sullo schermo</string>
     <string name="doubleTapToFinishTitle">Doppio tap per terminare</string>
     <string name="gift_for_donors">Regalo per la tua donazione</string>
     <string name="flashlight">Torcia elettrica</string>
     <string name="forecast">Previsioni meteo a 5 giorni</string>
+    <string name="frequently_asked_questions">Domanda frequenti</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Barra</string>
     <string name="hand_shape_triangle">Triangolo</string>
@@ -170,6 +197,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_services">Una notifica indica che l\'applicazione è in esecuzione</string>
     <string name="notification_grouping_title">Raggruppa notifiche simili</string>
     <string name="notification_grouping_summary">Raggruppa le notifiche dalle stesse app che mostrano la stessa icona.</string>
+    <string name="notification_show_mediastyle_summary">Mostra controlli multimediali</string>
+    <string name="notification_show_mediastyle_title">Controlli multimediali</string>
     <string name="notification_lowest_importance">L\'importanza è maggiore o uguale a</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">basso</string>
@@ -180,6 +209,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notificationsInStatusBarTitle">Barra di stato</string>
     <string name="notificationsInStatusBarSummary">Mostra le notifiche nella barra di stato se abilitato. Altrimenti aggiungi una riga aggiuntiva.</string>
     <string name="notificationListenerService">Servizio di ascolto delle notifiche</string>
+    <string name="showNotifications">Mostra notifiche</string>
+    <string name="showNotificationsAccessGranted">Permetti notifica</string>
+    <string name="showNotificationsAccessNotGranted">Non permettere notifica</string>
+    <string name="showNotificationsAlertText">L\'accesso alle notifiche deve essere permesso per mostrare le notifiche</string>
+    <string name="notifications_options">Opzioni di notifica</string>
     <string name="numbers">Numeri</string>
     <string name="numberStyleArabic">Arabico</string>
     <string name="numberStyleRoman">Romano</string>
@@ -193,12 +227,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="outer_circle_radius">Raggio cerchio esterno</string>
     <string name="outer_circle_width">Larghezza cerchio esterno</string>
     <string name="permission_request_autostart">L\'autorizzazione per la visualizzazione di overlay (avvio automatico) non è concessa. Per favore, concedi questo permesso!</string>
+    <string name="permission_request_location_mode">Il tipo di localizzazione attivo non permette di di identificare la località corrente</string>
     <string name="persistent_battery_value_while_charging">Livello batteria persistente</string>
     <string name="persistent_battery_value_while_charging_summary">Mostra lo stato della batteria durante il caricamento</string>
     <string name="power_source">alimentazione</string>
     <string name="preferences">Preferenze</string>
     <string name="prev">Precedente</string>
     <string name="preview">Anteprima</string>
+    <string name="product_description_weather">L\'aggiornamento include:
+\n
+\n- una linea del meteo attuale mostrata sotto l\'orologio
+\n- le previsioni dei 5 giorni successivi
+\n- più quadranti selezionabili</string>
     <string name="product_name_actions">Pacchetto sempre attivo</string>
     <string name="product_name_donation">Donazione</string>
     <string name="product_name_pro">Versione completa</string>
@@ -233,10 +273,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_desc">Scegli un\'app per condividere i tuoi consigli</string>
     <string name="recommend_app_subject">Vorrei raccomandati questo orologio notturno</string>
     <string name="recommend">App raccomandata</string>
+    <string name="export_preferences">Esporta le informazioni dalla APP</string>
     <string name="remaining">Residuo</string>
     <string name="repeat">Ripeti</string>
     <string name="reset_to_defaults">Reset ai valori predefiniti</string>
+    <string name="screenProtection">Protezione salvaschermo</string>
+    <string name="screenProtectionNone">Non attivo</string>
     <string name="screenProtectionMove">sposta l\'orologio</string>
+    <string name="screenProtectionFade">Dissolvenza orologio</string>
     <string name="review_request">valuta questa app.Grazie!</string>
     <string name="scheduledAutoStart">Pianifica l\'autostart</string>
     <string name="scheduledAutoStartChargerRequired">Solo quando carica</string>
@@ -255,13 +299,24 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Mostra un avviso all\'avvio quando non sei collegato alla rete elettrica</string>
     <string name="showBatteryWarningTitle">Allarme batteria</string>
     <string name="showBatteryWarningMessage">Attenzione: Nessuna fonte di alimentazione connessa!</string>
+    <string name="show_apparent_temperature">Mostra stima temperatura</string>
     <string name="show_date">Mostra data</string>
     <string name="show_divider">Mostrare divisine</string>
     <string name="show_temperature">Mostra temperatura</string>
+    <string name="show_second_hand">Mostra seconda mano</string>
+    <string name="show_seconds">Mostra i secondi</string>
     <string name="show_weather">Mostra meteo locale</string>
     <string name="show_wind_speed">Mostra velocità vento</string>
+    <string name="slideshow_center_crop">Smussa i bordi</string>
+    <string name="slideshow_center_inside">Aggiungi i bordi</string>
+    <string name="slideshow_center_animated">Animato</string>
+    <string name="slideshow_style">Stile</string>
     <string name="sleep_time_dialog_title">Timer spegnimento automatico</string>
     <string name="snoozeTime">Intervallo rinvio</string>
+    <string name="snoozeAfter">Posticipa automaticamente dopo</string>
+    <string name="speakTime">Sono le</string>
+    <string name="speakTimeSummary">Pronuncia l\'ora corrente premendo a lungo lo schermo</string>
+    <string name="speakTimeTitle">Pronuncia l\'ora corrente</string>
     <string name="speedUnit">Unità di misura del vento</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">Con lo schermo attivo</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Questa funzione scarica la batteria velocemente</string>
@@ -287,6 +342,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto leggero</string>
     <string name="typeface">carattere tipografico</string>
     <string name="uninstall">Disinstalla l\'applicazione</string>
+    <string name="upgrade_now">Aggiorna subito!</string>
     <string name="useAlarmSwipeGesture">Setta l\'allarme con uno swipe</string>
     <string name="useAlarmSwipeGestureSummary">Permette di impostare una nuova sveglia tirando dall\'angolo in basso a sinistra.</string>
     <string name="useDeviceLockDescription">La funzione di blocco schermo richiede privilegi amministrativi. Per disinstallare questa app per favore disabilitare questa funzione</string>
@@ -296,6 +352,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weatherProvider">Fornitore servizi meteo</string>
     <string name="weather_calculation_time">Tempo di calcolo previsioni meteo</string>
     <string name="weather_city_id_title">Ricerca posizione</string>
+    <string name="weather_current_location">Località corrente</string>
     <string name="weather_info_title">Informazioni</string>
     <string name="weekdays">Giorni della settimana</string>
     <string name="width">Larghezza</string>

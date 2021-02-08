@@ -58,11 +58,16 @@
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pollen_container"
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_mediacontrol_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="19">
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
