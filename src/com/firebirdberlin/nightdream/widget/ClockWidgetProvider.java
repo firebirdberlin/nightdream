@@ -87,6 +87,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
         clockLayout.showDate(showDate && settings.showDate);
         clockLayout.setShowNotifications(false);
+        clockLayout.showPollenExposure(false);
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
         if (settings.showWeather) {

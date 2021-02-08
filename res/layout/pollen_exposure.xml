@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable name="model" type="com.firebirdberlin.nightdream.ui.PollenExposureLayout" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/pollen_control"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:flexDirection="row">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/pollen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible">
+
+                <FrameLayout
+                    android:id="@+id/pollen_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/pollen_1"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:src="@{model.pollenImages.size() >= 1 ? model.pollenImages.get(0) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 1  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/pollen_2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:src="@{model.pollenImages.size() >= 2 ? model.pollenImages.get(1) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 2  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toStartOf="@+id/pollen_3"
+                            app:layout_constraintStart_toEndOf="@+id/pollen_1"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/pollen_3"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:src="@{model.pollenImages.size() >= 3 ? model.pollenImages.get(2) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 3  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toStartOf="@+id/pollen_4"
+                            app:layout_constraintStart_toEndOf="@+id/pollen_2"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/pollen_4"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:src="@{model.pollenImages.size() >= 4 ? model.pollenImages.get(3) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 4  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toStartOf="@+id/pollen_5"
+                            app:layout_constraintStart_toEndOf="@+id/pollen_3"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/pollen_5"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:src="@{model.pollenImages.size() >= 5 ? model.pollenImages.get(4) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 5  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toStartOf="@+id/pollen_6"
+                            app:layout_constraintStart_toEndOf="@+id/pollen_4"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/pollen_6"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:src="@{model.pollenImages.size() >= 6 ? model.pollenImages.get(5) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 6  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toStartOf="@+id/pollen_7"
+                            app:layout_constraintStart_toEndOf="@+id/pollen_5"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/pollen_7"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:src="@{model.pollenImages.size() >= 7 ? model.pollenImages.get(6) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 7  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toStartOf="@+id/pollen_8"
+                            app:layout_constraintStart_toEndOf="@+id/pollen_6"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/pollen_8"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginBottom="4dp"
+                            android:src="@{model.pollenImages.size() >= 8 ? model.pollenImages.get(7) : null}"
+                            android:visibility="@{model.pollenImages.size() >= 8  ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>
+

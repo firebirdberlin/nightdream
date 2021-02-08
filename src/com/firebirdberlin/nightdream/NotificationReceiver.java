@@ -26,8 +26,8 @@ import com.google.android.flexbox.FlexboxLayout;
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
     private int color;
-    private View contentView;
-    private NightDreamActivity activity;
+    private final View contentView;
+    private final NightDreamActivity activity;
 
     public NotificationReceiver(NightDreamActivity context) {
         Window window = context.getWindow();

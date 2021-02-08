@@ -131,6 +131,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_message_thank_you">Большое спасибо!</string>
     <string name="dialog_title_thank_you">Спасибо</string>
     <string name="digit_emphasize_quarters">Подчеркнуть четверть</string>
+    <string name="directory_background_image_select">Выбрать папку</string>
     <string name="decoration">Внешнее оформление</string>
     <string name="decoration_glow_effect">Эффект свечения</string>
     <string name="decoration_style_copper">Медь</string>
@@ -228,7 +229,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_location_mode">Включенный в данный момент режим определения местоположения не позволяет сканировать текущее местоположение.</string>
     <string name="persistent_battery_value_while_charging">Всегда отображать заряд</string>
     <string name="persistent_battery_value_while_charging_summary">Показывать статус батареи во время зарядки</string>
-    <string name="power_source">источник пита</string>
+    <string name="power_source">Источник питания</string>
     <string name="preferences">Предпочтения</string>
     <string name="prev">Предыдущее</string>
     <string name="preview">Предосмотр</string>
@@ -348,6 +349,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">Поиск местоположения</string>
     <string name="weather_current_location">Текущее местоположение</string>
     <string name="weather_info_title">Информация</string>
-    <string name="weekdays">будние дни</string>
+    <string name="weekdays">Дни недели</string>
     <string name="width">Ширина</string>
 </resources>

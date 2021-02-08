@@ -185,8 +185,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         </FrameLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>
-

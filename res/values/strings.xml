@@ -317,6 +317,8 @@ OR
     <string name="show_apparent_temperature">include apparent temperature</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
+    <string name="showPollen">Pollen risk index</string>
+    <string name="showPollenSummary">only available for German locations</string>
     <string name="show_temperature">Show temperature</string>
     <string name="show_second_hand">show second hand</string>
     <string name="show_seconds">Show seconds</string>
