@@ -315,7 +315,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Beim Start eine Warnung anzeigen, falls keine Stromquelle angeschlossen ist.</string>
     <string name="showBatteryWarningTitle">Akkuwarnung</string>
     <string name="showPollen">Pollenflug-Gefahrenindex anzeigen</string>
-    <string name="showPollenSummary">Datenquelle: Deutcher Wetterdienst</string>
+    <string name="showPollenSummary">Datenquelle: Deutscher Wetterdienst</string>
     <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
     <string name="show_date">Datum anzeigen</string>
     <string name="show_divider">Trennlinie anzeigen</string>
