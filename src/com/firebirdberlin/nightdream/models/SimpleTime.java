@@ -143,6 +143,12 @@ public class SimpleTime {
     public Calendar getCalendar(Calendar reference) {
         if (!isRecurring()) {
             Calendar cal = initCalendar(reference);
+            if (nextEventAfter != null) {
+                Calendar next = initCalendar(nextEventAfter);
+                if (next.after(cal)) {
+                    cal = next;
+                }
+            }
             if (cal.before(reference)) {
                 cal.add(Calendar.DATE, 1);
             }
@@ -172,8 +178,12 @@ public class SimpleTime {
     }
 
     private Calendar initCalendar(Calendar reference) {
+        return initCalendar(reference.getTimeInMillis());
+    }
+
+    private Calendar initCalendar(long reference) {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(reference.getTimeInMillis());
+        cal.setTimeInMillis(reference);
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, min);
         cal.set(Calendar.SECOND, 0);

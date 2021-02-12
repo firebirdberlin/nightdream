@@ -12,8 +12,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
@@ -25,7 +26,7 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AlarmNotificationService extends JobService {
-    private static String TAG = "AlarmNotificationService";
+    private static final String TAG = "AlarmNotifService";
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context, SimpleTime nextAlarmTime) {
@@ -34,7 +35,8 @@ public class AlarmNotificationService extends JobService {
         }
 
         ComponentName serviceComponent = new ComponentName(
-                context.getPackageName(), AlarmNotificationService.class.getName());
+                context.getPackageName(), AlarmNotificationService.class.getName()
+        );
         JobInfo.Builder builder = new JobInfo.Builder(Config.JOB_ID_ALARM_NOTIFICATION, serviceComponent);
         builder.setPersisted(true);
         builder.setRequiresCharging(false);
@@ -76,6 +78,18 @@ public class AlarmNotificationService extends JobService {
         jobScheduler.cancel(Config.JOB_ID_ALARM_NOTIFICATION);
     }
 
+    public static void cancelNotification(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        if (notificationManager != null) {
+            notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
+        }
+    }
+
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob");
@@ -102,14 +116,6 @@ public class AlarmNotificationService extends JobService {
         return false;
     }
 
-    public static void cancelNotification(Context context) {
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManager != null) {
-            notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
-        }
-    }
-
     private Notification buildNotification(Context context, SimpleTime nextAlarmTime) {
         Settings settings = new Settings(context);
         String timeFormatted = Utility.formatTime(
@@ -130,8 +136,9 @@ public class AlarmNotificationService extends JobService {
         Intent skipIntent = AlarmHandlerService.getSkipIntent(context, nextAlarmTime);
         PendingIntent pSkipIntent = PendingIntent.getService(
                 context, 0, skipIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action skipAction =
-                new NotificationCompat.Action.Builder(0, textActionSkip, pSkipIntent).build();
+        NotificationCompat.Action skipAction = new NotificationCompat.Action.Builder(
+                0, textActionSkip, pSkipIntent
+        ).build();
 
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
         bigStyle.bigText(timeFormatted);

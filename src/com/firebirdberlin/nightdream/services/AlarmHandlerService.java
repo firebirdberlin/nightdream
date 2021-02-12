@@ -165,9 +165,7 @@ public class AlarmHandlerService extends IntentService {
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmNotificationService.cancelNotification(this);
-        }
+        AlarmNotificationService.cancelNotification(this);
 
         if (reschedule) {
             SqliteIntentService.scheduleAlarm(this);

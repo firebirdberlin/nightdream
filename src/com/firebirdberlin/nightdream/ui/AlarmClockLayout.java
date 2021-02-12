@@ -344,24 +344,29 @@ public class AlarmClockLayout extends LinearLayout {
             toggleActive.setChecked(alarmClockEntry.isActive);
             switchActive.setChecked(alarmClockEntry.isActive);
 
+            String textWhen = "";
             if (alarmClockEntry.isRecurring()) {
-                String textWhen = alarmClockEntry.getWeekDaysAsString();
+                textWhen = alarmClockEntry.getWeekDaysAsString();
 
                 if (alarmClockEntry.nextEventAfter != null &&
                         alarmClockEntry.nextEventAfter > now) {
-                    // if the alarm is postponed by the user show the data of the next event
+                    // if the alarm is postponed by the user show the date of the next event
                     textWhen += String.format(
                             "\n%s %s",
                             context.getString(R.string.alarmStartsFrom),
                             Utility.formatTime(dateFormat, time)
                     );
                 }
-                textViewWhen.setText(textWhen);
+            } else if (alarmClockEntry.nextEventAfter != null && alarmClockEntry.nextEventAfter > now) {
+                // if the alarm is postponed by the user show the date of the next event
+                textWhen = String.format("%s", Utility.formatTime(dateFormat, time));
             } else if (isToday(time)) {
-                textViewWhen.setText(R.string.today);
+                textWhen = context.getString(R.string.today);
             } else if (isTomorrow(time)) {
-                textViewWhen.setText(R.string.tomorrow);
+                textWhen = context.getString(R.string.tomorrow);
             }
+
+            textViewWhen.setText(textWhen);
 
             checkBoxIsRepeating.setOnCheckedChangeListener(null);
             checkBoxIsRepeating.setChecked(alarmClockEntry.isRecurring());
