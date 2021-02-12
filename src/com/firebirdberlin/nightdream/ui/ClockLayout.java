@@ -502,10 +502,11 @@ public class ClockLayout extends LinearLayout {
     }
 
     void updateDigitalClock3(final boolean displayInWidget, int parentWidth) {
-        float maxWidth = 0.4f * parentWidth;
+        float maxWidth = displayInWidget ? 0.4f * parentWidth : 0.25f * parentWidth;
 
+        float sizeFactor = displayInWidget ? 1.f : 0.6f;
         setSize(
-                showWeather ? parentWidth : LayoutParams.WRAP_CONTENT,
+                showWeather ? (int) (sizeFactor * parentWidth) : LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
@@ -526,11 +527,11 @@ public class ClockLayout extends LinearLayout {
         Typeface typeface = clock.getTypeface();
         if (clock != null) {
             clock.setMaxWidth((int) maxWidth);
-            clock.setMaxFontSizesInSp(10.f, 100.f);
+            clock.setMaxFontSizesInSp(10.f, 50.f);
         }
         if (date != null) {
             date.setMaxWidth((int) maxWidth);
-            date.setMaxFontSizesInSp(10.f, 40.f);
+            date.setMaxFontSizesInSp(10.f, 20.f);
             date.setTypeface(typeface);
         }
 
@@ -564,7 +565,7 @@ public class ClockLayout extends LinearLayout {
             container.post(new Runnable() {
                 @Override
                 public void run() {
-                    setDividerHeight((int) (.85f * container.getHeight()));
+                    setDividerHeight((int) (.9f * container.getHeight()));
                 }
             });
         }
