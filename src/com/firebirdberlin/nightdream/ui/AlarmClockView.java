@@ -46,12 +46,12 @@ import static android.text.format.DateFormat.is24HourFormat;
 
 
 public class AlarmClockView extends View {
-    private static String TAG ="AlarmClockView";
+    private static final String TAG ="AlarmClockView";
     final private Handler handler = new Handler();
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
     SimpleTime time = null;
-    GestureDetector mGestureDetector = null;
+    GestureDetector mGestureDetector;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
     private boolean locked = false;
     private boolean FingerDown;
@@ -60,14 +60,13 @@ public class AlarmClockView extends View {
     private boolean useAlarmSwipeGesture = false;
     private boolean useSingleTap = true;
     private boolean useLongPress = false;
-    private Context ctx;
-    private int customcolor = Color.parseColor("#33B5E5");
-    private int customSecondaryColor = Color.parseColor("#C2C2C2");
-    private Paint paint = new Paint();
-    private Rect alarmTimeRect = new Rect(0, 0, 0, 0);
+    private final Context ctx;
+    private int customColor = Color.parseColor("#33B5E5");
+    private final Paint paint = new Paint();
+    private final Rect alarmTimeRect = new Rect(0, 0, 0, 0);
     private ColorFilter customColorFilter;
-    private HotCorner cornerLeft;
-    private HotCorner cornerRight;
+    private final HotCorner cornerLeft;
+    private final HotCorner cornerRight;
     private boolean blinkStateOn = false;
     Runnable blink = new Runnable() {
         public void run() {
@@ -157,15 +156,14 @@ public class AlarmClockView extends View {
         locked = on;
     }
 
-    public void setCustomColor(int primary, int secondary) {
-        customcolor = primary;
-        customSecondaryColor = secondary;
+    public void setCustomColor(int primary) {
+        customColor = primary;
         initColorFilters();
         invalidate();
     }
 
     private void initColorFilters() {
-        customColorFilter = new LightingColorFilter(customcolor, 1);
+        customColorFilter = new LightingColorFilter(customColor, 1);
     }
 
     public boolean isInteractive() {
@@ -318,7 +316,7 @@ public class AlarmClockView extends View {
         int h = getHeight();
 
         // touch zones
-        touch_zone_radius = (w < h) ? w : h;
+        touch_zone_radius = Math.min(w, h);
         quiet_zone_size = touch_zone_radius/4;
 
         if (showLeftCorner()) {
