@@ -68,7 +68,7 @@ public class AlarmClock extends RelativeLayout {
     public void setCustomColor(int primary, int secondary) {
         customSecondaryColor = secondary;
         initColorFilters();
-        alarmClockView.setCustomColor(primary, secondary);
+        alarmClockView.setCustomColor(primary);
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{
                         new int[]{android.R.attr.state_pressed},
@@ -85,8 +85,7 @@ public class AlarmClock extends RelativeLayout {
         ColorFilter customColorFilterImage = new PorterDuffColorFilter(
                 customSecondaryColor, PorterDuff.Mode.SRC_ATOP);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-                && alarmTimeTextView != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && alarmTimeTextView != null) {
             Drawable icon = getResources().getDrawable(R.drawable.ic_alarm_clock);
             icon = icon.mutate();
             icon.setColorFilter(customColorFilterImage);
