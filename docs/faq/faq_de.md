@@ -4,7 +4,6 @@
 
 [> english](faq_en.md)
 
-
 ## Wo finde ich Hilfe ?
 
 Wenn Ihre Frage hier nicht beantwortet wird, dann stellen Sie diese bitte auf
@@ -14,19 +13,59 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
 
 ## Inhaltsverzeichnis
 
- - [Werbung](#werbung)
- - [In-App Käufe](#in-app-käufe)
- - [Benutzeroberfläche](#benutzeroberfläche)
- - [Wetter](#wetter)
- - [Web Radio](#web-radio)
- - [Autostart](#autostart)
- - [Wecker](#wecker)
- - [Nachtmodus](#nachtmodus)
- - [Helligkeitseinstellungen](#helligkeitseinstellungen)
- - [Widget](#widget)
- - [Diashow](#diashow)
- - [Aktuelle Uhrzeit vorlesen](#aktuelle-uhrzeit-vorlesen)
- - [Benachrichtigungen](#benachrichtigungen)
+  * [Werbung](#werbung)
+     * [Wie kann ich die Werbung abschalten ?](#wie-kann-ich-die-werbung-abschalten-)
+  * [In-App Käufe](#in-app-käufe)
+     * [Welche Pakete kann ich kaufen ?](#welche-pakete-kann-ich-kaufen-)
+        * [Vollversion](#vollversion)
+        * [Wetter- und Designpaket](#wetter--und-designpaket)
+        * [Internetradio](#internetradio)
+        * [Fähigkeiten](#fähigkeiten)
+        * [Spende](#spende)
+  * [Benutzeroberfläche](#benutzeroberfläche)
+     * [Wie kann ich die Größe der Uhr ändern ?](#wie-kann-ich-die-größe-der-uhr-ändern-)
+     * [Wie kann ich die Position der Uhr ändern ?](#wie-kann-ich-die-position-der-uhr-ändern-)
+     * [Die Uhr verändert automatisch die Position](#die-uhr-verändert-automatisch-die-position)
+     * [Die Oberfläche ist gesperrt](#die-oberfläche-ist-gesperrt)
+     * [AM / PM-Anzeige funktioniert nicht richtig](#am--pm-anzeige-funktioniert-nicht-richtig)
+     * [Benutzerdefinierte Schriftarten](#benutzerdefinierte-schriftarten)
+     * [Die Querformatausrichtung (Landscape) funktioniert nicht](#die-querformatausrichtung-landscape-funktioniert-nicht)
+  * [Wetter](#wetter)
+     * [Wetter - Statuszeile](#wetter---statuszeile)
+     * [Weather - Einstellungen](#weather---einstellungen)
+     * [Ortsuche](#ortsuche)
+     * [5-Tage Wetter - Vorschau](#5-tage-wetter---vorschau)
+     * [Wetterdaten werden nicht angezeigt](#wetterdaten-werden-nicht-angezeigt)
+     * [Pollenvorhersage](#pollenvorhersage)
+  * [Web Radio](#web-radio)
+     * [So spielen Sie einen Radiostream ab](#so-spielen-sie-einen-radiostream-ab)
+     * [So entfernen oder bearbeiten Sie einen gespeicherten Radiosender](#so-entfernen-oder-bearbeiten-sie-einen-gespeicherten-radiosender)
+  * [Autostart](#autostart)
+     * [Autostart](#autostart-1)
+     * [Always On](#always-on)
+  * [Wecker](#wecker)
+     * [Warum funktioniert die Aktivierung des WLANs für den Radiowecker nicht ?](#warum-funktioniert-die-aktivierung-des-wlans-für-den-radiowecker-nicht-)
+     * [Ich bin vor dem Wecker aufgewacht und möchte heute nicht mehr geweckt werden.](#ich-bin-vor-dem-wecker-aufgewacht-und-möchte-heute-nicht-mehr-geweckt-werden)
+  * [Nachtmodus](#nachtmodus)
+  * [Helligkeitseinstellungen](#helligkeitseinstellungen)
+     * [Manueller Helligkeitsmodus](#manueller-helligkeitsmodus)
+     * [Automatischer Helligkeitsmodus](#automatischer-helligkeitsmodus)
+  * [Widget](#widget)
+     * [Das Uhr-Widget wird nicht aktualisiert](#das-uhr-widget-wird-nicht-aktualisiert)
+  * [Diashow](#diashow)
+     * [Welche Bilder werden in der Diashow angezeigt](#welche-bilder-werden-in-der-diashow-angezeigt)
+     * [Wie kann eine Auswahl der Bilder vorgenommen werden](#wie-kann-eine-auswahl-der-bilder-vorgenommen-werden)
+     * [Wie kann auf einen Cloudspeicher zugegriffen werden?](#wie-kann-auf-einen-cloudspeicher-zugegriffen-werden)
+     * [Beim Starten der App erscheint die Diashow mit Verzögerung](#beim-starten-der-app-erscheint-die-diashow-mit-verzögerung)
+     * [Es wird nur ein schwarzer Bildschirm angezeigt](#es-wird-nur-ein-schwarzer-bildschirm-angezeigt)
+     * [EXIF Informationen werden nicht angezeigt](#exif-informationen-werden-nicht-angezeigt)
+  * [Aktuelle Uhrzeit vorlesen](#aktuelle-uhrzeit-vorlesen)
+     * [Die aktuelle Uhrzeit wird nicht vorgelesen](#die-aktuelle-uhrzeit-wird-nicht-vorgelesen)
+     * [Wie kann die Sprache umgestellt werden?](#wie-kann-die-sprache-umgestellt-werden)
+  * [Benachrichtigungen](#benachrichtigungen)
+     * [Was ist die Mediensteuerung?](#was-ist-die-mediensteuerung)
+     * [Wie aktiviere ich die Mediensteuerung?](#wie-aktiviere-ich-die-mediensteuerung)
+     * [Die Mediensteuerung wird nicht angezeigt](#die-mediensteuerung-wird-nicht-angezeigt)
 
 ## Werbung
 
@@ -72,6 +111,8 @@ Um Ihre Anerkennung für diese App zu zeigen und zusätzlich zu unterstützen,
 können Sie eine Spende hinterlassen. 
 Damit werden die bezahlten Features ebenfalls freigeschaltet. Als besondere 
 Aufmerksamkeit gibt es eine exklusive Überraschung: ein Retro-Flipkarten Design.  
+
+[nach oben](#inhaltsverzeichnis)
 
 ## Benutzeroberfläche
 
@@ -121,6 +162,8 @@ Ab Android 5 haben Screensaver / Bildschirmschoner den Fehler, dass sich die Bil
 * Lösung 1: Deaktivieren Sie den Screensaver vollständig (Systemeinstellungen> Anzeige> Screensaver). Stattdessen 
 können Sie die Autostart-Funktion der App nach Ihren Wünschen einrichten.
 * Lösung 2: Versuchen Sie, "Einstellungen> Darstellung> Automatische Drehung im Screensaver erzwingen" zu aktivieren.
+
+[nach oben](#inhaltsverzeichnis)
 
 ## Wetter
 
@@ -179,22 +222,24 @@ Wetterdaten werden möglicherweise aus mehreren Gründen nicht angezeigt.
 
 Die Pollenvorhersage ist nur in Deutschland verfügbar.
 
-Symbol                          | Bedeutung
---------------------------------|-----------------------
-![Hasel](hazelnut.svg)          | Hasel
-![Gräser](grass.svg)            | Gräser
-![Ambrosia](ambrosia.svg)       | Ambrosia
-![Birke](birch.svg)             | Birke
-![Esche](ash.svg)               | Esche
-![Beifuss](mugwort.svg)         | Beifuss
-![Erle](alder.svg)              | Erle
-![Roggen](rye.svg)              | Roggen
+Symbol                                        | Bedeutung
+----------------------------------------------|-----------------------
+<img src="hazelnut.svg" width="80">           | Hasel
+<img src="grass.svg" width="80">              | Gräser
+<img src="ambrosia.svg" width="80">           | Ambrosia
+<img src="birch.svg" width="80">              | Birke
+<img src="ash.svg" width="80">                | Esche
+<img src="mugwort.svg" width="80">            | Beifuss
+<img src="alder.svg" width="80">              | Erle
+<img src="rye.svg" width="80">                | Roggen
 
 Der Gefahrenindex wird über den Farbwert dargestellt, wobei grau die niedrigste Belastung und 
 rot die höchste Belastung darstellt.
 
 ![Farbwert](pollen-color-index.png)
 
+
+[nach oben](#inhaltsverzeichnis)
 
 ## Web Radio
 
@@ -211,6 +256,8 @@ Beenden Sie die Wiedergabe eines Radiosenders, indem Sie die Taste erneut drück
 
 Tippen Sie einfach etwas länger auf einen gespeicherten Radiosender ("langes Drücken"), um das Konfigurationsmenu 
 der Radiostreams zu öffnen. Dort können Sie den Radiostream für diese Schaltfläche ändern oder entfernen.
+
+[nach oben](#inhaltsverzeichnis)
 
 ## Autostart
 
@@ -243,6 +290,8 @@ Ich empfehle ergänzend die Funktion Automatisch beenden > Nach Timeout (im
 Akkubetrieb) zu verwenden, denn ein aktiviertes Display entlädt den Akku 
 schnell. 
 
+[nach oben](#inhaltsverzeichnis)
+
 ## Wecker
 
 ### Warum funktioniert die Aktivierung des WLANs für den Radiowecker nicht ? 
@@ -260,6 +309,8 @@ angezeigt. Um einen wiederholenden Wecker einmalig zu deaktivieren, können
 Sie in dieser Benachrichtigung AUSLASSEN auswählen. Damit wird die nächste 
 Weckzeit übersprungen und der Wecker bleibt für den folgenden Wecktag aktiv. 
 
+[nach oben](#inhaltsverzeichnis)
+
 ## Nachtmodus
 
 Nachtuhr verfügt über zwei Betriebsarten: Tagesmodus und Nachtmodus.
@@ -276,6 +327,8 @@ Der Nachtmodus verfügt über folgende Funktionen:
    Andere Aktivierungsmodi sind * geplant * und * manuell *. Diese sind
    für Geräte ohne Lichtsensor gedacht. Wenn Sie von der automatischen Helligkeitsregelung profitieren möchten, 
    sollten Sie die Aktivierungseinstellungen für den Nachtmodus auf * automatisch * lassen.
+
+[nach oben](#inhaltsverzeichnis)
 
 ## Helligkeitseinstellungen
 
@@ -307,6 +360,8 @@ Ihres Displays wischen.
 Da die meisten Geräte keinen genauen Werte unter 10 Lux melden, ist bei schlechten Lichtverhältnissen 
 die automatische Helligkeitsregelung möglicherweise nicht sehr genau.
 
+[nach oben](#inhaltsverzeichnis)
+
 ## Widget
 
 ### Das Uhr-Widget wird nicht aktualisiert
@@ -317,6 +372,8 @@ Dieses wird durch eine permanente Benachrichtigung im Benachrichtigungscenter an
 Falls dieser Dienst nicht ordnungsgemäß ausgeführt wird (oder vom Android-System unterbrochen wird), 
 wird das Widget nicht mehr aktualisiert. Wenn Sie diesen Dienst (wieder) aktivieren möchten, können Sie den Autostart 
 der App deaktivieren und wieder aktivieren. Dies löst den Start des Dienstes erneut aus.
+
+[nach oben](#inhaltsverzeichnis)
 
 ## Diashow
 
@@ -354,6 +411,8 @@ Bitte prüfen Sie, ob in dem angezeigten JPG - Bild EXIF Informationen eingetrag
 Zur Bestimmung des Standortes aus den EXIF Informationen werden die Google Play Services benötigt.
 Bei einigen Android Distributionen sind diese ggf. nicht vorinstalliert.
 
+[nach oben](#inhaltsverzeichnis)
+
 ## Aktuelle Uhrzeit vorlesen
 
 ### Die aktuelle Uhrzeit wird nicht vorgelesen
@@ -365,6 +424,8 @@ Bitte prüfen Sie in den Einstellungen des Geräts ob diese auf Ihrem Gerät ins
 
 Die ausgewählte Sprache ist abhängig von der in den Einstellungen ausgewählten Sprache Ihres Geräts und 
 kann nicht in der App umgestellt werden.
+
+[nach oben](#inhaltsverzeichnis)
 
 ## Benachrichtigungen
 
