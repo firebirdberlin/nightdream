@@ -30,11 +30,13 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class WakeUpReceiver extends BroadcastReceiver {
     private final static String TAG = "WakeUpReceiver";
 
     public static void schedule(Context context, DataSource db) {
+        AlarmNotificationService.cancelNotification(context);
         SimpleTime next = db.getNextAlarmToSchedule();
         if (next != null) {
             setAlarm(context, next);
@@ -152,15 +154,19 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
         Intent stopIntent = AlarmHandlerService.getStopIntent(context);
         PendingIntent pStopIntent = PendingIntent.getService(
-                context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action stopAction =
-            new NotificationCompat.Action.Builder(0, textActionStop, pStopIntent).build();
+                context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        NotificationCompat.Action stopAction = new NotificationCompat.Action.Builder(
+                0, textActionStop, pStopIntent
+        ).build();
 
         Intent snoozeIntent = AlarmHandlerService.getSnoozeIntent(context);
         PendingIntent pSnoozeIntent = PendingIntent.getService(
-                context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action snoozeAction =
-            new NotificationCompat.Action.Builder(0, textActionSnooze, pSnoozeIntent).build();
+                context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(
+                0, textActionSnooze, pSnoozeIntent
+        ).build();
 
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
         bigStyle.bigText(text);
@@ -188,7 +194,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     private String dateAsString(String format, Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
         return sdf.format(date);
     }
 }

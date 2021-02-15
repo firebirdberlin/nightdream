@@ -40,6 +40,7 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     testImplementation 'junit:junit:4.12'
 }
 

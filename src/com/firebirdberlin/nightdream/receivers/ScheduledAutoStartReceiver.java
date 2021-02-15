@@ -1,4 +1,3 @@
-
 package com.firebirdberlin.nightdream.receivers;
 
 import android.app.AlarmManager;
@@ -26,9 +25,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class ScheduledAutoStartReceiver extends BroadcastReceiver {
-    private static String TAG = "ScheduledAutoStartReceiver";
-    private static int PENDING_INTENT_START_APP = 0;
-    private static String ACTION_START_SCHEDULED =
+    private static final String TAG = "AutoStartReceiver";
+    private static final int PENDING_INTENT_START_APP = 0;
+    private static final String ACTION_START_SCHEDULED =
             "com.firebirdberlin.nightdream.ACTION_START_SCHEDULED";
 
     public static ScheduledAutoStartReceiver register(Context ctx) {
@@ -51,23 +50,23 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
         Calendar now = new GregorianCalendar();
-        if (!settings.scheduledAutostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
+        if (!settings.scheduledAutostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
+            return false;
+        }
         Calendar start = new SimpleTime(settings.scheduledAutoStartTimeRangeStartInMinutes).getCalendar();
         Calendar end = new SimpleTime(settings.scheduledAutoStartTimeRangeEndInMinutes).getCalendar();
         boolean shall_auto_start = true;
-        if (end.before(start)){
-            shall_auto_start = ( now.after(start) || now.before(end) );
-        } else if (! start.equals(end)) {
-            shall_auto_start = ( now.after(start) && now.before(end) );
+        if (end.before(start)) {
+            shall_auto_start = (now.after(start) || now.before(end));
+        } else if (!start.equals(end)) {
+            shall_auto_start = (now.after(start) && now.before(end));
         }
-        if (! shall_auto_start) return false;
+        if (!shall_auto_start) return false;
 
         if (settings.scheduledAutoStartChargerRequired) {
             BatteryStats battery = new BatteryStats(context.getApplicationContext());
             BatteryValue batteryValue = battery.reference;
-            if (! batteryValue.isCharging) {
-                return false;
-            }
+            return batteryValue.isCharging;
         }
         return true;
 
@@ -78,7 +77,7 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         Intent intent = new Intent(ACTION_START_SCHEDULED);
         intent.setClass(context, ScheduledAutoStartReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-            context, PENDING_INTENT_START_APP, intent, 0
+                context, PENDING_INTENT_START_APP, intent, 0
         );
 
         Settings settings = new Settings(context);
@@ -115,7 +114,7 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
             mSensorManager.registerListener(new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent sensorEvent) {
-                    if (sensorEvent.values[0] > 0 ) {
+                    if (sensorEvent.values[0] > 0) {
                         NightDreamActivity.start(context);
                     }
                     mSensorManager.unregisterListener(this);
@@ -140,7 +139,9 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         if (ACTION_START_SCHEDULED.equals(action)
                 || Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+            PowerManager.WakeLock wakelock = pm.newWakeLock(
+                    PowerManager.PARTIAL_WAKE_LOCK, "nightdream:ScheduledAutostartReceiver"
+            );
             wakelock.acquire(10000);
 
             conditionallyStartApp(context);

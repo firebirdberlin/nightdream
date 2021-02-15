@@ -235,8 +235,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         }
 
         final Context context = this;
+        long now = System.currentTimeMillis();
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timestamp);
+        calendar.setTimeInMillis(timestamp > now ? timestamp : now);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -258,10 +259,17 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                         cal.set(Calendar.SECOND, 0);
                         cal.set(Calendar.MILLISECOND, 0);
                         db.updateNextEventAfter(entry_id, cal.getTimeInMillis());
+                        for (SimpleTime e : entries) {
+                            if (e.id == entry_id) {
+                                e.nextEventAfter = cal.getTimeInMillis();
+                                break;
+                            }
+                        }
                         SqliteIntentService.scheduleAlarm(context);
                     }
                 }, year, month, dayOfMonth);
         mDatePicker.setTitle(R.string.alarmStartDate);
+        mDatePicker.getDatePicker().setMinDate(now);
         mDatePicker.show();
     }
 
@@ -281,12 +289,11 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     public void onDateClicked(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
-        if (!entry.isRecurring()) {
-            return;
-        }
         Long nextEventAfter = entry.nextEventAfter;
-        if (nextEventAfter == null || nextEventAfter == 0L) {
+        long now = System.currentTimeMillis();
+        if (nextEventAfter == null || nextEventAfter == 0L || nextEventAfter < now) {
             nextEventAfter = entry.getCalendar().getTimeInMillis();
+
         }
         showDatePicker(nextEventAfter, entry.id);
     }
