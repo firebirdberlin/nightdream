@@ -242,6 +242,14 @@ OR
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
+    <string name="pollen_hazelnut">Hazelnut</string>
+    <string name="pollen_birch">Birch</string>
+    <string name="pollen_ambrosia">Ambrosia</string>
+    <string name="pollen_grass">Grass</string>
+    <string name="pollen_ash">Ash</string>
+    <string name="pollen_mugwort">Mugwort</string>
+    <string name="pollen_alder">Alder</string>
+    <string name="pollen_rye">Rye</string>
     <string name="power_source">power source</string>
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
@@ -318,6 +326,15 @@ OR
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
     <string name="showPollen">Pollen risk index</string>
+    <string name="showPollenIndex">Stress level:</string>
+    <string name="showPollenIndex0">none</string>
+    <string name="showPollenIndex1">none to low</string>
+    <string name="showPollenIndex2">low</string>
+    <string name="showPollenIndex3">low to moderate</string>
+    <string name="showPollenIndex4">moderate</string>
+    <string name="showPollenIndex5">moderate to high</string>
+    <string name="showPollenIndex6">high</string>
+    <string name="showPollenNoData">No data for this area. Pollen risk index only available for German locations.</string>
     <string name="showPollenSummary">only available for German locations</string>
     <string name="show_temperature">Show temperature</string>
     <string name="show_second_hand">show second hand</string>
@@ -372,6 +389,8 @@ OR
     <string name="weather_city_id_title">Search location</string>
     <string name="weather_current_location">Current location</string>
     <string name="weather_info_title">Information</string>
+    <string name="weather_sun_rise">Sunrise</string>
+    <string name="weather_sun_set">Sunset</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

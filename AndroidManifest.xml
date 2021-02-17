@@ -246,7 +246,7 @@
 
         <activity
             android:excludeFromRecents="true"
-            android:label="@string/forecast"
+            android:label="@string/weather"
             android:name=".WeatherForecastActivity"
             android:parentActivityName=".NightDreamActivity"
             android:theme="@style/SecondaryActivityTheme">

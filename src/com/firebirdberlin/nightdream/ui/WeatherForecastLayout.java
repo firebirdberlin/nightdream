@@ -4,6 +4,7 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,10 +19,11 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class WeatherForecastLayout extends LinearLayout {
 
-    private static final String TAG = "NightDream.WeatherForecastLayout";
+    private static final String TAG = "WeatherForecastLayout";
     private Context context = null;
     private TextView timeView = null;
     private TextView iconClouds = null;
@@ -35,6 +37,10 @@ public class WeatherForecastLayout extends LinearLayout {
     private TextView humidityText = null;
     private TextView windText = null;
     private TextView rainText = null;
+    private TextView sunSetTime = null;
+    private TextView sunRiseTime = null;
+    private LinearLayout sunSetLayout = null;
+    private LinearLayout sunRiseLayout = null;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
     private WeatherEntry weatherEntry = null;
@@ -52,6 +58,7 @@ public class WeatherForecastLayout extends LinearLayout {
     }
 
     private void init() {
+        Log.d(TAG,"init()");
         LayoutInflater inflater = (LayoutInflater)
             context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View child = inflater.inflate(R.layout.weather_forecast_layout, null);
@@ -72,6 +79,10 @@ public class WeatherForecastLayout extends LinearLayout {
         humidityText = findViewById(R.id.humidityText);
         rainText = findViewById(R.id.rainText);
         windText = findViewById(R.id.windText);
+        sunRiseTime = findViewById(R.id.sunRiseTime);
+        sunSetTime = findViewById(R.id.sunSetTime);
+        sunRiseLayout = findViewById(R.id.layoutSunRise);
+        sunSetLayout = findViewById(R.id.layoutSunSet);
         Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
         iconClouds.setTypeface(typeface);
         iconText.setTypeface(typeface);
@@ -86,6 +97,44 @@ public class WeatherForecastLayout extends LinearLayout {
     public void setTemperature(boolean on, int unit) {
         this.temperatureUnit = unit;
         temperatureText.setVisibility( (on) ? View.VISIBLE : View.GONE );
+    }
+
+    public void setSunrise(boolean on, long time) {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.setTimeInMillis(time * 1000);
+
+        SimpleDateFormat sdf;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            sdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
+        }
+        else
+        {
+            sdf = new SimpleDateFormat(timeFormat);
+        }
+        String text = sdf.format(mCalendar.getTime());
+        sunRiseTime.setText(text);
+        sunRiseLayout.setVisibility( (on) ? View.VISIBLE : View.GONE );
+    }
+
+
+    public void setSunset(boolean on, long time) {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.setTimeInMillis(time * 1000);
+
+        SimpleDateFormat sdf;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            sdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
+        }
+        else
+        {
+            sdf = new SimpleDateFormat(timeFormat);
+        }
+
+        String text = sdf.format(mCalendar.getTime());
+        sunSetTime.setText(text);
+        sunSetLayout.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
     public void setWindSpeed(boolean on, int unit) {
@@ -126,8 +175,8 @@ public class WeatherForecastLayout extends LinearLayout {
     }
 
     public void update(WeatherEntry entry) {
-        Log.d("WeatherForecastLayout", entry.toString());
-        Log.d("WeatherForecastLayout", entry.formatTemperatureText(temperatureUnit));
+       // Log.d("WeatherForecastLayout", entry.toString());
+       // Log.d("WeatherForecastLayout", entry.formatTemperatureText(temperatureUnit));
         this.weatherEntry = entry;
         if (iconText == null || temperatureText == null) return;
         iconWindDirection.setColor(Color.WHITE);

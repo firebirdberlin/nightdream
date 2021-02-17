@@ -1,54 +1,36 @@
 package com.firebirdberlin.nightdream;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
-import com.firebirdberlin.nightdream.models.FontCache;
-import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
-import com.firebirdberlin.nightdream.ui.WeatherLayout;
-import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 public class WeatherForecastActivity
         extends BillingHelperActivity
-        implements ForecastRequestTask.AsyncResponse,
+        implements
         WeatherLocationDialogFragment.WeatherLocationDialogListener {
     final static String TAG = "WeatherForecastActivity";
     final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 4000;
@@ -67,29 +49,34 @@ public class WeatherForecastActivity
             MENU_ITEM_LOCATION_3,
             MENU_ITEM_LOCATION_4,
     };
-    private ScrollView scrollView = null;
-    private LinearLayout scrollViewLayout = null;
     private Settings settings;
     private boolean locationAccessGranted = false;
     private boolean autoLocationEnabled = false;
     private ArrayList<City> cities = null;
     private City selectedCity = null;
-    private int fadeDuration = 2000;
     private Snackbar snackbar;
+    private WeatherForecastTabAdapter adapter;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     private LocationManager locationManager = null;
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
+            Log.d(TAG,"onLocationChanged");
             City city = new City();
             city.lat = location.getLatitude();
             city.lon = location.getLongitude();
             city.name = "current";
+            city.id = -1;
             Log.i(TAG, "location updated " + city.toJson());
             if (locationManager != null && locationListener != null) {
                 locationManager.removeUpdates(locationListener);
             }
-            requestWeather(city);
+            ((WeatherForecastTabWeather) adapter.getItem(0)).requestWeather(city, settings);
+            if (settings.showPollen) {
+                ((WeatherForecastTabPollen) adapter.getItem(1)).addPollen(city);
+            }
         }
 
         @Override
@@ -115,51 +102,85 @@ public class WeatherForecastActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG,"onCreate");
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_forecast);
-        scrollView = findViewById(R.id.scroll_view);
-        scrollViewLayout = findViewById(R.id.scroll_view_layout);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         cities = Settings.getFavoriteWeatherLocations(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart()");
+        Log.d(TAG, "onStart()");
         locationAccessGranted = hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
         settings = new Settings(this);
         settings.initWeatherAutoLocationEnabled();
         selectedCity = settings.getCityForWeather();
         autoLocationEnabled = settings.getWeatherAutoLocationEnabled();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
+        adapter.addFragment(new WeatherForecastTabWeather(), getResources().getString(R.string.forecast));
+
+        if (settings.showPollen) {
+            adapter.addFragment(new WeatherForecastTabPollen(), getResources().getString(R.string.showPollen));
+        }
+
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onResume() {
+        Log.d(TAG,"onResume()");
         super.onResume();
-        hide();
     }
 
     void init() {
-        if (! isPurchased(ITEM_WEATHER_DATA)) {
-            setupForecastPreview();
+        Log.d(TAG,"init()");
+        if (!isPurchased(ITEM_WEATHER_DATA)) {
+            adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
+            adapter.addFragment(new WeatherForecastTabWeather(), getResources().getString(R.string.forecast));
+
+            viewPager.setAdapter(adapter);
+            tabLayout.setupWithViewPager(viewPager);
+
+            ((WeatherForecastTabWeather)adapter.getItem(0)).setupForecastPreview(settings);
             return;
         }
 
         if (autoLocationEnabled) {
             Log.i(TAG, "starting with auto location (GPS)");
-            getWeatherForCurrentLocation();
+            initTabView(new City());
         } else {
-
             selectedCity = settings.getCityForWeather();
             if (selectedCity != null && selectedCity.id > 0) {
                 Log.i(TAG, "starting with " + selectedCity.toJson());
                 addToFavoriteCities(selectedCity);
-                requestWeather(selectedCity);
+                initTabView(selectedCity);
             }
         }
+
         conditionallyShowSnackBar();
+    }
+
+    private void initTabView(City city) {
+        Log.d(TAG, "initTabView");
+
+        if ((autoLocationEnabled)){
+            ((WeatherForecastTabWeather)adapter.getItem(0)).getWeatherForCurrentLocation(locationManager,locationListener, settings);
+        }
+        else {
+            WeatherEntry entrie = settings.weatherEntry;
+            Log.d(TAG,"addWeatherNow() city: "+entrie.cityName);
+            ((WeatherForecastTabWeather) adapter.getItem(0)).requestWeather(city, settings);
+        }
+
+        if (settings.showPollen) {
+            ((WeatherForecastTabPollen) adapter.getItem(1)).addPollen(city);
+        }
     }
 
     void addToFavoriteCities(City city) {
@@ -177,81 +198,6 @@ public class WeatherForecastActivity
         }
     }
 
-    void setupForecastPreview() {
-        List<WeatherEntry> entries = getFakeEntries();
-        scrollViewLayout.removeAllViews();
-
-        TextView textView = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        textView.setLayoutParams(layoutParams);
-        int color = Utility.getRandomMaterialColor(this);
-        int textColor = Utility.getContrastColor(color);
-        textView.setGravity(Gravity.CENTER);
-        textView.setBackgroundColor(color);
-        textView.setTextColor(textColor);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
-        textView.setPadding(10, 10, 10,  10);
-        textView.setText(getString(R.string.product_name_weather));
-
-        Typeface typeface = FontCache.get(this, "fonts/dancingscript_regular.ttf");
-        textView.setTypeface(typeface);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Drawable icon = getDrawable(R.drawable.ic_googleplay);
-            icon.setColorFilter(new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP));
-            textView.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, icon, null);
-        }
-        View.OnClickListener purchaseListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPurchaseDialog();
-            }
-        };
-        textView.setOnClickListener(purchaseListener);
-        scrollViewLayout.addView(textView);
-
-        TextView textView1 = new TextView(this);
-        textView1.setLayoutParams(layoutParams);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            textView1.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
-        } else {
-            textView1.setGravity(Gravity.CENTER);
-        }
-        int dp20 = Utility.dpToPx(this, 12);
-        textView1.setPadding(dp20, dp20, dp20, dp20);
-        textView1.setText(getString(R.string.product_description_weather));
-        textView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        scrollViewLayout.addView(textView1);
-
-        TextView textView2 = new TextView(this);
-        LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams2.gravity = Gravity.CENTER_VERTICAL | Gravity.END;
-        textView2.setLayoutParams(layoutParams2);
-        textView2.setBackgroundColor(color);
-        textView2.setTextColor(textColor);
-        textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-        textView2.setPadding(10, dp20, 10, 0);
-        textView2.setText(getString(R.string.upgrade_now));
-
-        textView2.setTypeface(typeface);
-        textView2.setOnClickListener(purchaseListener);
-        scrollViewLayout.addView(textView2);
-
-        WeatherLayout statusLine = new WeatherLayout(this);
-        statusLine.setColor(Color.WHITE);
-        statusLine.setGravity(Gravity.CENTER);
-        statusLine.setWindSpeed(true, WeatherEntry.METERS_PER_SECOND);
-        statusLine.update(entries.get(0));
-        statusLine.setPadding(dp20, dp20, dp20, dp20);
-
-        scrollViewLayout.addView(statusLine);
-        addWeatherEntries(entries);
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -260,80 +206,8 @@ public class WeatherForecastActivity
         }
     }
 
-    private void hide() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            // avoid flickering during build
-            scrollView.setAlpha(0);
-        }
-    }
-
-    public void onRequestFinished(List<WeatherEntry> entries) {
-        Log.i(TAG, "onRequestFinished()");
-        hide();
-        scrollViewLayout.removeAllViews();
-        addWeatherEntries(entries);
-    }
-
-    void addWeatherEntries(List<WeatherEntry> entries) {
-        Log.i(TAG, String.format(" > got %d entries", entries.size()));
-        String timeFormat = settings.getFullTimeFormat();
-
-        if (entries.size() > 0) {
-            WeatherEntry firstEntry = entries.get(0);
-            actionBarSetup(firstEntry.cityName);
-        }
-
-        int day = -1;
-        long now = System.currentTimeMillis();
-        for (WeatherEntry entry : entries) {
-            if (entry.timestamp * 1000 < now - 600000) {
-                continue;
-            }
-            TextView dateView = new TextView(this);
-            if (Build.VERSION.SDK_INT >= 23) {
-                dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
-                dateView.setTextColor(getResources().getColor(R.color.blue, null));
-            } else {
-                dateView.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-                dateView.setTextColor(getResources().getColor(R.color.blue));
-            }
-            dateView.setTypeface(null, Typeface.BOLD);
-
-            Calendar mCalendar = Calendar.getInstance();
-            mCalendar.setTimeInMillis(entry.timestamp * 1000);
-            if (day != mCalendar.get(Calendar.DAY_OF_MONTH)) {
-                day = mCalendar.get(Calendar.DAY_OF_MONTH);
-                DateFormat sdf = DateFormat.getDateInstance(DateFormat.FULL);
-                String text = sdf.format(mCalendar.getTime());
-                dateView.setText(text);
-                scrollViewLayout.addView(dateView);
-
-            }
-
-            WeatherForecastLayout layout = new WeatherForecastLayout(this);
-            layout.setTimeFormat(timeFormat);
-            layout.setTemperature(true, settings.temperatureUnit);
-            layout.setWindSpeed(true, settings.speedUnit);
-            layout.update(entry);
-            scrollViewLayout.addView(layout);
-        }
-
-        // avoid flickering of the UI
-        scrollView.animate().setDuration(fadeDuration).alpha(1);
-        fadeDuration = 1000;
-    }
-
-    private void actionBarSetup(String subtitle) {
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setTitle(R.string.forecast);
-            ab.setSubtitle(subtitle);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         if (cities != null) {
             for (int i = 0; i < cities.size(); i++) {
                 City city = cities.get(i);
@@ -392,7 +266,7 @@ public class WeatherForecastActivity
             case MENU_ITEM_ENABLE_GPS:
                 autoLocationEnabled = !autoLocationEnabled;
                 setAutoLocationEnabled(autoLocationEnabled);
-                getWeatherForCurrentLocation();
+                initTabView(new City());
                 invalidateOptionsMenu();
                 return true;
             case MENU_ITEM_LOCATION_0:
@@ -422,35 +296,15 @@ public class WeatherForecastActivity
     }
 
     public void onWeatherLocationSelected(City city) {
+        Log.d(TAG,"onWeatherLocationSelected");
+
         setAutoLocationEnabled(false);
         settings.setWeatherLocation(city);
         selectedCity = city;
         addToFavoriteCities(city);
-        requestWeather(city);
-    }
+        settings = new Settings(this);
 
-    void requestWeather(City city) {
-        if (city != null) {
-            new ForecastRequestTask(this, settings.getWeatherProvider()).execute(city.toJson());
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private void getWeatherForCurrentLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                requestPermissions(
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        PERMISSIONS_REQUEST_ACCESS_LOCATION
-                );
-                return;
-            }
-        }
-        Log.i(TAG, "searching location");
-        getLastKnownLocation();
-        locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 0, 0, locationListener
-        );
+        initTabView(city);
     }
 
     @Override
@@ -467,7 +321,8 @@ public class WeatherForecastActivity
                     Log.i(TAG, "Permission granted");
                     locationAccessGranted = true;
                     autoLocationEnabled = true;
-                    getWeatherForCurrentLocation();
+                    //getWeatherForCurrentLocation();
+                    initTabView(new City());
                 } else {
                     // Explain to the user that the feature is unavailable because
                     // the features requires a permission that the user has denied.
@@ -477,77 +332,14 @@ public class WeatherForecastActivity
                     locationAccessGranted = false;
                 }
                 invalidateOptionsMenu();
-                return;
         }
         // Other 'case' lines to check for other
         // permissions this app might request.
     }
 
-    private void getLastKnownLocation() {
-        if (!hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            return;
-        }
-        List<String> providers = locationManager.getProviders(true);
-        for (String provider : providers) {
-            if (LocationManager.GPS_PROVIDER.equals(provider)) {
-                continue;
-            }
-            @SuppressLint("MissingPermission")
-            Location location = locationManager.getLastKnownLocation(provider);
-            if (location == null) continue;
-            City city = new City();
-            city.lat = location.getLatitude();
-            city.lon = location.getLongitude();
-            city.name = "current";
-            if (locationManager != null && locationListener != null) {
-                locationManager.removeUpdates(locationListener);
-            }
-            requestWeather(city);
-        }
-    }
-
-    List<WeatherEntry> getFakeEntries() {
-        List<WeatherEntry> entries = new ArrayList<>();
-
-        Calendar now = Calendar.getInstance();
-        now.set(Calendar.MINUTE, 0);
-        now.set(Calendar.SECOND, 0);
-        now.set(Calendar.MILLISECOND, 0);
-        int hour = now.get(Calendar.HOUR);
-        int diff = ((23 + 1) / 3 * 3 + 2) - hour;
-        now.add(Calendar.HOUR, diff);
-        WeatherEntry entry1 = new WeatherEntry();
-        entry1.apparentTemperature = 292.15;
-        entry1.cityName = "Bullerby";
-        entry1.clouds = 71;
-        entry1.humidity = 53;
-        entry1.temperature = 293.15;
-        entry1.timestamp = now.getTimeInMillis() / 1000;
-        entry1.request_timestamp = System.currentTimeMillis();
-        entry1.weatherIcon = "04n";
-        entry1.windDirection = 247;
-        entry1.windSpeed = 3.4;
-        entries.add(entry1);
-        WeatherEntry entry2 = new WeatherEntry();
-        now.add(Calendar.HOUR, 3);
-        entry2.apparentTemperature = 294.15;
-        entry2.clouds = 57;
-        entry2.humidity = 57;
-        entry2.rain3h = 1.3;
-        entry2.temperature = 295.15;
-        entry2.timestamp = now.getTimeInMillis() / 1000;
-        entry1.request_timestamp = System.currentTimeMillis();
-        entry2.weatherIcon = "03n";
-        entry2.windDirection = 266;
-        entry2.windSpeed = 2.3;
-        entries.add(entry2);
-        return entries;
-    }
-
     @Override
     protected void onItemPurchased(String sku) {
         super.onItemPurchased(sku);
-        scrollViewLayout.removeAllViews();
         init();
         invalidateOptionsMenu();
         City city = settings.getCityForWeather();
