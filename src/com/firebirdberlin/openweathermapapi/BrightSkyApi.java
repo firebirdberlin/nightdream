@@ -1,14 +1,17 @@
 package com.firebirdberlin.openweathermapapi;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 
 import com.firebirdberlin.HttpReader;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -24,8 +27,10 @@ public class BrightSkyApi {
     private static final String ENDPOINT = "https://api.brightsky.dev";
     private static final String CACHE_FILE = "BrightSkyApi";
     private static final String TAG = "BrightSkyApi";
+    private static WeakReference<Context> mContext;
 
     public static WeatherEntry fetchCurrentWeatherData(Context context, float lat, float lon) {
+        mContext = new WeakReference<>(context);
         String responseText = fetchWeatherData(context, lat, lon);
         if (responseText == null) {
             return new WeatherEntry();
@@ -203,8 +208,20 @@ public class BrightSkyApi {
             WeatherEntry entry = new WeatherEntry();
             entry.cityID = (source != null) ? source.id : -1;
             entry.cityName = (source != null) ? source.station_name : String.format(java.util.Locale.getDefault(), "%3.2f, %3.2f", lat, lon);
+
+            if (mContext != null && mContext.get() != null) {
+                Utility.GeoCoder geoCoder = new Utility.GeoCoder(mContext.get(), lat, lon);
+                if (!geoCoder.getLocality().isEmpty()) entry.cityName = geoCoder.getLocality();
+            }
+
             entry.clouds = cloud_cover;
             entry.description = condition;
+            if (mContext != null && mContext.get() != null) {
+                Resources res = mContext.get().getResources();
+                String text = "brightsky_conditions_" + entry.description;
+                int resID = res.getIdentifier(text, "string", mContext.get().getPackageName());
+                if (resID != 0) entry.description = mContext.get().getResources().getString(resID);
+            }
             entry.lat = lat;
             entry.lon = lon;
             entry.rain1h = precipitation;

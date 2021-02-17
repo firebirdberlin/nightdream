@@ -1,0 +1,239 @@
+package com.firebirdberlin.nightdream;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+
+import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
+import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
+import com.firebirdberlin.openweathermapapi.ForcecastRequestTaskToday;
+import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.List;
+
+public class WeatherForecastTabWeather extends Fragment implements
+        ForecastRequestTask.AsyncResponse,
+        ForcecastRequestTaskToday.AsyncResponse {
+    final static String TAG = "WeatherForeTabWeather";
+    final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 4000;
+    private LinearLayout scrollViewLayout = null;
+    private ScrollView scrollView = null;
+    private Context context;
+    private Settings settings;
+    private int fadeDuration = 2000;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_weather_forecast_scrollview, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        scrollViewLayout = view.findViewById(R.id.scroll_view_layout);
+        scrollView = view.findViewById(R.id.scroll_view);
+    }
+
+    private void addWeatherEntries(List<WeatherEntry> entries) {
+        Log.d(TAG, "addWeatherEntries");
+        Log.d(TAG, String.format(" > got %d entries", entries.size()));
+
+        if (context != null) {
+            String timeFormat = settings.getFullTimeFormat();
+
+            int day = -1;
+            long now = System.currentTimeMillis();
+            for (WeatherEntry entry : entries) {
+                if (entry.timestamp * 1000 < now - 600000) {
+                    continue;
+                }
+                TextView dateView = new TextView(context);
+                if (Build.VERSION.SDK_INT >= 23) {
+                    dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
+                    if (getActivity() != null) {
+                        dateView.setTextColor(getActivity().getResources().getColor(R.color.blue, null));
+                    }
+                } else {
+                    dateView.setTextAppearance(context, android.R.style.TextAppearance_Medium);
+                    if (getActivity() != null) {
+                        dateView.setTextColor(getActivity().getResources().getColor(R.color.blue));
+                    }
+                }
+                dateView.setTypeface(null, Typeface.BOLD);
+
+                Calendar mCalendar = Calendar.getInstance();
+                mCalendar.setTimeInMillis(entry.timestamp * 1000);
+                if (day != mCalendar.get(Calendar.DAY_OF_MONTH)) {
+                    day = mCalendar.get(Calendar.DAY_OF_MONTH);
+                    DateFormat sdf = DateFormat.getDateInstance(DateFormat.FULL);
+                    String text = sdf.format(mCalendar.getTime());
+                    dateView.setText(text);
+                    scrollViewLayout.addView(dateView);
+                }
+
+                WeatherForecastLayout layout = new WeatherForecastLayout(context);
+                layout.setTimeFormat(timeFormat);
+                layout.setTemperature(true, settings.temperatureUnit);
+                layout.setWindSpeed(true, settings.speedUnit);
+                layout.update(entry);
+                scrollViewLayout.addView(layout);
+            }
+
+            // avoid flickering of the UI
+            scrollView.animate().setDuration(fadeDuration).alpha(1);
+            fadeDuration = 1000;
+        }
+    }
+
+    private void actionBarSetup(String subtitle) {
+        if (((AppCompatActivity) getActivity()) != null) {
+            ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (ab != null) {
+                ab.setTitle(R.string.weather);
+                ab.setSubtitle(subtitle);
+            }
+        }
+    }
+
+    private void addWeatherNow(WeatherEntry entry) {
+        Log.d(TAG, "addWeatherNow()");
+
+        String timeFormat = settings.getFullTimeFormat();
+        Log.d(TAG, "addWeatherNow() city: " + entry.cityName);
+
+        if (getActivity() != null) {
+            ConstraintLayout todayView = getActivity().findViewById(R.id.todayView);
+            todayView.removeAllViews();
+
+            WeatherForecastLayout layout = new WeatherForecastLayout(context);
+            layout.setTimeFormat(timeFormat);
+            layout.setTemperature(true, settings.temperatureUnit);
+            layout.setWindSpeed(true, settings.speedUnit);
+            if (entry.sunriseTime != 0) {
+                layout.setSunrise(true, entry.sunriseTime);
+            }
+            if (entry.sunsetTime != 0) {
+                layout.setSunset(true, entry.sunsetTime);
+            }
+            layout.setDescriptionText(true, entry.description);
+            layout.update(entry);
+            layout.findViewById(R.id.timeView).setVisibility(View.GONE);
+            todayView.addView(layout);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    public void getWeatherForCurrentLocation(LocationManager locationManager, LocationListener locationListener, Settings settings) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getActivity() != null) {
+                if (!((WeatherForecastActivity) getActivity()).hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    requestPermissions(
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            PERMISSIONS_REQUEST_ACCESS_LOCATION
+                    );
+                    return;
+                }
+            }
+        }
+        Log.d(TAG, "searching location");
+        getLastKnownLocation(locationManager, locationListener, settings);
+        locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER, 0, 0, locationListener
+        );
+    }
+
+    private void getLastKnownLocation(LocationManager locationManager, LocationListener locationListener, Settings settings) {
+        if (getActivity() != null) {
+            if (!((WeatherForecastActivity) getActivity()).hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                return;
+            }
+        }
+        List<String> providers = locationManager.getProviders(true);
+        for (String provider : providers) {
+            if (LocationManager.GPS_PROVIDER.equals(provider)) {
+                continue;
+            }
+            @SuppressLint("MissingPermission")
+            Location location = locationManager.getLastKnownLocation(provider);
+            if (location == null) continue;
+            City city = new City();
+            city.lat = location.getLatitude();
+            city.lon = location.getLongitude();
+            city.id = -1;
+
+            Utility.GeoCoder geoCoder = new Utility.GeoCoder(context, location.getLatitude(), location.getLongitude());
+            city.name = geoCoder.getLocality();
+
+            if (locationManager != null && locationListener != null) {
+                locationManager.removeUpdates(locationListener);
+            }
+            requestWeather(city, settings);
+        }
+    }
+
+    public void requestWeather(City city, Settings settings) {
+        Log.d(TAG, "requestWeather()");
+
+        this.settings = settings;
+
+        if (city != null) {
+            new ForecastRequestTask(this, settings.getWeatherProvider(), context).execute(city.toJson());
+            new ForcecastRequestTaskToday(this, settings.getWeatherProvider(), context).execute(city.toJson());
+        }
+    }
+
+    private void hide() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            // avoid flickering during build
+            scrollView.setAlpha(0);
+        }
+    }
+
+    @Override
+    public void onRequestFinished(WeatherEntry entry) {
+        Log.d(TAG, "onRequestFinished() WeatherEntry: " + entry);
+        addWeatherNow(entry);
+    }
+
+    @Override
+    public void onRequestFinished(List<WeatherEntry> entries) {
+        Log.d(TAG, "onRequestFinished() List<WeatherEntry>");
+        hide();
+
+        if (entries.size() > 0) {
+            WeatherEntry firstEntry = entries.get(0);
+            actionBarSetup(firstEntry.cityName);
+        }
+
+        scrollViewLayout.removeAllViews();
+        addWeatherEntries(entries);
+    }
+
+}
