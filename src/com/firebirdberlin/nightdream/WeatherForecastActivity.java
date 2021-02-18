@@ -140,6 +140,10 @@ public class WeatherForecastActivity
 
     void init() {
         Log.d(TAG,"init()");
+
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+
         if (!isPurchased(ITEM_WEATHER_DATA)) {
             adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
             adapter.addFragment(new WeatherForecastTabWeather(), getResources().getString(R.string.forecast));

@@ -3,6 +3,7 @@ package com.firebirdberlin.openweathermapapi;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -11,6 +12,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ForcecastRequestTaskToday extends AsyncTask<String, Void, WeatherEntry> {
 
+    final static String TAG = "ForecastRequestTask";
     private AsyncResponse delegate;
     Settings.WeatherProvider weatherProvider;
     Context context;

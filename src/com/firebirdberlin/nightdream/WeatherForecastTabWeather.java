@@ -55,6 +55,12 @@ public class WeatherForecastTabWeather extends Fragment implements
     private int fadeDuration = 2000;
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_weather_forecast_scrollview, container, false);
     }
@@ -64,12 +70,11 @@ public class WeatherForecastTabWeather extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         scrollViewLayout = view.findViewById(R.id.scroll_view_layout);
         scrollView = view.findViewById(R.id.scroll_view);
-        context = getContext();
     }
 
     private void addWeatherEntries(List<WeatherEntry> entries) {
         Log.d(TAG,"addWeatherEntries");
-        Log.i(TAG, String.format(" > got %d entries", entries.size()));
+        Log.d(TAG, String.format(" > got %d entries", entries.size()));
 
         if (context != null) {
             scrollViewLayout.removeAllViews();
@@ -281,7 +286,7 @@ public class WeatherForecastTabWeather extends Fragment implements
                 return;
             }
         }
-        Log.i(TAG, "searching location");
+        Log.d(TAG, "searching location");
         getLastKnownLocation(locationManager, locationListener, settings);
         locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER, 0, 0, locationListener
@@ -313,9 +318,10 @@ public class WeatherForecastTabWeather extends Fragment implements
     }
 
     public void requestWeather(City city, Settings settings) {
-        Log.i(TAG, "requestWeather()");
+        Log.d(TAG, "requestWeather()");
 
         this.settings = settings;
+
         if (city != null) {
             new ForecastRequestTask(this, settings.getWeatherProvider(), context).execute(city.toJson());
             new ForcecastRequestTaskToday(this, settings.getWeatherProvider(), context).execute(city.toJson());
@@ -331,13 +337,13 @@ public class WeatherForecastTabWeather extends Fragment implements
 
     @Override
     public void onRequestFinished(WeatherEntry entry) {
-        Log.i(TAG, "onRequestFinished() WeatherEntry: "+entry);
+        Log.d(TAG, "onRequestFinished() WeatherEntry: "+entry);
         addWeatherNow(entry);
     }
 
     @Override
     public void onRequestFinished(List<WeatherEntry> entries) {
-        Log.i(TAG, "onRequestFinished() List<WeatherEntry>");
+        Log.d(TAG, "onRequestFinished() List<WeatherEntry>");
         hide();
 
         if (entries.size() > 0) {
