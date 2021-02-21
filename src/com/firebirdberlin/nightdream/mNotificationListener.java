@@ -142,7 +142,10 @@ public class mNotificationListener extends NotificationListenerService {
             }
         }
 
-        if (!isClearable(sbn)) return true;
+        if (!isClearable(sbn) || sbn.isOngoing()) return true;
+        if ((notification.flags & Notification.FLAG_GROUP_SUMMARY) > 0) {
+            return true;
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return (notification.priority < minNotificationImportance - 3);
@@ -191,8 +194,6 @@ public class mNotificationListener extends NotificationListenerService {
         notificationApps.clear();
 
         clearNotificationUI();
-        HashSet<String> groupKeys = new HashSet<>();
-
         StatusBarNotification[] notificationList = null;
         try {
             notificationList = mNotificationListener.this.getActiveNotifications();
@@ -207,14 +208,6 @@ public class mNotificationListener extends NotificationListenerService {
             if (notification == null) continue;
 
             logNotification(sbn);
-
-            if (Build.VERSION.SDK_INT >= 20) {
-                String key = notification.getGroup();
-                if (key != null) {
-                    if (groupKeys.contains(key)) continue;
-                    groupKeys.add(key);
-                }
-            }
 
             if (shallIgnoreNotification(sbn)) {
                 continue;

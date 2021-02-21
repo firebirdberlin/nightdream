@@ -54,7 +54,7 @@ public class NotificationListActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
