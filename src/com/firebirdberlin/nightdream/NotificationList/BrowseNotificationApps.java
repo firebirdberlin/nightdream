@@ -20,12 +20,12 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
 
     public static String TAG = "BrowseNotificationApps";
 
-    private List<NotificationApp> notificationapplist;
-    private Activity context;
+    private List<NotificationApp> notificationAppList;
+    private final Activity context;
 
-    public BrowseNotificationApps(Activity context, List<NotificationApp> datas) {
+    public BrowseNotificationApps(Activity context, List<NotificationApp> notificationAppList) {
         this.context = context;
-        this.notificationapplist = datas;
+        this.notificationAppList = notificationAppList;
     }
 
     @NonNull
@@ -37,18 +37,17 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
         // Inflate view from notify_item_layout.xml
         View recyclerViewItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_list_apps, parent, false);
 
-        NotificationAppsViewHolder vh = new NotificationAppsViewHolder(recyclerViewItem);
-
+        final NotificationAppsViewHolder vh = new NotificationAppsViewHolder(recyclerViewItem);
 
         vh.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String packagename = (String) v.getTag();
-
-                if (packagename != null) {
+                String packageName = (String) v.getTag();
+                if (packageName != null) {
                     Log.d(TAG, "onClick");
                     Intent intent = new Intent(context, NotificationActivity.class);
-                    intent.putExtra("packagename", packagename);
+                    intent.putExtra("packageName", packageName);
+                    intent.putExtra("name", vh.name.getText());
                     context.startActivityForResult(intent, 1);
                 }
             }
@@ -58,8 +57,8 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
     }
 
     //to update the Data
-    public void updateData(List<NotificationApp> viewnotificationapplist) {
-        notificationapplist = viewnotificationapplist;
+    public void updateData(List<NotificationApp> notificationApps) {
+        notificationAppList = notificationApps;
 
         //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
         notifyDataSetChanged();
@@ -69,17 +68,17 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
     public void onBindViewHolder(NotificationAppsViewHolder holder, int position) {
 
         // get notification in notificationlist via position
-        final NotificationApp notifyapp = this.notificationapplist.get(position);
+        final NotificationApp app = this.notificationAppList.get(position);
 
         // Bind data to viewholder
-        holder.item.setTag("" + notifyapp.get_notificationapp_package());
+        holder.item.setTag(app.getPackageName());
 
         //get application packageName
         final PackageManager pm = context.getApplicationContext().getPackageManager();
         ApplicationInfo ai;
 
         try {
-            ai = pm.getApplicationInfo(notifyapp.get_notificationapp_package(), 0);
+            ai = pm.getApplicationInfo(app.getPackageName(), 0);
             if(ai != null) {
                 holder.appicon.setImageDrawable( pm.getApplicationIcon(ai));
             }
@@ -89,17 +88,16 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
         }
 
         holder.name.setVisibility(View.VISIBLE);
-        holder.name.setText(notifyapp.get_notificationapp_name());
-        holder.time.setText(notifyapp.get_notificationapp_time());
+        holder.name.setText(app.getName());
+        holder.time.setText(app.getPostTime());
     }
 
     @Override
     public int getItemCount() {
-        if (this.notificationapplist == null) {
+        if (this.notificationAppList == null) {
             return 0;
-        }
-        else {
-            return this.notificationapplist.size();
+        } else {
+            return this.notificationAppList.size();
         }
 
     }

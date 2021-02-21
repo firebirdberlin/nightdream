@@ -578,6 +578,7 @@ public class NightDreamUI {
         hideSystemUI();
 
         settings.reload();
+        notificationStatusBar.setClickable(Settings.useNotificationStatusBar(mContext));
 
         vibrantColor = 0;
         vibrantColorDark = 0;

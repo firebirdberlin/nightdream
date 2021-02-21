@@ -29,8 +29,34 @@ import com.firebirdberlin.nightdream.R;
 
 public class NotificationPreviewLayout extends LinearLayout {
     private static String TAG = "NotificationPreviewLayout";
-    private View notificationPreview;
     final private Handler handler = new Handler();
+    private View notificationPreview;
+    private final Runnable fadePreview = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadePreview);
+            AlphaAnimation alpha;
+            alpha = new AlphaAnimation(1.0f, 0.0f);
+            alpha.setDuration(2000);
+            alpha.setFillAfter(true);
+
+            AnimationSet animationSet = new AnimationSet(true);
+            animationSet.addAnimation(alpha);
+            animationSet.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {}
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    notificationPreview.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {}
+            });
+            notificationPreview.startAnimation(animationSet);
+        }
+    };
 
     public NotificationPreviewLayout(Context context) {
         super(context);
@@ -39,38 +65,6 @@ public class NotificationPreviewLayout extends LinearLayout {
     public NotificationPreviewLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
-
-    private Runnable fadePreview = new Runnable() {
-        @Override
-        public void run() {
-                AlphaAnimation alpha;
-                alpha = new AlphaAnimation(1.0f, 0.0f);
-                alpha.setDuration(2000);
-                alpha.setFillAfter(true);
-
-                AnimationSet animationSet = new AnimationSet(true);
-
-                animationSet.addAnimation(alpha);
-
-                animationSet.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        notificationPreview.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                notificationPreview.startAnimation(animationSet);
-        }
-    };
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, final Intent intent, Drawable smallIcon) {
@@ -93,7 +87,7 @@ public class NotificationPreviewLayout extends LinearLayout {
         appName.setText(intent.getStringExtra("applicationName"));
 
         TextView timestamp = notificationPreview.findViewById(R.id.notify_timestamp);
-        timestamp.setText(intent.getStringExtra("postTimestamp"));
+        timestamp.setText(intent.getStringExtra("postTime"));
 
         TextView title = notificationPreview.findViewById(R.id.notify_title);
         title.setText(intent.getStringExtra("title"));
@@ -102,18 +96,16 @@ public class NotificationPreviewLayout extends LinearLayout {
         ntext.setText(intent.getStringExtra("text"));
 
         Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
-        if (coverBitmap == null)
-        {
+        if (coverBitmap == null) {
             largeIconImageView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             largeIconImageView.setImageBitmap(coverBitmap);
             notificationPreview.findViewById(R.id.notification_control).setVisibility(View.VISIBLE);
         }
 
         OnClickListener onNotificationPreviewClickListener = new OnClickListener() {
             public void onClick(View v) {
-                PendingIntent contentIntent = (PendingIntent) intent.getParcelableExtra("contentintent");
+                PendingIntent contentIntent = (PendingIntent) intent.getParcelableExtra("contentIntent");
                 if (contentIntent != null) {
                     try {
                         contentIntent.send();
@@ -132,17 +124,14 @@ public class NotificationPreviewLayout extends LinearLayout {
 
         removeAllViews();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-             GradientDrawable shape = new GradientDrawable();
-             shape.setCornerRadius(30);
-             shape.setColor(Color.parseColor("#FFFFFFFF"));
-             notificationPreview.findViewById(R.id.notify_linear_layout).setBackground(shape);
-        } else {
-           notificationPreview.findViewById(R.id.notify_linear_layout).setBackgroundColor(Color.parseColor("#FFFFFFFF"));
-        }
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(30);
+        shape.setColor(Color.parseColor("#FFFFFFFF"));
+        notificationPreview.findViewById(R.id.notify_linear_layout).setBackground(shape);
 
         addView(notificationPreview);
         setVisibility(View.VISIBLE);
-        handler.postDelayed(fadePreview,10000);
+        bringToFront();
+        handler.postDelayed(fadePreview, 10000);
     }
 }

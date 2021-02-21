@@ -358,6 +358,17 @@ public class Utility {
         return false;
     }
 
+    public static boolean isEmpty(String string) {
+        return (string == null || string.isEmpty());
+    }
+
+    public static boolean contains(String haystack, String needle) {
+        if (haystack != null && needle != null) {
+            return haystack.contains(needle);
+        }
+        return false;
+    }
+
     public static boolean containsAny(String haystack, String... needles) {
         for (String needle : needles) {
             if (haystack.contains(needle)) {

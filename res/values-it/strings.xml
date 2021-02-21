@@ -195,8 +195,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Messaggi riguardante l\'applicazione</string>
     <string name="notification_channel_desc_radio">Una notifica mostra la stazione radio che si sta riproducendo</string>
     <string name="notification_channel_desc_services">Una notifica indica che l\'applicazione è in esecuzione</string>
-    <string name="notification_grouping_title">Raggruppa notifiche simili</string>
-    <string name="notification_grouping_summary">Raggruppa le notifiche dalle stesse app che mostrano la stessa icona.</string>
     <string name="notification_show_mediastyle_summary">Mostra controlli multimediali</string>
     <string name="notification_show_mediastyle_title">Controlli multimediali</string>
     <string name="notification_lowest_importance">L\'importanza è maggiore o uguale a</string>

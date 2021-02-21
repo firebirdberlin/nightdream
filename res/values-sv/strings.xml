@@ -195,8 +195,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Meddelande rörande app</string>
     <string name="notification_channel_desc_radio">Meddelanden visas när webbradio används</string>
     <string name="notification_channel_desc_services">Meddelanden som visar aktiva tjänster</string>
-    <string name="notification_grouping_title">Gruppera liknande meddelanden</string>
-    <string name="notification_grouping_summary">Gruppera meddelanden tillhörande samma app som visar samma ikon.</string>
     <string name="notification_show_mediastyle_summary">Visa kontroller för mediaspelare</string>
     <string name="notification_show_mediastyle_title">Kontroller för mediaspelare</string>
     <string name="notification_lowest_importance">Viktighet för meddelanden är högre eller lika som</string>

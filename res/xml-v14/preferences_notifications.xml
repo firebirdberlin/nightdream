@@ -55,13 +55,6 @@
             <SwitchPreferenceCompat
                 app:iconSpaceReserved="false"
                 app:defaultValue="false"
-                app:key="groupSimilarNotifications"
-                app:summary="@string/notification_grouping_summary"
-                app:title="@string/notification_grouping_title" />
-
-            <SwitchPreferenceCompat
-                app:iconSpaceReserved="false"
-                app:defaultValue="false"
                 app:key="showMediaStyleNotification"
                 app:summary="@string/notification_show_mediastyle_summary"
                 app:title="@string/notification_show_mediastyle_title" />

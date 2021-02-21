@@ -173,8 +173,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Beskeder om appen</string>
     <string name="notification_channel_desc_radio">Vis beskeder når der afspilles web radio</string>
     <string name="notification_channel_desc_services">Meddelelse om kørende tjenester</string>
-    <string name="notification_grouping_title">Gruppér ens meddelelser</string>
-    <string name="notification_grouping_summary"> Gruppér meddelelser fra de samme apps, der viser det samme ikon.</string>
     <string name="notification_lowest_importance">vigtighed er højere eller lig</string>
     <string name="notification_importance_min">minimal</string>
     <string name="notification_importance_low">lav</string>

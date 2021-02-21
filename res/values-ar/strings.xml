@@ -165,8 +165,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">رسائل متعلقة بالتطبيق</string>
     <string name="notification_channel_desc_radio">ظهور الإشعارات أثناء تشغيل الراديو</string>
     <string name="notification_channel_desc_services">خدمات تشغيل إشارات الإشعارات</string>
-    <string name="notification_grouping_title">مجموعة إشعارات متشابهة</string>
-    <string name="notification_grouping_summary">مجموعة إشعارات من نفس التطبيق تظهر في نفس الأيقونة</string>
     <string name="notification_lowest_importance">الأهمية أعاي أو مساوية لـ</string>
     <string name="notification_importance_min">أقل</string>
     <string name="notification_importance_low">منخفض</string>

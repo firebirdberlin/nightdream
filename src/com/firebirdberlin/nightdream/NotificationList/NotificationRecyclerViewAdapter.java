@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream.NotificationList;
 
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -20,21 +19,19 @@ import com.firebirdberlin.nightdream.R;
 
 import java.util.List;
 
-public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
+public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
     public static String TAG = "CustomRecyclerViewAdapter";
 
-    private List<Notification> notificationlist;
-    private Context context;
+    private List<Notification> notifications;
 
-    public CustomRecyclerViewAdapter(Context context, List<Notification> datas ) {
-        this.context = context;
-        this.notificationlist = datas;
+    public NotificationRecyclerViewAdapter(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 
     @NonNull
     @Override
     public NotificationViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-        Log.d(TAG,"BrowseNotification started");
+        Log.d(TAG, "BrowseNotification started");
 
         // Inflate view from notify_item_layout.xml
         final View recyclerViewItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_list_item_view, parent, false);
@@ -45,7 +42,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
             public void onClick(View v) {
                 try {
                     handleRecyclerItemClick((RecyclerView) parent, v);
-                }catch(Exception ex) {
+                } catch (Exception ex) {
                     Log.e(TAG, "setOnClickListener", ex);
                 }
             }
@@ -55,8 +52,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
     }
 
     //to update the Data
-    public void updateData(List<Notification> viewnotificationlist) {
-        notificationlist = viewnotificationlist;
+    public void updateData(List<Notification> notifications) {
+        this.notifications = notifications;
 
         //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
         notifyDataSetChanged();
@@ -67,10 +64,9 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
 
-        holder.itemView.setTag(""+position);
+        holder.itemView.setTag("" + position);
 
-        // get notification in notificationlist via position
-        final Notification notify = this.notificationlist.get(position);
+        final Notification notification = this.notifications.get(position);
 
         // Bind data to viewholder
         holder.notificationLargePicture.setVisibility(View.GONE);
@@ -80,40 +76,39 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
         holder.notificationRemoteView.removeAllViews();
         holder.itemView.findViewById(R.id.notify).setVisibility(View.VISIBLE);
 
-        holder.notificationMessagebitmap.setImageDrawable(notify.get_notification_drawableicon());
+        holder.notificationMessagebitmap.setImageDrawable(notification.getDrawableIcon());
 
-        if (notify.get_notification_color() != 0) {
-            holder.notificationMessagebitmap.setColorFilter(notify.get_notification_color(), PorterDuff.Mode.SRC_ATOP);
-        }else {
+        if (notification.getColor() != 0) {
+            holder.notificationMessagebitmap.setColorFilter(notification.getColor(), PorterDuff.Mode.SRC_ATOP);
+        } else {
             holder.notificationMessagebitmap.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
         }
 
-        if (notify.get_notification_bitmaplargeicon() != null){
+        if (notification.getBitmapLargeIcon() != null) {
             holder.notificationMessageLargeIcon.setVisibility(View.VISIBLE);
-            holder.notificationMessageLargeIcon.setImageBitmap(notify.get_notification_bitmaplargeicon());
-        }
-        else{
+            holder.notificationMessageLargeIcon.setImageBitmap(notification.getBitmapLargeIcon());
+        } else {
             holder.notificationMessageLargeIcon.setVisibility(View.GONE);
         }
 
-        holder.notificationAppname.setText(notify.get_notification_applicationname() );
-        holder.notificationpostTimeView.setText(notify.get_notification_posttime() );
-        holder.notificationTitle.setText(notify.get_notification_title());
-        holder.notificationText.setText(notify.get_notification_text());
+        holder.notificationAppname.setText(notification.getApplicationName());
+        holder.notificationpostTimeView.setText(notification.getPostTime());
+        holder.notificationTitle.setText(notification.getTitle());
+        holder.notificationText.setText(notification.getText());
 
         //get actions
-        for(TextView ActionText: holder.notificationActionText)
-        {
+        for (TextView ActionText : holder.notificationActionText) {
             ActionText.setVisibility(View.GONE);
         }
 
         try {
             int positionAction = 0;
 
-            if (notify.get_notification_action() != null) {
-                for (final android.app.Notification.Action action : notify.get_notification_action()) {
+            android.app.Notification.Action[] actions = notification.getActions();
+            if (actions != null) {
+                for (final android.app.Notification.Action action : actions) {
                     try {
-                        Log.d(TAG, "ShowActionText ("+positionAction+"): " + action.title.toString().toUpperCase());
+                        Log.d(TAG, "ShowActionText (" + positionAction + "): " + action.title.toString().toUpperCase());
                         holder.notificationActionText[positionAction].setVisibility(View.VISIBLE);
                         holder.notificationActionText[positionAction].setText(action.title.toString().toUpperCase());
                         holder.notificationActionText[positionAction].setTextColor(Color.rgb(0, 0, 200));
@@ -123,30 +118,31 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
                                 try {
                                     action.actionIntent.send();
                                 } catch (Exception ex) {
-                                    Log.e(TAG,ex.toString());
+                                    Log.e(TAG, ex.toString());
                                 }
                             }
                         });
                         positionAction++;
                     } catch (Exception ex) {
-                        Log.e(TAG, "ShowActionText: "+ex );
+                        Log.e(TAG, "ShowActionText: " + ex);
                         for (TextView ActionText : holder.notificationActionText) {
                             ActionText.setVisibility(View.GONE);
                         }
                     }
-                }//end for
+                }
             }
-        }catch (Exception ex){
-            Log.e(TAG,ex.toString());
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
         }
         //End Actions
 
         //get template style
-        String[] template = {"BigPictureStyle", "BigTextStyle", "DecoratedCustomViewStyle", "InboxStyle", "MessagingStyle"};
+        String[] templates = {"BigPictureStyle", "BigTextStyle", "DecoratedCustomViewStyle", "InboxStyle", "MessagingStyle"};
 
         String match = "default";
-        for (String s : template) {
-            if (notify.get_notification_template().contains(s)) {
+        for (String s : templates) {
+            String temp = notification.getTemplate();
+            if (temp != null && temp.contains(s)) {
                 match = s;
                 break;
             }
@@ -154,82 +150,78 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
 
         switch (match) {
             case "DecoratedCustomViewStyle":
-                try{
-                    if(notify.get_notification_bigview().getParent() != null) {
-                        ((ViewGroup)notify.get_notification_bigview().getParent()).removeView(notify.get_notification_bigview()); // <- fix
+                try {
+                    if (notification.getBigCardView().getParent() != null) {
+                        ((ViewGroup) notification.getBigCardView().getParent()).removeView(notification.getBigCardView()); // <- fix
                     }
                     holder.notificationRemoteView.removeAllViews();
                     holder.itemView.findViewById(R.id.notify).setVisibility(View.GONE);
                     if (holder.notificationRemoteView.getChildCount() == 0) {
-                        holder.notificationRemoteView.addView(notify.get_notification_bigview());
+                        holder.notificationRemoteView.addView(notification.getBigCardView());
                     }
-                }catch (Exception ex){
-                   Log.e(TAG, "DecoratedCustomViewStyle", ex);
+                } catch (Exception ex) {
+                    Log.e(TAG, "DecoratedCustomViewStyle", ex);
                 }
                 break;
             case "InboxStyle":
-                holder.notificationText.setText(notify.get_notification_textlines());
+                holder.notificationText.setText(notification.getTextLines());
                 break;
             case "MessagingStyle":
-                holder.notificationText.setText(notify.get_notification_messages());
+                holder.notificationText.setText(notification.getMessages());
                 break;
             case "BigTextStyle":
-                if (!notify.get_notification_titlebig().equals("")){
-                    holder.notificationTitle.setText(notify.get_notification_titlebig());
+                if (!notification.getTitleBig().equals("")) {
+                    holder.notificationTitle.setText(notification.getTitleBig());
+                } else {
+                    holder.notificationTitle.setText(notification.getTitle());
                 }
-                else{
-                    holder.notificationTitle.setText(notify.get_notification_title());
-                }
-                if (!notify.get_notification_textbig().equals("")){
-                    holder.notificationText.setText(notify.get_notification_textbig());
-                }
-                else{
-                    holder.notificationText.setText(notify.get_notification_text());
+                if (!notification.getTextBig().isEmpty()) {
+                    holder.notificationText.setText(notification.getTextBig());
+                } else {
+                    holder.notificationText.setText(notification.getText());
                 }
                 break;
             case "BigPictureStyle":
-                if (!notify.get_notification_titlebig().equals("")){
-                    holder.notificationTitle.setText(notify.get_notification_titlebig());
+                if (!notification.getTitleBig().isEmpty()) {
+                    holder.notificationTitle.setText(notification.getTitleBig());
+                } else {
+                    holder.notificationTitle.setText(notification.getTitle());
                 }
-                else{
-                    holder.notificationTitle.setText(notify.get_notification_title());
-                }
-                if (!notify.get_notification_summarytext().equals("")){
-                    holder.notificationText.setText(notify.get_notification_summarytext());
-                }
-                else{
-                    holder.notificationText.setText(notify.get_notification_text());
+                if (!notification.getSummaryText().isEmpty()) {
+                    holder.notificationText.setText(notification.getSummaryText());
+                } else {
+                    holder.notificationText.setText(notification.getText());
                 }
 
-                if (notify.get_notification_bitmaplargeicon() == null){
+                if (notification.getBitmapLargeIcon() == null) {
                     holder.notificationMessageLargeIcon.setVisibility(View.VISIBLE);
-                    holder.notificationMessageLargeIcon.setImageBitmap(notify.get_notification_bigpicture());
+                    holder.notificationMessageLargeIcon.setImageBitmap(notification.getBigPicture());
                 }
 
                 holder.notificationLargePicture.setVisibility(View.VISIBLE);
-                holder.notificationLargePicture.setImageBitmap(notify.get_notification_bigpicture());
+                holder.notificationLargePicture.setImageBitmap(notification.getBigPicture());
                 holder.notificationLargePicture.bringToFront();
                 break;
             case "default":
                 //try to set a custom view without style
                 holder.itemView.findViewById(R.id.notify_remoteview);
 
-                for(int index = 0; index < holder.notificationRemoteView.getChildCount(); index++) {
+                for (int index = 0; index < holder.notificationRemoteView.getChildCount(); index++) {
                     View nextChild = holder.notificationRemoteView.getChildAt(index);
                     holder.notificationRemoteView.removeView(nextChild);
                 }
 
-                try{
-                    if(notify.get_notification_view()!=null) {
-                        if (notify.get_notification_view().getParent() != null) {
-                            ((ViewGroup) notify.get_notification_view().getParent()).removeView(notify.get_notification_view());
+                try {
+                    if (notification.getCardView() != null) {
+                        if (notification.getCardView().getParent() != null) {
+                            ((ViewGroup) notification.getCardView().getParent()).removeView(notification.getCardView());
                         }
                         holder.notificationRemoteView.removeAllViews();
-                        holder.notificationRemoteView.addView(notify.get_notification_view());
+                        holder.notificationRemoteView.addView(notification.getCardView());
 
                         holder.itemView.findViewById(R.id.notify).setVisibility(View.GONE);
                     }
-                }catch (Exception ex) {
+                } catch (Exception ex) {
                     Log.e(TAG, "defaultstyle: ", ex);
                 }
                 break;
@@ -239,16 +231,16 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<Notification
     //Returns the total number of items in the data set held by the adapter.
     @Override
     public int getItemCount() {
-        return this.notificationlist.size();
+        return this.notifications.size();
     }
 
     // Interface definition for a callback to be invoked when a view is clicked.
     private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) throws PendingIntent.CanceledException, IntentSender.SendIntentException {
         int itemPosition = recyclerView.getChildLayoutPosition(itemView);
-        Notification notify  = this.notificationlist.get(itemPosition);
+        Notification notify = this.notifications.get(itemPosition);
         try {
-            if (notify.get_notification_contentintent() != null) {
-                notify.get_notification_contentintent().send();
+            if (notify.getPendingIntent() != null) {
+                notify.getPendingIntent().send();
             }
         } catch (PendingIntent.CanceledException e) {
             throw new IntentSender.SendIntentException(e);

@@ -195,8 +195,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Berichten over deze app</string>
     <string name="notification_channel_desc_radio">Notificatie weergave tijdens afspelen van web radio</string>
     <string name="notification_channel_desc_services">Notificatie weergave voor lopende diensten</string>
-    <string name="notification_grouping_title">Groepeer identieke notificaties</string>
-    <string name="notification_grouping_summary">Groepeer notificaties van dezelfde applicaties die dezelfde icoon tonen.</string>
     <string name="notification_show_mediastyle_summary">Toon</string>
     <string name="notification_show_mediastyle_title">Media-instellingen</string>
     <string name="notification_lowest_importance">Belangrijk is hoger of gelijk aan</string>

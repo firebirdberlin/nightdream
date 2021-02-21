@@ -18,30 +18,9 @@ import android.widget.RemoteViews;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-public class Notification implements Parcelable {
+import java.text.SimpleDateFormat;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    protected Notification(Parcel in) {
-        notification_bigpicture = in.readParcelable(Bitmap.class.getClassLoader());
-        notification_time = in.readString();
-        notification_posttimestamp = in.readString();
-        notification_posttime = in.readString();
-        notification_applicationname = in.readString();
-        notification_text = in.readString();
-        notification_textbig = in.readString();
-        notification_summarytext = in.readString();
-        notification_remoteview = in.readParcelable(RemoteViews.class.getClassLoader());
-        notification_bitmaplargeicon = in.readParcelable(Bitmap.class.getClassLoader());
-        notification_title = in.readString();
-        notification_titlebig = in.readString();
-        notification_template = in.readString();
-        notification_contentintent = in.readParcelable(PendingIntent.class.getClassLoader());
-        notification_action = in.createTypedArray(android.app.Notification.Action.CREATOR);
-        notification_package = in.readString();
-        notification_clearable = in.readByte() != 0;
-        notification_child_id = in.readInt();
-        notification_color = in.readInt();
-    }
+public class Notification implements Parcelable {
 
     public static final Creator<Notification> CREATOR = new Creator<Notification>() {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -55,6 +34,112 @@ public class Notification implements Parcelable {
             return new Notification[size];
         }
     };
+    public static String TAG = "Notification";
+    private final Bitmap bigPicture;
+    private final String time;
+    private final long postTimestamp;
+    private final String applicationName;
+    private final String text;
+    private final String textBig;
+    private final String summaryText;
+    private final RemoteViews remoteView;
+    private View cardView;
+    private View bigCardView;
+    private Drawable drawableIcon;
+    private final Bitmap bitmapLargeIcon;
+    private final String title;
+    private final String titleBig;
+    private final String template;
+    private Spanned notification_messages;
+    private Spanned notification_textlines;
+    private final PendingIntent pendingIntent;
+    private final android.app.Notification.Action[] actions;
+    private final String packageName;
+    private final boolean isClearable;
+    private int childId;
+    private final Integer color;
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    protected Notification(Parcel in) {
+        bigPicture = in.readParcelable(Bitmap.class.getClassLoader());
+        time = in.readString();
+        postTimestamp = in.readLong();
+        applicationName = in.readString();
+        text = in.readString();
+        textBig = in.readString();
+        summaryText = in.readString();
+        remoteView = in.readParcelable(RemoteViews.class.getClassLoader());
+        bitmapLargeIcon = in.readParcelable(Bitmap.class.getClassLoader());
+        title = in.readString();
+        titleBig = in.readString();
+        template = in.readString();
+        pendingIntent = in.readParcelable(PendingIntent.class.getClassLoader());
+        actions = in.createTypedArray(android.app.Notification.Action.CREATOR);
+        packageName = in.readString();
+        isClearable = in.readByte() != 0;
+        childId = in.readInt();
+        color = in.readInt();
+    }
+
+    public Notification(Context context, Intent intent) {
+        this.postTimestamp = intent.getLongExtra("postTimestamp", 0L);
+        this.time = intent.getStringExtra("timestamp");
+        this.template = intent.getStringExtra("template");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), null, null);
+        }
+        this.text = intent.getStringExtra("text");
+        this.textBig = intent.getStringExtra("textBig");
+        this.summaryText = intent.getStringExtra("summaryText");
+        this.bigPicture = intent.getParcelableExtra("bigPicture");
+        this.remoteView = intent.getParcelableExtra("contentView");
+        this.applicationName = intent.getStringExtra("applicationName");
+        this.title = intent.getStringExtra("title");
+        this.titleBig = intent.getStringExtra("titleBig");
+        this.actions = (android.app.Notification.Action[]) intent.getParcelableArrayExtra("actions");
+        this.packageName = intent.getStringExtra("packageName");
+        this.pendingIntent = intent.getParcelableExtra("contentIntent");
+        this.isClearable = intent.getBooleanExtra("isClearable", true);
+        this.color = intent.getIntExtra("color", 0);
+
+        //RemoteView to View
+        FrameLayout container = new FrameLayout(context);
+        RemoteViews notificationRemoteView = intent.getParcelableExtra("contentView");
+        if (notificationRemoteView != null) {
+            View view = notificationRemoteView.apply(context, container);
+            container.addView(view);
+            this.cardView = container;
+        }
+
+        //BigRemoteView to View
+        container = new FrameLayout(context);
+        RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigView");
+        if (notificationRemoteBigView != null) {
+            View view = notificationRemoteBigView.apply(context, container);
+            container.addView(view);
+            this.bigCardView = container;
+        }
+
+        //get drawable SmallIcon
+        try {
+            Context remotePackageContext = context.getApplicationContext().createPackageContext(intent.getStringExtra("packageName"), 0);
+            this.drawableIcon = ContextCompat.getDrawable(remotePackageContext, intent.getIntExtra("iconId", 0));
+
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+
+        this.bitmapLargeIcon = intent.getParcelableExtra("largeIconBitmap");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textLines"), Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textLines"), null, null);
+        }
+
+        childId = -1;
+    }
 
     @Override
     public int describeContents() {
@@ -63,191 +148,118 @@ public class Notification implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(notification_bigpicture, i);
-        parcel.writeString(notification_time);
-        parcel.writeString(notification_posttimestamp);
-        parcel.writeString(notification_posttime);
-        parcel.writeString(notification_applicationname);
-        parcel.writeString(notification_text);
-        parcel.writeString(notification_textbig);
-        parcel.writeString(notification_summarytext);
-        parcel.writeParcelable(notification_remoteview, i);
-        parcel.writeParcelable(notification_bitmaplargeicon, i);
-        parcel.writeString(notification_title);
-        parcel.writeString(notification_titlebig);
-        parcel.writeString(notification_template);
-        parcel.writeParcelable(notification_contentintent, i);
-        parcel.writeTypedArray(notification_action, i);
-        parcel.writeString(notification_package);
-        parcel.writeByte((byte) (notification_clearable ? 1 : 0));
-        parcel.writeInt(notification_child_id);
-        parcel.writeInt(notification_color);
+        parcel.writeParcelable(bigPicture, i);
+        parcel.writeString(time);
+        parcel.writeLong(postTimestamp);
+        parcel.writeString(applicationName);
+        parcel.writeString(text);
+        parcel.writeString(textBig);
+        parcel.writeString(summaryText);
+        parcel.writeParcelable(remoteView, i);
+        parcel.writeParcelable(bitmapLargeIcon, i);
+        parcel.writeString(title);
+        parcel.writeString(titleBig);
+        parcel.writeString(template);
+        parcel.writeParcelable(pendingIntent, i);
+        parcel.writeTypedArray(actions, i);
+        parcel.writeString(packageName);
+        parcel.writeByte((byte) (isClearable ? 1 : 0));
+        parcel.writeInt(childId);
+        parcel.writeInt(color);
     }
 
-    public static String TAG = "Notification";
-    private Bitmap notification_bigpicture;
-    private String notification_time;
-    private String notification_posttimestamp;
-    private String notification_posttime;
-    private String notification_applicationname;
-    private String notification_text;
-    private String notification_textbig;
-    private String notification_summarytext;
-    private RemoteViews notification_remoteview;
-    private View notification_cardview;
-    private View notification_bigcardview;
-    private Drawable notification_drawableicon;
-    private Bitmap notification_bitmaplargeicon;
-    private String notification_title;
-    private String notification_titlebig;
-    private String notification_template;
-    private Spanned notification_messages;
-    private Spanned notification_textlines;
-    private PendingIntent notification_contentintent;
-    private android.app.Notification.Action[] notification_action;
-    private String notification_package;
-    private boolean notification_clearable;
-    private int notification_child_id;
-    private Integer notification_color;
-
-    public Notification(Context context, Intent intent) {
-        this.notification_posttimestamp=  intent.getStringExtra("posttimestamp");
-        this.notification_time=  intent.getStringExtra("timestamp");
-        this.notification_posttime=  intent.getStringExtra("posttime");
-        this.notification_template=  intent.getStringExtra("template");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), null, null);
-        }
-        this.notification_text= intent.getStringExtra("text");
-        this.notification_textbig= intent.getStringExtra("textbig");
-        this.notification_summarytext= intent.getStringExtra("summarytext");
-        this.notification_bigpicture= intent.getParcelableExtra("bigpicture");
-        this.notification_remoteview = intent.getParcelableExtra("view");
-        this.notification_applicationname = intent.getStringExtra("applicationname");
-        this.notification_title = intent.getStringExtra("title");
-        this.notification_titlebig = intent.getStringExtra("titlebig");
-        this.notification_action = (android.app.Notification.Action[]) intent.getParcelableArrayExtra("action");
-        this.notification_package = intent.getStringExtra("package");
-        this.notification_contentintent= intent.getParcelableExtra("contentintent");
-        this.notification_clearable = intent.getBooleanExtra("clearable", true);
-        this.notification_color = intent.getIntExtra("color",0);
-
-        //RemoteView to View
-        FrameLayout CONTAINER = new FrameLayout(context);
-        RemoteViews notificationRemoteView = intent.getParcelableExtra("view");
-        if (notificationRemoteView != null) {
-            View view = notificationRemoteView.apply(context, CONTAINER);
-            CONTAINER.addView(view);
-            this.notification_cardview = CONTAINER;
-        }
-
-        //BigRemoteView to View
-        CONTAINER = new FrameLayout(context);
-        RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigview");
-        if (notificationRemoteBigView != null) {
-            View view = notificationRemoteBigView.apply(context, CONTAINER);
-            CONTAINER.addView(view);
-            this.notification_bigcardview = CONTAINER;
-        }
-
-        //get drawable SmallIcon
-        try{
-            Context remotePackageContext = context.getApplicationContext().createPackageContext(intent.getStringExtra("package"), 0);
-            this.notification_drawableicon = ContextCompat.getDrawable(remotePackageContext, intent.getIntExtra("iconresid",0));
-
-        }catch (Exception ex){
-            Log.e(TAG,ex.toString());
-        }
-
-        this.notification_bitmaplargeicon = intent.getParcelableExtra("largeiconbitmap");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textlines"), Html.FROM_HTML_MODE_LEGACY);
-        }
-        else {
-            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textlines"), null, null);
-        }
-
-        notification_child_id = -1;
+    public String getText() {
+        return text;
     }
 
-    public String get_notification_text() {
-        return notification_text;
+    public String getTextBig() {
+        return textBig;
     }
 
-    public String get_notification_textbig() {return notification_textbig;}
-
-    public String get_notification_summarytext() {
-        return notification_summarytext;
+    public String getSummaryText() {
+        return summaryText;
     }
 
-    public String get_notification_template() {
-        return notification_template;
+    public String getTemplate() {
+        return template;
     }
 
-    public Spanned get_notification_messages() {
+    public Spanned getMessages() {
         return notification_messages;
     }
 
-    public Spanned get_notification_textlines() {
+    public Spanned getTextLines() {
         return notification_textlines;
     }
 
-    public Drawable get_notification_drawableicon() {return notification_drawableicon;}
-
-    public Bitmap get_notification_bitmaplargeicon() {return notification_bitmaplargeicon;}
-
-    public String get_notification_time() {
-        return notification_time;
+    public Drawable getDrawableIcon() {
+        return drawableIcon;
     }
 
-    public String get_notification_posttimestamp() {
-        return notification_posttimestamp;
+    public Bitmap getBitmapLargeIcon() {
+        return bitmapLargeIcon;
     }
 
-    public String get_notification_title() {
-        return notification_title;
+    public String getTime() {
+        return time;
     }
 
-    public String get_notification_titlebig() {
-        return notification_titlebig;
+    public long getPostTimestamp() {
+        return postTimestamp;
     }
 
-    public String get_notification_posttime() {return notification_posttime;}
-
-    public String get_notification_applicationname() {
-        return notification_applicationname;
+    public String getTitle() {
+        return title;
     }
 
-    public Bitmap get_notification_bigpicture() {
-        return notification_bigpicture;
+    public String getTitleBig() {
+        return titleBig;
     }
 
-    public RemoteViews get_notification_remoteview () {return notification_remoteview;}
-
-    public View get_notification_view () {return notification_cardview;}
-
-    public View get_notification_bigview () {return notification_bigcardview;}
-
-    public PendingIntent get_notification_contentintent () {return notification_contentintent;}
-
-    public android.app.Notification.Action[] get_notification_action() {return notification_action;}
-
-    public String get_notification_package() {
-        return notification_package;
+    public String getPostTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+        return dateFormat.format(postTimestamp);
     }
 
-    public Boolean get_notification_clearable() {
-        return notification_clearable;
+    public String getApplicationName() {
+        return applicationName;
     }
 
-    public int get_notification_child_id(){return notification_child_id;}
+    public Bitmap getBigPicture() {
+        return bigPicture;
+    }
 
-    public int get_notification_color(){return notification_color;}
+    public View getCardView() {
+        return cardView;
+    }
 
-    public void set_notification_child_id(int notification_child_id){this.notification_child_id = notification_child_id;}
+    public View getBigCardView() {
+        return bigCardView;
+    }
+
+    public PendingIntent getPendingIntent() {
+        return pendingIntent;
+    }
+
+    public android.app.Notification.Action[] getActions() {
+        return actions;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public Boolean isClearable() {
+        return isClearable;
+    }
+
+    public void setChildId(int notification_child_id) {
+        this.childId = notification_child_id;
+    }
+
+    public int getColor() {
+        return color;
+    }
 
 }
 
