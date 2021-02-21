@@ -1,8 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,7 +24,6 @@ import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -37,7 +34,6 @@ import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -45,51 +41,17 @@ import java.util.List;
 public class mNotificationListener extends NotificationListenerService {
 
     public static boolean running = false;
+    private final String TAG = this.getClass().getSimpleName();
+    private final List<com.firebirdberlin.nightdream.NotificationList.Notification> notifications = new ArrayList<>();
+    private final List<NotificationApp> notificationApps = new ArrayList<>();
     int minNotificationImportance = 2;
-    boolean groupSimilarNotifications = false;
-    HashMap<String, HashSet<Integer>> iconIdsByPackage = new HashMap<>();
-    private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlServiceReceiver;
 
-    private List<com.firebirdberlin.nightdream.NotificationList.Notification> notificationlist = new ArrayList<>();
-    private List<com.firebirdberlin.nightdream.NotificationList.NotificationApp> notificationapplist = new ArrayList<>();
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        //retrieving data from the received intent
-        final Context context = this;
-
-        if(intent.hasExtra("command")) {
-            Log.d(TAG,"NL - onStartCommand:" + intent.getStringExtra("command"));
-
-            switch (intent.getStringExtra("command")) {
-                case "getnotificationlist":
-                    Log.d(TAG, "getnotificationlist");
-                    Intent intent_notificationlist = new Intent("Notification.Action.notificationlist");
-                    intent_notificationlist.putParcelableArrayListExtra("notificationlist", (ArrayList<? extends Parcelable>) notificationlist);
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent_notificationlist);
-                    break;
-                case "getnotificationapplist":
-                    Log.d(TAG, "getnotificationapplist: "+notificationapplist);
-                    Intent intent_notificationapplist = new Intent("Msg");
-                    intent_notificationapplist.putParcelableArrayListExtra("notificationapplist", (ArrayList<? extends Parcelable>) notificationapplist);
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent_notificationapplist);
-                    break;
-            }
-        }
-/*
-        if(intent.hasExtra("getnotificationlist")) {
-            Log.d(TAG,"getnotificationlist");
-            Intent i1 = new  Intent("Msg");
-            i1.putParcelableArrayListExtra("notificationlist", (ArrayList<? extends Parcelable>) notificationlist);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(i1);
-        }
-
- */
-        super.onStartCommand(intent, flags, startId);
-
-        //prevent the automatic service termination
-        return START_STICKY;
+    public static void requestNotificationList(Context context) {
+        Log.d("mNotificationListener", "requestNotificationList()");
+        Intent intent = new Intent(context, mNotificationListener.class);
+        intent.putExtra("command", "getNotificationList");
+        context.startService(intent);
     }
 
     private static Bitmap drawableToBitMap(Drawable drawable) {
@@ -108,6 +70,21 @@ public class mNotificationListener extends NotificationListenerService {
             drawable.draw(canvas);
             return bitmap;
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //retrieving data from the received intent
+        String command = intent.getStringExtra("command");
+        if (command != null) {
+            if ("getNotificationList".equals(command)) {
+                listNotifications();
+            }
+        }
+        super.onStartCommand(intent, flags, startId);
+
+        //prevent the automatic service termination
+        return START_STICKY;
     }
 
     @Override
@@ -132,23 +109,19 @@ public class mNotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
-        groupSimilarNotifications = Settings.groupSimilarNotifications(this);
 
         Log.i(TAG, "++++ notification posted ++++");
         logNotification(sbn);
+        if (shallIgnoreNotification(sbn)) return;
 
         Intent i = getIntentForBroadCast(sbn);
         if (i != null) {
+            i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("action", "added_preview");
             LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         }
 
-        if (shallIgnoreNotification(sbn)) return;
         listNotifications();
-
-        if (Build.VERSION.SDK_INT >= 28) {
-            getNotificationListData();
-        }
 
         if (!Utility.isScreenOn(this)) {
             conditionallyStartActivity();
@@ -157,29 +130,20 @@ public class mNotificationListener extends NotificationListenerService {
 
     private boolean shallIgnoreNotification(StatusBarNotification sbn) {
 
+        Notification notification = sbn.getNotification();
+        if (notification == null) return true;
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            Bundle extras = sbn.getNotification().extras;
-            if (
-                    extras.containsKey(Notification.EXTRA_TEMPLATE)
-                            && extras.getCharSequence("android.template") != null
-            ) {
-                if (((String) extras.getCharSequence("android.template")).contains("MediaStyle")) {
-                    Log.w(TAG, "MediaStyle notification found");
-                    return false;
-                }
+            Bundle extras = notification.extras;
+            String template = (String) extras.getCharSequence("android.template");
+            if (template != null && template.contains("MediaStyle")) {
+                Log.w(TAG, "MediaStyle notification found");
+                return false;
             }
         }
 
         if (!isClearable(sbn)) return true;
-        Notification notification = sbn.getNotification();
 
-        if (notification == null) return true;
-
-        if (groupSimilarNotifications && isIconIdInCache(sbn)) {
-            return true;
-        }
-
-        //if ( getTitle(sbn) == null ) return true;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return (notification.priority < minNotificationImportance - 3);
         }
@@ -223,7 +187,9 @@ public class mNotificationListener extends NotificationListenerService {
 
     private void listNotifications() {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
-        groupSimilarNotifications = Settings.groupSimilarNotifications(this);
+        notifications.clear();
+        notificationApps.clear();
+
         clearNotificationUI();
         HashSet<String> groupKeys = new HashSet<>();
 
@@ -236,7 +202,6 @@ public class mNotificationListener extends NotificationListenerService {
 
         if (notificationList == null) return;
 
-        iconIdsByPackage.clear();
         for (StatusBarNotification sbn : notificationList) {
             Notification notification = sbn.getNotification();
             if (notification == null) continue;
@@ -255,112 +220,188 @@ public class mNotificationListener extends NotificationListenerService {
                 continue;
             }
 
-            addIconIdToCache(sbn);
-
             Intent i = getIntentForBroadCast(sbn);
-            if (i != null) {
-                i.putExtra("action", "added");
-
-                // Utility.logIntent(TAG, "notification intent", i);
-                LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+            if (i == null) {
+                continue;
             }
-        }
-    }
+            String template = i.getStringExtra("template");
+            if (template == null) {
+                continue;
+            }
+            if (template.contains("MediaStyle")) {
+                i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
+                i.putExtra("action", "added_media");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+                continue;
+            }
+            notifications.add(
+                    new com.firebirdberlin.nightdream.NotificationList.Notification(
+                            getApplicationContext(), i
+                    )
+            );
 
-    void addIconIdToCache(StatusBarNotification sbn) {
-        String packageName = sbn.getPackageName();
-        Notification notification = sbn.getNotification();
-        if (notification == null) {
-            return;
-        }
-        HashSet<Integer> ids = iconIdsByPackage.get(packageName);
-        if (ids == null) {
-            ids = new HashSet<>();
-            iconIdsByPackage.put(packageName, ids);
-        }
-        ids.add(getIconId(notification));
-    }
+            String applicationName = i.getStringExtra("applicationName");
+            boolean addApp = true;
+            for (NotificationApp app : notificationApps) {
+                addApp = addApp && !app.getName().equals(applicationName);
+                if (app.getName().equals(applicationName)) {
+                    if (app.getPostTimestamp() < sbn.getPostTime()) {
+                        app.setPostTimestamp(sbn.getPostTime());
+                    }
+                }
+            }
+            if (addApp) {
+                notificationApps.add(new NotificationApp(i));
+            }
 
-    boolean isIconIdInCache(StatusBarNotification sbn) {
-        String packageName = sbn.getPackageName();
-        HashSet<Integer> iconIds = iconIdsByPackage.get(packageName);
-        Notification notification = sbn.getNotification();
-        int iconID = getIconId(notification);
-        return (iconID > 0 && iconIds != null && iconIds.contains(iconID));
+        }
+        Intent intentList = new Intent("Notification.Action.notificationList");
+        intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intentList);
+
+        Intent intentAppsList = new Intent(Config.ACTION_NOTIFICATION_APPS_LISTENER);
+        intentAppsList.putExtra("action", "scan");
+        intentAppsList.putParcelableArrayListExtra("notificationApps", (ArrayList<? extends Parcelable>) notificationApps);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intentAppsList);
     }
 
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
         final Context context = this;
         Notification notification = sbn.getNotification();
-        if (notification != null) {
-            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-            i.putExtra("packageName", sbn.getPackageName());
-            i.putExtra("iconId", getIconId(notification));
-            i.putExtra("tickerText", notification.tickerText);
-            i.putExtra("number", notification.number);
+        if (notification == null) {
+            return null;
+        }
+        String packageName = sbn.getPackageName();
+        String applicationName = getApplicationLabel(packageName);
+        Bitmap largeIconBitmap = getLargeIconBitmap(context, sbn);
+        Notification.Action[] actions = null;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            actions = notification.actions;
+        }
+        int color = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            color = notification.color;
+        }
+        PendingIntent contentIntent = notification.contentIntent;
+        Bitmap bigPicture = null;
+        CharSequence summaryText = "";
+        CharSequence template = "";
+        CharSequence textBigData = "";
+        CharSequence textData = "";
+        CharSequence titleBigData = "";
+        CharSequence titleData = "";
+        StringBuilder textLinesData = new StringBuilder();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            Bundle extras = notification.extras;
 
-            //get extra information
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                Bundle extras = notification.extras;
-                if (
-                        extras.containsKey(Notification.EXTRA_TEMPLATE)
-                                && extras.getCharSequence("android.template") != null
-                ) {
-                    i.putExtra("template", extras.getCharSequence("android.template").toString());
-                }
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    Icon largeIcon = notification.getLargeIcon();
-                    if (largeIcon != null) {
-                        Bitmap largeIconBitmap = drawableToBitMap(largeIcon.loadDrawable(context));
-                        i.putExtra("largeIconBitmap", largeIconBitmap);
-                    }
-                } else {
-                    if (extras.containsKey(Notification.EXTRA_PICTURE)) {
-                        i.putExtra("largeIconBitmap", (Bitmap) extras.get(Notification.EXTRA_PICTURE));
-                    }
-                }
-
-                //notification actions
-                try {
-                    Notification.Action[] actions = notification.actions;
-                    i.putExtra("actions", actions);
-                } catch (Exception ignored) {
-
-                }
-                //get application packageName
-                final PackageManager pm = getApplicationContext().getPackageManager();
-                ApplicationInfo info;
-                try {
-                    info = pm.getApplicationInfo(sbn.getPackageName(), 0);
-                } catch (final PackageManager.NameNotFoundException e) {
-                    info = null;
-                }
-                final String applicationName = (String) (info != null ? pm.getApplicationLabel(info) : "(unknown)");
-                i.putExtra("applicationName", applicationName);
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
-                String postTime = dateFormat.format(sbn.getPostTime());
-                i.putExtra("postTimestamp", postTime);
-
-                if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getCharSequence("android.title") != null) {
-                    i.putExtra("title", extras.getCharSequence("android.title").toString());
-                }
-
-                if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
-                    i.putExtra("text", extras.getCharSequence("android.text").toString());
-                }
-
-                //get content Intent from notification
-                if (sbn.getNotification().contentIntent != null) {
-                    i.putExtra("contentintent", sbn.getNotification().contentIntent);
-                }
+            template = extras.getCharSequence("android.template");
+            if (template == null) template = "";
+            if (extras.containsKey(Notification.EXTRA_PICTURE)) {
+                bigPicture = (Bitmap) extras.get(Notification.EXTRA_PICTURE);
             }
 
-            return i;
+            if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getCharSequence("android.title") != null) {
+                titleData = extras.getCharSequence("android.title");
+            }
+            if (extras.containsKey(Notification.EXTRA_TITLE_BIG) && extras.getCharSequence("android.title.big") != null) {
+                titleBigData = extras.getCharSequence("android.title.big");
+            }
+
+            //this is the longer text shown in the big form of a BigTextStyle notification,
+            if (extras.containsKey(Notification.EXTRA_BIG_TEXT) && extras.getCharSequence("android.bigText") != null) {
+                textBigData = extras.getCharSequence("android.bigText");
+            }
+
+            //this is the summary information intended to be shown alongside expanded notification
+            if (extras.containsKey(Notification.EXTRA_SUMMARY_TEXT) && extras.getCharSequence("android.summaryText") != null) {
+                summaryText = extras.getCharSequence("android.summaryText");
+            }
+            if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
+                textData = extras.getCharSequence("android.text");
+            }
+
+            //An array of CharSequences to show in InboxStyle expanded notifications
+            if (extras.containsKey(Notification.EXTRA_TEXT_LINES)) {
+                CharSequence[] messages = extras.getCharSequenceArray("android.textLines");
+                if (messages != null) {
+                    for (CharSequence message : messages) {
+                        if (textLinesData.toString().equals("")) {
+                            textLinesData = new StringBuilder(message.toString());
+                        } else {
+                            textLinesData.append("<br>").append(message.toString());
+                        }
+                    }
+                }
+            }
         }
-        return null;
+
+        // the "ticker" text which is sent to accessibility services.
+        CharSequence tickerText = "";
+        if (notification.tickerText != null) {
+            tickerText = notification.tickerText;
+        }
+
+
+        // Extract MessagingStyle object from the active notification.
+        StringBuilder notification_messages = new StringBuilder();
+        {
+            String lastPerson = "";
+            NotificationCompat.MessagingStyle activeStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(notification);
+            if (activeStyle != null) {
+                for (NotificationCompat.MessagingStyle.Message message : activeStyle.getMessages()) {
+                    if (message.getPerson() != null && message.getPerson().getName() != null) {
+                        if (lastPerson.contentEquals(message.getPerson().getName())) {
+                            notification_messages.append("<br>").append(message.getText());
+                        } else {
+                            if (notification_messages.toString().equals("")) {
+                                notification_messages = new StringBuilder(message.getPerson().getName() + "<br> " + message.getText());
+                            } else {
+                                notification_messages.append("<br>").append(message.getPerson().getName()).append("<br> ").append(message.getText());
+                            }
+                            lastPerson = message.getPerson().getName().toString();
+                        }
+                    }
+                }
+            }
+        }
+
+        //get date and time
+        long postTimestamp = sbn.getPostTime();
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ZZZZ", java.util.Locale.getDefault());
+        String date = dateFormat.format(now);
+
+        dateFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+        String postTime = dateFormat.format(postTimestamp);
+
+        Intent intent = new Intent();
+        intent.putExtra("actions", actions);
+        intent.putExtra("applicationName", applicationName);
+        intent.putExtra("bigPicture", bigPicture);
+        intent.putExtra("bigView", notification.bigContentView);
+        intent.putExtra("color", color);
+        intent.putExtra("contentIntent", contentIntent);
+        intent.putExtra("contentView", notification.contentView);
+        intent.putExtra("iconId", getIconId(sbn.getNotification()));
+        intent.putExtra("id", sbn.getId());
+        intent.putExtra("isClearable", sbn.isClearable());
+        intent.putExtra("largeIconBitmap", largeIconBitmap);
+        intent.putExtra("messages", notification_messages.toString());
+        intent.putExtra("number", notification.number);
+        intent.putExtra("packageName", packageName);
+        intent.putExtra("postTime", postTime);
+        intent.putExtra("postTimestamp", postTimestamp);
+        intent.putExtra("summaryText", summaryText.toString());
+        intent.putExtra("template", template.toString());
+        intent.putExtra("text", textData.toString());
+        intent.putExtra("textBig", textBigData.toString());
+        intent.putExtra("textLines", textLinesData.toString());
+        intent.putExtra("tickerText", tickerText);
+        intent.putExtra("timestamp", date);
+        intent.putExtra("title", titleData.toString());
+        intent.putExtra("titleBig", titleBigData.toString());
+        return intent;
     }
 
     private boolean isClearable(StatusBarNotification sbn) {
@@ -431,20 +472,39 @@ public class mNotificationListener extends NotificationListenerService {
         //Log.d(TAG, notification.toString());
     }
 
-    private CharSequence getTitle(StatusBarNotification sbn) {
-        Notification notification = sbn.getNotification();
-        CharSequence title = "";
-        CharSequence text = "";
-        if (Build.VERSION.SDK_INT >= 19) {
-            return notification.extras.getCharSequence(Notification.EXTRA_TITLE);
-        }
-        return null;
-    }
-
     private void clearNotificationUI() {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("action", "clear");
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+    }
+
+    private String getApplicationLabel(String packageName) {
+        final PackageManager pm = getApplicationContext().getPackageManager();
+        ApplicationInfo ai;
+
+        try {
+            ai = pm.getApplicationInfo(packageName, 0);
+        } catch (final PackageManager.NameNotFoundException e) {
+            ai = null;
+        }
+        return (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+    }
+
+    private Bitmap getLargeIconBitmap(Context context, StatusBarNotification sbn) {
+        Notification notification = sbn.getNotification();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            Icon largeIcon = notification.getLargeIcon();
+            if (largeIcon != null) {
+                return drawableToBitMap(largeIcon.loadDrawable(context));
+            }
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Bundle extras = notification.extras;
+            if (extras.containsKey(Notification.EXTRA_PICTURE)) {
+                return (Bitmap) extras.get(Notification.EXTRA_PICTURE);
+            }
+        }
+        return null;
     }
 
     class NLServiceReceiver extends BroadcastReceiver {
@@ -461,9 +521,6 @@ public class mNotificationListener extends NotificationListenerService {
                     break;
                 case "list":
                     listNotifications();
-                    if (Build.VERSION.SDK_INT >= 28) {
-                        getNotificationListData();
-                    }
                     break;
                 case "release":
                     Log.d(TAG, "calling stopSelf()");
@@ -472,271 +529,4 @@ public class mNotificationListener extends NotificationListenerService {
             }
         }
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void getNotificationListData() {
-        Log.d(TAG, "getNotificationListData");
-        minNotificationImportance = Settings.getMinNotificationImportance(this);
-        groupSimilarNotifications = false;
-        notificationapplist.clear();
-        notificationlist.clear();
-
-        final Context context = this;
-
-        StatusBarNotification[] notificationList = null;
-        try {
-            notificationList = mNotificationListener.this.getActiveNotifications();
-        } catch (RuntimeException | OutOfMemoryError ignored) {
-
-        }
-
-        if (notificationList == null) return;
-
-        for (StatusBarNotification sbn : notificationList) {
-
-            if (shallIgnoreNotification(sbn)) {
-                continue;
-            }
-
-            //get extra informations from notification
-            Bundle extras = sbn.getNotification().extras;
-            if (((String) extras.getCharSequence("android.template"))!= null && ((String) extras.getCharSequence("android.template")).contains("MediaStyle")) {
-                continue;
-            }
-
-            Intent msgrcv = new Intent("Msg");
-
-            String titleData = "";
-            String titleBigData = "";
-            String textData = "";
-            StringBuilder textLinesData = new StringBuilder();
-            String template = "";
-            String summaryText = "";
-
-            String packageName = sbn.getPackageName();
-            msgrcv.putExtra("package", packageName);
-
-            //get application packageName
-            final PackageManager pm = getApplicationContext().getPackageManager();
-            ApplicationInfo ai;
-
-            try {
-                ai = pm.getApplicationInfo(packageName, 0);
-            } catch (final PackageManager.NameNotFoundException e) {
-                ai = null;
-            }
-            final
-
-            String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
-            msgrcv.putExtra("applicationname", applicationName);
-
-            //get small icon from notification
-            msgrcv.putExtra("iconresid", getIconId(sbn.getNotification()));
-
-            //get large icon from notification
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Icon largeIcon;
-                largeIcon = sbn.getNotification().getLargeIcon();
-                if (largeIcon != null) {
-                    Bitmap largeiconbitmap = drawableToBitMap(largeIcon.loadDrawable(context));
-                    msgrcv.putExtra("largeiconbitmap", largeiconbitmap);
-                }
-            } else {
-                Bitmap largeiconbitmap = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON);
-                msgrcv.putExtra("largeiconbitmap", largeiconbitmap);
-            }
-
-            msgrcv.putExtra("id", sbn.getId());
-
-            Notification notification = sbn.getNotification();
-
-            // check the notification's flags for either Notification#FLAG_ONGOING_EVENT or Notification#FLAG_NO_CLEAR.
-            msgrcv.putExtra("clearable", sbn.isClearable());
-
-            //check the notification's icon color
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                msgrcv.putExtra("color", notification.color);
-            }
-            else {
-                msgrcv.putExtra("color", 0);
-            }
-
-            //Actions in Notification
-            try {
-                Notification.Action[] action = sbn.getNotification().actions;
-                msgrcv.putExtra("action", action);
-            } catch (Exception ex) {
-                Log.e(TAG, ex.toString());
-            }
-
-            //get content Intent
-            PendingIntent contentIntent = sbn.getNotification().contentIntent;
-            msgrcv.putExtra("contentintent", contentIntent);
-
-            //this is the bigPicture of the BigPictureStyle
-            Bitmap bigpicture = null;
-            if (extras.containsKey(Notification.EXTRA_PICTURE)) {
-                bigpicture = (Bitmap) extras.get(Notification.EXTRA_PICTURE);
-            }
-            msgrcv.putExtra("bigpicture", bigpicture);
-
-            //this is the title of the notification
-            if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getString("android.title") != null) {
-                titleData = extras.getString("android.title");
-            }
-            msgrcv.putExtra("title", titleData);
-
-            //this is the title of the notification when shown in expanded form
-            if (extras.containsKey(Notification.EXTRA_TITLE_BIG) && extras.getCharSequence("android.title.big") != null) {
-                titleBigData = extras.getCharSequence("android.title.big").toString();
-            }
-            msgrcv.putExtra("titlebig", titleBigData);
-
-            String textBigData = "";
-            //this is the longer text shown in the big form of a BigTextStyle notification,
-            if (extras.containsKey(Notification.EXTRA_BIG_TEXT) && extras.getCharSequence("android.bigText") != null) {
-                textBigData = extras.getCharSequence("android.bigText").toString();
-            }
-            msgrcv.putExtra("textbig", textBigData);
-
-            //this is the summary information intended to be shown alongside expanded notification
-            if (extras.containsKey(Notification.EXTRA_SUMMARY_TEXT) && extras.getCharSequence("android.summaryText") != null) {
-                summaryText = extras.getCharSequence("android.summaryText").toString();
-            }
-            msgrcv.putExtra("summarytext", summaryText);
-
-            //this is the main text
-            if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
-                textData = extras.getCharSequence("android.text").toString();
-            }
-            msgrcv.putExtra("text", textData);
-
-            //A string representing the name of the specific Notification.Style used to create this notification.
-            if (extras.containsKey(Notification.EXTRA_TEMPLATE) && extras.getCharSequence("android.template") != null) {
-                template = extras.getCharSequence("android.template").toString();
-            }
-            msgrcv.putExtra("template", template);
-
-            // the "ticker" text which is sent to accessibility services.
-            CharSequence ticker = "";
-            if (sbn.getNotification().tickerText != null) {
-                ticker = sbn.getNotification().tickerText;
-            }
-            msgrcv.putExtra("ticker", ticker);
-
-            //An array of CharSequences to show in InboxStyle expanded notifications
-            if (extras.containsKey(Notification.EXTRA_TEXT_LINES)) {
-                CharSequence[] messages = extras.getCharSequenceArray("android.textLines");
-                if (messages != null) {
-                    for (CharSequence message : messages) {
-                        if (textLinesData.toString().equals("")) {
-                            textLinesData = new StringBuilder(message.toString());
-                        } else {
-                            textLinesData.append("<br>").append(message.toString());
-                        }
-                    }
-                }
-            }
-            msgrcv.putExtra("textlines", textLinesData.toString());
-
-            // Extract MessagingStyle object from the active notification.
-            StringBuilder notification_messages = new StringBuilder();
-            try {
-                String lastPerson = "";
-                NotificationCompat.MessagingStyle activeStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(sbn.getNotification());
-                if(activeStyle != null) {
-                    for (NotificationCompat.MessagingStyle.Message message : activeStyle.getMessages()) {
-                        if (message.getPerson() != null && message.getPerson().getName() != null) {
-                            if (lastPerson.contentEquals(message.getPerson().getName())) {
-                                notification_messages.append("<br>").append(message.getText());
-                            } else {
-                                if (notification_messages.toString().equals("")) {
-                                    notification_messages = new StringBuilder(message.getPerson().getName() + "<br> " + message.getText());
-                                } else {
-                                    notification_messages.append("<br>").append(message.getPerson().getName()).append("<br> ").append(message.getText());
-                                }
-                                lastPerson = message.getPerson().getName().toString();
-                            }
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                Log.e(TAG,ex.toString());
-            }
-            msgrcv.putExtra("messages", notification_messages.toString());
-
-            //Contentview
-            RemoteViews Rviews = sbn.getNotification().contentView;
-
-            if (Rviews != null) {
-                //Returns the layout id of the root layout associated with this RemoteViews
-                msgrcv.putExtra("view", Rviews);
-            }
-
-            //BigContentview
-            Rviews = sbn.getNotification().bigContentView;
-
-            if (Rviews != null) {
-                //Returns the layout id of the root layout associated with this RemoteViews
-                msgrcv.putExtra("bigview", Rviews);
-            }
-
-            //get date and time
-            Date myDate = new Date();
-            //date formatation
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ZZZZ", java.util.Locale.getDefault());
-            //formate date
-            String date = dateFormat.format(myDate);
-            //date formatation
-            dateFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
-            String postTime = dateFormat.format(sbn.getPostTime());
-
-            msgrcv.putExtra("posttimestamp", String.valueOf(sbn.getPostTime()));
-            msgrcv.putExtra("timestamp", date);
-            msgrcv.putExtra("posttime", postTime);
-
-            //Add new notification
-            notificationlist.add(new com.firebirdberlin.nightdream.NotificationList.Notification(getApplicationContext(), msgrcv));
-
-            Log.d(TAG, "sendBroadcast");
-
-            //Send notificationlist
-            Intent notificationlist_intent = new Intent("Notification.Action.notificationlist");
-            notificationlist_intent.putParcelableArrayListExtra("notificationlist", (ArrayList<? extends Parcelable>) notificationlist);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(notificationlist_intent);
-
-            //AppList
-            Intent notificationapplist_intent = new Intent("Msg");
-
-            notificationapplist_intent.putExtra("name", msgrcv.getStringExtra("applicationname"));
-            notificationapplist_intent.putExtra("package", msgrcv.getStringExtra("package"));
-            notificationapplist_intent.putExtra("timestamp", msgrcv.getStringExtra("posttime"));
-            notificationapplist_intent.putExtra("posttimestamp", String.valueOf(sbn.getPostTime()));
-
-            boolean addApp = true;
-
-            //Remove old application from notificationapplist
-            for (int index = 0; index < notificationapplist.size(); index++) {
-                if (notificationapplist.get(index).get_notificationapp_name().equals(msgrcv.getStringExtra("applicationname"))) {
-                    addApp = false;
-                    if ( Long.parseLong(notificationapplist.get(index).get_notificationapp_posttime()) < sbn.getPostTime()) {
-                        notificationapplist.remove(notificationapplist.get(index));
-                        addApp = true;
-                    }
-                }
-            }
-
-            //Add to Applist
-            if (addApp) {
-                notificationapplist.add(new com.firebirdberlin.nightdream.NotificationList.NotificationApp(getApplicationContext(), notificationapplist_intent));
-            }
-
-            notificationapplist_intent.putParcelableArrayListExtra("notificationapplist", (ArrayList<? extends Parcelable>) notificationapplist);
-
-            //Send notificationapplist
-            LocalBroadcastManager.getInstance(context).sendBroadcast(notificationapplist_intent);
-        }
-    }
-
-
 }

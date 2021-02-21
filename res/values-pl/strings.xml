@@ -177,8 +177,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Wiadomości dotyczące aplikacji</string>
     <string name="notification_channel_desc_radio">Powiadomienia pojawiają się podczas włączonego radia</string>
     <string name="notification_channel_desc_services">Powiadomienia dotyczące aktywnych usług</string>
-    <string name="notification_grouping_title">Grupuj podobne powiadomienia</string>
-    <string name="notification_grouping_summary">Ta sama ikona dla zgrupowanych powiadomień z tych samych aplikacji.</string>
     <string name="notification_lowest_importance">Ważność jest większa lub równa niż</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">niski</string>
@@ -209,7 +207,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferencje</string>
     <string name="prev">Poprzedni</string>
     <string name="preview">Podgląd</string>
-<string name="product_description_weather">Upgrade zawiera\n- linia statusu pogody poniżej zegara\n- 5-dniowa prognoza pogody\n- więcej skór zegara</string>
+<string name="product_description_weather">Upgrade zawiera
+\n- linia statusu pogody poniżej zegara
+\n- 5-dniowa prognoza pogody
+\n- więcej skór zegara</string>
     <string name="product_name_actions">Zawsze na opakowaniu</string>
     <string name="product_name_donation">Dotacja</string>
     <string name="product_name_pro">Pełna wersja</string>

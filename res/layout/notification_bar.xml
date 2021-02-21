@@ -1,4 +1,5 @@
-<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/notificationbar"
     android:layout_width="match_parent"
@@ -7,4 +8,4 @@
     android:paddingRight="5dp"
     app:flexDirection="row"
     app:justifyContent="space_evenly"
-    android:onClick="onNotificationListClick"></com.google.android.flexbox.FlexboxLayout>
+    android:onClick="onNotificationListClick"/>

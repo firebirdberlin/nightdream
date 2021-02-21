@@ -31,15 +31,6 @@
                 android:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.firebirdberlin.nightdream.ui.NotificationPreviewLayout
-            android:id="@+id/notification_preview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/containerExifView"
             android:layout_width="242dp"
@@ -98,11 +89,15 @@
                     android:textColor="#C2C2C2"
                     android:textSize="20sp" />
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/notificationstatusbar"
-                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:onClick="onNotificationListClick"
                     app:alignContent="flex_end"
                     app:flexDirection="row"
@@ -143,4 +138,13 @@
             android:layout_height="60dp">
         </com.firebirdberlin.nightdream.ui.BottomPanelLayout>
     </LinearLayout>
+
+    <com.firebirdberlin.nightdream.ui.NotificationPreviewLayout
+        android:id="@+id/notification_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="bottom|right" />
+
 </FrameLayout>

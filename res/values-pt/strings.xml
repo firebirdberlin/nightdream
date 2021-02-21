@@ -177,8 +177,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Mensagens sobre a aplicação</string>
     <string name="notification_channel_desc_radio">Notificações a aprecer emquanto o rádio da internet está a tocar</string>
     <string name="notification_channel_desc_services">Notificações indicando os serviços ativos</string>
-    <string name="notification_grouping_title">Agrupar notificações semelhantes</string>
-    <string name="notification_grouping_summary">Agrupar notificações da mesma aplicação mostrando o mesmo ícone.</string>
     <string name="notification_lowest_importance">A importância é maior ou igual a </string>
     <string name="notification_importance_min">minimo </string>
     <string name="notification_importance_low">baixo</string>

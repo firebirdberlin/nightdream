@@ -194,8 +194,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Сообщения, касающиеся приложения</string>
     <string name="notification_channel_desc_radio">Уведомление о работающем интернет радио</string>
     <string name="notification_channel_desc_services">Уведомление запущенных сервисов</string>
-    <string name="notification_grouping_title">Группировать похожие уведомления</string>
-    <string name="notification_grouping_summary">Групповые уведомления из одних и тех же приложений, показывающие один и тот же значок.</string>
     <string name="notification_show_mediastyle_summary">Показать элементы управления медиаплеером</string>
     <string name="notification_show_mediastyle_title">Управление плеером</string>
     <string name="notification_lowest_importance">Степень важности</string>
@@ -233,7 +231,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Предпочтения</string>
     <string name="prev">Предыдущее</string>
     <string name="preview">Предосмотр</string>
-<string name="product_description_weather">Обновление включает:\n\n- строка состояния погоды отображается под часами;\n- прогноз погоды на 5 дней;\n- больше циферблатов;</string>
+<string name="product_description_weather">Обновление включает:
+\n
+\n- строка состояния погоды отображается под часами;
+\n- прогноз погоды на 5 дней;
+\n- больше циферблатов;</string>
     <string name="product_name_actions">Всегда Включено</string>
     <string name="product_name_donation">Пожертвование</string>
     <string name="product_name_pro">Полная версия</string>

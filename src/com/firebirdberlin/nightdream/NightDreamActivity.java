@@ -558,7 +558,9 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private NotificationReceiver registerNotificationReceiver() {
         NotificationReceiver receiver = new NotificationReceiver(this);
-        IntentFilter filter = new IntentFilter(Config.ACTION_NOTIFICATION_LISTENER);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
+        filter.addAction(Config.ACTION_NOTIFICATION_APPS_LISTENER);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         return receiver;
     }
@@ -645,8 +647,13 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onNotificationListClick(View v) {
+        if (nightDreamUI.isLocked()) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            NotificationListActivity.start(this);
+            int resId = Settings.getNotificationContainerResourceId(this);
+            FlexboxLayout notificationLayout = findViewById(resId);
+            if (notificationLayout != null && notificationLayout.getChildCount() > 0) {
+                NotificationListActivity.start(this);
+            }
         }
     }
 

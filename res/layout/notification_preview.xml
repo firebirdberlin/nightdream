@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/notification_control"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
@@ -14,6 +13,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
+        android:background="#FFFFFF"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
 
@@ -28,9 +28,9 @@
             android:id="@+id/notify_linear_layout"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
             android:orientation="horizontal"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:baselineAligned="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/notify"

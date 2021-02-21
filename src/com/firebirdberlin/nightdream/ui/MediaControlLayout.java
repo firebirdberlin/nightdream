@@ -168,7 +168,7 @@ public class MediaControlLayout extends ViewModel {
 
         this.smallIcon.setValue(smallIcon);
         this.appName.setValue(intent.getStringExtra("applicationName"));
-        this.timeStamp.setValue(intent.getStringExtra("postTimestamp"));
+        this.timeStamp.setValue(intent.getStringExtra("postTime"));
         this.title.setValue(intent.getStringExtra("title"));
         this.text.setValue(intent.getStringExtra("text"));
         this.largeIcon.setValue(new BitmapDrawable(context.getResources(), coverBitmap));
