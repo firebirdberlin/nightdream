@@ -76,10 +76,13 @@ public class OpenWeatherMapApi {
         String response = "";
         String responseText = "";
 
-        String cacheFileName =
-                (cityID != null && !cityID.isEmpty())
-                        ? String.format("%s_%s.txt", CACHE_FILE_DATA, cityID)
-                        : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_DATA, lat, lon);
+        String cacheFileName = "weather_unknown.txt";
+        try {
+            cacheFileName =
+                    (cityID != null && !cityID.isEmpty())
+                            ? String.format("%s_%s.txt", CACHE_FILE_DATA, cityID)
+                            : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_DATA, lat, lon);
+        } catch (NumberFormatException ignored) {}
         Log.d(TAG, cacheFileName);
         File cacheFile = new File(context.getCacheDir(), cacheFileName);
         long now = System.currentTimeMillis();

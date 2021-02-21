@@ -50,6 +50,10 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private FavoriteRadioStations radioStations = null;
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    }
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -58,7 +62,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_set_alarm_clock);

@@ -176,19 +176,19 @@ public class NightDreamActivity extends BillingHelperActivity
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
     private GestureDetector mGestureDetector = null;
-    private Runnable finishApp = new Runnable() {
+    private final Runnable finishApp = new Runnable() {
         @Override
         public void run() {
             finish();
         }
     };
-    private Runnable checkKeepScreenOn = new Runnable() {
+    private final Runnable checkKeepScreenOn = new Runnable() {
         @Override
         public void run() {
             setKeepScreenOn(shallKeepScreenOn(mode));
         }
     };
-    private Runnable alwaysOnTimeout = new Runnable() {
+    private final Runnable alwaysOnTimeout = new Runnable() {
         @Override
         public void run() {
             if (Utility.isCharging(context) && mode > 0) return;
@@ -648,7 +648,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     public void onNotificationListClick(View v) {
         if (nightDreamUI.isLocked()) return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             int resId = Settings.getNotificationContainerResourceId(this);
             FlexboxLayout notificationLayout = findViewById(resId);
             if (notificationLayout != null && notificationLayout.getChildCount() > 0) {
