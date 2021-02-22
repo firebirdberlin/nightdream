@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
@@ -592,6 +593,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     // click on the settings icon
     @SuppressWarnings("UnusedParameters")
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onSettingsClick(View v) {
         PreferencesActivity.start(this);
     }
