@@ -11,9 +11,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-
-public class PreferencesActivity extends BillingHelperActivity
-                                 implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+public class PreferencesActivity
+        extends BillingHelperActivity
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     PreferencesFragment fragment = null;
 
     public static void start(Context context) {
@@ -25,6 +25,7 @@ public class PreferencesActivity extends BillingHelperActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.PreferencesTheme);
+
         initTitleBar();
         fragment = new PreferencesFragment();
 
@@ -49,7 +50,6 @@ public class PreferencesActivity extends BillingHelperActivity
             fragment.onPurchasesInitialized();
         }
     }
-
 
     @Override
     protected void onItemConsumed(String sku) {
@@ -91,22 +91,38 @@ public class PreferencesActivity extends BillingHelperActivity
 
     void initTitleBar() {
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar !=null) {
+        if (actionBar != null) {
             actionBar.setTitle(R.string.preferences);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         Log.d("Pref", pref.getKey());
         // Instantiate the new Fragment
-        final Fragment fragment =
-                Fragment.instantiate(this, pref.getFragment(), pref.getExtras());
-        fragment.setTargetFragment(caller, 0);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        final Fragment fragment = fragmentManager.getFragmentFactory().instantiate(
+                this.getClassLoader(), pref.getFragment());
+
         Bundle args = new Bundle();
         args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
         fragment.setArguments(args);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(
+                        R.anim.move_in_prefs_right,
+                        R.anim.move_out_prefs_left,
+                        R.anim.move_in_prefs_left,
+                        R.anim.move_out_prefs_right
+                )
                 .replace(android.R.id.content, fragment)
                 .addToBackStack(null)
                 .commit();

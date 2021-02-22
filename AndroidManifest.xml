@@ -131,6 +131,7 @@
             android:enabled="true" />
         <activity
             android:name=".PreferencesActivity"
+            android:parentActivityName=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
             android:exported="true"

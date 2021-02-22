@@ -37,7 +37,6 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
-import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.CityIDPreference;
@@ -328,7 +327,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        Log.d("Prefs", "rootKey " + rootKey);
+        Log.d(TAG, "onCreatePreferences rootKey: " + rootKey);
         handler.removeCallbacks(runnableNotificationAccessChanged);
         this.rootKey = rootKey;
 
@@ -1124,7 +1123,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             snackbarView.setBackgroundColor(color);
             snackbar.setActionTextColor(textColor);
 
-            TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+            TextView tv = snackbarView.findViewById(R.id.snackbar_text);
             tv.setTextColor(textColor);
 
             snackbar.setAction(android.R.string.ok, new CanDrawOverlaysPermissionListener());
@@ -1159,7 +1158,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         snackbarView.setBackgroundColor(color);
         snackbar.setActionTextColor(textColor);
 
-        TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        TextView tv = snackbarView.findViewById(R.id.snackbar_text);
         tv.setTextColor(textColor);
 
         snackbar.setAction(android.R.string.ok, new BuyUpgradeListener());
