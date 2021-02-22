@@ -19,6 +19,8 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -217,6 +219,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
     }
 
@@ -278,7 +281,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         //togglePurchasePreferences();
 
         PreferencesActivity activity = ((PreferencesActivity) mContext);
-        activity.restartFragment();
+        activity.initFragment(true);
         togglePurchasePreferences();
     }
 
@@ -331,6 +334,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         handler.removeCallbacks(runnableNotificationAccessChanged);
         this.rootKey = rootKey;
 
+        Bundle arguments = getArguments();
+        if (arguments != null && arguments.containsKey("rootKey")) {
+            rootKey = getArguments().getString("rootKey");
+            Log.d(TAG, "onCreatePreferences getArgument: " + rootKey);
+        }
+
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
 
         if (rootKey != null) {
@@ -381,15 +390,22 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
                     }
                     break;
+                case "help":
+                    setPreferencesFromResource(R.xml.preferences_help_feedback, rootKey);
+                    break;
                 case "about":
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
                     break;
                 default:
-                    setPreferencesFromResource(R.xml.preferences, null);
+                    if (getId() != R.id.right) {
+                        setPreferencesFromResource(R.xml.preferences, null);
+                    }
                     break;
             }
         } else {
-            setPreferencesFromResource(R.xml.preferences, null);
+            if (getId() != R.id.right) {
+                setPreferencesFromResource(R.xml.preferences, null);
+            }
         }
 
         initPurchasePreference("purchaseActions");
@@ -412,11 +428,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onResume() {
+        Log.d(TAG, "onResume");
         super.onResume();
         init();
     }
 
     private void init() {
+        Log.d(TAG, "init rootkey: " + rootKey);
         final Context context = mContext;
 
         togglePurchasePreferences();
@@ -430,6 +448,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             removePreference("autostartForNotifications");
         }
 
+        Bundle arguments = getArguments();
+        if (arguments != null && arguments.containsKey("rootKey")) {
+            rootKey = getArguments().getString("rootKey");
+            Log.d(TAG, "init getArgument: " + rootKey);
+        }
 
         if ("autostart".equals(rootKey)) {
             Preference prefHandlePower = findPreference("handle_power");
@@ -533,7 +556,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                                 isPurchased(BillingHelperActivity.ITEM_DONATION)
                                         );
                                         PreferencesActivity activity = ((PreferencesActivity) mContext);
-                                        activity.restartFragment();
+                                        activity.initFragment(true);
                                     }
                                 }).show();
 
