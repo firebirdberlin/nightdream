@@ -58,21 +58,17 @@
         app:title="@string/notifications"/>
 
     <Preference
+        app:icon="@drawable/ic_help"
+        app:key="help"
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+        app:title="@string/help"/>
+
+    <Preference
         app:icon="@drawable/ic_about"
         app:key="about"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
         app:title="@string/about"
         />
-
-    <Preference
-        app:iconSpaceReserved="false"
-        app:icon="@drawable/ic_faq"
-        app:title="FAQ"
-        app:summary="@string/frequently_asked_questions">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="https://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
-    </Preference>
 
     <!-- Add an empty preference so that we have space to show a snackbar at the bottom -->
     <Preference
