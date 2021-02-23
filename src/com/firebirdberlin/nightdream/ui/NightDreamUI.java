@@ -802,6 +802,8 @@ public class NightDreamUI {
                 }
                 case Settings.BACKGROUND_IMAGE: {
                     bgshape = loadBackgroundImage();
+                    background_images[0].setImageDrawable(colorBlack);
+                    background_images[1].setImageDrawable(colorBlack);
                     break;
                 }
                 case Settings.BACKGROUND_SLIDESHOW: {
