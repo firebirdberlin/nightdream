@@ -34,6 +34,7 @@ public class WeatherForecastLayout extends LinearLayout {
     private DirectionIconView iconWindDirection = null;
     private TextView cloudText = null;
     private TextView temperatureText = null;
+    private TextView descriptionText = null;
     private TextView humidityText = null;
     private TextView windText = null;
     private TextView rainText = null;
@@ -76,6 +77,7 @@ public class WeatherForecastLayout extends LinearLayout {
         iconWindDirection = findViewById(R.id.iconWindDirection);
         cloudText = findViewById(R.id.cloudText);
         temperatureText = findViewById(R.id.temperatureText);
+        descriptionText = findViewById(R.id.descriptionText);
         humidityText = findViewById(R.id.humidityText);
         rainText = findViewById(R.id.rainText);
         windText = findViewById(R.id.windText);
@@ -97,6 +99,11 @@ public class WeatherForecastLayout extends LinearLayout {
     public void setTemperature(boolean on, int unit) {
         this.temperatureUnit = unit;
         temperatureText.setVisibility( (on) ? View.VISIBLE : View.GONE );
+    }
+
+    public void setDescriptionText(boolean on, String value) {
+        descriptionText.setText(value);
+        descriptionText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
     public void setSunrise(boolean on, long time) {
@@ -204,7 +211,9 @@ public class WeatherForecastLayout extends LinearLayout {
             rainText.setText(formatRainText(entry.rain1h));
         } else {
             iconRain3h.setText("");
+            iconRain3h.setVisibility(View.GONE);
             rainText.setText("");
+            rainText.setVisibility(View.GONE);
         }
 
         if (entry != null && entry.clouds >= 0) {

@@ -147,11 +147,9 @@ public class WeatherForecastTabWeather extends Fragment implements
             layout.setWindSpeed(true, settings.speedUnit);
             layout.setSunrise(true, entry.sunriseTime);
             layout.setSunset(true, entry.sunsetTime);
+            layout.setDescriptionText(true, entry.description);
             layout.update(entry);
             layout.findViewById(R.id.timeView).setVisibility(View.GONE);
-            layout.findViewById(R.id.layoutClouds).setVisibility(View.GONE);
-            layout.findViewById(R.id.humidityText).setVisibility(View.GONE);
-            layout.findViewById(R.id.layoutRain).setVisibility(View.GONE);
             todayView.addView(layout);
         }
     }

@@ -33,7 +33,6 @@
             android:layout_gravity="top"
             android:ellipsize="none"
             android:text="m"
-            android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
             android:textSize="55sp"
             android:singleLine="true"
@@ -43,12 +42,24 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             app:alignContent="stretch"
             app:alignItems="center"
             app:flexWrap="wrap"
             app:justifyContent="flex_start"
             app:showDivider="middle">
+
+            <TextView
+                android:id="@+id/descriptionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:ellipsize="none"
+                android:layout_marginEnd="20dp"
+                android:singleLine="true"
+                android:text="description"
+                android:textAlignment="textStart"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/temperatureText"
@@ -59,6 +70,7 @@
                 android:text="10°C"
                 android:textAppearance="@android:style/TextAppearance.Medium"
                 app:layout_minWidth="100dp" />
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -188,7 +200,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:ellipsize="none"
-                    android:paddingLeft="5sp"
                     android:singleLine="true"
                     android:text="@string/weather_sun_rise"
                     android:textAlignment="textEnd"
@@ -224,7 +235,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:ellipsize="none"
-                    android:paddingLeft="5sp"
                     android:singleLine="true"
                     android:text="@string/weather_sun_set"
                     android:textAlignment="textEnd"
@@ -241,7 +251,6 @@
                     android:text="0:00"
                     android:textAlignment="textEnd"
                     android:textAppearance="@android:style/TextAppearance.Medium" />
-
 
             </LinearLayout>
 
