@@ -1,6 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,20 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/background_view2"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/background_image_group"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:visibility="visible" />
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/background_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop" />
+            <ImageView
+                android:id="@+id/background_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/background_view2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/containerExifView"
@@ -33,8 +39,7 @@
             android:layout_marginBottom="16dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -84,11 +89,16 @@
                     android:textColor="#C2C2C2"
                     android:textSize="20sp" />
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/notificationstatusbar"
-                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:onClick="onNotificationListClick"
                     app:alignContent="flex_end"
                     app:flexDirection="row"
                     app:justifyContent="flex_end" />
@@ -125,7 +135,14 @@
         <com.firebirdberlin.nightdream.ui.BottomPanelLayout
             android:id="@+id/bottomPanel"
             android:layout_width="match_parent"
-            android:layout_height="60dp">
-        </com.firebirdberlin.nightdream.ui.BottomPanelLayout>
+            android:layout_height="60dp"/>
     </LinearLayout>
+
+    <com.firebirdberlin.nightdream.ui.NotificationPreviewLayout
+        android:id="@+id/notification_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="68dp"
+        android:layout_gravity="bottom|end" />
 </FrameLayout>

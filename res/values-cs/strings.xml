@@ -165,8 +165,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Zprávy o aplikaci</string>
     <string name="notification_channel_desc_radio">Oznámení zobrazené při přehrávání internetového rádia</string>
     <string name="notification_channel_desc_services">Oznámení o běžící službě</string>
-    <string name="notification_grouping_title">Seskupit podobná oznámení</string>
-    <string name="notification_grouping_summary">Seskupit oznámení od stejné aplikace se stejnou ikkonou.</string>
     <string name="notification_lowest_importance">Důležitost je stejná nebo vyšší než</string>
     <string name="notification_importance_min">nejnižší</string>
     <string name="notification_importance_low">nízká</string>

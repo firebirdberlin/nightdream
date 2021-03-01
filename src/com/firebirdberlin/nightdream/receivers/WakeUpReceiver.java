@@ -36,7 +36,9 @@ public class WakeUpReceiver extends BroadcastReceiver {
     private final static String TAG = "WakeUpReceiver";
 
     public static void schedule(Context context, DataSource db) {
-        AlarmNotificationService.cancelNotification(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmNotificationService.cancelNotification(context);
+        }
         SimpleTime next = db.getNextAlarmToSchedule();
         if (next != null) {
             setAlarm(context, next);

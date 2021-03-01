@@ -168,8 +168,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Meldinger angående programmet</string>
     <string name="notification_channel_desc_radio">Meldinger når web-radio kjører</string>
     <string name="notification_channel_desc_services">Meldinger angående tjenester</string>
-    <string name="notification_grouping_title">Grupper lignende meldinger</string>
-    <string name="notification_grouping_summary">Bruk programikoner</string>
     <string name="notification_lowest_importance">Viktighet er høyere eller tilsvarende</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">lav</string>
