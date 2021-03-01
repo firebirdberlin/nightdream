@@ -203,7 +203,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showNotifications">Benachrichtigungen anzeigen</string>
     <string name="showNotificationsAccessGranted">Benachrichtigungszugriff erteilt</string>
     <string name="showNotificationsAccessNotGranted">Benachrichtigungszugriff nicht erteilt!</string>
-    <string name="showNotificationsAlertText">Um Benachrichtigungen anzuzeigen, muss die Berechtigung erteilt in den Android-Einstellungen erteilt werden.</string>
+    <string name="showNotificationsAlertText">Um Benachrichtigungen anzuzeigen, muss die Berechtigung in den Android-Einstellungen erteilt werden.</string>
     <string name="notifications_options">Benachrichtigungsoptionen</string>
     <string name="notification_channel_desc_alarms">Benachrichtigung, die einen aktiven Weckalarm anzeigt.</string>
     <string name="notification_channel_desc_devmsg">Benachrichtigungen, die die Nachtuhr betreffen.</string>
@@ -213,8 +213,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_name_devmsg">Benachrichtigungen</string>
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Services</string>
-    <string name="notification_grouping_summary">Benachrichtigungen mit demselben Icon gruppieren und nur einmal anzeigen.</string>
-    <string name="notification_grouping_title">Ähnliche Benachrichtigungen gruppieren</string>
+    <string name="notification_show_preview_summary">Zeige Vorschau von eingehenden Benachrichtigungen</string>
+    <string name="notification_show_preview_title">Benachrichtigungsvorschau</string>
     <string name="notification_show_mediastyle_summary">Mediensteuerung anzeigen</string>
     <string name="notification_show_mediastyle_title">Medienplayer anzeigen</string>
     <string name="notification_importance_default">default</string>

@@ -148,6 +148,21 @@
             android:parentActivityName=".WeatherForecastActivity"
             android:theme="@style/PreferencesTheme"/>
         <activity
+            android:name=".NotificationListActivity"
+            android:label="@string/notifications"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:excludeFromRecents="true"
+            android:finishOnCloseSystemDialogs="true"
+            android:parentActivityName=".NightDreamActivity"
+            android:theme="@style/NotificationActivityTheme"/>
+        <activity
+            android:name=".NotificationList.NotificationActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:excludeFromRecents="true"
+            android:finishOnCloseSystemDialogs="true"
+            android:parentActivityName=".NotificationListActivity"
+            android:theme="@style/NotificationActivityTheme"/>
+        <activity
             android:name=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:enabled="true"

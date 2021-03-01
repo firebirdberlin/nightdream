@@ -19,15 +19,19 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
+import com.firebirdberlin.nightdream.ui.NotificationPreviewLayout;
 import com.google.android.flexbox.FlexboxLayout;
+
+import java.util.List;
 
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
-    private int color;
     private final View contentView;
     private final NightDreamActivity activity;
+    private int color;
 
     public NotificationReceiver(NightDreamActivity context) {
         Window window = context.getWindow();
@@ -66,55 +70,62 @@ public class NotificationReceiver extends BroadcastReceiver {
             Log.d(TAG, "Broadcast received.");
             dumpIntent(intent);
         }
+        String action = intent.getStringExtra("action");
+        Log.d(TAG, "action:" + action);
 
         boolean showNotification = Settings.showNotification(context);
         Log.d(TAG, "showNotification: " + showNotification);
-        FlexboxLayout notificationBar = contentView.findViewById(R.id.notificationbar);
-        FlexboxLayout notificationStatusBar = contentView.findViewById(R.id.notificationstatusbar);
 
-        if (!showNotification) {
-            removeViewsFrom(notificationBar);
-            removeViewsFrom(notificationStatusBar);
+        if (!showNotification || "clear".equals(action)) {
+            removeViewsFrom(R.id.notificationstatusbar);
+            removeViewsFrom(R.id.notificationbar);
             return;
         }
 
-        FlexboxLayout container =
-                Settings.useNotificationStatusBar(context) ? notificationStatusBar : notificationBar;
+        int notificationResId = Settings.getNotificationContainerResourceId(context);
+        FlexboxLayout container = contentView.findViewById(notificationResId);
         if (container == null) {
             return;
         }
 
-        String action = intent.getStringExtra("action");
-
-        if ("clear".equals(action)) {
-            removeViewsFrom(notificationBar);
-            removeViewsFrom(notificationStatusBar);
-            return;
+        Log.d(TAG, "action:" + action);
+        switch (action) {
+            case "scan":
+                removeViewsFrom(R.id.notificationstatusbar);
+                removeViewsFrom(R.id.notificationbar);
+                List<NotificationApp> notificationApps = intent.getParcelableArrayListExtra("notificationApps");
+                if (notificationApps == null) break;
+                for (NotificationApp app: notificationApps) {
+                    Log.d(TAG, app.getName() + ": " + app.getIconId());
+                    Drawable icon = getIcon(context, app);
+                    addNotificationIcon(context, container, icon);
+                }
+                break;
+            case "added_media":
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    setupMediaControls(context, intent);
+                }
+                break;
+            case "added_preview":
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    setupNotificationPreview(context, intent);
+                }
+                break;
+            default:
         }
+    }
 
-        String packageName = intent.getStringExtra("packageName");
-        if (packageName == null || packageName.isEmpty()) {
-            return;
-        }
-
-        int iconId = intent.getIntExtra("iconId", -1);
-        Drawable icon = getNotificationIcon(context, packageName, iconId);
+    private Drawable getIcon(Context context, NotificationApp notificationApp) {
+        Drawable icon = getNotificationIcon(context, notificationApp.getPackageName(), notificationApp.getIconId());
         if (icon == null) {
             icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
         }
-
-        if ("added".equals(action) && icon != null) {
-            addNotificationIcon(context, container, icon);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                setupMediaControls(context, intent);
-            }
-        }
-
+        return icon;
     }
 
-    private void removeViewsFrom(FlexboxLayout layout) {
-        if (layout != null) layout.removeAllViews();
+    private void removeViewsFrom(int redId) {
+        FlexboxLayout container = contentView.findViewById(redId);
+        if (container != null) container.removeAllViews();
     }
 
     private void addNotificationIcon(Context context, FlexboxLayout container, Drawable icon) {
@@ -195,5 +206,24 @@ public class NotificationReceiver extends BroadcastReceiver {
                 activity.onConfigurationChanged(activity.getResources().getConfiguration());
             }
         }, 500);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setupNotificationPreview(Context context, Intent intent) {
+        if (!Settings.showNotificationPreview(context) || activity == null) {
+            return;
+        }
+
+        String template = intent.getStringExtra("template");
+        if (Utility.contains(template, "MediaStyle")) {
+            return;
+        }
+
+        int iconId = intent.getIntExtra("iconId", -1);
+        String packageName = intent.getStringExtra("packageName");
+        Drawable notificationMessageSmallIcon = getNotificationIcon(context, packageName, iconId);
+
+        NotificationPreviewLayout container = contentView.findViewById(R.id.notification_preview);
+        container.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
     }
 }

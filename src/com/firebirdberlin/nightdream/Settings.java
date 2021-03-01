@@ -27,6 +27,7 @@ import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -287,6 +288,14 @@ public class Settings {
         return preferences.getBoolean("showNotification", true);
     }
 
+    public static boolean showNotificationPreview(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        if (preferences == null) {
+            return true;
+        }
+        return preferences.getBoolean("showNotificationPreview", false);
+    }
+
     public static boolean showMediaStyleNotification(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {
@@ -303,12 +312,8 @@ public class Settings {
         return preferences.getBoolean("showNotificationsInStatusBar", true);
     }
 
-    public static boolean groupSimilarNotifications(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
-            return false;
-        }
-        return preferences.getBoolean("groupSimilarNotifications", false);
+    public static int getNotificationContainerResourceId(Context context) {
+        return Settings.useNotificationStatusBar(context) ?  R.id.notificationstatusbar: R.id.notificationbar;
     }
 
     public static int getMinNotificationImportance(Context context) {
@@ -1295,6 +1300,9 @@ public class Settings {
     public void deleteFavoriteRadioStation(int stationIndex) {
         persistFavoriteRadioStation(null, stationIndex);
     }
+
+
+
 
     public boolean getShallRadioStreamActivateWiFi() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29) {
