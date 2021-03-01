@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -73,13 +74,17 @@ public class NotificationPreviewLayout extends LinearLayout {
         if (template != null && template.contains("MediaStyle")) {
             return;
         }
+        if(smallIcon == null) return;
+
+        // ignore own notifications
+        String packageName = intent.getStringExtra("packageName");
+        if ("com.firebirdberlin.nightdream".equals(packageName)) return;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         notificationPreview = inflater.inflate(R.layout.notification_preview, null);
         ImageView largeIconImageView = notificationPreview.findViewById(R.id.notify_largeicon);
 
         ImageView notificationMessageBitmap = notificationPreview.findViewById(R.id.notify_smallicon);
-        assert smallIcon != null;
         smallIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
         notificationMessageBitmap.setImageDrawable(smallIcon);
 
@@ -92,8 +97,8 @@ public class NotificationPreviewLayout extends LinearLayout {
         TextView title = notificationPreview.findViewById(R.id.notify_title);
         title.setText(intent.getStringExtra("title"));
 
-        TextView ntext = notificationPreview.findViewById(R.id.notify_text);
-        ntext.setText(intent.getStringExtra("text"));
+        TextView text = notificationPreview.findViewById(R.id.notify_text);
+        text.setText(intent.getStringExtra("text"));
 
         Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
         if (coverBitmap == null) {
@@ -105,7 +110,7 @@ public class NotificationPreviewLayout extends LinearLayout {
 
         OnClickListener onNotificationPreviewClickListener = new OnClickListener() {
             public void onClick(View v) {
-                PendingIntent contentIntent = (PendingIntent) intent.getParcelableExtra("contentIntent");
+                PendingIntent contentIntent = intent.getParcelableExtra("contentIntent");
                 if (contentIntent != null) {
                     try {
                         contentIntent.send();
@@ -123,11 +128,6 @@ public class NotificationPreviewLayout extends LinearLayout {
         notificationPreview.setOnClickListener(onNotificationPreviewClickListener);
 
         removeAllViews();
-
-        GradientDrawable shape = new GradientDrawable();
-        shape.setCornerRadius(30);
-        shape.setColor(Color.parseColor("#FFFFFFFF"));
-        notificationPreview.findViewById(R.id.notify_linear_layout).setBackground(shape);
 
         addView(notificationPreview);
         setVisibility(View.VISIBLE);

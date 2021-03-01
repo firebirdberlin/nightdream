@@ -7,6 +7,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 
 public class NotificationApp implements Parcelable {
 
@@ -21,12 +22,24 @@ public class NotificationApp implements Parcelable {
             return new NotificationApp[size];
         }
     };
-
+    public static Comparator<NotificationApp> comparator = new Comparator<NotificationApp>() {
+        @Override
+        public int compare(NotificationApp obj1, NotificationApp obj2) {
+            long t1 = obj1.getPostTimestamp();
+            long t2 = obj2.getPostTimestamp();
+            if (t1 == t2) {
+                return 0;
+            } else if (t1 > t2) {
+                return -1;
+            }
+            return 1;
+        }
+    };
     private final Bitmap picture;
-    private int iconId;
-    private long postTimestamp;
     private final String name;
     private final String packageName;
+    private int iconId;
+    private long postTimestamp;
 
     protected NotificationApp(Parcel parcel) {
         picture = parcel.readParcelable(Bitmap.class.getClassLoader());
@@ -69,13 +82,13 @@ public class NotificationApp implements Parcelable {
         return postTimestamp;
     }
 
+    public void setPostTimestamp(long postTimestamp) {
+        this.postTimestamp = postTimestamp;
+    }
+
     public String getPostTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
         return dateFormat.format(postTimestamp);
-    }
-
-    public void setPostTimestamp(long postTimestamp) {
-        this.postTimestamp = postTimestamp;
     }
 
     public String getPackageName() {
