@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.NotificationList;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class NotificationAppList {
@@ -23,18 +22,10 @@ public class NotificationAppList {
     }
 
     public void replace(List<NotificationApp> notificationAppList) {
-
         clear();
 
         notificationApps.addAll(notificationAppList);
-
-        //sorting time descending order
-        Collections.sort(notificationApps, new Comparator<NotificationApp>() {
-            @Override
-            public int compare(NotificationApp obj1, NotificationApp obj2) {
-                return obj2.getPostTime().compareToIgnoreCase(obj1.getPostTime());
-            }
-        });
+        Collections.sort(notificationApps, NotificationApp.comparator);
     }
 }
 
