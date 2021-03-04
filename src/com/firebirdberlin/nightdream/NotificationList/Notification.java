@@ -58,6 +58,10 @@ public class Notification implements Parcelable {
     private final boolean isClearable;
     private int childId;
     private final Integer color;
+    private final Integer notificationID;
+    private final String notificationKey;
+    private final String notificationTag;
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected Notification(Parcel in) {
         bigPicture = in.readParcelable(Bitmap.class.getClassLoader());
@@ -78,6 +82,9 @@ public class Notification implements Parcelable {
         isClearable = in.readByte() != 0;
         childId = in.readInt();
         color = in.readInt();
+        notificationID = in.readInt();
+        notificationKey = in.readString();
+        notificationTag = in.readString();
     }
 
     public Notification(Context context, Intent intent) {
@@ -102,6 +109,9 @@ public class Notification implements Parcelable {
         this.pendingIntent = intent.getParcelableExtra("contentIntent");
         this.isClearable = intent.getBooleanExtra("isClearable", true);
         this.color = intent.getIntExtra("color", 0);
+        this.notificationID = intent.getIntExtra("id", 0);
+        this.notificationKey = intent.getStringExtra("key");
+        this.notificationTag = intent.getStringExtra("tag");
 
         //RemoteView to View
         try {
@@ -265,5 +275,16 @@ public class Notification implements Parcelable {
         return color;
     }
 
+    public int getNotificationID() {
+        return notificationID;
+    }
+
+    public String getNotificationKey() {
+        return notificationKey;
+    }
+
+    public String getNotificationTag() {
+        return notificationTag;
+    }
 }
 

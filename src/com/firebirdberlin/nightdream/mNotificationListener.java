@@ -34,8 +34,8 @@ import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class mNotificationListener extends NotificationListenerService {
@@ -76,10 +76,20 @@ public class mNotificationListener extends NotificationListenerService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //retrieving data from the received intent
         if (intent != null) {
-            String command = intent.getStringExtra("command");
-            if (command != null) {
-                if ("getNotificationList".equals(command)) {
-                    listNotifications();
+            if (intent.hasExtra("command")) {
+                String command = intent.getStringExtra("command");
+                if (command != null) {
+                    switch (command) {
+                        case "getNotificationList":
+                            listNotifications();
+                            break;
+                        case "deleteNotification":
+                            deleteNotification(intent.getStringArrayListExtra("delete_notification"));
+                            break;
+                        case "deleteAllNotification":
+                            deleteAllNotifications();
+                            break;
+                    }
                 }
             }
         }
@@ -187,10 +197,34 @@ public class mNotificationListener extends NotificationListenerService {
         Log.i(TAG, "++++ notification removed ++++");
         logNotification(sbn);
 
-        listNotifications();
+        listNotifications(true);
+    }
+
+    private void deleteNotification(ArrayList<String> delete ) {
+        Log.d(TAG,"deleteNotification");
+
+        if (delete != null) {
+            for (int index = 0; index < delete.size(); index++) {
+                Log.d(TAG, "Notification to delete: " + delete.get(index));
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    String[] separated = delete.get(index).split(";");
+                    cancelNotification(separated[0], separated[1], Integer.parseInt(separated[2]));
+                } else {
+                    cancelNotification(delete.get(index));
+                }
+            }
+        }
+    }
+
+    private void deleteAllNotifications() {
+        cancelAllNotifications();
     }
 
     private void listNotifications() {
+        listNotifications(false);
+    }
+
+    private void listNotifications(boolean removed) {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         notifications.clear();
         notificationApps.clear();
@@ -252,6 +286,9 @@ public class mNotificationListener extends NotificationListenerService {
         }
         Intent intentList = new Intent("Notification.Action.notificationList");
         intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
+        if (removed){
+            intentList.putExtra("removed", true);
+        }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intentList);
 
         Intent intentAppsList = new Intent(Config.ACTION_NOTIFICATION_APPS_LISTENER);
@@ -364,10 +401,10 @@ public class mNotificationListener extends NotificationListenerService {
         //get date and time
         long postTimestamp = sbn.getPostTime();
         Date now = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ZZZZ", java.util.Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ZZZZ", Locale.getDefault());
         String date = dateFormat.format(now);
 
-        dateFormat = new SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+        dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         String postTime = dateFormat.format(postTimestamp);
 
         Intent intent = new Intent();
@@ -380,6 +417,12 @@ public class mNotificationListener extends NotificationListenerService {
         intent.putExtra("contentView", notification.contentView);
         intent.putExtra("iconId", getIconId(sbn.getNotification()));
         intent.putExtra("id", sbn.getId());
+        intent.putExtra("tag", sbn.getTag());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.putExtra("key", sbn.getKey());
+        }
+
         intent.putExtra("isClearable", sbn.isClearable());
         intent.putExtra("largeIconBitmap", largeIconBitmap);
         intent.putExtra("messages", notification_messages.toString());
@@ -410,7 +453,6 @@ public class mNotificationListener extends NotificationListenerService {
                     || ((notification.flags & Notification.FLAG_NO_CLEAR) == Notification.FLAG_NO_CLEAR));
         }
     }
-
 
     private int getIconId(Notification notification) {
         Log.d(TAG, "getIconId(" + notification.toString() + ")");

@@ -17,12 +17,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
     public static String TAG = "CustomRecyclerViewAdapter";
 
     private List<Notification> notifications;
+    private ArrayList<NotificationChecked> selected;
+
+    private int[] colorResId = new int[]{
+            R.color.white,
+            R.color.material_grey
+    };
 
     public NotificationRecyclerViewAdapter(List<Notification> notifications) {
         this.notifications = notifications;
@@ -48,13 +55,37 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
             }
         });
 
+        recyclerViewItem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                int itemviewtag = Integer.parseInt((String) view.getTag());
+
+                if (selected.size() > itemviewtag) {
+                    if (selected.get(itemviewtag).isChecked()) {
+                        recyclerViewItem.findViewById(R.id.notify).setBackgroundResource(colorResId[0]);
+                    } else {
+                        recyclerViewItem.findViewById(R.id.notify).setBackgroundResource(colorResId[1]);
+                    }
+                    selected.get(itemviewtag).setChecked(!selected.get(itemviewtag).isChecked());
+                }
+
+                return true;
+            }
+        });
         return new NotificationViewHolder(recyclerViewItem);
+    }
+
+    //to remove Notification
+    public void removeNotification(int position) {
+        Log.d(TAG, "removeNotification");
+        this.notifications.remove(position);
+        //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
+        notifyDataSetChanged();
     }
 
     //to update the Data
     public void updateData(List<Notification> notifications) {
         this.notifications = notifications;
-
         //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
         notifyDataSetChanged();
     }
@@ -75,6 +106,16 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
         holder.notificationRemoteView.removeAllViews();
         holder.itemView.findViewById(R.id.notify).setVisibility(View.VISIBLE);
+
+        if (selected != null) {
+            if (position < selected.size()) {
+                if (!selected.get(position).isChecked()) {
+                    holder.itemView.findViewById(R.id.notify).setBackgroundResource(colorResId[0]);
+                } else {
+                    holder.itemView.findViewById(R.id.notify).setBackgroundResource(colorResId[1]);
+                }
+            }
+        }
 
         holder.notificationMessagebitmap.setImageDrawable(notification.getDrawableIcon());
 
@@ -235,7 +276,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     }
 
     // Interface definition for a callback to be invoked when a view is clicked.
-    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) throws PendingIntent.CanceledException, IntentSender.SendIntentException {
+    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) throws IntentSender.SendIntentException {
         int itemPosition = recyclerView.getChildLayoutPosition(itemView);
         Notification notify = this.notifications.get(itemPosition);
         try {
@@ -245,6 +286,19 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         } catch (PendingIntent.CanceledException e) {
             throw new IntentSender.SendIntentException(e);
         }
+    }
+
+    public void setChecked(ArrayList<NotificationChecked> selected) {
+        this.selected = new ArrayList<>();
+        this.selected = selected;
+    }
+
+    public ArrayList<NotificationChecked> get_selected() {
+        return this.selected;
+    }
+
+    public void set_selected(ArrayList<NotificationChecked> selected) {
+        this.selected = selected;
     }
 
 }

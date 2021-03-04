@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +22,7 @@ public class NotificationViewHolder extends RecyclerView.ViewHolder {
     FrameLayout notificationRemoteView;
     FrameLayout notificationActions;
     View itemView;
-    TextView [] notificationActionText;
+    TextView[] notificationActionText;
 
     public NotificationViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -30,7 +31,7 @@ public class NotificationViewHolder extends RecyclerView.ViewHolder {
         this.notificationRemoteView = itemView.findViewById(R.id.notify_remoteview);
         this.itemView = itemView;
         this.notificationMessagebitmap = itemView.findViewById(R.id.notify_smallicon);
-        this.notificationMessageLargeIcon= itemView.findViewById(R.id.notify_largeicon);
+        this.notificationMessageLargeIcon = itemView.findViewById(R.id.notify_largeicon);
         this.notificationLargePicture = itemView.findViewById(R.id.notify_largepicture);
         this.notificationAppname = itemView.findViewById(R.id.notify_appname);
         this.notificationTitle = itemView.findViewById(R.id.notify_title);
