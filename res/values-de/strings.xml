@@ -223,6 +223,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_importance_max">max</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_lowest_importance">Prioriät ist größer oder gleich</string>
+    <string name="notification_list_delete_all">Alle löschen</string>
+    <string name="notification_list_delete_marked">Ausgewählte löschen</string>
+    <string name="notification_list_mark_all">Alle auswählen</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="notificationsInStatusBarSummary">Zeige Benachrichtigungen in der Statuszeile an. Andernfalls werden Benachrichtigungen unter der Uhrzeit dargestellt.</string>
     <string name="notificationsInStatusBarTitle">In Statuszeile anzeigen</string>

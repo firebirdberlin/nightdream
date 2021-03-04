@@ -822,7 +822,6 @@ public class NightDreamUI {
                 }
             }
         }
-
         if (settings.hideBackgroundImage && mode == 0) {
             background_images[background_image_active].setImageDrawable(colorBlack);
             exifLayoutContainer.setVisibility(View.GONE);
@@ -952,9 +951,16 @@ public class NightDreamUI {
             });
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            background_images[(background_image_active + 1) % 2].setZ(4);
+            background_images[(background_image_active)].setZ(5);
+        }
+
         background_images[background_image_active].startAnimation(animationSet);
         parentLayout.bringChildToFront(background_images[background_image_active]);
         parentLayout.bringChildToFront(exifLayoutContainer);
+        parentLayout.requestLayout();
+        parentLayout.invalidate();
 
         if (files != null && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));

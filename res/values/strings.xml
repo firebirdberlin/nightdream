@@ -212,6 +212,9 @@ OR
     <string name="notification_show_mediastyle_summary">Show media player controls</string>
     <string name="notification_show_mediastyle_title">Media controls</string>
     <string name="notification_lowest_importance">Importance is higher or equal than</string>
+    <string name="notification_list_delete_all">Delete all</string>
+    <string name="notification_list_delete_marked">Delete all marked</string>
+    <string name="notification_list_mark_all">Mark all</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">low</string>
     <string name="notification_importance_default">default</string>
