@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,6 +93,28 @@ public class NotificationListActivity extends AppCompatActivity {
         }
 
         super.onDestroy();
+    }
+
+    //Optionsmenu inflate
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.notification_list_menu, menu);
+        return true;
+    }
+
+    //item selected in options menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menuItem_delete_all) {
+            Intent intent = new Intent(getApplicationContext(), mNotificationListener.class);
+            intent.putExtra("command", "deleteAllNotification");
+            //starting service
+            startService(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

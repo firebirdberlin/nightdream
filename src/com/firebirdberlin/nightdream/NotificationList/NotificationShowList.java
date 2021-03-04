@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.NotificationList;
 
 import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,6 +15,10 @@ public class NotificationShowList {
     }
 
     public List<Notification> get() {
+        return this.notifications;
+    }
+
+    public List<Notification> get_notificationshowlist() {
         return this.notifications;
     }
 
@@ -38,12 +43,11 @@ public class NotificationShowList {
             public int compare(Notification obj1, Notification obj2) {
                 long t1 = obj1.getPostTimestamp();
                 long t2 = obj2.getPostTimestamp();
-                if ( t1 == t2 ) {
+                if (t1 == t2) {
                     return 0;
-                } else
-                if ( t1 > t2 ) {
+                } else if (t1 > t2) {
                     return -1;
-                };
+                }
                 return 1;
             }
         });
