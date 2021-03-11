@@ -15,6 +15,7 @@
         android:clipToPadding="true"
         android:fillViewport="true"
         android:visibility="visible"
+        android:nestedScrollingEnabled="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout

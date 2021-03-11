@@ -50,11 +50,11 @@
 
             <TextView
                 android:id="@+id/descriptionText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:ellipsize="none"
                 android:layout_marginEnd="20dp"
+                android:ellipsize="none"
                 android:singleLine="true"
                 android:text="description"
                 android:textAlignment="textStart"
