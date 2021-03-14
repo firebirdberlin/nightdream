@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <!--
+            time
+    -->
+    <com.firebirdberlin.nightdream.ui.CustomDigitalAnimClock
+        android:id="@+id/time_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:padding="0px">
+    </com.firebirdberlin.nightdream.ui.CustomDigitalAnimClock>
+
+    <!--
+        Date
+    -->
+    <LinearLayout
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <com.firebirdberlin.nightdream.CustomDigitalClock
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="none"
+            android:paddingTop="5sp"
+            android:singleLine="true"
+            android:text="Sun, 30. October 2016"
+            android:textColor="#C2C2C2"
+            android:textStyle="bold"
+            android:visibility="gone"
+            custom:capitalize="true"
+            custom:fontPath="fonts/roboto_light.ttf"
+            custom:format12Hr="dd. MMMM yyyy"
+            custom:format24Hr="dd. MMMM yyyy"
+            tools:ignore="HardcodedText"/>
+
+        <com.firebirdberlin.nightdream.ui.WeatherLayout
+            android:id="@+id/weatherLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
+
+        <com.firebirdberlin.nightdream.ui.WeatherLayout
+            xmlns:weather="weather"
+            android:id="@+id/weatherLayout2"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            weather:content="location"
+            />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pollen_container"
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--
+    Notifications
+    -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notification_mediacontrol_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="19">
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="2dp"
+        layout="@layout/notification_bar"/>
+
+</LinearLayout>

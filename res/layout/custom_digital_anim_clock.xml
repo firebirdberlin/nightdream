@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:padding="0px"
+    android:paddingTop="10dp">
+
+    <com.firebirdberlin.nightdream.ui.AnimDigit
+        android:id="@+id/charHighHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/avd_pathmorph_digits_0_to_1" />
+
+    <com.firebirdberlin.nightdream.ui.AnimDigit
+        android:id="@+id/charLowHour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/avd_pathmorph_digits_0_to_1" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <TextView
+            android:id="@+id/colon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:text=":"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+    </FrameLayout>
+
+    <com.firebirdberlin.nightdream.ui.AnimDigit
+        android:id="@+id/charHighMinute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/avd_pathmorph_digits_0_to_1" />
+
+    <com.firebirdberlin.nightdream.ui.AnimDigit
+        android:id="@+id/charLowMinute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/avd_pathmorph_digits_0_to_1" />
+
+
+    <LinearLayout
+        android:id="@+id/secondsampmLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/secondsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <com.firebirdberlin.nightdream.ui.AnimDigit
+                android:id="@+id/charHighSecond"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center|top"
+                android:background="@android:color/transparent"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:srcCompat="@drawable/avd_pathmorph_digits_0_to_1" />
+
+            <com.firebirdberlin.nightdream.ui.AnimDigit
+                android:id="@+id/charLowSecond"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center|top"
+                android:background="@android:color/transparent"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:srcCompat="@drawable/avd_pathmorph_digits_0_to_1" />
+        </LinearLayout>
+
+        <com.firebirdberlin.nightdream.CustomDigitalClock
+            android:id="@+id/clock_ampm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:ellipsize="none"
+            android:focusable="true"
+            android:padding="0px"
+            android:singleLine="true"
+            android:textColor="#C2C2C2"
+            android:textSize="14sp"
+            app:fontPath="fonts/roboto_light.ttf"
+            app:format12Hr="a"
+            app:format24Hr="" />
+
+    </LinearLayout>
+
+</LinearLayout>
