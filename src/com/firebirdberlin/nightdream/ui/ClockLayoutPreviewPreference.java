@@ -147,77 +147,98 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.invalidate();
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setupPreferencesFragment(final int clockLayoutID, final Settings settings) {
         preferencesContainer.removeAllViews();
-        if (clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL
-                || clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL2
-                || clockLayoutID == ClockLayout.LAYOUT_ID_DIGITAL3) {
-            CustomDigitalClockPreferencesLayout prefs =
-                    new CustomDigitalClockPreferencesLayout(context, settings, getActivity(), clockLayoutID);
-            prefs.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
-            prefs.setOnConfigChangedListener(
-                    new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
-                        @Override
-                        public void onConfigChanged() {
-                            updateView();
-                        }
 
-                        @Override
-                        public void onPurchaseRequested() {
-                            ((PreferencesActivity) context).showPurchaseDialog();
-                        }
-                    }
-            );
-            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            preferencesContainer.addView(prefs, lp);
-        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_CALENDAR) {
-            CustomCalendarClockPreferencesLayout prefs =
-                    new CustomCalendarClockPreferencesLayout(context, settings, getActivity());
-            prefs.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
-            prefs.setOnConfigChangedListener(
-                    new CustomCalendarClockPreferencesLayout.OnConfigChangedListener() {
-                        @Override
-                        public void onConfigChanged() {
-                            updateView();
-                        }
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
-                        @Override
-                        public void onPurchaseRequested() {
-                            ((PreferencesActivity) context).showPurchaseDialog();
-                        }
-                    }
-            );
-            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            preferencesContainer.addView(prefs, lp);
+        switch (clockLayoutID) {
+            case ClockLayout.LAYOUT_ID_DIGITAL:
+            case ClockLayout.LAYOUT_ID_DIGITAL2:
+            case ClockLayout.LAYOUT_ID_DIGITAL3:
+                CustomDigitalClockPreferencesLayout prefs_digital =
+                        new CustomDigitalClockPreferencesLayout(context, settings, getActivity(), clockLayoutID);
+                prefs_digital.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+                prefs_digital.setOnConfigChangedListener(
+                        new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
+                            @Override
+                            public void onConfigChanged() {
+                                updateView();
+                            }
 
-        } else if (clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG2 ||
-                clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG3 ||
-                clockLayoutID == ClockLayout.LAYOUT_ID_ANALOG4) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                // the view is not drawn correctly. We have issues with invalidation.
-                return;
-            }
-            AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
-            CustomAnalogClockPreferencesLayout prefs =
-                    new CustomAnalogClockPreferencesLayout(context, preset, getActivity());
-
-            prefs.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
-            prefs.setOnConfigChangedListener(
-                    new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
-                        @Override
-                        public void onConfigChanged() {
-                            updateClockLayout(clockLayoutID, settings);
+                            @Override
+                            public void onPurchaseRequested() {
+                                ((PreferencesActivity) context).showPurchaseDialog();
+                            }
                         }
+                );
+                preferencesContainer.addView(prefs_digital, lp);
+                break;
+            case ClockLayout.LAYOUT_ID_CALENDAR:
+                CustomCalendarClockPreferencesLayout prefs_calendar =
+                        new CustomCalendarClockPreferencesLayout(context, settings, getActivity());
+                prefs_calendar.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+                prefs_calendar.setOnConfigChangedListener(
+                        new CustomCalendarClockPreferencesLayout.OnConfigChangedListener() {
+                            @Override
+                            public void onConfigChanged() {
+                                updateView();
+                            }
 
-                        @Override
-                        public void onPurchaseRequested() {
-                            ((PreferencesActivity) context).showPurchaseDialog();
+                            @Override
+                            public void onPurchaseRequested() {
+                                ((PreferencesActivity) context).showPurchaseDialog();
+                            }
                         }
-                    }
-            );
-            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            preferencesContainer.addView(prefs, lp);
+                );
+                preferencesContainer.addView(prefs_calendar, lp);
+                break;
+            case ClockLayout.LAYOUT_ID_ANIM_DIGITAL:
+                CustomAnimClockPreferencesLayout prefs_anim =
+                        new CustomAnimClockPreferencesLayout(context, settings, getActivity());
+                prefs_anim.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+                prefs_anim.setOnConfigChangedListener(
+                        new CustomAnimClockPreferencesLayout.OnConfigChangedListener() {
+                            @Override
+                            public void onConfigChanged() {
+                                updateView();
+                            }
+
+                            @Override
+                            public void onPurchaseRequested() {
+                                ((PreferencesActivity) context).showPurchaseDialog();
+                            }
+                        }
+                );
+                preferencesContainer.addView(prefs_anim, lp);
+                break;
+            case ClockLayout.LAYOUT_ID_ANALOG2:
+            case ClockLayout.LAYOUT_ID_ANALOG3:
+            case ClockLayout.LAYOUT_ID_ANALOG4:
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    // the view is not drawn correctly. We have issues with invalidation.
+                    return;
+                }
+                AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
+                CustomAnalogClockPreferencesLayout prefs_analog =
+                        new CustomAnalogClockPreferencesLayout(context, preset, getActivity());
+
+                prefs_analog.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+                prefs_analog.setOnConfigChangedListener(
+                        new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
+                            @Override
+                            public void onConfigChanged() {
+                                updateClockLayout(clockLayoutID, settings);
+                            }
+
+                            @Override
+                            public void onPurchaseRequested() {
+                                ((PreferencesActivity) context).showPurchaseDialog();
+                            }
+                        }
+                );
+                preferencesContainer.addView(prefs_analog, lp);
+                break;
         }
     }
 
@@ -304,6 +325,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL3
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_FLIP
                         && layoutID != ClockLayout.LAYOUT_ID_CALENDAR
+                        && layoutID != ClockLayout.LAYOUT_ID_ANIM_DIGITAL
         );
     }
 
