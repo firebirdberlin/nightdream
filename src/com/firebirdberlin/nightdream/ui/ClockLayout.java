@@ -53,6 +53,7 @@ public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_CALENDAR = 6;
     public static final int LAYOUT_ID_DIGITAL2 = 7;
     public static final int LAYOUT_ID_DIGITAL3 = 8;
+    public static final int LAYOUT_ID_ANIM_DIGITAL = 9;
     private static final String TAG = "NightDream.ClockLayout";
     private WeatherLayout[] weatherLayouts = {null, null, null};
     private int layoutId = LAYOUT_ID_DIGITAL;
@@ -106,6 +107,8 @@ public class ClockLayout extends LinearLayout {
             child = inflater.inflate(R.layout.clock_layout_digital3, null);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
+        } else if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+            child = inflater.inflate(R.layout.clock_layout_anim, null);
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
             child = inflater.inflate(R.layout.clock_layout_calendar, null);
         } else if (layoutId == LAYOUT_ID_ANALOG) {
@@ -214,6 +217,10 @@ public class ClockLayout extends LinearLayout {
 
         if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
+            layout.setPrimaryColor(color);
+        }
+        if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+            CustomDigitalAnimClock layout = findViewById(R.id.time_layout);
             layout.setPrimaryColor(color);
         }
         if (calendarView != null) {
@@ -410,6 +417,8 @@ public class ClockLayout extends LinearLayout {
             updateDigitalClockCalendar(config, displayInWidget, parentWidth, parentHeight, minFontSize);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             updateDigitalFlipClock(parentWidth);
+        } else if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+            updateDigitalFlipClock(parentWidth);
         } else if (layoutId == LAYOUT_ID_ANALOG) {
             setupLayoutAnalog(parentWidth, parentHeight, config, displayInWidget);
         } else {
@@ -528,17 +537,16 @@ public class ClockLayout extends LinearLayout {
         if (clock != null) {
             clock.setMaxWidth((int) maxWidth);
             clock.setMaxFontSizesInSp(10.f, 50.f);
+            clock.invalidate();
         }
         if (date != null) {
             date.setMaxWidth((int) maxWidth);
             date.setMaxFontSizesInSp(10.f, 20.f);
             date.setTypeface(typeface);
+            date.invalidate();
         }
 
-        clock.invalidate();
-        date.invalidate();
-
-        if (weatherLayout != null) {
+        if (weatherLayout != null && clock != null) {
             float textSize = (float) Utility.pixelsToDp(context, clock.getTextSize());
             weatherLayout.setMaxWidth((int) (maxWidth));
             weatherLayout.setMaxHeight((Utility.getHeightOfView(clock)));
@@ -886,6 +894,12 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setCustomIs24Hour(is24HourFormat);
         }
+        if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+            CustomDigitalAnimClock layout = findViewById(R.id.time_layout);
+            layout.setCustomIs24Hour(is24HourFormat);
+            layout.setCustomFormat(formatString);
+        }
+
     }
 
     public void clearWeather() {

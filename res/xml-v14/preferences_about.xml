@@ -237,6 +237,16 @@ vi - Phong Nguyen"/>
         </Preference>
         <Preference
             app:iconSpaceReserved="false"
+            app:key="about_adp_delightful_view"
+            app:summary="by Alex Lockwood"
+            app:title="Android Design Patterns animated icons">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/alexjlockwood/adp-delightful-details"
+                />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
             app:key="about_texture_gold"
             app:summary="Background photo created by rawpixel.com - www.freepik.com"
             app:title="Gold texture">
