@@ -801,8 +801,15 @@ public class Utility {
     }
 
     public static int getVibrantColorFromPalette(Bitmap bitmap, int defaultColor) {
-        Palette p = Palette.from(bitmap).generate();
-        return p.getVibrantColor(defaultColor);
+        Log.d(TAG, "getVibrantColorFromPalette");
+
+        Palette p = Palette.from(bitmap).maximumColorCount(256).generate();
+        Palette.Swatch vibrant = p.getVibrantSwatch();
+        if (vibrant != null) {
+           return vibrant.getRgb();
+        }
+        return defaultColor;
+        //return p.getVibrantColor(defaultColor);
         //return p.getLightVibrantColor(Color.RED);
         //return p.getLightMutedColor(Color.RED);
     }

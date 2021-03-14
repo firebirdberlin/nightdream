@@ -24,7 +24,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -42,7 +41,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -64,6 +62,7 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
+import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -72,9 +71,6 @@ import com.google.android.flexbox.FlexboxLayout;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
@@ -104,7 +100,7 @@ public class NightDreamUI {
     private AlarmClock alarmClock;
     private ConstraintLayout parentLayout;
     private ExifView exifView;
-    private ImageView[] background_images = new ImageView[2];
+    private ImageViewExtended[] background_images = new ImageViewExtended[2];
     private int background_image_active = 0;
     private ArrayList<File> files;
     private Bitmap preloadBackgroundImage;
@@ -215,13 +211,13 @@ public class NightDreamUI {
                 if (preloadBackgroundImage == null) {
                     parentLayout.postDelayed(initSlideshowBackground, 500);
                 } else {
-                    setupBackgroundImage();
+                    setupSlideshow();
                 }
             }
         }
     };
     private final Runnable backgroundChange = () -> {
-        setupBackgroundImage();
+        setupSlideshow();
         postBackgroundImageChange();
     };
     private final Runnable hideAlarmClock = new Runnable() {
@@ -455,6 +451,7 @@ public class NightDreamUI {
 
     @SuppressLint("ClickableViewAccessibility")
     public NightDreamUI(final Context context, Window window) {
+        Log.d(TAG, "NightDreamUI()");
         mContext = context;
 
         mGestureDetector = new GestureDetector(mContext, mSimpleOnGestureListener);
@@ -479,7 +476,7 @@ public class NightDreamUI {
 
         background_images[0] = rootView.findViewById(R.id.background_view);
         background_images[1] = rootView.findViewById(R.id.background_view2);
-        background_image_active = 0;
+        background_image_active = 1;
 
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
@@ -489,26 +486,21 @@ public class NightDreamUI {
         exifView = new ExifView(mContext);
         exifLayoutContainer.addView(exifView.getView());
 
-        OnClickListener onMenuItemClickListener = new OnClickListener() {
-            public void onClick(View v) {
-                if (locked) return;
-                toggleSidePanel();
-            }
+        OnClickListener onMenuItemClickListener = v -> {
+            if (locked) return;
+            toggleSidePanel();
         };
         menuIcon.setOnClickListener(onMenuItemClickListener);
-        View.OnLongClickListener onMenuItemLongClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                locked = !locked;
-                settings.setUILocked(locked);
-                lockUI(locked);
-                if (locked) {
-                    hideSidePanel();
-                }
-                VibrationHandler handler = new VibrationHandler(mContext);
-                handler.startOneShotVibration(50);
-                return true;
+        View.OnLongClickListener onMenuItemLongClickListener = v -> {
+            locked = !locked;
+            settings.setUILocked(locked);
+            lockUI(locked);
+            if (locked) {
+                hideSidePanel();
             }
+            VibrationHandler handler = new VibrationHandler(mContext);
+            handler.startOneShotVibration(50);
+            return true;
         };
         menuIcon.setOnLongClickListener(onMenuItemLongClickListener);
 
@@ -591,17 +583,15 @@ public class NightDreamUI {
         background_images[1].clearAnimation();
         lastAnimationTime = 0L;
         setScreenOrientation(settings.screenOrientation);
-        initSidePanel();
-        initBackground();
-        bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
-        bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
-        bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
-        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
-        bottomPanelLayout.setup();
-        setupScreenAnimation();
-        lockUI(this.locked);
 
         clockLayoutContainer.post(initClockLayout);
+        postFadeAnimation();
+
+        initSidePanel();
+        initBackground();
+        initBottomPannelLayout();
+        setupScreenAnimation();
+        lockUI(this.locked);
 
         Utility.registerEventBus(this);
         broadcastReceiver = registerBroadcastReceiver();
@@ -611,30 +601,95 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
-        postFadeAnimation();
+    }
+
+    private void initBottomPannelLayout() {
+        bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
+        bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
+        bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
+        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
+        bottomPanelLayout.setup();
     }
 
     private void initBackground() {
+        if (mode == 0) return;
+
         preloadBackgroundImage = null;
         preloadBackgroundImageFile = null;
-        switch (settings.getBackgroundMode()) {
-            case Settings.BACKGROUND_SLIDESHOW:
-                loadBackgroundImageFiles();
-                if (files != null && files.size() > 0) {
-                    preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-                    AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-                    runningTask.execute(preloadBackgroundImageFile);
-                    parentLayout.postDelayed(initSlideshowBackground, 500);
-                    postBackgroundImageChange();
-                } else {
-                    preloadBackgroundImage = null;
-                    preloadBackgroundImageFile = null;
-                    setupBackgroundImage();
+        exifLayoutContainer.setVisibility(View.GONE);
+
+        if (!Utility.isLowRamDevice(mContext)) {
+            switch (settings.getBackgroundMode()) {
+
+                case Settings.BACKGROUND_TRANSPARENT: {
+                    Log.d(TAG, "BACKGROUND_TRANSPARENT");
+                    bgshape = colorTransparent;
+                    background_images[0].setImageDrawable(bgshape);
+                    background_images[1].setImageDrawable(bgshape);
+                    break;
                 }
-                break;
-            default:
-                setupBackgroundImage();
-                break;
+
+                case Settings.BACKGROUND_GRADIENT: {
+                    Log.d(TAG, "BACKGROUND_GRADIENT");
+                    bgshape = ContextCompat.getDrawable(mContext, R.drawable.background_gradient);
+                    background_images[background_image_active].setImageDrawable(bgshape);
+                    break;
+                }
+
+                case Settings.BACKGROUND_IMAGE: {
+                    Log.d(TAG, "BACKGROUND_IMAGE");
+                    setImageScale();
+
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    Handler handler = new Handler(Looper.getMainLooper());
+
+                    executor.execute(() -> {
+                        //doinbackground if cachefile not exists first write to cachefile
+
+                        if (!background_images[background_image_active].existCacheFile()) {
+                            background_images[background_image_active].setImageDrawable(colorBlack);
+                            background_images[background_image_active].bitmapUriToCache(Uri.parse(settings.backgroundImageURI));
+                        }
+
+                        handler.post(() -> {
+                            //like onPostExecute()
+                            background_images[background_image_active].setImage(Uri.parse(settings.backgroundImageURI));
+                            setDominantColorFromBitmap(background_images[background_image_active].getBitmap());
+                            if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                                background_images[(background_image_active + 1) % 2].setImageBitmap(Graphics.blur(mContext, background_images[background_image_active].getBitmap()));
+                                background_images[(background_image_active + 1) % 2].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            } else {
+                                background_images[(background_image_active + 1) % 2].setImageDrawable(colorBlack);
+                            }
+                        });
+                    });
+
+                    break;
+                }
+
+                case Settings.BACKGROUND_SLIDESHOW:
+                    Log.d(TAG, "BACKGROUND_SLIDESHOW");
+                    loadBackgroundImageFiles();
+                    if (files != null && files.size() > 0) {
+                        preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
+                        AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
+                        runningTask.execute(preloadBackgroundImageFile);
+                        parentLayout.postDelayed(initSlideshowBackground, 500);
+                        postBackgroundImageChange();
+                    } else {
+                        preloadBackgroundImage = null;
+                        preloadBackgroundImageFile = null;
+                        setupSlideshow();
+                    }
+                    break;
+
+                case Settings.BACKGROUND_BLACK:
+                default:
+                    Log.d(TAG, "BACKGROUND_default");
+                    bgshape = colorBlack;
+                    background_images[background_image_active].setImageDrawable(bgshape);
+                    break;
+            }
         }
     }
 
@@ -669,7 +724,7 @@ public class NightDreamUI {
                 Log.d(TAG, "pollenCount " + entry.cityName);
                 new PollenExposureUpdate(mContext, pollenContainer).execute(entry);
             } else {
-                Log.e(TAG, "pollenContainer not found");
+                Log.d(TAG, "pollenContainer not found");
             }
         }
     }
@@ -779,78 +834,13 @@ public class NightDreamUI {
         Utility.setIconSize(mContext, nightModeIcon);
     }
 
-    private void setupBackgroundImage() {
-        if (mode == 0) return;
-        bgshape = colorBlack;
-        exifLayoutContainer.setVisibility(View.GONE);
-        if (!Utility.isLowRamDevice(mContext)) {
-            switch (settings.getBackgroundMode()) {
-                case Settings.BACKGROUND_BLACK: {
-                    background_images[0].setImageDrawable(colorBlack);
-                    background_images[1].setImageDrawable(colorBlack);
-                    bgshape = colorBlack;
-                    break;
-                }
-                case Settings.BACKGROUND_TRANSPARENT: {
-                    background_images[0].setImageDrawable(colorTransparent);
-                    background_images[1].setImageDrawable(colorTransparent);
-                    bgshape = colorTransparent;
-                    break;
-                }
-                case Settings.BACKGROUND_GRADIENT: {
-                    bgshape = ContextCompat.getDrawable(mContext, R.drawable.background_gradient);
-                    break;
-                }
-                case Settings.BACKGROUND_IMAGE: {
-                    bgshape = loadBackgroundImage();
-                    background_images[0].setImageDrawable(colorBlack);
-                    background_images[1].setImageDrawable(colorBlack);
-                    break;
-                }
-                case Settings.BACKGROUND_SLIDESHOW: {
-                    if (preloadBackgroundImage == null) {
-                        bgshape = loadBackgroundSlideshowImage();
-                    } else {
-                        bgshape = new BitmapDrawable(mContext.getResources(), preloadBackgroundImage);
-                        // TODO determine the dominant color in an AsyncTask
-                        setDominantColorFromBitmap(preloadBackgroundImage);
-                    }
-                    if (settings.background_exif) {
-                        getExifInformation(preloadBackgroundImageFile);
-                    }
-                    break;
-                }
-            }
-        }
-
-        if (settings.hideBackgroundImage && mode == 0) {
-            background_images[background_image_active].setImageDrawable(colorBlack);
-            exifLayoutContainer.setVisibility(View.GONE);
-        } else {
-            background_image_active = (background_image_active + 1) % 2;
-
-            switch (settings.slideshowStyle) {
-                case Settings.SLIDESHOW_STYLE_CENTER:
-                    background_images[background_image_active].setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    break;
-                case Settings.SLIDESHOW_STYLE_CROPPED:
-                default:
-                    background_images[background_image_active].setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    break;
-            }
-
-            background_images[background_image_active].setImageDrawable(bgshape);
-            setupSlideshowAnimation();
-        }
-    }
-
     private Drawable loadBackgroundSlideshowImage() {
         Log.d(TAG, "loadBackgroundSlideshowImage");
         if (!settings.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             return new ColorDrawable(Color.BLACK);
         }
 
-        if (files.isEmpty()) return new ColorDrawable(Color.BLACK);
+        if (files == null || files.isEmpty()) return new ColorDrawable(Color.BLACK);
 
         File file = files.get(new Random().nextInt(files.size()));
         preloadBackgroundImageFile = file;
@@ -863,8 +853,21 @@ public class NightDreamUI {
         return new ColorDrawable(Color.BLACK);
     }
 
-    private void setupSlideshowAnimation() {
-        Log.d(TAG, "setup SlideshowAnimation");
+    private void setImageScale() {
+        switch (settings.slideshowStyle) {
+            case Settings.SLIDESHOW_STYLE_CENTER:
+                background_images[background_image_active].setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                break;
+
+            case Settings.SLIDESHOW_STYLE_CROPPED:
+            default:
+                background_images[background_image_active].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                break;
+        }
+    }
+
+    private void setupSlideshow() {
+        Log.d(TAG, "setupSlideshow");
 
         long now = System.currentTimeMillis();
         if (now - lastAnimationTime < 10000) {
@@ -872,6 +875,28 @@ public class NightDreamUI {
         }
 
         lastAnimationTime = now;
+
+        if (preloadBackgroundImage == null) {
+            bgshape = loadBackgroundSlideshowImage();
+        } else {
+            bgshape = new BitmapDrawable(mContext.getResources(), preloadBackgroundImage);
+            // TODO determine the dominant color in an AsyncTask
+            setDominantColorFromBitmap(preloadBackgroundImage);
+        }
+        if (settings.background_exif) {
+            getExifInformation(preloadBackgroundImageFile);
+        }
+
+        background_image_active = (background_image_active + 1) % 2;
+
+        setImageScale();
+
+        background_images[background_image_active].setImageDrawable(bgshape);
+
+        background_images[background_image_active].setScaleX(1);
+        background_images[background_image_active].setScaleY(1);
+        background_images[background_image_active].setTranslationX(0);
+        background_images[background_image_active].setTranslationY(0);
 
         AnimationSet animationSet = new AnimationSet(true);
 
@@ -959,6 +984,11 @@ public class NightDreamUI {
         }
         background_images[background_image_active].startAnimation(animationSet);
 
+        parentLayout.bringChildToFront(background_images[background_image_active]);
+        parentLayout.bringChildToFront(exifLayoutContainer);
+        parentLayout.requestLayout();
+        parentLayout.invalidate();
+
         if (files != null && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
             AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
@@ -974,68 +1004,6 @@ public class NightDreamUI {
         File path = settings.getBackgroundImageDir();
         files = Utility.listFiles(path, ".png");
         files.addAll(Utility.listFiles(path, ".jpg"));
-    }
-
-    private Drawable loadBackgroundImage() {
-        Log.d(TAG, "loadBackgroundImage()");
-        try {
-            Drawable cached = loadBackgroundImageFromCache();
-            if (cached != null) {
-                return cached;
-            }
-
-            Bitmap bgimage = loadBackgroundBitmap();
-            bgimage = rescaleBackgroundImage(bgimage);
-            AsyncTask<Bitmap, Integer, Bitmap> runningTask = new writeBackgroundImageToCache();
-            runningTask.execute(bgimage);
-            if (bgimage != null) {
-                return new BitmapDrawable(mContext.getResources(), bgimage);
-            }
-        } catch (OutOfMemoryError e) {
-            Toast.makeText(
-                    mContext, "Out of memory. Please, try to scale down your image.",
-                    Toast.LENGTH_LONG
-            ).show();
-        } catch (Exception e) {
-            //pass
-        }
-        return new ColorDrawable(Color.BLACK);
-    }
-
-    private Bitmap loadBackgroundBitmap() throws Exception {
-        Point display = Utility.getDisplaySize(mContext);
-        if (!settings.backgroundImageURI.isEmpty()) {
-            // version for Android 4.4+ (KitKat)
-            Uri uri = Uri.parse(settings.backgroundImageURI);
-            ParcelFileDescriptor parcelFileDescriptor =
-                    mContext.getContentResolver().openFileDescriptor(uri, "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
-
-            // Calculate inSampleSize
-            options.inSampleSize = Graphics.calculateInSampleSize(options, display.x, display.y);
-
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
-            parcelFileDescriptor.close();
-
-            int rotation = Utility.getCameraPhotoOrientation(fileDescriptor);
-            if (rotation != 0) {
-                bitmap = Utility.rotateBitmap(bitmap, rotation);
-            }
-
-            return bitmap;
-        } else if (!settings.backgroundImagePath().isEmpty()) {
-            // deprecated legacy version
-            String bgpath = settings.backgroundImagePath();
-            File file = new File(bgpath);
-            return loadImageFromPath(file);
-        }
-        return null;
     }
 
     private Bitmap loadImageFromPath(File file) {
@@ -1086,18 +1054,6 @@ public class NightDreamUI {
             bgimage = Bitmap.createScaledBitmap(bgimage, nw, nh, false);
         }
         return bgimage;
-    }
-
-    private BitmapDrawable loadBackgroundImageFromCache() {
-        Log.d(TAG, "load image from cache");
-        File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
-        if (cacheFile.exists()) {
-            Bitmap bgimage = BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
-            setDominantColorFromBitmap(bgimage);
-            Log.d(TAG, "loading image from cache");
-            return new BitmapDrawable(mContext.getResources(), imageFilter(bgimage));
-        }
-        return null;
     }
 
     private void setDominantColorFromBitmap(Bitmap bitmap) {
@@ -1178,17 +1134,17 @@ public class NightDreamUI {
         removeCallbacks(moveAround);
         removeCallbacks(backgroundChange);
 
-        Runnable fixConfig = new Runnable() {
-            public void run() {
-                float s = getScaleFactor(newConfig);
-                clockLayout.setScaleFactor(s);
-                Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
-                setClockPosition(newConfig);
+        Runnable fixConfig = () -> {
+            float s = getScaleFactor(newConfig);
+            clockLayout.setScaleFactor(s);
+            Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
+            setClockPosition(newConfig);
 
-                postDelayed(moveAround, Utility.millisToTimeTick(20000));
+            postDelayed(moveAround, Utility.millisToTimeTick(20000));
+            if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
                 postBackgroundImageChange();
-                sidePanel.post(setupSidePanel);
             }
+            sidePanel.post(setupSidePanel);
         };
 
         clockLayout.postDelayed(fixConfig, 200);
@@ -1752,39 +1708,6 @@ public class NightDreamUI {
         @Override
         protected void onPostExecute(Bitmap result) {
             preloadBackgroundImage = result;
-        }
-    }
-
-    private final class writeBackgroundImageToCache extends AsyncTask<Bitmap, Integer, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(Bitmap... params) {
-            if (params[0] == null) {
-                return null;
-            } else {
-                Log.d(TAG, "writing image to cache");
-                File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
-                Bitmap bgimage = params[0];
-                try {
-                    FileOutputStream out = new FileOutputStream(cacheFile);
-                    bgimage.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    out.flush();
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return bgimage;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... params) {
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-
         }
     }
 
