@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,21 +15,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <com.firebirdberlin.nightdream.ui.background.ImageViewExtended
                 android:id="@+id/background_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:contentDescription="Background Image"
+                tools:ignore="HardcodedText" />
 
-            <ImageView
+            <com.firebirdberlin.nightdream.ui.background.ImageViewExtended
                 android:id="@+id/background_view2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:contentDescription="Background Image"
+                tools:ignore="HardcodedText"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
