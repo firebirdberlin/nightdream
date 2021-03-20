@@ -268,10 +268,10 @@ public class mNotificationListener extends NotificationListenerService {
         String applicationName = getApplicationLabel(packageName);
         Bitmap largeIconBitmap = getLargeIconBitmap(context, sbn);
         Notification.Action[] actions = null;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             actions = notification.actions;
         }
+
         int color = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             color = notification.color;

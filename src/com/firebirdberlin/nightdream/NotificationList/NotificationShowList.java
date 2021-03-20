@@ -1,10 +1,6 @@
 package com.firebirdberlin.nightdream.NotificationList;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.preference.PreferenceManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,12 +9,8 @@ import java.util.List;
 public class NotificationShowList {
     private final List<Notification> notifications = new ArrayList<>();
 
-    private final SharedPreferences sharedPreferences;
-
     public NotificationShowList(List<Notification> notifications, Context context) {
         this.notifications.addAll(notifications);
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public List<Notification> get() {
@@ -29,29 +21,12 @@ public class NotificationShowList {
         notifications.clear();
     }
 
-    private boolean checkShowClearable(Notification notification) {
-        if (sharedPreferences.getBoolean("shownotclearable", false)) {
-            return true;
-        } else {
-            return !notification.isClearable() == sharedPreferences.getBoolean("shownotclearable", false);
-        }
-    }
-
-    private boolean checkPackageName(Notification notification, String packageName) {
-        if (packageName.equals("")) {
-            return true;
-        }
-
-        return notification.getPackageName().equals(packageName);
-    }
 
     public void replace(List<Notification> notifications, String packageName) {
-
         clear();
-
         for (int index = 0; index < notifications.size(); index++) {
             Notification n = notifications.get(index);
-            if (checkShowClearable(n) && checkPackageName(n, packageName)) {
+            if (shallShowNotification(n, packageName)) {
                 n.setChildId(index);
                 this.notifications.add(n);
             }
@@ -72,5 +47,12 @@ public class NotificationShowList {
                 return 1;
             }
         });
+    }
+
+    private boolean shallShowNotification(Notification notification, String packageName) {
+        return (
+                notification.isClearable()
+                        && notification.getPackageName().equals(packageName)
+        );
     }
 }
