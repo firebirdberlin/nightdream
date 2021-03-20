@@ -27,19 +27,19 @@ public class NotificationActivity extends AppCompatActivity {
 
     public static String TAG = "NotificationListActivity";
     List<Notification> notifications = new ArrayList<>();
-    NotificationShowList notificationshowlist;
+    NotificationShowList notificationList;
     String packageName;
     private NotificationRecyclerViewAdapter adapter;
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "NotActivity - Broadcastreceiver ");
+            Log.d(TAG, "onReceive");
 
             if (intent.hasExtra("notifications")) {
                 notifications = intent.getParcelableArrayListExtra("notifications");
-                notificationshowlist.replace(notifications, packageName);
+                notificationList.replace(notifications, packageName);
 
-                adapter.updateData(notificationshowlist.get());
+                adapter.updateData(notificationList.get());
             }
         }
     };
@@ -61,7 +61,7 @@ public class NotificationActivity extends AppCompatActivity {
         }
 
         Log.d(TAG, "NotificationActivity started");
-        notificationshowlist = new NotificationShowList(notifications, getApplicationContext());
+        notificationList = new NotificationShowList(notifications, getApplicationContext());
 
         setContentView(R.layout.notification_list_layout);
 

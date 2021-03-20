@@ -139,7 +139,8 @@ public class Utility {
                 || Build.MANUFACTURER.contains("Genymotion")
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                 || "google_sdk".equals(Build.PRODUCT)
-                || "sdk_gphone_x86".equals(Build.PRODUCT);
+                || "sdk_gphone_x86".equals(Build.PRODUCT)
+                || "sdk_gphone_x86_64".equals(Build.MODEL);
     }
 
     public static int getScreenOffTimeout(Context context) {
