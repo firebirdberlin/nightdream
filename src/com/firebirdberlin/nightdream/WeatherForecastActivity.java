@@ -147,9 +147,6 @@ public class WeatherForecastActivity
     void init() {
         Log.d(TAG,"init()");
 
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-
         if (!isPurchased(ITEM_WEATHER_DATA)) {
             adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
             adapter.addFragment(new WeatherForecastTabWeather(), getResources().getString(R.string.forecast));
@@ -158,22 +155,24 @@ public class WeatherForecastActivity
             tabLayout.setupWithViewPager(viewPager);
 
             ((WeatherForecastTabWeather)adapter.getItem(0)).setupForecastPreview(settings);
-            return;
-        }
+        }else {
+            viewPager.setAdapter(adapter);
+            tabLayout.setupWithViewPager(viewPager);
 
-        if (autoLocationEnabled) {
-            Log.i(TAG, "starting with auto location (GPS)");
-            initTabView(new City());
-        } else {
-            selectedCity = settings.getCityForWeather();
-            if (selectedCity != null && selectedCity.id > 0) {
-                Log.i(TAG, "starting with " + selectedCity.toJson());
-                addToFavoriteCities(selectedCity);
-                initTabView(selectedCity);
+            if (autoLocationEnabled) {
+                Log.i(TAG, "starting with auto location (GPS)");
+                initTabView(new City());
+            } else {
+                selectedCity = settings.getCityForWeather();
+                if (selectedCity != null && selectedCity.id > 0) {
+                    Log.i(TAG, "starting with " + selectedCity.toJson());
+                    addToFavoriteCities(selectedCity);
+                    initTabView(selectedCity);
+                }
             }
-        }
 
-        conditionallyShowSnackBar();
+            conditionallyShowSnackBar();
+        }
     }
 
     private void initTabView(City city) {

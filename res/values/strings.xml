@@ -158,7 +158,7 @@ OR
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
     <string name="gift_for_donors">Gift for your donation</string>
     <string name="flashlight">Flashlight</string>
-    <string name="forecast">5-day Weather Forecast</string>
+    <string name="forecast">Weather Forecast</string>
     <string name="frequently_asked_questions">frequently asked questions</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Bar</string>
@@ -256,7 +256,7 @@ OR
     <string name="preview">Preview</string>
     <string name="product_description_weather">An upgrade includes\n
     \n- a weather status line shown below the clock
-    \n- a 5-day weather forecast
+    \n- a weather forecast
     \n- more clock faces
     </string>
     <string name="product_name_actions">Always On package</string>

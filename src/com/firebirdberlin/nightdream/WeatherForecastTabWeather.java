@@ -77,7 +77,6 @@ public class WeatherForecastTabWeather extends Fragment implements
         Log.d(TAG, String.format(" > got %d entries", entries.size()));
 
         if (context != null) {
-            scrollViewLayout.removeAllViews();
             String timeFormat = settings.getFullTimeFormat();
 
             int day = -1;
@@ -224,14 +223,6 @@ public class WeatherForecastTabWeather extends Fragment implements
         textView2.setOnClickListener(purchaseListener);
         scrollViewLayout.addView(textView2);
 
-        WeatherLayout statusLine = new WeatherLayout(context);
-        statusLine.setColor(Color.WHITE);
-        statusLine.setGravity(Gravity.CENTER);
-        statusLine.setWindSpeed(true, WeatherEntry.METERS_PER_SECOND);
-        statusLine.update(entries.get(0));
-        statusLine.setPadding(dp20, dp20, dp20, dp20);
-
-        scrollViewLayout.addView(statusLine);
         addWeatherEntries(entries);
     }
 
@@ -349,6 +340,7 @@ public class WeatherForecastTabWeather extends Fragment implements
             actionBarSetup(firstEntry.cityName);
         }
 
+        scrollViewLayout.removeAllViews();
         addWeatherEntries(entries);
     }
 
