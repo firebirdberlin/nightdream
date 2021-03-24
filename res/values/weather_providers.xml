@@ -3,11 +3,13 @@
      <string-array name="weatherProviderValues">
           <item>0</item>
           <item>1</item>
+          <item>2</item>
      </string-array>
 
 
     <string-array name="weatherProvider">
         <item>OpenWeatherMap</item>
         <item>Dark Sky</item>
+        <item>Bright Sky (Germany, experimental)</item>
      </string-array>
 </resources>

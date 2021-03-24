@@ -36,6 +36,8 @@ public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEnt
                 return OpenWeatherMapApi.fetchWeatherForecast( (Context) delegate, city);
             case DARK_SKY:
                 return DarkSkyApi.fetchHourlyWeatherData((Context) delegate, city);
+            case BRIGHT_SKY:
+                return BrightSkyApi.fetchHourlyWeatherData((Context) delegate, city);
         }
     }
 
