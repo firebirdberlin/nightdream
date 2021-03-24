@@ -1,4 +1,4 @@
-package com.firebirdberlin.dwd;
+package com.firebirdberlin;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -28,7 +28,11 @@ public class HttpReader {
     private final File lockFile;
     private final Context context;
 
-    private final long cacheExpirationTimeMillis = 1000 * 60 * 60 * 24;
+    public void setCacheExpirationTimeMillis(long cacheExpirationTimeMillis) {
+        this.cacheExpirationTimeMillis = cacheExpirationTimeMillis;
+    }
+
+    private long cacheExpirationTimeMillis = 1000 * 60 * 60 * 24;
     private final long unsuccessfulAttemptTimeout = 1000 * 60 * 10; // 10 Minutes
 
     public HttpReader(Context context, final String cacheFileName) {

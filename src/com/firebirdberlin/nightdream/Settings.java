@@ -360,6 +360,8 @@ public class Settings {
                 return WeatherProvider.OPEN_WEATHER_MAP;
             case "1":
                 return WeatherProvider.DARK_SKY;
+            case "2":
+                return WeatherProvider.BRIGHT_SKY;
         }
     }
 
@@ -1311,7 +1313,7 @@ public class Settings {
         return radioStreamActivateWiFi;
     }
 
-    public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY}
+    public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY, BRIGHT_SKY}
 
     public enum ScreenProtectionModes {NONE, MOVE, FADE}
 }
