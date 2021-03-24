@@ -75,10 +75,12 @@ public class mNotificationListener extends NotificationListenerService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //retrieving data from the received intent
-        String command = intent.getStringExtra("command");
-        if (command != null) {
-            if ("getNotificationList".equals(command)) {
-                listNotifications();
+        if (intent != null) {
+            String command = intent.getStringExtra("command");
+            if (command != null) {
+                if ("getNotificationList".equals(command)) {
+                    listNotifications();
+                }
             }
         }
         super.onStartCommand(intent, flags, startId);

@@ -13,7 +13,7 @@ public class City {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)\n%1.3f°; %1.3f°", name, countryCode, lat, lon);
+        return String.format(java.util.Locale.getDefault(),"%s (%s)\n%1.3f°; %1.3f°", name, countryCode, lat, lon);
     }
 
     public static City fromJson(String json) {

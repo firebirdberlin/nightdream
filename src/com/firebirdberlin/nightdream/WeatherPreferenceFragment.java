@@ -52,17 +52,29 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
             return;
         }
         Preference prefAttribution = findPreference("weatherProviderAttribution");
-        if (settings.getWeatherProviderString().equals("0")) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://openweathermap.org"));
-            prefAttribution.setIntent(intent);
-            prefAttribution.setTitle("Powered by OpenWeatherMap");
-            prefAttribution.setSummary("https://openweathermap.org");
-        }
-        else if (settings.getWeatherProviderString().equals("1")) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://darksky.net/poweredby/"));
-            prefAttribution.setIntent(intent);
-            prefAttribution.setTitle("Powered by Dark Sky");
-            prefAttribution.setSummary("https://darksky.net/poweredby/");
+
+        switch (settings.getWeatherProviderString()) {
+            case "0": {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://openweathermap.org"));
+                prefAttribution.setIntent(intent);
+                prefAttribution.setTitle("Powered by OpenWeatherMap");
+                prefAttribution.setSummary("https://openweathermap.org");
+                break;
+            }
+            case "1": {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://darksky.net/poweredby/"));
+                prefAttribution.setIntent(intent);
+                prefAttribution.setTitle("Powered by Dark Sky");
+                prefAttribution.setSummary("https://darksky.net/poweredby/");
+                break;
+            }
+            case "2": {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://brightsky.dev/"));
+                prefAttribution.setIntent(intent);
+                prefAttribution.setTitle("Powered by Bright Sky");
+                prefAttribution.setSummary("https://brightsky.dev/");
+                break;
+            }
         }
     }
 

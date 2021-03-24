@@ -64,7 +64,7 @@ public class WeatherEntry {
     }
 
     public String toString() {
-        return String.format(
+        return String.format(java.util.Locale.getDefault(),
                 "%2.2fK %2.2fm/s %d° %d %s",
                 temperature, windSpeed, windDirection, timestamp, description
         );
@@ -91,17 +91,17 @@ public class WeatherEntry {
     public String formatTemperatureText(int temperatureUnit, double temp) {
         switch (temperatureUnit) {
             case WeatherEntry.CELSIUS:
-                return String.format("%d°C", Math.round(toDegreesCelcius(temp)));
+                return String.format(java.util.Locale.getDefault(),"%d°C", Math.round(toDegreesCelcius(temp)));
             case WeatherEntry.FAHRENHEIT:
-                return String.format("%d°F", Math.round(toDegreesFahrenheit(temp)));
+                return String.format(java.util.Locale.getDefault(),"%d°F", Math.round(toDegreesFahrenheit(temp)));
             default:
-                return String.format("%d K", Math.round(temp));
+                return String.format(java.util.Locale.getDefault(),"%d K", Math.round(temp));
         }
     }
 
     public String formatHumidityText() {
         if (humidity < 0) return "";
-        return String.format("%d %%", humidity);
+        return String.format(java.util.Locale.getDefault(),"%d %%", humidity);
     }
 
     private double toDegreesCelcius(double kelvin) {
@@ -115,19 +115,19 @@ public class WeatherEntry {
     public String formatWindText(int speedUnit) {
         switch (speedUnit) {
             case WeatherEntry.BEAUFORT:
-                return String.format("%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(this.windSpeed));
+                return String.format(java.util.Locale.getDefault(),"%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(this.windSpeed));
             case WeatherEntry.MILES_PER_HOUR:
                 double mph = WindSpeedConversion.metersPerSecondToMilesPerHour(this.windSpeed);
-                return String.format("%.1f mi/h", mph);
+                return String.format(java.util.Locale.getDefault(),"%.1f mi/h", mph);
             case WeatherEntry.KM_PER_HOUR:
                 double kmph = WindSpeedConversion.metersPerSecondToKilometersPerHour(this.windSpeed);
-                return String.format("%.1f km/h", kmph);
+                return String.format(java.util.Locale.getDefault(),"%.1f km/h", kmph);
             case WeatherEntry.KNOT:
                 double kn = WindSpeedConversion.metersPerSecondToKnot(this.windSpeed);
-                return String.format("%.1f kn", kn);
+                return String.format(java.util.Locale.getDefault(),"%.1f kn", kn);
             case WeatherEntry.METERS_PER_SECOND:
             default:
-                return String.format("%.1f m/s", this.windSpeed);
+                return String.format(java.util.Locale.getDefault(),"%.1f m/s", this.windSpeed);
         }
     }
 

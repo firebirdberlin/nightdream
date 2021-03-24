@@ -3,6 +3,7 @@ package com.firebirdberlin.dwd;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.firebirdberlin.HttpReader;
 import com.firebirdberlin.nightdream.PollenExposure;
 
 public class PollenExposureRequestTask extends AsyncTask<String, Void, PollenExposure> {
