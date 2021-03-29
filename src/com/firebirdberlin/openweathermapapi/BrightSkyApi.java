@@ -5,12 +5,9 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.firebirdberlin.HttpReader;
-import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,35 +22,54 @@ import java.util.List;
 public class BrightSkyApi {
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.brightsky.dev";
-    private static String CACHE_FILE = "BrightSkyApi";
-    private static String TAG = "BrightSkyApi";
+    private static final String CACHE_FILE = "BrightSkyApi";
+    private static final String TAG = "BrightSkyApi";
 
-    public static WeatherEntry fetchCurrentWeatherData(Context context, City city, float lat, float lon) {
-        String responseText = fetchWeatherData(context, city, lat, lon);
+    public static WeatherEntry fetchCurrentWeatherData(Context context, float lat, float lon) {
+        String responseText = fetchWeatherData(context, lat, lon);
         if (responseText == null) {
             return new WeatherEntry();
         }
-        JSONObject json = getJSONObject(responseText);
-        return getWeatherEntryFromJSONObject(city, json, context);
+        Data data = new Gson().fromJson(responseText, Data.class);
+        long now = System.currentTimeMillis();
+        Weather weather = data.getLatestWeather(now);
+        if (weather != null) {
+            Source source = data.getSourceById(weather.source_id);
+            return weather.toWeatherEntry(source, lat, lon, now);
+        } else {
+            WeatherEntry entry = new WeatherEntry();
+            entry.lat = lat;
+            entry.lon = lon;
+            return entry;
+        }
     }
 
-    public static List<WeatherEntry> fetchHourlyWeatherData(Context context, City city) {
-        String responseText = fetchWeatherData(context, city, (float) city.lat, (float) city.lon);
+    public static List<WeatherEntry> fetchHourlyWeatherData(Context context, float lat, float lon) {
+        String responseText = fetchWeatherData(context, lat, lon);
         if (responseText == null) {
             return new ArrayList<>();
         }
-        JSONObject json = getJSONObject(responseText);
-        return getWeatherEntriesHourly(city, json);
+        responseText = responseText.replaceAll("\"relative_humidity\": null", "\"relative_humidity\": -1");
+        // Log.i(TAG, responseText);
+        Gson gson = new GsonBuilder().create();
+        Data data = gson.fromJson(responseText, Data.class);
+        // data.log();
+
+        long now = System.currentTimeMillis();
+        List<WeatherEntry> entries = new ArrayList<>();
+        for (Weather weather : data.weather) {
+            Source source = data.getSourceById(weather.source_id);
+            source.lat = lat;
+            source.lon = lon;
+            entries.add(weather.toWeatherEntry(source, now));
+        }
+        return entries;
     }
 
-    private static String fetchWeatherData(Context context, City city, float lat, float lon) {
-        Log.d(TAG, "fetchWeatherData");
+    private static String fetchWeatherData(Context context, float lat, float lon) {
         String responseText = "";
 
-        if (city != null) {
-            lat = (float) city.lat;
-            lon = (float) city.lon;
-        }
+        Log.d(TAG, "fetchWeatherData(" + lat + "," + lon + ")");
         String cacheFileName = String.format(
                 java.util.Locale.getDefault(), "%s_%3.2f_%3.2f.txt", CACHE_FILE, lat, lon
         );
@@ -76,154 +92,7 @@ public class BrightSkyApi {
     }
 
     private static double toMetersPerSecond(double kilometersPerHour) {
-        return kilometersPerHour * 1000./3600.;
-    }
-
-    //current weather
-    private static WeatherEntry getWeatherEntryFromJSONObject(City city, JSONObject json, Context mContext) {
-        Log.d(TAG, "getWeatherEntryFromJSONObject");
-        WeatherEntry entry = new WeatherEntry();
-        if (json == null) {
-            return entry;
-        }
-        long now = System.currentTimeMillis();
-        float lat = getValue(json, "latitude", -1.f);
-        float lon = getValue(json, "longitude", -1.f);
-
-        JSONArray jsonData = getJSONArray(json, "weather");
-        JSONObject jsonEntry;
-
-        if (jsonData != null) {
-            for (int i = 0; i < jsonData.length(); i++) {
-                jsonEntry = getJSONObject(jsonData, i);
-                WeatherEntry new_entry = parseJsonObject(jsonEntry, city, lat, lon, now);
-
-                if (new_entry.timestamp > now) {
-                    return entry;
-                }
-                entry = new_entry;
-            }
-
-        }
-        return entry;
-    }
-
-    //forecast weather
-    private static List<WeatherEntry> getWeatherEntriesHourly(City city, JSONObject json) {
-        List<WeatherEntry> entries = new ArrayList<>();
-        if (json == null) {
-            return entries;
-        }
-        long now = System.currentTimeMillis();
-        float lat = getValue(json, "latitude", -1.f);
-        float lon = getValue(json, "longitude", -1.f);
-        JSONArray jsonData = getJSONArray(json, "weather");
-
-        if (jsonData != null) {
-            for (int i = 0; i < jsonData.length(); i++) {
-                JSONObject jsonEntry = getJSONObject(jsonData, i);
-                WeatherEntry entry = parseJsonObject(jsonEntry, city, lat, lon, now);
-                entries.add(entry);
-            }
-        }
-
-        return entries;
-    }
-
-    private static WeatherEntry parseJsonObject(JSONObject jsonEntry, City city, float lat, float lon, long now) {
-        WeatherEntry entry = new WeatherEntry();
-        entry.cityID = (city != null) ? city.id : -1;
-        entry.cityName = (city != null) ? city.name : String.format(java.util.Locale.getDefault(), "%3.2f, %3.2f", entry.lat, entry.lon);
-        entry.clouds = (int) (getValue(jsonEntry, "cloud_cover", 0.f));
-        entry.description = getValue(jsonEntry, "condition", "");
-        entry.lat = lat;
-        entry.lon = lon;
-        entry.rain1h = getValue(jsonEntry, "precipitation", -1.);
-        entry.rain3h = -1f;
-        entry.request_timestamp = now;
-        entry.sunriseTime = 0L;
-        entry.sunsetTime = 0L;
-        entry.temperature = toKelvin(getValue(jsonEntry, "temperature", -273.15));
-        entry.apparentTemperature = -273.15;
-        entry.humidity = getValue(jsonEntry, "relative_humidity", -1);
-        entry.weatherIcon = getValue(jsonEntry, "icon", "");
-        entry.windDirection = getValue(jsonEntry, "wind_direction", -1);
-        entry.windSpeed = toMetersPerSecond(getValue(jsonEntry, "wind_speed", 0.));
-
-        try {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ", java.util.Locale.getDefault());
-            Date result = df.parse(String.valueOf(getValue(jsonEntry, "timestamp", "")));
-            entry.timestamp = result.getTime() / 1000;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            entry.timestamp = -1L;
-        }
-
-        return entry;
-    }
-
-    private static JSONObject getJSONObject(String string_representation) {
-        try {
-            return new JSONObject(string_representation);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private static JSONObject getJSONObject(JSONArray jsonArray, int index) {
-        try {
-            return jsonArray.getJSONObject(index);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private static JSONArray getJSONArray(JSONObject json, String name) {
-        try {
-            return json.getJSONArray(name);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private static double getValue(JSONObject json, String name, double defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getDouble(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static float getValue(JSONObject json, String name, float defaultvalue) {
-        return (float) getValue(json, name, (double) defaultvalue);
-    }
-
-    private static int getValue(JSONObject json, String name, int defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getInt(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static String getValue(JSONObject json, String name, String defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getString(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static long getValue(JSONObject json, String name, long defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getLong(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
+        return kilometersPerHour * 1000. / 3600.;
     }
 
     private static URL getUrlForecast(float lat, float lon) throws MalformedURLException {
@@ -247,5 +116,110 @@ public class BrightSkyApi {
 
         String url = builder.build().toString();
         return new URL(url);
+    }
+
+    public class Data {
+        List<Source> sources;
+        List<Weather> weather;
+
+        Source getSourceById(int id) {
+            for (Source source : sources) {
+                if (source.id == id) {
+                    return source;
+                }
+            }
+            return null;
+        }
+
+        Weather getLatestWeather(long now) {
+            Weather latestWeather = null;
+            for (Weather weather : weather) {
+                if (weather.timestampToMillis() > now) {
+                    break;
+                }
+                latestWeather = weather;
+            }
+            return latestWeather;
+        }
+
+        // keep it for convenience, Logs all data.
+        void log() {
+            for (Source source : sources) {
+                Log.i(TAG, new Gson().toJson(source));
+            }
+            for (Weather weather : weather) {
+                Log.i(TAG, new Gson().toJson(weather));
+            }
+        }
+    }
+
+    class Source {
+        // commented fields are currently not in use
+        int id;
+        // String dwd_station_id;
+        // String wmo_station_id;
+        String station_name;
+        // String observation_type;
+        float lat;
+        float lon;
+        // float height;
+        // int distance;
+    }
+
+    class Weather {
+        // commented fields are currently not in use
+        String timestamp;
+        int source_id;
+        int cloud_cover;
+        String condition;
+        // float dew_point;
+        String icon;
+        float precipitation;
+        // float pressure_msl;
+        int relative_humidity = -1;
+        // int sunshine;
+        float temperature;
+        // int visibility;
+        int wind_direction;
+        float wind_speed;
+        // int wind_gust_direction;
+        // float wind_gust_speed;
+
+        long timestampToMillis() {
+            try {
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ", java.util.Locale.getDefault());
+                Date result = df.parse(timestamp);
+                return result.getTime();
+            } catch (ParseException e) {
+                return -1L;
+            }
+        }
+
+        WeatherEntry toWeatherEntry(Source source, long now) {
+            return toWeatherEntry(source, source.lat, source.lon, now);
+        }
+
+        WeatherEntry toWeatherEntry(Source source, float lat, float lon, long now) {
+            WeatherEntry entry = new WeatherEntry();
+            entry.cityID = (source != null) ? source.id : -1;
+            entry.cityName = (source != null) ? source.station_name : String.format(java.util.Locale.getDefault(), "%3.2f, %3.2f", lat, lon);
+            entry.clouds = cloud_cover;
+            entry.description = condition;
+            entry.lat = lat;
+            entry.lon = lon;
+            entry.rain1h = precipitation;
+            entry.rain3h = -1f;
+            entry.request_timestamp = now;
+            entry.sunriseTime = 0L;
+            entry.sunsetTime = 0L;
+            entry.temperature = toKelvin(temperature);
+            entry.apparentTemperature = -273.15;
+            entry.humidity = relative_humidity;
+            entry.weatherIcon = icon;
+            entry.windDirection = wind_direction;
+            entry.windSpeed = toMetersPerSecond(wind_speed);
+            entry.timestamp = timestampToMillis() / 1000;
+            return entry;
+        }
     }
 }
