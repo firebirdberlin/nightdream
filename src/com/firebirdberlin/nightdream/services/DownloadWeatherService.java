@@ -69,12 +69,19 @@ public class DownloadWeatherService extends JobIntentService {
                 );
                 break;
             case BRIGHT_SKY:
-                entry = BrightSkyApi.fetchCurrentWeatherData(
-                        this,
-                        city,
-                        (float) location.getLatitude(),
-                        (float) location.getLongitude()
-                );
+                if (city != null) {
+                    entry = BrightSkyApi.fetchCurrentWeatherData(
+                            this,
+                            (float) city.lat,
+                            (float) city.lon
+                    );
+                } else {
+                    entry = BrightSkyApi.fetchCurrentWeatherData(
+                            this,
+                            (float) location.getLatitude(),
+                            (float) location.getLongitude()
+                    );
+                }
                 break;
         }
         onPostExecute(entry);

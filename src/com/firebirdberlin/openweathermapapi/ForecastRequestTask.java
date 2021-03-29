@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
@@ -23,9 +24,11 @@ public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEnt
     protected List<WeatherEntry> doInBackground(String... query) {
         City city = null;
         String cityJson = query[0];
-        if (cityJson != null && !cityJson.isEmpty()) {
+
+        if (!Utility.isEmpty(cityJson)) {
             city = City.fromJson(cityJson);
         }
+
         if (city == null) {
             return null;
         }
@@ -37,7 +40,9 @@ public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEnt
             case DARK_SKY:
                 return DarkSkyApi.fetchHourlyWeatherData((Context) delegate, city);
             case BRIGHT_SKY:
-                return BrightSkyApi.fetchHourlyWeatherData((Context) delegate, city);
+                return BrightSkyApi.fetchHourlyWeatherData(
+                        (Context) delegate, (float) city.lat, (float) city.lon
+                );
         }
     }
 
