@@ -65,6 +65,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private static String streamURL = "";
     private static long muteDelayInMillis = 0;
     final private Handler handler = new Handler();
+    long fadeInDelay = 50;
+    int maxVolumePercent = 100;
     private long readyForPlaybackSince = 0L;
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
@@ -73,22 +75,19 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private int currentStreamVolume = -1;
     private HttpStatusCheckTask statusCheckTask = null;
     private PlaylistRequestTask resolveStreamUrlTask = null;
-
-    private IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+    private final IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
     private VibrationHandler vibrator = null;
-    long fadeInDelay = 150;
-    int maxVolumePercent = 100;
-
-    private Runnable fadeIn = new Runnable() {
+    private final Runnable fadeIn = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(fadeIn);
             if (mMediaPlayer == null) return;
             currentVolume += 0.01;
-            if ( currentVolume < maxVolumePercent / 100.) {
+            if (currentVolume <= maxVolumePercent / 100.) {
+                Log.i(TAG, "volume: " + currentVolume);
                 mMediaPlayer.setVolume(currentVolume, currentVolume);
-                handler.postDelayed(fadeIn, 50);
+                handler.postDelayed(fadeIn, fadeInDelay);
             }
         }
     };
@@ -243,9 +242,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         settings = new Settings(this);
         isRunning = true;
 
-        maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
-        fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
-
         String action = intent.getAction();
 
         Intent notificationIntent = new Intent(this, NightDreamActivity.class);
@@ -278,6 +274,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             streamingMode = StreamingMode.ALARM;
             alarmTime = new SimpleTime(intent.getExtras());
             setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
+
+            maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
+            fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
+
             radioStationIndex = alarmTime.radioStationIndex;
             checkStreamAndStart(radioStationIndex);
             // stop the alarm automatically after playing for two hours
@@ -291,6 +291,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
             streamingMode = StreamingMode.RADIO;
             currentStreamType = AudioManager.STREAM_MUSIC;
+            fadeInDelay = 50;
             myNoisyAudioStreamReceiver = new BecomingNoisyReceiver();
             registerReceiver(myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter);
             RadioStreamMetadataRetriever.getInstance().clearCache();
@@ -465,7 +466,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         mMediaPlayer.setOnPreparedListener(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int usage = (currentStreamType == AudioManager.STREAM_ALARM)
-                    ? AudioAttributes.USAGE_ALARM : AudioAttributes.USAGE_MEDIA;
+                    ? AudioAttributes.USAGE_ALARM
+                    : AudioAttributes.USAGE_MEDIA;
             mMediaPlayer.setAudioAttributes(
                     new AudioAttributes.Builder()
                             .setUsage(usage)
@@ -517,15 +519,12 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        if (settings.alarmFadeIn) {
-            currentVolume = 0.f;
+        currentVolume = 0.f;
+        if (mMediaPlayer != null) {
             // mute mediaplayer volume immediately, before it starts playing
-            if (mMediaPlayer != null) {
-                mMediaPlayer.setVolume(currentVolume, currentVolume);
-            }
-            //handler.post(fadeIn);
-            handler.postDelayed(fadeIn, muteDelayInMillis);
+            mMediaPlayer.setVolume(currentVolume, currentVolume);
         }
+        handler.postDelayed(fadeIn, muteDelayInMillis);
         try {
             mp.start();
             readyForPlayback = true;
