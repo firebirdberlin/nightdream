@@ -187,7 +187,7 @@ public class BrightSkyApi {
 
         long timestampToMillis() {
             try {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ", java.util.Locale.getDefault());
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", java.util.Locale.getDefault());
                 Date result = df.parse(timestamp);
                 return result.getTime();
             } catch (ParseException e) {
