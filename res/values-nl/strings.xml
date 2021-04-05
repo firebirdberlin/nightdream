@@ -95,7 +95,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Helderheid standaard</string>
     <string name="buy">Kopen</string>
     <string name="buy_upgrade_summary">Verkrijg versie met alle opties</string>
-    <string name="category_handle_power">... en als je verbonden bent met</string>
+    <string name="category_handle_power">… en als je verbonden bent met</string>
     <string name="category_handle_power_autostart_time">Starten binnen tijdsbereik</string>
     <string name="category_night_mode_display_management">Scherminstellingen</string>
     <string name="choose_alarm_sound">Alarmtoon</string>

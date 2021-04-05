@@ -62,6 +62,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_movein_right">Droit</string>
     <string name="background_movein_bottom">Bas</string>
     <string name="background_movein_left">Gauche</string>
+    <string name="background_image_filter">Filtre image</string>
+    <string name="background_image_filter_none">Aucun</string>
+    <string name="background_image_filter_grey">Gris</string>
+    <string name="background_image_filter_sepia">Sepia</string>
+    <string name="background_image_filter_invert">Inversé</string>
+    <string name="background_image_filter_contrast">Contraste</string>
+    <string name="background_image_filter_sketch">Esquisse</string>
+    <string name="background_image_filter_blur">Estomper</string>
     <string name="background_auto_accent_color">Sélection automatique des couleurs</string>
     <string name="background_auto_accent_summary">Sélectionnez automatiquement une couleur d\'accentuation appropriée.</string>
     <string name="background_black">Noir</string>
@@ -71,6 +79,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">Image</string>
     <string name="background_image_select">Choisir une image</string>
     <string name="background_slideshow">Diaporama</string>
+    <string name="background_transparent">Transparent</string>
     <string name="background_image_duration">Changement d\'image tous les</string>
     <string name="seconds_60">60 secondes</string>
     <string name="seconds_30">30 secondes</string>
@@ -95,24 +104,27 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Compensation de la luminosité</string>
     <string name="buy">Acheter</string>
     <string name="buy_upgrade_summary">Passez à la version pro maintenant</string>
-    <string name="category_handle_power">...et lorsque connecté à</string>
+    <string name="category_handle_power">…et lorsque connecté à</string>
     <string name="category_handle_power_autostart_time">Démarrer dans la plage horaire</string>
     <string name="category_night_mode_display_management">Gestion d\'affichage</string>
     <string name="choose_alarm_sound">Tonalité d\'alarme</string>
     <string name="choose_primary_color">Couleur principale</string>
     <string name="choose_secondary_color">Couleur du texte</string>
     <string name="clear">Effacer</string>
+    <string name="clock">Horloge</string>
     <string name="clock_hands">Aiguilles</string>
     <string name="clock_layout_analog">Analogique</string>
     <string name="clock_layout_calendar">Horloge digitale avec calendrier</string>
     <string name="clock_layout_digital">Numérique</string>
     <string name="clock_layout_digital2">horloge numérique avec grandes icônes météo</string>
+    <string name="clock_layout_digital3">Horloge digitale avec température</string>
     <string name="clock_layout_elegant_analog">Visuel horloge analogique élégante</string>
     <string name="clock_layout_digit_analog">Horloge analogique digitale</string>
     <string name="clock_layout_digital_flip">Horloge digitale basculante</string>
     <string name="clock_layout">Type d\'horloge</string>
     <string name="clock_layout_modern_analog">Visuel horloge analogique modern</string>
     <string name="clock_layout_mirror_text">Texte en miroir</string>
+    <string name="clockBackgroundTransparency">Transparence du fond d\'écran</string>
     <string name="colors">Couleurs</string>
     <string name="confirm_reset_question">Voulez-vous vraiment réinitialiser tous les paramètres?</string>
     <string name="confirm_reset_question_layout">Voulez-vous vraiment réinitialiser l\'apparence</string>
@@ -206,7 +218,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notifications">Notifications</string>
     <string name="notificationsInStatusBarTitle">Barre de statut</string>
     <string name="notificationsInStatusBarSummary">Afficher les notifications dans la barre d\'état si activé. Sinon, ajoutez une ligne supplémentaire.</string>
-    <string name="notificationListenerService">Service d\'écoute de notification</string>
+    <string name="notificationListenerService">Accès aux notifications</string>
     <string name="showNotifications">Afficher notifications</string>
     <string name="showNotificationsAccessGranted">Accès autorisé</string>
     <string name="showNotificationsAccessNotGranted">Accès non autorisé!</string>
@@ -232,11 +244,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Préférences</string>
     <string name="prev">Précédent</string>
     <string name="preview">Aperçu</string>
-    <string name="product_description_weather">Une mise à niveau comprend
+<string name="product_description_weather">Une mise à niveau comprend
 \n
-\n- une ligne d\'état météo affichée sous l\'horloge
+\n- une ligne d'état météo affichée sous l'horloge
 \n- une prévision météo à 5 jours
-\n- plus de cadrans d\'horloge</string>
+\n- plus de cadrans d'horloge</string>
     <string name="product_name_actions">Package Toujours actif</string>
     <string name="product_name_donation">Don</string>
     <string name="product_name_pro">Version complete</string>
@@ -273,6 +285,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend">Recommander l\'application</string>
     <string name="export_preferences">Exporter les informations de l\'application</string>
     <string name="remaining">rest.</string>
+    <string name="remaining_alarm_time_now">L'alarme sonnera bientôt</string>
+    <string name="remaining_alarm_time_start">L'alarme sonnera dans</string>
     <string name="repeat">Répéter</string>
     <string name="reset_to_defaults">Réinitialiser aux paramètres par défaut</string>
     <string name="screenProtection">Protection contre les brûlures d\'écran</string>
@@ -300,6 +314,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_apparent_temperature">inclure la température apparente</string>
     <string name="show_date">Afficher la date</string>
     <string name="show_divider">Montrer séparations</string>
+    <string name="showPollen">Indice de risque pollinique</string>
+    <string name="showPollenSummary">disponible uniquement pour les sites allemands</string>
     <string name="show_temperature">Température</string>
     <string name="show_second_hand">Afficher la deuxième main</string>
     <string name="show_seconds">Montrer les secondes</string>
@@ -312,6 +328,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Mode veille</string>
     <string name="snoozeTime">Durée du report</string>
     <string name="snoozeAfter">Répétition automatique après</string>
+    <string name="snoozeCycles">Cycles de répétition automatique avant l'arrêt automatique</string>
     <string name="speakTime">Il est</string>
     <string name="speakTimeSummary">Dit l\'heure actuelle en appuyant longuement sur l\'écran.</string>
     <string name="speakTimeTitle">Dire l\'heure actuelle</string>

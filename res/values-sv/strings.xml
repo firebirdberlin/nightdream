@@ -95,7 +95,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Förskjuten ljusstyrka</string>
     <string name="buy">Köp</string>
     <string name="buy_upgrade_summary">Uppgradera till pro-version nu.</string>
-    <string name="category_handle_power">...och när enheten är ansluten till</string>
+    <string name="category_handle_power">… och när enheten är ansluten till</string>
     <string name="category_handle_power_autostart_time">Starta inom angiven tid</string>
     <string name="category_night_mode_display_management">Displayhantering</string>
     <string name="choose_alarm_sound">Alarmsignal</string>
@@ -232,7 +232,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Förvalda</string>
     <string name="prev">Föregående</string>
     <string name="preview">Förhandsgranskning</string>
-    <string name="product_description_weather">En uppgradering inkluderar
+<string name="product_description_weather">En uppgradering inkluderar
 \n
 \n-Visning av väderinformation under klockan
 \n-En 5 dagars väderprognos
