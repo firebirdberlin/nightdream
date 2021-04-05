@@ -175,13 +175,14 @@ OR
     <string name="handle_power_disconnection_at_time_range_end">at the end of the autostart time range</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">wireless charger</string>
-    <string name="help">Help and Feedback</string>
+    <string name="help">Help and feedback</string>
     <string name="hide_background_image_in_night_mode">Hide</string>
     <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="hour">h</string>
     <string name="inner_circle_radius">Inner circle radius</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
+    <string name="mailing_list">Public mailing list</string>
     <string name="manage_permissions">Manage permissions</string>
     <string name="maxBrightness">Maximum screen brightness</string>
     <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
@@ -210,7 +211,7 @@ OR
     <string name="notification_channel_desc_devmsg">Messages concerning the app</string>
     <string name="notification_channel_desc_radio">Notification showing up while web radio is playing</string>
     <string name="notification_channel_desc_services">Notification indicating running services</string>
-    <string name="notification_show_preview_summary">Show preview of incoming notifications</string>
+    <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
     <string name="notification_show_preview_title">Notification preview</string>
     <string name="notification_show_mediastyle_summary">Show media player controls</string>
     <string name="notification_show_mediastyle_title">Media controls</string>
@@ -347,7 +348,7 @@ OR
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
     <string name="style">Style</string>
     <string name="suggestions">Suggestions</string>
-    <string name="suggestions_summary">Let us know if you have any suggestions for the next version.</string>
+    <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="tick_style_hours">Hour tick style</string>
     <string name="tick_style_minutes">Minute tick style</string>

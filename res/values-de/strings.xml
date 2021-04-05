@@ -182,6 +182,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="inner_circle_radius">Radius des inneren Kreises</string>
     <string name="length">Länge</string>
     <string name="location_time">Zeit der letzten Standortbestimmung</string>
+    <string name="mailing_list">Öffentliche Mailingliste</string>
     <string name="manage_permissions">Berechtigungen</string>
     <string name="maxBrightness">max. Bildschirmhelligkeit</string>
     <string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
@@ -347,7 +348,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedTitle">Standbymodus auch beim Entladen</string>
     <string name="style">Stil</string>
     <string name="suggestions">Ideen</string>
-    <string name="suggestions_summary">Ideen für kommende Versionen melden.</string>
+    <string name="suggestions_summary">Ideen für kommende Versionen melden</string>
     <string name="temperatureUnit">Temperatureinheit</string>
     <string name="tick_style_circle">Kreis</string>
     <string name="tick_style_dash">Strich</string>
