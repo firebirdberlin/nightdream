@@ -27,9 +27,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">uživatelské písmo</string>
     <string name="alarm">Budík</string>
     <string name="alarmFadeIn">Zvyšující se hlasitost</string>
-    <string name="alarmUpcoming">Následující budík</string>
     <string name="alarmStartDate">Následující budík v</string>
     <string name="alarmStartsFrom">od</string>
+    <string name="alarmUpcoming">Následující budík</string>
     <string name="alarmVolume">Hlasitost</string>
     <string name="allow_screen_off_summary">Vypnout obrazovku v noci</string>
     <string name="allow_screen_off">Vypnout obrazovku</string>
@@ -250,10 +250,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Zamykání obrazovky vyžaduje práva administrátora. Zrušte toto nastavení, abyste mohli odinstalovat aplikaci.</string>
     <string name="useDeviceLockExplanation">Zamknout zařízení, zatímco je aplikace aktivní. Zrušte toto nastavení, abyste mohli odinstalovat.</string>
     <string name="useDeviceLock">Zamknout zařízení</string>
+    <string name="weather">Počasí</string>
+    <string name="weatherProvider">Zdroj počasí</string>
     <string name="weather_calculation_time">čas předpovědi počasí</string>
     <string name="weather_city_id_title">Vyhledat lokalitu</string>
     <string name="weather_info_title">Informace</string>
-    <string name="weather">Počasí</string>
-    <string name="weatherProvider">Zdroj počasí</string>
     <string name="width">Šířka</string>
 </resources>
