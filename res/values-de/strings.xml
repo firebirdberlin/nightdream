@@ -102,6 +102,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Helligkeit</string>
     <string name="brightness_night_mode">Helligkeit im Nachtmodus</string>
     <string name="brightness_offset">Helligkeits-Richtwert</string>
+    <string name="bug">Fehler melden</string>
+    <string name="bug_summary">Bitte lassen Sie uns wissen, wenn etwas schief gelaufen ist.</string>
     <string name="buy">Kaufen</string>
     <string name="buy_upgrade_summary">Jetzt auf die Pro-Version upgraden!</string>
     <string name="category_handle_power">… und wenn verbunden mit</string>
@@ -173,12 +175,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_disconnection_summary">Die Anwendung soll sich beim Trennen der Stromzufuhr automatisch beenden.</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">einem kabellosen Ladegerät</string>
+    <string name="help">Hilfe und Feedback</string>
     <string name="hide_background_image_in_night_mode">Ausblenden</string>
     <string name="hide_background_image_in_night_mode_summary">Das Hintergrundbild soll im Nachtmodus ausgeblendet werden.</string>
     <string name="hour">h</string>
     <string name="inner_circle_radius">Radius des inneren Kreises</string>
     <string name="length">Länge</string>
     <string name="location_time">Zeit der letzten Standortbestimmung</string>
+    <string name="mailing_list">Öffentliche Mailingliste</string>
     <string name="manage_permissions">Berechtigungen</string>
     <string name="maxBrightness">max. Bildschirmhelligkeit</string>
     <string name="maxBrightnessBattery">max. Bildschirmhelligkeit im Akkubetrieb</string>
@@ -286,6 +290,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_desc">Wählen Sie eine App aus, mit der Sie Ihre Empfehlung posten möchten.</string>
     <string name="recommend_app_subject">Die App gefällt mir, schau sie dir doch auch mal an. Austesten kostet ja nichts…</string>
     <string name="export_preferences">Informationen zur App exportieren</string>
+    <string name="rate">Bewertung abgeben</string>
+    <string name="rate_summary">Über eine Bewertung der App würden wir uns freuen.</string>
     <string name="remaining">übrig</string>
     <string name="remaining_alarm_time_end">&#160;</string>
     <string name="remaining_alarm_time_now">Dieser Wecker klingelt gleich.</string>
@@ -341,6 +347,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">im Zeitraum</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standbymodus auch beim Entladen</string>
     <string name="style">Stil</string>
+    <string name="suggestions">Ideen</string>
+    <string name="suggestions_summary">Ideen für kommende Versionen melden</string>
     <string name="temperatureUnit">Temperatureinheit</string>
     <string name="tick_style_circle">Kreis</string>
     <string name="tick_style_dash">Strich</string>

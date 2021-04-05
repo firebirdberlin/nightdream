@@ -60,39 +60,6 @@
     <PreferenceCategory
         app:iconSpaceReserved="false"
         android:layout="@layout/preferences_category"
-        app:title="@string/contribute">
-        <Preference
-            app:iconSpaceReserved="false"
-            app:icon="@drawable/ic_googleplay"
-            app:title="@string/contribute_beta_channel">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://play.google.com/apps/testing/com.firebirdberlin.nightdream" />
-        </Preference>
-
-        <Preference
-            app:iconSpaceReserved="false"
-            app:icon="@drawable/ic_github"
-            app:title="@string/contribute_source_code">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/firebirdberlin/nightdream" />
-
-        </Preference>
-
-        <Preference
-            app:iconSpaceReserved="false"
-            app:icon="@drawable/ic_github"
-            app:title="@string/contribute_translation">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://firebirdberlin.github.io/nightdream/translation.html" />
-        </Preference>
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        android:layout="@layout/preferences_category"
         app:key="donation_category"
         app:isPreferenceVisible="false"
         app:title="@string/donate">

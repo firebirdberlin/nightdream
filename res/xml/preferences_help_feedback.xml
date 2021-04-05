@@ -1,0 +1,94 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:icon="@drawable/ic_help"
+    app:key="help"
+    app:title="@string/help">
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_faq"
+        app:title="FAQ"
+        app:summary="@string/frequently_asked_questions">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://firebirdberlin.github.io/nightdream/faq/faq_en.html" />
+    </Preference>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_email"
+        app:title="@string/mailing_list"
+        app:summary="night-clock@googlegroups.com">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://groups.google.com/g/night-clock" />
+    </Preference>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_bug"
+        app:title="@string/bug"
+        app:summary="@string/bug_summary">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="mailto:night-clock@googlegroups.com?subject=Bug report">
+        </intent>
+    </Preference>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_new_features"
+        app:title="@string/suggestions"
+        app:summary="@string/suggestions_summary">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="mailto:night-clock@googlegroups.com?subject=Feature request">
+        </intent>
+    </Preference>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_star"
+        app:title="@string/rate"
+        app:summary="@string/rate_summary">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream" />
+    </Preference>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:layout="@layout/preferences_category"
+        app:title="@string/contribute">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_googleplay"
+            app:title="@string/contribute_beta_channel">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/apps/testing/com.firebirdberlin.nightdream" />
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_github"
+            app:title="@string/contribute_source_code">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/firebirdberlin/nightdream" />
+
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_github"
+            app:title="@string/contribute_translation">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://firebirdberlin.github.io/nightdream/translation.html" />
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -102,6 +102,8 @@ OR
     <string name="brightness">Brightness</string>
     <string name="brightness_night_mode">Brightness in night mode</string>
     <string name="brightness_offset">Brightness offset</string>
+    <string name="bug">Report a bug</string>
+    <string name="bug_summary">Please let us know if something went wrong.</string>
     <string name="buy">Buy</string>
     <string name="buy_upgrade_summary">Upgrade to the professional version now.</string>
     <string name="category_handle_power">… and when connected to</string>
@@ -173,12 +175,14 @@ OR
     <string name="handle_power_disconnection_at_time_range_end">at the end of the autostart time range</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">wireless charger</string>
+    <string name="help">Help and feedback</string>
     <string name="hide_background_image_in_night_mode">Hide</string>
     <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="hour">h</string>
     <string name="inner_circle_radius">Inner circle radius</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
+    <string name="mailing_list">Public mailing list</string>
     <string name="manage_permissions">Manage permissions</string>
     <string name="maxBrightness">Maximum screen brightness</string>
     <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
@@ -207,7 +211,7 @@ OR
     <string name="notification_channel_desc_devmsg">Messages concerning the app</string>
     <string name="notification_channel_desc_radio">Notification showing up while web radio is playing</string>
     <string name="notification_channel_desc_services">Notification indicating running services</string>
-    <string name="notification_show_preview_summary">Show preview of incoming notifications</string>
+    <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
     <string name="notification_show_preview_title">Notification preview</string>
     <string name="notification_show_mediastyle_summary">Show media player controls</string>
     <string name="notification_show_mediastyle_title">Media controls</string>
@@ -286,6 +290,8 @@ OR
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend">Recommend app</string>
     <string name="export_preferences">Export app information</string>
+    <string name="rate">Rate this app</string>
+    <string name="rate_summary">We would like to know if you like our app</string>
     <string name="remaining">rem.</string>
     <string name="remaining_alarm_time_end">&#160;</string>
     <string name="remaining_alarm_time_now">This alarm will ring soon.</string>
@@ -341,6 +347,8 @@ OR
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">within the time range</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
     <string name="style">Style</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="tick_style_hours">Hour tick style</string>
     <string name="tick_style_minutes">Minute tick style</string>
