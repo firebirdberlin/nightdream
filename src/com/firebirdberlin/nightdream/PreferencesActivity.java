@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -17,7 +19,7 @@ public class PreferencesActivity extends BillingHelperActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     public static final String TAG = "PreferencesActivity";
-    PreferencesFragment fragment = null;
+    PreferencesFragment fragment = new PreferencesFragment();
     PreferencesFragment fragment2 = null;
     String rootKey = "";
 
@@ -33,87 +35,55 @@ public class PreferencesActivity extends BillingHelperActivity
         setTheme(R.style.PreferencesTheme);
         initTitleBar();
 
-        fragment = new PreferencesFragment();
-
-        initFragment(false);
+        initFragment();
     }
 
-    public void initFragment(boolean putRootkey) {
+    public void initFragment() {
+        Log.i(TAG, "initFragment()");
         FragmentManager fm = getSupportFragmentManager();
+
+        FragmentTransaction fT = fm.beginTransaction();
+        if (fragment != null) {
+            fT.remove(fragment);
+        }
+        fragment = new PreferencesFragment();
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             TextView tv = new TextView(this);
             tv.setText("");
             setContentView(tv);
 
-            if (fragment != null) {
-                fm.beginTransaction()
-                        .remove(fragment)
-                        .commit();
-                fm.popBackStackImmediate();
-            }
-
             if (fragment2 != null) {
-                fm.beginTransaction()
-                        .remove(fragment)
-                        .commit();
-                fm.popBackStackImmediate();
+                fT.remove(fragment2);
+                fragment2 = null;
             }
 
-            if (putRootkey) {
-                Bundle data = new Bundle();
-                data.putString("rootKey", rootKey);
-                fragment.setArguments(data);
-            }
+            Bundle data = new Bundle();
+            data.putString("rootKey", rootKey);
+            fragment.setArguments(data);
 
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(android.R.id.content, fragment)
-                    .commit();
+            fT.replace(android.R.id.content, fragment);
         } else {
-            if (fragment != null) {
-                fm.beginTransaction()
-                        .remove(fragment)
-                        .commit();
-                fm.popBackStackImmediate();
-            }
-
             setContentView(R.layout.preferences_layout_land);
 
-            fragment = new PreferencesFragment();
-
-            if (putRootkey) {
-                Bundle data = new Bundle();
-                data.putString("rootKey", rootKey);
-                fragment.setArguments(data);
+            if (Utility.isEmpty(rootKey)) {
+                rootKey = "autostart";
             }
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.right, fragment)
-                    .commit();
-
+            Bundle data = new Bundle();
+            data.putString("rootKey", rootKey);
+            fragment.setArguments(data);
             fragment2 = new PreferencesFragment();
 
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.details, fragment2)
-                    .commit();
+            fT.replace(R.id.right, fragment);
+            fT.replace(R.id.details, fragment2);
         }
+        fT.commit();
     }
 
     @Override
-    public void onResume() {
-        Log.d(TAG, "onResume");
-        super.onResume();
-        initFragment(true);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        Log.d(TAG, "onConfigurationChanged: " + getResources().getConfiguration().orientation);
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        initFragment(true);
+        initFragment();
     }
 
     @Override
@@ -123,6 +93,12 @@ public class PreferencesActivity extends BillingHelperActivity
         if (fragment != null) {
             fragment.onPurchasesInitialized();
         }
+        Settings.storeWeatherDataPurchase(
+                this,
+                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
+                isPurchased(BillingHelperActivity.ITEM_DONATION)
+        );
+        initFragment();
     }
 
     @Override
@@ -131,6 +107,12 @@ public class PreferencesActivity extends BillingHelperActivity
         super.onItemPurchased(sku);
         if (fragment != null) {
             fragment.onPurchasesInitialized();
+            Settings.storeWeatherDataPurchase(
+                    this,
+                    isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
+                    isPurchased(BillingHelperActivity.ITEM_DONATION)
+            );
+            initFragment();
         }
     }
 
@@ -196,24 +178,23 @@ public class PreferencesActivity extends BillingHelperActivity
         // Instantiate the new Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        final Fragment fragment = fragmentManager.getFragmentFactory().instantiate(
-                this.getClassLoader(), pref.getFragment());
+        final Fragment fragment =
+                fragmentManager.getFragmentFactory().instantiate(
+                        this.getClassLoader(), pref.getFragment()
+                );
 
         Bundle args = new Bundle();
         args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
         fragment.setArguments(args);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            getSupportFragmentManager().beginTransaction()
+            fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.move_in_prefs_right, R.anim.move_out_prefs_left, R.anim.move_in_prefs_left, R.anim.move_out_prefs_right)
                     .replace(android.R.id.content, fragment)
                     .addToBackStack(null)
                     .commit();
         } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.right, fragment)
-                    .commit();
+            fragmentManager.beginTransaction().replace(R.id.right, fragment).commit();
         }
 
         ActionBar actionBar = getSupportActionBar();

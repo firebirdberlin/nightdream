@@ -19,8 +19,6 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -271,18 +269,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     void onPurchasesInitialized() {
-        Settings.storeWeatherDataPurchase(
-                getContext(),
-                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
-                isPurchased(BillingHelperActivity.ITEM_DONATION)
-        );
         resetAlwaysOnModeIfNotPurchased();
         resetUseDeviceLockIfNotPurchased();
-        //togglePurchasePreferences();
-
-        PreferencesActivity activity = ((PreferencesActivity) mContext);
-        activity.initFragment(true);
-        togglePurchasePreferences();
     }
 
     private void togglePurchasePreferences() {
@@ -556,7 +544,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                                 isPurchased(BillingHelperActivity.ITEM_DONATION)
                                         );
                                         PreferencesActivity activity = ((PreferencesActivity) mContext);
-                                        activity.initFragment(true);
+                                        activity.initFragment();
                                     }
                                 }).show();
 
