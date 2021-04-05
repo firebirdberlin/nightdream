@@ -18,12 +18,23 @@
 
     <Preference
         app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_email"
+        app:title="@string/mailing_list"
+        app:summary="night-clock@googlegroups.com">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://groups.google.com/g/night-clock" />
+    </Preference>
+
+    <Preference
+        app:iconSpaceReserved="false"
         app:icon="@drawable/ic_bug"
         app:title="@string/bug"
         app:summary="@string/bug_summary">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://groups.google.com/g/night-clock" />
+            android:data="mailto:night-clock@googlegroups.com?subject=Bug report">
+        </intent>
     </Preference>
 
     <Preference
@@ -33,7 +44,8 @@
         app:summary="@string/suggestions_summary">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://groups.google.com/g/night-clock" />
+            android:data="mailto:night-clock@googlegroups.com?subject=Feature request">
+        </intent>
     </Preference>
 
     <Preference
