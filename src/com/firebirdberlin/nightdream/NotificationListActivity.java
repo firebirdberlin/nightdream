@@ -78,7 +78,9 @@ public class NotificationListActivity extends AppCompatActivity {
         );
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER));
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER)
+        );
 
         mNotificationListener.requestNotificationList(getApplicationContext());
     }
