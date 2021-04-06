@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,7 +78,9 @@ public class NotificationListActivity extends AppCompatActivity {
         );
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER));
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER)
+        );
 
         mNotificationListener.requestNotificationList(getApplicationContext());
     }
@@ -91,6 +95,25 @@ public class NotificationListActivity extends AppCompatActivity {
         }
 
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.notification_list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menuItem_delete_all) {
+            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+            i.putExtra("command", "clearall");
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

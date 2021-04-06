@@ -1,19 +1,54 @@
 package com.firebirdberlin.nightdream.NotificationList;
 
 import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
-public class NotificationShowList {
+public class NotificationList {
     private final List<Notification> notifications = new ArrayList<>();
+    private final HashSet<String> selectedNotificationKeys = new HashSet<>();
 
-    public NotificationShowList(List<Notification> notifications, Context context) {
-        this.notifications.addAll(notifications);
+    public NotificationList() {
     }
 
     public List<Notification> get() {
+        return this.notifications;
+    }
+
+    public Notification get(int index) {
+        return this.notifications.get(index);
+    }
+
+    public void remove(int index) {
+        Notification notification = notifications.get(index);
+        selectedNotificationKeys.remove(notification.getNotificationKey());
+        this.notifications.remove(index);
+    }
+
+    public void setSelected(int index, boolean on) {
+        Notification notification = notifications.get(index);
+        if (on) {
+            selectedNotificationKeys.add(notification.getNotificationKey());
+        } else {
+            selectedNotificationKeys.remove(notification.getNotificationKey());
+        }
+    }
+
+    public boolean isSelected(int index) {
+        Notification notification = notifications.get(index);
+        String key = notification.getNotificationKey();
+        return selectedNotificationKeys.contains(key);
+    }
+
+    public int size() {
+        return this.notifications.size();
+    }
+
+    public List<Notification> getNotifications() {
         return this.notifications;
     }
 
@@ -38,12 +73,11 @@ public class NotificationShowList {
             public int compare(Notification obj1, Notification obj2) {
                 long t1 = obj1.getPostTimestamp();
                 long t2 = obj2.getPostTimestamp();
-                if ( t1 == t2 ) {
+                if (t1 == t2) {
                     return 0;
-                } else
-                if ( t1 > t2 ) {
+                } else if (t1 > t2) {
                     return -1;
-                };
+                }
                 return 1;
             }
         });
