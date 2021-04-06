@@ -244,11 +244,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Préférences</string>
     <string name="prev">Précédent</string>
     <string name="preview">Aperçu</string>
-<string name="product_description_weather">Une mise à niveau comprend
+    <string name="product_description_weather">Une mise à niveau comprend
 \n
-\n- une ligne d'état météo affichée sous l'horloge
+\n- une ligne d\'état météo affichée sous l\'horloge
 \n- une prévision météo à 5 jours
-\n- plus de cadrans d'horloge</string>
+\n- plus de cadrans d\'horloge</string>
     <string name="product_name_actions">Package Toujours actif</string>
     <string name="product_name_donation">Don</string>
     <string name="product_name_pro">Version complete</string>
@@ -285,8 +285,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend">Recommander l\'application</string>
     <string name="export_preferences">Exporter les informations de l\'application</string>
     <string name="remaining">rest.</string>
-    <string name="remaining_alarm_time_now">L'alarme sonnera bientôt</string>
-    <string name="remaining_alarm_time_start">L'alarme sonnera dans</string>
+    <string name="remaining_alarm_time_now">L\'alarme sonnera bientôt</string>
+    <string name="remaining_alarm_time_start">L\'alarme sonnera dans</string>
     <string name="repeat">Répéter</string>
     <string name="reset_to_defaults">Réinitialiser aux paramètres par défaut</string>
     <string name="screenProtection">Protection contre les brûlures d\'écran</string>
@@ -328,7 +328,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Mode veille</string>
     <string name="snoozeTime">Durée du report</string>
     <string name="snoozeAfter">Répétition automatique après</string>
-    <string name="snoozeCycles">Cycles de répétition automatique avant l'arrêt automatique</string>
+    <string name="snoozeCycles">Cycles de répétition automatique avant l\'arrêt automatique</string>
     <string name="speakTime">Il est</string>
     <string name="speakTimeSummary">Dit l\'heure actuelle en appuyant longuement sur l\'écran.</string>
     <string name="speakTimeTitle">Dire l\'heure actuelle</string>
