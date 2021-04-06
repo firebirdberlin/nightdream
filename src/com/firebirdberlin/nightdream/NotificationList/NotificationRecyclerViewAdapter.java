@@ -17,15 +17,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.R;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
     public static String TAG = "CustomRecyclerViewAdapter";
+    private final int[] colorResId = new int[]{
+            R.color.white,
+            R.color.material_light_blue_grey
+    };
+    NotificationList notificationList;
 
-    private List<Notification> notifications;
-
-    public NotificationRecyclerViewAdapter(List<Notification> notifications) {
-        this.notifications = notifications;
+    public NotificationRecyclerViewAdapter(NotificationList notificationList) {
+        this.notificationList = notificationList;
     }
 
     @NonNull
@@ -33,8 +36,9 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     public NotificationViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         Log.d(TAG, "BrowseNotification started");
 
-        // Inflate view from notify_item_layout.xml
-        final View recyclerViewItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_list_item_view, parent, false);
+        final View recyclerViewItem = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.notification_list_item_view, parent, false
+        );
 
         //Interface definition for a callback to be invoked when a view is clicked.
         recyclerViewItem.setOnClickListener(new View.OnClickListener() {
@@ -48,13 +52,24 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
             }
         });
 
+        recyclerViewItem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                int index = Integer.parseInt((String) view.getTag());
+                boolean isSelected = notificationList.isSelected(index);
+                View cardView = recyclerViewItem.findViewById(R.id.notify);
+                cardView.setBackgroundResource(colorResId[isSelected ? 0 : 1]);
+                notificationList.setSelected(index, !isSelected);
+
+                return true;
+            }
+        });
         return new NotificationViewHolder(recyclerViewItem);
     }
 
-    //to update the Data
-    public void updateData(List<Notification> notifications) {
-        this.notifications = notifications;
-
+    public void removeNotification(int position) {
+        Log.d(TAG, "removeNotification");
+        this.notificationList.remove(position);
         //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
         notifyDataSetChanged();
     }
@@ -64,9 +79,8 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
 
+        final Notification notification = this.notificationList.get(position);
         holder.itemView.setTag("" + position);
-
-        final Notification notification = this.notifications.get(position);
 
         // Bind data to viewholder
         holder.notificationLargePicture.setVisibility(View.GONE);
@@ -75,6 +89,10 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
         holder.notificationRemoteView.removeAllViews();
         holder.itemView.findViewById(R.id.notify).setVisibility(View.VISIBLE);
+
+        View cardView = holder.itemView.findViewById(R.id.notify);
+        boolean isSelected = notificationList.isSelected(position);
+        cardView.setBackgroundResource(colorResId[isSelected ? 1 : 0]);
 
         holder.notificationMessagebitmap.setImageDrawable(notification.getDrawableIcon());
 
@@ -231,20 +249,29 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     //Returns the total number of items in the data set held by the adapter.
     @Override
     public int getItemCount() {
-        return this.notifications.size();
+        return this.notificationList.size();
     }
 
     // Interface definition for a callback to be invoked when a view is clicked.
-    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) throws PendingIntent.CanceledException, IntentSender.SendIntentException {
+    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) throws IntentSender.SendIntentException {
         int itemPosition = recyclerView.getChildLayoutPosition(itemView);
-        Notification notify = this.notifications.get(itemPosition);
+        Notification notification = this.notificationList.get(itemPosition);
         try {
-            if (notify.getPendingIntent() != null) {
-                notify.getPendingIntent().send();
+            if (notification.getPendingIntent() != null) {
+                notification.getPendingIntent().send();
             }
         } catch (PendingIntent.CanceledException e) {
             throw new IntentSender.SendIntentException(e);
         }
     }
 
+    public ArrayList<Notification> getSelectedNotifications() {
+        ArrayList<Notification> notifications = new ArrayList<>();
+        for (int index = 0; index < notificationList.size(); index++) {
+            if (notificationList.isSelected(index)) {
+                notifications.add(notificationList.get(index));
+            }
+        }
+        return notifications;
+    }
 }

@@ -79,8 +79,8 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
 
         try {
             ai = pm.getApplicationInfo(app.getPackageName(), 0);
-            if(ai != null) {
-                holder.appicon.setImageDrawable( pm.getApplicationIcon(ai));
+            if (ai != null) {
+                holder.appicon.setImageDrawable(pm.getApplicationIcon(ai));
             }
         } catch (PackageManager.NameNotFoundException ex) {
             Log.e(TAG, "Appicon not found. ", ex);
