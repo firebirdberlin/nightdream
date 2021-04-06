@@ -49,9 +49,9 @@ public class mNotificationListener extends NotificationListenerService {
 
     public static void requestNotificationList(Context context) {
         Log.d("mNotificationListener", "requestNotificationList()");
-        Intent intent = new Intent(context, mNotificationListener.class);
-        intent.putExtra("command", "getNotificationList");
-        context.startService(intent);
+        Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+        i.putExtra("command", "list");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
     }
 
     private static Bitmap drawableToBitMap(Drawable drawable) {
@@ -74,21 +74,6 @@ public class mNotificationListener extends NotificationListenerService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            if (intent.hasExtra("command")) {
-                String command = intent.getStringExtra("command");
-                if (command != null) {
-                    switch (command) {
-                        case "getNotificationList":
-                            listNotifications();
-                            break;
-                        case "deleteNotification":
-                            deleteNotification(intent.getStringArrayListExtra("delete_notification"));
-                            break;
-                    }
-                }
-            }
-        }
         super.onStartCommand(intent, flags, startId);
 
         //prevent the automatic service termination
@@ -196,17 +181,17 @@ public class mNotificationListener extends NotificationListenerService {
         listNotifications(true);
     }
 
-    private void deleteNotification(ArrayList<String> delete ) {
-        Log.d(TAG,"deleteNotification");
+    private void deleteNotification(ArrayList<String> delete) {
+        Log.d(TAG, "deleteNotification");
 
         if (delete != null) {
-            for (int index = 0; index < delete.size(); index++) {
-                Log.d(TAG, "Notification to delete: " + delete.get(index));
+            for (String notificationId : delete) {
+                Log.d(TAG, "Notification to delete: " + notificationId);
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    String[] separated = delete.get(index).split(";");
+                    String[] separated = notificationId.split(";");
                     cancelNotification(separated[0], separated[1], Integer.parseInt(separated[2]));
                 } else {
-                    cancelNotification(delete.get(index));
+                    cancelNotification(notificationId);
                 }
             }
         }
@@ -278,7 +263,7 @@ public class mNotificationListener extends NotificationListenerService {
         }
         Intent intentList = new Intent("Notification.Action.notificationList");
         intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
-        if (removed){
+        if (removed) {
             intentList.putExtra("removed", true);
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intentList);
@@ -545,6 +530,9 @@ public class mNotificationListener extends NotificationListenerService {
             if (command == null) return;
 
             switch (command) {
+                case "clear":
+                    deleteNotification(intent.getStringArrayListExtra("notificationKeys"));
+                    break;
                 case "clearall":
                     mNotificationListener.this.cancelAllNotifications();
                     break;
