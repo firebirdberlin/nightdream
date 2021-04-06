@@ -74,7 +74,6 @@ public class mNotificationListener extends NotificationListenerService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //retrieving data from the received intent
         if (intent != null) {
             if (intent.hasExtra("command")) {
                 String command = intent.getStringExtra("command");
@@ -85,9 +84,6 @@ public class mNotificationListener extends NotificationListenerService {
                             break;
                         case "deleteNotification":
                             deleteNotification(intent.getStringArrayListExtra("delete_notification"));
-                            break;
-                        case "deleteAllNotification":
-                            deleteAllNotifications();
                             break;
                     }
                 }
@@ -214,10 +210,6 @@ public class mNotificationListener extends NotificationListenerService {
                 }
             }
         }
-    }
-
-    private void deleteAllNotifications() {
-        cancelAllNotifications();
     }
 
     private void listNotifications() {

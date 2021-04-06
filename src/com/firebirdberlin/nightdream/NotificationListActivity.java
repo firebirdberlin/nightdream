@@ -95,23 +95,20 @@ public class NotificationListActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    //Optionsmenu inflate
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.notification_list_menu, menu);
         return true;
     }
 
-    //item selected in options menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.menuItem_delete_all) {
-            Intent intent = new Intent(getApplicationContext(), mNotificationListener.class);
-            intent.putExtra("command", "deleteAllNotification");
-            //starting service
-            startService(intent);
+            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+            i.putExtra("command", "clearall");
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
         }
 
         return super.onOptionsItemSelected(item);
