@@ -431,7 +431,7 @@ public class WeatherForecastActivity
 
     void requestWeather(City city) {
         if (city != null) {
-            new ForecastRequestTask(this, settings.getWeatherProvider()).execute(city.toJson());
+            new ForecastRequestTask(this, settings.getWeatherProvider(), this).execute(city.toJson());
         }
     }
 

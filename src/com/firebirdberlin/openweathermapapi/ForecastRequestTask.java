@@ -8,16 +8,22 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEntry>> {
 
-    private AsyncResponse delegate;
+    final static String TAG = "ForecastRequestTask";
+    private final AsyncResponse delegate;
+    private final WeakReference<Context> context;
     Settings.WeatherProvider weatherProvider;
 
-    public ForecastRequestTask(AsyncResponse listener, Settings.WeatherProvider weatherProvider) {
+    public ForecastRequestTask(
+            AsyncResponse listener, Settings.WeatherProvider weatherProvider, Context mContext
+    ) {
         this.delegate = listener;
         this.weatherProvider = weatherProvider;
+        this.context = new WeakReference<>(mContext);
     }
 
     @Override
@@ -36,22 +42,20 @@ public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEnt
         switch (weatherProvider) {
             case OPEN_WEATHER_MAP:
             default:
-                return OpenWeatherMapApi.fetchWeatherForecast( (Context) delegate, city);
+                return OpenWeatherMapApi.fetchWeatherForecast(context.get(), city);
             case DARK_SKY:
-                return DarkSkyApi.fetchHourlyWeatherData((Context) delegate, city);
+                return DarkSkyApi.fetchHourlyWeatherData(context.get(), city);
             case BRIGHT_SKY:
-                return BrightSkyApi.fetchHourlyWeatherData(
-                        (Context) delegate, (float) city.lat, (float) city.lon
-                );
+                return BrightSkyApi.fetchHourlyWeatherData(context.get(), (float) city.lat, (float) city.lon);
         }
-    }
-
-    public interface AsyncResponse {
-        void onRequestFinished(List<WeatherEntry> entries);
     }
 
     @Override
     protected void onPostExecute(List<WeatherEntry> entries) {
         delegate.onRequestFinished(entries);
+    }
+
+    public interface AsyncResponse {
+        void onRequestFinished(List<WeatherEntry> entries);
     }
 }
