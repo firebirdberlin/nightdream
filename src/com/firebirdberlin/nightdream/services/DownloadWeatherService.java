@@ -49,7 +49,7 @@ public class DownloadWeatherService extends JobIntentService {
         String cityID = settings.weatherCityID;
         Settings.WeatherProvider weatherProvider = settings.getWeatherProvider();
         WeatherEntry entry;
-        Log.e(TAG, "fetchWeatherData");
+        Log.d(TAG, "fetchWeatherData");
         switch (weatherProvider) {
             case OPEN_WEATHER_MAP:
             default:
