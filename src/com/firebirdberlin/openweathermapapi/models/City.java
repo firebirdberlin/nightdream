@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 public class City {
 
-    public int id = 0;
+    public int id = -1;
     public String name;
     public String countryCode;
     public double lat = 0.0f;
