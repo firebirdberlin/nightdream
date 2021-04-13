@@ -76,6 +76,12 @@ public class OpenWeatherMapApi {
         String response = "";
         String responseText = "";
 
+        if (cityID != null && !cityID.isEmpty()) {
+            if (Integer.parseInt(cityID) < 0) {
+                cityID = null;
+            }
+        }
+
         String cacheFileName = "weather_unknown.txt";
         try {
             cacheFileName =

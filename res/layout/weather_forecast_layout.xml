@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="10dp"
@@ -31,158 +33,229 @@
             android:layout_gravity="top"
             android:ellipsize="none"
             android:text="m"
-            android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
             android:textSize="55sp"
             android:singleLine="true"
             android:layout_margin="6dp"
             />
 
-    <com.google.android.flexbox.FlexboxLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        app:flexWrap="wrap"
-        app:alignItems="center"
-        app:showDivider="middle"
-        app:alignContent="stretch"
-        app:justifyContent="flex_start" >
-
-        <TextView
-            android:id="@+id/temperatureText"
-            android:layout_width="wrap_content"
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="none"
-            android:text="10°C"
-            android:textAppearance="@android:style/TextAppearance.Medium"
-            android:singleLine="true"
-            app:layout_minWidth="100dp"
-            />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            app:layout_minWidth="200dp"
-            android:orientation="horizontal">
+            app:alignContent="stretch"
+            app:alignItems="center"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start"
+            app:showDivider="middle">
 
             <TextView
-                android:id="@+id/iconWind"
-                android:layout_width="wrap_content"
+                android:id="@+id/descriptionText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginEnd="20dp"
                 android:ellipsize="none"
-                android:text=""
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:singleLine="true" />
-
-            <com.firebirdberlin.nightdream.ui.DirectionIconView
-                android:id="@+id/iconWindDirection"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:elevation="0dp"
-                android:fadingEdge="horizontal|vertical" />
-
-            <TextView
-                android:id="@+id/windText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="none"
-                android:paddingLeft="5sp"
-                android:text="10,3km/h"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:singleLine="true" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_minWidth="100dp"
-            android:elevation="1dp"
-            android:orientation="horizontal">
-
-
-            <TextView
-                android:id="@+id/iconClouds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="none"
-                android:text=""
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:singleLine="true" />
-
-            <TextView
-                android:id="@+id/cloudText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="none"
-                android:paddingLeft="5sp"
-                android:text="25 %"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:singleLine="true" />
-
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/humidityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_humidity"
-            android:drawableLeft="@drawable/ic_humidity"
-            android:drawablePadding="6dp"
-            android:ellipsize="none"
-            android:singleLine="true"
-            android:text="55%"
-            android:textAppearance="@android:style/TextAppearance.Medium"
-            app:layout_minWidth="100dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            app:layout_minWidth="100dp"
-            android:orientation="horizontal">
-
-
-            <TextView
-                android:id="@+id/iconRain3h"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="none"
-                android:text=""
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:singleLine="true" />
-
-            <TextView
-                android:id="@+id/rainText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="none"
-                android:paddingLeft="5sp"
-                android:text="0.3mm"
-                android:textAlignment="textEnd"
-                android:textAppearance="@android:style/TextAppearance.Medium"
                 android:singleLine="true"
-                android:layout_gravity="end" />
+                android:text="description"
+                android:textAlignment="textStart"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:visibility="gone" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/temperatureText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="none"
+                android:singleLine="true"
+                android:text="10°C"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                app:layout_minWidth="100dp" />
 
-    </com.google.android.flexbox.FlexboxLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:orientation="horizontal"
+                app:layout_minWidth="200dp">
+
+                <TextView
+                    android:id="@+id/iconWind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                <com.firebirdberlin.nightdream.ui.DirectionIconView
+                    android:id="@+id/iconWindDirection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:elevation="0dp"
+                    android:fadingEdge="horizontal|vertical" />
+
+                <TextView
+                    android:id="@+id/windText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="none"
+                    android:paddingLeft="5sp"
+                    android:singleLine="true"
+                    android:text="10,3km/h"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layoutClouds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:orientation="horizontal"
+                app:layout_minWidth="100dp">
+
+
+                <TextView
+                    android:id="@+id/iconClouds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                <TextView
+                    android:id="@+id/cloudText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="none"
+                    android:paddingLeft="5sp"
+                    android:singleLine="true"
+                    android:text="25 %"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/humidityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_humidity"
+                android:drawableLeft="@drawable/ic_humidity"
+                android:drawablePadding="6dp"
+                android:ellipsize="none"
+                android:singleLine="true"
+                android:text="55%"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                app:layout_minWidth="100dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutRain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:orientation="horizontal"
+                app:layout_minWidth="100dp">
+
+
+                <TextView
+                    android:id="@+id/iconRain3h"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                <TextView
+                    android:id="@+id/rainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:ellipsize="none"
+                    android:paddingLeft="5sp"
+                    android:singleLine="true"
+                    android:text="0.3mm"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutSunRise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_minWidth="100dp">
+
+
+                <TextView
+                    android:id="@+id/sunRiseText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:text="@string/weather_sun_rise"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                <TextView
+                    android:id="@+id/sunRiseTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:ellipsize="none"
+                    android:paddingLeft="5sp"
+                    android:singleLine="true"
+                    android:text="0:00"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutSunSet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="1dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_minWidth="100dp">
+
+
+                <TextView
+                    android:id="@+id/sunSetText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:ellipsize="none"
+                    android:singleLine="true"
+                    android:text="@string/weather_sun_set"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                <TextView
+                    android:id="@+id/sunSetTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:ellipsize="none"
+                    android:paddingLeft="5sp"
+                    android:singleLine="true"
+                    android:text="0:00"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
 
     </LinearLayout>
-    <GridLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:columnCount="3"
-        android:orientation="horizontal"
-        android:rowCount="2"
-        android:useDefaultMargins="true">
-
-    </GridLayout>
-
 </LinearLayout>
