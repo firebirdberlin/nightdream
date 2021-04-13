@@ -58,7 +58,7 @@ public class PollenExposureLayout extends ViewModel {
         ArrayList<Drawable> setupPollenImages = new ArrayList<>();
 
         Resources res = mContext.getResources();
-        for (HashMap<String, String> map : result.getPollenList()) {
+        for (Map<String, String> map : result.getPollenList()) {
             for (Map.Entry<String, String> entrySet : map.entrySet()) {
                 String icon = "ic_" + entrySet.getKey();
                 String value = entrySet.getValue();

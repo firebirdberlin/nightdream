@@ -13,13 +13,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.TreeMap;
 
 public class PollenExposure {
 
     private static String TAG = "PollenObject";
 
-    private ArrayList<HashMap<String, String>> pollenList = new ArrayList<>();
-    private ArrayList<HashMap<String, String>> pollenAreaList = new ArrayList<>();
+    private final ArrayList<TreeMap<String, String>> pollenList = new ArrayList<>();
+    private final ArrayList<HashMap<String, String>> pollenAreaList = new ArrayList<>();
     private String nextUpdate;
     private String postCode = "";
 
@@ -59,13 +60,13 @@ public class PollenExposure {
                     if (region_ID == area) {
                         JSONObject pollen = c.getJSONObject("Pollen");
 
-                        HashMap<String, String> pollenTmp = new HashMap<>();
+                        TreeMap<String, String> pollenTmp = new TreeMap<>();
 
                         Iterator<String> iter = pollen.keys();
                         while (iter.hasNext()) {
                             String key = iter.next();
                             try {
-                                String herb = unifyHerbNames(key);
+                                String herb = getUnifiedHerbName(key);
                                 JSONObject forecast = pollen.getJSONObject(key);
                                 pollenTmp.put(herb, forecast.getString("today"));
                             } catch (JSONException e) {
@@ -81,7 +82,7 @@ public class PollenExposure {
         }
     }
 
-    private String unifyHerbNames(String key) {
+    private String getUnifiedHerbName(String key) {
         switch (key) {
             case "Ambrosia":
                 return "ambrosia";
@@ -100,7 +101,7 @@ public class PollenExposure {
             case "Roggen":
                 return "rye";
         }
-        return "";
+        return key;
     }
 
     private Integer plzToArea(Integer area) {
@@ -190,7 +191,7 @@ public class PollenExposure {
         return -1;
     }
 
-    public ArrayList<HashMap<String, String>> getPollenList() {
+    public ArrayList<TreeMap<String, String>> getPollenList() {
         return this.pollenList;
     }
 
@@ -236,5 +237,4 @@ public class PollenExposure {
         this.postCode = postCode;
 
     }
-
 }

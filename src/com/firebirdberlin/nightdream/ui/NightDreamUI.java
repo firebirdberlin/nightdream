@@ -665,7 +665,7 @@ public class NightDreamUI {
             ConstraintLayout pollenContainer = clockLayout.findViewById(R.id.pollen_container);
 
             if (pollenContainer != null) {
-                Log.e(TAG, "pollenCount " + entry.cityName);
+                Log.d(TAG, "pollenCount " + entry.cityName);
                 new PollenExposureUpdate(mContext, pollenContainer).execute(entry);
             } else {
                 Log.e(TAG, "pollenContainer not found");

@@ -102,6 +102,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Helligkeit</string>
     <string name="brightness_night_mode">Helligkeit im Nachtmodus</string>
     <string name="brightness_offset">Helligkeits-Richtwert</string>
+    <string name="brightsky_conditions_dry">trocken</string>
+    <string name="brightsky_conditions_fog">Nebel</string>
+    <string name="brightsky_conditions_hail">Hagel</string>
+    <string name="brightsky_conditions_rain">Regen</string>
+    <string name="brightsky_conditions_sleet">Schneeregen</string>
+    <string name="brightsky_conditions_snow">Schnee</string>
+    <string name="brightsky_conditions_thunderstorm">Gewitter</string>
     <string name="bug">Fehler melden</string>
     <string name="bug_summary">Bitte lassen Sie uns wissen, wenn etwas schief gelaufen ist.</string>
     <string name="buy">Kaufen</string>
@@ -249,13 +256,22 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_location_mode">Die Standortbestimmung ist zur Zeit deaktiviert.</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
+    <string name="pollen_hazelnut">Haselnuss</string>
+    <string name="pollen_birch">Birke</string>
+    <string name="pollen_ambrosia">Ambrosia</string>
+    <string name="pollen_grass">Gräser</string>
+    <string name="pollen_ash">Esche</string>
+    <string name="pollen_mugwort">Beifuss</string>
+    <string name="pollen_alder">Erle</string>
+    <string name="pollen_rye">Roggen</string>
     <string name="power_source">Stromquelle</string>
     <string name="preferences">Einstellungen</string>
     <string name="prev">vorheriges</string>
     <string name="preview">Vorschau</string>
-    <string name="product_description_weather">Ein Upgrade enthält\n
-    \n- Anzeige der aktuellen Wetterbedingungen unter der Uhrzeit
-    \n- eine 5-Tages Wettervorhersage
+    <string name="product_description_weather">\nEin Upgrade enthält\n
+    \n- Anzeige der aktuellen Wetterbedingungen
+    \n- Pollenvorhersage für Deutschland
+    \n- Wettervorhersage
     \n- mehr Uhrendesigns
     </string>
     <string name="product_name_actions">Zusatzfunktionen</string>
@@ -323,7 +339,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">Achtung: Es ist keine Stromquelle verbunden !</string>
     <string name="showBatteryWarningSummary">Beim Start eine Warnung anzeigen, falls keine Stromquelle angeschlossen ist.</string>
     <string name="showBatteryWarningTitle">Akkuwarnung</string>
-    <string name="showPollen">Pollenflug-Gefahrenindex anzeigen</string>
+    <string name="showPollen">Pollenflug-Gefahrenindex</string>
+    <string name="showPollenIndex">Belastungsintensität</string>
+    <string name="showPollenIndex0">keine</string>
+    <string name="showPollenIndex1">keine bis gering</string>
+    <string name="showPollenIndex2">gering</string>
+    <string name="showPollenIndex3">gering bis mittel</string>
+    <string name="showPollenIndex4">mittel</string>
+    <string name="showPollenIndex5">mittel bis hoch</string>
+    <string name="showPollenIndex6">hoch</string>
+    <string name="showPollenNoData">Keine Daten für dieses Gebiet verfügbar. Der Pollenflug-Gefahrenindex ist nur für Deutschland verfügbar.</string>
     <string name="showPollenSummary">Datenquelle: Deutscher Wetterdienst</string>
     <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
     <string name="show_date">Datum anzeigen</string>
@@ -383,6 +408,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">Standort suchen</string>
     <string name="weather_current_location">Aktueller Standort</string>
     <string name="weather_info_title">Informationen</string>
+    <string name="weather_sun_rise">Sonnenaufgang</string>
+    <string name="weather_sun_set">Sonnenuntergang</string>
     <string name="weekdays">Wochentage</string>
     <string name="width">Breite</string>
 </resources>
