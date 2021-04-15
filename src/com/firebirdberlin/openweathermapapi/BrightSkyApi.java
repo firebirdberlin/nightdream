@@ -32,7 +32,7 @@ public class BrightSkyApi {
     public static WeatherEntry fetchCurrentWeatherData(Context context, float lat, float lon) {
         mContext = new WeakReference<>(context);
         String responseText = fetchWeatherData(context, lat, lon);
-        if (responseText == null) {
+        if (responseText == null || responseText.isEmpty()) {
             return new WeatherEntry();
         }
         Data data = new Gson().fromJson(responseText, Data.class);
@@ -51,7 +51,7 @@ public class BrightSkyApi {
 
     public static List<WeatherEntry> fetchHourlyWeatherData(Context context, float lat, float lon) {
         String responseText = fetchWeatherData(context, lat, lon);
-        if (responseText == null) {
+        if (responseText == null || responseText.isEmpty()) {
             return new ArrayList<>();
         }
         responseText = responseText.replaceAll("\"relative_humidity\": null", "\"relative_humidity\": -1");
@@ -62,17 +62,19 @@ public class BrightSkyApi {
 
         long now = System.currentTimeMillis();
         List<WeatherEntry> entries = new ArrayList<>();
-        for (Weather weather : data.weather) {
-            Source source = data.getSourceById(weather.source_id);
-            source.lat = lat;
-            source.lon = lon;
-            entries.add(weather.toWeatherEntry(source, now));
+        if (data != null && data.isValid()) {
+            for (Weather weather : data.weather) {
+                Source source = data.getSourceById(weather.source_id);
+                source.lat = lat;
+                source.lon = lon;
+                entries.add(weather.toWeatherEntry(source, now));
+            }
         }
         return entries;
     }
 
     private static String fetchWeatherData(Context context, float lat, float lon) {
-        String responseText = "";
+        String responseText;
 
         Log.d(TAG, "fetchWeatherData(" + lat + "," + lon + ")");
         String cacheFileName = String.format(
@@ -127,6 +129,15 @@ public class BrightSkyApi {
         List<Source> sources;
         List<Weather> weather;
 
+        boolean isValid() {
+            return (
+                    weather != null
+                            && sources != null
+                            && weather.size() > 0
+                            && sources.size() > 0
+            );
+        }
+
         Source getSourceById(int id) {
             for (Source source : sources) {
                 if (source.id == id) {
@@ -138,11 +149,13 @@ public class BrightSkyApi {
 
         Weather getLatestWeather(long now) {
             Weather latestWeather = null;
-            for (Weather weather : weather) {
-                if (weather.timestampToMillis() > now) {
-                    break;
+            if (weather != null) {
+                for (Weather weather : weather) {
+                    if (weather.timestampToMillis() > now) {
+                        break;
+                    }
+                    latestWeather = weather;
                 }
-                latestWeather = weather;
             }
             return latestWeather;
         }

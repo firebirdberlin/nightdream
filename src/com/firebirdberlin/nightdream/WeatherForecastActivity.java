@@ -25,7 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.firebirdberlin.dwd.PollenExposureRequestTask;
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
-import com.firebirdberlin.openweathermapapi.ForcecastRequestTaskToday;
+import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -39,7 +39,7 @@ import java.util.List;
 public class WeatherForecastActivity
         extends BillingHelperActivity
         implements ForecastRequestTask.AsyncResponse,
-        ForcecastRequestTaskToday.AsyncResponse,
+        ForecastRequestTaskToday.AsyncResponse,
         PollenExposureRequestTask.AsyncResponse,
         WeatherLocationDialogFragment.WeatherLocationDialogListener {
     final static String TAG = "WeatherForecastActivity";
@@ -174,16 +174,15 @@ public class WeatherForecastActivity
     }
 
     public void onRequestFinished(WeatherEntry entry) {
-        Log.d(TAG, "onRequestFinished() WeatherEntry: " + entry);
-
-
-        String timeFormat = settings.getFullTimeFormat();
-        Log.d(TAG, "addWeatherNow() city: " + entry.cityName);
-
         ConstraintLayout todayView = findViewById(R.id.todayView);
         todayView.removeAllViews();
+        if (entry == null) {
+            return;
+        }
+        Log.d(TAG, "onRequestFinished() WeatherEntry: " + entry);
 
         WeatherForecastLayout layout = new WeatherForecastLayout(this);
+        String timeFormat = settings.getFullTimeFormat();
         layout.setTimeFormat(timeFormat);
         layout.setTemperature(true, settings.temperatureUnit);
         layout.setWindSpeed(true, settings.speedUnit);
@@ -197,7 +196,6 @@ public class WeatherForecastActivity
         layout.update(entry);
         layout.findViewById(R.id.timeView).setVisibility(View.GONE);
         todayView.addView(layout);
-
     }
 
     public void onRequestFinished(List<WeatherEntry> entries) {
@@ -390,7 +388,7 @@ public class WeatherForecastActivity
     void requestWeather(City city) {
         if (city != null) {
             new ForecastRequestTask(this, settings.getWeatherProvider(), this).execute(city.toJson());
-            new ForcecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
+            new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
 
             if (settings.showPollen) {
                 Utility.GeoCoder geoCoder = new Utility.GeoCoder(this, city.lat, city.lon);
