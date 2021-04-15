@@ -50,13 +50,20 @@ public class SoundMeter {
         if (mRecorder == null) {
             File file = new File(context.getCacheDir(), "audio.mp3");
 
-            mRecorder = new MediaRecorder();
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setOutputFile(file.getAbsolutePath());
-            mRecorder.setOnErrorListener(errorListener);
-            mRecorder.setOnInfoListener(infoListener);
+            try {
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                mRecorder.setOutputFile(file.getAbsolutePath());
+                mRecorder.setOnErrorListener(errorListener);
+                mRecorder.setOnInfoListener(infoListener);
+            } catch (RuntimeException e) {
+                // on Android 11 setAudioSource fails with a RuntimeException ... is it always failing ?
+                e.printStackTrace();
+                this.release();
+                return false;
+            }
         }
         try{
             mRecorder.prepare();
