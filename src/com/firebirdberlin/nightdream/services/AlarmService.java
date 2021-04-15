@@ -149,17 +149,20 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     }
 
     private void setTimerForFadeOut() {
-        long duration = mMediaPlayer.getDuration();
-        float percentage = duration / (float) settings.autoSnoozeTimeInMillis;
-        if (percentage > 1.5f) {
-            // Long tracks shall be stopped before the end
-            handler.postDelayed(fadeOut, settings.autoSnoozeTimeInMillis);
-        } else {
-            // Short tracks shall be completed via onCompletion
-            // Some files define ANDROID_LOOP which causes onCompletion never to be called.
-            // That's why we need a backup strategy for auto snooze.
-            handler.postDelayed(fadeOut, (long) Math.ceil(1.5f * settings.autoSnoozeTimeInMillis));
+        if (mMediaPlayer != null && settings != null) {
+            long duration = mMediaPlayer.getDuration();
+            float percentage = duration / (float) settings.autoSnoozeTimeInMillis;
+            if (percentage > 1.5f) {
+                // Long tracks shall be stopped before the end
+                handler.postDelayed(fadeOut, settings.autoSnoozeTimeInMillis);
+                return;
+            }
         }
+
+        // Short tracks shall be completed via onCompletion
+        // Some files define ANDROID_LOOP which causes onCompletion never to be called.
+        // That's why we need a backup strategy for auto snooze.
+        handler.postDelayed(fadeOut, (long) Math.ceil(1.5f * settings.autoSnoozeTimeInMillis));
     }
 
     public void setVolume(int volume) {
