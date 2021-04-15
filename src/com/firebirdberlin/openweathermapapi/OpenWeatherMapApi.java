@@ -118,7 +118,7 @@ public class OpenWeatherMapApi {
             Log.i(TAG, " >> response " + response);
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 Log.w(TAG, " >> responseCode " + responseCode);
-                return new WeatherEntry();
+                return null;
             }
         }
 
@@ -206,11 +206,9 @@ public class OpenWeatherMapApi {
     }
 
     private static WeatherEntry getWeatherEntryFromJSONObject(JSONObject json) {
-        WeatherEntry entry = new WeatherEntry();
         if (json == null) {
-            return entry;
+            return null;
         }
-
         JSONObject jsonMain = getJSONObject(json, "main");
         JSONObject jsonCoord = getJSONObject(json, "coord");
         JSONObject jsonClouds = getJSONObject(json, "clouds");
@@ -219,6 +217,7 @@ public class OpenWeatherMapApi {
         JSONObject jsonSys = getJSONObject(json, "sys");
         JSONArray jsonWeather = getJSONArray(json, "weather");
 
+        WeatherEntry entry = new WeatherEntry();
         entry.cityID = getValue(json, "id", 0);
         entry.lat = getValue(jsonCoord, "lat", -1.f);
         entry.lon = getValue(jsonCoord, "lon", -1.f);

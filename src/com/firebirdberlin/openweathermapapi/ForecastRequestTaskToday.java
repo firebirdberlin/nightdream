@@ -9,14 +9,14 @@ import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 
-public class ForcecastRequestTaskToday extends AsyncTask<String, Void, WeatherEntry> {
+public class ForecastRequestTaskToday extends AsyncTask<String, Void, WeatherEntry> {
 
     final static String TAG = "ForecastRequestTask";
     Settings.WeatherProvider weatherProvider;
     Context context;
     private AsyncResponse delegate;
 
-    public ForcecastRequestTaskToday(AsyncResponse listener, Settings.WeatherProvider weatherProvider, Context mContext) {
+    public ForecastRequestTaskToday(AsyncResponse listener, Settings.WeatherProvider weatherProvider, Context mContext) {
         this.delegate = listener;
         this.weatherProvider = weatherProvider;
         this.context = mContext;
