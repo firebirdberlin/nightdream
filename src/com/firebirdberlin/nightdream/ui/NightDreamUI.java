@@ -452,6 +452,7 @@ public class NightDreamUI {
             return false;
         }
     };
+
     @SuppressLint("ClickableViewAccessibility")
     public NightDreamUI(final Context context, Window window) {
         mContext = context;
@@ -873,11 +874,6 @@ public class NightDreamUI {
 
         lastAnimationTime = now;
 
-        background_images[background_image_active].setScaleX(1);
-        background_images[background_image_active].setScaleY(1);
-        background_images[background_image_active].setTranslationX(0);
-        background_images[background_image_active].setTranslationY(0);
-
         AnimationSet animationSet = new AnimationSet(true);
 
         //prevent flicker - do not remove
@@ -944,6 +940,7 @@ public class NightDreamUI {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    exifLayoutContainer.bringToFront();
                 }
 
                 @Override
@@ -952,9 +949,16 @@ public class NightDreamUI {
             });
         }
 
+        background_images[background_image_active].setScaleX(1);
+        background_images[background_image_active].setScaleY(1);
+        background_images[background_image_active].setTranslationX(0);
+        background_images[background_image_active].setTranslationY(0);
+        background_images[background_image_active].bringToFront();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            background_images[(background_image_active + 1) % 2].setZ(4);
+            background_images[background_image_active].setZ(5);
+        }
         background_images[background_image_active].startAnimation(animationSet);
-        parentLayout.bringChildToFront(background_images[background_image_active]);
-        parentLayout.bringChildToFront(exifLayoutContainer);
 
         if (files != null && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
