@@ -110,6 +110,7 @@ public class HttpReader {
         try {
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestProperty("User-Agent", "day_and_night_clock");
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
             urlConnection.setReadTimeout(READ_TIMEOUT);
             responseCode = urlConnection.getResponseCode();
@@ -128,7 +129,6 @@ public class HttpReader {
             Log.e(TAG, Log.getStackTraceString(e), e);
             e.printStackTrace();
         }
-
         return responseText;
     }
 

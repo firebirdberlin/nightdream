@@ -36,6 +36,8 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.firebirdberlin.nightdream.Settings.WeatherProvider.Met_No;
+
 public class WeatherForecastActivity
         extends BillingHelperActivity
         implements ForecastRequestTask.AsyncResponse,
@@ -192,7 +194,9 @@ public class WeatherForecastActivity
         if (entry.sunsetTime != 0) {
             layout.setSunset(true, entry.sunsetTime);
         }
-        layout.setDescriptionText(true, entry.description);
+        if (settings.getWeatherProvider() != Met_No) {
+            layout.setDescriptionText(true, entry.description);
+        }
         layout.update(entry);
         layout.findViewById(R.id.timeView).setVisibility(View.GONE);
         todayView.addView(layout);

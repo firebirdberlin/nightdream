@@ -41,6 +41,8 @@ public class ForecastRequestTaskToday extends AsyncTask<String, Void, WeatherEnt
                 return DarkSkyApi.fetchCurrentWeatherData(context, city, (float) city.lat, (float) city.lon);
             case BRIGHT_SKY:
                 return BrightSkyApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
+            case Met_No:
+                return MetNoApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
         }
     }
 

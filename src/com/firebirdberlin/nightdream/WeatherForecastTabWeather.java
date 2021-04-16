@@ -71,6 +71,7 @@ public class WeatherForecastTabWeather extends Fragment {
             int day = -1;
             long now = System.currentTimeMillis();
             for (WeatherEntry entry : entries) {
+                Log.d(TAG, "drin: " + (entry.timestamp * 1000) + " < " + (now - 600000));
                 if (entry.timestamp * 1000 < now - 600000) {
                     continue;
                 }

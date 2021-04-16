@@ -22,11 +22,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class BrightSkyApi {
+public class MetNoApi {
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
-    private static final String ENDPOINT = "https://api.brightsky.dev";
-    private static final String CACHE_FILE = "BrightSkyApi";
-    private static final String TAG = "BrightSkyApi";
+    private static final String ENDPOINT = "https://api.met.no/weatherapi/locationforecast/2.0/";
+    private static final String CACHE_FILE = "MetNoApi";
+    private static final String TAG = "MetNoApi";
     private static WeakReference<Context> mContext;
 
     public static WeatherEntry fetchCurrentWeatherData(Context context, float lat, float lon) {
@@ -37,7 +37,10 @@ public class BrightSkyApi {
         }
         Data data = new Gson().fromJson(responseText, Data.class);
         long now = System.currentTimeMillis();
-        Weather weather = data.getLatestWeather(now);
+        Weather weather = null;
+        if (data != null) {
+            weather = data.getLatestWeather(now);
+        }
         if (weather != null) {
             Source source = data.getSourceById(weather.source_id);
             return weather.toWeatherEntry(source, lat, lon, now);
@@ -58,7 +61,9 @@ public class BrightSkyApi {
         // Log.i(TAG, responseText);
         Gson gson = new GsonBuilder().create();
         Data data = gson.fromJson(responseText, Data.class);
-        // data.log();
+        data.log();
+
+        data.weather = data.timeseriesToWeather();
 
         long now = System.currentTimeMillis();
         List<WeatherEntry> entries = new ArrayList<>();
@@ -103,23 +108,12 @@ public class BrightSkyApi {
     }
 
     private static URL getUrlForecast(float lat, float lon) throws MalformedURLException {
-        Calendar now = Calendar.getInstance();
-        Date todayDate = now.getTime();
-        now.add(Calendar.DAY_OF_YEAR, 7);
-        Date lastDate = now.getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
-        String todayString = formatter.format(todayDate);
-        String lastDateString = formatter.format(lastDate);
-
         Uri.Builder builder = Uri
                 .parse(ENDPOINT)
                 .buildUpon()
-                .appendPath("weather")
+                .appendPath("compact")
                 .appendQueryParameter("lat", String.valueOf(lat))
-                .appendQueryParameter("lon", String.valueOf(lon))
-                .appendQueryParameter("units", "dwd")
-                .appendQueryParameter("date", todayString)
-                .appendQueryParameter("last_date", lastDateString);
+                .appendQueryParameter("lon", String.valueOf(lon));
 
         String url = builder.build().toString();
         return new URL(url);
@@ -128,6 +122,8 @@ public class BrightSkyApi {
     public class Data {
         List<Source> sources;
         List<Weather> weather;
+        Geometry geometry;
+        Properties properties;
 
         boolean isValid() {
             return (
@@ -139,27 +135,63 @@ public class BrightSkyApi {
         }
 
         Source getSourceById(int id) {
-            if (sources != null) {
-                for (Source source : sources) {
-                    if (source.id == id) {
-                        return source;
-                    }
-                }
+            if (geometry != null) {
+                Source source = new Source();
+                source.lon = geometry.coordinates.get(0);
+                source.lat = geometry.coordinates.get(1);
+                return source;
             }
             return null;
         }
 
         Weather getLatestWeather(long now) {
-            Weather latestWeather = null;
-            if (weather != null) {
-                for (Weather weather : weather) {
+            Weather latestWeather = new Weather();
+            if (properties != null) {
+                for (Properties.Timeseries weather : properties.timeseries) {
                     if (weather.timestampToMillis() > now) {
                         break;
                     }
-                    latestWeather = weather;
+                    latestWeather.timestamp = weather.time;
+                    latestWeather.cloud_cover = Math.round(weather.data.instant.details.cloud_area_fraction);
+                    if (weather.data.next_1_hours != null && weather.data.next_1_hours.summary != null && weather.data.next_1_hours.summary.symbol_code != null) {
+                        latestWeather.icon = weather.data.next_1_hours.summary.symbol_code;
+                        latestWeather.condition = weather.data.next_1_hours.summary.symbol_code;
+                    } else {
+                        latestWeather.icon = "";
+                    }
+                    latestWeather.relative_humidity = Math.round(weather.data.instant.details.relative_humidity);
+                    latestWeather.temperature = weather.data.instant.details.air_temperature;
+                    latestWeather.wind_direction = Math.round(weather.data.instant.details.wind_from_direction);
+                    latestWeather.wind_speed = weather.data.instant.details.wind_speed;
                 }
             }
             return latestWeather;
+        }
+
+        List<Weather> timeseriesToWeather() {
+            this.weather = new ArrayList<>();
+            if (properties != null) {
+                for (Properties.Timeseries weather : properties.timeseries) {
+                    if (weather.timestampToMillis() > 2 * 24 * 60 * 60 * 1000 + System.currentTimeMillis()) {
+                        break;
+                    }
+                    Weather latestWeather = new Weather();
+                    latestWeather.timestamp = weather.time;
+                    latestWeather.cloud_cover = Math.round(weather.data.instant.details.cloud_area_fraction);
+                    if (weather.data.next_1_hours != null && weather.data.next_1_hours.summary != null && weather.data.next_1_hours.summary.symbol_code != null) {
+                        latestWeather.icon = weather.data.next_1_hours.summary.symbol_code;
+                        latestWeather.condition = weather.data.next_1_hours.summary.symbol_code;
+                    } else {
+                        latestWeather.icon = "";
+                    }
+                    latestWeather.relative_humidity = Math.round(weather.data.instant.details.relative_humidity);
+                    latestWeather.temperature = weather.data.instant.details.air_temperature;
+                    latestWeather.wind_direction = Math.round(weather.data.instant.details.wind_from_direction);
+                    latestWeather.wind_speed = weather.data.instant.details.wind_speed;
+                    this.weather.add(latestWeather);
+                }
+            }
+            return this.weather;
         }
 
         // keep it for convenience, Logs all data.
@@ -172,7 +204,80 @@ public class BrightSkyApi {
                 for (Weather weather : weather) {
                     Log.i(TAG, new Gson().toJson(weather));
                 }
+            if (geometry != null)
+                Log.i(TAG, new Gson().toJson(geometry));
+            if (properties != null)
+                Log.i(TAG, new Gson().toJson(properties));
         }
+    }
+
+    class Geometry {
+        String type;
+        List<Float> coordinates;
+    }
+
+    class Properties {
+        Meta meta;
+        List<Timeseries> timeseries;
+
+        class Meta {
+            String updated_at;
+            Units units;
+
+            class Units {
+                String air_pressure_at_sea_level;
+                String air_temperature;
+                String cloud_area_fraction;
+                String precipitation_amount;
+                String relative_humidity;
+                String wind_from_direction;
+                String wind_speed;
+            }
+        }
+
+        class Timeseries {
+            String time;
+            Data data;
+
+            long timestampToMillis() {
+                try {
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.getDefault());
+                    Date result = df.parse(time);
+                    return result.getTime();
+                } catch (ParseException e) {
+                    Log.e(TAG, e.toString());
+                    return -1L;
+                }
+            }
+
+            class Data {
+                Instant instant;
+                Next_1_hours next_1_hours;
+
+                class Instant {
+                    Details details;
+
+                    class Details {
+                        float air_pressure_at_sea_level;
+                        float air_temperature;
+                        float cloud_area_fraction;
+                        float relative_humidity;
+                        float wind_from_direction;
+                        float wind_speed;
+                    }
+                }
+
+                class Next_1_hours {
+                    Summary summary;
+
+                    class Summary {
+                        String symbol_code;
+                    }
+                }
+            }
+        }
+
+
     }
 
     class Source {
@@ -209,7 +314,7 @@ public class BrightSkyApi {
 
         long timestampToMillis() {
             try {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", java.util.Locale.getDefault());
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.getDefault());
                 Date result = df.parse(timestamp);
                 return result.getTime();
             } catch (ParseException e) {
@@ -233,12 +338,6 @@ public class BrightSkyApi {
 
             entry.clouds = cloud_cover;
             entry.description = condition;
-            if (mContext != null && mContext.get() != null) {
-                Resources res = mContext.get().getResources();
-                String text = "brightsky_conditions_" + entry.description;
-                int resID = res.getIdentifier(text, "string", mContext.get().getPackageName());
-                if (resID != 0) entry.description = mContext.get().getResources().getString(resID);
-            }
             entry.lat = lat;
             entry.lon = lon;
             entry.rain1h = precipitation;
