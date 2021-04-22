@@ -64,19 +64,19 @@ public class Notification implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected Notification(Parcel in) {
-        bigPicture = in.readParcelable(Bitmap.class.getClassLoader());
+        bigPicture = getParcelable(in, Bitmap.class.getClassLoader());
         time = in.readString();
         postTimestamp = in.readLong();
         applicationName = in.readString();
         text = in.readString();
         textBig = in.readString();
         summaryText = in.readString();
-        remoteView = in.readParcelable(RemoteViews.class.getClassLoader());
-        bitmapLargeIcon = in.readParcelable(Bitmap.class.getClassLoader());
+        remoteView = getParcelable(in, RemoteViews.class.getClassLoader());
+        bitmapLargeIcon = getParcelable(in, Bitmap.class.getClassLoader());
         title = in.readString();
         titleBig = in.readString();
         template = in.readString();
-        pendingIntent = in.readParcelable(PendingIntent.class.getClassLoader());
+        pendingIntent = getParcelable(in, PendingIntent.class.getClassLoader());
         actions = in.createTypedArray(android.app.Notification.Action.CREATOR);
         packageName = in.readString();
         isClearable = in.readByte() != 0;
@@ -85,6 +85,15 @@ public class Notification implements Parcelable {
         notificationID = in.readInt();
         notificationKey = in.readString();
         notificationTag = in.readString();
+    }
+
+
+    <T> T getParcelable(Parcel in, ClassLoader classLoader) {
+       try {
+            return in.readParcelable(classLoader);
+        } catch (ClassCastException ignored) {
+            return null;
+        }
     }
 
     public Notification(Context context, Intent intent) {
@@ -114,26 +123,28 @@ public class Notification implements Parcelable {
         this.notificationTag = intent.getStringExtra("tag");
 
         //RemoteView to View
+        this.cardView = null;
         try {
-            FrameLayout container = new FrameLayout(context);
             RemoteViews notificationRemoteView = intent.getParcelableExtra("contentView");
-            View view = notificationRemoteView.apply(context, container);
-            container.addView(view);
-            this.cardView = container;
-        } catch (SecurityException | NullPointerException e) {
-            this.cardView = null;
-        }
+            if (notificationRemoteView != null) {
+                FrameLayout container = new FrameLayout(context);
+                View view = notificationRemoteView.apply(context, container);
+                container.addView(view);
+                this.cardView = container;
+            }
+        } catch (SecurityException ignored) {}
 
         //BigRemoteView to View
+        this.bigCardView = null;
         try {
-            FrameLayout container = new FrameLayout(context);
             RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigView");
-            View view = notificationRemoteBigView.apply(context, container);
-            container.addView(view);
-            this.bigCardView = container;
-        } catch (SecurityException | NullPointerException e) {
-            this.bigCardView = null;
-        }
+            if (notificationRemoteBigView != null) {
+                FrameLayout container = new FrameLayout(context);
+                View view = notificationRemoteBigView.apply(context, container);
+                container.addView(view);
+                this.bigCardView = container;
+            }
+        } catch (SecurityException ignored) {}
 
         //get drawable SmallIcon
         try {
