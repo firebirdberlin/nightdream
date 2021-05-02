@@ -42,6 +42,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.3.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
+    implementation 'org.shredzone.commons:commons-suncalc:2.11'
     testImplementation 'junit:junit:4.12'
 }
 

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,7 +34,10 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import org.shredzone.commons.suncalc.SunTimes;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class WeatherForecastActivity
@@ -174,7 +178,7 @@ public class WeatherForecastActivity
     }
 
     public void onRequestFinished(WeatherEntry entry) {
-        ConstraintLayout todayView = findViewById(R.id.todayView);
+        LinearLayout todayView = findViewById(R.id.todayView);
         todayView.removeAllViews();
         if (entry == null) {
             return;
@@ -189,9 +193,23 @@ public class WeatherForecastActivity
         if (entry.sunriseTime != 0) {
             layout.setSunrise(true, entry.sunriseTime);
         }
+        else {
+            SunTimes sunTime = SunTimes.compute()
+                    .at(entry.lat, entry.lon)
+                    .execute();
+            layout.setSunrise(true, sunTime.getRise(),settings.is24HourFormat());
+        }
+
         if (entry.sunsetTime != 0) {
             layout.setSunset(true, entry.sunsetTime);
         }
+        else {
+            SunTimes sunTime = SunTimes.compute()
+                    .at(entry.lat, entry.lon)
+                    .execute();
+            layout.setSunset(true, sunTime.getSet(), settings.is24HourFormat());
+        }
+
         layout.setDescriptionText(true, entry.description);
         layout.update(entry);
         layout.findViewById(R.id.timeView).setVisibility(View.GONE);

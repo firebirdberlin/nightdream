@@ -19,6 +19,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class WeatherForecastLayout extends LinearLayout {
@@ -106,6 +107,23 @@ public class WeatherForecastLayout extends LinearLayout {
         descriptionText.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
+    public void setSunrise(boolean on, Date time, boolean is24Hour) {
+        String text = "-";
+
+        if (time != null) {
+            SimpleDateFormat sdf;
+            if (is24Hour) {
+                 sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            }
+            else {
+                 sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+            }
+            text = sdf.format(time);
+        }
+        sunRiseTime.setText(text);
+        sunRiseLayout.setVisibility( (on) ? View.VISIBLE : View.GONE );
+    }
+
     public void setSunrise(boolean on, long time) {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(time * 1000);
@@ -117,20 +135,29 @@ public class WeatherForecastLayout extends LinearLayout {
         sunRiseLayout.setVisibility( (on) ? View.VISIBLE : View.GONE );
     }
 
+    public void setSunset(boolean on, Date time, boolean is24Hour) {
+        String text = "-";
+        if (time != null){
+            SimpleDateFormat sdf;
+            if (is24Hour) {
+                sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            }
+            else {
+                sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+            }
+            text = sdf.format(time);
+        }
+
+        sunSetTime.setText(text);
+        sunSetLayout.setVisibility( (on) ? View.VISIBLE : View.GONE );
+    }
 
     public void setSunset(boolean on, long time) {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(time * 1000);
 
         SimpleDateFormat sdf;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            sdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
-        }
-        else
-        {
-            sdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
-        }
+        sdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
 
         String text = sdf.format(mCalendar.getTime());
         sunSetTime.setText(text);
