@@ -5,6 +5,10 @@ import android.location.LocationManager;
 
 import com.firebirdberlin.nightdream.WindSpeedConversion;
 
+import org.shredzone.commons.suncalc.SunTimes;
+
+import java.util.Date;
+
 public class WeatherEntry {
     public static final int CELSIUS = 1;
     public static final int FAHRENHEIT = 2;
@@ -34,9 +38,32 @@ public class WeatherEntry {
     public float lon = 0.0f;
     public double windSpeed = 0.;
     public int windDirection = -1;
-
     public WeatherEntry() {
 
+    }
+
+    public long getSunriseTime() {
+        if (sunriseTime > 0L) {
+            return sunriseTime * 1000;
+        }
+        SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
+        Date rise = sunTime.getRise();
+        if (rise != null) {
+            return rise.getTime();
+        }
+        return 0L;
+    }
+
+    public long getSunsetTime() {
+        if (sunsetTime > 0L) {
+            return sunsetTime * 1000;
+        }
+        SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
+        Date set = sunTime.getSet();
+        if (set != null) {
+            return set.getTime();
+        }
+        return 0L;
     }
 
     public void setFakeData() {
@@ -91,17 +118,17 @@ public class WeatherEntry {
     public String formatTemperatureText(int temperatureUnit, double temp) {
         switch (temperatureUnit) {
             case WeatherEntry.CELSIUS:
-                return String.format(java.util.Locale.getDefault(),"%d°C", Math.round(toDegreesCelcius(temp)));
+                return String.format(java.util.Locale.getDefault(), "%d°C", Math.round(toDegreesCelcius(temp)));
             case WeatherEntry.FAHRENHEIT:
-                return String.format(java.util.Locale.getDefault(),"%d°F", Math.round(toDegreesFahrenheit(temp)));
+                return String.format(java.util.Locale.getDefault(), "%d°F", Math.round(toDegreesFahrenheit(temp)));
             default:
-                return String.format(java.util.Locale.getDefault(),"%d K", Math.round(temp));
+                return String.format(java.util.Locale.getDefault(), "%d K", Math.round(temp));
         }
     }
 
     public String formatHumidityText() {
         if (humidity < 0) return "";
-        return String.format(java.util.Locale.getDefault(),"%d %%", humidity);
+        return String.format(java.util.Locale.getDefault(), "%d %%", humidity);
     }
 
     private double toDegreesCelcius(double kelvin) {
@@ -115,19 +142,19 @@ public class WeatherEntry {
     public String formatWindText(int speedUnit) {
         switch (speedUnit) {
             case WeatherEntry.BEAUFORT:
-                return String.format(java.util.Locale.getDefault(),"%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(this.windSpeed));
+                return String.format(java.util.Locale.getDefault(), "%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(this.windSpeed));
             case WeatherEntry.MILES_PER_HOUR:
                 double mph = WindSpeedConversion.metersPerSecondToMilesPerHour(this.windSpeed);
-                return String.format(java.util.Locale.getDefault(),"%.1f mi/h", mph);
+                return String.format(java.util.Locale.getDefault(), "%.1f mi/h", mph);
             case WeatherEntry.KM_PER_HOUR:
                 double kmph = WindSpeedConversion.metersPerSecondToKilometersPerHour(this.windSpeed);
-                return String.format(java.util.Locale.getDefault(),"%.1f km/h", kmph);
+                return String.format(java.util.Locale.getDefault(), "%.1f km/h", kmph);
             case WeatherEntry.KNOT:
                 double kn = WindSpeedConversion.metersPerSecondToKnot(this.windSpeed);
-                return String.format(java.util.Locale.getDefault(),"%.1f kn", kn);
+                return String.format(java.util.Locale.getDefault(), "%.1f kn", kn);
             case WeatherEntry.METERS_PER_SECOND:
             default:
-                return String.format(java.util.Locale.getDefault(),"%.1f m/s", this.windSpeed);
+                return String.format(java.util.Locale.getDefault(), "%.1f m/s", this.windSpeed);
         }
     }
 
@@ -135,4 +162,5 @@ public class WeatherEntry {
         long age = ageMillis();
         return (timestamp > -1L && age < 4 * 60 * 60 * 1000);
     }
+
 }

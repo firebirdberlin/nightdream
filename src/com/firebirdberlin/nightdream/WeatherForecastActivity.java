@@ -14,19 +14,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.firebirdberlin.dwd.PollenExposureRequestTask;
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
-import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
+import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -174,7 +174,7 @@ public class WeatherForecastActivity
     }
 
     public void onRequestFinished(WeatherEntry entry) {
-        ConstraintLayout todayView = findViewById(R.id.todayView);
+        LinearLayout todayView = findViewById(R.id.todayView);
         todayView.removeAllViews();
         if (entry == null) {
             return;
@@ -186,12 +186,9 @@ public class WeatherForecastActivity
         layout.setTimeFormat(timeFormat);
         layout.setTemperature(true, settings.temperatureUnit);
         layout.setWindSpeed(true, settings.speedUnit);
-        if (entry.sunriseTime != 0) {
-            layout.setSunrise(true, entry.sunriseTime);
-        }
-        if (entry.sunsetTime != 0) {
-            layout.setSunset(true, entry.sunsetTime);
-        }
+        layout.setSunrise(true, entry.getSunriseTime());
+        layout.setSunset(true, entry.getSunsetTime());
+
         layout.setDescriptionText(true, entry.description);
         layout.update(entry);
         layout.findViewById(R.id.timeView).setVisibility(View.GONE);
