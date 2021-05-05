@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="10dp"
@@ -50,7 +49,7 @@
 
             <TextView
                 android:id="@+id/descriptionText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginEnd="20dp"
@@ -59,7 +58,8 @@
                 android:text="description"
                 android:textAlignment="textStart"
                 android:textAppearance="@android:style/TextAppearance.Medium"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:layout_minWidth="200dp"/>
 
             <TextView
                 android:id="@+id/temperatureText"
@@ -69,7 +69,9 @@
                 android:singleLine="true"
                 android:text="10°C"
                 android:textAppearance="@android:style/TextAppearance.Medium"
-                app:layout_minWidth="100dp" />
+                app:layout_minWidth="100dp"
+                app:layout_wrapBefore="true"
+                />
 
 
             <LinearLayout
@@ -184,18 +186,21 @@
 
             </LinearLayout>
 
+
+
             <LinearLayout
-                android:id="@+id/layoutSunRise"
-                android:layout_width="match_parent"
+                android:id="@+id/layoutSunrise"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:orientation="horizontal"
                 android:visibility="gone"
-                app:layout_minWidth="100dp">
+                app:layout_wrapBefore="true"
+                app:layout_minWidth="200dp">
 
 
                 <TextView
-                    android:id="@+id/sunRiseText"
+                    android:id="@+id/sunriseText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -206,7 +211,7 @@
                     android:textAppearance="@android:style/TextAppearance.Medium" />
 
                 <TextView
-                    android:id="@+id/sunRiseTime"
+                    android:id="@+id/sunriseTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -220,17 +225,17 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layoutSunSet"
-                android:layout_width="match_parent"
+                android:id="@+id/layoutSunset"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
                 android:orientation="horizontal"
                 android:visibility="gone"
-                app:layout_minWidth="100dp">
+                app:layout_minWidth="200dp">
 
 
                 <TextView
-                    android:id="@+id/sunSetText"
+                    android:id="@+id/sunsetText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -241,7 +246,7 @@
                     android:textAppearance="@android:style/TextAppearance.Medium" />
 
                 <TextView
-                    android:id="@+id/sunSetTime"
+                    android:id="@+id/sunsetTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"

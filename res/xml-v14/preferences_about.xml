@@ -265,6 +265,17 @@ vi - Phong Nguyen"/>
                 android:data="https://www.needpix.com/photo/767841/seamless-tileable-texture-rust-rusty-old-fridge-rusted-oxidation-dilapidation"
                 />
         </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_commons_suncalc"
+            app:summary="by shred"
+            app:title="commons-suncalc">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/shred/commons-suncalc/tree/v2"
+                />
+        </Preference>
+
     </PreferenceCategory>
 
     <PreferenceCategory
