@@ -351,8 +351,7 @@ public class NightDreamActivity extends BillingHelperActivity
         broadcastReceiver = registerBroadcastReceiver();
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
-
-        nReceiver.setColor(mySettings.secondaryColor);
+        nReceiver.setColor( (mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
         Intent intent = getIntent();
 
         String action = intent.getAction();
