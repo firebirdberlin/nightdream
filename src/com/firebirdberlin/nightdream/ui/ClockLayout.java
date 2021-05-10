@@ -37,6 +37,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 import com.firebirdberlin.nightdream.mNotificationListener;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
+import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -166,10 +167,25 @@ public class ClockLayout extends LinearLayout {
     public void setTypeface(Typeface typeface) {
         if (clock != null) {
             clock.setTypeface(typeface);
-
         }
+
         if (clock_ampm != null) {
             clock_ampm.setTypeface(typeface);
+        }
+
+        if (
+                typeface != null
+                        && !typeface.equals(FontCache.get(context, "fonts/dseg14classic.ttf"))
+                        && !typeface.equals(FontCache.get(context, "fonts/7_segment_digital.ttf"))
+        ) {
+            if (date != null) {
+                date.setTypeface(typeface);
+            }
+            for (WeatherLayout layout : weatherLayouts) {
+                if (layout != null) {
+                    layout.setTypeface(typeface);
+                }
+            }
         }
     }
 
@@ -524,7 +540,6 @@ public class ClockLayout extends LinearLayout {
             divider.setVisibility(showWeather ? View.VISIBLE : View.GONE);
         }
 
-        Typeface typeface = clock.getTypeface();
         if (clock != null) {
             clock.setMaxWidth((int) maxWidth);
             clock.setMaxFontSizesInSp(10.f, 50.f);
@@ -532,7 +547,6 @@ public class ClockLayout extends LinearLayout {
         if (date != null) {
             date.setMaxWidth((int) maxWidth);
             date.setMaxFontSizesInSp(10.f, 20.f);
-            date.setTypeface(typeface);
         }
 
         clock.invalidate();
@@ -543,7 +557,6 @@ public class ClockLayout extends LinearLayout {
             weatherLayout.setMaxWidth((int) (maxWidth));
             weatherLayout.setMaxHeight((Utility.getHeightOfView(clock)));
             weatherLayout.setMaxFontSizesInSp(10.f, textSize);
-            weatherLayout.setTypeface(typeface);
             weatherLayout.update();
         }
         for (int i = 1; i < weatherLayouts.length; i++) {
@@ -553,7 +566,6 @@ public class ClockLayout extends LinearLayout {
                 layout.setLocation(true);
                 layout.setMaxWidth((int) maxWidth);
                 layout.setMaxFontSizesInSp(10.f, textSize);
-                layout.setTypeface(typeface);
                 layout.update();
             }
         }
