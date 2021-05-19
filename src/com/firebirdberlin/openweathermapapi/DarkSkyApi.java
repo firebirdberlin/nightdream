@@ -168,8 +168,25 @@ public class DarkSkyApi {
         entry.weatherIcon = getValue(jsonCurrently, "icon", "");
         entry.windDirection = getValue(jsonCurrently, "windBearing", -1);
         entry.windSpeed = getValue(jsonCurrently, "windSpeed", 0.);
-
+        entry.weatherIconMeteoconsSymbol = iconToMeteoconsSymbol(entry.weatherIcon);
         return entry;
+    }
+
+    private static String iconToMeteoconsSymbol(String code) {
+        if (code.equals("clear-day")) return "B";
+        if (code.equals("clear-night")) return "C";
+        if (code.equals("rain")) return "R";
+        if (code.equals("snow")) return "W";
+        if (code.equals("sleet")) return "X";
+        if (code.equals("wind")) return "F";
+        if (code.equals("fog")) return "M";
+        if (code.equals("cloudy")) return "N";
+        if (code.equals("partly-cloudy-day")) return "H";
+        if (code.equals("partly-cloudy-night")) return "I";
+        if (code.equals("thunderstorm")) return "0";
+        if (code.equals("tornado")) return "0";
+        if (code.equals("hail")) return "X";
+        return "";
     }
 
     private static List<WeatherEntry> getWeatherEntriesHourly(City city, JSONObject json) {
@@ -204,6 +221,7 @@ public class DarkSkyApi {
             entry.weatherIcon = getValue(jsonEntry, "icon", "");
             entry.windDirection = getValue(jsonEntry, "windBearing", -1);
             entry.windSpeed = getValue(jsonEntry, "windSpeed", 0.);
+            entry.weatherIconMeteoconsSymbol = iconToMeteoconsSymbol(entry.weatherIcon);
             entries.add(entry);
         }
         return entries;

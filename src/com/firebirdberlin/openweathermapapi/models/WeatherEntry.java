@@ -33,6 +33,7 @@ public class WeatherEntry {
     public long sunriseTime = 0L;
     public long sunsetTime = 0L;
     public String weatherIcon = "";
+    public String weatherIconMeteoconsSymbol = "";
     public String description = "";
     public float lat = 0.0f;
     public float lon = 0.0f;

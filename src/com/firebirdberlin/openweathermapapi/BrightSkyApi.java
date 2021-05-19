@@ -28,6 +28,7 @@ public class BrightSkyApi {
     private static final String CACHE_FILE = "BrightSkyApi";
     private static final String TAG = "BrightSkyApi";
     private static WeakReference<Context> mContext;
+    private static long requestTimestamp = 0L;
 
     public static WeatherEntry fetchCurrentWeatherData(Context context, float lat, float lon) {
         mContext = new WeakReference<>(context);
@@ -40,7 +41,7 @@ public class BrightSkyApi {
         Weather weather = data.getLatestWeather(now);
         if (weather != null) {
             Source source = data.getSourceById(weather.source_id);
-            return weather.toWeatherEntry(source, lat, lon, now);
+            return weather.toWeatherEntry(source, lat, lon, requestTimestamp);
         } else {
             WeatherEntry entry = new WeatherEntry();
             entry.lat = lat;
@@ -60,14 +61,13 @@ public class BrightSkyApi {
         Data data = gson.fromJson(responseText, Data.class);
         // data.log();
 
-        long now = System.currentTimeMillis();
         List<WeatherEntry> entries = new ArrayList<>();
         if (data != null && data.isValid()) {
             for (Weather weather : data.weather) {
                 Source source = data.getSourceById(weather.source_id);
                 source.lat = lat;
                 source.lon = lon;
-                entries.add(weather.toWeatherEntry(source, now));
+                entries.add(weather.toWeatherEntry(source, requestTimestamp));
             }
         }
         return entries;
@@ -87,6 +87,7 @@ public class BrightSkyApi {
         try {
             url = getUrlForecast(lat, lon);
             responseText = httpReader.readUrl(url.toString(), false);
+            requestTimestamp = httpReader.getRequestTimestamp();
             return responseText;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -139,6 +140,9 @@ public class BrightSkyApi {
         }
 
         Source getSourceById(int id) {
+            if (sources == null) {
+                return null;
+            }
             for (Source source : sources) {
                 if (source.id == id) {
                     return source;
@@ -162,6 +166,7 @@ public class BrightSkyApi {
 
         // keep it for convenience, Logs all data.
         void log() {
+            if (!isValid()) return;
             for (Source source : sources) {
                 Log.i(TAG, new Gson().toJson(source));
             }
@@ -207,17 +212,18 @@ public class BrightSkyApi {
             try {
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", java.util.Locale.getDefault());
                 Date result = df.parse(timestamp);
+                Log.w(TAG, timestamp + " => " + result.getTime());
                 return result.getTime();
             } catch (ParseException e) {
                 return -1L;
             }
         }
 
-        WeatherEntry toWeatherEntry(Source source, long now) {
-            return toWeatherEntry(source, source.lat, source.lon, now);
+        WeatherEntry toWeatherEntry(Source source, long requestTimestamp) {
+            return toWeatherEntry(source, source.lat, source.lon, requestTimestamp);
         }
 
-        WeatherEntry toWeatherEntry(Source source, float lat, float lon, long now) {
+        WeatherEntry toWeatherEntry(Source source, float lat, float lon, long requestTimestamp) {
             WeatherEntry entry = new WeatherEntry();
             entry.cityID = (source != null) ? source.id : -1;
             entry.cityName = (source != null) ? source.station_name : String.format(java.util.Locale.getDefault(), "%3.2f, %3.2f", lat, lon);
@@ -239,17 +245,35 @@ public class BrightSkyApi {
             entry.lon = lon;
             entry.rain1h = precipitation;
             entry.rain3h = -1f;
-            entry.request_timestamp = now;
+            entry.request_timestamp = requestTimestamp;
             entry.sunriseTime = 0L;
             entry.sunsetTime = 0L;
             entry.temperature = toKelvin(temperature);
             entry.apparentTemperature = -273.15;
             entry.humidity = relative_humidity;
             entry.weatherIcon = icon;
+            entry.weatherIconMeteoconsSymbol = iconToMeteoconsSymbol(icon);
             entry.windDirection = wind_direction;
             entry.windSpeed = toMetersPerSecond(wind_speed);
             entry.timestamp = timestampToMillis() / 1000;
             return entry;
+        }
+
+        String iconToMeteoconsSymbol(String code) {
+            if (code.equals("clear-day")) return "B";
+            if (code.equals("clear-night")) return "C";
+            if (code.equals("rain")) return "R";
+            if (code.equals("snow")) return "W";
+            if (code.equals("sleet")) return "X";
+            if (code.equals("wind")) return "F";
+            if (code.equals("fog")) return "M";
+            if (code.equals("cloudy")) return "N";
+            if (code.equals("partly-cloudy-day")) return "H";
+            if (code.equals("partly-cloudy-night")) return "I";
+            if (code.equals("thunderstorm")) return "0";
+            if (code.equals("tornado")) return "0";
+            if (code.equals("hail")) return "X";
+            return "";
         }
     }
 }

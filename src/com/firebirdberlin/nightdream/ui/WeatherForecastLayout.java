@@ -102,9 +102,9 @@ public class WeatherForecastLayout extends LinearLayout {
         temperatureText.setVisibility((on) ? View.VISIBLE : View.GONE);
     }
 
-    public void setDescriptionText(boolean on, String value) {
+    public void setDescriptionText(String value) {
         descriptionText.setText(value);
-        descriptionText.setVisibility((on) ? View.VISIBLE : View.GONE);
+        descriptionText.setVisibility((value != null) ? View.VISIBLE : View.GONE);
     }
 
     public void setSunrise(boolean on, long time) {
@@ -171,7 +171,7 @@ public class WeatherForecastLayout extends LinearLayout {
         String text = sdf.format(mCalendar.getTime());
         timeView.setText(text);
 
-        iconText.setText(iconToText(entry.weatherIcon));
+        iconText.setText(entry.weatherIconMeteoconsSymbol);
         temperatureText.setText(entry.formatTemperatureText(temperatureUnit));
         if (!entry.formatHumidityText().isEmpty()) {
             humidityText.setText(entry.formatHumidityText());
@@ -209,43 +209,6 @@ public class WeatherForecastLayout extends LinearLayout {
             iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
         }
         fixIconWindDirectionSize();
-    }
-
-    private String iconToText(String code) {
-        // openweathermap
-        if (code.equals("01d")) return "B";
-        if (code.equals("01n")) return "C";
-        if (code.equals("02d")) return "H";
-        if (code.equals("02n")) return "I";
-        if (code.equals("03d")) return "N";
-        if (code.equals("03n")) return "N";
-        if (code.equals("04d")) return "Y";
-        if (code.equals("04n")) return "Y";
-        if (code.equals("09d")) return "R";
-        if (code.equals("09n")) return "R";
-        if (code.equals("10d")) return "Q";
-        if (code.equals("10n")) return "Q";
-        if (code.equals("11d")) return "0";
-        if (code.equals("11n")) return "0";
-        if (code.equals("13d")) return "W";
-        if (code.equals("13n")) return "W";
-        if (code.equals("50d")) return "M";
-        if (code.equals("50n")) return "M";
-        // darksky
-        if (code.equals("clear-day")) return "B";
-        if (code.equals("clear-night")) return "C";
-        if (code.equals("rain")) return "R";
-        if (code.equals("snow")) return "W";
-        if (code.equals("sleet")) return "X";
-        if (code.equals("wind")) return "F";
-        if (code.equals("fog")) return "M";
-        if (code.equals("cloudy")) return "N";
-        if (code.equals("partly-cloudy-day")) return "H";
-        if (code.equals("partly-cloudy-night")) return "I";
-        if (code.equals("thunderstorm")) return "0";
-        if (code.equals("tornado")) return "0";
-        if (code.equals("hail")) return "X";
-        return "";
     }
 
     private String formatRainText(double rainValue) {
