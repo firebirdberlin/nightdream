@@ -27,7 +27,6 @@ import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
-import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -362,6 +361,9 @@ public class Settings {
                 return WeatherProvider.DARK_SKY;
             case "2":
                 return WeatherProvider.BRIGHT_SKY;
+            case "3":
+                return WeatherProvider.MET_NO;
+
         }
     }
 
@@ -1225,6 +1227,7 @@ public class Settings {
             this.weatherEntry.sunriseTime = settings.getLong("weather_sunrise_time", this.weatherEntry.sunriseTime);
             this.weatherEntry.sunsetTime = settings.getLong("weather_sunset_time", this.weatherEntry.sunsetTime);
             this.weatherEntry.weatherIcon = settings.getString("weather_icon", this.weatherEntry.weatherIcon);
+            this.weatherEntry.weatherIconMeteoconsSymbol = settings.getString("weather_icon_meteocons_symbol", this.weatherEntry.weatherIconMeteoconsSymbol);
             this.weatherEntry.description = settings.getString("weather_description", this.weatherEntry.description);
             this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
             this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
@@ -1246,6 +1249,7 @@ public class Settings {
         prefEditor.putLong("weather_sunrise_time", entry.sunriseTime);
         prefEditor.putLong("weather_sunset_time", entry.sunsetTime);
         prefEditor.putString("weather_icon", entry.weatherIcon);
+        prefEditor.putString("weather_icon_meteocons_symbol", entry.weatherIconMeteoconsSymbol);
         prefEditor.putString("weather_city_name", entry.cityName);
         prefEditor.putString("weather_description", entry.description);
         prefEditor.putInt("weather_city_id", entry.cityID);
@@ -1253,7 +1257,7 @@ public class Settings {
         prefEditor.putFloat("weather_felt_temperature", (float) entry.apparentTemperature);
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
         prefEditor.putInt("weather_wind_direction", entry.windDirection);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public String backgroundImagePath() {
@@ -1313,7 +1317,7 @@ public class Settings {
         return radioStreamActivateWiFi;
     }
 
-    public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY, BRIGHT_SKY}
+    public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY, BRIGHT_SKY, MET_NO}
 
     public enum ScreenProtectionModes {NONE, MOVE, FADE}
 }

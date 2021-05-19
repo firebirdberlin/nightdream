@@ -4,6 +4,7 @@
           <item>0</item>
           <item>1</item>
           <item>2</item>
+          <item>3</item>
      </string-array>
 
 
@@ -11,5 +12,6 @@
         <item>OpenWeatherMap</item>
         <item>Dark Sky</item>
         <item>Bright Sky (Germany, experimental)</item>
+        <item>Met.no</item>
      </string-array>
 </resources>

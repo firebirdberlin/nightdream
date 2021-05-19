@@ -29,7 +29,8 @@ public class WeatherService {
         Log.d(TAG, String.format("Weather: data age %d => %b", age, age > maxAge));
         Log.d(TAG, String.format("City ID changed => %b ('%s' =?= '%s')",
                 (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID)),
-                settings.weatherCityID, cityID));
+                settings.weatherCityID, cityID)
+        );
         if (settings.weatherCityID.isEmpty() ) {
             Log.d(TAG, "GPS distance " + gpsDistance + " m ");
         }
