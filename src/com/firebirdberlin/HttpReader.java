@@ -27,13 +27,9 @@ public class HttpReader {
     private final File cacheFile;
     private final File lockFile;
     private final Context context;
-
-    public void setCacheExpirationTimeMillis(long cacheExpirationTimeMillis) {
-        this.cacheExpirationTimeMillis = cacheExpirationTimeMillis;
-    }
-
-    private long cacheExpirationTimeMillis = 1000 * 60 * 60 * 24;
     private final long unsuccessfulAttemptTimeout = 1000 * 60 * 10; // 10 Minutes
+    private long requestTimestamp;
+    private long cacheExpirationTimeMillis = 1000 * 60 * 60 * 24;
 
     public HttpReader(Context context, final String cacheFileName) {
         cacheFile = new File(context.getCacheDir(), cacheFileName);
@@ -80,64 +76,6 @@ public class HttpReader {
         return new String(bytes);
     }
 
-    public String readUrl(String urlString, boolean overrideCache) {
-        Log.d(TAG, "readUrl()");
-        int responseCode = 0;
-        String responseText = "";
-        long now = System.currentTimeMillis();
-
-        // load the data from the cache if new enough
-        if (!overrideCache && cacheFile.exists() && cacheFile.lastModified() > now - cacheExpirationTimeMillis) {
-            responseText = readFromCacheFile(cacheFile);
-            Log.d(TAG, "Returning from cache");
-            return responseText;
-        }
-
-        // for unsuccessful attempts we need to block execution for a certain amount of time
-        if (lockFile.exists() && lockFile.lastModified() > now - unsuccessfulAttemptTimeout) {
-            Log.i(TAG, "Network access is locked");
-            return responseText;
-        }
-
-        if (!hasNetworkConnection(context)) {
-            Log.i(TAG, "no network connection");
-            return responseText;
-        }
-
-        createLockFile();
-
-        Log.i(TAG, "requesting " + urlString);
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
-            urlConnection.setReadTimeout(READ_TIMEOUT);
-            responseCode = urlConnection.getResponseCode();
-            if (responseCode == 200) {
-                responseText = getResponseText(urlConnection.getInputStream());
-                storeCacheFile(cacheFile, responseText);
-            }
-            urlConnection.disconnect();
-        } catch (SocketTimeoutException e) {
-            Log.e(TAG, "Http Timeout");
-            return responseText;
-        } catch (UnknownHostException e) {
-            Log.e(TAG, "Unknown host");
-            return responseText;
-        } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e), e);
-            e.printStackTrace();
-        }
-
-        return responseText;
-    }
-
-    private void createLockFile() {
-        long now = System.currentTimeMillis();
-        Log.i(TAG, "lockFile: " + now);
-        storeCacheFile(lockFile, String.valueOf(now));
-    }
-
     public static boolean hasNetworkConnection(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -165,5 +103,73 @@ public class HttpReader {
             return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
         }
         return false;
+    }
+
+    public long getRequestTimestamp() {
+        return requestTimestamp;
+    }
+
+    public void setCacheExpirationTimeMillis(long cacheExpirationTimeMillis) {
+        this.cacheExpirationTimeMillis = cacheExpirationTimeMillis;
+    }
+
+    public String readUrl(String urlString, boolean overrideCache) {
+        Log.d(TAG, "readUrl()");
+        int responseCode = 0;
+        String responseText = "";
+        long now = System.currentTimeMillis();
+        requestTimestamp = 0L;
+        // load the data from the cache if new enough
+        if (!overrideCache && cacheFile.exists() && cacheFile.lastModified() > now - cacheExpirationTimeMillis) {
+            responseText = readFromCacheFile(cacheFile);
+            requestTimestamp = cacheFile.lastModified();
+            Log.d(TAG, "Returning from cache");
+            return responseText;
+        }
+
+        // for unsuccessful attempts we need to block execution for a certain amount of time
+        if (lockFile.exists() && lockFile.lastModified() > now - unsuccessfulAttemptTimeout) {
+            Log.i(TAG, "Network access is locked");
+            return responseText;
+        }
+
+        if (!hasNetworkConnection(context)) {
+            Log.i(TAG, "no network connection");
+            return responseText;
+        }
+
+        createLockFile();
+
+        Log.i(TAG, "requesting " + urlString);
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestProperty("User-Agent", "NightClock/com.firebirdberlin.nightdream");
+            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            urlConnection.setReadTimeout(READ_TIMEOUT);
+            responseCode = urlConnection.getResponseCode();
+            if (responseCode == 200) {
+                responseText = getResponseText(urlConnection.getInputStream());
+                requestTimestamp = now;
+                storeCacheFile(cacheFile, responseText);
+            }
+            urlConnection.disconnect();
+        } catch (SocketTimeoutException e) {
+            Log.e(TAG, "Http Timeout");
+            return responseText;
+        } catch (UnknownHostException e) {
+            Log.e(TAG, "Unknown host");
+            return responseText;
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e), e);
+            e.printStackTrace();
+        }
+        return responseText;
+    }
+
+    private void createLockFile() {
+        long now = System.currentTimeMillis();
+        Log.i(TAG, "lockFile: " + now);
+        storeCacheFile(lockFile, String.valueOf(now));
     }
 }

@@ -97,8 +97,10 @@ public class OpenWeatherMapApi {
             Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
         }
 
+        long requestTimestamp = now;
         if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
+            requestTimestamp = cacheFile.lastModified();
         } else {
             try {
                 URL url = getUrlWeather(cityID, lat, lon);
@@ -125,7 +127,7 @@ public class OpenWeatherMapApi {
         Log.i(TAG, " >> responseText " + responseText);
 
         JSONObject json = getJSONObject(responseText);
-        return getWeatherEntryFromJSONObject(json);
+        return getWeatherEntryFromJSONObject(json, requestTimestamp);
     }
 
     static List<WeatherEntry> fetchWeatherForecast(
@@ -154,8 +156,10 @@ public class OpenWeatherMapApi {
             Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
             Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
         }
+        long requestTimestamp = now;
         if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
+            requestTimestamp = cacheFile.lastModified();
             Log.i(TAG, "response: " + responseText);
         } else {
             try {
@@ -197,7 +201,7 @@ public class OpenWeatherMapApi {
         }
         for (int i = 0; i < jsonList.length(); i++) {
             JSONObject jsonEntry = getJSONObject(jsonList, i);
-            WeatherEntry entry = getWeatherEntryFromJSONObject(jsonEntry);
+            WeatherEntry entry = getWeatherEntryFromJSONObject(jsonEntry, requestTimestamp);
             entry.cityID = cityIDint;
             entry.cityName = cityName;
             forecast.add(entry);
@@ -205,7 +209,9 @@ public class OpenWeatherMapApi {
         return forecast;
     }
 
-    private static WeatherEntry getWeatherEntryFromJSONObject(JSONObject json) {
+    private static WeatherEntry getWeatherEntryFromJSONObject(
+            JSONObject json, long requestTimestamp
+    ) {
         if (json == null) {
             return null;
         }
@@ -224,7 +230,7 @@ public class OpenWeatherMapApi {
         entry.cityName = getValue(json, "name", "");
         entry.clouds = getValue(jsonClouds, "all", 0);
         entry.timestamp = getValue(json, "dt", 0L);
-        entry.request_timestamp = System.currentTimeMillis();
+        entry.request_timestamp = requestTimestamp;
         entry.humidity = getValue(jsonMain, "humidity", -1);
         entry.temperature = getValue(jsonMain, "temp", 0.);
         entry.apparentTemperature = getValue(jsonMain, "feels_like", entry.temperature);
@@ -241,11 +247,36 @@ public class OpenWeatherMapApi {
             JSONObject weatherObj = getJSONObject(jsonWeather, 0);
             entry.weatherIcon = getValue(weatherObj, "icon", "");
             entry.description = getValue(weatherObj, "description", "");
+            entry.weatherIconMeteoconsSymbol = iconToText(entry.weatherIcon);
         }
 
         return entry;
     }
 
+    private static String iconToText(String code) {
+        if (code == null) return "";
+        // openweathermap
+        if (code.equals("01d")) return "B";
+        if (code.equals("01n")) return "C";
+        if (code.equals("02d")) return "H";
+        if (code.equals("02n")) return "I";
+        if (code.equals("03d")) return "N";
+        if (code.equals("03n")) return "N";
+        if (code.equals("04d")) return "Y";
+        if (code.equals("04n")) return "Y";
+        if (code.equals("09d")) return "R";
+        if (code.equals("09n")) return "R";
+        if (code.equals("10d")) return "Q";
+        if (code.equals("10n")) return "Q";
+        if (code.equals("11d")) return "0";
+        if (code.equals("11n")) return "0";
+        if (code.equals("13d")) return "W";
+        if (code.equals("13n")) return "W";
+        if (code.equals("50d")) return "M";
+        if (code.equals("50n")) return "M";
+
+        return "";
+    }
     private static JSONObject getJSONObject(String string_representation) {
         try {
             return new JSONObject(string_representation);

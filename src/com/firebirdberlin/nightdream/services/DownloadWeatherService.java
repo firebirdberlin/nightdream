@@ -15,6 +15,7 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.BrightSkyApi;
 import com.firebirdberlin.openweathermapapi.DarkSkyApi;
+import com.firebirdberlin.openweathermapapi.MetNoApi;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -77,6 +78,21 @@ public class DownloadWeatherService extends JobIntentService {
                     );
                 } else {
                     entry = BrightSkyApi.fetchCurrentWeatherData(
+                            this,
+                            (float) location.getLatitude(),
+                            (float) location.getLongitude()
+                    );
+                }
+                break;
+            case MET_NO:
+                if (city != null) {
+                    entry = MetNoApi.fetchCurrentWeatherData(
+                            this,
+                            (float) city.lat,
+                            (float) city.lon
+                    );
+                } else {
+                    entry = MetNoApi.fetchCurrentWeatherData(
                             this,
                             (float) location.getLatitude(),
                             (float) location.getLongitude()

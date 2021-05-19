@@ -75,6 +75,13 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
                 prefAttribution.setSummary("https://brightsky.dev/");
                 break;
             }
+            case "3": {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://met.no/"));
+                prefAttribution.setIntent(intent);
+                prefAttribution.setTitle("Powered by Met.no");
+                prefAttribution.setSummary("https://met.no/");
+                break;
+            }
         }
     }
 
