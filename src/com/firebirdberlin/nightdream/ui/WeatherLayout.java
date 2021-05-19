@@ -252,7 +252,7 @@ public class WeatherLayout extends LinearLayout {
         this.weatherEntry = entry;
         if (iconText == null || temperatureText == null) return;
         if (shallBeVisible()) {
-            iconText.setText(iconToText(entry.weatherIcon));
+            iconText.setText(entry.weatherIconMeteoconsSymbol);
             temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
             locationText.setText(entry.cityName);
             iconWind.setText("F");
@@ -275,43 +275,6 @@ public class WeatherLayout extends LinearLayout {
 
     public float getTextSize() {
         return temperatureText.getTextSize();
-    }
-
-    private String iconToText(String code) {
-        // openweathermap
-        if (code.equals("01d")) return "B";
-        if (code.equals("01n")) return "C";
-        if (code.equals("02d")) return "H";
-        if (code.equals("02n")) return "I";
-        if (code.equals("03d")) return "N";
-        if (code.equals("03n")) return "N";
-        if (code.equals("04d")) return "Y";
-        if (code.equals("04n")) return "Y";
-        if (code.equals("09d")) return "R";
-        if (code.equals("09n")) return "R";
-        if (code.equals("10d")) return "Q";
-        if (code.equals("10n")) return "Q";
-        if (code.equals("11d")) return "0";
-        if (code.equals("11n")) return "0";
-        if (code.equals("13d")) return "W";
-        if (code.equals("13n")) return "W";
-        if (code.equals("50d")) return "M";
-        if (code.equals("50n")) return "M";
-        // darksky
-        if (code.equals("clear-day")) return "B";
-        if (code.equals("clear-night")) return "C";
-        if (code.equals("rain")) return "R";
-        if (code.equals("snow")) return "W";
-        if (code.equals("sleet")) return "X";
-        if (code.equals("wind")) return "F";
-        if (code.equals("fog")) return "M";
-        if (code.equals("cloudy")) return "N";
-        if (code.equals("partly-cloudy-day")) return "H";
-        if (code.equals("partly-cloudy-night")) return "I";
-        if (code.equals("thunderstorm")) return "0";
-        if (code.equals("tornado")) return "0";
-        if (code.equals("hail")) return "X";
-        return "";
     }
 
     public void update() {

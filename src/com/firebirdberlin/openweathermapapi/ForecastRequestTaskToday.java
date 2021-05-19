@@ -14,7 +14,7 @@ public class ForecastRequestTaskToday extends AsyncTask<String, Void, WeatherEnt
     final static String TAG = "ForecastRequestTask";
     Settings.WeatherProvider weatherProvider;
     Context context;
-    private AsyncResponse delegate;
+    private final AsyncResponse delegate;
 
     public ForecastRequestTaskToday(AsyncResponse listener, Settings.WeatherProvider weatherProvider, Context mContext) {
         this.delegate = listener;
@@ -41,6 +41,8 @@ public class ForecastRequestTaskToday extends AsyncTask<String, Void, WeatherEnt
                 return DarkSkyApi.fetchCurrentWeatherData(context, city, (float) city.lat, (float) city.lon);
             case BRIGHT_SKY:
                 return BrightSkyApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
+            case MET_NO:
+                return MetNoApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
         }
     }
 
