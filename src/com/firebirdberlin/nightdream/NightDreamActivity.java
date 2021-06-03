@@ -19,7 +19,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -63,7 +61,6 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.RadioInfoDialogFragment;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
-import com.firebirdberlin.nightdream.ui.WebRadioLayout;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
@@ -87,13 +84,15 @@ public class NightDreamActivity extends BillingHelperActivity
         LocationUpdateReceiver.AsyncResponse,
         SleepTimerDialogFragment.SleepTimerDialogListener,
         RadioInfoDialogFragment.RadioInfoDialogListener {
+    private static final int PENDING_INTENT_STOP_APP = 1;
+    private static final int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
-    private static int PENDING_INTENT_STOP_APP = 1;
-    private static int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
     private static int mode = 2;
     final private Handler handler = new Handler();
+    private final Runnable finishApp = () -> finish();
+    public CastContext mCastContext;
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
@@ -113,11 +112,8 @@ public class NightDreamActivity extends BillingHelperActivity
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
     private TextToSpeech textToSpeech;
-    public CastContext mCastContext;
     private CastSession mCastSession;
     private SessionManagerListener<CastSession> mSessionManagerListener;
-
-
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -185,16 +181,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         }
     };
-    private boolean isChargingWireless = false;
-    private DevicePolicyManager mgr = null;
-    private ComponentName cn = null;
-    private GestureDetector mGestureDetector = null;
-    private final Runnable finishApp = new Runnable() {
-        @Override
-        public void run() {
-            finish();
-        }
-    };
     private final Runnable checkKeepScreenOn = new Runnable() {
         @Override
         public void run() {
@@ -211,6 +197,10 @@ public class NightDreamActivity extends BillingHelperActivity
             triggerAlwaysOnTimeout();
         }
     };
+    private boolean isChargingWireless = false;
+    private DevicePolicyManager mgr = null;
+    private ComponentName cn = null;
+    private GestureDetector mGestureDetector = null;
     private Runnable lockDevice = new Runnable() {
         @Override
         public void run() {
@@ -297,7 +287,7 @@ public class NightDreamActivity extends BillingHelperActivity
             private void onApplicationConnected(CastSession castSession) {
                 mCastSession = castSession;
                 if (RadioStreamService.isRunning) {
-                    RadioStreamService.loadRemoteMediaListener(new RadioStreamService(), castSession, RadioStreamService.mMediaPlayer);
+                    RadioStreamService.loadRemoteMediaListener(castSession);
                 }
             }
 
@@ -414,7 +404,8 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onResume()");
 
         mCastContext.getSessionManager().addSessionManagerListener(
-                mSessionManagerListener, CastSession.class);
+                mSessionManagerListener, CastSession.class
+        );
 
         isRunning = true;
         resumeTime = System.currentTimeMillis();
@@ -695,13 +686,15 @@ public class NightDreamActivity extends BillingHelperActivity
             if (RadioStreamService.isRunning) RadioStreamService.stop(this);
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
             setIconInactive(radioIcon);
-            RemoteMediaClient mRemoteMediaPlayer = mCastSession.getRemoteMediaClient();
-            if (mRemoteMediaPlayer != null) {
-                mRemoteMediaPlayer.stop();
+            if (mCastSession != null) {
+                RemoteMediaClient mRemoteMediaPlayer = mCastSession.getRemoteMediaClient();
+                if (mRemoteMediaPlayer != null) {
+                    mRemoteMediaPlayer.stop();
+                }
+                SessionManager mSessionManager = mCastContext.getSessionManager();
+                mSessionManager.endCurrentSession(true);
             }
             RadioStreamService.isRunning = false;
-            SessionManager mSessionManager = mCastContext.getSessionManager();
-            mSessionManager.endCurrentSession(true);
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
             setIconActive(radioIcon);

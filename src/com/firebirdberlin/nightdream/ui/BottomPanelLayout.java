@@ -110,7 +110,9 @@ public class BottomPanelLayout extends FrameLayout {
         if (view != null) {
             view.setCustomColor(accentColor, textColor);
         }
-//        if (webRadioLayout != null) webRadioLayout.setCustomColor(accentColor, textColor);
+        if (webRadioLayout != null) {
+            webRadioLayout.setCustomColor(accentColor, textColor);
+        }
     }
 
     public void setup() {

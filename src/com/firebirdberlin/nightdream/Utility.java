@@ -409,21 +409,20 @@ public class Utility {
 
     public static Point getDisplaySize(Context context) {
         Point size = new Point();
-        if (Build.VERSION.SDK_INT < 17) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.getDefaultDisplay().getMetrics(metrics);
-            size.x = metrics.widthPixels;
-            size.y = metrics.heightPixels;
-        } else {
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            display.getSize(size);
-        }
-
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        display.getSize(size);
         return size;
     }
 
+    public static int getSmallestDisplaySize(Context context) {
+        Point size = getDisplaySize(context);
+        if (size.x < size.y) {
+            return size.x;
+        } else {
+            return size.y;
+        }
+    }
     public static void logToFile(Context context, String logFileName, String text) {
 
         // allow logging only in debug mode
