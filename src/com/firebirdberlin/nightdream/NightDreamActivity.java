@@ -63,7 +63,13 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.gms.cast.framework.CastContext;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.SessionManager;
+import com.google.android.gms.cast.framework.SessionManagerListener;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -78,13 +84,15 @@ public class NightDreamActivity extends BillingHelperActivity
         LocationUpdateReceiver.AsyncResponse,
         SleepTimerDialogFragment.SleepTimerDialogListener,
         RadioInfoDialogFragment.RadioInfoDialogListener {
+    private static final int PENDING_INTENT_STOP_APP = 1;
+    private static final int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
-    private static int PENDING_INTENT_STOP_APP = 1;
-    private static int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
     private static int mode = 2;
     final private Handler handler = new Handler();
+    private final Runnable finishApp = () -> finish();
+    public CastContext mCastContext;
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
@@ -104,7 +112,8 @@ public class NightDreamActivity extends BillingHelperActivity
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
     private TextToSpeech textToSpeech;
-
+    private CastSession mCastSession;
+    private SessionManagerListener<CastSession> mSessionManagerListener;
     private Settings mySettings = null;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -172,16 +181,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         }
     };
-    private boolean isChargingWireless = false;
-    private DevicePolicyManager mgr = null;
-    private ComponentName cn = null;
-    private GestureDetector mGestureDetector = null;
-    private final Runnable finishApp = new Runnable() {
-        @Override
-        public void run() {
-            finish();
-        }
-    };
     private final Runnable checkKeepScreenOn = new Runnable() {
         @Override
         public void run() {
@@ -198,6 +197,10 @@ public class NightDreamActivity extends BillingHelperActivity
             triggerAlwaysOnTimeout();
         }
     };
+    private boolean isChargingWireless = false;
+    private DevicePolicyManager mgr = null;
+    private ComponentName cn = null;
+    private GestureDetector mGestureDetector = null;
     private Runnable lockDevice = new Runnable() {
         @Override
         public void run() {
@@ -237,6 +240,69 @@ public class NightDreamActivity extends BillingHelperActivity
         return intent;
     }
 
+    private void setupCastListener() {
+        mSessionManagerListener = new SessionManagerListener<CastSession>() {
+
+            @Override
+            public void onSessionEnded(CastSession session, int error) {
+                onApplicationDisconnected();
+            }
+
+            @Override
+            public void onSessionResumed(CastSession session, boolean wasSuspended) {
+                onApplicationConnected(session);
+            }
+
+            @Override
+            public void onSessionResumeFailed(CastSession session, int error) {
+                onApplicationDisconnected();
+            }
+
+            @Override
+            public void onSessionStarted(CastSession session, String sessionId) {
+                onApplicationConnected(session);
+            }
+
+            @Override
+            public void onSessionStartFailed(CastSession session, int error) {
+                onApplicationDisconnected();
+            }
+
+            @Override
+            public void onSessionStarting(CastSession session) {
+            }
+
+            @Override
+            public void onSessionEnding(CastSession session) {
+            }
+
+            @Override
+            public void onSessionResuming(CastSession session, String sessionId) {
+            }
+
+            @Override
+            public void onSessionSuspended(CastSession session, int reason) {
+            }
+
+            private void onApplicationConnected(CastSession castSession) {
+                mCastSession = castSession;
+                if (RadioStreamService.isRunning) {
+                    RadioStreamService.loadRemoteMediaListener(castSession);
+                }
+            }
+
+            private void onApplicationDisconnected() {
+                if (RadioStreamService.isRunning) {
+                    FavoriteRadioStations stations = mySettings.getFavoriteRadioStations();
+                    if ((stations != null) && (stations.numAvailableStations() != 0)) {
+                        int stationIndex = Settings.getLastActiveRadioStation(context);
+                        RadioStreamService.startStream(context, stationIndex);
+                    }
+                }
+            }
+        };
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -249,6 +315,10 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
+
+        setupCastListener();
+        mCastContext = CastContext.getSharedInstance(this);
+        mCastSession = mCastContext.getSessionManager().getCurrentCastSession();
 
         // allow the app to be displayed above the keyguard
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -332,6 +402,11 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
+
+        mCastContext.getSessionManager().addSessionManagerListener(
+                mSessionManagerListener, CastSession.class
+        );
+
         isRunning = true;
         resumeTime = System.currentTimeMillis();
         screenWasOn = false;
@@ -611,6 +686,15 @@ public class NightDreamActivity extends BillingHelperActivity
             if (RadioStreamService.isRunning) RadioStreamService.stop(this);
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
             setIconInactive(radioIcon);
+            if (mCastSession != null) {
+                RemoteMediaClient mRemoteMediaPlayer = mCastSession.getRemoteMediaClient();
+                if (mRemoteMediaPlayer != null) {
+                    mRemoteMediaPlayer.stop();
+                }
+                SessionManager mSessionManager = mCastContext.getSessionManager();
+                mSessionManager.endCurrentSession(true);
+            }
+            RadioStreamService.isRunning = false;
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
             setIconActive(radioIcon);

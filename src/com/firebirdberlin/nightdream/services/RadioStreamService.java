@@ -11,6 +11,7 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -37,6 +38,12 @@ import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStrea
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaLoadRequestData;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.framework.CastContext;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -49,16 +56,17 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         HttpStatusCheckTask.AsyncResponse,
         PlaylistRequestTask.AsyncResponse {
     static public boolean isRunning = false;
+    static RadioStreamService mRadioStreamService = null;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
     public static int currentStreamType = AudioManager.USE_DEFAULT_STREAM_TYPE;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     private static boolean readyForPlayback = false;
-    private static String TAG = "RadioStreamService";
-    private static String ACTION_START = "start";
-    private static String ACTION_START_STREAM = "start stream";
-    private static String ACTION_STOP = "stop";
-    private static String ACTION_NEXT_STATION = "next station";
+    private static final String TAG = "RadioStreamService";
+    private static final String ACTION_START = "start";
+    private static final String ACTION_START_STREAM = "start stream";
+    private static final String ACTION_STOP = "stop";
+    private static final String ACTION_NEXT_STATION = "next station";
     static private int radioStationIndex;
     static private RadioStation radioStation;
     private static long sleepTimeInMillis = 0L;
@@ -68,7 +76,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
     private long readyForPlaybackSince = 0L;
-    private MediaPlayer mMediaPlayer = null;
+    MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
@@ -78,6 +86,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private final IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
     private VibrationHandler vibrator = null;
+    CastSession castSession;
     private final Runnable fadeIn = new Runnable() {
         @Override
         public void run() {
@@ -91,7 +100,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             }
         }
     };
-    private Runnable fadeOut = new Runnable() {
+    private final Runnable fadeOut = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(fadeOut);
@@ -108,7 +117,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             }
         }
     };
-    private Runnable startSleep = new Runnable() {
+    private final Runnable startSleep = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(startSleep);
@@ -121,7 +130,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             handler.post(fadeOut);
         }
     };
-    private Runnable timeout = new Runnable() {
+    private final Runnable timeout = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(timeout);
@@ -241,6 +250,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.d(TAG, "onStartCommand() called.");
         settings = new Settings(this);
         isRunning = true;
+        mRadioStreamService = this;
 
         String action = intent.getAction();
 
@@ -269,10 +279,11 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         startForeground(1337, note);
 
         alarmTime = null;
-        if (ACTION_START.equals(action)) {
+        Bundle extras = intent.getExtras();
+        if (ACTION_START.equals(action) && extras != null) {
             alarmIsRunning = true;
             streamingMode = StreamingMode.ALARM;
-            alarmTime = new SimpleTime(intent.getExtras());
+            alarmTime = new SimpleTime(extras);
             setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
 
             maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
@@ -282,8 +293,8 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             checkStreamAndStart(radioStationIndex);
             // stop the alarm automatically after playing for two hours
             handler.postDelayed(timeout, 60000 * 120);
-        } else if (ACTION_START_STREAM.equals(action)) {
-            alarmTime = new SimpleTime(intent.getExtras());
+        } else if (ACTION_START_STREAM.equals(action) && extras != null) {
+            alarmTime = new SimpleTime(extras);
             radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
 
             Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
@@ -312,8 +323,6 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } else {
             sleepTimeInMillis = 0L;
         }
-
-
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -369,6 +378,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
             restoreAlarmVolume();
         }
+        stopRemoteMedia();
 
         handler.removeCallbacks(fadeIn);
         handler.removeCallbacks(fadeOut);
@@ -382,6 +392,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             unregisterReceiver(myNoisyAudioStreamReceiver);
         }
         isRunning = false;
+        mRadioStreamService = null;
         alarmIsRunning = false;
         radioStationIndex = -1;
         radioStation = null;
@@ -456,7 +467,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     private void playStream() {
-        Log.i(TAG, "playStream()");
+        Log.i(TAG, "playStream() " + streamURL);
 
         stopPlaying();
         mMediaPlayer = new MediaPlayer();
@@ -495,6 +506,63 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             mMediaPlayer.prepareAsync();
         } catch (IllegalStateException e) {
             Log.e(TAG, "MediaPlayer.prepare() failed", e);
+        }
+
+        //todo
+        Log.d(TAG, "start chromecast music");
+        castSession = CastContext.getSharedInstance(getApplicationContext()).getSessionManager()
+                .getCurrentCastSession();
+
+        loadRemoteMedia();
+    }
+
+    private MediaInfo getRemoteMediaData() {
+        Log.d(TAG, "getRemoteMediadata()");
+        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, radioStation.name);
+        //mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, "Test Artist");
+        return new MediaInfo.Builder(
+                streamURL)
+                .setContentType("audio/mp3")
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setMetadata(mediaMetadata)
+                .build();
+    }
+
+    public static void loadRemoteMediaListener(CastSession castSession) {
+        Log.d(TAG, "loadRemoteMediaStatic()");
+        mRadioStreamService.castSession = castSession;
+        mRadioStreamService.loadRemoteMedia();
+    }
+
+    public void loadRemoteMedia() {
+        Log.d(TAG, "loadRemoteMedia()");
+        if (castSession == null) {
+            Log.d(TAG, "castSession == null");
+            return;
+        }
+        RemoteMediaClient mRemoteMediaPlayer = castSession.getRemoteMediaClient();
+        if (mRemoteMediaPlayer == null) {
+            Log.d(TAG, "mRemoteMediaPlayer == null");
+            return;
+        }
+
+        mRemoteMediaPlayer.load(
+                new MediaLoadRequestData.Builder().setMediaInfo(getRemoteMediaData()).build()
+        );
+
+        stopPlaying();
+    }
+
+    void stopRemoteMedia() {
+        Log.d(TAG, "stopRemoteMedia()");
+        if (castSession == null) {
+            Log.d(TAG, "castSession == null");
+            return;
+        }
+        RemoteMediaClient mRemoteMediaPlayer = castSession.getRemoteMediaClient();
+        if (mRemoteMediaPlayer != null) {
+            mRemoteMediaPlayer.stop();
         }
     }
 
