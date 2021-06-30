@@ -295,7 +295,10 @@ public class WebRadioLayout extends RelativeLayout {
 
         for (int i = 0; i < maxNumButtons; i++) {
             int id = getResources().getIdentifier("web_radio_button" + (i + 1), "id", context.getPackageName());
-            Button b = findViewById(id); // get the element
+            Button b = findViewById(id);
+            if (b == null) {
+                continue;
+            }
             b.setVisibility(i <= lastButtonInUseIndex + 1 ? VISIBLE : GONE);
             final boolean active = (activeStationIndex != null && activeStationIndex == i);
             int color = active ? accentColor : textColor;
