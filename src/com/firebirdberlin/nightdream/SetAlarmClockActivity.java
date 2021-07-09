@@ -174,57 +174,72 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     public void onClickAddNewAlarm(View view) {
         Calendar now = Calendar.getInstance();
-        showTimePicker(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), null);
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int min;
+        boolean recurring = true;
+        if (hour > 9 && hour < 18) {
+            // short
+            now.add(Calendar.MINUTE, 30);
+            hour = now.get(Calendar.HOUR_OF_DAY);
+            min = (now.get(Calendar.MINUTE) / 10 + 1) * 10;
+            if (min >= 60) {
+                min = 0;
+                hour = ( hour + 1 > 23 ) ? 0 : hour + 1;
+            }
+            recurring = false;
+        } else {
+            // long
+            hour = 7;
+            min = 0;
+        }
+        showTimePicker(hour, min, recurring, null);
     }
 
-    private void showTimePicker(int hour, int min, final Long entry_id) {
+    private void showTimePicker(int hour, int min, boolean recurring, final Long entry_id) {
         final Context context = this;
         TimePickerDialog mTimePicker = new TimePickerDialog(
                 context, R.style.DialogTheme,
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        // Bug Android 4.1: Dialog is submitted twice
-                        // >> ignore second call to this method.
-                        if (!timePicker.isShown()) return;
+                (timePicker, selectedHour, selectedMinute) -> {
+                    // Bug Android 4.1: Dialog is submitted twice
+                    // >> ignore second call to this method.
+                    if (!timePicker.isShown()) return;
 
-                        SimpleTime entry = null;
-                        boolean isNew = (entry_id == null);
-                        if (isNew) {
-                            entry = new SimpleTime();
-                            entry.soundUri = Settings.getDefaultAlarmTone(context);
-                            entry.radioStationIndex = Settings.getDefaultRadioStation(context);
-                        } else {
-                            for (SimpleTime e : entries) {
-                                if (e.id == entry_id) {
-                                    entry = e;
-                                    break;
-                                }
+                    SimpleTime entry = null;
+                    boolean isNew = (entry_id == null);
+                    if (isNew) {
+                        entry = new SimpleTime();
+                        entry.soundUri = Settings.getDefaultAlarmTone(context);
+                        entry.radioStationIndex = Settings.getDefaultRadioStation(context);
+                    } else {
+                        for (SimpleTime e : entries) {
+                            if (e.id == entry_id) {
+                                entry = e;
+                                break;
                             }
                         }
-                        if (entry != null) {
-                            entry.hour = selectedHour;
-                            entry.min = selectedMinute;
-                            entry.isActive = true;
-                            if (isNew) {
-                                entry.autocompleteRecurringDays();
-                            }
-                            entry = db.save(entry);
-                            if (entry_id == null) {
-                                entries.add(entry);
-                                update(entry.id);
-
-                                if (Utility.languageIs("de", "en")) {
-                                    Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
-                                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
-                                    snackbar.show();
-                                }
-                            } else {
-                                update();
-                            }
-                        }
-                        WakeUpReceiver.schedule(context, db);
                     }
+                    if (entry != null) {
+                        entry.hour = selectedHour;
+                        entry.min = selectedMinute;
+                        entry.isActive = true;
+                        if (isNew && recurring) {
+                            entry.autocompleteRecurringDays();
+                        }
+                        entry = db.save(entry);
+                        if (entry_id == null) {
+                            entries.add(entry);
+                            update(entry.id);
+
+                            if (Utility.languageIs("de", "en")) {
+                                Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
+                                snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                                snackbar.show();
+                            }
+                        } else {
+                            update();
+                        }
+                    }
+                    WakeUpReceiver.schedule(context, db);
                 },
                 hour, min, Utility.is24HourFormat(context));
         // fix broken dialog appearance on some devices
@@ -246,30 +261,27 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog mDatePicker = new DatePickerDialog(
                 context,
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        // Bug Android 4.1: Dialog is submitted twice
-                        // >> ignore second call to this method.
-                        if (!view.isShown()) return;
+                (view, year1, month1, dayOfMonth1) -> {
+                    // Bug Android 4.1: Dialog is submitted twice
+                    // >> ignore second call to this method.
+                    if (!view.isShown()) return;
 
-                        Calendar cal = Calendar.getInstance();
-                        cal.set(Calendar.YEAR, year);
-                        cal.set(Calendar.MONTH, month);
-                        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        cal.set(Calendar.HOUR_OF_DAY, 0);
-                        cal.set(Calendar.MINUTE, 0);
-                        cal.set(Calendar.SECOND, 0);
-                        cal.set(Calendar.MILLISECOND, 0);
-                        db.updateNextEventAfter(entry_id, cal.getTimeInMillis());
-                        for (SimpleTime e : entries) {
-                            if (e.id == entry_id) {
-                                e.nextEventAfter = cal.getTimeInMillis();
-                                break;
-                            }
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(Calendar.YEAR, year1);
+                    cal.set(Calendar.MONTH, month1);
+                    cal.set(Calendar.DAY_OF_MONTH, dayOfMonth1);
+                    cal.set(Calendar.HOUR_OF_DAY, 0);
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
+                    cal.set(Calendar.MILLISECOND, 0);
+                    db.updateNextEventAfter(entry_id, cal.getTimeInMillis());
+                    for (SimpleTime e : entries) {
+                        if (e.id == entry_id) {
+                            e.nextEventAfter = cal.getTimeInMillis();
+                            break;
                         }
-                        SqliteIntentService.scheduleAlarm(context);
                     }
+                    SqliteIntentService.scheduleAlarm(context);
                 }, year, month, dayOfMonth);
         mDatePicker.setTitle(R.string.alarmStartDate);
         mDatePicker.getDatePicker().setMinDate(now);
@@ -287,7 +299,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     public void onTimeClicked(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
-        showTimePicker(entry.hour, entry.min, entry.id);
+        showTimePicker(entry.hour, entry.min, true, entry.id);
     }
 
     public void onDateClicked(View view) {
