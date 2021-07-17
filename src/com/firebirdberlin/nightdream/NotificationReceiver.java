@@ -108,6 +108,11 @@ public class NotificationReceiver extends BroadcastReceiver {
                         setupMediaControls(context, intent);
                     }
                     break;
+                case "removed_media":
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        removeMediaControls();
+                    }
+                    break;
                 case "added_preview":
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         setupNotificationPreview(context, intent);
@@ -160,6 +165,15 @@ public class NotificationReceiver extends BroadcastReceiver {
             return ContextCompat.getDrawable(remotePackageContext, id);
         } catch (NullPointerException | NameNotFoundException | Resources.NotFoundException e) {
             return null;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void removeMediaControls() {
+        ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
+
+        if (mediaStyleContainer != null) {
+            mediaStyleContainer.removeAllViews();
         }
     }
 
