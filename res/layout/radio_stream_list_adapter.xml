@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:padding="6dip" >
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_audiotrack_dark"
+        android:contentDescription="RadioIcon"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/icon"
+        android:ellipsize="marquee"
+        android:text="RadioStation"
+        tools:ignore="HardcodedText"
+        android:textSize="14sp"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/icon"
+        android:layout_below="@+id/name"
+        android:text="Description"
+        tools:ignore="HardcodedText"
+        android:paddingBottom="5dp"
+        android:textSize="12sp" />
+
+</RelativeLayout>

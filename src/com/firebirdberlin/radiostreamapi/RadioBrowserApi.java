@@ -114,6 +114,7 @@ public class RadioBrowserApi {
                     RadioStation station = new RadioStation();
                     station.uuid = jsonStation.getString("stationuuid");
                     station.name = jsonStation.getString("name");
+                    station.favIcon = jsonStation.getString("favicon");
                     station.countryCode = jsonStation.getString("countrycode");
                     station.stream = jsonStation.getString("url");
                     station.bitrate = jsonStation.getLong("bitrate");
