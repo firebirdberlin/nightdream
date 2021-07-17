@@ -110,7 +110,12 @@
             android:enabled="true" />
         <service
             android:name=".services.RadioStreamService"
-            android:enabled="true" />
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </service>
         <service
             android:name=".services.ScreenWatcherService"
             android:enabled="true" />
@@ -165,6 +170,12 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+
+        <receiver android:name="androidx.media.session.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".receivers.StopServiceReceiver"

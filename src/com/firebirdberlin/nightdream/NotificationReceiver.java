@@ -108,7 +108,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                         setupMediaControls(context, intent);
                     }
                     break;
-                case "removed_media":
+                case "remove_media":
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         removeMediaControls();
                     }

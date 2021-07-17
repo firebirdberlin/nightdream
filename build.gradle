@@ -47,6 +47,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     implementation 'org.shredzone.commons:commons-suncalc:2.11'
     implementation 'com.android.volley:volley:1.2.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 def getApiKeyOWM() {
@@ -121,6 +123,7 @@ android {
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildFeatures {
         dataBinding true

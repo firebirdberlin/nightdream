@@ -201,6 +201,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="minute">min</string>
     <string name="mute_ringer">lautlos</string>
     <string name="next">weiter</string>
+    <string name="radio_next">nächster Radiosender</string>
+    <string name="radio_previous">vorheriger Radiosender</string>
+    <string name="radio_play">Radio starten</string>
+    <string name="radio_pause">Radio pausieren</string>
+    <string name="radio_connecting">verbinde</string>
+    <string name="radio_paused">Radio angehalten</string>
     <string name="night_mode">Nachtmodus</string>
     <string name="night_mode_activation_auto">automatisch</string>
     <string name="night_mode_activation_manual">manuell</string>

@@ -1,26 +1,37 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioAttributes;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.util.LruCache;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.media.session.MediaButtonReceiver;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.HttpStatusCheckTask;
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -30,31 +41,34 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
-import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
-import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.metadata.Metadata;
+import com.google.android.exoplayer2.metadata.icy.IcyHeaders;
+import com.google.android.exoplayer2.metadata.icy.IcyInfo;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaLoadRequestData;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.framework.CastContext;
 import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
+import com.google.android.gms.common.images.WebImage;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
+public class RadioStreamService extends Service {
+    protected static final int NOTIFY_ID = 1337;
+    private static final String NOTIFICATION_CHANNEL_ID = "nachtuhr";
 
-public class RadioStreamService extends Service implements MediaPlayer.OnErrorListener,
-        MediaPlayer.OnBufferingUpdateListener,
-        MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnPreparedListener,
-        HttpStatusCheckTask.AsyncResponse,
-        PlaylistRequestTask.AsyncResponse {
     static public boolean isRunning = false;
     static RadioStreamService mRadioStreamService = null;
     static public boolean alarmIsRunning = false;
@@ -76,7 +90,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
     private long readyForPlaybackSince = 0L;
-    MediaPlayer mMediaPlayer = null;
+    SimpleExoPlayer exoPlayer = null;
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
@@ -87,15 +101,22 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
     private VibrationHandler vibrator = null;
     CastSession castSession;
+    private Intent intent;
+    private static MediaSessionCompat mediaSession;
+    private PlaybackStateCompat.Builder stateBuilder;
+    private IcyInfo icyInfo;
+    private Bitmap iconRadio;
+
     private final Runnable fadeIn = new Runnable() {
         @Override
         public void run() {
+            //Log.i(TAG, "fadeIn Runnable");
             handler.removeCallbacks(fadeIn);
-            if (mMediaPlayer == null) return;
+            if (exoPlayer == null) return;
             currentVolume += 0.01;
             if (currentVolume <= maxVolumePercent / 100.) {
-                Log.i(TAG, "volume: " + currentVolume);
-                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                //Log.i(TAG, "volume: " + currentVolume);
+                exoPlayer.setVolume(currentVolume);
                 handler.postDelayed(fadeIn, fadeInDelay);
             }
         }
@@ -104,13 +125,13 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         @Override
         public void run() {
             handler.removeCallbacks(fadeOut);
-            if (mMediaPlayer == null) return;
+            if (exoPlayer == null) return;
             if (RadioStreamService.streamingMode == StreamingMode.INACTIVE) {
                 stop(getApplicationContext());
             }
             currentVolume -= 0.01;
             if (currentVolume > 0.) {
-                mMediaPlayer.setVolume(currentVolume, currentVolume);
+                exoPlayer.setVolume(currentVolume);
                 handler.postDelayed(fadeOut, 50);
             } else {
                 stop(getApplicationContext());
@@ -181,6 +202,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     public static void startStream(Context context, int radioStationIndex) {
+        Log.d(TAG, "startStream()");
         if (!Utility.hasNetworkConnection(context)) {
             Toast.makeText(context, R.string.message_no_data_connection, Toast.LENGTH_SHORT).show();
             return;
@@ -205,11 +227,16 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     public static void updateMetaData(RadioStreamMetadataListener listener, Context context) {
+        Log.d(TAG, "updateMetaData()");
+
         if (streamingMode != StreamingMode.RADIO) {
             return;
         }
 
         RadioStreamMetadataRetriever.getInstance().retrieveMetadata(streamURL, listener, context);
+        if (RadioStreamMetadataRetriever.getInstance().getCachedMetadata() != null) {
+            Log.d(TAG, "New Metadata: " + RadioStreamMetadataRetriever.getInstance().getCachedMetadata().streamTitle);
+        }
     }
 
     public static boolean isSleepTimeSet() {
@@ -221,6 +248,26 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     public void onCreate() {
         Log.d(TAG, "onCreate() called.");
         vibrator = new VibrationHandler(this);
+
+        enableMediaSession();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "RadioDroid2 Player", NotificationManager.IMPORTANCE_LOW);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(false);
+            notificationChannel.enableVibration(false);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        //todo
+        Log.d(TAG, "Init chromecast");
+
+        castSession = CastContext.getSharedInstance(getApplicationContext()).getSessionManager()
+                .getCurrentCastSession();
+
         startForeground();
         Utility.registerEventBus(this);
     }
@@ -237,7 +284,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
-        startForeground(1337, note);
+        startForeground(NOTIFY_ID, note);
     }
 
     @Override
@@ -245,38 +292,37 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         return null;
     }
 
+    private void enableMediaSession() {
+        Log.d(TAG, "enableMediaSession()");
+
+        mediaSession = new MediaSessionCompat(getBaseContext(), getBaseContext().getPackageName());
+        mediaSession.setCallback(new sessionCallback());
+        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mediaSession.setMediaButtonReceiver(null);
+
+        mediaSession.setActive(true);
+
+        stateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(
+                        PlaybackStateCompat.ACTION_PLAY |
+                                PlaybackStateCompat.ACTION_PAUSE |
+                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
+                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+
+        mediaSession.setPlaybackState(stateBuilder.build());
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand() called.");
+        Log.d(TAG, "onStartCommand() called. Action: " + intent.getAction());
         settings = new Settings(this);
         isRunning = true;
         mRadioStreamService = this;
 
+        MediaButtonReceiver.handleIntent(mediaSession, intent);
+
+        this.intent = intent;
         String action = intent.getAction();
-
-        Intent notificationIntent = new Intent(this, NightDreamActivity.class);
-        if (ACTION_START_STREAM.equals(action)) {
-            // uses action (using only extra params would cause android to treat this PI as identical with the PI of the widget, ignoring extra params)
-            notificationIntent.setAction(Config.ACTION_SHOW_RADIO_PANEL);
-        }
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        NotificationCompat.Builder noteBuilder =
-                Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_RADIO)
-                        .setContentTitle(getString(R.string.radio))
-                        .setSmallIcon(R.drawable.ic_radio)
-                        .setContentIntent(contentIntent)
-                        .setPriority(NotificationCompat.PRIORITY_MAX);
-
-        addActionButtonsToNotificationBuilder(noteBuilder, intent);
-
-        Notification note = noteBuilder.build();
-
-        note.flags |= Notification.FLAG_NO_CLEAR;
-        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-
-        startForeground(1337, note);
 
         alarmTime = null;
         Bundle extras = intent.getExtras();
@@ -290,7 +336,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                         setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
 
                         maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
-                        fadeInDelay = settings.alarmFadeInDurationSeconds * 1000L / maxVolumePercent;
+                        fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
 
                         radioStationIndex = alarmTime.radioStationIndex;
                         checkStreamAndStart(radioStationIndex);
@@ -322,11 +368,18 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                 case ACTION_STOP:
                     RadioStreamMetadataRetriever.getInstance().clearCache();
                     readyForPlayback = false;
+                    Log.d(TAG, "stopself");
                     stopSelf();
+/*
+                    Intent stopIntent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(stopIntent);
+
+                    stopIntent.setAction(Config.ACTION_NOTIFICATION_LISTENER);
+                    stopIntent.putExtra("action", "remove_media");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(stopIntent);
                     break;
-                case ACTION_NEXT_STATION:
-                    switchToNextStation();
-                    break;
+
+ */
             }
         }
 
@@ -336,6 +389,10 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
             initSleepTime();
         } else {
             sleepTimeInMillis = 0L;
+        }
+
+        if (!action.equals(ACTION_STOP)) {
+            playStream();
         }
 
         return Service.START_REDELIVER_INTENT;
@@ -349,11 +406,48 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     }
 
-    private void checkStreamAndStart(int radioStationIndex) {
+    private void loadRadioFavIcon(){
+        RequestQueue requestQueue;
+        ImageLoader imageLoader;
 
+        requestQueue = Volley.newRequestQueue(this);
+        imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+
+            private final LruCache<String, Bitmap> lruCache = new LruCache<String, Bitmap>(10);
+
+            public Bitmap getBitmap(String url) {
+                return lruCache.get(url);
+            }
+
+            @Override
+            public void putBitmap(String url, Bitmap bitmap) {
+                lruCache.put(url, bitmap);
+            }
+        });
+        imageLoader.get(radioStation.favIcon, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                iconRadio = imageContainer.getBitmap();
+                if (icyInfo != null) {
+                    updateNotification(icyInfo.title);
+                } else {
+                    updateNotification(getResources().getString(R.string.radio_connecting));
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e(TAG, volleyError.getMessage());
+            }
+        }).getBitmap();
+    }
+
+    private void checkStreamAndStart(int radioStationIndex) {
         Log.i(TAG, "checkStreamAndStart radioStationIndex=" + radioStationIndex);
 
         streamURL = "";
+        iconRadio = BitmapFactory.decodeResource(getResources(), R.drawable.ic_audiotrack_dark);
+
         if (radioStationIndex > -1) {
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
             if (stations != null) {
@@ -361,15 +455,9 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
                 if (radioStation != null) {
                     streamURL = radioStation.stream;
                     muteDelayInMillis = radioStation.muteDelayInMillis;
+                    loadRadioFavIcon();
                 }
             }
-        }
-        if (PlaylistParser.isPlaylistUrl(streamURL)) {
-            resolveStreamUrlTask = new PlaylistRequestTask(this);
-            resolveStreamUrlTask.execute(streamURL);
-        } else {
-            statusCheckTask = new HttpStatusCheckTask(this);
-            statusCheckTask.execute(streamURL);
         }
     }
 
@@ -406,6 +494,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         if (myNoisyAudioStreamReceiver != null) {
             unregisterReceiver(myNoisyAudioStreamReceiver);
         }
+
         isRunning = false;
         mRadioStreamService = null;
         alarmIsRunning = false;
@@ -440,40 +529,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         if (audioManager == null) {
             return;
         }
-
         audioManager.setStreamVolume(currentStreamType, currentStreamVolume, 0);
-    }
-
-    @Override
-    public void onPlaylistRequestFinished(PlaylistInfo result) {
-        if (result != null && result.valid) {
-            statusCheckTask = new HttpStatusCheckTask(this);
-            statusCheckTask.execute(result.streamUrl);
-            return;
-        }
-
-        if (alarmIsRunning) {
-            startFallbackAlarm();
-        }
-
-        Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
-        stopSelf();
-    }
-
-    @Override
-    public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
-        if (checkResult != null && checkResult.isSuccess()) {
-            streamURL = checkResult.url;
-            playStream();
-            return;
-        }
-
-        if (alarmIsRunning) {
-            startFallbackAlarm();
-        }
-
-        Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
-        stopSelf();
     }
 
     void startFallbackAlarm() {
@@ -485,57 +541,129 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         Log.i(TAG, "playStream() " + streamURL);
 
         stopPlaying();
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setOnCompletionListener(this);
-        mMediaPlayer.setOnErrorListener(this);
-        mMediaPlayer.setOnBufferingUpdateListener(this);
-        mMediaPlayer.setOnPreparedListener(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int usage = (currentStreamType == AudioManager.STREAM_ALARM)
-                    ? AudioAttributes.USAGE_ALARM
-                    : AudioAttributes.USAGE_MEDIA;
-            mMediaPlayer.setAudioAttributes(
-                    new AudioAttributes.Builder()
-                            .setUsage(usage)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .build()
-            );
-        } else {
-            mMediaPlayer.setAudioStreamType(currentStreamType);
+
+        if (exoPlayer == null) {
+            Log.d(TAG, "init exoPlayer");
+
+            exoPlayer = new SimpleExoPlayer.Builder(getApplicationContext()).build();
+            exoPlayer.setMediaItem(MediaItem.fromUri(streamURL));
+            exoPlayer.prepare();
+
+            exoPlayer.addMetadataOutput(metadata -> {
+                if ((metadata != null)) {
+                    final int length = metadata.length();
+                    if (length > 0) {
+                        for (int i = 0; i < length; i++) {
+                            final Metadata.Entry entry = metadata.get(i);
+                            if (entry instanceof IcyInfo) {
+                                icyInfo = ((IcyInfo) entry);
+                                Log.d(TAG, "IcyInfo:" + icyInfo.title);
+                                mediaSession.setPlaybackState(stateBuilder.build());
+                                updateNotification(icyInfo.title);
+                            } else if (entry instanceof IcyHeaders) {
+                                final IcyHeaders icyHeaders = ((IcyHeaders) entry);
+                                Log.d(TAG, "IcyHeaders: " + icyHeaders.name);
+                                Log.d(TAG, "IcyHeaders: " + icyHeaders.genre);
+                            }
+                        }
+                    }
+                }
+            });
+
+            exoPlayer.addListener(new Player.Listener() {
+                @Override
+                public void onPlaybackStateChanged(@Player.State int state) {
+                    Log.d(TAG, "onPlaybackStateChanged() state: " + state);
+
+                    if ((state == ExoPlayer.STATE_READY) && exoPlayer.getPlayWhenReady()) {
+                        Log.d(TAG, "onPlayerStateChanged PLAYING");
+
+                        stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                                exoPlayer.getCurrentPosition(), 1f);
+
+                        Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
+                        intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        fadeInDelay = 50;
+                        currentVolume = 0.f;
+                        handler.postDelayed(fadeIn, muteDelayInMillis);
+
+                        if (icyInfo != null) {
+                            updateNotification(icyInfo.title);
+                        } else {
+                            updateNotification(getResources().getString(R.string.radio_connecting));
+                        }
+
+                        if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
+                            vibrator.startVibration();
+                        }
+
+                    } else if ((state == ExoPlayer.STATE_READY)) {
+                        Log.d(TAG, "onPlayerStateChanged: PAUSED");
+                        stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                                exoPlayer.getCurrentPosition(), 1f);
+                        handler.removeCallbacks(fadeIn);
+                        updateNotification(getResources().getString(R.string.radio_paused));
+                        Log.d(TAG, "onPlayerStateChanged stateBuilder: " + stateBuilder.build().getState());
+                        Log.d(TAG, "onPlayerStateChanged STATE_PLAYING: " + PlaybackStateCompat.STATE_PAUSED);
+                    } else if ((state == ExoPlayer.STATE_IDLE)) {
+                        Log.d(TAG, "onPlayerStateChanged: The player does not have any media to play");
+                        stateBuilder.setState(PlaybackStateCompat.STATE_STOPPED,
+                                exoPlayer.getCurrentPosition(), 1f);
+                    }
+
+                    mediaSession.setPlaybackState(stateBuilder.build());
+                }
+
+                @Override
+                public void onPlayerError(ExoPlaybackException error) {
+                    switch (error.type) {
+                        case ExoPlaybackException.TYPE_SOURCE:
+                            Log.e(TAG, "TYPE_SOURCE: " + error.getSourceException().getMessage());
+                            updateNotification(error.getMessage());
+                            break;
+                        case ExoPlaybackException.TYPE_RENDERER:
+                            Log.e(TAG, "TYPE_RENDERER: " + error.getRendererException().getMessage());
+                            updateNotification(error.getMessage());
+                            break;
+                        case ExoPlaybackException.TYPE_UNEXPECTED:
+                            Log.e(TAG, "TYPE_UNEXPECTED: " + error.getUnexpectedException().getMessage());
+                            updateNotification(error.getMessage());
+                            break;
+                    }
+                    long now = System.currentTimeMillis();
+                    if (alarmIsRunning && now - readyForPlaybackSince < 120000) {
+                        // if the stream stops during the first two minutes there are probably issues connecting
+                        // to the stream
+                        Log.d(TAG, "stopself");
+                        stopSelf();
+                        startFallbackAlarm();
+                        Toast.makeText(getApplicationContext(), getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            Log.d(TAG, "exoPlayer.play()");
+            exoPlayer.setVolume(0);
+            exoPlayer.setPlayWhenReady(true);
+            exoPlayer.play();
         }
-        mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
-
-        try {
-            mMediaPlayer.setDataSource(streamURL);
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
-        } catch (IOException e) {
-            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
-        } catch (SecurityException e) {
-            Log.e(TAG, "MediaPlayer.setDataSource() failed", e);
-        }
-
-        try {
-            mMediaPlayer.prepareAsync();
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "MediaPlayer.prepare() failed", e);
-        }
-
-        //todo
-        Log.d(TAG, "start chromecast music");
-        castSession = CastContext.getSharedInstance(getApplicationContext()).getSessionManager()
-                .getCurrentCastSession();
-
-        loadRemoteMedia();
     }
 
     private MediaInfo getRemoteMediaData() {
         Log.d(TAG, "getRemoteMediadata()");
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, radioStation.name);
+
+        WebImage image = new WebImage(new Uri.Builder().encodedPath(radioStation.favIcon).build());
+        // First image for showing the audio album art
+        mediaMetadata.addImage(image);
+        // Second image on the full screen
+        mediaMetadata.addImage(image);
+
+        //todo show icy metadata title
         //mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, "Test Artist");
+
         return new MediaInfo.Builder(
                 streamURL)
                 .setContentType("audio/mp3")
@@ -545,26 +673,31 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     }
 
     public static void loadRemoteMediaListener(CastSession castSession) {
-        Log.d(TAG, "loadRemoteMediaStatic()");
+        Log.d(TAG, "loadRemoteMediaListener()");
+
         mRadioStreamService.castSession = castSession;
         mRadioStreamService.loadRemoteMedia();
     }
 
     public void loadRemoteMedia() {
         Log.d(TAG, "loadRemoteMedia()");
+
         if (castSession == null) {
             Log.d(TAG, "castSession == null");
             return;
         }
+
         RemoteMediaClient mRemoteMediaPlayer = castSession.getRemoteMediaClient();
         if (mRemoteMediaPlayer == null) {
-            Log.d(TAG, "mRemoteMediaPlayer == null");
+            Log.d(TAG, "loadRemoteMedia() mRemoteMediaPlayer == null");
             return;
         }
 
         mRemoteMediaPlayer.load(
                 new MediaLoadRequestData.Builder().setMediaInfo(getRemoteMediaData()).build()
         );
+
+        mRemoteMediaPlayer.getMediaInfo();
 
         stopPlaying();
     }
@@ -581,123 +714,147 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         }
     }
 
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.e(TAG, "MediaPlayer.error: " + what + " " + extra);
-        long now = System.currentTimeMillis();
-        if (alarmIsRunning && now - readyForPlaybackSince < 120000) {
-            // if the stream stops during the first two minutes there are probably issues connecting
-            // to the stream
-            stopSelf();
-            startFallbackAlarm();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        Log.e(TAG, "onBufferingUpdate " + percent);
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        currentVolume = 0.f;
-        if (mMediaPlayer != null) {
-            // mute mediaplayer volume immediately, before it starts playing
-            mMediaPlayer.setVolume(currentVolume, currentVolume);
-        }
-        handler.postDelayed(fadeIn, muteDelayInMillis);
-        try {
-            mp.start();
-            readyForPlayback = true;
-            readyForPlaybackSince = System.currentTimeMillis();
-            Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-            intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "MediaPlayer.start() failed", e);
-        }
-
-        if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
-            vibrator.startVibration();
-        }
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        Log.i(TAG, "onCompletion");
-        playStream();
-    }
-
     public void stopPlaying() {
-        if (mMediaPlayer != null) {
-            if (mMediaPlayer.isPlaying()) {
-                Log.i(TAG, "stopPlaying()");
-                mMediaPlayer.stop();
+        Log.d(TAG, "stopPlaying()");
+
+        if (exoPlayer != null) {
+            if (exoPlayer.isPlaying()) {
+                Log.i(TAG, "exoPlayer.stop()");
+                exoPlayer.stop();
             }
-            mMediaPlayer.release();
-            mMediaPlayer = null;
+            exoPlayer.release();
+            exoPlayer = null;
+            Log.i(TAG, "notificationManager.cancel");
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.cancel(NOTIFY_ID);
         }
+
         if (vibrator != null) {
             vibrator.stopVibration();
         }
     }
 
-    /**
+    private void updateNotification(String title) {
+        Log.i(TAG, "UpdateNotification()");
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.cancel(NOTIFY_ID);
+
+        String action = this.intent.getAction();
+        if (ACTION_START.equals(action) || exoPlayer == null) {
+            return;
+        }
+
+        Intent notificationIntent = new Intent(this, NightDreamActivity.class);
+        notificationIntent.setAction(Config.ACTION_SHOW_RADIO_PANEL);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        MediaSessionCompat mediaSession = new MediaSessionCompat(getBaseContext(), getBaseContext().getPackageName());
+
+        NotificationCompat.Builder noteBuilder = Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_RADIO)
+                .setContentIntent(contentIntent)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setSmallIcon(R.drawable.ic_radio)
+                .setLargeIcon(iconRadio)
+                .setTicker(title)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(1, 2, 3)
+                        .setMediaSession(mediaSession.getSessionToken()))
+                .setContentText(title)
+                .setWhen(System.currentTimeMillis())
+                .setUsesChronometer(true);
+
+        if (radioStation != null) {
+            noteBuilder.setContentTitle(radioStation.name);
+        } else {
+            noteBuilder.setContentTitle(currentRadioStationName(intent));
+        }
+
+        addActionButtonsToNotificationBuilder(noteBuilder);
+
+        Notification note = noteBuilder.build();
+
+        note.flags |= Notification.FLAG_NO_CLEAR;
+        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+
+        notificationManager.notify(NOTIFY_ID, note);
+    }
+
+    /*
      * add stop button for normal radio, and for alarm radio preview (stream started in
      * preferences dialog), but not for alarm
      */
-    private void addActionButtonsToNotificationBuilder(NotificationCompat.Builder noteBuilder,
-                                                       Intent intent) {
+    private void addActionButtonsToNotificationBuilder(NotificationCompat.Builder noteBuilder) {
+        Log.d(TAG, "addActionButton");
 
-        String action = intent.getAction();
-
-        if (ACTION_START_STREAM.equals(action) || (ACTION_START.equals(action))) {
-            noteBuilder.addAction(notificationStopAction());
-
-            // show radio station name in notification
-            noteBuilder.setContentText(currentRadioStationName(intent));
-        }
-
-        // if normal radio is playing and multiple stations are configured, also add button to
-        // switch to next station
-        if (ACTION_START_STREAM.equals(action)) {
-            FavoriteRadioStations stations = settings.getFavoriteRadioStations();
-            if (stations != null && stations.numAvailableStations() > 1)
-                noteBuilder.addAction(notificationNextStationAction());
-        }
+        noteBuilder.addAction(notificationStopAction());
+        noteBuilder.addAction(notificationPreviousStationAction());
+        noteBuilder.addAction(notificationPlayPauseAction());
+        noteBuilder.addAction(notificationNextStationAction());
     }
 
     private NotificationCompat.Action notificationStopAction() {
-        return notificationAction(ACTION_STOP, getString(R.string.action_stop));
+        return notificationAction(R.drawable.exo_icon_stop, ACTION_STOP, getString(R.string.action_stop));
+    }
+
+    private NotificationCompat.Action notificationPlayPauseAction() {
+        Log.d(TAG, "notificationPlayPauseAction()");
+
+        Log.d(TAG, "stateBuilder: " + stateBuilder.build().getState());
+        Log.d(TAG, "STATE_PLAYING: " + PlaybackStateCompat.STATE_PLAYING);
+
+        if (stateBuilder.build().getState() == PlaybackStateCompat.STATE_PLAYING) {
+            return new NotificationCompat.Action(
+                    R.drawable.exo_controls_pause, getString(R.string.radio_pause),
+                    MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                            PlaybackStateCompat.ACTION_PAUSE));
+        } else {
+            return new NotificationCompat.Action(
+                    R.drawable.exo_controls_play, getString(R.string.radio_play),
+                    MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                            PlaybackStateCompat.ACTION_PLAY));
+        }
     }
 
     private NotificationCompat.Action notificationNextStationAction() {
-        return notificationAction(ACTION_NEXT_STATION, getString(R.string.next));
+        return new NotificationCompat.Action(
+                R.drawable.exo_controls_next, getString(R.string.radio_next),
+                MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT));
     }
 
-    private NotificationCompat.Action notificationAction(String intentAction, String text) {
+    private NotificationCompat.Action notificationPreviousStationAction() {
+        return new NotificationCompat.Action(
+                R.drawable.exo_controls_previous, getString(R.string.radio_previous),
+                MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
+    }
+
+    private NotificationCompat.Action notificationAction(int res, String intentAction, String text) {
         Intent intent = new Intent(this, RadioStreamService.class);
         intent.setAction(intentAction);
 
         PendingIntent pi = PendingIntent.getService(
                 this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        return new NotificationCompat.Action.Builder(0, text, pi).build();
+        return new NotificationCompat.Action.Builder(res, text, pi).build();
     }
 
     private String currentRadioStationName(Intent intent) {
-        int currentIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
-        RadioStation station = settings.getFavoriteRadioStation(currentIndex);
-        if (station != null && station.name != null && !station.name.isEmpty()) {
-            return station.name;
+        if (intent != null) {
+            int currentIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
+            RadioStation station = settings.getFavoriteRadioStation(currentIndex);
+            if (station != null && station.name != null && !station.name.isEmpty()) {
+                return station.name;
+            }
         }
         return "";
     }
 
-    private void switchToNextStation() {
-        Log.d(TAG, "switchToNextStation() called.");
+    private void skipToNextStation() {
+        Log.d(TAG, "skipToNextStation() called.");
+
         if (streamingMode != StreamingMode.RADIO) {
             return;
         }
@@ -711,10 +868,31 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         int nextStationIndex = stations.nextAvailableIndex(currentIndex);
         Log.d(TAG, "nextStationIndex: " + nextStationIndex);
 
-        // always stop and restart, so a new notification occurs
-        stopSelf();
         if (nextStationIndex > -1) {
+            icyInfo = null;
             startStream(this, nextStationIndex);
+        }
+    }
+
+    private void skipToPreviousStation() {
+        Log.d(TAG, "skipToPreviousStation() called.");
+
+        if (streamingMode != StreamingMode.RADIO) {
+            return;
+        }
+
+        int currentIndex = getCurrentRadioStationIndex();
+        if (currentIndex < 0) {
+            return;
+        }
+
+        FavoriteRadioStations stations = settings.getFavoriteRadioStations();
+        int previousStationIndex = stations.previousAvailableIndex(currentIndex);
+        Log.d(TAG, "previousStationIndex: " + previousStationIndex);
+
+        if (previousStationIndex > -1) {
+            icyInfo = null;
+            startStream(this, previousStationIndex);
         }
     }
 
@@ -729,9 +907,50 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
     private class BecomingNoisyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "BecomingNoisyReceiver");
+            MediaButtonReceiver.handleIntent(mediaSession, intent);
             if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
+                Log.d(TAG, "stopself");
                 stopSelf();
             }
+        }
+    }
+
+    public static class MediaReceiver extends BroadcastReceiver {
+
+        public MediaReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "MediaReceiver");
+            MediaButtonReceiver.handleIntent(mediaSession, intent);
+        }
+    }
+
+    private class sessionCallback extends MediaSessionCompat.Callback {
+        @Override
+        public void onPlay() {
+            Log.d(TAG, "onplay Callback");
+            exoPlayer.setPlayWhenReady(true);
+        }
+
+        @Override
+        public void onPause() {
+            Log.d(TAG, "onpause Callback");
+            exoPlayer.setPlayWhenReady(false);
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            Log.d(TAG, "skiptoprevious Callback");
+            skipToPreviousStation();
+        }
+
+        @Override
+        public void onSkipToNext() {
+            Log.d(TAG, "skiptoNext Callback");
+            skipToNextStation();
         }
     }
 }

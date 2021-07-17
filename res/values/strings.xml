@@ -201,6 +201,12 @@ OR
     <string name="minute">min</string>
     <string name="mute_ringer">Mute ringer</string>
     <string name="next">next</string>
+    <string name="radio_next">next station</string>
+    <string name="radio_previous">previous station</string>
+    <string name="radio_play">play radio</string>
+    <string name="radio_pause">pause radio</string>
+    <string name="radio_connecting">connecting</string>
+    <string name="radio_paused">paused</string>
     <string name="night_mode_activation_auto">automatic</string>
     <string name="night_mode_activation_manual">manual</string>
     <string name="night_mode_activation_mode">Activation mode</string>
