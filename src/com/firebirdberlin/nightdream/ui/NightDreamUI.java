@@ -645,14 +645,36 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_IMAGE: {
                     Log.d(TAG, "BACKGROUND_IMAGE");
                     setImageScale();
-                    background_images[background_image_active].setImage(Uri.parse(settings.backgroundImageURI));
-                    setDominantColorFromBitmap(background_images[background_image_active].getBitmap());
-                    if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                        background_images[(background_image_active + 1) % 2].setImageBitmap(Graphics.blur(mContext, background_images[background_image_active].getBitmap()));
-                        background_images[(background_image_active + 1) % 2].setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    } else {
-                        background_images[(background_image_active + 1) % 2].setImageDrawable(colorBlack);
-                    }
+
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    Handler handler = new Handler(Looper.getMainLooper());
+
+                    executor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            //doinbackground if cachefile not exists first write to cachefile
+                            if (!background_images[background_image_active].existCacheFile()) {
+                                background_images[background_image_active].setImageDrawable(colorBlack);
+                                background_images[background_image_active].bitmapUriToCache(Uri.parse(settings.backgroundImageURI));
+                            }
+
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //like onPostExecute()
+                                    background_images[background_image_active].setImage(Uri.parse(settings.backgroundImageURI));
+                                    setDominantColorFromBitmap(background_images[background_image_active].getBitmap());
+                                    if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                                        background_images[(background_image_active + 1) % 2].setImageBitmap(Graphics.blur(mContext, background_images[background_image_active].getBitmap()));
+                                        background_images[(background_image_active + 1) % 2].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                    } else {
+                                        background_images[(background_image_active + 1) % 2].setImageDrawable(colorBlack);
+                                    }
+                                }
+                            });
+                        }
+                    });
+
                     break;
                 }
 

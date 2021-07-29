@@ -15,6 +15,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -38,12 +40,15 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ImageViewExtended extends AppCompatImageView {
     private static String TAG = "ImageViewExtended";
     private Context context;
     private GifMovie gif = null;
     private Bitmap bitmapImage;
+
 
     public ImageViewExtended(@NonNull Context context) {
         super(context);
@@ -188,8 +193,7 @@ public class ImageViewExtended extends AppCompatImageView {
 
             Bitmap bgimage = loadBackgroundBitmap(uri);
             bgimage = rescaleBackgroundImage(bgimage);
-            AsyncTask<Bitmap, Integer, Bitmap> runningTask = new writeBackgroundImageToCache();
-            runningTask.execute(bgimage);
+            writeBackgroundImageToCache(bgimage);
             if (bgimage != null) {
                 setBitmap(bgimage);
                 return new BitmapDrawable(context.getResources(), bgimage);
@@ -203,6 +207,26 @@ public class ImageViewExtended extends AppCompatImageView {
             ex.printStackTrace();
         }
         return new ColorDrawable(Color.BLACK);
+    }
+
+    public boolean existCacheFile(){
+        File cacheFile = new File(context.getCacheDir(), Config.backgroundImageCacheFilename);
+        return cacheFile.exists();
+    }
+
+    public void bitmapUriToCache(Uri uri){
+        try {
+            Bitmap bgimage = loadBackgroundBitmap(uri);
+            bgimage = rescaleBackgroundImage(bgimage);
+            writeImageToCache(bgimage);
+        } catch (OutOfMemoryError e) {
+            Toast.makeText(
+                    context, "Out of memory. Please, try to scale down your image.",
+                    Toast.LENGTH_LONG
+            ).show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private BitmapDrawable loadBackgroundImageFromCache() {
@@ -242,7 +266,6 @@ public class ImageViewExtended extends AppCompatImageView {
         return bgimage;
     }
 
-
     private Bitmap loadBackgroundBitmap(Uri uri) throws Exception {
         Log.d(TAG, "loadBackgroundBitmap");
         Point display = Utility.getDisplaySize(context);
@@ -269,38 +292,31 @@ public class ImageViewExtended extends AppCompatImageView {
         return bitmap;
     }
 
-    private final class writeBackgroundImageToCache extends AsyncTask<Bitmap, Integer, Bitmap> {
+    private void writeBackgroundImageToCache(Bitmap bitmapToCache){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        @Override
-        protected Bitmap doInBackground(Bitmap... params) {
-            if (params[0] == null) {
-                return null;
-            } else {
-                Log.d(TAG, "writing image to cache");
-                File cacheFile = new File(context.getCacheDir(), Config.backgroundImageCacheFilename);
-                Bitmap bgimage = params[0];
-                try {
-                    FileOutputStream out = new FileOutputStream(cacheFile);
-                    bgimage.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    out.flush();
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return bgimage;
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                //doInBackground
+                writeImageToCache(bitmapToCache);
             }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... params) {
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-
-        }
+        });
     }
 
+    private void writeImageToCache(Bitmap bitmapToCache){
+        if (bitmapToCache != null) {
+            Log.d(TAG, "writing image to cache");
+            File cacheFile = new File(context.getCacheDir(), Config.backgroundImageCacheFilename);
+            try {
+                FileOutputStream out = new FileOutputStream(cacheFile);
+                bitmapToCache.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
