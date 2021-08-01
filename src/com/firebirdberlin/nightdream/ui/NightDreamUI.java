@@ -594,17 +594,15 @@ public class NightDreamUI {
         background_images[1].clearAnimation();
         lastAnimationTime = 0L;
         setScreenOrientation(settings.screenOrientation);
-        initSidePanel();
-        initBackground();
-        bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
-        bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
-        bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
-        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
-        bottomPanelLayout.setup();
-        setupScreenAnimation();
-        lockUI(this.locked);
 
         clockLayoutContainer.post(initClockLayout);
+        postFadeAnimation();
+
+        initSidePanel();
+        initBackground();
+        initBottomPannelLayout();
+        setupScreenAnimation();
+        lockUI(this.locked);
 
         Utility.registerEventBus(this);
         broadcastReceiver = registerBroadcastReceiver();
@@ -614,7 +612,14 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
-        postFadeAnimation();
+    }
+
+    private void initBottomPannelLayout(){
+        bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
+        bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
+        bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
+        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
+        bottomPanelLayout.setup();
     }
 
     private void initBackground() {
@@ -653,6 +658,7 @@ public class NightDreamUI {
                         @Override
                         public void run() {
                             //doinbackground if cachefile not exists first write to cachefile
+
                             if (!background_images[background_image_active].existCacheFile()) {
                                 background_images[background_image_active].setImageDrawable(colorBlack);
                                 background_images[background_image_active].bitmapUriToCache(Uri.parse(settings.backgroundImageURI));
