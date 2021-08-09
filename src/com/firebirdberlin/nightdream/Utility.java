@@ -897,12 +897,16 @@ public class Utility {
 
         public String getLocality() {
             if (address == null) return "";
-            return address.getLocality();
+            String locality = address.getLocality();
+            if (locality == null) return "";
+            return locality;
         }
 
         public String getCountryName() {
             if (address == null) return "";
-            return address.getCountryName();
+            String countryName = address.getCountryName();
+            if (countryName == null) return "";
+            return countryName;
         }
 
         public String getCountryCode() {
