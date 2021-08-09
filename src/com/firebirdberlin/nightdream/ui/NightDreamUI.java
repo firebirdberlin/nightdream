@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -77,6 +78,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NightDreamUI {
     private static final int SWIPE_MIN_DISTANCE = 120;
@@ -816,8 +819,7 @@ public class NightDreamUI {
                         setDominantColorFromBitmap(preloadBackgroundImage);
                     }
                     if (settings.background_exif) {
-                        AsyncTask<File, Integer, Boolean> runningTask = new getExifInformation();
-                        runningTask.execute(preloadBackgroundImageFile);
+                        getExifInformation(preloadBackgroundImageFile);
                     }
                     break;
                 }
@@ -1720,25 +1722,30 @@ public class NightDreamUI {
         return bitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 
-    private final class getExifInformation extends AsyncTask<File, Integer, Boolean> {
+    private void getExifInformation(File file) {
+        final Boolean[] result = {false};
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
 
-        @Override
-        protected Boolean doInBackground(File... params) {
-            return exifView.getExifView(mContext, params[0], getSecondaryColor());
-        }
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                //background thread like doInBackground()
+                result[0] = exifView.getExifView(mContext, file, getSecondaryColor());
 
-        @Override
-        protected void onProgressUpdate(Integer... params) {
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                exifLayoutContainer.setVisibility(View.VISIBLE);
-            } else {
-                exifLayoutContainer.setVisibility(View.GONE);
+                handler.post(new Runnable() {
+                    //like onPostExecute()
+                    @Override
+                    public void run() {
+                        if (result[0]) {
+                            exifLayoutContainer.setVisibility(View.VISIBLE);
+                        } else {
+                            exifLayoutContainer.setVisibility(View.GONE);
+                        }
+                    }
+                });
             }
-        }
+        });
     }
 
     private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
