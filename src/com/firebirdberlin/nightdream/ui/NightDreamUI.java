@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -77,6 +78,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NightDreamUI {
     private static final int SWIPE_MIN_DISTANCE = 120;
@@ -86,6 +89,11 @@ public class NightDreamUI {
     final private Handler handler = new Handler();
     final private Drawable colorTransparent = new ColorDrawable(Color.TRANSPARENT);
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
+        public void notifyAction() {
+            resetAlarmClockHideDelay();
+        }
+    };
     private int screen_alpha_animation_duration = 3000;
     private int screen_transition_animation_duration = 10000;
     private int mode = 2;
@@ -144,6 +152,41 @@ public class NightDreamUI {
             settings.setScaleClock(s, config.orientation);
         }
     };
+    private final Runnable fadeClock = new Runnable() {
+        @Override
+        public void run() {
+            if (settings.screenProtection == Settings.ScreenProtectionModes.FADE) {
+                AlphaAnimation alpha;
+                alpha = new AlphaAnimation(1.0f, 0.0f);
+                alpha.setDuration(2000);
+                alpha.setFillAfter(true);
+
+                AnimationSet animationSet = new AnimationSet(true);
+                animationSet.addAnimation(alpha);
+
+                animationSet.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        AlphaAnimation alpha;
+                        alpha = new AlphaAnimation(0.0f, 1.0f);
+                        alpha.setDuration(2000);
+                        alpha.setFillAfter(true);
+                        clockLayoutContainer.startAnimation(alpha);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+                clockLayoutContainer.startAnimation(animationSet);
+                postFadeAnimation();
+            }
+        }
+    };
     private float clockLayout_xDelta;
     private float clockLayout_yDelta;
     private int vibrantColor = 0;
@@ -151,6 +194,19 @@ public class NightDreamUI {
     private long lastAnimationTime = 0L;
     private SoundMeter soundmeter;
     private ProgressBar brightnessProgress;
+    private final Runnable hideBrightnessView = new Runnable() {
+        @Override
+        public void run() {
+            brightnessProgress.setVisibility(View.INVISIBLE);
+        }
+    };
+    private final Runnable hideBrightnessLevel = new Runnable() {
+        @Override
+        public void run() {
+            setAlpha(brightnessProgress, 0.f, 2000);
+            postDelayed(hideBrightnessView, 2010);
+        }
+    };
     private BatteryIconView batteryIconView;
     public Runnable initSlideshowBackground = new Runnable() {
         @Override
@@ -164,7 +220,46 @@ public class NightDreamUI {
             }
         }
     };
+    private final Runnable backgroundChange = () -> {
+        setupBackgroundImage();
+        postBackgroundImageChange();
+    };
+    private final Runnable hideAlarmClock = new Runnable() {
+        @Override
+        public void run() {
+            if (alarmClock.isInteractive() || AlarmHandlerService.alarmIsRunning()) {
+                handler.postDelayed(hideAlarmClock, 20000);
+                return;
+            }
+            controlsVisible = false;
+            hideBatteryView(2000);
+            setAlpha(menuIcon, 0.f, 2000);
+
+            bottomPanelLayout.hide();
+            if (mode == 0) {
+                setAlpha(notificationStatusBar, 0.f, 2000);
+            }
+            hideSidePanel();
+        }
+    };
     private Window window;
+    // move the clock randomly around
+    private final Runnable moveAround = new Runnable() {
+        @Override
+        public void run() {
+            Log.i(TAG, "moveAround.run()");
+            removeCallbacks(hideBrightnessLevel);
+            hideSystemUI();
+            setupScreenAnimation();
+
+            hideBatteryView(2000);
+            updateClockPosition();
+
+            updateWeatherData();
+
+            postDelayed(this, Utility.millisToTimeTick(20000));
+        }
+    };
     private mAudioManager AudioManage;
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
@@ -200,101 +295,6 @@ public class NightDreamUI {
     private float LIGHT_VALUE_DARK = 4.2f;
     private float LIGHT_VALUE_BRIGHT = 40.0f;
     private float LIGHT_VALUE_DAYLIGHT = 300.0f;
-    private Runnable hideBrightnessView = new Runnable() {
-        @Override
-        public void run() {
-            brightnessProgress.setVisibility(View.INVISIBLE);
-        }
-    };
-    private Runnable hideBrightnessLevel = new Runnable() {
-        @Override
-        public void run() {
-            setAlpha(brightnessProgress, 0.f, 2000);
-            postDelayed(hideBrightnessView, 2010);
-        }
-    };
-    private Runnable backgroundChange = new Runnable() {
-        @Override
-        public void run() {
-            setupBackgroundImage();
-            postBackgroundImageChange();
-        }
-    };
-    private Runnable fadeClock = new Runnable() {
-        @Override
-        public void run() {
-            if (settings.screenProtection == Settings.ScreenProtectionModes.FADE) {
-                AlphaAnimation alpha;
-                alpha = new AlphaAnimation(1.0f, 0.0f);
-                alpha.setDuration(2000);
-                alpha.setFillAfter(true);
-
-                AnimationSet animationSet = new AnimationSet(true);
-                animationSet.addAnimation(alpha);
-
-                animationSet.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        AlphaAnimation alpha;
-                        alpha = new AlphaAnimation(0.0f, 1.0f);
-                        alpha.setDuration(2000);
-                        alpha.setFillAfter(true);
-                        clockLayoutContainer.startAnimation(alpha);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                    }
-                });
-                clockLayoutContainer.startAnimation(animationSet);
-                postFadeAnimation();
-            }
-        }
-    };
-    // move the clock randomly around
-    private Runnable moveAround = new Runnable() {
-        @Override
-        public void run() {
-            Log.i(TAG, "moveAround.run()");
-            removeCallbacks(hideBrightnessLevel);
-            hideSystemUI();
-            setupScreenAnimation();
-
-            hideBatteryView(2000);
-            updateClockPosition();
-
-            updateWeatherData();
-
-            postDelayed(this, Utility.millisToTimeTick(20000));
-        }
-    };
-    private Runnable hideAlarmClock = new Runnable() {
-        @Override
-        public void run() {
-            if (alarmClock.isInteractive() || AlarmHandlerService.alarmIsRunning()) {
-                handler.postDelayed(hideAlarmClock, 20000);
-                return;
-            }
-            controlsVisible = false;
-            hideBatteryView(2000);
-            setAlpha(menuIcon, 0.f, 2000);
-
-            bottomPanelLayout.hide();
-            if (mode == 0) {
-                setAlpha(notificationStatusBar, 0.f, 2000);
-            }
-            hideSidePanel();
-        }
-    };
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
-        public void notifyAction() {
-            resetAlarmClockHideDelay();
-        }
-    };
     private boolean blinkStateOn = false;
     private Runnable blink = new Runnable() {
         public void run() {
@@ -816,8 +816,7 @@ public class NightDreamUI {
                         setDominantColorFromBitmap(preloadBackgroundImage);
                     }
                     if (settings.background_exif) {
-                        AsyncTask<File, Integer, Boolean> runningTask = new getExifInformation();
-                        runningTask.execute(preloadBackgroundImageFile);
+                        getExifInformation(preloadBackgroundImageFile);
                     }
                     break;
                 }
@@ -1720,25 +1719,19 @@ public class NightDreamUI {
         return bitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 
-    private final class getExifInformation extends AsyncTask<File, Integer, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(File... params) {
-            return exifView.getExifView(mContext, params[0], getSecondaryColor());
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... params) {
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                exifLayoutContainer.setVisibility(View.VISIBLE);
-            } else {
-                exifLayoutContainer.setVisibility(View.GONE);
-            }
-        }
+    private void getExifInformation(File file) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(() -> { //background thread
+            Boolean success = exifView.getExifView(mContext, file, getSecondaryColor());
+            handler.post(() -> { //like onPostExecute()
+                if (success) {
+                    exifLayoutContainer.setVisibility(View.VISIBLE);
+                } else {
+                    exifLayoutContainer.setVisibility(View.GONE);
+                }
+            });
+        });
     }
 
     private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {

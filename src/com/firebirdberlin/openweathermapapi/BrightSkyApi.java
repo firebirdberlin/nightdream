@@ -230,7 +230,7 @@ public class BrightSkyApi {
 
             if (mContext != null && mContext.get() != null) {
                 Utility.GeoCoder geoCoder = new Utility.GeoCoder(mContext.get(), lat, lon);
-                if (!geoCoder.getLocality().isEmpty()) entry.cityName = geoCoder.getLocality();
+                if (!Utility.isEmpty(geoCoder.getLocality())) entry.cityName = geoCoder.getLocality();
             }
 
             entry.clouds = cloud_cover;
