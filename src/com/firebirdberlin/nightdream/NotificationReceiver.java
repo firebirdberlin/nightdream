@@ -59,6 +59,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         try {
             handleOnReceive(context, intent);
         } catch (NullPointerException e) {
+            e.printStackTrace();
             Log.e(TAG, "Unknown error in onReceive (NotificationReceiver)");
         }
     }
@@ -89,29 +90,31 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
         Log.d(TAG, "action:" + action);
-        switch (action) {
-            case "scan":
-                removeViewsFrom(R.id.notificationstatusbar);
-                removeViewsFrom(R.id.notificationbar);
-                List<NotificationApp> notificationApps = intent.getParcelableArrayListExtra("notificationApps");
-                if (notificationApps == null) break;
-                for (NotificationApp app: notificationApps) {
-                    Log.d(TAG, app.getName() + ": " + app.getIconId());
-                    Drawable icon = getIcon(context, app);
-                    addNotificationIcon(context, container, icon);
-                }
-                break;
-            case "added_media":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    setupMediaControls(context, intent);
-                }
-                break;
-            case "added_preview":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    setupNotificationPreview(context, intent);
-                }
-                break;
-            default:
+        if (action != null) {
+            switch (action) {
+                case "scan":
+                    removeViewsFrom(R.id.notificationstatusbar);
+                    removeViewsFrom(R.id.notificationbar);
+                    List<NotificationApp> notificationApps = intent.getParcelableArrayListExtra("notificationApps");
+                    if (notificationApps == null) break;
+                    for (NotificationApp app : notificationApps) {
+                        Log.d(TAG, app.getName() + ": " + app.getIconId());
+                        Drawable icon = getIcon(context, app);
+                        addNotificationIcon(context, container, icon);
+                    }
+                    break;
+                case "added_media":
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        setupMediaControls(context, intent);
+                    }
+                    break;
+                case "added_preview":
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        setupNotificationPreview(context, intent);
+                    }
+                    break;
+                default:
+            }
         }
     }
 
@@ -187,7 +190,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             if (mediaControlLayoutBinding != null) {
                 mediaControlLayoutBinding.getModel().setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
-                mediaControlLayoutBinding.invalidateAll();
             } else {
                 MediaControlLayout mediaControlLayout = new MediaControlLayout(mediaStyleContainer);
                 mediaStyleContainer.removeAllViews();
@@ -196,16 +198,14 @@ public class NotificationReceiver extends BroadcastReceiver {
                 boundView = mediaStyleContainer.getChildAt(0);
                 mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
                 mediaControlLayoutBinding.getModel().setColor(color);
-                mediaControlLayoutBinding.invalidateAll();
             }
+            mediaControlLayoutBinding.invalidateAll();
         }
 
-        clockLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                activity.onConfigurationChanged(activity.getResources().getConfiguration());
-            }
-        }, 500);
+        clockLayout.postDelayed(
+                () -> activity.onConfigurationChanged(activity.getResources().getConfiguration()),
+                500
+        );
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
