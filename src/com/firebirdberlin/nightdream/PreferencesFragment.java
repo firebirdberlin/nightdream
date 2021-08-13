@@ -567,7 +567,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             conditionallyShowSnackBar(null);
         }
 
-        if (isAdded() && rootKey == null) {
+        if (isAdded() && Utility.isEmpty(rootKey)) {
             conditionallyShowSnackBarPurchase();
         }
     }
@@ -1156,8 +1156,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         || Utility.isAirplaneModeOn(mContext)
                         || isPurchased(BillingHelperActivity.ITEM_DONATION) || isPurchased(BillingHelperActivity.ITEM_PRO)
                         || (isPurchased(BillingHelperActivity.ITEM_WEB_RADIO) && isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA))
-                        || daysInstalled < 7
-                        || timeSinceShown < 60000 * 60 * 24 * 7
+                        || daysInstalled < 4
+                        || timeSinceShown < 60000 * 60 * 12 // 12 hours
         ) {
             return;
         }

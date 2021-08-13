@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -37,22 +36,17 @@ import java.util.Map;
 public abstract class BillingHelperActivity
         extends AppCompatActivity
         implements PurchasesUpdatedListener {
-    static final String TAG = "BillingHelperActivity";
-
     public static final String ITEM_WEATHER_DATA = "weather_data";
     public static final String ITEM_DONATION = "donation";
     public static final String ITEM_WEB_RADIO = "web_radio";
     public static final String ITEM_PRO = "pro";
     public static final String ITEM_ACTIONS = "actions";
-
-    private BillingClient mBillingClient;
-
+    static final String TAG = "BillingHelperActivity";
     private static final int PRODUCT_ID_WEATHER_DATA = 0;
     private static final int PRODUCT_ID_WEB_RADIO = 1;
     private static final int PRODUCT_ID_DONATION = 2;
     private static final int PRODUCT_ID_PRO = 3;
     private static final int PRODUCT_ID_ACTIONS = 4;
-
     static List<String> fullSkuList = new ArrayList<>(
             Arrays.asList(
                     ITEM_DONATION, ITEM_PRO, ITEM_WEATHER_DATA,
@@ -63,6 +57,15 @@ public abstract class BillingHelperActivity
     HashMap<String, String> prices = new HashMap<>();
     List<SkuDetails> skuDetails;
     SharedPreferences preferences;
+    private BillingClient mBillingClient;
+
+    static HashMap<String, Boolean> getDefaultPurchaseMap() {
+        HashMap<String, Boolean> def = new HashMap<>();
+        for (String sku : fullSkuList) {
+            def.put(sku, false);
+        }
+        return def;
+    }
 
     public boolean isPurchased(String sku) {
         if (Utility.isEmulator()) {
@@ -87,7 +90,6 @@ public abstract class BillingHelperActivity
         }
         return false;
     }
-
 
     public void showPurchaseDialog() {
         Log.i(TAG, "showPurchaseDialog()");
@@ -169,14 +171,6 @@ public abstract class BillingHelperActivity
 
     private void updateAllPurchases() {
         // TODO
-    }
-
-    static HashMap<String, Boolean> getDefaultPurchaseMap() {
-        HashMap<String, Boolean> def = new HashMap<>();
-        for (String sku: fullSkuList) {
-            def.put(sku, false);
-        }
-        return def;
     }
 
     @Override
@@ -284,17 +278,19 @@ public abstract class BillingHelperActivity
                 mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
                     @Override
                     public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
-                        Log.i(TAG,"onAcknowledgePurchaseResponse: " + billingResult.getResponseCode());
+                        Log.i(TAG, "onAcknowledgePurchaseResponse: " + billingResult.getResponseCode());
                         Log.i(TAG, billingResult.getDebugMessage());
                         if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
                             return;
                         }
-                        String sku = purchase.getSku();
+                        ArrayList<String> skus = purchase.getSkus();
                         int state = purchase.getPurchaseState();
                         boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
-                        Log.d(TAG, String.format("purchased %s = %s (%d)", sku, purchased, state));
-                        purchases.put(sku, purchased);
-                        onItemPurchased(sku);
+                        for (String sku : skus) {
+                            Log.d(TAG, String.format("purchased %s = %s (%d)", sku, purchased, state));
+                            purchases.put(sku, purchased);
+                            onItemPurchased(sku);
+                        }
                     }
                 });
             }
@@ -330,6 +326,7 @@ public abstract class BillingHelperActivity
                     mBillingClient = null;
                 }
             }
+
             @Override
             public void onBillingServiceDisconnected() {
                 Log.i(TAG, "onBillingServiceDisconnected");
@@ -346,17 +343,19 @@ public abstract class BillingHelperActivity
             return;
         }
 
-        for(String sku: fullSkuList) {
+        for (String sku : fullSkuList) {
             purchases.put(sku, false);
         }
-        for(Purchase purchase: result.getPurchasesList()) {
-            String sku = purchase.getSku();
-            int state = purchase.getPurchaseState();
-            boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
-            purchases.put(sku, purchased);
-            Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
-            // ATTENTION only activate temporarily
-            //consumeItem(sku);
+        for (Purchase purchase : result.getPurchasesList()) {
+            ArrayList<String> skus = purchase.getSkus();
+            for (String sku : skus) {
+                int state = purchase.getPurchaseState();
+                boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
+                purchases.put(sku, purchased);
+                Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
+                // ATTENTION only activate temporarily
+                // consumeItem(sku);
+            }
         }
 
         // store in the cache
@@ -391,7 +390,7 @@ public abstract class BillingHelperActivity
     }
 
     void consumeItem(String sku) {
-        List<String> skuList = new ArrayList<> ();
+        List<String> skuList = new ArrayList<>();
         skuList.add(sku);
         Purchase.PurchasesResult result = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
         int responseCode = result.getResponseCode();
@@ -400,16 +399,20 @@ public abstract class BillingHelperActivity
         }
 
         purchases.put(sku, false);
-        for(Purchase purchase: result.getPurchasesList()) {
+        for (Purchase purchase : result.getPurchasesList()) {
             // ATTENTION only activate temporarily
-            if (sku.equals(purchase.getSku())) {
-                consumePurchase(purchase);
+            ArrayList<String> skus = purchase.getSkus();
+            for (String s : skus) {
+                if (sku.equals(s)) {
+                    consumePurchase(purchase);
+                    break;
+                }
             }
         }
     }
 
     void consumePurchase(Purchase purchase) {
-        final String sku = purchase.getSku();
+        final ArrayList<String> skus = purchase.getSkus();
         String token = purchase.getPurchaseToken();
         ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(token).build();
         mBillingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
@@ -418,8 +421,10 @@ public abstract class BillingHelperActivity
                 Log.d(TAG, "onConsumeResponse: " + billingResult.getDebugMessage());
                 int response = billingResult.getResponseCode();
                 if (response == BillingClient.BillingResponseCode.OK) {
-                    purchases.put(sku, false);
-                    onItemConsumed(sku);
+                    for (String sku : skus) {
+                        purchases.put(sku, false);
+                        onItemConsumed(sku);
+                    }
                 }
             }
         });
@@ -443,9 +448,10 @@ public abstract class BillingHelperActivity
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
+
     SkuDetails getSkuDetails(String sku) {
         if (this.skuDetails != null) {
-            for (SkuDetails details: skuDetails) {
+            for (SkuDetails details : skuDetails) {
                 if (sku.equals(details.getSku())) {
                     return details;
                 }
