@@ -41,11 +41,13 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
+import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever;
 import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
+import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -65,7 +67,9 @@ import com.google.android.gms.common.images.WebImage;
 
 import org.greenrobot.eventbus.Subscribe;
 
-public class RadioStreamService extends Service {
+public class RadioStreamService extends Service implements HttpStatusCheckTask.AsyncResponse,
+        PlaylistRequestTask.AsyncResponse {
+
     protected static final int NOTIFY_ID = 1337;
     private static final String NOTIFICATION_CHANNEL_ID = "nachtuhr";
 
@@ -90,7 +94,7 @@ public class RadioStreamService extends Service {
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
     private long readyForPlaybackSince = 0L;
-    SimpleExoPlayer exoPlayer = null;
+    private SimpleExoPlayer exoPlayer = null;
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
@@ -262,7 +266,7 @@ public class RadioStreamService extends Service {
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        //todo
+        //todo changing Radio Titles
         Log.d(TAG, "Init chromecast");
 
         castSession = CastContext.getSharedInstance(getApplicationContext()).getSessionManager()
@@ -391,10 +395,6 @@ public class RadioStreamService extends Service {
             sleepTimeInMillis = 0L;
         }
 
-        if (!action.equals(ACTION_STOP)) {
-            playStream();
-        }
-
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -406,14 +406,14 @@ public class RadioStreamService extends Service {
         }
     }
 
-    private void loadRadioFavIcon(){
+    private void loadRadioFavIcon() {
         RequestQueue requestQueue;
         ImageLoader imageLoader;
 
         requestQueue = Volley.newRequestQueue(this);
         imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
 
-            private final LruCache<String, Bitmap> lruCache = new LruCache<String, Bitmap>(10);
+            private final LruCache<String, Bitmap> lruCache = new LruCache<>(10);
 
             public Bitmap getBitmap(String url) {
                 return lruCache.get(url);
@@ -437,7 +437,11 @@ public class RadioStreamService extends Service {
 
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.e(TAG, volleyError.getMessage());
+                if (volleyError.getMessage() != null) {
+                    Log.e(TAG, volleyError.getMessage());
+                } else {
+                    Log.e(TAG, "volleyError.getMessage() = null");
+                }
             }
         }).getBitmap();
     }
@@ -459,6 +463,45 @@ public class RadioStreamService extends Service {
                 }
             }
         }
+        if (PlaylistParser.isPlaylistUrl(streamURL)) {
+            resolveStreamUrlTask = new PlaylistRequestTask(this);
+            resolveStreamUrlTask.execute(streamURL);
+        } else {
+            statusCheckTask = new HttpStatusCheckTask(this);
+            statusCheckTask.execute(streamURL);
+        }
+    }
+
+    @Override
+    public void onPlaylistRequestFinished(PlaylistInfo result) {
+        if (result != null && result.valid) {
+            statusCheckTask = new HttpStatusCheckTask(this);
+            statusCheckTask.execute(result.streamUrl);
+            return;
+        }
+
+        if (alarmIsRunning) {
+            startFallbackAlarm();
+        }
+
+        Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
+        stopSelf();
+    }
+
+    @Override
+    public void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult) {
+        if (checkResult != null && checkResult.isSuccess()) {
+            streamURL = checkResult.url;
+            playStream();
+            return;
+        }
+
+        if (alarmIsRunning) {
+            startFallbackAlarm();
+        }
+
+        Toast.makeText(this, getString(R.string.radio_stream_failure), Toast.LENGTH_SHORT).show();
+        stopSelf();
     }
 
     @Override
@@ -575,44 +618,53 @@ public class RadioStreamService extends Service {
                 public void onPlaybackStateChanged(@Player.State int state) {
                     Log.d(TAG, "onPlaybackStateChanged() state: " + state);
 
-                    if ((state == ExoPlayer.STATE_READY) && exoPlayer.getPlayWhenReady()) {
-                        Log.d(TAG, "onPlayerStateChanged PLAYING");
+                    switch (state) {
+                        case ExoPlayer.STATE_READY:
+                            Log.d(TAG, "The player is able to immediately play from its current position.");
 
+                            Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
+                            intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                            fadeInDelay = 50;
+                            currentVolume = 0.f;
+                            handler.postDelayed(fadeIn, muteDelayInMillis);
+
+                            if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
+                                vibrator.startVibration();
+                            }
+                            break;
+                        case ExoPlayer.STATE_ENDED:
+                            Log.d(TAG, "The player finished playing all media");
+                            stateBuilder.setState(PlaybackStateCompat.STATE_STOPPED,
+                                    exoPlayer.getCurrentPosition(), 1f);
+                            handler.removeCallbacks(fadeIn);
+                            break;
+                    }
+
+                    mediaSession.setPlaybackState(stateBuilder.build());
+                }
+
+                @Override
+                public void onIsPlayingChanged(boolean isPlaying) {
+                    Log.d(TAG, "onIsPlayingChanged() isPlaying: " + isPlaying);
+
+                    if (isPlaying) {
+                        Log.d(TAG, "onIsPlayingChanged: Play");
                         stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                                 exoPlayer.getCurrentPosition(), 1f);
-
-                        Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-                        intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                        fadeInDelay = 50;
-                        currentVolume = 0.f;
-                        handler.postDelayed(fadeIn, muteDelayInMillis);
 
                         if (icyInfo != null) {
                             updateNotification(icyInfo.title);
                         } else {
                             updateNotification(getResources().getString(R.string.radio_connecting));
                         }
-
-                        if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
-                            vibrator.startVibration();
-                        }
-
-                    } else if ((state == ExoPlayer.STATE_READY)) {
-                        Log.d(TAG, "onPlayerStateChanged: PAUSED");
+                    } else if (!exoPlayer.getPlayWhenReady()) {
+                        Log.d(TAG, "onIsPlayingChanged: PAUSED");
                         stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                                 exoPlayer.getCurrentPosition(), 1f);
                         handler.removeCallbacks(fadeIn);
                         updateNotification(getResources().getString(R.string.radio_paused));
-                        Log.d(TAG, "onPlayerStateChanged stateBuilder: " + stateBuilder.build().getState());
-                        Log.d(TAG, "onPlayerStateChanged STATE_PLAYING: " + PlaybackStateCompat.STATE_PAUSED);
-                    } else if ((state == ExoPlayer.STATE_IDLE)) {
-                        Log.d(TAG, "onPlayerStateChanged: The player does not have any media to play");
-                        stateBuilder.setState(PlaybackStateCompat.STATE_STOPPED,
-                                exoPlayer.getCurrentPosition(), 1f);
                     }
-
-                    mediaSession.setPlaybackState(stateBuilder.build());
                 }
 
                 @Override
@@ -735,13 +787,14 @@ public class RadioStreamService extends Service {
     }
 
     private void updateNotification(String title) {
-        Log.i(TAG, "UpdateNotification()");
+        Log.i(TAG, "UpdateNotification() Title: " + title);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.cancel(NOTIFY_ID);
 
         String action = this.intent.getAction();
         if (ACTION_START.equals(action) || exoPlayer == null) {
+            Log.d(TAG, "UpdateNotification() return. action: " + action + " - exoPlayer: " + exoPlayer);
             return;
         }
 
