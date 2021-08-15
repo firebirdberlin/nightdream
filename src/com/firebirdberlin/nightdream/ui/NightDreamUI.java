@@ -24,7 +24,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -38,12 +37,10 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.webkit.MimeTypeMap;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -74,9 +71,6 @@ import com.google.android.flexbox.FlexboxLayout;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
@@ -223,7 +217,7 @@ public class NightDreamUI {
         }
     };
     private final Runnable backgroundChange = () -> {
-        setupBackgroundImage();
+        setupSlideshow();
         postBackgroundImageChange();
     };
     private final Runnable hideAlarmClock = new Runnable() {
@@ -492,26 +486,21 @@ public class NightDreamUI {
         exifView = new ExifView(mContext);
         exifLayoutContainer.addView(exifView.getView());
 
-        OnClickListener onMenuItemClickListener = new OnClickListener() {
-            public void onClick(View v) {
-                if (locked) return;
-                toggleSidePanel();
-            }
+        OnClickListener onMenuItemClickListener = v -> {
+            if (locked) return;
+            toggleSidePanel();
         };
         menuIcon.setOnClickListener(onMenuItemClickListener);
-        View.OnLongClickListener onMenuItemLongClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                locked = !locked;
-                settings.setUILocked(locked);
-                lockUI(locked);
-                if (locked) {
-                    hideSidePanel();
-                }
-                VibrationHandler handler = new VibrationHandler(mContext);
-                handler.startOneShotVibration(50);
-                return true;
+        View.OnLongClickListener onMenuItemLongClickListener = v -> {
+            locked = !locked;
+            settings.setUILocked(locked);
+            lockUI(locked);
+            if (locked) {
+                hideSidePanel();
             }
+            VibrationHandler handler = new VibrationHandler(mContext);
+            handler.startOneShotVibration(50);
+            return true;
         };
         menuIcon.setOnLongClickListener(onMenuItemLongClickListener);
 
@@ -614,7 +603,7 @@ public class NightDreamUI {
         }
     }
 
-    private void initBottomPannelLayout(){
+    private void initBottomPannelLayout() {
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
@@ -654,31 +643,25 @@ public class NightDreamUI {
                     ExecutorService executor = Executors.newSingleThreadExecutor();
                     Handler handler = new Handler(Looper.getMainLooper());
 
-                    executor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            //doinbackground if cachefile not exists first write to cachefile
+                    executor.execute(() -> {
+                        //doinbackground if cachefile not exists first write to cachefile
 
-                            if (!background_images[background_image_active].existCacheFile()) {
-                                background_images[background_image_active].setImageDrawable(colorBlack);
-                                background_images[background_image_active].bitmapUriToCache(Uri.parse(settings.backgroundImageURI));
-                            }
-
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //like onPostExecute()
-                                    background_images[background_image_active].setImage(Uri.parse(settings.backgroundImageURI));
-                                    setDominantColorFromBitmap(background_images[background_image_active].getBitmap());
-                                    if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                                        background_images[(background_image_active + 1) % 2].setImageBitmap(Graphics.blur(mContext, background_images[background_image_active].getBitmap()));
-                                        background_images[(background_image_active + 1) % 2].setScaleType(ImageView.ScaleType.CENTER_CROP);
-                                    } else {
-                                        background_images[(background_image_active + 1) % 2].setImageDrawable(colorBlack);
-                                    }
-                                }
-                            });
+                        if (!background_images[background_image_active].existCacheFile()) {
+                            background_images[background_image_active].setImageDrawable(colorBlack);
+                            background_images[background_image_active].bitmapUriToCache(Uri.parse(settings.backgroundImageURI));
                         }
+
+                        handler.post(() -> {
+                            //like onPostExecute()
+                            background_images[background_image_active].setImage(Uri.parse(settings.backgroundImageURI));
+                            setDominantColorFromBitmap(background_images[background_image_active].getBitmap());
+                            if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                                background_images[(background_image_active + 1) % 2].setImageBitmap(Graphics.blur(mContext, background_images[background_image_active].getBitmap()));
+                                background_images[(background_image_active + 1) % 2].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            } else {
+                                background_images[(background_image_active + 1) % 2].setImageDrawable(colorBlack);
+                            }
+                        });
                     });
 
                     break;
@@ -1151,19 +1134,17 @@ public class NightDreamUI {
         removeCallbacks(moveAround);
         removeCallbacks(backgroundChange);
 
-        Runnable fixConfig = new Runnable() {
-            public void run() {
-                float s = getScaleFactor(newConfig);
-                clockLayout.setScaleFactor(s);
-                Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
-                setClockPosition(newConfig);
+        Runnable fixConfig = () -> {
+            float s = getScaleFactor(newConfig);
+            clockLayout.setScaleFactor(s);
+            Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
+            setClockPosition(newConfig);
 
-                postDelayed(moveAround, Utility.millisToTimeTick(20000));
-                if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
-                    postBackgroundImageChange();
-                }
-                sidePanel.post(setupSidePanel);
+            postDelayed(moveAround, Utility.millisToTimeTick(20000));
+            if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
+                postBackgroundImageChange();
             }
+            sidePanel.post(setupSidePanel);
         };
 
         clockLayout.postDelayed(fixConfig, 200);
