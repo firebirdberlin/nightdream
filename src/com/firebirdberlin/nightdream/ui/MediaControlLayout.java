@@ -66,7 +66,9 @@ public class MediaControlLayout extends ViewModel {
 
         if (this.actionImages.getValue() != null) {
             for (int i = 0; i < this.actionImages.getValue().size(); i++) {
-                this.actionImages.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                if (this.actionImages.getValue().get(i) != null) {
+                    this.actionImages.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                }
             }
         }
     }
@@ -156,7 +158,9 @@ public class MediaControlLayout extends ViewModel {
                         new View.OnClickListener() {
                             public void onClick(View v) {
                                 try {
-                                    action.actionIntent.send();
+                                    if (action.actionIntent != null) {
+                                        action.actionIntent.send();
+                                    }
                                 } catch (PendingIntent.CanceledException ex) {
                                     Log.e(TAG, "MediaStyle - Notification set actionIntent");
                                 }

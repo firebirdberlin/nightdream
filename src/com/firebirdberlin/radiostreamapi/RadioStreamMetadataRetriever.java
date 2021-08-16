@@ -90,7 +90,6 @@ public class RadioStreamMetadataRetriever {
                         listener.onMetadataAvailable(metadata);
                     }
                 }
-
             };
 
             new StreamMetadataTask(cacheCallback, context).execute(url);

@@ -317,6 +317,7 @@ public class WebRadioLayout extends RelativeLayout {
             b.setTextColor(color);
             border.setColorFilter((color == accentColor) ? new LightingColorFilter(accentColor, 1) : new LightingColorFilter(textColor, 1));
         }
+        invalidate();
     }
 
     private void stopRadioStream() {
@@ -620,16 +621,23 @@ public class WebRadioLayout extends RelativeLayout {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
-                setShowConnectingHint(true);
-                updateText();
-            } else if (Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK.equals(action)) {
-                setShowConnectingHint(false);
-                updateMetaData();
-                updateText();
-            } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
-                updateText();
-                setShowConnectingHint(false);
+            switch (action) {
+                case Config.ACTION_RADIO_STREAM_STARTED:
+                    setShowConnectingHint(true);
+                    updateText();
+                    break;
+                case Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK:
+                    setShowConnectingHint(false);
+                    updateMetaData();
+                    updateText();
+                    break;
+                case Config.ACTION_RADIO_STREAM_STOPPED:
+                    Log.d(TAG, "BroadcastReceiver - ACTION_RADIO_STREAM_STOPPED");
+                    updateText();
+                    setShowConnectingHint(false);
+                    activeStationIndex = null;
+                    updateButtonState();
+                    break;
             }
         }
     }
