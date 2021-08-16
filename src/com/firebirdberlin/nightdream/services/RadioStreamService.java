@@ -374,16 +374,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                     readyForPlayback = false;
                     Log.d(TAG, "stopself");
                     stopSelf();
-/*
-                    Intent stopIntent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(stopIntent);
-
-                    stopIntent.setAction(Config.ACTION_NOTIFICATION_LISTENER);
-                    stopIntent.putExtra("action", "remove_media");
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(stopIntent);
-                    break;
-
- */
             }
         }
 
