@@ -280,40 +280,54 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
 
         alarmTime = null;
         Bundle extras = intent.getExtras();
-        if (ACTION_START.equals(action) && extras != null) {
-            alarmIsRunning = true;
-            streamingMode = StreamingMode.ALARM;
-            alarmTime = new SimpleTime(extras);
-            setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
+        if (action != null) {
+            switch (action) {
+                case ACTION_START:
+                    if (extras != null) {
+                        alarmIsRunning = true;
+                        streamingMode = StreamingMode.ALARM;
+                        alarmTime = new SimpleTime(extras);
+                        setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
 
-            maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
-            fadeInDelay = settings.alarmFadeInDurationSeconds * 1000 / maxVolumePercent;
+                        maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
+                        fadeInDelay = settings.alarmFadeInDurationSeconds * 1000L / maxVolumePercent;
 
-            radioStationIndex = alarmTime.radioStationIndex;
-            checkStreamAndStart(radioStationIndex);
-            // stop the alarm automatically after playing for two hours
-            handler.postDelayed(timeout, 60000 * 120);
-        } else if (ACTION_START_STREAM.equals(action) && extras != null) {
-            alarmTime = new SimpleTime(extras);
-            radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
+                        radioStationIndex = alarmTime.radioStationIndex;
+                        checkStreamAndStart(radioStationIndex);
+                        // stop the alarm automatically after playing for two hours
+                        handler.postDelayed(timeout, 60000 * 120);
+                    }
+                    break;
+                case ACTION_START_STREAM:
+                    if (extras != null) {
+                        alarmTime = new SimpleTime(extras);
+                        radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
 
-            Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
-            broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
-            streamingMode = StreamingMode.RADIO;
-            currentStreamType = AudioManager.STREAM_MUSIC;
-            fadeInDelay = 50;
-            myNoisyAudioStreamReceiver = new BecomingNoisyReceiver();
-            registerReceiver(myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter);
-            RadioStreamMetadataRetriever.getInstance().clearCache();
-            readyForPlayback = false;
-            checkStreamAndStart(radioStationIndex);
-        } else if (ACTION_STOP.equals(action)) {
-            RadioStreamMetadataRetriever.getInstance().clearCache();
-            readyForPlayback = false;
-            stopSelf();
-        } else if (ACTION_NEXT_STATION.equals(action)) {
-            switchToNextStation();
+                        Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
+                        broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
+                        streamingMode = StreamingMode.RADIO;
+                        currentStreamType = AudioManager.STREAM_MUSIC;
+                        fadeInDelay = 50;
+                        if (myNoisyAudioStreamReceiver == null) {
+                            myNoisyAudioStreamReceiver = new BecomingNoisyReceiver();
+                            registerReceiver(myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter);
+                        }
+
+                        RadioStreamMetadataRetriever.getInstance().clearCache();
+                        readyForPlayback = false;
+                        checkStreamAndStart(radioStationIndex);
+                    }
+                    break;
+                case ACTION_STOP:
+                    RadioStreamMetadataRetriever.getInstance().clearCache();
+                    readyForPlayback = false;
+                    stopSelf();
+                    break;
+                case ACTION_NEXT_STATION:
+                    switchToNextStation();
+                    break;
+            }
         }
 
         if (!alarmIsRunning) {
@@ -323,6 +337,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnErrorLi
         } else {
             sleepTimeInMillis = 0L;
         }
+
         return Service.START_REDELIVER_INTENT;
     }
 

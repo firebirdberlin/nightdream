@@ -178,7 +178,19 @@ public class mNotificationListener extends NotificationListenerService {
         Log.i(TAG, "++++ notification removed ++++");
         logNotification(sbn);
 
-        listNotifications(true);
+        listNotifications();
+
+        Intent i = getIntentForBroadCast(sbn);
+        if (i != null) {
+            String template = i.getStringExtra("template");
+            if (template != null) {
+                if (template.contains("MediaStyle")) {
+                    i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
+                    i.putExtra("action", "removed_media");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+                }
+            }
+        }
     }
 
     private void deleteNotification(ArrayList<String> delete) {
@@ -198,10 +210,6 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void listNotifications() {
-        listNotifications(false);
-    }
-
-    private void listNotifications(boolean removed) {
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         notifications.clear();
         notificationApps.clear();
@@ -263,9 +271,6 @@ public class mNotificationListener extends NotificationListenerService {
         }
         Intent intentList = new Intent("Notification.Action.notificationList");
         intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
-        if (removed) {
-            intentList.putExtra("removed", true);
-        }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intentList);
 
         Intent intentAppsList = new Intent(Config.ACTION_NOTIFICATION_APPS_LISTENER);
