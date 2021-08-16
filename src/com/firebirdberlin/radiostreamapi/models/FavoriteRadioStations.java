@@ -70,7 +70,7 @@ public class FavoriteRadioStations {
             String key = keys.next();
             JSONObject stationObj = (JSONObject) favorites.get(key);
             RadioStation station = RadioStation.fromJsonObj(stationObj);
-            result.set(Integer.valueOf(key), station);
+            result.set(Integer.parseInt(key), station);
         }
         return result;
     }
