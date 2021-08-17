@@ -12,10 +12,12 @@ public class RadioStation {
     private static final String JSON_USER_DEFINED_STREAM_URL = "user_defined_stream_URL";
     private static final String JSON_STATUS = "status";
     private static final String JSON_MUTE_DELAY_MILLIS = "muteDelayInMills";
+    private static final String JSON_FAVICON = "favicon";
     public String uuid;
     public String name;
     public String countryCode;
     public String stream;
+    public String favIcon;
     public boolean isOnline;
     public long bitrate;
     public boolean isUserDefinedStreamUrl = false;
@@ -39,6 +41,11 @@ public class RadioStation {
         station.name = jsonStation.getString(JSON_NAME);
         station.countryCode = jsonStation.getString(JSON_COUNTRY);
         station.stream = jsonStation.getString(JSON_STREAM);
+        if (jsonStation.has(JSON_FAVICON)) {
+            station.favIcon = jsonStation.getString(JSON_FAVICON);
+        } else {
+            station.favIcon = "";
+        }
         try {
             station.muteDelayInMillis = jsonStation.getLong(JSON_MUTE_DELAY_MILLIS);
         } catch (JSONException e) {
@@ -82,6 +89,7 @@ public class RadioStation {
         jsonStation.put(JSON_USER_DEFINED_STREAM_URL, isUserDefinedStreamUrl);
         jsonStation.put(JSON_MUTE_DELAY_MILLIS, muteDelayInMillis);
         //jsonStation.put(JSON_STATUS, isOnline);
+        jsonStation.put(JSON_FAVICON, favIcon);
         return jsonStation;
     }
 }
