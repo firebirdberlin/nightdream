@@ -282,6 +282,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="purchaseActions">Zusatzfunktionen-Paket kaufen</string>
     <string name="purchaseWeatherData">Wetter- und Design-Paket kaufen</string>
     <string name="radio">Radio</string>
+    <string name="radio_connecting">verbinde</string>
+    <string name="radio_muting">Werbung stummschalten</string>
+    <string name="radio_next">nächster Radiosender</string>
+    <string name="radio_pause">Radio pausieren</string>
+    <string name="radio_paused">Radio angehalten</string>
+    <string name="radio_play">Radio starten</string>
+    <string name="radio_playing">Stream läuft</string>
+    <string name="radio_previous">vorheriger Radiosender</string>
     <string name="radio_station">Sender</string>
     <string name="radio_station_dialog_title">Radiosender auswählen</string>
     <string name="radio_station_none">kein Radiosender</string>
