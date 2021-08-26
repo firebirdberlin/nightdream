@@ -306,7 +306,6 @@ public class AlarmClockView extends View {
 
     @Override
     protected void onDraw(Canvas canvas){
-        Log.w(TAG, "onDraw()");
         if ( !isClickable() ) return;
 
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
