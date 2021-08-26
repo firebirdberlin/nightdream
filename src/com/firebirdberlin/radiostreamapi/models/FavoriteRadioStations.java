@@ -1,5 +1,7 @@
 package com.firebirdberlin.radiostreamapi.models;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +42,23 @@ public class FavoriteRadioStations {
         return total;
     }
 
+    public int previousAvailableIndex(int currentIndex) {
+        if (currentIndex < 0 || currentIndex >= radioStations.length) {
+            return -1;
+        }
+
+        for (int i = 0; i < radioStations.length; i++) {
+            int index = (currentIndex - 1 - i + radioStations.length) % radioStations.length;
+            RadioStation s = radioStations[index];
+            if (s != null) {
+                return index;
+            }
+        }
+
+        // should never happen
+        return currentIndex;
+    }
+
     public int nextAvailableIndex(int currentIndex) {
         if (currentIndex < 0 || currentIndex >= radioStations.length) {
             return -1;
@@ -53,7 +72,7 @@ public class FavoriteRadioStations {
             }
         }
         // should never happen
-        return -1;
+        return currentIndex;
     }
 
     private static final String JSON_FAVORITES = "favorites";
