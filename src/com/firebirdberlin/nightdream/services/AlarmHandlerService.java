@@ -111,6 +111,12 @@ public class AlarmHandlerService extends IntentService {
         return i;
     }
 
+    public static SimpleTime getCurrentlyActiveAlarm() {
+        EventBus bus = EventBus.getDefault();
+        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
+        return (event != null) ? event.entry : null;
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         SimpleTime currentAlarm = getCurrentlyActiveAlarm();
@@ -119,7 +125,7 @@ public class AlarmHandlerService extends IntentService {
         Log.d(TAG, TAG + " started");
         String action = intent.getAction();
 
-        if (ACTION_STOP_ALARM.equals(action) ) {
+        if (ACTION_STOP_ALARM.equals(action)) {
             stopAlarm();
         } else if (ACTION_SKIP_ALARM.equals(action)) {
             Bundle bundle = intent.getExtras();
@@ -127,10 +133,10 @@ public class AlarmHandlerService extends IntentService {
                 SimpleTime time = new SimpleTime(bundle);
                 SqliteIntentService.skipAlarm(context, time);
             }
-        } else if (ACTION_SNOOZE_ALARM.equals(action) ) {
+        } else if (ACTION_SNOOZE_ALARM.equals(action)) {
             snoozeAlarm();
-        } else if (ACTION_AUTOSNOOZE_ALARM.equals(action) ) {
-            if (currentAlarm.numAutoSnoozeCycles == settings.autoSnoozeCycles) {
+        } else if (ACTION_AUTOSNOOZE_ALARM.equals(action)) {
+            if (currentAlarm != null && currentAlarm.numAutoSnoozeCycles == settings.autoSnoozeCycles) {
                 stopAlarm();
             } else {
                 snoozeAlarm(true);
@@ -139,10 +145,10 @@ public class AlarmHandlerService extends IntentService {
     }
 
     private void stopAlarm() {
-       stopAlarm(true);
+        stopAlarm(true);
     }
 
-    private void stopAlarm(boolean reschedule){
+    private void stopAlarm(boolean reschedule) {
         boolean isRunning = alarmIsRunning();
         if (AlarmService.isRunning) {
             AlarmService.stop(context);
@@ -165,7 +171,9 @@ public class AlarmHandlerService extends IntentService {
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         }
 
-        AlarmNotificationService.cancelNotification(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmNotificationService.cancelNotification(this);
+        }
 
         if (reschedule) {
             SqliteIntentService.scheduleAlarm(this);
@@ -186,13 +194,9 @@ public class AlarmHandlerService extends IntentService {
         time.soundUri = (currentAlarm != null) ? currentAlarm.soundUri : null;
         time.radioStationIndex = (currentAlarm != null) ? currentAlarm.radioStationIndex : -1;
         time.vibrate = (currentAlarm != null) ? currentAlarm.vibrate : false;
-        time.numAutoSnoozeCycles = (isAutoSnooze) ? currentAlarm.numAutoSnoozeCycles + 1 : 0;
+        time.numAutoSnoozeCycles = (currentAlarm != null && isAutoSnooze)
+                ? currentAlarm.numAutoSnoozeCycles + 1
+                : 0;
         SqliteIntentService.snooze(context, time);
-    }
-
-    public static SimpleTime getCurrentlyActiveAlarm() {
-        EventBus bus = EventBus.getDefault();
-        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
-        return (event != null) ? event.entry : null;
     }
 }
