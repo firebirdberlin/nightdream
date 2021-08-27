@@ -67,6 +67,7 @@ public class WebRadioLayout extends RelativeLayout {
     private int textColor = -1;
     private int maxNumButtons = 0;
     private Settings settings;
+    private String metaTitle = null;
     private Integer activeStationIndex;
     private MediaRouteButton mMediaRouteButton;
     private final OnClickListener buttonOnClickListener = new OnClickListener() {
@@ -130,7 +131,8 @@ public class WebRadioLayout extends RelativeLayout {
         textView.setOnClickListener(view -> {
             if (locked) return;
             notifyUserInteraction();
-            updateMetaData();
+            //updateMetaData();
+            showInfoDialog();
         });
         textView.setOnLongClickListener(view -> {
             if (locked) return false;
@@ -373,6 +375,7 @@ public class WebRadioLayout extends RelativeLayout {
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
+        filter.addAction(Config.ACTION_RADIO_STREAM_METADATA_UPDATED);
         LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter);
         return receiver;
     }
@@ -492,15 +495,9 @@ public class WebRadioLayout extends RelativeLayout {
         RadioStation station = RadioStreamService.getCurrentRadioStation();
 
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.RADIO) {
-
             if (radioStationIndex >= 0 && station != null) {
-                textView.setText(station.name);
+                textView.setText(Utility.isEmpty(metaTitle) ? station.name : metaTitle);
                 setActiveStation(radioStationIndex);
-            }
-
-            if (showMetaInfoOnNextUpdate) {
-                // display current meta info when panel was hidden and becomes visible
-                updateMetaData();
             }
         } else {
             textView.setText("");
@@ -628,8 +625,12 @@ public class WebRadioLayout extends RelativeLayout {
                     break;
                 case Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK:
                     setShowConnectingHint(false);
-                    updateMetaData();
                     updateText();
+                    break;
+                case Config.ACTION_RADIO_STREAM_METADATA_UPDATED:
+                    setShowConnectingHint(false);
+                    metaTitle = intent.getStringExtra(RadioStreamService.EXTRA_TITLE);
+                    showMetaTitle(metaTitle);
                     break;
                 case Config.ACTION_RADIO_STREAM_STOPPED:
                     Log.d(TAG, "BroadcastReceiver - ACTION_RADIO_STREAM_STOPPED");
