@@ -79,6 +79,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
     public static int currentStreamType = AudioManager.USE_DEFAULT_STREAM_TYPE;
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
+    public static String EXTRA_TITLE = "title";
     static RadioStreamService mRadioStreamService = null;
     private static boolean readyForPlayback = false;
     static private int radioStationIndex;
@@ -680,7 +681,13 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 public void onMediaMetadataChanged(com.google.android.exoplayer2.MediaMetadata metadata) {
                     Log.i(TAG, "onMediaMetadataChanged:" + metadata.title);
                     mediaMetaData = metadata;
-                    updateNotification(metadata.title.toString());
+                    if (metadata.title != null) {
+                        updateNotification(metadata.title.toString());
+                        Intent intent = new Intent(Config.ACTION_RADIO_STREAM_METADATA_UPDATED);
+                        intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+                        intent.putExtra(EXTRA_TITLE, metadata.title.toString());
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                    }
                 }
             });
 
