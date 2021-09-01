@@ -37,7 +37,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class RadioStreamDialog
-        implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse {
+        implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse
+{
 
     private final static String TAG = "RadioStreamDialog";
 
@@ -217,17 +218,14 @@ public class RadioStreamDialog
     @Override
     public void onCountryRequestFinished(List<Country> countries) {
         // sort countries alphabetically
-        Collections.sort(countries, new Comparator<Country>() {
-            @Override
-            public int compare(Country lhs, Country rhs) {
-                if (lhs.name == null) {
-                    return -1;
-                }
-                if (rhs.name == null) {
-                    return 1;
-                }
-                return lhs.name.compareTo(rhs.name);
+        Collections.sort(countries, (lhs, rhs) -> {
+            if (lhs.name == null) {
+                return -1;
             }
+            if (rhs.name == null) {
+                return 1;
+            }
+            return lhs.name.compareTo(rhs.name);
         });
 
         updateCountryNameToCodeMap(countries);
@@ -291,11 +289,8 @@ public class RadioStreamDialog
         // now add all countries (including preferred country, so they are duplicates, but no problem)
         for (Country c : countries) {
             countryList.add(c.name);
-
             // if radio station is already configured selects its country as default
-            if (preferredCountry != null &&
-                    c.name != null &&
-                    c.name.equals(preferredCountry)) {
+            if (c.countryCode != null && c.countryCode.equals(preferredCountry)) {
                 //  c.name.equals(persistedRadioStation.countryCode)) {
                 selectedItemIndex = countryList.size() - 1;
             }
