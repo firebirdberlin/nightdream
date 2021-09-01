@@ -77,9 +77,6 @@ public class BottomPanelLayout extends FrameLayout {
         } else {
             isVisible = false;
             setClickable(false);
-            if (webRadioLayout != null) {
-                webRadioLayout.hide();
-            }
             setAlpha(this, 0.f, 2000);
         }
     }
@@ -93,11 +90,7 @@ public class BottomPanelLayout extends FrameLayout {
         }
     }
 
-    public void onResume() {
-        if (webRadioLayout != null) {
-            webRadioLayout.showMetaInfoOnNextUpdate();
-        }
-    }
+    public void onResume() {}
 
     public void show() {
         isVisible = true;

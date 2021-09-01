@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.ui;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
@@ -40,8 +39,6 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
-import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import com.google.android.gms.cast.framework.CastButtonFactory;
@@ -57,7 +54,6 @@ public class WebRadioLayout extends RelativeLayout {
     private ImageView buttonSleepTimer;
     private ImageView volumeMutedIndicator;
     private boolean showConnectingHint = false;
-    private boolean showMetaInfoOnNextUpdate = true;
     private ProgressBar spinner;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
@@ -119,27 +115,10 @@ public class WebRadioLayout extends RelativeLayout {
         initButtons();
         initVolumeMutedIndicator();
         initSpinner();
-        initTextView();
         initButtonSleepTimer();
 
         startLastActiveRadioStream();
         updateText();
-    }
-
-    private void initTextView() {
-
-        textView.setOnClickListener(view -> {
-            if (locked) return;
-            notifyUserInteraction();
-            //updateMetaData();
-            showInfoDialog();
-        });
-        textView.setOnLongClickListener(view -> {
-            if (locked) return false;
-            notifyUserInteraction();
-            showInfoDialog();
-            return true;
-        });
     }
 
     private void initButtonSleepTimer() {
@@ -480,14 +459,6 @@ public class WebRadioLayout extends RelativeLayout {
         this.locked = locked;
     }
 
-    protected void hide() {
-        showMetaInfoOnNextUpdate = true;
-    }
-
-    protected void showMetaInfoOnNextUpdate() {
-        showMetaInfoOnNextUpdate = true;
-    }
-
     protected void updateText() {
         if (textView == null) return;
 
@@ -508,41 +479,6 @@ public class WebRadioLayout extends RelativeLayout {
         updateVolumeMutedIndicator();
         buttonSleepTimer.setVisibility(RadioStreamService.isRunning ? VISIBLE : INVISIBLE);
         volumeMutedIndicator.setVisibility(RadioStreamService.isRunning ? VISIBLE : INVISIBLE);
-        showMetaInfoOnNextUpdate = false;
-    }
-
-    private void updateMetaData() {
-        if (RadioStreamService.getCurrentRadioStation() == null) {
-            return;
-        }
-
-        RadioStreamMetadataListener listener = new RadioStreamMetadataListener() {
-            @Override
-            public void onMetadataRequestStarted() {
-                setShowConnectingHint(true, true);
-            }
-
-            @Override
-            public void onMetadataAvailable(RadioStreamMetadata metadata) {
-                String streamTitle = (metadata != null ? metadata.streamTitle : null);
-                showMetaTitle(streamTitle);
-            }
-        };
-
-        RadioStreamService.updateMetaData(listener, context);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void showInfoDialog() {
-        // dialog not available while stream is still loading or stopped
-        if (!RadioStreamService.isReadyForPlayback() ||
-                RadioStreamService.getCurrentRadioStation() == null) {
-            return;
-        }
-
-        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
-        RadioInfoDialogFragment dialog = new RadioInfoDialogFragment();
-        dialog.show(fm, "radio info");
     }
 
     private void showMetaTitle(final String metaTitle) {
@@ -634,6 +570,7 @@ public class WebRadioLayout extends RelativeLayout {
                     break;
                 case Config.ACTION_RADIO_STREAM_STOPPED:
                     Log.d(TAG, "BroadcastReceiver - ACTION_RADIO_STREAM_STOPPED");
+                    metaTitle = null;
                     updateText();
                     setShowConnectingHint(false);
                     activeStationIndex = null;
