@@ -43,9 +43,6 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.radiostreamapi.PlaylistParser;
 import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
-import com.firebirdberlin.radiostreamapi.RadioStreamMetadata;
-import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever;
-import com.firebirdberlin.radiostreamapi.RadioStreamMetadataRetriever.RadioStreamMetadataListener;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -202,10 +199,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         return radioStation;
     }
 
-    public static RadioStreamMetadata getCurrentIcecastMetadata() {
-        return RadioStreamMetadataRetriever.getInstance().getCachedMetadata();
-    }
-
     public static void startStream(Context context, int radioStationIndex) {
         Log.d(TAG, "startStream()");
         if (!Utility.hasNetworkConnection(context)) {
@@ -229,19 +222,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Intent i = new Intent(context, RadioStreamService.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return i;
-    }
-
-    public static void updateMetaData(RadioStreamMetadataListener listener, Context context) {
-        Log.d(TAG, "updateMetaData()");
-
-        if (streamingMode != StreamingMode.RADIO) {
-            return;
-        }
-
-        RadioStreamMetadataRetriever.getInstance().retrieveMetadata(streamURL, listener, context);
-        if (RadioStreamMetadataRetriever.getInstance().getCachedMetadata() != null) {
-            Log.d(TAG, "New Metadata: " + RadioStreamMetadataRetriever.getInstance().getCachedMetadata().streamTitle);
-        }
     }
 
     public static boolean isSleepTimeSet() {
@@ -372,13 +352,11 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                             registerReceiver(myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter);
                         }
 
-                        RadioStreamMetadataRetriever.getInstance().clearCache();
                         readyForPlayback = false;
                         checkStreamAndStart(radioStationIndex);
                     }
                     break;
                 case ACTION_STOP:
-                    RadioStreamMetadataRetriever.getInstance().clearCache();
                     readyForPlayback = false;
                     Log.d(TAG, "stopself");
                     stopSelf();
