@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
@@ -80,6 +81,7 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
         this.stationIndex = stationIndex;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -132,8 +134,9 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
         // applied by LayoutInflater in RadioStreamDialog!
         // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme
         // for this DialogFragment)
-        RadioStreamDialog radioStreamDialog =
-                new RadioStreamDialog(builder.getContext(), radioStation, preferredCountry);
+        RadioStreamDialog radioStreamDialog = new RadioStreamDialog(
+                builder.getContext(), radioStation, preferredCountry
+        );
 
         RadioStreamDialogListener dialogDismissListener = new RadioStreamDialogListener() {
             @Override
