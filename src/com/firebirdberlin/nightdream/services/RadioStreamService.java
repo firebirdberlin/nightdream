@@ -575,7 +575,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                             Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
                             intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                            fadeInDelay = 50;
                             currentVolume = 0.f;
                             handler.postDelayed(fadeIn, muteDelayInMillis);
                             updateNotification(getResources().getString(R.string.radio_muting));

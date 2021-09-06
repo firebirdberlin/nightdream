@@ -357,9 +357,13 @@ public class WeatherForecastActivity
         }
         Log.i(TAG, "searching location");
         getLastKnownLocation();
-        locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 0, 0, locationListener
-        );
+        try {
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 0, 0, locationListener
+            );
+        } catch (RuntimeException e) {
+            Log.e(TAG, "RuntimeException");
+        }
     }
 
     private void getLastKnownLocation() {
