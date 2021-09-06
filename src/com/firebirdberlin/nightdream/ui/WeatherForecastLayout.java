@@ -60,7 +60,6 @@ public class WeatherForecastLayout extends LinearLayout {
     }
 
     private void init() {
-        Log.d(TAG, "init()");
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child = inflater.inflate(R.layout.weather_forecast_layout, null);
