@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,6 +22,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -50,34 +52,27 @@ import de.firebirdberlin.preference.InlineSeekBarPreference;
 public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
-    private static int RESULT_LOAD_IMAGE = 1;
-    private static int RESULT_LOAD_IMAGE_KITKAT = 4;
-    private static int RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP = 5;
     private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private final int PERMISSIONS_REQUEST_RECORD_AUDIO = 3;
+    private final Handler handler = new Handler();
     Snackbar snackbar;
     String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
     Preference.OnPreferenceChangeListener recordAudioPrefChangeListener =
-            new Preference.OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(Preference preference, Object new_value) {
-                    boolean on = Boolean.parseBoolean(new_value.toString());
-                    if (on && !hasPermission(Manifest.permission.RECORD_AUDIO)) {
-                        requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
-                                PERMISSIONS_REQUEST_RECORD_AUDIO);
-                    }
-                    return true;
+            (preference, new_value) -> {
+                boolean on = Boolean.parseBoolean(new_value.toString());
+                if (on && doesNotHavePermission(Manifest.permission.RECORD_AUDIO)) {
+                    requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
+                            PERMISSIONS_REQUEST_RECORD_AUDIO);
                 }
+                return true;
             };
-    private Handler handler = new Handler();
     private Settings settings = null;
     private Context mContext = null;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
-            new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    showPurchaseDialog();
-                    return true;
-                }
+            preference -> {
+                showPurchaseDialog();
+                return true;
             };
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
             new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -87,13 +82,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         View v = getView();
                         if (v != null) {
                             v.post(
-                                    new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
-                                            if (preview != null) {
-                                                preview.invalidate();
-                                            }
+                                    () -> {
+                                        ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
+                                        if (preview != null) {
+                                            preview.invalidate();
                                         }
                                     }
                             );
@@ -162,8 +154,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     ClockWidgetProvider.updateAllWidgets(mContext);
                 }
             };
-
-    private Runnable runnableNotificationAccessChanged = new Runnable() {
+    private final Runnable runnableNotificationAccessChanged = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(runnableNotificationAccessChanged);
@@ -174,7 +165,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Preference preference = findPreference("showNotification");
 
             if (preference != null) {
-                if (!isNotificationAccessGranted()) {
+                if (isNotificationAccessDenied()) {
                     preference.setSummary(getString(R.string.showNotificationsAccessNotGranted));
                     preference.setEnabled(false);
                 } else {
@@ -185,26 +176,30 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
     };
+    private ActivityResultLauncher<Intent> activityResultLauncherLoadImage = null;
+    private ActivityResultLauncher<Intent> activityResultLauncherLoadDirectory = null;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    boolean isNotificationAccessGranted() {
+    boolean isNotificationAccessDenied() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             NotificationManager n = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            return n.isNotificationPolicyAccessGranted();
+            return !n.isNotificationPolicyAccessGranted();
         } else {
-            return mNotificationListener.running;
+            return !mNotificationListener.running;
         }
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         mContext = activity;
+        activityResultLauncherLoadImage = registerActivityResultLoadImage();
+        activityResultLauncherLoadDirectory = registerActivityResultLoadDirectory();
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
     }
@@ -312,11 +307,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         Log.d(TAG, "onCreatePreferences rootKey: " + rootKey);
         handler.removeCallbacks(runnableNotificationAccessChanged);
@@ -361,7 +351,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
                         if (showNotificationPreference != null) {
 
-                            if (!isNotificationAccessGranted()) {
+                            if (isNotificationAccessDenied()) {
                                 showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessNotGranted));
                                 showNotificationPreference.setEnabled(false);
 
@@ -444,29 +434,23 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         if ("autostart".equals(rootKey)) {
             Preference prefHandlePower = findPreference("handle_power");
-            prefHandlePower.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(Preference preference, Object new_value) {
-                    boolean on = Boolean.parseBoolean(new_value.toString());
-                    Utility.toggleComponentState(context, PowerConnectionReceiver.class, on);
-                    return true;
-                }
+            prefHandlePower.setOnPreferenceChangeListener((preference, new_value) -> {
+                boolean on = Boolean.parseBoolean(new_value.toString());
+                Utility.toggleComponentState(context, PowerConnectionReceiver.class, on);
+                return true;
             });
 
         } else if ("background".equals(rootKey)) {
             setupBackgroundImageControls(prefs);
             Preference chooseImage = findPreference("chooseBackgroundImage");
-            chooseImage.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    checkPermissionAndSelectBackgroundImage();
-                    return true;
-                }
+            chooseImage.setOnPreferenceClickListener(preference -> {
+                checkPermissionAndSelectBackgroundImage();
+                return true;
             });
             Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
-            chooseDirectory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    checkPermissionAndSelectDirectoryBackgroundImage();
-                    return true;
-                }
+            chooseDirectory.setOnPreferenceClickListener(preference -> {
+                checkPermissionAndSelectDirectoryBackgroundImage();
+                return true;
             });
         } else if ("brightness".equals(rootKey)) {
             setupBrightnessControls(prefs);
@@ -492,64 +476,54 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
             Preference recommendApp = findPreference("recommendApp");
             if (recommendApp != null) {
-                recommendApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    public boolean onPreferenceClick(Preference preference) {
-                        recommendApp();
-                        return true;
-                    }
+                recommendApp.setOnPreferenceClickListener(preference -> {
+                    recommendApp();
+                    return true;
                 });
             }
 
             Preference exportPreferences = findPreference("exportPreferences");
             if (exportPreferences != null) {
-                exportPreferences.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    public boolean onPreferenceClick(Preference preference) {
-                        ExportPreferences export = new ExportPreferences(getActivity());
-                        export.execute();
-                        return true;
-                    }
+                exportPreferences.setOnPreferenceClickListener(preference -> {
+                    ExportPreferences export = new ExportPreferences(getActivity());
+                    export.execute();
+                    return true;
                 });
             }
 
             Preference uninstallApp = findPreference("uninstallApp");
             if (uninstallApp != null) {
-                uninstallApp.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    public boolean onPreferenceClick(Preference preference) {
-                        uninstallApplication();
-                        return true;
-                    }
+                uninstallApp.setOnPreferenceClickListener(preference -> {
+                    uninstallApplication();
+                    return true;
                 });
             }
             Preference resetToDefaults = findPreference("reset_to_defaults");
             if (resetToDefaults != null) {
 
-                resetToDefaults.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    public boolean onPreferenceClick(Preference preference) {
-                        new AlertDialog.Builder(mContext)
-                                .setTitle(getResources().getString(R.string.confirm_reset))
-                                .setMessage(getResources().getString(R.string.confirm_reset_question))
-                                .setNegativeButton(android.R.string.no, null)
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        settings.clear();
-                                        getPreferenceScreen().removeAll();
-                                        WakeUpReceiver.cancelAlarm(mContext);
-                                        DataSource db = new DataSource(context);
-                                        db.open();
-                                        db.dropData();
-                                        db.close();
-                                        Settings.storeWeatherDataPurchase(
-                                                getContext(),
-                                                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
-                                                isPurchased(BillingHelperActivity.ITEM_DONATION)
-                                        );
-                                        PreferencesActivity activity = ((PreferencesActivity) mContext);
-                                        activity.initFragment();
-                                    }
-                                }).show();
+                resetToDefaults.setOnPreferenceClickListener(preference -> {
+                    new AlertDialog.Builder(mContext)
+                            .setTitle(getResources().getString(R.string.confirm_reset))
+                            .setMessage(getResources().getString(R.string.confirm_reset_question))
+                            .setNegativeButton(android.R.string.no, null)
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                                settings.clear();
+                                getPreferenceScreen().removeAll();
+                                WakeUpReceiver.cancelAlarm(mContext);
+                                DataSource db = new DataSource(context);
+                                db.open();
+                                db.dropData();
+                                db.close();
+                                Settings.storeWeatherDataPurchase(
+                                        getContext(),
+                                        isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
+                                        isPurchased(BillingHelperActivity.ITEM_DONATION)
+                                );
+                                PreferencesActivity activity = ((PreferencesActivity) mContext);
+                                activity.initFragment();
+                            }).show();
 
-                        return true;
-                    }
+                    return true;
                 });
 
             }
@@ -620,32 +594,48 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    ActivityResultLauncher<Intent> registerActivityResultLoadImage() {
+        return registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    int resultCode = result.getResultCode();
+                    Intent data = result.getData();
+                    if (resultCode != Activity.RESULT_OK || data == null) {
+                        return;
+                    }
+                    if (Build.VERSION.SDK_INT < 19) {
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
+                        Uri selectedImage = data.getData();
+                        String picturePath = getRealPathFromURI(selectedImage);
+                        if (picturePath != null) {
+                            settings.setBackgroundImage(picturePath);
+                        } else {
+                            Toast.makeText(getActivity(), "Could not locate image !", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Uri uri = data.getData();
+                        settings.setBackgroundImageURI(uri.toString());
+                    }
+                }
+        );
+    }
 
-            Uri selectedImage = data.getData();
-            String picturePath = getRealPathFromURI(selectedImage);
-            if (picturePath != null) {
-                settings.setBackgroundImage(picturePath);
-            } else {
-                Toast.makeText(getActivity(), "Could not locate image !", Toast.LENGTH_LONG).show();
-            }
-        } else if (requestCode == RESULT_LOAD_IMAGE_KITKAT && resultCode == Activity.RESULT_OK && data != null) {
-            Uri uri = data.getData();
-            settings.setBackgroundImageURI(uri.toString());
-        }
-
-        if (requestCode == RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP && resultCode == Activity.RESULT_OK && data != null) {
-            Uri uri = data.getData();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getContext().getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                settings.setBackgroundImageDir(uri.getPath());
-            }
-        }
-
+    ActivityResultLauncher<Intent> registerActivityResultLoadDirectory() {
+        return registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    int resultCode = result.getResultCode();
+                    Intent data = result.getData();
+                    if (resultCode != Activity.RESULT_OK || data == null) {
+                        return;
+                    }
+                    Uri uri = data.getData();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getContext().getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        settings.setBackgroundImageDir(uri.getPath());
+                    }
+                }
+        );
     }
 
     public String getRealPathFromURI(Uri contentUri) {
@@ -669,7 +659,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void checkPermissionAndSelectBackgroundImage() {
-        if (!hasPermissionReadExternalStorage()) {
+        if (doesNotHavePermissionReadExternalStorage()) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
             return;
@@ -678,7 +668,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void checkPermissionAndSelectDirectoryBackgroundImage() {
-        if (!hasPermissionReadExternalStorage()) {
+        if (doesNotHavePermissionReadExternalStorage()) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
             return;
@@ -696,20 +686,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 File dir = settings.getBackgroundImageDir();
                 intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(dir).toString());
             }
-
-            startActivityForResult(Intent.createChooser(intent, "Choose directory"), RESULT_LOAD_DIRECTORY_IMAGE_LOLLIPOP);
+            activityResultLauncherLoadDirectory.launch(Intent.createChooser(intent, "Choose directory"));
         }
     }
 
 
-    private boolean checkReadExternalStoragePermission() {
-        if (!hasPermissionReadExternalStorage()) {
+    private void checkReadExternalStoragePermission() {
+        if (doesNotHavePermissionReadExternalStorage()) {
             requestPermissions(
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0
             );
-            return false;
         }
-        return true;
     }
 
     private void selectBackgroundImage() {
@@ -717,27 +704,23 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
             getIntent.setType("image/*");
 
-            //Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            //pickIntent.setType("image/*");
             String msg = getString(R.string.background_image_select);
             Intent chooserIntent = Intent.createChooser(getIntent, msg);
-            //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-
-            startActivityForResult(chooserIntent, RESULT_LOAD_IMAGE);
+            activityResultLauncherLoadImage.launch(chooserIntent);
         } else {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("image/*");
-            startActivityForResult(intent, RESULT_LOAD_IMAGE_KITKAT);
+            activityResultLauncherLoadImage.launch(intent);
         }
     }
 
-    private boolean hasPermissionReadExternalStorage() {
-        return Build.VERSION.SDK_INT < 23 || (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    private boolean doesNotHavePermissionReadExternalStorage() {
+        return doesNotHavePermission(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    private boolean hasPermission(String permission) {
-        return Build.VERSION.SDK_INT < 23 || (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+    private boolean doesNotHavePermission(String permission) {
+        return Build.VERSION.SDK_INT >= 23 && (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
@@ -766,7 +749,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     prefAmbientNoiseReactivation.setChecked(false);
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }
@@ -860,9 +842,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void setupBackgroundImageControls(SharedPreferences prefs) {
         String selection = prefs.getString("backgroundMode", "1");
 
-        showPreference("chooseBackgroundImage", selection.equals("3"));
+        showPreference("chooseBackgroundImage", "3".equals(selection));
 
-        boolean on = selection.equals("4");
+        boolean on = "4".equals(selection);
         showPreference("backgroundImageDuration", on);
         showPreference("backgroundImageZoomIn", on);
         showPreference("backgroundImageFadeIn", on);
@@ -882,11 +864,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("autoAccentColor", on);
         showPreference("slideshowStyle", on);
         showPreference("hideBackgroundImage", Utility.equalsAny(selection, "3", "4", "5"));
-        showPreference("clockBackgroundTransparency", !selection.equals("1"));
+        showPreference("clockBackgroundTransparency", !"1".equals(selection));
 
         boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
-        showPreference("purchaseDesignPackageBackground", selection.equals("4") && !isPurchasedWeather);
-        boolean shallEnable = !selection.equals("4") || isPurchasedWeather;
+        showPreference("purchaseDesignPackageBackground", "4".equals(selection) && !isPurchasedWeather);
+        boolean shallEnable = !"4".equals(selection) || isPurchasedWeather;
         enablePreference("autoAccentColor", shallEnable);
         enablePreference("backgroundEXIF", shallEnable);
         enablePreference("backgroundImageDuration", shallEnable);
@@ -963,7 +945,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void requestCanDrawOverlaysPermission() {
-        startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+        }
     }
 
     private void setupNotificationAccessPermission(SharedPreferences sharedPreferences, String preferenceKey) {
