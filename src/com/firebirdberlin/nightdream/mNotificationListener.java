@@ -151,27 +151,35 @@ public class mNotificationListener extends NotificationListenerService {
         final Context context = this;
         Settings settings = new Settings(this);
         if (!settings.autostartForNotifications) return;
-        final SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (mSensorManager == null) return;
 
-        Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if (mProximity == null) return;
-
-        mSensorManager.registerListener(new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                if (sensorEvent.values[0] > 0 && !Utility.isScreenOn(context)) {
-                    NightDreamActivity.start(context, "start standby mode");
+        try {
+            final SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            mSensorManager.registerListener(new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    if (sensorEvent.values[0] > 0) {
+                        startActivity(context);
+                    }
+                    mSensorManager.unregisterListener(this);
                 }
-                mSensorManager.unregisterListener(this);
-            }
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
 
-            }
-        }, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+                }
+            }, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+        } catch (IllegalStateException | NullPointerException e) {
+            // Sensor is not present or could not be initiated
+            startActivity(context);
+        }
     }
+
+    void startActivity(Context context) {
+         if (!Utility.isScreenOn(context)) {
+             NightDreamActivity.start(context, "start standby mode");
+         }
+     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
