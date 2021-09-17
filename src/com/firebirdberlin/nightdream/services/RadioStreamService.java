@@ -241,8 +241,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Log.d(TAG, "onCreate() called.");
         vibrator = new VibrationHandler(this);
 
-        enableMediaSession();
-
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "RadioDroid2 Player", NotificationManager.IMPORTANCE_LOW);
@@ -563,6 +561,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             exoPlayer = new SimpleExoPlayer.Builder(getApplicationContext()).build();
             exoPlayer.setMediaItem(MediaItem.fromUri(streamURL));
             exoPlayer.prepare();
+
             exoPlayer.addListener(new Player.Listener() {
                 @Override
                 public void onPlaybackStateChanged(@Player.State int state) {
@@ -671,6 +670,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             Log.d(TAG, "exoPlayer.play()");
             exoPlayer.setVolume(0);
             exoPlayer.setPlayWhenReady(true);
+            enableMediaSession();
             exoPlayer.play();
         }
     }
@@ -963,25 +963,25 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private class sessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
-            Log.d(TAG, "onplay Callback");
+            Log.d(TAG, "onPlay");
             exoPlayer.setPlayWhenReady(true);
         }
 
         @Override
         public void onPause() {
-            Log.d(TAG, "onpause Callback");
+            Log.d(TAG, "onPause");
             exoPlayer.setPlayWhenReady(false);
         }
 
         @Override
         public void onSkipToPrevious() {
-            Log.d(TAG, "skiptoprevious Callback");
+            Log.d(TAG, "onSkipToPrevious");
             skipToPreviousStation();
         }
 
         @Override
         public void onSkipToNext() {
-            Log.d(TAG, "skiptoNext Callback");
+            Log.d(TAG, "skipToNext");
             skipToNextStation();
         }
     }
