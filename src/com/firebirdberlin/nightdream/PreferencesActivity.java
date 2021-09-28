@@ -3,8 +3,10 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -51,7 +53,12 @@ public class PreferencesActivity extends BillingHelperActivity
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             TextView tv = new TextView(this);
             tv.setText("");
-            setContentView(tv);
+            Point size = Utility.getDisplaySize(this);
+            tv.setWidth(size.x);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+            );
+            setContentView(tv, params);
 
             if (fragment2 != null) {
                 fT.remove(fragment2);
@@ -78,6 +85,7 @@ public class PreferencesActivity extends BillingHelperActivity
             fT.replace(R.id.details, fragment2);
         }
         fT.commit();
+        fm.executePendingTransactions();
     }
 
     @Override
