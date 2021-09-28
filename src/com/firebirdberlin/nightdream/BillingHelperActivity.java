@@ -268,6 +268,9 @@ public abstract class BillingHelperActivity
     }
 
     void handlePurchase(final Purchase purchase) {
+        if (purchase == null) {
+            return;
+        }
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
             // Acknowledge purchase and grant the item to the user
             if (!purchase.isAcknowledged()) {
@@ -275,22 +278,19 @@ public abstract class BillingHelperActivity
                         AcknowledgePurchaseParams.newBuilder()
                                 .setPurchaseToken(purchase.getPurchaseToken())
                                 .build();
-                mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
-                    @Override
-                    public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
-                        Log.i(TAG, "onAcknowledgePurchaseResponse: " + billingResult.getResponseCode());
-                        Log.i(TAG, billingResult.getDebugMessage());
-                        if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
-                            return;
-                        }
-                        ArrayList<String> skus = purchase.getSkus();
-                        int state = purchase.getPurchaseState();
-                        boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
-                        for (String sku : skus) {
-                            Log.d(TAG, String.format("purchased %s = %s (%d)", sku, purchased, state));
-                            purchases.put(sku, purchased);
-                            onItemPurchased(sku);
-                        }
+                mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, billingResult -> {
+                    Log.i(TAG, "onAcknowledgePurchaseResponse: " + billingResult.getResponseCode());
+                    Log.i(TAG, billingResult.getDebugMessage());
+                    if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                        return;
+                    }
+                    ArrayList<String> skus = purchase.getSkus();
+                    int state = purchase.getPurchaseState();
+                    boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
+                    for (String sku : skus) {
+                        Log.d(TAG, String.format("purchased %s = %s (%d)", sku, purchased, state));
+                        purchases.put(sku, purchased);
+                        onItemPurchased(sku);
                     }
                 });
             }
