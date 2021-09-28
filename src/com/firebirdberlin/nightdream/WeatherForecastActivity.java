@@ -151,13 +151,17 @@ public class WeatherForecastActivity
             adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
             adapter.addFragment(new WeatherForecastTabPreview(), getResources().getString(R.string.forecast));
 
-            viewPager.setAdapter(adapter);
-            tabLayout.setupWithViewPager(viewPager);
+            runOnUiThread(() -> {
+                viewPager.setAdapter(adapter);
+                tabLayout.setupWithViewPager(viewPager);
+            });
 
             ((WeatherForecastTabPreview) adapter.getItem(0)).setupForecastPreview(settings);
         } else {
-            viewPager.setAdapter(adapter);
-            tabLayout.setupWithViewPager(viewPager);
+            runOnUiThread(() -> {
+                viewPager.setAdapter(adapter);
+                tabLayout.setupWithViewPager(viewPager);
+            });
 
             if (autoLocationEnabled) {
                 Log.i(TAG, "starting with auto location (GPS)");
