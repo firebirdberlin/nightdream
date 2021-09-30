@@ -25,6 +25,7 @@ import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.firebirdberlin.nightdream.ui.NotificationPreviewLayout;
 import com.google.android.flexbox.FlexboxLayout;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -97,7 +98,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                     removeViewsFrom(R.id.notificationbar);
                     List<NotificationApp> notificationApps = intent.getParcelableArrayListExtra("notificationApps");
                     if (notificationApps == null) break;
-                    for (NotificationApp app : notificationApps) {
+                    for (Iterator<NotificationApp> iterator = notificationApps.iterator(); iterator.hasNext(); ) {
+                        NotificationApp app = iterator.next();
                         Log.d(TAG, app.getName() + ": " + app.getIconId());
                         Drawable icon = getIcon(context, app);
                         addNotificationIcon(context, container, icon);

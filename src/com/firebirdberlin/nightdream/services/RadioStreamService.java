@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream.services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -13,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -66,7 +64,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         PlaylistRequestTask.AsyncResponse {
 
     protected static final int NOTIFY_ID = 1337;
-    private static final String NOTIFICATION_CHANNEL_ID = "nachtuhr";
     private static final String TAG = "RadioStreamService";
     private static final String ACTION_START = "start";
     private static final String ACTION_START_STREAM = "start stream";
@@ -240,17 +237,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     public void onCreate() {
         Log.d(TAG, "onCreate() called.");
         vibrator = new VibrationHandler(this);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "RadioDroid2 Player", NotificationManager.IMPORTANCE_LOW);
-
-            // Configure the notification channel.
-            notificationChannel.setDescription("Channel description");
-            notificationChannel.enableLights(false);
-            notificationChannel.enableVibration(false);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
 
         //todo changing Radio Titles
         Log.d(TAG, "Init chromecast");
@@ -613,6 +599,13 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                                 1f
                         );
 
+                        if (mediaMetaData != null && mediaMetaData.title != null) {
+                            updateNotification(mediaMetaData.title.toString());
+                        }
+                        else {
+                            updateNotification(getResources().getString(R.string.radio_playing));
+                        }
+
                     } else if (!exoPlayer.getPlayWhenReady()) {
                         Log.d(TAG, "onIsPlayingChanged: PAUSED");
                         stateBuilder.setState(
@@ -754,6 +747,11 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         if (vibrator != null) {
             vibrator.stopVibration();
         }
+
+        if (mediaSession != null) {
+            mediaSession.setActive(false);
+        }
+        stopForeground(true);
     }
 
     private void updateNotification(String title) {
@@ -773,7 +771,14 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        MediaSessionCompat mediaSession = new MediaSessionCompat(getBaseContext(), getBaseContext().getPackageName());
+        if (mediaSession == null) {
+            enableMediaSession();
+        }
+
+        NotificationChannel channelRadio = notificationManager.getNotificationChannel(Config.NOTIFICATION_CHANNEL_ID_RADIO);
+        if (channelRadio == null) {
+            Utility.createNotificationChannels(this);
+        }
 
         NotificationCompat.Builder noteBuilder = Utility.buildNotification(this, Config.NOTIFICATION_CHANNEL_ID_RADIO)
                 .setContentIntent(contentIntent)
@@ -801,7 +806,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
-        notificationManager.notify(NOTIFY_ID, note);
+        startForeground(NOTIFY_ID, note);
     }
 
     /*
@@ -964,13 +969,17 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         @Override
         public void onPlay() {
             Log.d(TAG, "onPlay");
-            exoPlayer.setPlayWhenReady(true);
+            if (exoPlayer != null) {
+                exoPlayer.setPlayWhenReady(true);
+            }
         }
 
         @Override
         public void onPause() {
-            Log.d(TAG, "onPause");
-            exoPlayer.setPlayWhenReady(false);
+            Log.d(TAG, "onPause: ");
+            if (exoPlayer != null) {
+                exoPlayer.setPlayWhenReady(false);
+            }
         }
 
         @Override

@@ -12,6 +12,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
@@ -125,24 +126,28 @@ public class Notification implements Parcelable {
         //RemoteView to View
         this.cardView = null;
         try {
-            RemoteViews notificationRemoteView = intent.getParcelableExtra("contentView");
-            if (notificationRemoteView != null) {
-                FrameLayout container = new FrameLayout(context);
-                View view = notificationRemoteView.apply(context, container);
-                container.addView(view);
-                this.cardView = container;
+            if (intent.getParcelableExtra("contentView") instanceof RemoteViews) {
+                RemoteViews notificationRemoteView = intent.getParcelableExtra("contentView");
+                if (notificationRemoteView != null) {
+                    FrameLayout container = new FrameLayout(context);
+                    View view = notificationRemoteView.apply(context, container);
+                    container.addView(view);
+                    this.cardView = container;
+                }
             }
         } catch (SecurityException ignored) {}
 
         //BigRemoteView to View
         this.bigCardView = null;
         try {
-            RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigView");
-            if (notificationRemoteBigView != null) {
-                FrameLayout container = new FrameLayout(context);
-                View view = notificationRemoteBigView.apply(context, container);
-                container.addView(view);
-                this.bigCardView = container;
+            if (intent.getParcelableExtra("bigView") instanceof RemoteViews) {
+                RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigView");
+                if (notificationRemoteBigView != null) {
+                    FrameLayout container = new FrameLayout(context);
+                    View view = notificationRemoteBigView.apply(context, container);
+                    container.addView(view);
+                    this.bigCardView = container;
+                }
             }
         } catch (SecurityException ignored) {}
 

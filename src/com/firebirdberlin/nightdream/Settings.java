@@ -790,14 +790,14 @@ public class Settings {
         prefEditor.remove("batteryReferenceScale");
         prefEditor.remove("batteryReferenceChargingMethod");
         prefEditor.remove("batteryReferenceStatus");
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public void disableSettingsNeedingBackgroundService() {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("handle_power", false);
         prefEditor.putBoolean("standbyEnabledWhileDisconnected", false);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     private String getDefaultDateFormat() {
@@ -930,7 +930,7 @@ public class Settings {
         minIlluminance = value;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("minIlluminance", value);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     private void initNextAlarmTime() {
@@ -994,7 +994,7 @@ public class Settings {
         lastReviewRequestTime = reviewRequestTime;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public void setSleepTimeInMinutesDefaultValue(int sleepTimeInMinutes) {
@@ -1020,7 +1020,7 @@ public class Settings {
 
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public void deleteNextAlwaysOnTime() {
@@ -1028,7 +1028,7 @@ public class Settings {
 
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public boolean isAlwaysOnAllowed() {
@@ -1125,7 +1125,7 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.clear();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
-        prefEditor.commit();
+        prefEditor.apply();
     }
 
     public boolean useAmbientNoiseDetection() {
@@ -1291,7 +1291,7 @@ public class Settings {
             String json = stations.toJson();
             SharedPreferences.Editor prefEditor = settings.edit();
             prefEditor.putString(FAVORITE_RADIO_STATIONS_KEY, json);
-            prefEditor.commit();
+            prefEditor.apply();
         } catch (JSONException e) {
             Log.e(TAG, "error converting FavoriteRadioStations to json", e);
         }

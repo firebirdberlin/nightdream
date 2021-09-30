@@ -152,9 +152,9 @@ public class mNotificationListener extends NotificationListenerService {
         Settings settings = new Settings(this);
         if (!settings.autostartForNotifications) return;
 
-        try {
-            final SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-            Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        final SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        if (mProximity != null) {
             mSensorManager.registerListener(new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent sensorEvent) {
@@ -169,10 +169,11 @@ public class mNotificationListener extends NotificationListenerService {
 
                 }
             }, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
-        } catch (IllegalStateException | NullPointerException e) {
-            // Sensor is not present or could not be initiated
+        }
+        else{
             startActivity(context);
         }
+
     }
 
     void startActivity(Context context) {
@@ -289,6 +290,9 @@ public class mNotificationListener extends NotificationListenerService {
 
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
         final Context context = this;
+        if (sbn == null) {
+            return null;
+        }
         Notification notification = sbn.getNotification();
         if (notification == null) {
             return null;
