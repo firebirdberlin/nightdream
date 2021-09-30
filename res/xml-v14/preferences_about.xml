@@ -257,7 +257,7 @@ vi - Phong Nguyen"/>
         </Preference>
         <Preference
             app:iconSpaceReserved="false"
-            app:key="about_texture_copper"
+            app:key="about_texture_rust"
             app:summary="SojanJanso"
             app:title="Rust texture">
             <intent
