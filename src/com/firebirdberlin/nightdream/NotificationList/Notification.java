@@ -43,24 +43,24 @@ public class Notification implements Parcelable {
     private final String textBig;
     private final String summaryText;
     private final RemoteViews remoteView;
-    private View cardView;
-    private View bigCardView;
-    private Drawable drawableIcon;
     private final Bitmap bitmapLargeIcon;
     private final String title;
     private final String titleBig;
     private final String template;
-    private Spanned notification_messages;
-    private Spanned notification_textlines;
     private final PendingIntent pendingIntent;
     private final android.app.Notification.Action[] actions;
     private final String packageName;
     private final boolean isClearable;
-    private int childId;
     private final Integer color;
     private final Integer notificationID;
     private final String notificationKey;
     private final String notificationTag;
+    private View cardView;
+    private View bigCardView;
+    private Drawable drawableIcon;
+    private Spanned notification_messages;
+    private Spanned notification_textlines;
+    private int childId;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected Notification(Parcel in) {
@@ -87,14 +87,6 @@ public class Notification implements Parcelable {
         notificationTag = in.readString();
     }
 
-
-    <T> T getParcelable(Parcel in, ClassLoader classLoader) {
-       try {
-            return in.readParcelable(classLoader);
-        } catch (ClassCastException ignored) {
-            return null;
-        }
-    }
 
     public Notification(Context context, Intent intent) {
         this.postTimestamp = intent.getLongExtra("postTimestamp", 0L);
@@ -125,26 +117,32 @@ public class Notification implements Parcelable {
         //RemoteView to View
         this.cardView = null;
         try {
-            RemoteViews notificationRemoteView = intent.getParcelableExtra("contentView");
-            if (notificationRemoteView != null) {
-                FrameLayout container = new FrameLayout(context);
-                View view = notificationRemoteView.apply(context, container);
-                container.addView(view);
-                this.cardView = container;
+            if (intent.getParcelableExtra("contentView") instanceof RemoteViews) {
+                RemoteViews notificationRemoteView = intent.getParcelableExtra("contentView");
+                if (notificationRemoteView != null) {
+                    FrameLayout container = new FrameLayout(context);
+                    View view = notificationRemoteView.apply(context, container);
+                    container.addView(view);
+                    this.cardView = container;
+                }
             }
-        } catch (SecurityException ignored) {}
+        } catch (SecurityException ignored) {
+        }
 
         //BigRemoteView to View
         this.bigCardView = null;
         try {
-            RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigView");
-            if (notificationRemoteBigView != null) {
-                FrameLayout container = new FrameLayout(context);
-                View view = notificationRemoteBigView.apply(context, container);
-                container.addView(view);
-                this.bigCardView = container;
+            if (intent.getParcelableExtra("bigView") instanceof RemoteViews) {
+                RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigView");
+                if (notificationRemoteBigView != null) {
+                    FrameLayout container = new FrameLayout(context);
+                    View view = notificationRemoteBigView.apply(context, container);
+                    container.addView(view);
+                    this.bigCardView = container;
+                }
             }
-        } catch (SecurityException ignored) {}
+        } catch (SecurityException ignored) {
+        }
 
         //get drawable SmallIcon
         try {
@@ -164,6 +162,14 @@ public class Notification implements Parcelable {
         }
 
         childId = -1;
+    }
+
+    <T> T getParcelable(Parcel in, ClassLoader classLoader) {
+        try {
+            return in.readParcelable(classLoader);
+        } catch (ClassCastException ignored) {
+            return null;
+        }
     }
 
     @Override
