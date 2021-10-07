@@ -12,6 +12,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.hardware.Sensor;
@@ -22,6 +23,8 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -36,6 +39,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.multidex.MultiDex;
 
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
@@ -76,6 +80,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NightDreamActivity extends BillingHelperActivity
         implements View.OnTouchListener,
@@ -88,13 +94,13 @@ public class NightDreamActivity extends BillingHelperActivity
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
     private static int mode = 2;
+    private static Context context = null;
     final private Handler handler = new Handler();
     private final Runnable finishApp = () -> finish();
     public CastContext mCastContext;
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
-    private static Context context = null;
     private ImageView alarmClockIcon;
     private ImageView radioIcon;
     private ImageView torchIcon;
@@ -218,6 +224,34 @@ public class NightDreamActivity extends BillingHelperActivity
             setMode(new_mode);
         }
     };
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            NightModeListener.LocalBinder binder = (NightModeListener.LocalBinder) service;
+            NightModeListener myService = binder.getService();
+            context.startForegroundService(getForegroundIntent());
+
+            myService.startForeground();
+            context.unbindService(this);
+        }
+
+        @Override
+        public void onBindingDied(ComponentName name) {
+            Log.d(TAG, "Binding has dead.");
+        }
+
+        @Override
+        public void onNullBinding(ComponentName name) {
+            Log.d(TAG, "Bind was null.");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "Service is disconnected..");
+        }
+    };
 
     static public void start(Context context) {
         NightDreamActivity.start(context, null);
@@ -236,6 +270,10 @@ public class NightDreamActivity extends BillingHelperActivity
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+    public static Context getAppContext() {
+        return context;
     }
 
     private void setupCastListener() {
@@ -304,6 +342,7 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MultiDex.install(this);
         context = this;
         setContentView(R.layout.main);
 
@@ -331,7 +370,11 @@ public class NightDreamActivity extends BillingHelperActivity
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
-        initTextToSpeech();
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> { //background thread
+            initTextToSpeech();
+        });
     }
 
     void initTextToSpeech() {
@@ -424,7 +467,7 @@ public class NightDreamActivity extends BillingHelperActivity
         broadcastReceiver = registerBroadcastReceiver();
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
-        nReceiver.setColor( (mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
+        nReceiver.setColor((mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
         Intent intent = getIntent();
 
         String action = intent.getAction();
@@ -473,7 +516,6 @@ public class NightDreamActivity extends BillingHelperActivity
             public void run() {
                 // ask for active notifications
                 if (Build.VERSION.SDK_INT >= 18) {
-
                     Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
                     i.putExtra("command", "list");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(i);
@@ -483,10 +525,16 @@ public class NightDreamActivity extends BillingHelperActivity
 
         if (mySettings.getWeatherAutoLocationEnabled()
                 && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            getLastKnownLocation();
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
-            );
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+            executor.execute(() -> { //background thread
+                getLastKnownLocation();
+                handler.post(() -> { //like onPostExecute()
+                    locationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
+                    );
+                });
+            });
         }
     }
 
@@ -793,9 +841,27 @@ public class NightDreamActivity extends BillingHelperActivity
         return keyguardManager.inKeyguardRestrictedInputMode();
     }
 
+    private Intent getForegroundIntent() {
+        return new Intent(this, NightModeListener.class);
+    }
+
     private void startBackgroundListener() {
-        Intent i = new Intent(this, NightModeListener.class);
-        Utility.startForegroundService(this, i);
+        Log.d(TAG, "startBackgroundListener");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                Log.d(TAG, "try binding startBackgroundListener");
+                context.bindService(getForegroundIntent(), connection,
+                        Context.BIND_AUTO_CREATE);
+            } catch (RuntimeException ignored) {
+                Log.d(TAG, "error binding startBackgroundListener");
+                Intent i = new Intent(this, NightModeListener.class);
+                Utility.startForegroundService(this, i);
+            }
+        } else {
+            Intent i = new Intent(this, NightModeListener.class);
+            Utility.startForegroundService(this, i);
+        }
     }
 
     private boolean shallKeepScreenOn(int mode) {
@@ -1036,9 +1102,5 @@ public class NightDreamActivity extends BillingHelperActivity
                 isChargingWireless = stats.reference.isChargingWireless;
             }
         }
-    }
-
-    public static Context getAppContext() {
-        return context;
     }
 }
