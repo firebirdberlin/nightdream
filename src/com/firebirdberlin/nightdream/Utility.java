@@ -423,6 +423,7 @@ public class Utility {
             return size.y;
         }
     }
+
     public static void logToFile(Context context, String logFileName, String text) {
 
         // allow logging only in debug mode
@@ -551,14 +552,16 @@ public class Utility {
 
     public static Notification getForegroundServiceNotification(Context context, int resIdText) {
         createNotificationChannels(context);
-        NotificationCompat.Builder noteBuilder =
+        Notification note =
                 Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
+                        .setOngoing(true)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(context.getString(resIdText))
                         .setSmallIcon(R.drawable.ic_expert)
-                        .setPriority(NotificationCompat.PRIORITY_MIN);
-
-        Notification note = noteBuilder.build();
+                        .setAutoCancel(true)
+                        .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                        .setPriority(NotificationCompat.PRIORITY_MIN)
+                        .build();
 
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
@@ -573,40 +576,54 @@ public class Utility {
         NotificationManager notificationManager =
                 context.getSystemService(NotificationManager.class);
 
-        NotificationChannel channelAlarms = prepareNotificationChannel(
-                context,
-                Config.NOTIFICATION_CHANNEL_ID_ALARMS,
-                R.string.notification_channel_name_alarms,
-                R.string.notification_channel_desc_alarms,
-                NotificationManager.IMPORTANCE_DEFAULT
-        );
-        NotificationChannel channelRadio = prepareNotificationChannel(
-                context,
-                Config.NOTIFICATION_CHANNEL_ID_RADIO,
-                R.string.notification_channel_name_radio,
-                R.string.notification_channel_desc_radio,
-                NotificationManager.IMPORTANCE_DEFAULT
-        );
-        NotificationChannel channelMessages = prepareNotificationChannel(
-                context,
-                Config.NOTIFICATION_CHANNEL_ID_DEVMSG,
-                R.string.notification_channel_name_devmsg,
-                R.string.notification_channel_desc_devmsg,
-                NotificationManager.IMPORTANCE_LOW
-        );
-        channelMessages.setShowBadge(true);
-        NotificationChannel channelServices = prepareNotificationChannel(
-                context,
-                Config.NOTIFICATION_CHANNEL_ID_SERVICES,
-                R.string.notification_channel_name_services,
-                R.string.notification_channel_desc_services,
-                NotificationManager.IMPORTANCE_MIN
-        );
+        NotificationChannel channelAlarms = notificationManager.getNotificationChannel(Config.NOTIFICATION_CHANNEL_ID_ALARMS);
+        if (channelAlarms == null) {
+            channelAlarms = prepareNotificationChannel(
+                    context,
+                    Config.NOTIFICATION_CHANNEL_ID_ALARMS,
+                    R.string.notification_channel_name_alarms,
+                    R.string.notification_channel_desc_alarms,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(channelAlarms);
+        }
 
-        notificationManager.createNotificationChannel(channelAlarms);
-        notificationManager.createNotificationChannel(channelMessages);
-        notificationManager.createNotificationChannel(channelRadio);
-        notificationManager.createNotificationChannel(channelServices);
+        NotificationChannel channelRadio = notificationManager.getNotificationChannel(Config.NOTIFICATION_CHANNEL_ID_RADIO);
+        if (channelRadio == null) {
+            channelRadio = prepareNotificationChannel(
+                    context,
+                    Config.NOTIFICATION_CHANNEL_ID_RADIO,
+                    R.string.notification_channel_name_radio,
+                    R.string.notification_channel_desc_radio,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(channelRadio);
+        }
+
+        NotificationChannel channelMessages = notificationManager.getNotificationChannel(Config.NOTIFICATION_CHANNEL_ID_DEVMSG);
+        if (channelMessages == null) {
+            channelMessages = prepareNotificationChannel(
+                    context,
+                    Config.NOTIFICATION_CHANNEL_ID_DEVMSG,
+                    R.string.notification_channel_name_devmsg,
+                    R.string.notification_channel_desc_devmsg,
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            channelMessages.setShowBadge(true);
+            notificationManager.createNotificationChannel(channelMessages);
+        }
+
+        NotificationChannel channelServices = notificationManager.getNotificationChannel(Config.NOTIFICATION_CHANNEL_ID_SERVICES);
+        if (channelServices == null) {
+            channelServices = prepareNotificationChannel(
+                    context,
+                    Config.NOTIFICATION_CHANNEL_ID_SERVICES,
+                    R.string.notification_channel_name_services,
+                    R.string.notification_channel_desc_services,
+                    NotificationManager.IMPORTANCE_MIN
+            );
+            notificationManager.createNotificationChannel(channelServices);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -620,6 +637,7 @@ public class Utility {
         mChannel.enableVibration(false);
         mChannel.setSound(null, null);
         mChannel.setShowBadge(false);
+        mChannel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
         return mChannel;
     }
 
