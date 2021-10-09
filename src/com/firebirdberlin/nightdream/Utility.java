@@ -84,7 +84,7 @@ public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
     private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    private static String TAG = "NightDreamActivity";
+    private static String TAG = "NightDreamUtility";
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     private Context mContext;
 
@@ -495,9 +495,18 @@ public class Utility {
         // get the name from android content
         if ("content".equals(uri.getScheme())) {
             try {
-                Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
-                String title = ringtone.getTitle(context);
-                ringtone.stop();
+                String title =context.getResources().getString(R.string.ringtone_none);
+
+                int permissionCheck = ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                    Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
+                    title = ringtone.getTitle(context);
+                    ringtone.stop();
+                }
+                else {
+                    Log.d(TAG,"keine Berechtigung READ_EXTERNAL_STORAGE");
+                }
+
                 return title;
             } catch (RuntimeException ignored) {
             }
