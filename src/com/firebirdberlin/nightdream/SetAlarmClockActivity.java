@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,12 +14,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
 
 import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
 import com.firebirdberlin.nightdream.events.OnAlarmEntryDeleted;
@@ -27,6 +28,7 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
+import com.firebirdberlin.nightdream.ui.ManageAlarmSoundsDialogFragment;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -42,6 +44,7 @@ import java.util.List;
 
 public class SetAlarmClockActivity extends BillingHelperActivity {
     static final String TAG = "SetAlarmClockActivity";
+    private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     final int MENU_ITEM_PREFERENCES = 3000;
     private final HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
     private LinearLayout scrollView = null;
@@ -50,6 +53,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private FavoriteRadioStations radioStations = null;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -102,6 +106,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         timeFormat = settings.getFullTimeFormat();
         dateFormat = settings.dateFormat;
         radioStations = settings.getFavoriteRadioStations();
+
         init();
 
         Intent intent = getIntent();
@@ -366,6 +371,25 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                     finish();
                 }
             }, 3000);
+        }
+     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    List<androidx.fragment.app.Fragment> allFragments = getSupportFragmentManager().getFragments();
+                    for (Fragment fragment: allFragments) {
+                        if (fragment instanceof ManageAlarmSoundsDialogFragment){
+                            Toast.makeText(this, getResources().getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+                            fragment.onDestroyView();
+                        }
+                    }
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

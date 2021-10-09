@@ -1,8 +1,11 @@
 package com.firebirdberlin.nightdream.ui;
 
 
+import android.Manifest;
 import android.animation.LayoutTransition;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -24,6 +27,7 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -242,6 +246,12 @@ public class AlarmClockLayout extends LinearLayout {
             @Override
             public void onClick(View view) {
                 if (alarmClockEntry == null) return;
+
+                int permissionCheck = ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions((Activity) context,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                }
 
                 FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                 ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
