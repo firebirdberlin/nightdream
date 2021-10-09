@@ -252,6 +252,7 @@ OR
     <string name="options_stop_alarms_long_press">long press</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
+    <string name="permission_denied">Permission denied!</string>
     <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
@@ -324,6 +325,7 @@ OR
     <string name="remaining_alarm_time_start">This alarm will ring in&#160;</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
+    <string name="ringtone_none">no alarmsound</string>
     <string name="screenProtection">Screen burn protection</string>
     <string name="screenProtectionNone">None</string>
     <string name="screenProtectionMove">Move the clock around</string>
