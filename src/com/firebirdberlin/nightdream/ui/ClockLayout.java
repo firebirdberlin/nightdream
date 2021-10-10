@@ -917,6 +917,15 @@ public class ClockLayout extends LinearLayout {
         }
     }
 
+    public void updateWidget(WeatherEntry entry) {
+        for (WeatherLayout layout : weatherLayouts) {
+            if (layout != null) {
+                layout.setWidget(true);
+                layout.update(entry);
+            }
+        }
+    }
+
     public void getScaledSize(int[] size) {
         size[0] = Math.abs((int) (getWidth() * getScaleX()));
         size[1] = Math.abs((int) (getHeight() * getScaleY()));

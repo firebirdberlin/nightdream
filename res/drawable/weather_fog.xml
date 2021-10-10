@@ -1,0 +1,40 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="fog"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <group
+        android:name="cloud_group"
+        android:translateX="-6.290000000000006"
+        android:translateY="-4.160000000000004">
+        <path
+            android:name="path_3"
+            android:pathData="M 63.25 32.227 C 63.25 25.692 57.73 20.578 51.015 20.578 C 49.523 20.578 48.18 20.862 46.837 21.288 C 46.389 16.458 42.212 12.48 36.989 12.48 C 31.469 12.48 26.992 16.742 26.992 21.999 C 26.992 23.134 27.29 24.271 27.589 25.266 C 27.142 25.124 26.545 25.124 26.097 25.124 C 20.576 25.124 16.1 29.386 16.1 34.641 C 16.1 39.756 20.427 44.018 25.799 44.16 L 51.462 44.16 C 58.027 43.449 63.25 38.477 63.25 32.227 Z"
+            android:fillColor="#57a0ee"
+            android:strokeColor="#ffffff"
+            android:strokeWidth="1.2"/>
+    </group>
+    <group
+        android:name="fog_1_group"
+        android:translateX="2"
+        android:translateY="-0.3199999999999932">
+        <path
+            android:name="fog_1"
+            android:pathData="M 20 46 L 40 46"
+            android:strokeColor="#57a0ee"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+    </group>
+    <group
+        android:name="fog_2_group"
+        android:translateY="3.520000000000003">
+        <path
+            android:name="fog_2"
+            android:pathData="M 25 50 L 45 50"
+            android:strokeColor="#57a0ee"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+    </group>
+</vector>

@@ -414,6 +414,10 @@ OR
     <string name="weather_calculation_time">weather calculation time</string>
     <string name="weather_city_id_title">Search location</string>
     <string name="weather_current_location">Current location</string>
+    <string name="weather_icon">Weather Icon</string>
+    <string name="weather_icon_default">Default</string>
+    <string name="weather_icon_colored">Colored</string>
+    <string name="weather_icon_animated">Animated (Android 6+)</string>
     <string name="weather_info_title">Information</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
