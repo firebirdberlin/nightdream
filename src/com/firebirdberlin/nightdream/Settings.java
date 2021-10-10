@@ -123,6 +123,7 @@ public class Settings {
     public boolean background_movein = false;
     public boolean background_exif = false;
     public int background_movein_style = 1;
+    public int weather_icon = 1;
     public int background_filter = 1;
     public boolean background_mode_auto_color = false;
     public int clockColor;
@@ -482,6 +483,7 @@ public class Settings {
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
         weatherCityID = settings.getString("weatherCityID", "");
+        weather_icon = Integer.parseInt(settings.getString("weatherIconMode", "1"));
         batteryTimeout = getBatteryTimeoutMinutes();
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;

@@ -1,0 +1,42 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="snow_1"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <group android:name="snowflake_2">
+        <path
+            android:name="path_5"
+            android:pathData="M 31 44.5 L 31 49.5"
+            android:fillColor="#57a0ee"
+            android:strokeColor="#57a0ee"
+            android:strokeWidth="1.2"/>
+        <path
+            android:name="path_6"
+            android:pathData="M 32.768 45.232 L 29.232 48.768"
+            android:fillColor="#57a0ee"
+            android:strokeColor="#57a0ee"
+            android:strokeWidth="1"/>
+        <path
+            android:name="path_7"
+            android:pathData="M 33.5 47 L 28.5 47"
+            android:fillColor="#57a0ee"
+            android:strokeColor="#57a0ee"
+            android:strokeWidth="1"/>
+        <path
+            android:name="path_8"
+            android:pathData="M 32.768 48.768 L 29.232 45.232"
+            android:fillColor="#57a0ee"
+            android:strokeColor="#57a0ee"
+            android:strokeWidth="1"/>
+    </group>
+    <group android:name="cloud_group">
+        <path
+            android:name="cloud"
+            android:pathData="M 58.45 25.315 C 58.45 18.85 52.742 13.79 45.799 13.79 C 44.257 13.79 42.869 14.072 41.48 14.493 C 41.017 9.715 36.698 5.78 31.298 5.78 C 25.59 5.78 20.962 9.996 20.962 15.196 C 20.962 16.32 21.27 17.444 21.579 18.428 C 21.116 18.288 20.499 18.288 20.036 18.288 C 14.329 18.288 9.7 22.504 9.7 27.704 C 9.7 32.763 14.174 36.98 19.728 37.12 L 46.263 37.12 C 53.051 36.417 58.45 31.498 58.45 25.315 Z"
+            android:fillColor="#57a0ee"
+            android:strokeColor="#ffffff"
+            android:strokeWidth="1.2"/>
+    </group>
+</vector>

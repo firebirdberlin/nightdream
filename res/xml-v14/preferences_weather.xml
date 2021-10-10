@@ -66,6 +66,16 @@
 
     <ListPreference
         app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:dependency="showWeather"
+        app:entries="@array/weatherIconModes"
+        app:entryValues="@array/weatherIconModeValues"
+        app:key="weatherIconMode"
+        app:title="@string/weather_icon"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        app:iconSpaceReserved="false"
         app:dependency="showWeather"
         app:defaultValue="0"
         app:entries="@array/weatherProvider"
