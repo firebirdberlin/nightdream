@@ -20,8 +20,17 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="none"
                     android:singleLine="true"
-                    android:text=""
                     android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/iconImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="none"
+                    android:scaleType="fitXY"
+                    android:visibility="visible"
+                    tools:srcCompat="@drawable/weather_rain_1" />
 
         </LinearLayout>
 
@@ -30,10 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="none"
+            android:paddingStart="5sp"
             android:singleLine="true"
             android:text=""
             android:textSize="20sp"
-            android:paddingStart="5sp"
             android:textStyle="bold"
             tools:ignore="RtlSymmetry" />
 

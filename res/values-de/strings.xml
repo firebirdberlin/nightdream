@@ -415,6 +415,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_calculation_time">Zeit der Wetterdatenberechnung</string>
     <string name="weather_city_id_title">Standort suchen</string>
     <string name="weather_current_location">Aktueller Standort</string>
+    <string name="weather_icon">Wettersymbol</string>
+    <string name="weather_icon_default">Standard</string>
+    <string name="weather_icon_colored">Farbig</string>
+    <string name="weather_icon_animated">Animiert (Android 6+)</string>
     <string name="weather_info_title">Informationen</string>
     <string name="weather_sun_rise">Sonnenaufgang</string>
     <string name="weather_sun_set">Sonnenuntergang</string>

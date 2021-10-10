@@ -1,0 +1,261 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="sun_and_rain"
+            android:width="64dp"
+            android:height="64dp"
+            android:viewportWidth="64"
+            android:viewportHeight="64">
+            <group
+                android:name="beam_group"
+                android:translateX="-13.38330972479994"
+                android:translateY="-15.764322704475717"
+                android:rotation="1">
+                <path
+                    android:name="beam_1"
+                    android:pathData="M 32.31 61.266 L 27.677 66.032"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+                <path
+                    android:name="beam_2"
+                    android:pathData="M 26.552 46.965 L 20 46.965"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+                <path
+                    android:name="beam_3"
+                    android:pathData="M 32.31 32.664 L 27.677 27.898"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+                <path
+                    android:name="beam_4"
+                    android:pathData="M 46.21 26.742 L 46.21 20"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+                <path
+                    android:name="beam_5"
+                    android:pathData="M 60.11 32.664 L 64.743 27.898"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+                <path
+                    android:name="beam_6"
+                    android:pathData="M 65.868 46.965 L 72.42 46.965"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+                <path
+                    android:name="beam_7"
+                    android:pathData="M 60.11 61.266 L 64.743 66.032"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+                <path
+                    android:name="beam_8"
+                    android:pathData="M 46.21 67.188 L 46.21 73.93"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+            </group>
+            <group
+                android:name="sun_group"
+                android:translateX="-9.689999999835692"
+                android:translateY="-10.24999999983568">
+                <path
+                    android:name="sun"
+                    android:pathData="M 41.69 27 C 37.794 27 34.057 28.607 31.301 31.466 C 28.548 34.326 27 38.206 27 42.25 C 27 46.294 28.548 50.174 31.301 53.034 C 34.057 55.893 37.794 57.5 41.69 57.5 C 45.586 57.5 49.323 55.893 52.079 53.034 C 54.832 50.174 56.38 46.294 56.38 42.25 C 56.38 38.206 54.832 34.326 52.079 31.466 C 49.323 28.607 45.586 27 41.69 27 Z"
+                    android:fillColor="#ffa500"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"/>
+            </group>
+            <group
+                android:name="cloud_group"
+                android:translateX="10.875000000082174"
+                android:translateY="-2.7869999997707637">
+                <path
+                    android:name="cloud_big"
+                    android:pathData="M 53.125 40.037 C 53.125 34.561 48.79 30.275 43.518 30.275 C 42.346 30.275 41.291 30.513 40.236 30.87 C 39.885 26.823 36.604 23.489 32.503 23.489 C 28.169 23.489 24.653 27.06 24.653 31.465 C 24.653 32.418 24.888 33.37 25.122 34.203 C 24.771 34.084 24.302 34.084 23.95 34.084 C 19.615 34.084 16.1 37.656 16.1 42.06 C 16.1 46.346 19.498 49.917 23.715 50.037 L 43.869 50.037 C 49.024 49.442 53.125 45.275 53.125 40.037 Z"
+                    android:fillColor="#57a0ee"
+                    android:strokeColor="#ffffff"
+                    android:strokeWidth="1.2"/>
+            </group>
+            <group android:name="rainy_2">
+                <group android:name="rain_group">
+                    <path
+                        android:name="rain_drop"
+                        android:pathData="M 45.918 48.943 L 44.528 56.821"
+                        android:strokeColor="#91c0f8"
+                        android:strokeAlpha="0"
+                        android:strokeWidth="2"
+                        android:strokeLineCap="round"/>
+                </group>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="beam_1">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 46.21 67.188 L 46.21 73.93"
+                android:valueTo="M 32.31 61.266 L 27.677 66.032"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="beam_2">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 32.31 61.266 L 27.677 66.032"
+                android:valueTo="M 26.552 46.965 L 20 46.965"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="beam_3">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 26.552 46.965 L 20 46.965"
+                android:valueTo="M 32.31 32.664 L 27.677 27.898"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="beam_4">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 32.31 32.664 L 27.677 27.898"
+                android:valueTo="M 46.21 26.742 L 46.21 20"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="beam_5">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 46.21 26.742 L 46.21 20"
+                android:valueTo="M 60.11 32.664 L 64.743 27.898"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="beam_6">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 60.11 32.664 L 64.743 27.898"
+                android:valueTo="M 65.868 46.965 L 72.42 46.965"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="beam_7">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 65.868 46.965 L 72.42 46.965"
+                android:valueTo="M 60.11 61.266 L 64.743 66.032"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="beam_8">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="pathData"
+                android:duration="4000"
+                android:valueFrom="M 60.11 61.266 L 64.743 66.032"
+                android:valueTo="M 46.21 67.188 L 46.21 73.93"
+                android:valueType="pathType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+    <target android:name="rain_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="2000"
+                    android:valueFrom="1"
+                    android:valueTo="0.9"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="2000"
+                    android:valueFrom="1"
+                    android:valueTo="1.1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:startOffset="2000"
+                    android:duration="2000"
+                    android:valueFrom="1"
+                    android:valueTo="0.9"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:startOffset="2000"
+                    android:duration="2000"
+                    android:valueFrom="1"
+                    android:valueTo="1.1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="rain_drop">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:duration="1000"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="1000"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="3000"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="2000"
+                    android:duration="1000"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

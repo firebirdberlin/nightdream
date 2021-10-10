@@ -1,0 +1,73 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="day"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <group
+        android:name="beam_group"
+        android:translateX="-13.383309724799993"
+        android:translateY="-15.01432270464003"
+        android:rotation="1">
+        <path
+            android:name="beam_1"
+            android:pathData="M 46.573 67.185 L 46.695 73.926"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="beam_2"
+            android:pathData="M 32.569 61.514 L 28.023 66.362"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="beam_3"
+            android:pathData="M 26.555 47.318 L 20.004 47.437"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="beam_4"
+            android:pathData="M 32.055 32.917 L 27.336 28.234"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="beam_5"
+            android:pathData="M 45.847 26.745 L 45.725 20.004"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="beam_6"
+            android:pathData="M 59.851 32.416 L 64.397 27.568"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="beam_7"
+            android:pathData="M 65.865 46.612 L 72.416 46.493"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="beam_8"
+            android:pathData="M 60.365 61.013 L 65.083 65.696"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+    </group>
+    <group
+        android:name="sun_group"
+        android:translateX="-9.340000000000003"
+        android:translateY="-9.5">
+        <path
+            android:name="sun"
+            android:pathData="M 41.69 27 C 37.794 27 34.057 28.607 31.301 31.466 C 28.548 34.326 27 38.206 27 42.25 C 27 46.294 28.548 50.174 31.301 53.034 C 34.057 55.893 37.794 57.5 41.69 57.5 C 45.586 57.5 49.323 55.893 52.079 53.034 C 54.832 50.174 56.38 46.294 56.38 42.25 C 56.38 38.206 54.832 34.326 52.079 31.466 C 49.323 28.607 45.586 27 41.69 27 Z"
+            android:fillColor="#ffa500"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"/>
+    </group>
+</vector>
