@@ -1,0 +1,33 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="thunder"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <group android:name="thunder_group">
+        <path
+            android:name="flash"
+            android:pathData="M 28.16 34.52 L 35.6 34.52 L 30.68 43.16 L 35.36 43.16 L 24.8 55.52 L 28.88 46.28 L 24.32 46.28 Z"
+            android:fillColor="#ffa500"
+            android:strokeColor="#ffffff"
+            android:strokeAlpha="0"
+            android:strokeWidth="1.200000048"/>
+    </group>
+    <group android:name="cloud_group_small">
+        <path
+            android:name="cloud_small"
+            android:pathData="M 38.62 25.24 C 38.62 22.48 36.4 20.32 33.7 20.32 C 33.1 20.32 32.56 20.44 32.02 20.62 C 31.84 18.58 30.16 16.9 28.06 16.9 C 25.84 16.9 24.04 18.7 24.04 20.92 C 24.04 21.4 24.16 21.88 24.28 22.3 C 24.1 22.24 23.86 22.24 23.68 22.24 C 21.46 22.24 19.66 24.04 19.66 26.26 C 19.66 28.42 21.4 30.22 23.56 30.28 L 33.88 30.28 C 36.52 29.98 38.62 27.88 38.62 25.24 Z"
+            android:fillColor="#91c0f8"
+            android:strokeColor="#ffffff"
+            android:strokeWidth="0.72"/>
+    </group>
+    <group android:name="cloud_group_big">
+        <path
+            android:name="cloud_big"
+            android:pathData="M 47.7 34.4 C 47.7 29.8 44 26.2 39.5 26.2 C 38.5 26.2 37.6 26.4 36.7 26.7 C 36.4 23.3 33.6 20.5 30.1 20.5 C 26.4 20.5 23.4 23.5 23.4 27.2 C 23.4 28 23.6 28.8 23.8 29.5 C 23.5 29.4 23.1 29.4 22.8 29.4 C 19.1 29.4 16.1 32.4 16.1 36.1 C 16.1 39.7 19 42.7 22.6 42.8 L 39.8 42.8 C 44.2 42.3 47.7 38.8 47.7 34.4 Z"
+            android:fillColor="#57a0ee"
+            android:strokeColor="#ffffff"
+            android:strokeWidth="1.2"/>
+    </group>
+</vector>

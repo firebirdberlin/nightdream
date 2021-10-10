@@ -1,0 +1,22 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="day"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <group android:name="sun_group">
+        <path
+            android:name="beam"
+            android:pathData="M 32 41 L 32 44 M 25.636 38.364 L 23.515 40.485 M 23 32 L 20 32 M 25.636 25.636 L 23.515 23.515 M 32 23 L 32 20 M 38.364 25.636 L 40.485 23.515 M 41 32 L 44 32 M 38.364 38.364 L 40.485 40.485"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"
+            android:strokeLineCap="round"/>
+        <path
+            android:name="sun"
+            android:pathData="M 32 27 C 30.674 27 29.402 27.527 28.464 28.464 C 27.527 29.402 27 30.674 27 32 C 27 33.326 27.527 34.598 28.464 35.536 C 29.402 36.473 30.674 37 32 37 C 33.326 37 34.598 36.473 35.536 35.536 C 36.473 34.598 37 33.326 37 32 C 37 30.674 36.473 29.402 35.536 28.464 C 34.598 27.527 33.326 27 32 27 Z"
+            android:fillColor="#ffa500"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"/>
+    </group>
+</vector>

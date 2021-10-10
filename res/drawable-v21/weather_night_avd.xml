@@ -1,0 +1,80 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="night"
+            android:width="64dp"
+            android:height="64dp"
+            android:viewportWidth="64"
+            android:viewportHeight="64">
+            <group android:name="star_group">
+                <path
+                    android:name="star_1"
+                    android:pathData="M 23.3 21.5 L 24 22.7 L 25.2 23.3 L 24 24 L 23.3 25.2 L 22.7 24 L 21.5 23.3 L 22.7 22.7 Z"
+                    android:fillColor="#ffa500"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="1"
+                    android:strokeMiterLimit="10"/>
+                <path
+                    android:name="start_2"
+                    android:pathData="M 43.3 31.5 L 44 32.7 L 45.2 33.3 L 44 34 L 43.3 35.2 L 42.7 34 L 41.5 33.3 L 42.7 32.7 Z"
+                    android:fillColor="#ffa500"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="1"
+                    android:strokeMiterLimit="10"/>
+            </group>
+            <group android:name="moon_group">
+                <path
+                    android:name="moon"
+                    android:pathData="M 34.5 33.2 C 34.5 29.5 36.5 26.3 39.5 24.5 C 38 23.6 36.3 23.2 34.5 23.2 C 29 23.2 24.5 27.7 24.5 33.2 C 24.5 38.7 29 43.2 34.5 43.2 C 36.3 43.2 38 42.7 39.5 41.9 C 36.5 40.2 34.5 36.9 34.5 33.2 Z"
+                    android:fillColor="#ffa500"
+                    android:strokeColor="#ffa500"
+                    android:strokeWidth="2"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="star_1">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:duration="500"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/accelerate_interpolator"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="800"
+                    android:duration="500"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/accelerate_interpolator"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="start_2">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="400"
+                    android:duration="500"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/accelerate_interpolator"/>
+                <objectAnimator
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="1200"
+                    android:duration="500"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/accelerate_interpolator"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
