@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,11 +27,14 @@ import com.firebirdberlin.nightdream.mNotificationListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NotificationActivity extends AppCompatActivity {
 
     public static String TAG = "NotificationActivity";
     NotificationList notificationList = new NotificationList();
+    NotificationList oldNotificationList = new NotificationList();
     String packageName;
     private NotificationRecyclerViewAdapter adapter;
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -40,10 +44,14 @@ public class NotificationActivity extends AppCompatActivity {
 
             if (intent.hasExtra("notifications")) {
                 List<Notification> notifications = intent.getParcelableArrayListExtra("notifications");
+
+                oldNotificationList.replace(notificationList.getNotifications(), packageName);
+
                 if (notifications != null) {
                     notificationList.replace(notifications, packageName);
                 }
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
+                adapter.updateDataSet(oldNotificationList, notificationList);
             }
         }
     };
@@ -130,11 +138,15 @@ public class NotificationActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.menuItem_markall:
+
                 if (notificationList != null) {
+                    oldNotificationList.replace(notificationList.getNotifications(), packageName);
                     for (int index = 0; index < notificationList.size(); index++) {
+                        oldNotificationList.setSelected(index, notificationList.isSelected(index));
                         notificationList.setSelected(index, true);
                     }
-                    adapter.notifyDataSetChanged();
+                    //adapter.notifyDataSetChanged();
+                    adapter.updateDataSet(oldNotificationList, notificationList);
                 }
                 break;
             case R.id.menuItem_delete:
@@ -183,7 +195,8 @@ public class NotificationActivity extends AppCompatActivity {
                             + notification.getNotificationID()
             );
         }
-        adapter.removeNotification(position);
+        oldNotificationList.replace(notificationList.getNotifications(), packageName);
+        adapter.removeNotification(position,oldNotificationList);
 
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "clear");
