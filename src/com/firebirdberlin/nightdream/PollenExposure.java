@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -33,8 +34,13 @@ public class PollenExposure {
     public void parse(String json, String plz) {
         pollenList.clear();
         pollenAreaList.clear();
+        Integer area;
 
-        Integer area = plzToArea(Integer.parseInt(plz.substring(0, 2)));
+        if (!plz.isEmpty() && TextUtils.isDigitsOnly(plz.substring(0, 2))) {
+            area = plzToArea(Integer.parseInt(plz.substring(0, 2)));
+        } else{
+            area = -1;
+        }
 
         if (json != null && area != -1) {
             try {
