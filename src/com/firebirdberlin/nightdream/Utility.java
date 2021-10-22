@@ -1,5 +1,8 @@
 package com.firebirdberlin.nightdream;
 
+import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.POWER_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -76,9 +79,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
-
-import static android.content.Context.LOCATION_SERVICE;
-import static android.content.Context.POWER_SERVICE;
 
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
@@ -495,18 +495,9 @@ public class Utility {
         // get the name from android content
         if ("content".equals(uri.getScheme())) {
             try {
-                String title =context.getResources().getString(R.string.ringtone_none);
-
-                int permissionCheck = ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
-                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                    Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
-                    title = ringtone.getTitle(context);
-                    ringtone.stop();
-                }
-                else {
-                    Log.d(TAG,"keine Berechtigung READ_EXTERNAL_STORAGE");
-                }
-
+                Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
+                String title = ringtone.getTitle(context);
+                ringtone.stop();
                 return title;
             } catch (RuntimeException ignored) {
             }
