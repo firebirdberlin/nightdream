@@ -1,10 +1,12 @@
 package com.firebirdberlin.nightdream;
 
+import android.Manifest;
 import android.animation.LayoutTransition;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,9 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -36,12 +36,17 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 public class SetAlarmClockActivity extends BillingHelperActivity {
     static final String TAG = "SetAlarmClockActivity";
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    }
+
     final int MENU_ITEM_PREFERENCES = 3000;
     private final HashMap<Long, AlarmClockLayout> layoutHashMap = new HashMap<>();
     private LinearLayout scrollView = null;
@@ -50,10 +55,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private FavoriteRadioStations radioStations = null;
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-    }
+    private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 333;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -102,11 +104,12 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         timeFormat = settings.getFullTimeFormat();
         dateFormat = settings.dateFormat;
         radioStations = settings.getFavoriteRadioStations();
+
         init();
 
         Intent intent = getIntent();
         Utility.logIntent(TAG, "onResume()", intent);
-        if (intent != null && AlarmClock.ACTION_SET_ALARM.equals(intent.getAction())) {
+        if (AlarmClock.ACTION_SET_ALARM.equals(intent.getAction())) {
             intent.setAction(""); // clear that intent
 
             saveAlarmEntryFromIntent(intent);
@@ -148,11 +151,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     private void update(Long highlight_entry_id) {
-        Collections.sort(entries, new Comparator<SimpleTime>() {
-            public int compare(SimpleTime obj1, SimpleTime obj2) {
-                return obj1.getCalendar().compareTo(obj2.getCalendar());
-            }
-        });
+        Collections.sort(entries, (obj1, obj2) -> obj1.getCalendar().compareTo(obj2.getCalendar()));
         scrollView.removeAllViews();
         for (SimpleTime entry : entries) {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
@@ -173,6 +172,16 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     public void onClickAddNewAlarm(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                requestPermissions(
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+                );
+                return;
+            }
+        }
+
         Calendar now = Calendar.getInstance();
         int hour = now.get(Calendar.HOUR_OF_DAY);
         int min;
@@ -184,7 +193,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             min = (now.get(Calendar.MINUTE) / 10 + 1) * 10;
             if (min >= 60) {
                 min = 0;
-                hour = ( hour + 1 > 23 ) ? 0 : hour + 1;
+                hour = (hour + 1 > 23) ? 0 : hour + 1;
             }
             recurring = false;
         } else {
@@ -255,7 +264,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         final Context context = this;
         long now = System.currentTimeMillis();
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timestamp > now ? timestamp : now);
+        calendar.setTimeInMillis(Math.max(timestamp, now));
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -349,10 +358,12 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         entry.hour = intent.getIntExtra(AlarmClock.EXTRA_HOUR, 0);
         entry.min = intent.getIntExtra(AlarmClock.EXTRA_MINUTES, 0);
 
-        ArrayList<Integer> days = intent.getIntegerArrayListExtra(AlarmClock.EXTRA_DAYS);
-        if (days != null) {
-            for (int day : days) {
-                entry.addRecurringDay(day);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            ArrayList<Integer> days = intent.getIntegerArrayListExtra(AlarmClock.EXTRA_DAYS);
+            if (days != null) {
+                for (int day : days) {
+                    entry.addRecurringDay(day);
+                }
             }
         }
         entry.isActive = true;
@@ -360,12 +371,22 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         entries.add(entry);
         update(entry.id);
         if (intent.getBooleanExtra(AlarmClock.EXTRA_SKIP_UI, false)) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    finish();
+            new Handler().postDelayed(this::finish, 3000);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults
+    ) {
+        if (PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE == requestCode) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    onClickAddNewAlarm(scrollView);
                 }
-            }, 3000);
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
