@@ -81,39 +81,24 @@ public class NightDreamUI {
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-    private static String TAG = "NightDreamUI";
+    private static final String TAG = "NightDreamUI";
     final private Handler handler = new Handler();
     final private Drawable colorTransparent = new ColorDrawable(Color.TRANSPARENT);
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
-        public void notifyAction() {
-            resetAlarmClockHideDelay();
-        }
-    };
-    private int screen_alpha_animation_duration = 3000;
-    private int screen_transition_animation_duration = 10000;
-    private int mode = 2;
-    private boolean controlsVisible = false;
-    private Context mContext;
-    private FrameLayout mainFrame;
-    private Drawable bgshape = colorBlack;
-    private AlarmClock alarmClock;
-    private ConstraintLayout parentLayout;
-    private ExifView exifView;
-    private ImageViewExtended[] background_images = new ImageViewExtended[2];
-    private int background_image_active = 0;
-    private ArrayList<File> files;
-    private Bitmap preloadBackgroundImage;
-    private File preloadBackgroundImageFile;
-    private ImageView menuIcon;
-    private ImageView nightModeIcon;
-    private ImageView radioIcon;
-    private LightSensorEventListener lightSensorEventListener = null;
-    private ConstraintLayout exifLayoutContainer;
-    private ClockLayoutContainer clockLayoutContainer;
-    private ClockLayout clockLayout;
-    private FlexboxLayout notificationStatusBar;
-    private FlexboxLayout sidePanel;
+    private final Context mContext;
+    private final FrameLayout mainFrame;
+    private final AlarmClock alarmClock;
+    private final ConstraintLayout parentLayout;
+    private final ExifView exifView;
+    private final ImageViewExtended[] background_images = new ImageViewExtended[2];
+    private final ImageView menuIcon;
+    private final ImageView nightModeIcon;
+    private final ImageView radioIcon;
+    private final ConstraintLayout exifLayoutContainer;
+    private final ClockLayoutContainer clockLayoutContainer;
+    private final ClockLayout clockLayout;
+    private final FlexboxLayout notificationStatusBar;
+    private final FlexboxLayout sidePanel;
     private final Runnable setupSidePanel = new Runnable() {
         @Override
         public void run() {
@@ -123,7 +108,40 @@ public class NightDreamUI {
 
         }
     };
-    private BottomPanelLayout bottomPanelLayout;
+    private final BottomPanelLayout bottomPanelLayout;
+    private final ProgressBar brightnessProgress;
+    private final Runnable hideBrightnessView = new Runnable() {
+        @Override
+        public void run() {
+            brightnessProgress.setVisibility(View.INVISIBLE);
+        }
+    };
+    private final Runnable hideBrightnessLevel = new Runnable() {
+        @Override
+        public void run() {
+            setAlpha(brightnessProgress, 0.f, 2000);
+            postDelayed(hideBrightnessView, 2010);
+        }
+    };
+    private final BatteryIconView batteryIconView;
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
+        public void notifyAction() {
+            resetAlarmClockHideDelay();
+        }
+    };
+    private final mAudioManager AudioManage;
+    private final ScaleGestureDetector mScaleDetector;
+    private final GestureDetector mGestureDetector;
+    private int screen_alpha_animation_duration = 3000;
+    private int screen_transition_animation_duration = 10000;
+    private int mode = 2;
+    private boolean controlsVisible = false;
+    private Drawable bgshape = colorBlack;
+    private int background_image_active;
+    private ArrayList<File> files;
+    private Bitmap preloadBackgroundImage;
+    private File preloadBackgroundImageFile;
+    private LightSensorEventListener lightSensorEventListener = null;
     private Settings settings;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
@@ -183,43 +201,6 @@ public class NightDreamUI {
             }
         }
     };
-    private float clockLayout_xDelta;
-    private float clockLayout_yDelta;
-    private int vibrantColor = 0;
-    private int vibrantColorDark = 0;
-    private long lastAnimationTime = 0L;
-    private SoundMeter soundmeter;
-    private ProgressBar brightnessProgress;
-    private final Runnable hideBrightnessView = new Runnable() {
-        @Override
-        public void run() {
-            brightnessProgress.setVisibility(View.INVISIBLE);
-        }
-    };
-    private final Runnable hideBrightnessLevel = new Runnable() {
-        @Override
-        public void run() {
-            setAlpha(brightnessProgress, 0.f, 2000);
-            postDelayed(hideBrightnessView, 2010);
-        }
-    };
-    private BatteryIconView batteryIconView;
-    public Runnable initSlideshowBackground = new Runnable() {
-        @Override
-        public void run() {
-            if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
-                if (preloadBackgroundImage == null) {
-                    parentLayout.postDelayed(initSlideshowBackground, 500);
-                } else {
-                    setupSlideshow();
-                }
-            }
-        }
-    };
-    private final Runnable backgroundChange = () -> {
-        setupSlideshow();
-        postBackgroundImageChange();
-    };
     private final Runnable hideAlarmClock = new Runnable() {
         @Override
         public void run() {
@@ -238,6 +219,28 @@ public class NightDreamUI {
             hideSidePanel();
         }
     };
+    private float clockLayout_xDelta;
+    private float clockLayout_yDelta;
+    private int vibrantColor = 0;
+    private int vibrantColorDark = 0;
+    private long lastAnimationTime = 0L;
+    public Runnable initSlideshowBackground = new Runnable() {
+        @Override
+        public void run() {
+            if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
+                if (preloadBackgroundImage == null) {
+                    parentLayout.postDelayed(initSlideshowBackground, 500);
+                } else {
+                    setupSlideshow();
+                }
+            }
+        }
+    };
+    private final Runnable backgroundChange = () -> {
+        setupSlideshow();
+        postBackgroundImageChange();
+    };
+    private SoundMeter soundmeter;
     private Window window;
     // move the clock randomly around
     private final Runnable moveAround = new Runnable() {
@@ -256,9 +259,6 @@ public class NightDreamUI {
             postDelayed(this, Utility.millisToTimeTick(20000));
         }
     };
-    private mAudioManager AudioManage;
-    private ScaleGestureDetector mScaleDetector;
-    private GestureDetector mGestureDetector;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private boolean locked = false;
     private boolean zoomFinished = false;
@@ -292,7 +292,7 @@ public class NightDreamUI {
     private float LIGHT_VALUE_BRIGHT = 40.0f;
     private float LIGHT_VALUE_DAYLIGHT = 300.0f;
     private boolean blinkStateOn = false;
-    private Runnable blink = new Runnable() {
+    private final Runnable blink = new Runnable() {
         public void run() {
             handler.removeCallbacks(blink);
             if (AlarmHandlerService.alarmIsRunning()) {
@@ -345,115 +345,117 @@ public class NightDreamUI {
             return false;
         }
     };
-    private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
-        int[] rect = new int[2];
-        int[] size = new int[2];
-
-        @Override
-        public void onShowPress(MotionEvent e) {
-            super.onShowPress(e);
-            Log.i(TAG, "onShowPress");
-            if (isInsideClockLayout(e)) {
-                clockLayout_xDelta = e.getRawX() - clockLayout.getX();
-                clockLayout_yDelta = e.getRawY() - clockLayout.getY();
-                enableMoveClock();
-            }
-        }
-
-        boolean isInsideClockLayout(MotionEvent e) {
-            clockLayout.getLocationOnScreen(rect);
-            clockLayout.getScaledSize(size);
-            int x = (int) e.getRawX();
-            int y = (int) e.getRawY();
-            return (
-                    x > rect[0] && x < rect[0] + size[0] && y > rect[1] && y < rect[1] + size[1]
-            );
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (e1 == null || e2 == null) return false;
-            Log.i(TAG, "onFling");
-            clockLayoutContainer.getLocationOnScreen(rect);
-            if (e1.getY() < rect[1]) return false;
-
-            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
-                return false;
-            }
-            // right to left swipe
-            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                Log.w(TAG, "left swipe");
-                hideSidePanel();
-            }
-            // left to right swipe
-            else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                Log.w(TAG, "right swipe");
-                showSidePanel();
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            Log.w(TAG, "single tap up");
-
-            showAlarmClock();
-            resetAlarmClockHideDelay();
-
-            if (AlarmHandlerService.alarmIsRunning()) {
-                alarmClock.snooze();
-            }
-
-            removeCallbacks(hideBrightnessLevel);
-            removeCallbacks(hideBrightnessView);
-            setBrightnessProgress();
-            brightnessProgress.setVisibility(View.VISIBLE);
-            setAlpha(brightnessProgress, 1.f, 0);
-            handler.postDelayed(hideBrightnessLevel, 1000);
-            return false;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d(TAG, "onScroll");
-            if (
-                    clockLayoutContainer == null || mContext == null || settings == null
-                            || brightnessProgress == null
-            ) return false;
-            if (brightnessProgress.getVisibility() == View.VISIBLE) {
-                clockLayoutContainer.getLocationOnScreen(rect);
-                if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
-                    Point size = Utility.getDisplaySize(mContext);
-                    float dx = -2.f * (distanceX / size.x);
-                    float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
-                    value += dx;
-                    value = to_range(value, -1.f, 1.f);
-
-                    setAlpha(brightnessProgress, 1.f, 0);
-
-                    dimScreen(0, last_ambient, value);
-                    if (mode != 0) {
-                        settings.setBrightnessOffset(value);
-                    } else {
-                        settings.setNightModeBrightness(value);
-                    }
-                    setBrightnessProgress();
-                }
-                removeCallbacks(hideBrightnessLevel);
-                removeCallbacks(hideBrightnessView);
-                handler.postDelayed(hideBrightnessLevel, 1000);
-            }
-            return false;
-        }
-    };
 
     @SuppressLint("ClickableViewAccessibility")
     public NightDreamUI(final Context context, Window window) {
         Log.d(TAG, "NightDreamUI()");
         mContext = context;
 
+        // right to left swipe
+        // left to right swipe
+        GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+            final int[] rect = new int[2];
+            final int[] size = new int[2];
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+                super.onShowPress(e);
+                Log.i(TAG, "onShowPress");
+                if (isInsideClockLayout(e)) {
+                    clockLayout_xDelta = e.getRawX() - clockLayout.getX();
+                    clockLayout_yDelta = e.getRawY() - clockLayout.getY();
+                    enableMoveClock();
+                }
+            }
+
+            boolean isInsideClockLayout(MotionEvent e) {
+                clockLayout.getLocationOnScreen(rect);
+                clockLayout.getScaledSize(size);
+                int x = (int) e.getRawX();
+                int y = (int) e.getRawY();
+                return (
+                        x > rect[0] && x < rect[0] + size[0] && y > rect[1] && y < rect[1] + size[1]
+                );
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e1 == null || e2 == null) return false;
+                Log.i(TAG, "onFling");
+                clockLayoutContainer.getLocationOnScreen(rect);
+                if (e1.getY() < rect[1]) return false;
+
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
+                    return false;
+                }
+                // right to left swipe
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
+                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Log.w(TAG, "left swipe");
+                    hideSidePanel();
+                }
+                // left to right swipe
+                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
+                        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Log.w(TAG, "right swipe");
+                    showSidePanel();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                Log.w(TAG, "single tap up");
+
+                showAlarmClock();
+                resetAlarmClockHideDelay();
+
+                if (AlarmHandlerService.alarmIsRunning()) {
+                    alarmClock.snooze();
+                }
+
+                removeCallbacks(hideBrightnessLevel);
+                removeCallbacks(hideBrightnessView);
+                setBrightnessProgress();
+                brightnessProgress.setVisibility(View.VISIBLE);
+                setAlpha(brightnessProgress, 1.f, 0);
+                handler.postDelayed(hideBrightnessLevel, 1000);
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                Log.d(TAG, "onScroll");
+                if (
+                        clockLayoutContainer == null || mContext == null || settings == null
+                                || brightnessProgress == null
+                ) return false;
+                if (brightnessProgress.getVisibility() == View.VISIBLE) {
+                    clockLayoutContainer.getLocationOnScreen(rect);
+                    if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
+                        Point size = Utility.getDisplaySize(mContext);
+                        float dx = -2.f * (distanceX / size.x);
+                        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                        value += dx;
+                        value = to_range(value, -1.f, 1.f);
+
+                        setAlpha(brightnessProgress, 1.f, 0);
+
+                        dimScreen(0, last_ambient, value);
+                        if (mode != 0) {
+                            settings.setBrightnessOffset(value);
+                        } else {
+                            settings.setNightModeBrightness(value);
+                        }
+                        setBrightnessProgress();
+                    }
+                    removeCallbacks(hideBrightnessLevel);
+                    removeCallbacks(hideBrightnessView);
+                    handler.postDelayed(hideBrightnessLevel, 1000);
+                }
+                return false;
+            }
+        };
         mGestureDetector = new GestureDetector(mContext, mSimpleOnGestureListener);
         mScaleDetector = new ScaleGestureDetector(mContext, mOnScaleGestureListener);
 
@@ -516,7 +518,7 @@ public class NightDreamUI {
 
     private void postBackgroundImageChange() {
         long delay = Utility.millisUntil(
-                15000 * settings.backgroundImageDuration, 10000
+                15000L * settings.backgroundImageDuration, 10000
         ) - 750;
         postDelayed(backgroundChange, delay);
     }
@@ -949,7 +951,7 @@ public class NightDreamUI {
                 Animation animZoomIn = AnimationUtils.loadAnimation(
                         mContext.getApplicationContext(), R.anim.zoom_in
                 );
-                animZoomIn.setDuration(50000 * settings.backgroundImageDuration);
+                animZoomIn.setDuration(50000L * settings.backgroundImageDuration);
                 animationSet.addAnimation(animZoomIn);
             }
 
@@ -1380,6 +1382,7 @@ public class NightDreamUI {
             if (settings.hideBackgroundImage) {
                 background_images[background_image_active].setImageDrawable(colorBlack);
                 exifLayoutContainer.setVisibility(View.GONE);
+                removeCallbacks(backgroundChange);
             }
         } else if ((new_mode != 0) && (current_mode == 0)) {
             restoreRingerMode();
@@ -1389,6 +1392,7 @@ public class NightDreamUI {
                 if (settings.background_exif && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
                     exifLayoutContainer.setVisibility(View.VISIBLE);
                 }
+                postBackgroundImageChange();
             }
         }
 
@@ -1562,7 +1566,7 @@ public class NightDreamUI {
 
             return true;
         }
-        boolean event_consumed = mGestureDetector.onTouchEvent(e);
+        mGestureDetector.onTouchEvent(e);
         if (mScaleDetector != null) {
             mScaleDetector.onTouchEvent(e);
         }

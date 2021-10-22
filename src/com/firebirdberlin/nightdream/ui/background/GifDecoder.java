@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.ui.background;
 
 import android.graphics.Bitmap;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
 
@@ -17,9 +18,9 @@ public class GifDecoder {
      */
 
     public static final int STATUS_OPEN_ERROR = 2;
-    protected static final int MAX_STACK_SIZE = 4096 * 2;
     public static final int MIN_DELAY = 100;
     public static final int MIN_DELAY_ENFORCE_THRESHOLD = 20;
+    protected static final int MAX_STACK_SIZE = 4096 * 2;
     protected InputStream in;
     protected int status;
     protected int width; // full image width
@@ -60,16 +61,6 @@ public class GifDecoder {
 
     public GifDecoder() {
         readComplete = false;
-    }
-
-    private static class GifFrame {
-        public GifFrame(Bitmap im, int del) {
-            image = im;
-            delay = del;
-        }
-
-        public Bitmap image;
-        public int delay;
     }
 
     /**
@@ -242,8 +233,7 @@ public class GifDecoder {
         readContents();
         try {
             in.close();
-        } catch (Exception e) {
-        }
+        } catch (IOException ignored) {}
     }
 
     /**
@@ -274,7 +264,7 @@ public class GifDecoder {
         code_size = data_size + 1;
         code_mask = (1 << code_size) - 1;
         for (code = 0; code < clear; code++) {
-            prefix[code] = 0; // XXX ArrayIndexOutOfBoundsException
+            prefix[code] = 0;
             suffix[code] = (byte) code;
         }
         // Decode GIF pixel stream.
@@ -394,7 +384,7 @@ public class GifDecoder {
         int n = 0;
         if (blockSize > 0) {
             try {
-                int count = 0;
+                int count;
                 while (n < blockSize) {
                     count = in.read(block, n, blockSize - n);
                     if (count == -1) {
@@ -402,7 +392,7 @@ public class GifDecoder {
                     }
                     n += count;
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             if (n < blockSize) {
@@ -425,7 +415,7 @@ public class GifDecoder {
         int n = 0;
         try {
             n = in.read(c);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         if (n < nbytes) {
@@ -642,5 +632,14 @@ public class GifDecoder {
         do {
             readBlock();
         } while ((blockSize > 0) && !err());
+    }
+
+    private static class GifFrame {
+        public Bitmap image;
+        public int delay;
+        public GifFrame(Bitmap im, int del) {
+            image = im;
+            delay = del;
+        }
     }
 }

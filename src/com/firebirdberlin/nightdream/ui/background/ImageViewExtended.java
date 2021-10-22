@@ -14,9 +14,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -44,8 +41,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ImageViewExtended extends AppCompatImageView {
-    private static String TAG = "ImageViewExtended";
-    private Context context;
+    private static final String TAG = "ImageViewExtended";
+    private final Context context;
     private GifMovie gif = null;
     private Bitmap bitmapImage;
 
@@ -63,6 +60,10 @@ public class ImageViewExtended extends AppCompatImageView {
     public ImageViewExtended(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmapImage;
     }
 
     private void setBitmap(Uri uri) {
@@ -85,10 +86,6 @@ public class ImageViewExtended extends AppCompatImageView {
 
     private void setBitmap(Bitmap bitmapImage) {
         this.bitmapImage = bitmapImage;
-    }
-
-    public Bitmap getBitmap() {
-        return bitmapImage;
     }
 
     public void startDrawableAnimation() {
@@ -209,12 +206,12 @@ public class ImageViewExtended extends AppCompatImageView {
         return new ColorDrawable(Color.BLACK);
     }
 
-    public boolean existCacheFile(){
+    public boolean existCacheFile() {
         File cacheFile = new File(context.getCacheDir(), Config.backgroundImageCacheFilename);
         return cacheFile.exists();
     }
 
-    public void bitmapUriToCache(Uri uri){
+    public void bitmapUriToCache(Uri uri) {
         try {
             Bitmap bgimage = loadBackgroundBitmap(uri);
             bgimage = rescaleBackgroundImage(bgimage);
@@ -268,7 +265,6 @@ public class ImageViewExtended extends AppCompatImageView {
 
     private Bitmap loadBackgroundBitmap(Uri uri) throws Exception {
         Log.d(TAG, "loadBackgroundBitmap");
-        Point display = Utility.getDisplaySize(context);
         ParcelFileDescriptor parcelFileDescriptor =
                 context.getContentResolver().openFileDescriptor(uri, "r");
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
@@ -278,6 +274,7 @@ public class ImageViewExtended extends AppCompatImageView {
         BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
 
         // Calculate inSampleSize
+        Point display = Utility.getDisplaySize(context);
         options.inSampleSize = Graphics.calculateInSampleSize(options, display.x, display.y);
 
         // Decode bitmap with inSampleSize set
@@ -292,19 +289,13 @@ public class ImageViewExtended extends AppCompatImageView {
         return bitmap;
     }
 
-    private void writeBackgroundImageToCache(Bitmap bitmapToCache){
+    private void writeBackgroundImageToCache(Bitmap bitmapToCache) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                //doInBackground
-                writeImageToCache(bitmapToCache);
-            }
-        });
+        executor.execute(() -> writeImageToCache(bitmapToCache));
     }
 
-    private void writeImageToCache(Bitmap bitmapToCache){
+    private void writeImageToCache(Bitmap bitmapToCache) {
         if (bitmapToCache != null) {
             Log.d(TAG, "writing image to cache");
             File cacheFile = new File(context.getCacheDir(), Config.backgroundImageCacheFilename);
