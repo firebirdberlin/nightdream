@@ -342,7 +342,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     }
 
     public Uri getAlarmToneUri() {
-        if (alarmTime != null && alarmTime.soundUri != null) {
+        if (alarmTime != null && !Utility.isEmpty(alarmTime.soundUri)) {
             Log.d(TAG, "soundUri = " + alarmTime.soundUri);
             try {
                 return Uri.parse(alarmTime.soundUri);
