@@ -1,5 +1,8 @@
 package com.firebirdberlin.nightdream;
 
+import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.POWER_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -77,14 +80,11 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
-import static android.content.Context.LOCATION_SERVICE;
-import static android.content.Context.POWER_SERVICE;
-
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
     private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    private static String TAG = "NightDreamActivity";
+    private static String TAG = "NightDreamUtility";
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     private Context mContext;
 

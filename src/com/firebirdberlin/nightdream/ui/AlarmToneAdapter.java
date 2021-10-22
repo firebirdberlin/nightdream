@@ -9,8 +9,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
@@ -29,8 +30,8 @@ import java.util.List;
 
 
 class AlarmToneAdapter extends ArrayAdapter<FileUri> {
-    private Context context;
-    private int viewId;
+    private final Context context;
+    private final int viewId;
     private int selectedPosition = -1;
     private MediaPlayer mediaPlayer;
     private OnDeleteRequestListener listener;
@@ -62,99 +63,86 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         button.setText(name);
         button.setChecked(position == selectedPosition);
         button.setTag(position);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean samePosition = selectedPosition == (Integer) view.getTag();
-                selectedPosition = (Integer) view.getTag();
-                notifyDataSetChanged();
+        button.setOnClickListener(view -> {
+            boolean samePosition = selectedPosition == (Integer) view.getTag();
+            selectedPosition = (Integer) view.getTag();
+            notifyDataSetChanged();
 
-                boolean justStop = (samePosition && mediaPlayer != null && mediaPlayer.isPlaying());
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                    releaseMediaplayer();
-                }
-
-                if (item == null || justStop || !shallPlaySound()) {
-                    return;
-                }
-
-                mediaPlayer = new MediaPlayer();
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mediaPlayer.setAudioAttributes(
-                            new AudioAttributes.Builder()
-                                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                                    .build()
-                    );
-                } else {
-                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                }
-
-                try {
-                    mediaPlayer.setDataSource(context, item.uri);
-                    mediaPlayer.setLooping(false);
-                    mediaPlayer.prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mediaPlayer.start();
-
+            boolean justStop = (samePosition && mediaPlayer != null && mediaPlayer.isPlaying());
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                releaseMediaplayer();
             }
+
+            if (justStop || !shallPlaySound()) {
+                return;
+            }
+
+            mediaPlayer = new MediaPlayer();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mediaPlayer.setAudioAttributes(
+                        new AudioAttributes.Builder()
+                                .setUsage(AudioAttributes.USAGE_MEDIA)
+                                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                .build()
+                );
+            } else {
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            }
+
+            try {
+                mediaPlayer.setDataSource(context, item.uri);
+                mediaPlayer.setLooping(false);
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mediaPlayer.start();
+
         });
         ImageView buttonDelete = (ImageView) v.findViewById(R.id.buttonDelete);
 
         buttonDelete.setVisibility(
-                item != null && "file".equals(item.uri.getScheme()) &&
-                        !item.uri.toString().contains("android_asset")
-                        ? View.VISIBLE : View.GONE);
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("DIALOG", "delete clicked");
-                if (item == null) {
-                    return;
-                }
-                if (listener != null) {
-                    listener.onDeleteRequested(item);
-                }
-
-                FileUri selected = getSelectedUri();
-                remove(item);
-                notifyDataSetChanged();
-                if (selected != null) {
-                    setSelectedUri(selected.uri);
-                }
-                releaseMediaplayer();
-
+                "file".equals(item.uri.getScheme()) && !item.uri.toString().contains("android_asset")
+                        ? View.VISIBLE : View.GONE
+        );
+        buttonDelete.setOnClickListener(view -> {
+            Log.i("DIALOG", "delete clicked");
+            if (listener != null) {
+                listener.onDeleteRequested(item);
             }
+
+            FileUri selected = getSelectedUri();
+            remove(item);
+            notifyDataSetChanged();
+            if (selected != null) {
+                setSelectedUri(selected.uri);
+            }
+            releaseMediaplayer();
 
         });
 
         // click effect
-        buttonDelete.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        ImageView view = (ImageView) v;
-                        //overlay is black with transparency of 0x77 (119)
-                        view.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
-                        view.invalidate();
-                        break;
-                    }
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL: {
-                        ImageView view = (ImageView) v;
-                        //clear the overlay
-                        view.getDrawable().clearColorFilter();
-                        view.invalidate();
-                        break;
-                    }
+        buttonDelete.setOnTouchListener((v1, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    ImageView view = (ImageView) v1;
+                    //overlay is black with transparency of 0x77 (119)
+                    view.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                    view.invalidate();
+                    break;
                 }
-
-                return false;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL: {
+                    ImageView view = (ImageView) v1;
+                    //clear the overlay
+                    view.getDrawable().clearColorFilter();
+                    view.invalidate();
+                    break;
+                }
             }
+
+            return false;
         });
 
         return v;
@@ -166,7 +154,6 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
             case AudioManager.RINGER_MODE_NORMAL:
                 return true;
             case AudioManager.RINGER_MODE_SILENT:
-                return false;
             case AudioManager.RINGER_MODE_VIBRATE:
                 return false;
         }
@@ -191,18 +178,14 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
             return null;
         }
 
-        FileUri item = getItem(selectedPosition);
-        if (item != null ) {
-            return item;
-        }
-        return null;
+        return getItem(selectedPosition);
     }
 
     public void setSelectedUri(Uri uri) {
         if (uri == null) return;
-        for (int i = 0; i < getCount(); i++){
+        for (int i = 0; i < getCount(); i++) {
             FileUri item = getItem(i);
-            if (uri.equals(item.uri)) {
+            if (item != null && uri.equals(item.uri)) {
                 selectedPosition = i;
                 notifyDataSetChanged();
                 break;
