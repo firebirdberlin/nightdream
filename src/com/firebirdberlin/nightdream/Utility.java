@@ -140,7 +140,8 @@ public class Utility {
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                 || "google_sdk".equals(Build.PRODUCT)
                 || "sdk_gphone_x86".equals(Build.PRODUCT)
-                || "sdk_gphone_x86_64".equals(Build.MODEL);
+                || "sdk_gphone_x86_64".equals(Build.MODEL)
+                || "sdk_gphone64_x86_64".equals(Build.MODEL);
     }
 
     public static int getScreenOffTimeout(Context context) {
@@ -788,30 +789,33 @@ public class Utility {
     }
 
     public static int getDominantColorFromPalette(Bitmap bitmap) {
-        Palette p = Palette.from(bitmap).generate();
-        return p.getDominantColor(Color.RED);
+        try {
+            Palette p = Palette.from(bitmap).generate();
+            return p.getDominantColor(Color.RED);
+        } catch (IllegalArgumentException e) {
+            return Color.RED;
+        }
     }
 
     public static int getDarkMutedColorFromPalette(Bitmap bitmap, int defaultColor) {
-        Palette p = Palette.from(bitmap).generate();
-        return p.getDarkMutedColor(defaultColor);
-        //return p.getDarkVibrantColor(defaultColor);
-        //return p.getLightVibrantColor(Color.RED);
-        //return p.getLightMutedColor(Color.RED);
+        try {
+            Palette p = Palette.from(bitmap).generate();
+            return p.getDarkMutedColor(defaultColor);
+        } catch (IllegalArgumentException e) {
+            return defaultColor;
+        }
     }
 
     public static int getVibrantColorFromPalette(Bitmap bitmap, int defaultColor) {
-        Log.d(TAG, "getVibrantColorFromPalette");
+        try {
+            Palette p = Palette.from(bitmap).maximumColorCount(256).generate();
+            Palette.Swatch vibrant = p.getVibrantSwatch();
+            if (vibrant != null) {
+                return vibrant.getRgb();
+            }
+        } catch (IllegalArgumentException ignored) {}
 
-        Palette p = Palette.from(bitmap).maximumColorCount(256).generate();
-        Palette.Swatch vibrant = p.getVibrantSwatch();
-        if (vibrant != null) {
-           return vibrant.getRgb();
-        }
         return defaultColor;
-        //return p.getVibrantColor(defaultColor);
-        //return p.getLightVibrantColor(Color.RED);
-        //return p.getLightMutedColor(Color.RED);
     }
 
     public static int getScreenOrientation(Context context) {
