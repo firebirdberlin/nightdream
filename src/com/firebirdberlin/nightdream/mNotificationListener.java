@@ -21,6 +21,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -48,12 +51,16 @@ public class mNotificationListener extends NotificationListenerService {
     private final List<NotificationApp> notificationApps = new ArrayList<>();
     int minNotificationImportance = 2;
     private NLServiceReceiver nlServiceReceiver;
+    private Handler broadcastReceiverHandler = null;
+    private HandlerThread broadcastReceiverThread = null;
+    private Looper broadcastReceiverThreadLooper = null;
 
     public static void requestNotificationList(Context context) {
         Log.d("mNotificationListener", "requestNotificationList()");
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "list");
-        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+        //LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+        context.sendBroadcast(i);
     }
 
     private static Bitmap drawableToBitMap(Drawable drawable) {
@@ -91,10 +98,17 @@ public class mNotificationListener extends NotificationListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
+        broadcastReceiverThread = new HandlerThread("mNotificationListener");
+        broadcastReceiverThread.start();
+
+        broadcastReceiverThreadLooper = broadcastReceiverThread.getLooper();
+        broadcastReceiverHandler = new Handler(broadcastReceiverThreadLooper);
+
         nlServiceReceiver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
-        LocalBroadcastManager.getInstance(this).registerReceiver(nlServiceReceiver, filter);
+        //LocalBroadcastManager.getInstance(this).registerReceiver(nlServiceReceiver, filter);
+        this.registerReceiver(nlServiceReceiver, filter, null, broadcastReceiverHandler);
         Log.i(TAG, "**********  Notification listener STARTED");
         running = true;
     }
@@ -104,7 +118,9 @@ public class mNotificationListener extends NotificationListenerService {
         super.onDestroy();
         running = false;
         Log.i(TAG, "**********  Notification listener STOPPED");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(nlServiceReceiver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(nlServiceReceiver);
+        unregisterReceiver(nlServiceReceiver);
+        broadcastReceiverThread.quit();
     }
 
     @Override
@@ -226,6 +242,7 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void listNotifications() {
+        Log.d(TAG, "listNotifications");
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         notifications.clear();
         notificationApps.clear();
@@ -575,6 +592,7 @@ public class mNotificationListener extends NotificationListenerService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive: "+intent.getStringExtra("command"));
 
             String command = intent.getStringExtra("command");
             if (command == null) return;

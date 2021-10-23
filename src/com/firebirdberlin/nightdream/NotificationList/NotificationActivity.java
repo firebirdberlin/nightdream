@@ -174,7 +174,8 @@ public class NotificationActivity extends AppCompatActivity {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "clear");
         i.putExtra("notificationKeys", notificationsKeys);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        this.sendBroadcast(i);
     }
 
     private void deleteItem(int position) {
@@ -202,6 +203,7 @@ public class NotificationActivity extends AppCompatActivity {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "clear");
         i.putExtra("notificationKeys", notificationKeys);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        this.sendBroadcast(i);
     }
 }
