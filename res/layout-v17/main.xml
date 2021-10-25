@@ -103,8 +103,8 @@
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/notificationstatusbar"
-                    android:layout_height="match_parent"
                     android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:onClick="onNotificationListClick"
                     app:alignContent="flex_end"
                     app:flexDirection="row"
@@ -137,7 +137,7 @@
             </com.firebirdberlin.nightdream.ui.ClockLayoutContainer>
 
             <include layout="@layout/side_panel" />
-         </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.firebirdberlin.nightdream.ui.BottomPanelLayout
             android:id="@+id/bottomPanel"

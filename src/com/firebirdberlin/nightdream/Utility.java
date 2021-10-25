@@ -420,26 +420,23 @@ public class Utility {
         return size;
     }
 
-    public static Rect getSafeWindowRect(Activity context) {
+    public static Rect getNotchRect(Activity context) {
         Rect rect = new Rect();
-        Point displaySize = getDisplaySize(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowInsets insets = context.getWindow().getDecorView().getRootWindowInsets();
             if (insets != null) {
                 DisplayCutout displayCutout = insets.getDisplayCutout();
                 if (displayCutout != null) {
-                    rect.bottom = displaySize.y - displayCutout.getSafeInsetBottom();
-                    rect.left = displayCutout.getSafeInsetLeft();
-                    rect.right = displaySize.x - displayCutout.getSafeInsetRight();
-                    rect.top = displayCutout.getSafeInsetTop();
+                    List<Rect> bounding = displayCutout.getBoundingRects();
+                    rect = bounding.get(0);
                     return rect;
                 }
             }
         }
         rect.left = 0;
         rect.top = 0;
-        rect.bottom = displaySize.y;
-        rect.right = displaySize.x;
+        rect.bottom = 0;
+        rect.right = 0;
         return rect;
     }
 
