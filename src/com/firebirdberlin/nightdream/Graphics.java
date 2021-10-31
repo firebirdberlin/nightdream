@@ -16,6 +16,9 @@ import android.renderscript.ScriptIntrinsicBlur;
 public class Graphics {
 
     public static Bitmap blur(Context context, Bitmap bitmap) {
+        if (bitmap == null){
+            return null;
+        }
         float blurRadius = 15f;
         Bitmap blurredBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
@@ -32,6 +35,9 @@ public class Graphics {
     }
 
     public static Bitmap sketch(final Bitmap bitmap) {
+        if (bitmap == null){
+            return null;
+        }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         int imageHeight = output.getHeight();
         int imageWidth = output.getWidth();
@@ -63,6 +69,9 @@ public class Graphics {
     }
 
     public static Bitmap desaturate(final Bitmap bitmap) {
+        if (bitmap == null){
+            return null;
+        }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
@@ -75,6 +84,9 @@ public class Graphics {
     }
 
     public static Bitmap sepia(final Bitmap bitmap) {
+        if (bitmap == null){
+            return null;
+        }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
@@ -92,6 +104,9 @@ public class Graphics {
     }
 
     public static Bitmap invert(final Bitmap bitmap) {
+        if (bitmap == null){
+            return null;
+        }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
@@ -110,6 +125,9 @@ public class Graphics {
     }
 
     public static Bitmap contrast(final Bitmap bitmap) {
+        if (bitmap == null){
+            return null;
+        }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
