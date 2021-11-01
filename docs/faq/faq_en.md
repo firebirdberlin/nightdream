@@ -47,13 +47,21 @@ If your question is not listed here, please try to post it to the
      * [Automatic brightness mode](#automatic-brightness-mode)
   * [Widget](#widget)
      * [The clock widget is not updated](#the-clock-widget-is-not-updated)
-  * [Slideshow](#slideshow)
-     * [Which pictures are shown in the slideshow](#which-pictures-are-shown-in-the-slideshow)
-     * [How can I select images](#how-can-i-select-images)
-     * [The slide show appears with a delay at app startup](#the-slide-show-appears-with-a-delay-at-app-startup)
-     * [How can cloud storage be accessed?](#how-can-cloud-storage-be-accessed)
-     * [Only a black screen is displayed](#only-a-black-screen-is-displayed)
-     * [EXIF information is not displayed](#exif-information-is-not-displayed)
+  * [Background](#background)
+       * [Black](#black)
+            * [Can I choose the color for the background?](#can-i-choose-the-color-for-the-background)
+      * [Transparent](#transparent)
+      * [Gradient](#gradient)
+             * [Can I choose the color for gradient?](#can-i-choose-the-color-for-gradient)
+      * [Image](#image)
+             * [Are animated gifs displayed?](#are-animated-gifs-displayed)
+      * [Slideshow](#slideshow)
+             * [Which pictures are shown in the slideshow](#which-pictures-are-shown-in-the-slideshow)
+             * [How can I select images](#how-can-i-select-images)
+             * [The slide show appears with a delay at app startup](#the-slide-show-appears-with-a-delay-at-app-startup)
+             * [How can cloud storage be accessed?](#how-can-cloud-storage-be-accessed)
+             * [Only a black screen is displayed](#only-a-black-screen-is-displayed)
+             * [EXIF information is not displayed](#exif-information-is-not-displayed)
   * [Speak the current time](#speak-the-current-time)
      * [The current time is not read out](#the-current-time-is-not-read-out)
      * [How can the language be changed?](#how-can-the-language-be-changed)
@@ -66,8 +74,8 @@ If your question is not listed here, please try to post it to the
 
 ### How do I remove the ads ?
 
-Night Clock does not show any advertisements, neither in the free version nor in the paid versions. 
-If you observe any ads check the other apps on your device. I don't want to contribute to a world 
+Night Clock does not show any advertisements, neither in the free version nor in the paid versions.
+If you observe any ads check the other apps on your device. I don't want to contribute to a world
 which is full of ads in all possible situations of life.
 
 [Top](#table-of-contents)
@@ -127,12 +135,12 @@ Using a two-finger pinch gesture you can freely resize the clock layout.
 With a long press on the clock a frame is displayed and the clock can be freely positioned on the screen.
 The position is automatically saved as soon as the clock is released.
 
-### The clock automatically changes its position 
+### The clock automatically changes its position
 
 The app offers two different options for screen protection:
 - move the clock around
 - fade the clock
-If an automatic change of position of the clock is not desired, the screen protection mode can be changed 
+If an automatic change of position of the clock is not desired, the screen protection mode can be changed
 or disabled in the options.
 
 ### The interface is locked
@@ -146,7 +154,7 @@ If the standby mode is enabled, the user interface always starts in locked mode.
 
 ### AM/PM indicator not working properly
 
-The seven segment font is not able to draw uppercase letters very precisely. An alternative font is 
+The seven segment font is not able to draw uppercase letters very precisely. An alternative font is
 a 14 segments digital font as found at https://www.keshikan.net/fonts-e.html.
 
 ### Custom fonts
@@ -160,7 +168,7 @@ There are sources of free fonts in the web, such as
 
 ### The landscape orientation does not work
 
-Starting from Android 5 Daydreams have a bug. The screen orientation changes to portrait as soon 
+Starting from Android 5 Daydreams have a bug. The screen orientation changes to portrait as soon
 as the screen lock is activated.
 * Solution 1: Disable Daydreams completely (System Settings > Display > Daydream). Instead you
 can setup the auto start feature of the app to your needs.
@@ -327,50 +335,82 @@ the fact that most of the devices do not report accurate values below 10 lux.
 ### The clock widget is not updated
 
 The clock widget needs to be updated once per minute. Due to restrictions of the Android system
-this is a difficult task. In order to ensure that the update works a foreground service is needed. 
-The same service is managing the autostart of the app. It is indicated by showing a permanent 
-notification in the notification area. If this service is not properly running (or interrupted by 
-the android system) the widget is no longer updated. If you want to (re-) enable this service you 
-can disable and re-enable the autostart of the app. This triggers the start of the service. 
+this is a difficult task. In order to ensure that the update works a foreground service is needed.
+The same service is managing the autostart of the app. It is indicated by showing a permanent
+notification in the notification area. If this service is not properly running (or interrupted by
+the android system) the widget is no longer updated. If you want to (re-) enable this service you
+can disable and re-enable the autostart of the app. This triggers the start of the service.
 
 [Top](#table-of-contents)
 
-## Slideshow
+## Background
 
-### Which pictures are shown in the slideshow
+### Black
 
-The app shows all images in JPG format.
+Shows a black background.
+
+#### Can I choose the color for the background?
+
+It is currently not possible to select any other color
+
+### Transparent
+
+Shows the mobile background.
+
+### Gradient
+
+Zeigt eine dunklen Farbverlauf als Hintergrund an.
+
+#### Can I choose the color for gradient?
+
+It is currently not possible to select any other color .
+
+### Image
+
+Shows an image as background.
+
+#### Are animated gifs displayed?
+
+Yes, since version 2.10.18.
+
+### Slideshow
+
+#### Which pictures are shown in the slideshow
+
+The app shows all images in JPG and PNG format.
 Videos or images in any other format are not displayed.
 It is currently not possible to select individual images for the slideshow.
 
-### How can I select images
+#### How can I select images
 
 For Android Lollipop (version 5.0) and above a folder can be selected for displaying images.
 It is currently not possible to select individual images for the slide show.
 It is recommended to create your own folder and copy the images you like for the slide show into this folder.
 For Android Versions below Lollipop the device's photo directory is selected automatically.
 
-### The slide show appears with a delay at app startup
+#### The slide show appears with a delay at app startup
 
 The loading of the individual images takes place in the background to ensure smooth operation of the app.
 On older devices or large images it may take some time before the image is ready to be displayed.
 In this case please try to reduce the size of the problematic image.
 
-### How can cloud storage be accessed?
+#### How can cloud storage be accessed?
 
 It is currently not possible access to any cloud storage.
 
-### Only a black screen is displayed
+#### Only a black screen is displayed
 
-Please check if there are pictures in JPG format on the device. 
-The option * Hide the background image in night mode * may be activated. 
+Please check if there are pictures in JPG format on the device.
+The option * Hide the background image in night mode * may be activated.
 If so, a black background is shown instead of a slideshow during the night.
 
-### EXIF information is not displayed
+#### EXIF information is not displayed
 
 Please check whether EXIF information is included in the displayed JPG image.
 To determine the location from the EXIF information the Google Play Services are required.
 Some Android distributions may not have these preinstalled.
+
+[Top](#table-of-contents)
 
 ## Speak the current time
 
@@ -387,13 +427,13 @@ The selected language depends on the language of your device and cannot be chang
 
 ### What is the media control?
 
-The media control makes it possible to take control of external music players which are controlled 
+The media control makes it possible to take control of external music players which are controlled
 through the notification center.
 
 ### How do I activate the media control?
 
 The media control notifications can be activated in the app preferences in the notifications section.
-If a compatible app is running in the background (e.g. Google Play Music, Spotify, Amazon Music, 
+If a compatible app is running in the background (e.g. Google Play Music, Spotify, Amazon Music,
 Pulsar, MyBob etc.) the media control is displayed below the clock.
 
 ### The media control is not displayed
