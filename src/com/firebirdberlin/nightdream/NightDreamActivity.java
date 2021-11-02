@@ -344,6 +344,7 @@ public class NightDreamActivity extends BillingHelperActivity
         super.onCreate(savedInstanceState);
         MultiDex.install(this);
         context = this;
+
         setContentView(R.layout.main);
 
         Log.i(TAG, "onCreate()");
@@ -359,6 +360,11 @@ public class NightDreamActivity extends BillingHelperActivity
 
         // allow the app to be displayed above the keyguard
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        // allow the app to be displayed fullscreen with notch
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            window.getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+        }
 
         setKeepScreenOn(true);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
