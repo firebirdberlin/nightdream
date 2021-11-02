@@ -89,6 +89,8 @@
     <target android:name="beam_1">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 46.21 67.188 L 46.21 73.93"
@@ -100,6 +102,8 @@
     <target android:name="beam_2">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 32.31 61.266 L 27.677 66.032"
@@ -111,6 +115,8 @@
     <target android:name="beam_3">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 26.552 46.965 L 20 46.965"
@@ -122,6 +128,8 @@
     <target android:name="beam_4">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 32.31 32.664 L 27.677 27.898"
@@ -133,6 +141,8 @@
     <target android:name="beam_5">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 46.21 26.742 L 46.21 20"
@@ -144,6 +154,8 @@
     <target android:name="beam_6">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 60.11 32.664 L 64.743 27.898"
@@ -155,6 +167,8 @@
     <target android:name="beam_7">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 65.868 46.965 L 72.42 46.965"
@@ -166,6 +180,8 @@
     <target android:name="beam_8">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 60.11 61.266 L 64.743 66.032"
@@ -178,6 +194,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:duration="2000"
                     android:valueFrom="0"
@@ -185,6 +203,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:startOffset="2000"
                     android:duration="2000"

@@ -47,6 +47,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="translateY"
                     android:duration="600"
                     android:valueFrom="0"
@@ -54,6 +56,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="translateY"
                     android:startOffset="1400"
                     android:duration="600"
@@ -62,6 +66,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="translateY"
                     android:startOffset="2800"
                     android:duration="600"
@@ -76,6 +82,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="fillAlpha"
                     android:duration="300"
                     android:valueFrom="0"
@@ -83,6 +91,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="fillAlpha"
                     android:startOffset="300"
                     android:duration="300"
@@ -91,6 +101,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="fillAlpha"
                     android:startOffset="1400"
                     android:duration="300"
@@ -99,6 +111,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="fillAlpha"
                     android:startOffset="1700"
                     android:duration="300"
@@ -107,6 +121,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="fillAlpha"
                     android:startOffset="2800"
                     android:duration="300"
@@ -115,6 +131,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/accelerate_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="fillAlpha"
                     android:startOffset="3100"
                     android:duration="300"
@@ -129,6 +147,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:duration="1800"
                     android:valueFrom="0"
@@ -136,6 +156,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:startOffset="2200"
                     android:duration="1800"

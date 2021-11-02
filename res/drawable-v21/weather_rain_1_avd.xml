@@ -37,6 +37,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleY"
                     android:duration="1200"
                     android:valueFrom="1"
@@ -44,6 +46,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleX"
                     android:duration="1200"
                     android:valueFrom="1"
@@ -57,6 +61,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:duration="600"
                     android:valueFrom="0"
@@ -64,6 +70,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="600"
                     android:duration="600"

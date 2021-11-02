@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -33,9 +35,10 @@ import java.util.HashSet;
 public class WeatherLayout extends LinearLayout {
     private static final String TAG = "WeatherLayout";
     private static final String NAMESPACE = "weather";
-    private Settings settings;
+    private final HashSet<String> cycleItems = new HashSet<>();
+    private final Context context;
     TimeReceiver timeReceiver;
-    private Context context;
+    private int weatherIconMode = Settings.WEATHER_ICON_MODE_DEFAULT;
     private DirectionIconView iconWindDirection = null;
     private TextView iconText = null;
     private ImageView iconImage = null;
@@ -62,9 +65,7 @@ public class WeatherLayout extends LinearLayout {
     private boolean isVertical = false;
     private int iconHeight = -1;
     private String content = "icon|temperature|wind";
-    private final HashSet<String> cycleItems = new HashSet<>();
     private boolean widget = false;
-
     public WeatherLayout(Context context) {
         super(context);
         this.context = context;
@@ -85,7 +86,6 @@ public class WeatherLayout extends LinearLayout {
         showLocation = content.contains("location");
         isVertical = "vertical".equals(orientation);
         cycleItems.add("temperature");
-        settings = new Settings(context);
         init();
     }
 
@@ -96,6 +96,10 @@ public class WeatherLayout extends LinearLayout {
         if (value == null) value = defaultValue;
 
         return value;
+    }
+
+    public void setWeatherIconMode(int weatherIconMode) {
+        this.weatherIconMode = weatherIconMode;
     }
 
     @Override
@@ -186,7 +190,7 @@ public class WeatherLayout extends LinearLayout {
 
             boolean on = "temperature".equals(item);
 
-            if (settings.weather_icon == 1) {
+            if (weatherIconMode == Settings.WEATHER_ICON_MODE_DEFAULT) {
                 iconText.setVisibility(on ? View.VISIBLE : View.GONE);
                 iconImage.setVisibility(View.GONE);
             } else {
@@ -206,7 +210,7 @@ public class WeatherLayout extends LinearLayout {
             on = "location".equals(item);
             locationText.setVisibility(on ? View.VISIBLE : View.GONE);
         } else {
-            if (settings.weather_icon == 1) {
+            if (weatherIconMode == Settings.WEATHER_ICON_MODE_DEFAULT) {
                 iconText.setVisibility(showIcon ? View.VISIBLE : View.GONE);
                 iconImage.setVisibility(View.GONE);
             } else {
@@ -286,21 +290,14 @@ public class WeatherLayout extends LinearLayout {
         if (shallBeVisible()) {
             iconText.setText(entry.weatherIconMeteoconsSymbol);
 
-            if (settings.weather_icon != 1) {
-                Drawable d = getIconImage(entry.weatherIconMeteoconsSymbol);
+            if (weatherIconMode != Settings.WEATHER_ICON_MODE_DEFAULT) {
+                Drawable d = getIconImage(entry);
                 iconImage.setImageDrawable(d);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (d instanceof AnimatedVectorDrawable) {
-                        AnimatedVectorDrawable animation = (AnimatedVectorDrawable) d;
-                        animation.registerAnimationCallback(new Animatable2.AnimationCallback() {
-                            @Override
-                            public void onAnimationEnd(Drawable drawable) {
-                                animation.start();
-                            }
-                        });
-                        animation.start();
-                    }
+                if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED
+                        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && d instanceof AnimatedVectorDrawable) {
+                    ((AnimatedVectorDrawable) d).start();
                 }
             }
 
@@ -315,78 +312,12 @@ public class WeatherLayout extends LinearLayout {
         }
     }
 
-    public Drawable getIconImage(String weatherIconMeteoconsSymbol) {
-        String avd = "";
-        int imageID;
+    public Drawable getIconImage(WeatherEntry entry) {
+        String identifier = entry.getWeatherIconIdentifier(weatherIconMode, widget);
 
-        if (settings.weather_icon == 3 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !widget) {
-            avd = "_avd";
-        }
-
-        switch (weatherIconMeteoconsSymbol) {
-            case "A":
-            case "B":
-                imageID = getResources().getIdentifier("weather_day" + avd, "drawable", context.getPackageName());
-                break;
-            case "C":
-                imageID = getResources().getIdentifier("weather_night" + avd, "drawable", context.getPackageName());
-                break;
-            case "G":
-                imageID = getResources().getIdentifier("weather_snow_1" + avd, "drawable", context.getPackageName());
-                break;
-            case "H":
-                imageID = getResources().getIdentifier("weather_cloudy_day" + avd, "drawable", context.getPackageName());
-                break;
-            case "I":
-                imageID = getResources().getIdentifier("weather_cloudy_night" + avd, "drawable", context.getPackageName());
-                break;
-            case "J":
-            case "K":
-            case "L":
-            case "M":
-                imageID = getResources().getIdentifier("weather_fog" + avd, "drawable", context.getPackageName());
-                break;
-            case "N":
-                imageID = getResources().getIdentifier("weather_cloudy" + avd, "drawable", context.getPackageName());
-                break;
-            case "O":
-            case "P":
-                imageID = getResources().getIdentifier("weather_thunder" + avd, "drawable", context.getPackageName());
-                break;
-            case "Q":
-                imageID = getResources().getIdentifier("weather_rain_1" + avd, "drawable", context.getPackageName());
-                break;
-            case "R":
-                imageID = getResources().getIdentifier("weather_rain_3" + avd, "drawable", context.getPackageName());
-                break;
-            case "S":
-                imageID = getResources().getIdentifier("weather_cloudy" + avd, "drawable", context.getPackageName());
-                break;
-            case "T":
-                imageID = getResources().getIdentifier("weather_rain_2" + avd, "drawable", context.getPackageName());
-                break;
-            case "U":
-            case "V":
-                imageID = getResources().getIdentifier("weather_snow_1" + avd, "drawable", context.getPackageName());
-                break;
-            case "W":
-                imageID = getResources().getIdentifier("weather_snow_3" + avd, "drawable", context.getPackageName());
-                break;
-            case "X":
-                imageID = getResources().getIdentifier("weather_rain_2" + avd, "drawable", context.getPackageName());
-                break;
-            case "Y":
-                imageID = getResources().getIdentifier("weather_cloudy" + avd, "drawable", context.getPackageName());
-                break;
-            case "Z":
-            case "0":
-                imageID = getResources().getIdentifier("weather_thunder" + avd, "drawable", context.getPackageName());
-                break;
-            default:
-                imageID = getResources().getIdentifier("weather_cloudy" + avd, "drawable", context.getPackageName());
-                break;
-        }
-
+        int imageID = getResources().getIdentifier(
+                identifier, "drawable", context.getPackageName()
+        );
         if (imageID > 0) {
             return ContextCompat.getDrawable(context, imageID);
         } else {

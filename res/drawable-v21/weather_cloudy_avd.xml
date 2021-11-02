@@ -36,6 +36,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:duration="4000"
                     android:valueFrom="0"
@@ -43,6 +45,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:startOffset="4000"
                     android:duration="4000"
@@ -57,6 +61,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:duration="4000"
                     android:valueFrom="-10"
@@ -64,6 +70,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/overshoot_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
                     android:propertyName="translateX"
                     android:startOffset="4000"
                     android:duration="4000"
