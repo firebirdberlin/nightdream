@@ -128,12 +128,13 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setTemperature(settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit);
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.setWeatherLocation(false);
+        clockLayout.setWeatherIconMode(settings.weather_icon);
         clockLayout.showWeather(settings.showWeather);
         clockLayout.setShowNotifications(false);
         clockLayout.showPollenExposure(false);
 
         WeatherEntry entry = getWeatherEntry(settings);
-        clockLayout.update(entry);
+        clockLayout.update(entry, false);
 
         Point size = Utility.getDisplaySize(getContext());
         Configuration config = context.getResources().getConfiguration();

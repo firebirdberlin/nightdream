@@ -57,6 +57,11 @@ public class Settings {
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
+
+    public final static int WEATHER_ICON_MODE_DEFAULT = 1;
+    public final static int WEATHER_ICON_MODE_COLORED = 2;
+    public final static int WEATHER_ICON_MODE_ANIMATED = 3;
+
     private final static String TAG = "NightDream.Settings";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
     public boolean activateDoNotDisturb = false;
@@ -123,6 +128,7 @@ public class Settings {
     public boolean background_movein = false;
     public boolean background_exif = false;
     public int background_movein_style = 1;
+    public int weather_icon = 1;
     public int background_filter = 1;
     public boolean background_mode_auto_color = false;
     public int clockColor;
@@ -482,6 +488,7 @@ public class Settings {
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
         weatherCityID = settings.getString("weatherCityID", "");
+        weather_icon = Integer.parseInt(settings.getString("weatherIconMode", "1"));
         batteryTimeout = getBatteryTimeoutMinutes();
 
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
