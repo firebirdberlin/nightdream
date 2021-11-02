@@ -1,0 +1,243 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="rain_3"
+            android:width="64dp"
+            android:height="64dp"
+            android:viewportWidth="64"
+            android:viewportHeight="64">
+            <group android:name="cloud_group">
+                <path
+                    android:name="cloud"
+                    android:pathData="M 58.45 25.315 C 58.45 18.85 52.742 13.79 45.799 13.79 C 44.257 13.79 42.869 14.072 41.48 14.493 C 41.017 9.715 36.698 5.78 31.298 5.78 C 25.59 5.78 20.962 9.996 20.962 15.196 C 20.962 16.32 21.27 17.444 21.579 18.428 C 21.116 18.288 20.499 18.288 20.036 18.288 C 14.329 18.288 9.7 22.504 9.7 27.704 C 9.7 32.763 14.174 36.98 19.728 37.12 L 46.263 37.12 C 53.051 36.417 58.45 31.498 58.45 25.315 Z"
+                    android:fillColor="#57a0ee"
+                    android:strokeColor="#ffffff"
+                    android:strokeWidth="1.2"/>
+            </group>
+            <group android:name="rain_group_1">
+                <path
+                    android:name="rain_drop_1"
+                    android:pathData="M 30.918 44.943 L 29.528 52.821"
+                    android:strokeColor="#91c0f8"
+                    android:strokeAlpha="0"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+            </group>
+            <group android:name="rain_group_2">
+                <path
+                    android:name="rain_drop_2"
+                    android:pathData="M 37.918 44.943 L 36.528 52.821"
+                    android:fillColor="#91c0f8"
+                    android:strokeColor="#91c0f8"
+                    android:strokeAlpha="0"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+            </group>
+            <group android:name="rain_group_3">
+                <path
+                    android:name="rain_drop_3"
+                    android:pathData="M 23.918 44.943 L 22.528 52.821"
+                    android:fillColor="#91c0f8"
+                    android:strokeColor="#91c0f8"
+                    android:strokeAlpha="0"
+                    android:strokeWidth="2"
+                    android:strokeLineCap="round"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="rain_group_1">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleY"
+                    android:duration="1200"
+                    android:valueFrom="1"
+                    android:valueTo="1.2"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleX"
+                    android:duration="1200"
+                    android:valueFrom="1"
+                    android:valueTo="0.9"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleY"
+                    android:startOffset="1200"
+                    android:duration="800"
+                    android:valueFrom="1"
+                    android:valueTo="1.2"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleX"
+                    android:startOffset="1200"
+                    android:duration="800"
+                    android:valueFrom="1"
+                    android:valueTo="0.9"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="rain_drop_2">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="800"
+                    android:duration="600"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="1400"
+                    android:duration="600"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="rain_drop_1">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:duration="600"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="600"
+                    android:duration="600"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/linear_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="1200"
+                    android:duration="600"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="1800"
+                    android:duration="200"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/accelerate_interpolator"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="rain_group_2">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleX"
+                    android:startOffset="800"
+                    android:duration="1200"
+                    android:valueFrom="1"
+                    android:valueTo="0.9"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleY"
+                    android:startOffset="800"
+                    android:duration="1200"
+                    android:valueFrom="1"
+                    android:valueTo="1.2"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="rain_group_3">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleX"
+                    android:startOffset="500"
+                    android:duration="1200"
+                    android:valueFrom="1"
+                    android:valueTo="0.9"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="scaleY"
+                    android:startOffset="500"
+                    android:duration="1200"
+                    android:valueFrom="1"
+                    android:valueTo="1.2"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="rain_drop_3">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="500"
+                    android:duration="600"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="1100"
+                    android:duration="600"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

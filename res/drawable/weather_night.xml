@@ -1,0 +1,36 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="night"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <group
+        android:name="star_group"
+        android:translateX="-11.849999999999998"
+        android:translateY="-3.1999999999999886">
+        <path
+            android:name="star_1"
+            android:pathData="M 24.923 21.5 L 26.254 23.542 L 28.536 24.561 L 26.254 25.751 L 24.923 27.793 L 23.782 25.751 L 21.5 24.561 L 23.782 23.542 Z"
+            android:fillColor="#ffa500"
+            android:strokeWidth="1"
+            android:strokeMiterLimit="10"/>
+        <path
+            android:name="start_2"
+            android:pathData="M 62.957 38.507 L 64.288 40.549 L 66.57 41.569 L 64.288 42.758 L 62.957 44.8 L 61.816 42.758 L 59.534 41.569 L 61.816 40.549 Z"
+            android:fillColor="#ffa500"
+            android:strokeWidth="1"
+            android:strokeMiterLimit="10"/>
+    </group>
+    <group
+        android:name="moon_group"
+        android:translateX="-7.350000000000001"
+        android:translateY="-9.290000000000013">
+        <path
+            android:name="moon"
+            android:pathData="M 44.3 43.08 C 44.3 35.725 48.26 29.363 54.2 25.785 C 51.23 23.995 47.864 23.2 44.3 23.2 C 33.41 23.2 24.5 32.146 24.5 43.08 C 24.5 54.014 33.41 62.96 44.3 62.96 C 47.864 62.96 51.23 61.966 54.2 60.375 C 48.26 56.996 44.3 50.435 44.3 43.08 Z"
+            android:fillColor="#ffa500"
+            android:strokeColor="#ffa500"
+            android:strokeWidth="2"/>
+    </group>
+</vector>

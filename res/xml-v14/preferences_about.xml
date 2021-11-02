@@ -275,6 +275,16 @@ vi - Phong Nguyen"/>
                 android:data="https://github.com/shred/commons-suncalc/tree/v2"
                 />
         </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_commons_suncalc"
+            app:summary="based on AMCHARTS"
+            app:title="animated weather icons">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.amcharts.com/free-animated-svg-weather-icons/"
+                />
+        </Preference>
 
     </PreferenceCategory>
 

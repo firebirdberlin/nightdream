@@ -1,0 +1,85 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="cloudy_1"
+            android:width="64dp"
+            android:height="64dp"
+            android:viewportWidth="64"
+            android:viewportHeight="64">
+            <group
+                android:name="small_group"
+                android:translateX="1.2960000000000136"
+                android:translateY="-7.68">
+                <path
+                    android:name="cloud_small"
+                    android:pathData="M 59.792 28.334 C 59.792 23.888 56.386 20.409 52.244 20.409 C 51.323 20.409 50.495 20.602 49.666 20.892 C 49.39 17.606 46.813 14.9 43.591 14.9 C 40.185 14.9 37.423 17.799 37.423 21.375 C 37.423 22.148 37.608 22.922 37.792 23.598 C 37.516 23.501 37.147 23.501 36.871 23.501 C 33.465 23.501 30.704 26.401 30.704 29.977 C 30.704 33.456 33.373 36.355 36.687 36.452 L 52.52 36.452 C 56.57 35.969 59.792 32.586 59.792 28.334 Z"
+                    android:fillColor="#91c0f8"
+                    android:strokeColor="#ffffff"
+                    android:strokeWidth="0.72"/>
+            </group>
+            <group
+                android:name="big_group"
+                android:translateX="-11.68"
+                android:translateY="-10.33999999999999">
+                <path
+                    android:name="cloud_big"
+                    android:pathData="M 61.616 46.883 C 61.616 39.284 55.77 33.337 48.658 33.337 C 47.078 33.337 45.656 33.667 44.233 34.163 C 43.759 28.546 39.334 23.92 33.803 23.92 C 27.957 23.92 23.215 28.876 23.215 34.988 C 23.215 36.31 23.532 37.631 23.848 38.788 C 23.374 38.623 22.742 38.623 22.268 38.623 C 16.421 38.623 11.68 43.579 11.68 49.692 C 11.68 55.639 16.263 60.595 21.951 60.76 L 49.132 60.76 C 56.085 59.934 61.616 54.152 61.616 46.883 Z"
+                    android:fillColor="#57a0ee"
+                    android:strokeColor="#ffffff"
+                    android:strokeWidth="1.2"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="small_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
+                    android:propertyName="translateX"
+                    android:duration="4000"
+                    android:valueFrom="0"
+                    android:valueTo="-30"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+                <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
+                    android:propertyName="translateX"
+                    android:startOffset="4000"
+                    android:duration="4000"
+                    android:valueFrom="-30"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/linear_interpolator"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="big_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
+                    android:propertyName="translateX"
+                    android:duration="4000"
+                    android:valueFrom="-10"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/overshoot_interpolator"/>
+                <objectAnimator
+                    android:repeatMode="reverse"
+                    android:repeatCount="infinite"
+                    android:propertyName="translateX"
+                    android:startOffset="4000"
+                    android:duration="4000"
+                    android:valueFrom="0"
+                    android:valueTo="-10"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/overshoot_interpolator"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
