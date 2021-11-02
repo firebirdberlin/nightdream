@@ -68,7 +68,7 @@ public class Notification implements Parcelable {
         text = in.readString();
         textBig = in.readString();
         summaryText = in.readString();
-        remoteView = getParcelable(in, RemoteViews.class.getClassLoader());
+        remoteView = getParcelable(in, null);
         bitmapLargeIcon = getParcelable(in, Bitmap.class.getClassLoader());
         title = in.readString();
         titleBig = in.readString();

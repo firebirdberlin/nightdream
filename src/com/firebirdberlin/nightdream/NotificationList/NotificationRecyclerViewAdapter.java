@@ -168,17 +168,19 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
         switch (match) {
             case "DecoratedCustomViewStyle":
-                try {
-                    if (notification.getBigCardView().getParent() != null) {
-                        ((ViewGroup) notification.getBigCardView().getParent()).removeView(notification.getBigCardView()); // <- fix
+                if (notification.getBigCardView() != null) {
+                    try {
+                        if (notification.getBigCardView().getParent() != null) {
+                            ((ViewGroup) notification.getBigCardView().getParent()).removeView(notification.getBigCardView()); // <- fix
+                        }
+                        holder.notificationRemoteView.removeAllViews();
+                        holder.itemView.findViewById(R.id.notify).setVisibility(View.GONE);
+                        if (holder.notificationRemoteView.getChildCount() == 0) {
+                            holder.notificationRemoteView.addView(notification.getBigCardView());
+                        }
+                    } catch (Exception ex) {
+                        Log.e(TAG, "DecoratedCustomViewStyle", ex);
                     }
-                    holder.notificationRemoteView.removeAllViews();
-                    holder.itemView.findViewById(R.id.notify).setVisibility(View.GONE);
-                    if (holder.notificationRemoteView.getChildCount() == 0) {
-                        holder.notificationRemoteView.addView(notification.getBigCardView());
-                    }
-                } catch (Exception ex) {
-                    Log.e(TAG, "DecoratedCustomViewStyle", ex);
                 }
                 break;
             case "InboxStyle":
