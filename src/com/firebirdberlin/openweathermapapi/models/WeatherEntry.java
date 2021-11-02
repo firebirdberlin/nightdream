@@ -2,7 +2,9 @@ package com.firebirdberlin.openweathermapapi.models;
 
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
 
 import org.shredzone.commons.suncalc.SunTimes;
@@ -162,6 +164,85 @@ public class WeatherEntry {
     public boolean isValid() {
         long age = ageMillis();
         return (timestamp > -1L && age < 4 * 60 * 60 * 1000);
+    }
+
+    public String getWeatherIconIdentifier(int weatherIconMode, boolean widget) {
+        if (weatherIconMode == Settings.WEATHER_ICON_MODE_DEFAULT) {
+            return weatherIconMeteoconsSymbol;
+        }
+
+        String identifier;
+        switch (weatherIconMeteoconsSymbol) {
+            case "A":
+            case "B":
+                identifier = "weather_day";
+                break;
+            case "C":
+                identifier = "weather_night";
+                break;
+            case "G":
+                identifier = "weather_snow_1";
+                break;
+            case "H":
+                identifier = "weather_cloudy_day";
+                break;
+            case "I":
+                identifier = "weather_cloudy_night";
+                break;
+            case "J":
+            case "K":
+            case "L":
+            case "M":
+                identifier = "weather_fog";
+                break;
+            case "N":
+                identifier = "weather_cloudy";
+                break;
+            case "O":
+            case "P":
+                identifier = "weather_thunder";
+                break;
+            case "Q":
+                identifier = "weather_rain_1";
+                break;
+            case "R":
+                identifier = "weather_rain_3";
+                break;
+            case "S":
+                identifier = "weather_cloudy";
+                break;
+            case "T":
+                identifier = "weather_rain_2";
+                break;
+            case "U":
+            case "V":
+                identifier = "weather_snow_1";
+                break;
+            case "W":
+                identifier = "weather_snow_3";
+                break;
+            case "X":
+                identifier = "weather_rain_2";
+                break;
+            case "Y":
+                identifier = "weather_cloudy";
+                break;
+            case "Z":
+            case "0":
+                identifier = "weather_thunder";
+                break;
+            default:
+                identifier = "weather_cloudy";
+                break;
+        }
+        if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !widget
+        ) {
+            identifier += "_avd";
+        }
+
+        return identifier;
     }
 
 }

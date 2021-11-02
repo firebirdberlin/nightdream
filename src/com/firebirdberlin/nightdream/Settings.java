@@ -57,6 +57,11 @@ public class Settings {
     public final static int NIGHT_MODE_ACTIVATION_MANUAL = 0;
     public final static int NIGHT_MODE_ACTIVATION_AUTOMATIC = 1;
     public final static int NIGHT_MODE_ACTIVATION_SCHEDULED = 2;
+
+    public final static int WEATHER_ICON_MODE_DEFAULT = 1;
+    public final static int WEATHER_ICON_MODE_COLORED = 2;
+    public final static int WEATHER_ICON_MODE_ANIMATED = 3;
+
     private final static String TAG = "NightDream.Settings";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
     public boolean activateDoNotDisturb = false;

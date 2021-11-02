@@ -100,6 +100,8 @@
     <target android:name="beam_1">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 46.21 67.188 L 46.21 73.93"
@@ -111,6 +113,8 @@
     <target android:name="beam_2">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 32.31 61.266 L 27.677 66.032"
@@ -122,6 +126,8 @@
     <target android:name="beam_3">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 26.552 46.965 L 20 46.965"
@@ -133,6 +139,8 @@
     <target android:name="beam_4">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 32.31 32.664 L 27.677 27.898"
@@ -144,6 +152,8 @@
     <target android:name="beam_5">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 46.21 26.742 L 46.21 20"
@@ -155,6 +165,8 @@
     <target android:name="beam_6">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 60.11 32.664 L 64.743 27.898"
@@ -166,6 +178,8 @@
     <target android:name="beam_7">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 65.868 46.965 L 72.42 46.965"
@@ -177,6 +191,8 @@
     <target android:name="beam_8">
         <aapt:attr name="android:animation">
             <objectAnimator
+                android:repeatMode="restart"
+                android:repeatCount="infinite"
                 android:propertyName="pathData"
                 android:duration="4000"
                 android:valueFrom="M 60.11 61.266 L 64.743 66.032"
@@ -189,6 +205,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleX"
                     android:duration="2000"
                     android:valueFrom="1"
@@ -196,6 +214,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleY"
                     android:duration="2000"
                     android:valueFrom="1"
@@ -203,6 +223,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleX"
                     android:startOffset="2000"
                     android:duration="2000"
@@ -211,6 +233,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleY"
                     android:startOffset="2000"
                     android:duration="2000"
@@ -225,6 +249,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:duration="1000"
                     android:valueFrom="0"
@@ -232,6 +258,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="1000"
                     android:duration="1000"
@@ -240,6 +268,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="3000"
                     android:duration="1000"
@@ -248,6 +278,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="2000"
                     android:duration="1000"

@@ -51,6 +51,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleY"
                     android:duration="1200"
                     android:valueFrom="1"
@@ -58,6 +60,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleX"
                     android:duration="1200"
                     android:valueFrom="1"
@@ -65,6 +69,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleY"
                     android:startOffset="1200"
                     android:duration="800"
@@ -73,6 +79,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleX"
                     android:startOffset="1200"
                     android:duration="800"
@@ -87,6 +95,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="800"
                     android:duration="600"
@@ -95,6 +105,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="1400"
                     android:duration="600"
@@ -109,6 +121,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:duration="600"
                     android:valueFrom="0"
@@ -116,6 +130,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="600"
                     android:duration="600"
@@ -124,6 +140,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/linear_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="1200"
                     android:duration="600"
@@ -132,6 +150,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="1800"
                     android:duration="200"
@@ -146,6 +166,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleX"
                     android:startOffset="800"
                     android:duration="1200"
@@ -154,6 +176,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleY"
                     android:startOffset="800"
                     android:duration="1200"
@@ -168,6 +192,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleX"
                     android:startOffset="500"
                     android:duration="1200"
@@ -176,6 +202,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="scaleY"
                     android:startOffset="500"
                     android:duration="1200"
@@ -190,6 +218,8 @@
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="500"
                     android:duration="600"
@@ -198,6 +228,8 @@
                     android:valueType="floatType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
+                    android:repeatMode="restart"
+                    android:repeatCount="infinite"
                     android:propertyName="strokeAlpha"
                     android:startOffset="1100"
                     android:duration="600"

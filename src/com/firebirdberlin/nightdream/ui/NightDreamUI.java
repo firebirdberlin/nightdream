@@ -744,6 +744,7 @@ public class NightDreamUI {
         );
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.setWeatherLocation(false);
+        clockLayout.setWeatherIconMode(settings.weather_icon);
 
         clockLayout.setShowDivider(settings.getShowDivider(layoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
@@ -754,7 +755,7 @@ public class NightDreamUI {
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
-        clockLayout.update(settings.weatherEntry);
+        clockLayout.update(settings.weatherEntry, false);
         updatePollenExposure(settings.weatherEntry);
         setClockPosition(config);
     }
@@ -1722,7 +1723,7 @@ public class NightDreamUI {
             if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 Log.v(TAG, "Weather data updated");
                 settings.weatherEntry = settings.getWeatherEntry();
-                clockLayout.update(settings.weatherEntry);
+                clockLayout.update(settings.weatherEntry, false);
                 updatePollenExposure(settings.weatherEntry);
                 ClockWidgetProvider.updateAllWidgets(context);
             } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
