@@ -94,7 +94,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         boolean isSelected = notificationList.isSelected(position);
         cardView.setBackgroundResource(colorResId[isSelected ? 1 : 0]);
 
-        holder.notificationMessagebitmap.setImageDrawable(notification.getDrawableIcon());
+        holder.notificationMessagebitmap.setImageBitmap(notification.getSmallIconBitmap());
 
         if (notification.getColor() != 0) {
             holder.notificationMessagebitmap.setColorFilter(notification.getColor(), PorterDuff.Mode.SRC_ATOP);

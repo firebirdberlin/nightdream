@@ -3,9 +3,9 @@ package com.firebirdberlin.nightdream;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -126,7 +126,11 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private Drawable getIcon(Context context, NotificationApp notificationApp) {
-        Drawable icon = getNotificationIcon(context, notificationApp.getPackageName(), notificationApp.getIconId());
+        Bitmap bitmap = notificationApp.getSmallNotificationIcon();
+        Drawable icon = null;
+        if (bitmap != null) {
+            icon = new BitmapDrawable(context.getResources(), bitmap);
+        }
         if (icon == null) {
             icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
         }
@@ -157,17 +161,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         container.addView(image);
     }
 
-    private Drawable getNotificationIcon(Context context, String packageName, int id) {
-        Log.d(TAG, "getNotificationIcon for id = " + id);
-        if (packageName == null || id == -1) {
-            return null;
-        }
-        try {
-            Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
-            return ContextCompat.getDrawable(remotePackageContext, id);
-        } catch (NullPointerException | NameNotFoundException | Resources.NotFoundException e) {
-            return null;
-        }
+    private Drawable getNotificationIcon(Context context, Intent intent) {
+        Bitmap smallIcon = intent.getParcelableExtra("smallIconBitmap");
+        return new BitmapDrawable(context.getResources(), smallIcon);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -193,9 +189,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.i(TAG, "Show MediaStyle notification");
         Log.i(TAG, "template = " + template);
 
-        int iconId = intent.getIntExtra("iconId", -1);
-        String packageName = intent.getStringExtra("packageName");
-        Drawable notificationMessageSmallIcon = getNotificationIcon(context, packageName, iconId);
+        Drawable notificationMessageSmallIcon = getNotificationIcon(context, intent);
         View clockLayout = contentView.findViewById(R.id.clockLayout);
 
         ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
@@ -235,10 +229,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             return;
         }
 
-        int iconId = intent.getIntExtra("iconId", -1);
-        String packageName = intent.getStringExtra("packageName");
-        Drawable notificationMessageSmallIcon = getNotificationIcon(context, packageName, iconId);
-
+        Drawable notificationMessageSmallIcon = getNotificationIcon(context, intent);
         NotificationPreviewLayout container = contentView.findViewById(R.id.notification_preview);
         container.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
     }
