@@ -36,16 +36,18 @@ public class NotificationApp implements Parcelable {
         }
     };
     private final Bitmap picture;
+    private final Bitmap smallNotificationIcon;
     private final String name;
     private final String packageName;
     private int iconId;
     private long postTimestamp;
 
     protected NotificationApp(Parcel parcel) {
-        picture = parcel.readParcelable(Bitmap.class.getClassLoader());
-        postTimestamp = parcel.readLong();
-        name = parcel.readString();
-        packageName = parcel.readString();
+        this.picture = parcel.readParcelable(Bitmap.class.getClassLoader());
+        this.postTimestamp = parcel.readLong();
+        this.name = parcel.readString();
+        this.packageName = parcel.readString();
+        this.smallNotificationIcon = parcel.readParcelable(Bitmap.class.getClassLoader());
     }
 
     public NotificationApp(Intent intent) {
@@ -53,6 +55,7 @@ public class NotificationApp implements Parcelable {
         this.name = intent.getStringExtra("applicationName");
         this.packageName = intent.getStringExtra("packageName");
         this.picture = intent.getParcelableExtra("bitmap");
+        this.smallNotificationIcon = intent.getParcelableExtra("smallIconBitmap");
         this.postTimestamp = intent.getLongExtra("postTimestamp", 0L);
     }
 
@@ -67,10 +70,15 @@ public class NotificationApp implements Parcelable {
         parcel.writeLong(postTimestamp);
         parcel.writeString(name);
         parcel.writeString(packageName);
+        parcel.writeParcelable(smallNotificationIcon, i);
     }
 
     public Bitmap getPicture() {
         return picture;
+    }
+
+    public Bitmap getSmallNotificationIcon() {
+        return smallNotificationIcon;
     }
 
     public String getName() {

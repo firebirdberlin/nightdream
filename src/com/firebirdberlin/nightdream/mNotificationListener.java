@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -27,6 +28,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
@@ -420,6 +422,7 @@ public class mNotificationListener extends NotificationListenerService {
         intent.putExtra("packageName", packageName);
         intent.putExtra("postTime", postTime);
         intent.putExtra("postTimestamp", postTimestamp);
+        intent.putExtra("smallIconBitmap", getSmallIconBitmap(context, sbn));
         intent.putExtra("summaryText", summaryText.toString());
         intent.putExtra("template", template.toString());
         intent.putExtra("text", textData.toString());
@@ -430,6 +433,34 @@ public class mNotificationListener extends NotificationListenerService {
         intent.putExtra("title", titleData.toString());
         intent.putExtra("titleBig", titleBigData.toString());
         return intent;
+    }
+
+    private Bitmap getSmallIconBitmap(Context context, StatusBarNotification sbn) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            Notification notification = sbn.getNotification();
+            Icon icon = notification.getSmallIcon();
+            if (icon == null) return null;
+            return drawableToBitMap(icon.loadDrawable(context));
+        } else {
+            return drawableToBitMap(
+                    getNotificationIconFromPackage(
+                            context, sbn.getPackageName(), getIconId(sbn.getNotification())
+                    )
+            );
+        }
+    }
+
+    private Drawable getNotificationIconFromPackage(Context context, String packageName, int id) {
+        Log.d(TAG, "getNotificationIcon for id = " + id);
+        if (packageName == null || id == -1) {
+            return null;
+        }
+        try {
+            Context remotePackageContext = context.getApplicationContext().createPackageContext(packageName, 0);
+            return ContextCompat.getDrawable(remotePackageContext, id);
+        } catch (NullPointerException | PackageManager.NameNotFoundException | Resources.NotFoundException e) {
+            return null;
+        }
     }
 
     private boolean isClearable(StatusBarNotification sbn) {
