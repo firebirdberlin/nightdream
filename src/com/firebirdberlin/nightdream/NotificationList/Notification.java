@@ -4,19 +4,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 
 import java.text.SimpleDateFormat;
 
@@ -57,7 +54,7 @@ public class Notification implements Parcelable {
     private final String notificationTag;
     private View cardView;
     private View bigCardView;
-    private Drawable drawableIcon;
+    private Bitmap smallIconBitmap;
     private Spanned notification_messages;
     private Spanned notification_textlines;
     private int childId;
@@ -144,15 +141,7 @@ public class Notification implements Parcelable {
         } catch (SecurityException ignored) {
         }
 
-        //get drawable SmallIcon
-        try {
-            Context remotePackageContext = context.getApplicationContext().createPackageContext(intent.getStringExtra("packageName"), 0);
-            this.drawableIcon = ContextCompat.getDrawable(remotePackageContext, intent.getIntExtra("iconId", 0));
-
-        } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
-        }
-
+        this.smallIconBitmap = intent.getParcelableExtra("smallIconBitmap");
         this.bitmapLargeIcon = intent.getParcelableExtra("largeIconBitmap");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -223,8 +212,8 @@ public class Notification implements Parcelable {
         return notification_textlines;
     }
 
-    public Drawable getDrawableIcon() {
-        return drawableIcon;
+    public Bitmap getSmallIconBitmap() {
+        return smallIconBitmap;
     }
 
     public Bitmap getBitmapLargeIcon() {
