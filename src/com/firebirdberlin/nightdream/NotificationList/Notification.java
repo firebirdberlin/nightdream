@@ -39,7 +39,6 @@ public class Notification implements Parcelable {
     private final String text;
     private final String textBig;
     private final String summaryText;
-    private final RemoteViews remoteView;
     private final Bitmap bitmapLargeIcon;
     private final String title;
     private final String titleBig;
@@ -68,7 +67,6 @@ public class Notification implements Parcelable {
         text = in.readString();
         textBig = in.readString();
         summaryText = in.readString();
-        remoteView = getParcelable(in, RemoteViews.class.getClassLoader());
         bitmapLargeIcon = getParcelable(in, Bitmap.class.getClassLoader());
         title = in.readString();
         titleBig = in.readString();
@@ -98,7 +96,6 @@ public class Notification implements Parcelable {
         this.textBig = intent.getStringExtra("textBig");
         this.summaryText = intent.getStringExtra("summaryText");
         this.bigPicture = intent.getParcelableExtra("bigPicture");
-        this.remoteView = intent.getParcelableExtra("contentView");
         this.applicationName = intent.getStringExtra("applicationName");
         this.title = intent.getStringExtra("title");
         this.titleBig = intent.getStringExtra("titleBig");
@@ -111,32 +108,24 @@ public class Notification implements Parcelable {
         this.notificationKey = intent.getStringExtra("key");
         this.notificationTag = intent.getStringExtra("tag");
 
-        //RemoteView to View
         this.cardView = null;
         try {
-            if (intent.getParcelableExtra("contentView") instanceof RemoteViews) {
-                RemoteViews notificationRemoteView = intent.getParcelableExtra("contentView");
-                if (notificationRemoteView != null) {
-                    FrameLayout container = new FrameLayout(context);
-                    View view = notificationRemoteView.apply(context, container);
-                    container.addView(view);
-                    this.cardView = container;
-                }
+            RemoteViews remoteView = intent.getParcelableExtra("contentView");
+            if (remoteView != null) {
+                FrameLayout container = new FrameLayout(context);
+                container.addView(remoteView.apply(context, container));
+                this.cardView = container;
             }
         } catch (SecurityException ignored) {
         }
 
-        //BigRemoteView to View
         this.bigCardView = null;
         try {
-            if (intent.getParcelableExtra("bigView") instanceof RemoteViews) {
-                RemoteViews notificationRemoteBigView = intent.getParcelableExtra("bigView");
-                if (notificationRemoteBigView != null) {
-                    FrameLayout container = new FrameLayout(context);
-                    View view = notificationRemoteBigView.apply(context, container);
-                    container.addView(view);
-                    this.bigCardView = container;
-                }
+            RemoteViews bigContentView = intent.getParcelableExtra("bigContentView");
+            if (bigContentView != null) {
+                FrameLayout container = new FrameLayout(context);
+                container.addView(bigContentView.apply(context, container));
+                this.bigCardView = container;
             }
         } catch (SecurityException ignored) {
         }
@@ -175,7 +164,6 @@ public class Notification implements Parcelable {
         parcel.writeString(text);
         parcel.writeString(textBig);
         parcel.writeString(summaryText);
-        parcel.writeParcelable(remoteView, i);
         parcel.writeParcelable(bitmapLargeIcon, i);
         parcel.writeString(title);
         parcel.writeString(titleBig);
