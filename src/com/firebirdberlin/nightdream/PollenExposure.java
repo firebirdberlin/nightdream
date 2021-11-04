@@ -34,7 +34,10 @@ public class PollenExposure {
         pollenList.clear();
         pollenAreaList.clear();
 
-        Integer area = plzToArea(Integer.parseInt(plz.substring(0, 2)));
+        Integer area = -1;
+        try {
+            area = plzToArea(Integer.parseInt(plz.substring(0, 2)));
+        } catch (NumberFormatException ignored) { }
 
         if (json != null && area != -1) {
             try {

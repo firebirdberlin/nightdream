@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -169,13 +170,16 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         switch (match) {
             case "DecoratedCustomViewStyle":
                 try {
-                    if (notification.getBigCardView().getParent() != null) {
-                        ((ViewGroup) notification.getBigCardView().getParent()).removeView(notification.getBigCardView()); // <- fix
-                    }
-                    holder.notificationRemoteView.removeAllViews();
-                    holder.itemView.findViewById(R.id.notify).setVisibility(View.GONE);
-                    if (holder.notificationRemoteView.getChildCount() == 0) {
-                        holder.notificationRemoteView.addView(notification.getBigCardView());
+                    View bigCardView = notification.getBigCardView();
+                    if (bigCardView != null) {
+                        if (bigCardView.getParent() != null) {
+                            ((ViewGroup) bigCardView.getParent()).removeView(bigCardView);
+                        }
+                        holder.notificationRemoteView.removeAllViews();
+                        holder.itemView.findViewById(R.id.notify).setVisibility(View.GONE);
+                        if (holder.notificationRemoteView.getChildCount() == 0) {
+                            holder.notificationRemoteView.addView(bigCardView);
+                        }
                     }
                 } catch (Exception ex) {
                     Log.e(TAG, "DecoratedCustomViewStyle", ex);
@@ -230,12 +234,13 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                 }
 
                 try {
-                    if (notification.getCardView() != null) {
-                        if (notification.getCardView().getParent() != null) {
-                            ((ViewGroup) notification.getCardView().getParent()).removeView(notification.getCardView());
+                    View notificationCardView = notification.getCardView();
+                    if (notificationCardView != null) {
+                        if (notificationCardView.getParent() != null) {
+                            ((ViewGroup) notificationCardView.getParent()).removeView(notificationCardView);
                         }
                         holder.notificationRemoteView.removeAllViews();
-                        holder.notificationRemoteView.addView(notification.getCardView());
+                        holder.notificationRemoteView.addView(notificationCardView);
 
                         holder.itemView.findViewById(R.id.notify).setVisibility(View.GONE);
                     }

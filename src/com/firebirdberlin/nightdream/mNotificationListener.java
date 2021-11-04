@@ -403,18 +403,13 @@ public class mNotificationListener extends NotificationListenerService {
         intent.putExtra("actions", actions);
         intent.putExtra("applicationName", applicationName);
         intent.putExtra("bigPicture", bigPicture);
-        intent.putExtra("bigView", notification.bigContentView);
+        intent.putExtra("bigContentView", notification.bigContentView);
         intent.putExtra("color", color);
         intent.putExtra("contentIntent", contentIntent);
         intent.putExtra("contentView", notification.contentView);
         intent.putExtra("iconId", getIconId(sbn.getNotification()));
         intent.putExtra("id", sbn.getId());
         intent.putExtra("tag", sbn.getTag());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            intent.putExtra("key", sbn.getKey());
-        }
-
         intent.putExtra("isClearable", sbn.isClearable());
         intent.putExtra("largeIconBitmap", largeIconBitmap);
         intent.putExtra("messages", notification_messages.toString());
@@ -432,6 +427,11 @@ public class mNotificationListener extends NotificationListenerService {
         intent.putExtra("timestamp", date);
         intent.putExtra("title", titleData.toString());
         intent.putExtra("titleBig", titleBigData.toString());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.putExtra("key", sbn.getKey());
+        }
+
         return intent;
     }
 
