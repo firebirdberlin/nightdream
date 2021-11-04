@@ -16,7 +16,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 public class Graphics {
 
     public static Bitmap blur(Context context, Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         float blurRadius = 15f;
@@ -35,7 +35,7 @@ public class Graphics {
     }
 
     public static Bitmap sketch(final Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -69,7 +69,7 @@ public class Graphics {
     }
 
     public static Bitmap desaturate(final Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -84,7 +84,7 @@ public class Graphics {
     }
 
     public static Bitmap sepia(final Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -104,7 +104,7 @@ public class Graphics {
     }
 
     public static Bitmap invert(final Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -125,7 +125,7 @@ public class Graphics {
     }
 
     public static Bitmap contrast(final Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         Bitmap output = bitmap.copy(Bitmap.Config.ARGB_8888, true);
