@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -16,6 +17,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -87,6 +89,7 @@ public class NightDreamUI {
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
     private final Context mContext;
     private final FrameLayout mainFrame;
+    private final LinearLayout safeRect;
     private final AlarmClock alarmClock;
     private final ConstraintLayout parentLayout;
     private final ExifView exifView;
@@ -124,11 +127,6 @@ public class NightDreamUI {
         }
     };
     private final BatteryIconView batteryIconView;
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
-        public void notifyAction() {
-            resetAlarmClockHideDelay();
-        }
-    };
     private final mAudioManager AudioManage;
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
@@ -217,6 +215,11 @@ public class NightDreamUI {
                 setAlpha(notificationStatusBar, 0.f, 2000);
             }
             hideSidePanel();
+        }
+    };
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
+        public void notifyAction() {
+            resetAlarmClockHideDelay();
         }
     };
     private float clockLayout_xDelta;
@@ -369,7 +372,7 @@ public class NightDreamUI {
             }
 
             boolean isInsideClockLayout(MotionEvent e) {
-                clockLayout.getLocationOnScreen(rect);
+                clockLayout.getLocationInWindow(rect);
                 clockLayout.getScaledSize(size);
                 int x = (int) e.getRawX();
                 int y = (int) e.getRawY();
@@ -382,7 +385,7 @@ public class NightDreamUI {
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (e1 == null || e2 == null) return false;
                 Log.i(TAG, "onFling");
-                clockLayoutContainer.getLocationOnScreen(rect);
+                clockLayoutContainer.getLocationInWindow(rect);
                 if (e1.getY() < rect[1]) return false;
 
                 if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH) {
@@ -431,7 +434,7 @@ public class NightDreamUI {
                                 || brightnessProgress == null
                 ) return false;
                 if (brightnessProgress.getVisibility() == View.VISIBLE) {
-                    clockLayoutContainer.getLocationOnScreen(rect);
+                    clockLayoutContainer.getLocationInWindow(rect);
                     if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
                         Point size = Utility.getDisplaySize(mContext);
                         float dx = -2.f * (distanceX / size.x);
@@ -469,6 +472,7 @@ public class NightDreamUI {
         exifLayoutContainer = rootView.findViewById(R.id.containerExifView);
 
         mainFrame = rootView.findViewById(R.id.main_frame);
+        safeRect = rootView.findViewById(R.id.safeRect);
         menuIcon = rootView.findViewById(R.id.burger_icon);
         nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
         notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
@@ -514,6 +518,17 @@ public class NightDreamUI {
 
         checkForReviewRequest();
         clockLayoutContainer.setClockLayout(clockLayout);
+    }
+
+    private void configureSafeRect() {
+        Point displaySize = Utility.getDisplaySize(mContext);
+        Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
+        this.safeRect.setPadding(
+                safeRect.left,
+                safeRect.top,
+                displaySize.x - safeRect.right,
+                displaySize.y - safeRect.bottom
+        );
     }
 
     private void postBackgroundImageChange() {
@@ -571,6 +586,7 @@ public class NightDreamUI {
     public void onResume() {
         Log.d(TAG, "onResume()");
         hideSystemUI();
+        mainFrame.post(this::configureSafeRect);
 
         settings.reload();
         notificationStatusBar.setClickable(Settings.useNotificationStatusBar(mContext));
@@ -1142,6 +1158,7 @@ public class NightDreamUI {
             clockLayout.setScaleFactor(s);
             Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
             setClockPosition(newConfig);
+            configureSafeRect();
 
             postDelayed(moveAround, Utility.millisToTimeTick(20000));
             if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {

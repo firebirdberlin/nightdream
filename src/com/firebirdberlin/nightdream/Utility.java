@@ -5,6 +5,7 @@ import static android.content.Context.POWER_SERVICE;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -24,6 +25,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Address;
@@ -47,8 +49,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.DisplayCutout;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -414,6 +418,29 @@ public class Utility {
         Display display = wm.getDefaultDisplay();
         display.getSize(size);
         return size;
+    }
+
+    public static Rect getSafeWindowRect(Activity context) {
+        Rect rect = new Rect();
+        Point displaySize = getDisplaySize(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WindowInsets insets = context.getWindow().getDecorView().getRootWindowInsets();
+            if (insets != null) {
+                DisplayCutout displayCutout = insets.getDisplayCutout();
+                if (displayCutout != null) {
+                    rect.bottom = displaySize.y - displayCutout.getSafeInsetBottom();
+                    rect.left = displayCutout.getSafeInsetLeft();
+                    rect.right = displaySize.x - displayCutout.getSafeInsetRight();
+                    rect.top = displayCutout.getSafeInsetTop();
+                    return rect;
+                }
+            }
+        }
+        rect.left = 0;
+        rect.top = 0;
+        rect.bottom = displaySize.y;
+        rect.right = displaySize.x;
+        return rect;
     }
 
     public static int getSmallestDisplaySize(Context context) {
@@ -813,7 +840,8 @@ public class Utility {
             if (vibrant != null) {
                 return vibrant.getRgb();
             }
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException ignored) {
+        }
 
         return defaultColor;
     }
