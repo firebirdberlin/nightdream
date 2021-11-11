@@ -102,6 +102,7 @@ public class NightDreamUI {
     private final ClockLayout clockLayout;
     private final FlexboxLayout notificationStatusBar;
     private final FlexboxLayout sidePanel;
+    private final View sidePanelSpace;
     private final Runnable setupSidePanel = new Runnable() {
         @Override
         public void run() {
@@ -479,6 +480,7 @@ public class NightDreamUI {
         parentLayout = rootView.findViewById(R.id.background_group);
         radioIcon = rootView.findViewById(R.id.radio_icon);
         sidePanel = rootView.findViewById(R.id.side_panel);
+        sidePanelSpace = rootView.findViewById(R.id.side_panel_space);
 
         background_images[0] = rootView.findViewById(R.id.background_view);
         background_images[1] = rootView.findViewById(R.id.background_view2);
@@ -523,8 +525,11 @@ public class NightDreamUI {
     private void configureSafeRect() {
         Point displaySize = Utility.getDisplaySize(mContext);
         Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
+
+        sidePanelSpace.getLayoutParams().width = safeRect.left;
+
         this.safeRect.setPadding(
-                safeRect.left,
+                0,
                 safeRect.top,
                 displaySize.x - safeRect.right,
                 displaySize.y - safeRect.bottom
@@ -1158,7 +1163,7 @@ public class NightDreamUI {
             clockLayout.setScaleFactor(s);
             Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
             setClockPosition(newConfig);
-            configureSafeRect();
+            mainFrame.post(this::configureSafeRect);
 
             postDelayed(moveAround, Utility.millisToTimeTick(20000));
             if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
