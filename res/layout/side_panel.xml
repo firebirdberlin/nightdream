@@ -6,12 +6,17 @@
     android:layout_height="match_parent"
     android:layout_margin="20dp"
     android:background="@drawable/sidepanel"
-    app:alignItems="center"
+    app:alignItems="flex_end"
     app:dividerDrawable="@drawable/divider"
     app:flexDirection="column"
     app:flexWrap="wrap"
     app:justifyContent="space_around"
-    app:showDividerVertical="middle">
+    app:showDividerVertical="none">
+
+        <View
+            android:id="@+id/side_panel_space"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
 
         <ImageView
             android:id="@+id/settings_icon"
