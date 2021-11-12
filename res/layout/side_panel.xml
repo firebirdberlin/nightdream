@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<com.firebirdberlin.nightdream.ui.SideMenu xmlns:android="http://schemas.android.com/apk/res/android"
+<com.firebirdberlin.nightdream.ui.SidePanel
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/side_menu"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
-    app:SideMenuBackground="@drawable/sidepanel"
+    android:background="@drawable/sidepanel"
     app:alignItems="flex_end"
     app:dividerDrawable="@drawable/divider"
     app:flexDirection="column"
@@ -18,91 +18,73 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/side_panel"
+        <ImageView
+            android:id="@+id/settings_icon"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="0dp"
-            android:background="@drawable/sidepanel"
-            app:alignItems="center"
-            app:dividerDrawable="@drawable/divider"
-            app:flexDirection="column"
-            app:flexWrap="wrap"
-            app:justifyContent="space_around"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:showDividerVertical="middle">
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="settings"
+            android:focusable="true"
+            android:onClick="onSettingsClick"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_settings" />
 
-                <ImageView
-                    android:id="@+id/settings_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:contentDescription="settings"
-                    android:focusable="true"
-                    android:onClick="onSettingsClick"
-                    android:padding="5dp"
-                    app:srcCompat="@drawable/ic_settings" />
+        <ImageView
+            android:id="@+id/alarm_clock_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/alarm"
+            android:focusable="true"
+            android:onClick="onAlarmClockClick"
+            android:padding="5dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_alarm_clock_icon" />
 
-                <ImageView
-                    android:id="@+id/alarm_clock_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:contentDescription="@string/alarm"
-                    android:focusable="true"
-                    android:onClick="onAlarmClockClick"
-                    android:padding="5dp"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_alarm_clock_icon" />
+        <ImageView
+            android:id="@+id/icon_weather_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/weather"
+            android:focusable="true"
+            android:onClick="onWeatherForecastClick"
+            android:padding="5dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_cloud" />
 
-                <ImageView
-                    android:id="@+id/icon_weather_forecast"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:contentDescription="@string/weather"
-                    android:focusable="true"
-                    android:onClick="onWeatherForecastClick"
-                    android:padding="5dp"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_cloud" />
+        <ImageView
+            android:id="@+id/night_mode_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/night_mode"
+            android:focusable="true"
+            android:onClick="onNightModeClick"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_sun" />
 
-                <ImageView
-                    android:id="@+id/night_mode_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:contentDescription="@string/night_mode"
-                    android:focusable="true"
-                    android:onClick="onNightModeClick"
-                    android:padding="5dp"
-                    app:srcCompat="@drawable/ic_sun" />
+        <ImageView
+            android:id="@+id/torch_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/flashlight"
+            android:focusable="true"
+            android:onClick="onTorchClick"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_lightbulb" />
 
-                <ImageView
-                    android:id="@+id/torch_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:contentDescription="@string/flashlight"
-                    android:focusable="true"
-                    android:onClick="onTorchClick"
-                    android:padding="5dp"
-                    app:srcCompat="@drawable/ic_lightbulb" />
+        <ImageView
+            android:id="@+id/radio_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/radio"
+            android:focusable="true"
+            android:onClick="onRadioClick"
+            android:padding="5dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_radio" />
 
-                <ImageView
-                    android:id="@+id/radio_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:contentDescription="@string/radio"
-                    android:focusable="true"
-                    android:onClick="onRadioClick"
-                    android:padding="5dp"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_radio" />
-        </com.google.android.flexbox.FlexboxLayout>
-
-
-</com.firebirdberlin.nightdream.ui.SideMenu>
+</com.firebirdberlin.nightdream.ui.SidePanel>

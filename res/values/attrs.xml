@@ -13,9 +13,8 @@
     <declare-styleable name="DateFormatPreference">
         <attr name="formatType" format="string"/>
     </declare-styleable>
-    <declare-styleable name="SideMenu">
-        <attr name="SideMenuIconColor" format="color"/>
-        <attr name="SideMenuBackground" format="reference"/>
-        <attr name="SideMenuIconBackground" format="reference"/>
+    <declare-styleable name="SidePanel">
+        <attr name="iconColor" format="color"/>
+        <attr name="iconBackground" format="reference"/>
     </declare-styleable>
 </resources>

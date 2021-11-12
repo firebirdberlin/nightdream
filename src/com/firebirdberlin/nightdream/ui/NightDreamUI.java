@@ -100,7 +100,7 @@ public class NightDreamUI {
     private final ClockLayoutContainer clockLayoutContainer;
     private final ClockLayout clockLayout;
     private final FlexboxLayout notificationStatusBar;
-    private final SideMenu sideMenu;
+    private final SidePanel sidePanel;
     private final BottomPanelLayout bottomPanelLayout;
     private final ProgressBar brightnessProgress;
     private final Runnable hideBrightnessView = new Runnable() {
@@ -120,6 +120,11 @@ public class NightDreamUI {
     private final mAudioManager AudioManage;
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
+        public void notifyAction() {
+            resetAlarmClockHideDelay();
+        }
+    };
     private int screen_alpha_animation_duration = 3000;
     private int screen_transition_animation_duration = 10000;
     private int mode = 2;
@@ -204,11 +209,6 @@ public class NightDreamUI {
             if (mode == 0) {
                 setAlpha(notificationStatusBar, 0.f, 2000);
             }
-        }
-    };
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
-        public void notifyAction() {
-            resetAlarmClockHideDelay();
         }
     };
     private float clockLayout_xDelta;
@@ -384,13 +384,13 @@ public class NightDreamUI {
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Log.d(TAG, "left swipe");
-                    sideMenu.closeMenu();
+                    sidePanel.closeMenu();
                 }
                 // left to right swipe
                 else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Log.d(TAG, "right swipe");
-                    sideMenu.openMenu();
+                    sidePanel.openMenu();
                     handler.postDelayed(hideAlarmClock, 20000);
                 }
                 return false;
@@ -468,7 +468,7 @@ public class NightDreamUI {
         notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
         parentLayout = rootView.findViewById(R.id.background_group);
         radioIcon = rootView.findViewById(R.id.radio_icon);
-        sideMenu = rootView.findViewById(R.id.side_menu);
+        sidePanel = rootView.findViewById(R.id.side_menu);
 
         background_images[0] = rootView.findViewById(R.id.background_view);
         background_images[1] = rootView.findViewById(R.id.background_view2);
@@ -483,7 +483,7 @@ public class NightDreamUI {
 
         OnClickListener onMenuItemClickListener = v -> {
             if (locked) return;
-            sideMenu.toggleMenu();
+            sidePanel.toggleMenu();
         };
         menuIcon.setOnClickListener(onMenuItemClickListener);
         View.OnLongClickListener onMenuItemLongClickListener = v -> {
@@ -491,7 +491,7 @@ public class NightDreamUI {
             settings.setUILocked(locked);
             lockUI(locked);
             if (locked) {
-                sideMenu.closeMenu();
+                sidePanel.closeMenu();
             }
             VibrationHandler handler = new VibrationHandler(mContext);
             handler.startOneShotVibration(50);
@@ -513,13 +513,11 @@ public class NightDreamUI {
         Point displaySize = Utility.getDisplaySize(mContext);
         Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
 
-        sideMenu.setPaddingLeft(safeRect.left);
-
-        /*
-        Rect notchRect = Utility.getNotchRect((Activity) mContext);
-        sideMenu.setPaddingLeft(notchRect);
-        */
-
+        sidePanel.setPaddingLeft(safeRect.left);
+        /* todo
+            Temporary solution to keep the UI elements within a safe rectangle
+            without display cutouts. Replace by a better solution.
+         */
         this.safeRect.setPadding(
                 0,
                 safeRect.top,
@@ -782,11 +780,10 @@ public class NightDreamUI {
         menuIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
 
         // colorize icons in the side panel
-        sideMenu.setAccentColor(accentColor);
-        sideMenu.setSecondaryColor(textColor);
+        sidePanel.setAccentColor(accentColor);
+        sidePanel.setSecondaryColor(textColor);
 
         updateRadioIconColor();
-        sideMenu.setupFlashlight();
 
         bottomPanelLayout.setCustomColor(accentColor, textColor);
         int clockLayoutId = settings.getClockLayoutID(false);
@@ -1426,10 +1423,6 @@ public class NightDreamUI {
             return;
         }
         if (settings.muteRinger) AudioManage.restoreRingerMode();
-    }
-
-    public boolean sidePanelIsHidden() {
-        return sideMenu.sidePanelIsHidden();
     }
 
     private void hideBatteryView(int millis) {
