@@ -61,7 +61,7 @@ import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
-import com.firebirdberlin.nightdream.ui.SideMenu;
+import com.firebirdberlin.nightdream.ui.SidePanel;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
@@ -102,10 +102,9 @@ public class NightDreamActivity extends BillingHelperActivity
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
     private ImageView alarmClockIcon;
-    private ImageView radioIcon;
     private BottomPanelLayout bottomPanelLayout;
     private ClockLayoutContainer clockLayoutContainer;
-    private SideMenu sideMenu;
+    private SidePanel sidePanel;
     private boolean screenWasOn = false;
     private float last_ambient = 4.0f;
     private NightDreamUI nightDreamUI = null;
@@ -364,14 +363,13 @@ public class NightDreamActivity extends BillingHelperActivity
         setKeepScreenOn(true);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
-        radioIcon = findViewById(R.id.radio_icon);
         ImageView background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
         mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         cn = new ComponentName(this, AdminReceiver.class);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
-        sideMenu = findViewById(R.id.side_menu);
+        sidePanel = findViewById(R.id.side_menu);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> { //background thread
@@ -393,27 +391,16 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void setupFlashlight() {
-        torchIcon = findViewById(R.id.torch_icon);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (flash == null) {
                 flash = new FlashlightProvider(this);
             }
-            torchIcon.setVisibility(flash.hasCameraFlash() ? View.VISIBLE : View.GONE);
-            FlexboxLayout sidePanel = findViewById(R.id.side_panel);
-            sidePanel.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (flash.isFlashlightOn()) {
-                        Log.w(TAG, "Flashlight is ON");
-                        setIconActive(torchIcon);
-                    } else {
-                        Log.w(TAG, "Flashlight is OFF");
-                        setIconInactive(torchIcon);
-                    }
-                }
+            sidePanel.post(() -> {
+                sidePanel.setTorchIconVisibility(flash.hasCameraFlash());
+                sidePanel.setTorchIconActive(flash.isFlashlightOn());
             });
         } else {
-            torchIcon.setVisibility(View.GONE);
+            sidePanel.setTorchIconVisibility(false);
         }
     }
 
@@ -732,7 +719,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (panel == BottomPanelLayout.Panel.WEB_RADIO) {
             if (RadioStreamService.isRunning) RadioStreamService.stop(this);
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
-            sideMenu.setIconInactive(radioIcon);
             if (mCastSession != null) {
                 RemoteMediaClient mRemoteMediaPlayer = mCastSession.getRemoteMediaClient();
                 if (mRemoteMediaPlayer != null) {
@@ -744,8 +730,8 @@ public class NightDreamActivity extends BillingHelperActivity
             RadioStreamService.isRunning = false;
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
-            sideMenu.setIconActive(radioIcon);
         }
+        sidePanel.setRadioIconActive(panel != BottomPanelLayout.Panel.WEB_RADIO);
         nightDreamUI.showAlarmClock();
     }
 

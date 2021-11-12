@@ -3,46 +3,33 @@ package com.firebirdberlin.nightdream.ui;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.google.android.flexbox.FlexboxLayout;
 
-public class SideMenu extends ConstraintLayout {
-    private static final String TAG = "SideMenu";
-
+public class SidePanel extends FlexboxLayout {
+    private static final String TAG = "SidePanel";
+    private final int transparentColor = getResources().getColor(android.R.color.transparent);
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private int mIconBackground;
     private Interpolator mAnimationInterpolator;
     private int mAnimationDuration = 250;
-    private final int transparentColor = getResources().getColor(android.R.color.transparent);
     private boolean menuIsOpen = false;
     private boolean mLockedCLick;
-    private int mIconColor;
-    private int mAccentColor;
-    private Context context;
-    private View paddingLeft;
-    private FlexboxLayout sidePanel;
-    private final Handler handler = new Handler(Looper.getMainLooper());
-
     private final Runnable hideSideMenu = new Runnable() {
         @Override
         public void run() {
@@ -50,52 +37,48 @@ public class SideMenu extends ConstraintLayout {
             closeMenu();
         }
     };
+    private int mIconColor;
+    private int mAccentColor;
+    private View paddingLeft;
 
-    public SideMenu(Context context) {
+    public SidePanel(Context context) {
         super(context);
         init(context, null);
     }
 
-    public SideMenu(Context context, AttributeSet attrs) {
+    public SidePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public SideMenu(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SidePanel(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        Log.d(TAG,"onConfigurationChanged");
-        super.onConfigurationChanged(newConfig);
+    private static void setIconSize(Context context, ImageView icon) {
+        int dim = Utility.dpToPx(context, 48);
+        icon.getLayoutParams().height = dim;
+        icon.getLayoutParams().width = dim;
     }
 
     @Override
     protected void onFinishInflate() {
-        Log.d(TAG,"onFinishInflate");
+        Log.d(TAG, "onFinishInflate");
         super.onFinishInflate();
     }
 
-    //Initialize view and attributes from xml
     private void init(Context context, AttributeSet attrs) {
         Log.d(TAG, "init");
-
-        this.context = context;
 
         mAnimationInterpolator = new AccelerateDecelerateInterpolator();
         mIconColor = transparentColor;
 
-        //xml attributes
         if (attrs != null) {
-            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.SideMenu, 0, 0);
+            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.SidePanel, 0, 0);
             try {
-                mIconColor = a.getColor(R.styleable.SideMenu_SideMenuIconColor, transparentColor);
-                mIconBackground = a.getResourceId(R.styleable.SideMenu_SideMenuIconBackground, 0);
-                int backgroundResource = a.getResourceId(R.styleable.SideMenu_SideMenuBackground, 0);
-                Drawable menuBackground = backgroundResource != 0 ? ContextCompat.getDrawable(context, backgroundResource) : null;
-                this.setBackground(menuBackground);
+                mIconColor = a.getColor(R.styleable.SidePanel_iconColor, transparentColor);
+                mIconBackground = a.getResourceId(R.styleable.SidePanel_iconBackground, 0);
             } finally {
                 a.recycle();
             }
@@ -109,26 +92,14 @@ public class SideMenu extends ConstraintLayout {
         super.onAttachedToWindow();
 
         paddingLeft = findViewById(R.id.padding_left);
-        sidePanel = findViewById(R.id.side_panel);
 
-        ((ViewGroup) getParent()).setClipChildren(false);
-        ((ViewGroup) getParent()).setClipToPadding(false);
-
-//        getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-        getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-
-        initMenu();
+        setX(getWidth());
+        menuIsOpen = false;
+        handler.removeCallbacks(hideSideMenu);
         colorizeIcons();
         setIconBackgroundResource(mIconBackground);
     }
 
-    private void initMenu(){
-        setX(-1000f);
-        menuIsOpen = false;
-        handler.removeCallbacks(hideSideMenu);
-    }
-
-    //open and close menu
     public void toggleMenu() {
         Log.d(TAG, "toggleMenu()");
         // Prevents opening and closing frenetically the menu
@@ -147,7 +118,9 @@ public class SideMenu extends ConstraintLayout {
         Log.d(TAG, "closeMenu(): " + menuIsOpen);
         if (menuIsOpen) {
             ObjectAnimator animation;
-            animation = ObjectAnimator.ofFloat(this, "translationX", 0, -this.getWidth());
+            animation = ObjectAnimator.ofFloat(
+                    this, "translationX", 0, -this.getWidth()
+            );
             startMenuAnimation(animation);
             handler.removeCallbacks(hideSideMenu);
         }
@@ -157,7 +130,9 @@ public class SideMenu extends ConstraintLayout {
         Log.d(TAG, "openMenu(): " + menuIsOpen);
         if (!menuIsOpen) {
             ObjectAnimator animation;
-            animation = ObjectAnimator.ofFloat(this, "translationX", -this.getWidth(), 0);
+            animation = ObjectAnimator.ofFloat(
+                    this, "translationX", -this.getWidth(), 0
+            );
             startMenuAnimation(animation);
             handler.postDelayed(hideSideMenu, 20000);
         }
@@ -191,7 +166,7 @@ public class SideMenu extends ConstraintLayout {
     }
 
     //Sets background drawable for all icons
-    public SideMenu setIconBackgroundResource(int iconBackground) {
+    public SidePanel setIconBackgroundResource(int iconBackground) {
         mIconBackground = iconBackground;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -206,19 +181,19 @@ public class SideMenu extends ConstraintLayout {
     }
 
     // Sets the background for the menu
-    public SideMenu setMenuBackground(Drawable menuBackground) {
+    public SidePanel setMenuBackground(Drawable menuBackground) {
         this.setBackground(menuBackground);
         return this;
     }
 
     // Sets animation interpolator
-    public SideMenu setAnimationInterpolator(Interpolator animationInterpolator) {
+    public SidePanel setAnimationInterpolator(Interpolator animationInterpolator) {
         this.mAnimationInterpolator = animationInterpolator;
         return this;
     }
 
     // Sets the animation duration
-    public SideMenu setAnimationDuration(int animationDuration) {
+    public SidePanel setAnimationDuration(int animationDuration) {
         this.mAnimationDuration = animationDuration;
         return this;
     }
@@ -234,21 +209,48 @@ public class SideMenu extends ConstraintLayout {
         }
     }
 
-    public boolean sidePanelIsHidden() {
+    public boolean isHidden() {
         return !menuIsOpen;
     }
 
-    public void setIconActive(ImageView icon) {
+    public void setTorchIconActive(boolean on) {
+        ImageView torchIcon = findViewById(R.id.torch_icon);
+        if (on) {
+            setIconActive(torchIcon);
+        } else {
+            setIconInactive(torchIcon);
+        }
+    }
+
+    public void setTorchIconVisibility(boolean visible) {
+        ImageView torchIcon = findViewById(R.id.torch_icon);
+        if (visible) {
+            torchIcon.setVisibility(VISIBLE);
+        } else {
+            torchIcon.setVisibility(GONE);
+        }
+    }
+
+    public void setRadioIconActive(boolean on) {
+        ImageView radioIcon = findViewById(R.id.radio_icon);
+        if (on) {
+            setIconActive(radioIcon);
+        } else {
+            setIconInactive(radioIcon);
+        }
+    }
+
+    private void setIconActive(ImageView icon) {
         post(() -> {
             icon.setColorFilter(mAccentColor, PorterDuff.Mode.SRC_ATOP);
-            Utility.setIconSize(getContext(), icon);
+            setIconSize(getContext(), icon);
         });
     }
 
-    public void setIconInactive(ImageView icon) {
+    private void setIconInactive(ImageView icon) {
         post(() -> {
             icon.setColorFilter(mIconColor, PorterDuff.Mode.SRC_ATOP);
-            Utility.setIconSize(getContext(), icon);
+            setIconSize(getContext(), icon);
         });
     }
 
@@ -261,38 +263,9 @@ public class SideMenu extends ConstraintLayout {
         colorizeIcons();
     }
 
-    public void setupFlashlight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setupFlashlight(new FlashlightProvider(getContext()));
-        }
-    }
-
-    public void setPaddingLeft(int padding){
-        Log.d(TAG, "setPaddingLeft");
-        initMenu();
+    public void setPaddingLeft(int padding) {
+        Log.d(TAG, "setPaddingLeft" + padding);
         paddingLeft.getLayoutParams().width = padding;
-    }
-
-    //setup flashlight icon
-    public void setupFlashlight(FlashlightProvider flash) {
-        Log.d(TAG, "setupFlashlight");
-        ImageView torchIcon;
-
-        torchIcon = findViewById(R.id.torch_icon);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (flash == null) {
-                flash = new FlashlightProvider(getContext());
-            }
-            torchIcon.setVisibility(flash.hasCameraFlash() ? View.VISIBLE : View.GONE);
-            if (flash.isFlashlightOn()) {
-                Log.d(TAG, "Flashlight is ON");
-                setIconActive(torchIcon);
-            } else {
-                Log.d(TAG, "Flashlight is OFF");
-                setIconInactive(torchIcon);
-            }
-        } else {
-            torchIcon.setVisibility(View.GONE);
-        }
+        setX(isHidden() ? -getWidth() : 0);
     }
 }
