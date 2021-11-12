@@ -443,6 +443,26 @@ public class Utility {
         return rect;
     }
 
+    public static Rect getNotchRect(Activity context) {
+        Rect rect = new Rect();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WindowInsets insets = context.getWindow().getDecorView().getRootWindowInsets();
+            if (insets != null) {
+                DisplayCutout displayCutout = insets.getDisplayCutout();
+                if (displayCutout != null) {
+                    List<Rect> bounding = displayCutout.getBoundingRects();
+                    rect = bounding.get(0);
+                    return rect;
+                }
+            }
+        }
+        rect.left = 0;
+        rect.top = 0;
+        rect.bottom = 0;
+        rect.right = 0;
+        return rect;
+    }
+
     public static int getSmallestDisplaySize(Context context) {
         Point size = getDisplaySize(context);
         if (size.x < size.y) {
