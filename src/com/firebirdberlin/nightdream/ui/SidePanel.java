@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
@@ -261,6 +262,23 @@ public class SidePanel extends FlexboxLayout {
     public void setSecondaryColor(int iconColor) {
         this.mIconColor = iconColor;
         colorizeIcons();
+    }
+
+    public void setPaddingLeft(Rect displayCutOut) {
+        Log.d(TAG, "setPaddingLeft");
+
+        Rect rect = new Rect();
+        rect.left = this.getLeft();
+        rect.top = this.getTop();
+        rect.bottom = this.getBottom();
+        rect.right = this.getRight();
+
+        if (rect.intersects(displayCutOut.left, displayCutOut.top, displayCutOut.right, displayCutOut.bottom)) {
+            paddingLeft.setVisibility(View.VISIBLE);
+            paddingLeft.getLayoutParams().width = displayCutOut.right;
+        } else {
+            paddingLeft.setVisibility(View.GONE);
+        }
     }
 
     public void setPaddingLeft(int padding) {

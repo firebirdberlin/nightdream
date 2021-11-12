@@ -33,6 +33,7 @@ import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
@@ -510,20 +511,42 @@ public class NightDreamUI {
     }
 
     private void configureSafeRect() {
-        Point displaySize = Utility.getDisplaySize(mContext);
-        Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return;
+        }
 
-        sidePanel.setPaddingLeft(safeRect.left);
-        /* todo
-            Temporary solution to keep the UI elements within a safe rectangle
-            without display cutouts. Replace by a better solution.
-         */
-        this.safeRect.setPadding(
-                0,
-                safeRect.top,
-                displaySize.x - safeRect.right,
-                displaySize.y - safeRect.bottom
-        );
+        Rect displayCutOut = Utility.getNotchRect((Activity) mContext);
+        sidePanel.setPaddingLeft(displayCutOut);
+        setMarginsCutOut(menuIcon, displayCutOut, "left");
+        setMarginsCutOut(notificationStatusBar, displayCutOut, "right");
+    }
+
+    private void setMarginsCutOut(View view, Rect displayCutOut, String margin) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+
+            Rect rect = new Rect();
+            rect.left = view.getLeft();
+            rect.top = view.getTop();
+            rect.bottom = view.getBottom();
+            rect.right = view.getRight();
+
+            if (rect.intersects(displayCutOut.left, displayCutOut.top, displayCutOut.right, displayCutOut.bottom)) {
+                switch (margin) {
+                    case "left":
+                        params.leftMargin = displayCutOut.right;
+                        break;
+                    case "right":
+                        params.rightMargin = displayCutOut.right - displayCutOut.left;
+                        break;
+                }
+            } else {
+                params.leftMargin = 0;
+                params.rightMargin = 0;
+            }
+        }
+
+        view.requestLayout();
     }
 
     private void postBackgroundImageChange() {
