@@ -370,36 +370,38 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         RequestQueue requestQueue;
         ImageLoader imageLoader;
 
-        requestQueue = Volley.newRequestQueue(this);
-        imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+        if (!radioStation.favIcon.isEmpty()) {
+            requestQueue = Volley.newRequestQueue(this);
+            imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
 
-            private final LruCache<String, Bitmap> lruCache = new LruCache<>(10);
+                private final LruCache<String, Bitmap> lruCache = new LruCache<>(10);
 
-            public Bitmap getBitmap(String url) {
-                return lruCache.get(url);
-            }
-
-            @Override
-            public void putBitmap(String url, Bitmap bitmap) {
-                lruCache.put(url, bitmap);
-            }
-        });
-
-        imageLoader.get(radioStation.favIcon, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                iconRadio = imageContainer.getBitmap();
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                if (volleyError.getMessage() != null) {
-                    Log.e(TAG, volleyError.getMessage());
-                } else {
-                    Log.e(TAG, "volleyError.getMessage() = null");
+                public Bitmap getBitmap(String url) {
+                    return lruCache.get(url);
                 }
-            }
-        }).getBitmap();
+
+                @Override
+                public void putBitmap(String url, Bitmap bitmap) {
+                    lruCache.put(url, bitmap);
+                }
+            });
+
+            imageLoader.get(radioStation.favIcon, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                    iconRadio = imageContainer.getBitmap();
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    if (volleyError.getMessage() != null) {
+                        Log.e(TAG, volleyError.getMessage());
+                    } else {
+                        Log.e(TAG, "volleyError.getMessage() = null");
+                    }
+                }
+            }).getBitmap();
+        }
     }
 
     private void checkStreamAndStart(int radioStationIndex) {
