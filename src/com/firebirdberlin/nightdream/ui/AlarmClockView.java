@@ -16,6 +16,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -312,7 +313,9 @@ public class AlarmClockView extends View {
         paint.setColorFilter(customColorFilter);
 
         int w = getWidth();
-        int h = getHeight();
+        int maxHeight = Utility.dpToPx(getContext(), 60);
+        int panelHeight = getHeight();
+        int h = Math.min(getHeight(), maxHeight);
 
         // touch zones
         touch_zone_radius = Math.min(w, h);
@@ -549,16 +552,63 @@ public class AlarmClockView extends View {
         }
 
         void draw(Canvas canvas, Paint paint) {
-            paint.setColor(Color.WHITE);
-            paint.setAlpha( ( activated ) ? 255 : 153 );
-            canvas.drawCircle(center.x, center.y, radius, paint);
+            if (position == Position.LEFT) {
+                paint.setColor(Color.WHITE);
+                paint.setAlpha( ( activated ) ? 255 : 153 );
+                RectF oval = new RectF(
+                        center.x - radius, center.y - radius,
+                        center.x + radius, center.y + radius
+                );
+                canvas.drawArc(oval, 270, 90, true, paint);
+                canvas.drawRect(center.x, center.y, center.x + radius, center.y + radius, paint);
 
-            paint.setColor(Color.BLACK);
-            canvas.drawCircle(center.x, center.y, radius2, paint);
+                paint.setColor(Color.BLACK);
+                int diff = radius - radius2;
+                oval = new RectF(
+                        center.x - radius2, center.y - radius2,
+                        center.x + radius2, center.y + radius2 - diff
+                );
+                canvas.drawArc(oval, 270, 90, true, paint);
+                canvas.drawRect(center.x, center.y - diff, center.x + radius2, center.y + radius2, paint);
 
-            paint.setColor(Color.WHITE);
-            paint.setAlpha( ( activated ) ? 153 : 102 );
-            canvas.drawCircle(center.x, center.y, radius3, paint);
+                paint.setColor(Color.WHITE);
+                paint.setAlpha( ( activated ) ? 153 : 102 );
+                diff = radius - radius3;
+                oval = new RectF(
+                        center.x - radius3, center.y - radius3,
+                        center.x + radius3, center.y + radius3 - diff
+                );
+                canvas.drawArc(oval, 270, 90, true, paint);
+                canvas.drawRect(center.x, center.y - (radius2 - radius3), center.x + radius3, center.y + radius3, paint);
+            } else if (position == Position.RIGHT) {
+                paint.setColor(Color.WHITE);
+                paint.setAlpha( ( activated ) ? 255 : 153 );
+                RectF oval = new RectF(
+                        center.x - radius, center.y - radius,
+                        center.x + radius, center.y + radius
+                );
+                canvas.drawArc(oval, 180, 90, true, paint);
+                canvas.drawRect(center.x, center.y, center.x - radius, center.y + radius, paint);
+
+                paint.setColor(Color.BLACK);
+                int diff = radius - radius2;
+                oval = new RectF(
+                        center.x - radius2, center.y - radius2,
+                        center.x + radius2, center.y + radius2 - diff
+                );
+                canvas.drawArc(oval, 180, 90, true, paint);
+                canvas.drawRect(center.x, center.y - diff, center.x - radius2, center.y + radius2, paint);
+
+                paint.setColor(Color.WHITE);
+                paint.setAlpha( ( activated ) ? 153 : 102 );
+                diff = radius - radius3;
+                oval = new RectF(
+                        center.x - radius3, center.y - radius3,
+                        center.x + radius3, center.y + radius3 - diff
+                );
+                canvas.drawArc(oval, 180, 90, true, paint);
+                canvas.drawRect(center.x, center.y - (radius2 - radius3), center.x - radius3, center.y + radius3, paint);
+            }
 
             ColorFilter filter = paint.getColorFilter();
             paint.setColorFilter(colorFilter);

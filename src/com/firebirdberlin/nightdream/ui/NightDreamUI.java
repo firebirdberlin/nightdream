@@ -514,6 +514,9 @@ public class NightDreamUI {
         Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
 
         sidePanel.setPaddingLeft(safeRect.left);
+
+        int baseHeight = Utility.dpToPx(mContext, 60);
+        bottomPanelLayout.getLayoutParams().height = baseHeight + (displaySize.y - safeRect.bottom);
         /* todo
             Temporary solution to keep the UI elements within a safe rectangle
             without display cutouts. Replace by a better solution.
@@ -522,7 +525,8 @@ public class NightDreamUI {
                 0,
                 safeRect.top,
                 displaySize.x - safeRect.right,
-                displaySize.y - safeRect.bottom
+                0
+                //displaySize.y - safeRect.bottom
         );
     }
 
