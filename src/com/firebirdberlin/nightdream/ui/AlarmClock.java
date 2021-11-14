@@ -85,7 +85,7 @@ public class AlarmClock extends RelativeLayout {
         ColorFilter customColorFilterImage = new PorterDuffColorFilter(
                 customSecondaryColor, PorterDuff.Mode.SRC_ATOP);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && alarmTimeTextView != null) {
+        if (alarmTimeTextView != null) {
             Drawable icon = getResources().getDrawable(R.drawable.ic_alarm_clock);
             icon = icon.mutate();
             icon.setColorFilter(customColorFilterImage);
