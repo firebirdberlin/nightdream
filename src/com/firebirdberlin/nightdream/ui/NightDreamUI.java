@@ -679,7 +679,7 @@ public class NightDreamUI {
                             setDominantColorFromBitmap(bitmap);
                             if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
                                 backgroundImages[other].setImageBitmap(
-                                        Graphics.blur(mContext, bitmap)
+                                        Graphics.blur(bitmap)
                                 );
                             } else {
                                 backgroundImages[other].setImageDrawable(colorBlack);
@@ -1651,7 +1651,7 @@ public class NightDreamUI {
             case 6:
                 return Graphics.sketch(bitmap);
             case 7:
-                return Graphics.blur(mContext, bitmap);
+                return Graphics.blur(bitmap);
         }
 
         return bitmap.copy(Bitmap.Config.ARGB_8888, true);
