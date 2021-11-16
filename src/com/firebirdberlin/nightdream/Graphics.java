@@ -8,10 +8,8 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
+
+import com.google.android.renderscript.Toolkit;
 
 public class Graphics {
 
@@ -19,19 +17,10 @@ public class Graphics {
         if (bitmap == null) {
             return null;
         }
-        float blurRadius = 15f;
-        Bitmap blurredBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        int blurRadius = 15;
         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
 
-        RenderScript rs = RenderScript.create(context);
-        ScriptIntrinsicBlur scriptIntrinsicBlur = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-        Allocation allocationIn = Allocation.createFromBitmap(rs, bitmap);
-        Allocation allocationOut = Allocation.createFromBitmap(rs, blurredBitmap);
-        scriptIntrinsicBlur.setRadius(blurRadius);
-        scriptIntrinsicBlur.setInput(allocationIn);
-        scriptIntrinsicBlur.forEach(allocationOut);
-        allocationOut.copyTo(blurredBitmap);
-        return blurredBitmap;
+        return Toolkit.INSTANCE.blur(bitmap, blurRadius);
     }
 
     public static Bitmap sketch(final Bitmap bitmap) {
