@@ -381,6 +381,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 case "clock":
                     setPreferencesFromResource(R.xml.preferences_clock, rootKey);
                     break;
+                case "design":
+                    setPreferencesFromResource(R.xml.preferences_design, rootKey);
+                    break;
                 case "background":
                     setPreferencesFromResource(R.xml.preferences_background, rootKey);
                     break;

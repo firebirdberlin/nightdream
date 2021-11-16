@@ -382,6 +382,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_temperature">Temperatur anzeigen</string>
     <string name="show_weather">Wetter anzeigen</string>
     <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
+    <string name="sidePanel_default">Standard</string>
+    <string name="sidePanel_button">Knopf-Menü</string>
+    <string name="sidePanel_blurred">Blurred-Menü</string>
+    <string name="sidePanelMode">Menü</string>
     <string name="sleep_time_dialog_title">Sleep Timer</string>
     <string name="slideshow_center_animated">animiert</string>
     <string name="slideshow_center_crop">Bild beschneiden</string>

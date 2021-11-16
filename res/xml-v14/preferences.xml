@@ -28,6 +28,12 @@
         app:title="@string/clock"/>
 
     <Preference
+        app:icon="@drawable/ic_design"
+        app:key="design"
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+        app:title="@string/design"/>
+
+    <Preference
         app:icon="@drawable/ic_background"
         app:key="background"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"

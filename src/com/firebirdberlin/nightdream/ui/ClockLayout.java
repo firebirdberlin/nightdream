@@ -94,6 +94,7 @@ public class ClockLayout extends LinearLayout {
     }
 
     private void init() {
+
         if (getChildCount() > 0) {
             removeAllViews();
         }

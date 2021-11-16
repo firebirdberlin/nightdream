@@ -101,7 +101,7 @@ public class NightDreamUI {
     private final ClockLayoutContainer clockLayoutContainer;
     private final ClockLayout clockLayout;
     private final FlexboxLayout notificationStatusBar;
-    private final SidePanel sidePanel;
+    private SidePanel sidePanel;
     private final BottomPanelLayout bottomPanelLayout;
     private final ProgressBar brightnessProgress;
     private final Runnable hideBrightnessView = new Runnable() {
@@ -327,13 +327,27 @@ public class NightDreamUI {
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Log.d(TAG, "left swipe");
-                    sidePanel.closeMenu();
+                    if (sidePanel != null) {
+                        sidePanel.closeMenu();
+                    }
                 }
                 // left to right swipe
                 else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Log.d(TAG, "right swipe");
-                    sidePanel.openMenu();
+                    if (sidePanel == null) {
+                        Log.d(TAG, "init SidePanel");
+                        View rootView = window.getDecorView().findViewById(android.R.id.content);
+                        sidePanel = rootView.findViewById(R.id.side_menu);
+                        sidePanel.setAccentColor(getAccentColor());
+                        sidePanel.setSecondaryColor(getSecondaryColor());
+                        sidePanel.setStyle(settings.getSidepanelMode());
+                    }
+
+                    if (sidePanel != null){
+                        sidePanel.setStyle(settings.getSidepanelMode());
+                        sidePanel.openMenu();
+                    }
                     handler.postDelayed(hideAlarmClock, 20000);
                 }
                 return false;
@@ -412,7 +426,6 @@ public class NightDreamUI {
         notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
         parentLayout = rootView.findViewById(R.id.background_group);
         radioIcon = rootView.findViewById(R.id.radio_icon);
-        sidePanel = rootView.findViewById(R.id.side_menu);
 
         backgroundImages[0] = rootView.findViewById(R.id.background_view);
         backgroundImages[1] = rootView.findViewById(R.id.background_view2);
@@ -427,14 +440,16 @@ public class NightDreamUI {
 
         OnClickListener onMenuItemClickListener = v -> {
             if (locked) return;
-            sidePanel.toggleMenu();
+            if (sidePanel != null) {
+                sidePanel.toggleMenu();
+            }
         };
         menuIcon.setOnClickListener(onMenuItemClickListener);
         View.OnLongClickListener onMenuItemLongClickListener = v -> {
             locked = !locked;
             settings.setUILocked(locked);
             lockUI(locked);
-            if (locked) {
+            if ((locked) && (sidePanel != null)){
                 sidePanel.closeMenu();
             }
             VibrationHandler handler = new VibrationHandler(mContext);
@@ -483,8 +498,9 @@ public class NightDreamUI {
     private void configureSafeRect() {
         Point displaySize = Utility.getDisplaySize(mContext);
         Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
-
-        sidePanel.setPaddingLeft(safeRect.left);
+        if (sidePanel != null) {
+            sidePanel.setPaddingLeft(safeRect.left);
+        }
 
         int baseHeight = Utility.dpToPx(mContext, 60);
         int paddingHorizontal = Math.max(safeRect.left, displaySize.x - safeRect.right);
@@ -609,7 +625,6 @@ public class NightDreamUI {
         lastAnimationTime = 0L;
         setScreenOrientation(settings.screenOrientation);
 
-
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> { //background thread
@@ -633,6 +648,10 @@ public class NightDreamUI {
             soundmeter = new SoundMeter(mContext);
         } else {
             soundmeter = null;
+        }
+
+        if (sidePanel != null){
+            sidePanel.setStyle(settings.getSidepanelMode());
         }
     }
 
@@ -795,8 +814,10 @@ public class NightDreamUI {
         menuIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
 
         // colorize icons in the side panel
-        sidePanel.setAccentColor(accentColor);
-        sidePanel.setSecondaryColor(textColor);
+        if (sidePanel != null) {
+            sidePanel.setAccentColor(accentColor);
+            sidePanel.setSecondaryColor(textColor);
+        }
 
         updateRadioIconColor();
 

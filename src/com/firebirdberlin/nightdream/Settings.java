@@ -188,6 +188,7 @@ public class Settings {
     private boolean purchasedDonation = false;
     private boolean radioStreamActivateWiFi = false;
     private int background_mode = BACKGROUND_BLACK;
+    private int sidepanel_mode = 1;
     private long nextAlwaysOnTime = 0L;
     private Context mContext;
     private boolean reactivate_screen_on_noise = false;
@@ -433,6 +434,7 @@ public class Settings {
         scheduledAutoStartTimeRangeEndInMinutes = settings.getInt("scheduledAutoStartTimeRange_end_minutes", -1);
         scheduledAutoStartTimeRangeStartInMinutes = settings.getInt("scheduledAutoStartTimeRange_start_minutes", -1);
         background_mode = Integer.parseInt(settings.getString("backgroundMode", "1"));
+        sidepanel_mode = Integer.parseInt(settings.getString("sidepanelMode", "1"));
         slideshowStyle = Integer.parseInt(settings.getString("slideshowStyle", "1"));
         backgroundImageDuration = Integer.parseInt(settings.getString("backgroundImageDuration", "4"));
         clockBackgroundTransparency = 255 - settings.getInt("clockBackgroundTransparency", 100);
@@ -764,6 +766,10 @@ public class Settings {
         }
 
         return clockLayoutId;
+    }
+
+    public int getSidepanelMode() {
+        return sidepanel_mode;
     }
 
     public int getBackgroundMode() {

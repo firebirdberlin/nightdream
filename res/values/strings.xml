@@ -165,6 +165,7 @@ OR
     <string name="decoration_style_labels">Numbers</string>
     <string name="decoration_style_rust">Rust</string>
     <string name="decoration_weather_icon_size">Weather icon size</string>
+    <string name="design">Design</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
@@ -381,6 +382,10 @@ OR
     <string name="show_seconds">Show seconds</string>
     <string name="show_weather">Show local weather</string>
     <string name="show_wind_speed">Show wind speed</string>
+    <string name="sidePanel_default">Default</string>
+    <string name="sidePanel_button">Button</string>
+    <string name="sidePanel_blurred">Blurred</string>
+    <string name="sidePanelMode">Sidepanel</string>
     <string name="slideshow_center_crop">crop borders</string>
     <string name="slideshow_center_inside">add borders</string>
     <string name="slideshow_center_animated">animated</string>
