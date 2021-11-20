@@ -31,6 +31,7 @@ import androidx.fragment.app.FragmentManager;
 import com.firebirdberlin.nightdream.BillingHelperActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
@@ -349,7 +350,7 @@ public class AlarmClockLayout extends LinearLayout {
             String displayName = "alarm tone";
             try {
                 if (Utility.isEmpty(alarmClockEntry.soundUri)) {
-                    Uri soundUri = Utility.getDefaultAlarmToneUri();
+                    Uri soundUri = Uri.parse(Settings.getDefaultAlarmTone(context));
                     displayName = Utility.getSoundFileTitleFromUri(context, soundUri);
                 } else {
                     displayName = Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
