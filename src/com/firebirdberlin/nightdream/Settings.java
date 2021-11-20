@@ -273,7 +273,7 @@ public class Settings {
         return preferences.getInt("lastActiveRadioStation", -1);
     }
 
-    static String getDefaultAlarmTone(Context context) {
+    public static String getDefaultAlarmTone(Context context) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         if (preferences == null) {
             return null;
