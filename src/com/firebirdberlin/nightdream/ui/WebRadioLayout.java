@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -55,6 +53,7 @@ public class WebRadioLayout extends RelativeLayout {
     private ImageView volumeMutedIndicator;
     private boolean showConnectingHint = false;
     private ProgressBar spinner;
+    private final Runnable hideConnectingHint = () -> setShowConnectingHint(false);
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
     private UserInteractionObserver userInteractionObserver;
@@ -65,7 +64,6 @@ public class WebRadioLayout extends RelativeLayout {
     private Settings settings;
     private String metaTitle = null;
     private Integer activeStationIndex;
-    private MediaRouteButton mMediaRouteButton;
     private final OnClickListener buttonOnClickListener = new OnClickListener() {
         @Override
         public void onClick(final View v) {
@@ -87,8 +85,8 @@ public class WebRadioLayout extends RelativeLayout {
         showRadioStreamDialog(stationIndex);
         return true;
     };
-    private final Runnable hideConnectingHint = () -> setShowConnectingHint(false);
     private final Runnable resetDefaultText = () -> updateText();
+    private MediaRouteButton mMediaRouteButton;
 
     public WebRadioLayout(Context context) {
         super(context);

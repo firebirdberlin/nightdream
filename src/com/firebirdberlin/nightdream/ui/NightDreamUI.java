@@ -88,7 +88,7 @@ public class NightDreamUI {
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
     private final Context mContext;
     private final FrameLayout mainFrame;
-    private final LinearLayout safeRect;
+    private final LinearLayout topPanel;
     private final AlarmClock alarmClock;
     private final ConstraintLayout parentLayout;
     private final ExifView exifView;
@@ -462,7 +462,7 @@ public class NightDreamUI {
         exifLayoutContainer = rootView.findViewById(R.id.containerExifView);
 
         mainFrame = rootView.findViewById(R.id.main_frame);
-        safeRect = rootView.findViewById(R.id.safeRect);
+        topPanel = rootView.findViewById(R.id.topPanel);
         menuIcon = rootView.findViewById(R.id.burger_icon);
         nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
         notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
@@ -516,18 +516,18 @@ public class NightDreamUI {
         sidePanel.setPaddingLeft(safeRect.left);
 
         int baseHeight = Utility.dpToPx(mContext, 60);
+        int paddingHorizontal = Math.max(safeRect.left, displaySize.x - safeRect.right);
+        bottomPanelLayout.setPaddingHorizontal(paddingHorizontal);
         bottomPanelLayout.getLayoutParams().height = baseHeight + (displaySize.y - safeRect.bottom);
-        /* todo
-            Temporary solution to keep the UI elements within a safe rectangle
-            without display cutouts. Replace by a better solution.
-         */
-        this.safeRect.setPadding(
-                0,
-                safeRect.top,
-                displaySize.x - safeRect.right,
-                0
-                //displaySize.y - safeRect.bottom
-        );
+        topPanel.setPadding(paddingHorizontal, safeRect.top, paddingHorizontal, 0);
+        if (
+                safeRect.left > 0 || safeRect.top > 0
+                        || (displaySize.y - safeRect.bottom) > 0
+                        || (displaySize.x - safeRect.right) > 0
+        ) {
+            // reposition the clock
+            bottomPanelLayout.post(initClockLayout);
+        }
     }
 
     private void postBackgroundImageChange() {
@@ -605,7 +605,7 @@ public class NightDreamUI {
         postFadeAnimation();
 
         initBackground();
-        initBottomPannelLayout();
+        initBottomPanelLayout();
         setupScreenAnimation();
         lockUI(this.locked);
 
@@ -619,7 +619,7 @@ public class NightDreamUI {
         }
     }
 
-    private void initBottomPannelLayout() {
+    private void initBottomPanelLayout() {
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
@@ -1141,7 +1141,7 @@ public class NightDreamUI {
             clockLayout.setScaleFactor(s);
             Log.i(TAG, "fix = " + clockLayout.getHeight() + " " + s);
             setClockPosition(newConfig);
-            mainFrame.post(this::configureSafeRect);
+            configureSafeRect();
 
             postDelayed(moveAround, Utility.millisToTimeTick(20000));
             if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
