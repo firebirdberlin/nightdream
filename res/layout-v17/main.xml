@@ -52,67 +52,73 @@
     <include layout="@layout/background" />
 
     <LinearLayout
-        android:id="@+id/safeRect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/progressbar" />
-
         <LinearLayout
+            android:id="@+id/topPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/burger_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:alpha="0.0"
-                android:clickable="true"
-                android:contentDescription="@string/preferences"
-                android:focusable="true"
-                app:srcCompat="@drawable/ic_menu" />
+            <include layout="@layout/progressbar" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:layout_weight="1"
+                android:layout_gravity="center"
                 android:orientation="horizontal">
 
-                <com.firebirdberlin.nightdream.ui.BatteryIconView
-                    android:id="@+id/batteryIconView"
-                    android:ellipsize="end"
-                    android:fontFamily="monospace"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/burger_icon"
                     android:layout_width="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:singleLine="true"
-                    android:text=""
-                    android:textColor="#C2C2C2"
-                    android:textSize="20sp" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:alpha="0.0"
+                    android:clickable="true"
+                    android:contentDescription="@string/preferences"
+                    android:focusable="true"
+                    app:srcCompat="@drawable/ic_menu" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-                <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/notificationstatusbar"
-                    android:layout_height="match_parent"
                     android:layout_width="wrap_content"
-                    android:onClick="onNotificationListClick"
-                    app:alignContent="flex_end"
-                    app:flexDirection="row"
-                    app:justifyContent="flex_end" />
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <com.firebirdberlin.nightdream.ui.BatteryIconView
+                        android:id="@+id/batteryIconView"
+                        android:ellipsize="end"
+                        android:fontFamily="monospace"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="#C2C2C2"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/notificationstatusbar"
+                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:onClick="onNotificationListClick"
+                        app:alignContent="flex_end"
+                        app:flexDirection="row"
+                        app:justifyContent="flex_end" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -137,7 +143,7 @@
             </com.firebirdberlin.nightdream.ui.ClockLayoutContainer>
 
             <include layout="@layout/side_panel" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
 
         <com.firebirdberlin.nightdream.ui.BottomPanelLayout
             android:id="@+id/bottomPanel"

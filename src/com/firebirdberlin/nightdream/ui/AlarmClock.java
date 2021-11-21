@@ -7,7 +7,6 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -113,7 +112,11 @@ public class AlarmClock extends RelativeLayout {
         alarmClockView.snooze();
     }
 
-    public void cancelAlarm(){
+    public void cancelAlarm() {
         alarmClockView.cancelAlarm();
+    }
+
+    public void setPaddingHorizontal(int paddingHorizontal) {
+        alarmClockView.setPaddingHorizontal(paddingHorizontal);
     }
 }

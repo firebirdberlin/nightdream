@@ -11,7 +11,7 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 
 public class BottomPanelLayout extends FrameLayout {
 
-    public static String TAG ="BottomPanelLayout";
+    public static String TAG = "BottomPanelLayout";
 
     public boolean isVisible = true;
     Panel activePanel = Panel.ALARM_CLOCK;
@@ -24,6 +24,7 @@ public class BottomPanelLayout extends FrameLayout {
     private UserInteractionObserver userInteractionObserver;
     private boolean locked = false;
     private boolean showAlarmsPersistently = true;
+    private int paddingHorizontal = 0;
 
     public BottomPanelLayout(Context context) {
         super(context);
@@ -35,6 +36,20 @@ public class BottomPanelLayout extends FrameLayout {
         this.context = context;
         this.attrs = attrs;
         view = new AlarmClock(context, attrs);
+    }
+
+    public void setPaddingHorizontal(int paddingHorizontal) {
+        this.paddingHorizontal = paddingHorizontal;
+        if (view != null) {
+            setPadding(0, 0, 0, 0);
+            view.setPaddingHorizontal(paddingHorizontal);
+            view.invalidate();
+        }
+        if (webRadioLayout != null) {
+            setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
+            webRadioLayout.invalidate();
+        }
+        invalidate();
     }
 
     public Panel getActivePanel() {
@@ -61,6 +76,7 @@ public class BottomPanelLayout extends FrameLayout {
             view.alarmClockView.setUseSingleTap(enabled);
         }
     }
+
     public void setAlarmUseLongPress(boolean enabled) {
         if (view != null && view.alarmClockView != null) {
             view.alarmClockView.setUseLongPress(enabled);
@@ -90,7 +106,8 @@ public class BottomPanelLayout extends FrameLayout {
         }
     }
 
-    public void onResume() {}
+    public void onResume() {
+    }
 
     public void show() {
         isVisible = true;
@@ -136,6 +153,7 @@ public class BottomPanelLayout extends FrameLayout {
         removeAllViews();
         clearViews();
         webRadioLayout = new WebRadioLayout(context, attrs);
+        setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
         webRadioLayout.setCustomColor(accentColor, textColor);
         webRadioLayout.setUserInteractionObserver(userInteractionObserver);
         addView(webRadioLayout);
@@ -150,6 +168,8 @@ public class BottomPanelLayout extends FrameLayout {
         if (activePanel == Panel.WEB_RADIO && !AlarmHandlerService.alarmIsRunning()) return;
         removeAllViews();
         clearViews();
+        setPadding(0, 0, 0, 0);
+        view.setPaddingHorizontal(paddingHorizontal);
         addView(view);
         invalidate();
     }

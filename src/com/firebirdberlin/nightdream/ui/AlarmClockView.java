@@ -1,5 +1,8 @@
 package com.firebirdberlin.nightdream.ui;
 
+import static android.text.format.DateFormat.getBestDateTimePattern;
+import static android.text.format.DateFormat.is24HourFormat;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,13 +24,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
@@ -42,13 +46,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-import static android.text.format.DateFormat.is24HourFormat;
-
 
 public class AlarmClockView extends View {
-    private static final String TAG ="AlarmClockView";
+    private static final String TAG = "AlarmClockView";
+    final Handler mHandler = new Handler();
     final private Handler handler = new Handler();
+    private final Context ctx;
+    private final Paint paint = new Paint();
+    private final Rect alarmTimeRect = new Rect(0, 0, 0, 0);
+    private final HotCorner cornerLeft;
+    private final HotCorner cornerRight;
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
     SimpleTime time = null;
@@ -61,13 +68,9 @@ public class AlarmClockView extends View {
     private boolean useAlarmSwipeGesture = false;
     private boolean useSingleTap = true;
     private boolean useLongPress = false;
-    private final Context ctx;
     private int customColor = Color.parseColor("#33B5E5");
-    private final Paint paint = new Paint();
-    private final Rect alarmTimeRect = new Rect(0, 0, 0, 0);
+    private int paddingHorizontal = 0;
     private ColorFilter customColorFilter;
-    private final HotCorner cornerLeft;
-    private final HotCorner cornerRight;
     private boolean blinkStateOn = false;
     Runnable blink = new Runnable() {
         public void run() {
@@ -97,6 +100,10 @@ public class AlarmClockView extends View {
         cornerRight = new HotCorner(Position.RIGHT);
         cornerRight.setIconResource(getResources(), R.drawable.ic_no_alarm_clock);
         initColorFilters();
+    }
+
+    public void setPaddingHorizontal(int paddingHorizontal) {
+        this.paddingHorizontal = paddingHorizontal;
     }
 
     public void setUseAlarmSwipeGesture(boolean enabled) {
@@ -171,7 +178,7 @@ public class AlarmClockView extends View {
         return (FingerDown || FingerDownDeleteAlarm);
     }
 
-    private float distance(Point a, Point b){
+    private float distance(Point a, Point b) {
         return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
@@ -179,15 +186,14 @@ public class AlarmClockView extends View {
         return new Point((int) e.getX(), (int) e.getY());
     }
 
-
     public boolean onTouchEvent(MotionEvent e) {
         Log.d(TAG, String.format("onTouchEvent: %d", e.getAction()));
 
         // the view should be visible before the user interacts with it
-        if (!isClickable() || locked ) return false;
+        if (!isClickable() || locked) return false;
 
         if (showRightCorner()) {
-            boolean success =  mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e);
+            boolean success = mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e);
             if (success) return true;
         }
         if (showLeftCorner()) {
@@ -197,7 +203,7 @@ public class AlarmClockView extends View {
     }
 
     private boolean handleAlarmSetEvents(MotionEvent e) {
-        if ( alarmIsRunning() ) return false;
+        if (alarmIsRunning()) return false;
         float tX = e.getX();
         float tY = e.getY();
 
@@ -219,12 +225,11 @@ public class AlarmClockView extends View {
                 return false;
             case MotionEvent.ACTION_MOVE:
                 if (!FingerDown) return false;
-                if ( dist > touch_zone_radius ) {
+                if (dist > touch_zone_radius) {
                     userChangesAlarmTime = true;
                     cancelAlarm();
-                    XYtotime(tX,tY);
-                }
-                else {
+                    XYtotime(tX, tY);
+                } else {
                     userChangesAlarmTime = false;
                 }
                 this.invalidate();
@@ -232,8 +237,8 @@ public class AlarmClockView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 if (!FingerDown) return false;
-                if ( dist > touch_zone_radius ) {
-                    XYtotime(tX,tY);
+                if (dist > touch_zone_radius) {
+                    XYtotime(tX, tY);
                     setAlarm();
                 }
                 FingerDown = false;
@@ -245,7 +250,7 @@ public class AlarmClockView extends View {
         return false;
     }
 
-    private boolean handleAlarmCancelling(MotionEvent e){
+    private boolean handleAlarmCancelling(MotionEvent e) {
         Point click = getClickedPoint(e);
         Point lr = new Point(getWidth(), getHeight()); // lower right corner
         float dist = distance(click, lr);
@@ -281,19 +286,19 @@ public class AlarmClockView extends View {
 
         // adjust time in 5-minute intervals when dragging upwards, and 1-minute interval when dragging downwards.
         int roundTo = (movingDown) ? 1 : 5;
-        int hours = (int) (x/w * 24);
-        int mins = (int) ((y/h * 60)) / roundTo * roundTo;
+        int hours = (int) (x / w * 24);
+        int mins = (int) ((y / h * 60)) / roundTo * roundTo;
         if (movingDown) {
-           // make sure time never increases while dragging downwards
-           mins = Math.min(mins, lastMinSinceDragStart);
+            // make sure time never increases while dragging downwards
+            mins = Math.min(mins, lastMinSinceDragStart);
         } else {
-           // make sure time never decreases while dragging upwards
-           mins = Math.max(mins, lastMinSinceDragStart);
+            // make sure time never decreases while dragging upwards
+            mins = Math.max(mins, lastMinSinceDragStart);
         }
         lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
 
-        setAlarmTime(( hours >= 24 ) ? 23 : hours,
-                     ( mins >= 60 || mins < 0 ) ? 0 : mins);
+        setAlarmTime((hours >= 24) ? 23 : hours,
+                (mins >= 60 || mins < 0) ? 0 : mins);
     }
 
     private void setAlarmTime(int hour, int min) {
@@ -306,33 +311,34 @@ public class AlarmClockView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas){
-        if ( !isClickable() ) return;
+    protected void onDraw(Canvas canvas) {
+        if (!isClickable()) return;
 
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setColorFilter(customColorFilter);
 
         int w = getWidth();
         int maxHeight = Utility.dpToPx(getContext(), 60);
-        int panelHeight = getHeight();
         int h = Math.min(getHeight(), maxHeight);
 
         // touch zones
         touch_zone_radius = Math.min(w, h);
-        quiet_zone_size = touch_zone_radius/4;
+        quiet_zone_size = touch_zone_radius / 4;
 
         if (showLeftCorner()) {
-            cornerLeft.setCenter(0, h);
+            cornerLeft.setCenter(paddingHorizontal, h);
             cornerLeft.setRadius(touch_zone_radius);
             cornerLeft.setActive(FingerDown);
             cornerLeft.draw(canvas, paint);
 
         }
         if (showRightCorner()) {
-            cornerRight.setCenter(w, h);
+            cornerRight.setCenter(w - paddingHorizontal, h);
             cornerRight.setRadius(touch_zone_radius);
-            cornerRight.setIconResource(getResources(),
-                    alarmIsRunning() ? R.drawable.ic_no_audio : R.drawable.ic_no_alarm_clock);
+            cornerRight.setIconResource(
+                    getResources(),
+                    alarmIsRunning() ? R.drawable.ic_no_audio : R.drawable.ic_no_alarm_clock
+            );
             cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
             cornerRight.draw(canvas, paint);
         }
@@ -389,7 +395,7 @@ public class AlarmClockView extends View {
             return "";
         }
         String localPattern;
-        if (Build.VERSION.SDK_INT >= 18){
+        if (Build.VERSION.SDK_INT >= 18) {
             if (is24HourFormat(ctx)) {
                 localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
             } else {
@@ -397,7 +403,7 @@ public class AlarmClockView extends View {
             }
         } else {
             DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-            localPattern  = ((SimpleDateFormat)formatter).toLocalizedPattern();
+            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
         }
 
         SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
@@ -408,7 +414,7 @@ public class AlarmClockView extends View {
         return (this.time != null);
     }
 
-    public void stopAlarm(){
+    public void stopAlarm() {
         Log.d(TAG, "stopAlarm()");
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
@@ -433,9 +439,9 @@ public class AlarmClockView extends View {
         AlarmHandlerService.set(ctx, time);
     }
 
-    public void cancelAlarm(){
+    public void cancelAlarm() {
         Log.d(TAG, "cancelAlarm()");
-        if (isAlarmSet() ) {
+        if (isAlarmSet()) {
             AlarmHandlerService.cancel(ctx);
         }
 
@@ -451,6 +457,19 @@ public class AlarmClockView extends View {
         } else {
             Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
         }
+    }
+
+    void toast(final CharSequence text) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
+                        | PowerManager.ACQUIRE_CAUSES_WAKEUP, "nightdream:toastTag");
+                wl.acquire(15000);
+                Toast.makeText(ctx, text, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private enum Position {LEFT, RIGHT}
@@ -475,8 +494,7 @@ public class AlarmClockView extends View {
                 if (useSingleTap) {
                     stopAlarm();
                     postAlarmTime();
-                }
-                else if (useLongPress) {
+                } else if (useLongPress) {
                     String msg = getResources().getString(R.string.message_stop_alarm_long_press);
                     toast(msg);
                 }
@@ -489,7 +507,7 @@ public class AlarmClockView extends View {
         public void onLongPress(MotionEvent e) {
             super.onLongPress(e);
             Point click = getClickedPoint(e);
-            if (useLongPress && showRightCorner() && cornerRight.isInside(click) ) {
+            if (useLongPress && showRightCorner() && cornerRight.isInside(click)) {
                 stopAlarm();
                 postAlarmTime();
             }
@@ -533,7 +551,7 @@ public class AlarmClockView extends View {
             this.radius = radius;
             this.radius2 = (int) (0.93 * radius);
             this.radius3 = (int) (0.86 * radius);
-            this.radius4 = (int) (0.6  * radius);
+            this.radius4 = (int) (0.6 * radius);
             if (this.icon != null) {
                 this.scaledIcon = Bitmap.createScaledBitmap(this.icon, radius4, radius4, false);
             }
@@ -554,13 +572,14 @@ public class AlarmClockView extends View {
         void draw(Canvas canvas, Paint paint) {
             if (position == Position.LEFT) {
                 paint.setColor(Color.WHITE);
-                paint.setAlpha( ( activated ) ? 255 : 153 );
+                paint.setAlpha((activated) ? 255 : 153);
                 RectF oval = new RectF(
                         center.x - radius, center.y - radius,
                         center.x + radius, center.y + radius
                 );
                 canvas.drawArc(oval, 270, 90, true, paint);
                 canvas.drawRect(center.x, center.y, center.x + radius, center.y + radius, paint);
+                canvas.drawRect(0, 0, center.x, center.y, paint);
 
                 paint.setColor(Color.BLACK);
                 int diff = radius - radius2;
@@ -570,9 +589,10 @@ public class AlarmClockView extends View {
                 );
                 canvas.drawArc(oval, 270, 90, true, paint);
                 canvas.drawRect(center.x, center.y - diff, center.x + radius2, center.y + radius2, paint);
+                canvas.drawRect(0, diff, center.x, center.y, paint);
 
                 paint.setColor(Color.WHITE);
-                paint.setAlpha( ( activated ) ? 153 : 102 );
+                paint.setAlpha((activated) ? 153 : 102);
                 diff = radius - radius3;
                 oval = new RectF(
                         center.x - radius3, center.y - radius3,
@@ -580,15 +600,17 @@ public class AlarmClockView extends View {
                 );
                 canvas.drawArc(oval, 270, 90, true, paint);
                 canvas.drawRect(center.x, center.y - (radius2 - radius3), center.x + radius3, center.y + radius3, paint);
+                canvas.drawRect(0, diff, center.x, center.y, paint);
             } else if (position == Position.RIGHT) {
                 paint.setColor(Color.WHITE);
-                paint.setAlpha( ( activated ) ? 255 : 153 );
+                paint.setAlpha((activated) ? 255 : 153);
                 RectF oval = new RectF(
                         center.x - radius, center.y - radius,
                         center.x + radius, center.y + radius
                 );
                 canvas.drawArc(oval, 180, 90, true, paint);
                 canvas.drawRect(center.x, center.y, center.x - radius, center.y + radius, paint);
+                canvas.drawRect(center.x, 0, center.x + radius, center.y, paint);
 
                 paint.setColor(Color.BLACK);
                 int diff = radius - radius2;
@@ -598,9 +620,10 @@ public class AlarmClockView extends View {
                 );
                 canvas.drawArc(oval, 180, 90, true, paint);
                 canvas.drawRect(center.x, center.y - diff, center.x - radius2, center.y + radius2, paint);
+                canvas.drawRect(center.x, diff, center.x + radius, center.y, paint);
 
                 paint.setColor(Color.WHITE);
-                paint.setAlpha( ( activated ) ? 153 : 102 );
+                paint.setAlpha((activated) ? 153 : 102);
                 diff = radius - radius3;
                 oval = new RectF(
                         center.x - radius3, center.y - radius3,
@@ -608,12 +631,13 @@ public class AlarmClockView extends View {
                 );
                 canvas.drawArc(oval, 180, 90, true, paint);
                 canvas.drawRect(center.x, center.y - (radius2 - radius3), center.x - radius3, center.y + radius3, paint);
+                canvas.drawRect(center.x, diff, center.x + radius, center.y, paint);
             }
 
             ColorFilter filter = paint.getColorFilter();
             paint.setColorFilter(colorFilter);
             if (position == Position.LEFT) {
-                canvas.drawBitmap(scaledIcon, 5, center.y - radius4 - 5, paint);
+                canvas.drawBitmap(scaledIcon, center.x + 5, center.y - radius4 - 5, paint);
             } else {
                 canvas.drawBitmap(scaledIcon, center.x - radius4 - 5, center.y - radius4 - 5, paint);
             }
@@ -637,18 +661,5 @@ public class AlarmClockView extends View {
                 updateTime(time);
             }
         }
-    }
-    final Handler mHandler = new Handler();
-
-    void toast(final CharSequence text) {
-        mHandler.post(new Runnable() {
-            @Override public void run() {
-                PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
-                        | PowerManager.ACQUIRE_CAUSES_WAKEUP, "nightdream:toastTag");
-                wl.acquire(15000);
-                Toast.makeText(ctx, text, Toast.LENGTH_LONG).show();
-            }
-        });
     }
 }
