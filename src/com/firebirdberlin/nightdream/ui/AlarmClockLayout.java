@@ -350,7 +350,13 @@ public class AlarmClockLayout extends LinearLayout {
             String displayName = "alarm tone";
             try {
                 if (Utility.isEmpty(alarmClockEntry.soundUri)) {
-                    Uri soundUri = Uri.parse(Settings.getDefaultAlarmTone(context));
+                    Uri soundUri;
+                    String tone = Settings.getDefaultAlarmTone(context);
+                    if (Utility.isEmpty(tone)) {
+                        soundUri = Utility.getDefaultAlarmToneUri();
+                    } else {
+                        soundUri = Uri.parse(tone);
+                    }
                     displayName = Utility.getSoundFileTitleFromUri(context, soundUri);
                 } else {
                     displayName = Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
