@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,13 +21,7 @@ import com.firebirdberlin.nightdream.Utility;
 public class AlarmClock extends RelativeLayout {
     protected AlarmClockView alarmClockView;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
-    private TextView alarmTimeTextView;
-    private TextView.OnClickListener alarmTimeTextVieOnCLickListener = new OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            SetAlarmClockActivity.start(getContext());
-        }
-    };
+    private final TextView alarmTimeTextView;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,19 +34,17 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView = new TextView(context);
         alarmTimeTextView.setEllipsize(TextUtils.TruncateAt.END);
         alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        OnClickListener alarmTimeTextVieOnCLickListener = view -> SetAlarmClockActivity.start(getContext());
         alarmTimeTextView.setOnClickListener(alarmTimeTextVieOnCLickListener);
 
         LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_VERTICAL);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-        alarmClockView.setOnAlarmChangedListener(new AlarmClockView.onAlarmChangeListener() {
-            @Override
-            public void onAlarmChanged(String alarmString) {
-                alarmTimeTextView.setText(alarmString);
-                alarmTimeTextView.setVisibility(alarmString.isEmpty() ? GONE : VISIBLE);
-                alarmTimeTextView.invalidate();
-            }
+        alarmClockView.setOnAlarmChangedListener(alarmString -> {
+            alarmTimeTextView.setText(alarmString);
+            alarmTimeTextView.setVisibility(alarmString.isEmpty() ? GONE : VISIBLE);
+            alarmTimeTextView.invalidate();
         });
 
         addView(alarmClockView, layoutAlarmClockView);
