@@ -36,6 +36,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
@@ -312,6 +313,8 @@ public class AlarmClockView extends View {
         }
         time.hour = hour;
         time.min = min;
+        time.soundUri = Settings.getDefaultAlarmTone(ctx);
+        time.radioStationIndex = Settings.getDefaultRadioStation(ctx);
         postAlarmTime();
     }
 
