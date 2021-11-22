@@ -272,6 +272,7 @@ public class AlarmClockView extends View {
         return false;
     }
 
+    private int lastHour = -1;
     private void XYtotime(float x, float y) {
         int w = getWidth() - 2 * touch_zone_radius;
         int h = Utility.getDisplaySize(ctx).y - 2 * touch_zone_radius;
@@ -284,10 +285,13 @@ public class AlarmClockView extends View {
         // the coordinate is negative outside the view
         y *= -1.f;
 
+        // separate hours from minutes
+        int separator = 1*touch_zone_radius;
+
         // adjust time in 5-minute intervals when dragging upwards, and 1-minute interval when dragging downwards.
         int roundTo = (movingDown) ? 1 : 5;
         int hours = (int) (x / w * 24);
-        int mins = (int) ((y / h * 60)) / roundTo * roundTo;
+        int mins = (int) (((y-separator) / (h-separator) * 60)) / roundTo * roundTo;
         if (movingDown) {
             // make sure time never increases while dragging downwards
             mins = Math.min(mins, lastMinSinceDragStart);
@@ -297,8 +301,9 @@ public class AlarmClockView extends View {
         }
         lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
 
-        setAlarmTime((hours >= 24) ? 23 : hours,
-                (mins >= 60 || mins < 0) ? 0 : mins);
+        if (y > separator) hours = lastHour;
+        lastHour = (hours >= 24) ? 23 : hours;
+        setAlarmTime(lastHour, (mins >= 60 || mins < 0) ? 0 : mins);
     }
 
     private void setAlarmTime(int hour, int min) {
