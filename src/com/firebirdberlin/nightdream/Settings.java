@@ -250,7 +250,7 @@ public class Settings {
         edit.apply();
     }
 
-    static int getDefaultRadioStation(Context context) {
+    public static int getDefaultRadioStation(Context context) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         if (preferences == null) {
             return -1;
@@ -273,7 +273,7 @@ public class Settings {
         return preferences.getInt("lastActiveRadioStation", -1);
     }
 
-    static String getDefaultAlarmTone(Context context) {
+    public static String getDefaultAlarmTone(Context context) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         if (preferences == null) {
             return null;
