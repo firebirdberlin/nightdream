@@ -250,7 +250,7 @@ public class Settings {
         edit.apply();
     }
 
-    static int getDefaultRadioStation(Context context) {
+    public static int getDefaultRadioStation(Context context) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         if (preferences == null) {
             return -1;
