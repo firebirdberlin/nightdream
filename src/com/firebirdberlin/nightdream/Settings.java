@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -286,27 +287,33 @@ public class Settings {
     }
 
     public static boolean showNotification(Context context) {
+        Resources res = context.getResources();
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {
-            return true;
+            return enabled;
         }
-        return preferences.getBoolean("showNotification", true);
+        return enabled && preferences.getBoolean("showNotification", true);
     }
 
     public static boolean showNotificationPreview(Context context) {
+        Resources res = context.getResources();
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {
-            return true;
+            return false;
         }
-        return preferences.getBoolean("showNotificationPreview", false);
+        return enabled && preferences.getBoolean("showNotificationPreview", false);
     }
 
     public static boolean showMediaStyleNotification(Context context) {
+        Resources res = context.getResources();
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {
-            return true;
+            return false;
         }
-        return preferences.getBoolean("showMediaStyleNotification", false);
+        return enabled && preferences.getBoolean("showMediaStyleNotification", false);
     }
 
     public static boolean useNotificationStatusBar(Context context) {
