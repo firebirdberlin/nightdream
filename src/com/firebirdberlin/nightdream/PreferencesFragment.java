@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -421,7 +422,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
 
-        if (Build.VERSION.SDK_INT < 18) {
+        Resources res = getResources();
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
+        if (! enabled) {
             removePreference("startNotificationService");
             removePreference("autostartForNotifications");
         }
@@ -579,7 +582,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupNotificationCategory() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        Resources res = getResources();
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
+        if (! enabled) {
             hidePreference("notifications");
         } else {
             showPreference("notifications");
