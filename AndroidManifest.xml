@@ -3,6 +3,7 @@
     package="com.firebirdberlin.nightdream"
     android:versionCode="299"
     android:versionName="2.10.21">
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
@@ -28,12 +29,11 @@
 
     <application
         android:name=".NightDreamApplication"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:label="@string/app_name"
         android:allowBackup="true"
-        android:networkSecurityConfig="@xml/network_security_config">
-
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="nightdream"
@@ -102,12 +102,11 @@
         <service
             android:name=".services.AlarmHandlerService"
             android:enabled="true" />
-
         <service
             android:name=".services.DownloadWeatherService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:enabled="true"
             android:exported="true"
-            android:enabled="true" />
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".services.RadioStreamService"
             android:enabled="true"
@@ -119,53 +118,67 @@
         <service
             android:name=".services.ScreenWatcherService"
             android:enabled="true" />
+
         <activity
             android:name=".PreferencesActivity"
-            android:parentActivityName=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:parentActivityName=".NightDreamActivity"
             android:theme="@style/PreferencesTheme" />
         <activity
             android:name=".AlarmsPreferenceActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".SetAlarmClockActivity"
-            android:theme="@style/PreferencesTheme"/>
+            android:theme="@style/PreferencesTheme" />
         <activity
             android:name=".WeatherPreferenceActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".WeatherForecastActivity"
-            android:theme="@style/PreferencesTheme"/>
+            android:theme="@style/PreferencesTheme" />
+
+        <activity
+            android:name=".WidgetPreferencesActivity"
+            android:exported="false"
+            android:theme="@style/PreferencesTheme"
+            android:label="@string/preferences">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".NotificationListActivity"
-            android:label="@string/notifications"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
             android:finishOnCloseSystemDialogs="true"
+            android:label="@string/notifications"
             android:parentActivityName=".NightDreamActivity"
-            android:theme="@style/NotificationActivityTheme"/>
+            android:theme="@style/NotificationActivityTheme" />
         <activity
             android:name=".NotificationList.NotificationActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
             android:finishOnCloseSystemDialogs="true"
             android:parentActivityName=".NotificationListActivity"
-            android:theme="@style/NotificationActivityTheme"/>
+            android:theme="@style/NotificationActivityTheme" />
         <activity
             android:name=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:enabled="true"
             android:icon="@mipmap/ic_launcher"
-            android:roundIcon="@mipmap/ic_launcher_round"
             android:label="@string/app_name"
             android:launchMode="singleTop"
+            android:roundIcon="@mipmap/ic_launcher_round"
             android:theme="@style/ActivityTheme">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
@@ -176,7 +189,6 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".receivers.StopServiceReceiver"
             android:enabled="true">
@@ -191,8 +203,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".receivers.ScheduledAutoStartReceiver">
+        <receiver android:name=".receivers.ScheduledAutoStartReceiver">
             <intent-filter>
                 <action android:name="com.firebirdberlin.nightdream.ACTION_START_SCHEDULED" />
             </intent-filter>
@@ -237,35 +248,38 @@
                 android:resource="@xml/clock_widget_info" />
         </receiver>
 
-        <service android:name=".services.SqliteIntentService"
+        <service
+            android:name=".services.SqliteIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
+            android:name=".WeatherForecastActivity"
             android:excludeFromRecents="true"
             android:label="@string/forecast"
-            android:name=".WeatherForecastActivity"
             android:parentActivityName=".NightDreamActivity"
-            android:theme="@style/SecondaryActivityTheme">
-        </activity>
+            android:theme="@style/SecondaryActivityTheme"></activity>
         <activity
+            android:name=".SetAlarmClockActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="@string/alarm"
-            android:name=".SetAlarmClockActivity"
             android:parentActivityName=".NightDreamActivity"
             android:theme="@style/AlarmClockActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SET_ALARM" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SHOW_ALARMS" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <meta-data
-            android:name=
-                "com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.firebirdberlin.nightdream.CastOptionsProvider" />
     </application>
+
 </manifest>
