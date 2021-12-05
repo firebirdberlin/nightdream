@@ -10,6 +10,7 @@
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="3600000"
     android:widgetCategory="home_screen"
+    android:configure="com.firebirdberlin.nightdream.WidgetPreferencesActivity"
     tools:targetApi="jelly_bean_mr1">
 </appwidget-provider>
 <!--
