@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -29,13 +31,15 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
+import java.util.Locale;
+
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
 
-    private static ViewInfo prepareSourceView(Context context, WidgetDimension dimension) {
+    private static ViewInfo prepareSourceView(Context context, WidgetDimension dimension, int appWidgetId) {
 
         final Dimension widgetSize = actualWidgetSize(context, dimension);
 
@@ -49,7 +53,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         ClockLayout clockLayout = container.findViewById(R.id.clockLayout);
 
-        updateClockLayoutSettings(context, clockLayout, widgetSize);
+        updateClockLayoutSettings(context, appWidgetId, clockLayout, widgetSize);
 
         Configuration config = context.getResources().getConfiguration();
         clockLayout.updateLayoutForWidget(widthPixel, heightPixel, config);
@@ -64,7 +68,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     }
 
     private static void updateClockLayoutSettings(
-            Context context, ClockLayout clockLayout, Dimension widgetDimension
+            Context context, int appWidgetId, ClockLayout clockLayout, Dimension widgetDimension
     ) {
         Settings settings = new Settings(context);
         int clockLayoutId = settings.getClockLayoutID(false);
@@ -116,12 +120,20 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
 
         {   // draw background
+            SharedPreferences prefs = context.getSharedPreferences(
+                    String.format(Locale.ENGLISH, "preferences_widget_%d", appWidgetId),
+                    Context.MODE_PRIVATE
+            );
+            int transparency = 255 - prefs.getInt("clockBackgroundTransparency", 100);
+
             GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(30);
             shape.setGradientType(GradientDrawable.LINEAR_GRADIENT);
+            int color = Color.parseColor("#000000");
+
             int[] colors = {
-                    Color.parseColor("#33000000"),
-                    Color.parseColor("#BB000000")
+                    Graphics.setColorWithAlpha(color, transparency),
+                    Graphics.setColorWithAlpha(color, Math.max(0, transparency - 50))
             };
             shape.setColors(colors);
             clockLayout.setBackground(shape);
@@ -259,7 +271,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         @Override
         protected RemoteViews doInBackground(Context... contexts) {
             Context context = contexts[0];
-            final ViewInfo sourceView = prepareSourceView(context, dimension);
+            final ViewInfo sourceView = prepareSourceView(context, dimension, appWidgetId);
             Bitmap widgetBitmap = loadBitmapFromView(sourceView);
 
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
