@@ -20,29 +20,22 @@ public class WeatherService {
         WeatherEntry entry = settings.weatherEntry;
         long age = entry.ageMillis();
         final int maxAge = 60 * 60 * 1000;
-        final String cityID = String.valueOf(entry.cityID);
         Location weatherLocation = entry.getLocation();
         Location gpsLocation = settings.getLocation();
-        float gpsDistance = (weatherLocation != null && gpsLocation != null)
+        float gpsDistance =
+                (weatherLocation != null && gpsLocation != null)
                 ? weatherLocation.distanceTo(gpsLocation) : -1.f;
 
         Log.d(TAG, String.format("Weather: data age %d => %b", age, age > maxAge));
-        Log.d(TAG, String.format("City ID changed => %b ('%s' =?= '%s')",
-                (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID)),
-                settings.weatherCityID, cityID)
-        );
         if (settings.weatherCityID.isEmpty() ) {
             Log.d(TAG, "GPS distance " + gpsDistance + " m ");
         }
 
         boolean result = (
-                Utility.hasNetworkConnection(context) &&
-                        (
-                                age < 0L
-                                        || (!settings.weatherCityID.isEmpty() && !settings.weatherCityID.equals(cityID))
-                                        || age > maxAge
-                                        || (settings.weatherCityID.isEmpty() && gpsDistance > 10000.f)
-                        )
+                Utility.hasNetworkConnection(context) && (
+                        age < 0L || age > maxAge
+                                || (settings.weatherCityID.isEmpty() && gpsDistance > 10000.f)
+                )
         );
 
         Log.d(TAG, "shallUpdateWeatherData = " + result);
