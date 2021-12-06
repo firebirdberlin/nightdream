@@ -25,7 +25,7 @@ public class AlarmClock extends RelativeLayout {
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        setClipChildren(false);
         initColorFilters();
 
         alarmClockView = new AlarmClockView(context, attrs);
