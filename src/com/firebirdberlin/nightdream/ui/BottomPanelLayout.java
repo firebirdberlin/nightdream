@@ -29,12 +29,14 @@ public class BottomPanelLayout extends FrameLayout {
     public BottomPanelLayout(Context context) {
         super(context);
         this.context = context;
+        setClipChildren(false);
     }
 
     public BottomPanelLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         this.attrs = attrs;
+        setClipChildren(false);
         view = new AlarmClock(context, attrs);
     }
 

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.DashPathEffect;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -273,6 +274,7 @@ public class AlarmClockView extends View {
         return false;
     }
 
+    private float lastHourX = -1;
     private int lastHour = -1;
     private void XYtotime(float x, float y) {
         int w = getWidth() - 2 * touch_zone_radius;
@@ -291,7 +293,17 @@ public class AlarmClockView extends View {
 
         // adjust time in 5-minute intervals when dragging upwards, and 1-minute interval when dragging downwards.
         int roundTo = (movingDown) ? 1 : 5;
-        int hours = (int) (x / w * 24);
+        if (y > separator) {
+            lastHour = (int) (lastHourX / w * 24);
+            int diff = (int) ((x - lastHourX) / w * 8);
+            diff = to_range(diff, -1, 1);
+            lastHour = lastHour + diff;
+            lastHour = (lastHour >= 24) ? 23 : lastHour;
+        } else {
+            lastHourX = x;
+            int hours = (int) (x / w * 24);
+            lastHour = (hours >= 24) ? 23 : hours;
+        }
         int mins = (int) (((y-separator) / (h-separator) * 60)) / roundTo * roundTo;
         if (movingDown) {
             // make sure time never increases while dragging downwards
@@ -302,9 +314,11 @@ public class AlarmClockView extends View {
         }
         lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
 
-        if (y > separator) hours = lastHour;
-        lastHour = (hours >= 24) ? 23 : hours;
         setAlarmTime(lastHour, (mins >= 60 || mins < 0) ? 0 : mins);
+    }
+
+    private int to_range(int value, int min, int max) {
+        return Math.max(Math.min(value, max), min);
     }
 
     private void setAlarmTime(int hour, int min) {
@@ -349,6 +363,21 @@ public class AlarmClockView extends View {
             );
             cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
             cornerRight.draw(canvas, paint);
+        }
+
+        if (userChangesAlarmTime) {
+            paint.setColor(Color.WHITE);
+            paint.setStrokeWidth(6.f);
+            paint.setStrokeMiter(10.f);
+            paint.setPathEffect(new DashPathEffect(new float[] {20f,40f}, 0f));
+
+            canvas.drawLine(
+                    0.f,
+                    -1.f*maxHeight,
+                    (float) w,
+                    -1.f * maxHeight,
+                    paint
+            );
         }
     }
 
