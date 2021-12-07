@@ -313,8 +313,8 @@ public class AlarmClockView extends View {
             mins = Math.max(mins, lastMinSinceDragStart);
         }
         lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
-
-        setAlarmTime(lastHour, (mins >= 60 || mins < 0) ? 0 : mins);
+        mins = to_range(mins, 0, 59);
+        setAlarmTime(lastHour, mins);
     }
 
     private int to_range(int value, int min, int max) {
