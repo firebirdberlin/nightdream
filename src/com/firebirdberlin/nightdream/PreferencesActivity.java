@@ -3,11 +3,8 @@ package com.firebirdberlin.nightdream;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -36,7 +33,6 @@ public class PreferencesActivity extends BillingHelperActivity
         super.onCreate(savedInstanceState);
         setTheme(R.style.PreferencesTheme);
         initTitleBar();
-
         initFragment();
     }
 
@@ -51,15 +47,7 @@ public class PreferencesActivity extends BillingHelperActivity
         fragment = new PreferencesFragment();
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            TextView tv = new TextView(this);
-            tv.setText("");
-            Point size = Utility.getDisplaySize(this);
-            tv.setWidth(size.x);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-            );
-            setContentView(tv, params);
-
+            setContentView(R.layout.preferences_layout);
             if (fragment2 != null) {
                 fT.remove(fragment2);
                 fragment2 = null;
@@ -68,8 +56,7 @@ public class PreferencesActivity extends BillingHelperActivity
             Bundle data = new Bundle();
             data.putString("rootKey", rootKey);
             fragment.setArguments(data);
-
-            fT.replace(android.R.id.content, fragment);
+            fT.replace(R.id.main_frame, fragment);
         } else {
             setContentView(R.layout.preferences_layout_land);
 
@@ -142,28 +129,26 @@ public class PreferencesActivity extends BillingHelperActivity
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed");
-
         if (!rootKey.isEmpty() && (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)) {
             rootKey = "";
             fragment = new PreferencesFragment();
 
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.move_in_prefs_left, R.anim.move_out_prefs_right, R.anim.move_in_prefs_right, R.anim.move_out_prefs_left)
-                    .replace(android.R.id.content, fragment)
+                    .replace(R.id.main_frame, fragment)
                     .addToBackStack(null)
                     .commit();
+            initTitleBar();
         } else {
             finish();
         }
-        initTitleBar();
     }
 
     void initTitleBar() {
-        Log.d(TAG, "initTitlebar");
+        Log.d(TAG, "initTitleBar");
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(R.string.preferences);
-            actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -195,14 +180,14 @@ public class PreferencesActivity extends BillingHelperActivity
         args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
         fragment.setArguments(args);
 
+        FragmentTransaction fT = fragmentManager.beginTransaction();
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.move_in_prefs_right, R.anim.move_out_prefs_left, R.anim.move_in_prefs_left, R.anim.move_out_prefs_right)
-                    .replace(android.R.id.content, fragment)
+            fT.setCustomAnimations(R.anim.move_in_prefs_right, R.anim.move_out_prefs_left, R.anim.move_in_prefs_left, R.anim.move_out_prefs_right)
+                    .replace(R.id.main_frame, fragment)
                     .addToBackStack(null)
                     .commit();
         } else {
-            fragmentManager.beginTransaction().replace(R.id.right, fragment).commit();
+            fT.replace(R.id.right, fragment).commit();
         }
 
         ActionBar actionBar = getSupportActionBar();
