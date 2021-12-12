@@ -66,6 +66,13 @@ import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.flexbox.FlexboxLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -93,6 +100,8 @@ public class NightDreamUI {
     private final ConstraintLayout parentLayout;
     private final ExifView exifView;
     private final ImageViewExtended[] backgroundImages = new ImageViewExtended[2];
+    private StyledPlayerView playerView;
+    private ExoPlayer exoPlayer;
     private final ImageView menuIcon;
     private final ImageView nightModeIcon;
     private final ImageView radioIcon;
@@ -486,6 +495,7 @@ public class NightDreamUI {
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
 
+        playerView = rootView.findViewById(R.id.background_videostream);
 
         exifView = new ExifView(mContext);
         exifLayoutContainer.addView(exifView.getView());
@@ -515,6 +525,32 @@ public class NightDreamUI {
 
         checkForReviewRequest();
         clockLayoutContainer.setClockLayout(clockLayout);
+    }
+
+    private void initExoplayer(){
+        exoPlayer = new ExoPlayer.Builder(mContext).build();
+        exoPlayer.addListener(new Player.Listener() {
+            @Override
+            public void onPlayerError(PlaybackException error) {
+                playerView.setVisibility(View.INVISIBLE);
+                bgshape = colorBlack;
+                backgroundImages[(activeBackgroundImage + 1) % 2].setImageDrawable(bgshape);
+                backgroundImages[activeBackgroundImage].setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+                Throwable cause = error.getCause();
+                if (cause instanceof HttpDataSource.HttpDataSourceException) {
+                    //HTTP error
+                    HttpDataSource.HttpDataSourceException httpError = (HttpDataSource.HttpDataSourceException) cause;
+                    Log.d(TAG,"ExoPlaybackException:" + httpError.getMessage());
+                    backgroundImages[activeBackgroundImage].setText("Playbackerror: "+httpError.getMessage(),20,Color.RED);
+                }
+                else {
+                    Log.d(TAG,"ExoPlaybackException:" + error.toString());
+                    backgroundImages[activeBackgroundImage].setText("Playbackerror: "+ error.getMessage(),20,Color.RED);
+                }
+            }
+        });
+        playerView.setPlayer(exoPlayer);
     }
 
     private void configureSafeRect() {
@@ -638,79 +674,125 @@ public class NightDreamUI {
             bgshape = colorBlack;
             backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
         } else {
-            switch (settings.getBackgroundMode()) {
-                case Settings.BACKGROUND_TRANSPARENT: {
-                    Log.d(TAG, "BACKGROUND_TRANSPARENT");
-                    bgshape = colorTransparent;
-                    backgroundImages[0].setImageDrawable(bgshape);
-                    backgroundImages[1].setImageDrawable(bgshape);
-                    break;
+
+            if (!Utility.isLowRamDevice(mContext)) {
+                if (exoPlayer != null) {
+                    exoPlayer.pause();
+                    exoPlayer.setPlayWhenReady(false);
+                    exoPlayer.stop();
+                    exoPlayer.release();
+                }
+                if (playerView != null) {
+                    playerView.setVisibility(View.INVISIBLE);
                 }
 
-                case Settings.BACKGROUND_GRADIENT: {
-                    Log.d(TAG, "BACKGROUND_GRADIENT");
+                switch (settings.getBackgroundMode()) {
 
-                    int[] colors = {
-                            settings.gradientStartColor,
-                            settings.gradientEndColor,
-                            settings.gradientStartColor,
-                    };
-                    bgshape = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors);
-                    backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
-                    break;
-                }
+                    case Settings.BACKGROUND_STREAM: {
+                        Log.d(TAG, "BACKGROUND_STREAM");
+                        initExoplayer();
 
-                case Settings.BACKGROUND_IMAGE: {
-                    Log.d(TAG, "BACKGROUND_IMAGE");
-                    setImageScale();
+                        bgshape = colorBlack;
+                        backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
 
-                    int other = (activeBackgroundImage + 1) % 2;
-                    backgroundImages[activeBackgroundImage].setImage(
-                            Uri.parse(settings.backgroundImageURI)
-                    );
-                    Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
-                    if (bitmap == null) {
-                        return;
+                        //background_videostream
+                        MediaItem mediaItem = MediaItem.fromUri(settings.streamURL);
+
+                        if (settings.streamFullscreen) {
+                            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+                        } else {
+                            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                        }
+                        playerView.setVisibility(View.VISIBLE);
+                        playerView.bringToFront();
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            backgroundImages[activeBackgroundImage].setZ(4);
+                            backgroundImages[(activeBackgroundImage + 1) % 2].setZ(4);
+                            playerView.setZ(5);
+                        }
+
+                        exoPlayer.setVolume(0f);
+                        exoPlayer.addMediaItem(mediaItem);
+                        exoPlayer.prepare();
+                        exoPlayer.setPlayWhenReady(true);
+                        exoPlayer.play();
+
+                        break;
                     }
-                    setDominantColorFromBitmap(bitmap);
-                    if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                        backgroundImages[other].setImageBitmap(
-                                Graphics.blur(bitmap)
+
+                    case Settings.BACKGROUND_TRANSPARENT: {
+                        Log.d(TAG, "BACKGROUND_TRANSPARENT");
+                        bgshape = colorTransparent;
+                        backgroundImages[0].setImageDrawable(bgshape);
+                        backgroundImages[1].setImageDrawable(bgshape);
+                        break;
+                    }
+
+                    case Settings.BACKGROUND_GRADIENT: {
+                        Log.d(TAG, "BACKGROUND_GRADIENT");
+
+                        int[] colors = {
+                                settings.gradientStartColor,
+                                settings.gradientEndColor,
+                                settings.gradientStartColor,
+                        };
+                        bgshape = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors);
+                        backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
+                        break;
+                    }
+
+                    case Settings.BACKGROUND_IMAGE: {
+                        Log.d(TAG, "BACKGROUND_IMAGE");
+                        setImageScale();
+
+                        int other = (activeBackgroundImage + 1) % 2;
+                        backgroundImages[activeBackgroundImage].setImage(
+                                Uri.parse(settings.backgroundImageURI)
                         );
-                    } else {
-                        backgroundImages[other].setImageDrawable(colorBlack);
-                    }
-                    backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
+                        if (bitmap == null) {
+                            return;
+                        }
+                        setDominantColorFromBitmap(bitmap);
+                        if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                            backgroundImages[other].setImageBitmap(
+                                    Graphics.blur(bitmap)
+                            );
+                        } else {
+                            backgroundImages[other].setImageDrawable(colorBlack);
+                        }
+                        backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                    break;
+                        break;
+                    }
+
+                    case Settings.BACKGROUND_SLIDESHOW:
+                        Log.d(TAG, "BACKGROUND_SLIDESHOW");
+                        loadBackgroundImageFiles();
+                        if (files != null && files.size() > 0) {
+                            preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
+                            AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
+                            runningTask.execute(preloadBackgroundImageFile);
+                            parentLayout.postDelayed(initSlideshowBackground, 500);
+                            handler.post(backgroundChange);
+                        } else {
+                            preloadBackgroundImage = null;
+                            preloadBackgroundImageFile = null;
+                            setupSlideshow();
+                        }
+
+                        if (settings.background_exif) {
+                            exifLayoutContainer.setVisibility(View.VISIBLE);
+                        }
+                        break;
+
+                    case Settings.BACKGROUND_BLACK:
+                    default:
+                        Log.d(TAG, "BACKGROUND_default");
+                        bgshape = colorBlack;
+                        backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
+                        break;
                 }
-
-                case Settings.BACKGROUND_SLIDESHOW:
-                    Log.d(TAG, "BACKGROUND_SLIDESHOW");
-                    loadBackgroundImageFiles();
-                    if (files != null && files.size() > 0) {
-                        preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-                        AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-                        runningTask.execute(preloadBackgroundImageFile);
-                        parentLayout.postDelayed(initSlideshowBackground, 500);
-                        handler.post(backgroundChange);
-                    } else {
-                        preloadBackgroundImage = null;
-                        preloadBackgroundImageFile = null;
-                        setupSlideshow();
-                    }
-
-                    if (settings.background_exif) {
-                        exifLayoutContainer.setVisibility(View.VISIBLE);
-                    }
-                    break;
-
-                case Settings.BACKGROUND_BLACK:
-                default:
-                    Log.d(TAG, "BACKGROUND_default");
-                    bgshape = colorBlack;
-                    backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
-                    break;
             }
         }
     }
@@ -1122,6 +1204,10 @@ public class NightDreamUI {
             soundmeter = null;
         }
 
+        if (exoPlayer != null){
+            exoPlayer.stop();
+            exoPlayer.release();
+        }
     }
 
     public void onDestroy() {

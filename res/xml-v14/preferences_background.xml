@@ -140,6 +140,30 @@
         app:isPreferenceVisible="false"
         />
 
+    <Preference
+        app:iconSpaceReserved="false"
+        app:enabled="true"
+        app:key="streamInfo"
+        app:selectable="false"
+        app:title="Showing just the video without any sound" />
+
+    <EditTextPreference
+        app:iconSpaceReserved="false"
+        app:key="streamURL"
+        app:useSimpleSummaryProvider="true"
+        app:dialogTitle="URL"
+        app:title="URL"
+        app:isPreferenceVisible="false"/>
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:key="streamFullScreen"
+        app:summary="Zoom stream to fullscreen"
+        app:title="Fullscreen"
+        app:isPreferenceVisible="false"
+        />
+
     <CheckBoxPreference
         app:iconSpaceReserved="false"
         app:defaultValue="false"
