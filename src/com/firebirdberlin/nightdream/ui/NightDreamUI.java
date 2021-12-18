@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -647,7 +648,9 @@ public class NightDreamUI {
 
                 case Settings.BACKGROUND_GRADIENT: {
                     Log.d(TAG, "BACKGROUND_GRADIENT");
-                    bgshape = ContextCompat.getDrawable(mContext, R.drawable.background_gradient);
+
+                    int[] colors = {settings.gradientStartColor,settings.gradientEndColor};
+                    bgshape = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors);
                     backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
                     break;
                 }

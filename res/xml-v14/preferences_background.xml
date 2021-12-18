@@ -1,5 +1,6 @@
 <PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     app:key="background"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:title="@string/background">
@@ -20,6 +21,26 @@
         app:key="purchaseDesignPackageBackground"
         app:isPreferenceVisible="false"
         app:title="@string/purchaseWeatherData" />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        app:iconSpaceReserved="false"
+        android:descendantFocusability="afterDescendants"
+        app:key="gradientStartColor"
+        app:selectable="true"
+        app:title="@string/choose_gradient_start"
+        app:isPreferenceVisible="false"
+        android:defaultValue="#000000"
+        />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        app:iconSpaceReserved="false"
+        android:descendantFocusability="afterDescendants"
+        app:key="gradientEndColor"
+        app:selectable="true"
+        app:title="@string/choose_gradient_end"
+        app:isPreferenceVisible="false"
+        android:defaultValue="#303030"
+        />
 
     <Preference
         app:iconSpaceReserved="false"
