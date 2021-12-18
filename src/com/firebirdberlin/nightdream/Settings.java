@@ -138,6 +138,8 @@ public class Settings {
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int secondaryColorNight;
+    public int gradientStartColor;
+    public int gradientEndColor;
     public int sensitivity = 1;
     public int temperatureUnit = WeatherEntry.CELSIUS;
     public int speedUnit = WeatherEntry.METERS_PER_SECOND;
@@ -461,6 +463,8 @@ public class Settings {
         final String defaultSecondaryColorString = "#C2C2C2";
         secondaryColor = settings.getInt("secondaryColor", Color.parseColor(defaultSecondaryColorString));
         secondaryColorNight = settings.getInt("secondaryColorNight", Color.parseColor(defaultSecondaryColorString));
+        gradientStartColor = settings.getInt("gradientStartColor", Color.parseColor("#000000"));
+        gradientEndColor = settings.getInt("gradientEndColor", Color.parseColor("#303030"));
         scaleClock = settings.getFloat("scaleClock", 1.f);
         scaleClockPortrait = settings.getFloat("scaleClockPortrait", -1.f);
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", -1.f);
