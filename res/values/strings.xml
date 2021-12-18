@@ -117,6 +117,8 @@ OR
     <string name="category_handle_power_autostart_time">Start within the time range</string>
     <string name="category_night_mode_display_management">Display management</string>
     <string name="choose_alarm_sound">Alarm tone</string>
+    <string name="choose_gradient_start">Start color</string>
+    <string name="choose_gradient_end">End color</string>
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
     <string name="clear">clear</string>
