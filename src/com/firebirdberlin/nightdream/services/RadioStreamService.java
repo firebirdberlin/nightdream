@@ -487,9 +487,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         handler.removeCallbacks(timeout);
         handler.removeCallbacks(startSleep);
         stopPlaying();
-        if (alarmIsRunning) {
-            AlarmHandlerService.stop(getApplicationContext());
-        }
         if (myNoisyAudioStreamReceiver != null) {
             unregisterReceiver(myNoisyAudioStreamReceiver);
         }
