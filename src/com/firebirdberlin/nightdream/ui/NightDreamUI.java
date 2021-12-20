@@ -1157,6 +1157,7 @@ public class NightDreamUI {
             }
         };
 
+        clockLayout.removeCallbacks(fixConfig);
         clockLayout.postDelayed(fixConfig, 200);
     }
 
