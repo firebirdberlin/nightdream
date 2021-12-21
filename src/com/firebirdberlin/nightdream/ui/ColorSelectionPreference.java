@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -19,13 +18,12 @@ import com.firebirdberlin.nightdream.Settings;
 import com.rarepebble.colorpicker.ColorPickerView;
 
 public class ColorSelectionPreference extends Preference
-                                      implements View.OnClickListener {
+        implements View.OnClickListener {
+    private final Context context;
     private ColorPrefWidgetView primaryColorView = null;
     private ColorPrefWidgetView secondaryColorView = null;
     private ColorPrefWidgetView primaryColorNightView = null;
     private ColorPrefWidgetView secondaryColorNightView = null;
-
-    private final Context context;
 
     public ColorSelectionPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,7 +45,7 @@ public class ColorSelectionPreference extends Preference
             ViewParent summaryParent = summary.getParent();
             if (summaryParent instanceof ViewGroup) {
                 final LayoutInflater layoutInflater =
-                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 View customView = summaryParent2.findViewWithTag("custom");
                 if (customView == null) {
@@ -103,7 +101,7 @@ public class ColorSelectionPreference extends Preference
         showDialog(v);
     }
 
-    private void showDialog(View v){
+    private void showDialog(View v) {
         if (v instanceof ColorPrefWidgetView) {
             ColorPrefWidgetView button = (ColorPrefWidgetView) v;
 
@@ -113,19 +111,16 @@ public class ColorSelectionPreference extends Preference
             picker.showPreview(true);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder
-                    .setTitle(null)
-                    .setView(picker);
+            builder.setTitle(null).setView(picker);
 
             picker.setColor(button.getColor());
-            builder
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        final int color = picker.getColor();
-                        if (callChangeListener(color)) {
-                            putInt(button.getTag().toString(), color);
-                            notifyChanged();
-                        }
-                    });
+            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                final int color = picker.getColor();
+                if (callChangeListener(color)) {
+                    putInt(button.getTag().toString(), color);
+                    notifyChanged();
+                }
+            });
 
             builder.show();
         }
