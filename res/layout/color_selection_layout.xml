@@ -51,6 +51,7 @@
 
             <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
                 android:id="@+id/primaryColor"
+                android:tag="clockColor"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
@@ -60,6 +61,7 @@
 
             <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
                 android:id="@+id/primaryColorNight"
+                android:tag="primaryColorNight"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
@@ -78,6 +80,7 @@
 
             <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
                 android:id="@+id/secondaryColor"
+                android:tag="secondaryColor"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
@@ -86,6 +89,7 @@
                 android:clickable="true" />
             <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
                 android:id="@+id/secondaryColorNight"
+                android:tag="secondaryColorNight"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
