@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
@@ -14,16 +15,15 @@ import androidx.preference.PreferenceViewHolder;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
-
-import yuku.ambilwarna.AmbilWarnaDialog;
+import com.rarepebble.colorpicker.ColorPickerView;
 
 public class ColorSelectionPreference extends Preference
-                                      implements View.OnClickListener {
+        implements View.OnClickListener {
+    private final Context context;
     private ColorPrefWidgetView primaryColorView = null;
     private ColorPrefWidgetView secondaryColorView = null;
     private ColorPrefWidgetView primaryColorNightView = null;
     private ColorPrefWidgetView secondaryColorNightView = null;
-    private Context context;
 
     public ColorSelectionPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,7 +45,7 @@ public class ColorSelectionPreference extends Preference
             ViewParent summaryParent = summary.getParent();
             if (summaryParent instanceof ViewGroup) {
                 final LayoutInflater layoutInflater =
-                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 View customView = summaryParent2.findViewWithTag("custom");
                 if (customView == null) {
@@ -98,41 +98,32 @@ public class ColorSelectionPreference extends Preference
             return;
         }
 
-        if (! (v instanceof ColorPrefWidgetView)) {
-            return;
-        }
-        final ColorPrefWidgetView view = (ColorPrefWidgetView) v;
-        int color = view.getColor();
+        showDialog(v);
+    }
 
-        AmbilWarnaDialog dialog = new AmbilWarnaDialog(getContext(), color, new AmbilWarnaDialog.OnAmbilWarnaListener() {
-            @Override public void onOk(AmbilWarnaDialog dialog, int color) {
-                view.setColor(color);
-                view.invalidate();
-                if (view.equals(primaryColorView)) {
-                    putInt("clockColor", color);
-                } else
-                if (view.equals(primaryColorNightView)) {
-                    putInt("primaryColorNight", color);
-                } else
-                if (view.equals(secondaryColorView)) {
-                    putInt("secondaryColor", color);
-                } else
-                if (view.equals(secondaryColorNightView)) {
-                    putInt("secondaryColorNight", color);
+    private void showDialog(View v) {
+        if (v instanceof ColorPrefWidgetView) {
+            ColorPrefWidgetView button = (ColorPrefWidgetView) v;
+
+            final ColorPickerView picker = new ColorPickerView(getContext());
+            picker.showHex(false);
+            picker.showAlpha(true);
+            picker.showPreview(true);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(null).setView(picker);
+
+            picker.setColor(button.getColor());
+            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                final int color = picker.getColor();
+                if (callChangeListener(color)) {
+                    putInt(button.getTag().toString(), color);
+                    notifyChanged();
                 }
-                notifyChanged();
-            }
+            });
 
-            @Override public void onCancel(AmbilWarnaDialog dialog) {
-                // nothing to do
-            }
-        });
-
-        dialog.setQuickColor1(primaryColorView.getColor());
-        dialog.setQuickColor2(secondaryColorView.getColor());
-        dialog.setQuickColor3(primaryColorNightView.getColor());
-        dialog.setQuickColor4(secondaryColorNightView.getColor());
-        dialog.show();
+            builder.show();
+        }
     }
 
     public void putInt(String key, int value) {
