@@ -60,12 +60,9 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             }
         }
     };
-    private final Runnable retry = new Runnable() {
-        @Override
-        public void run() {
-            AlarmPlay();
-            setTimerForFadeOut();
-        }
+    private final Runnable retry = () -> {
+        AlarmPlay();
+        setTimerForFadeOut();
     };
     private final Runnable fadeOut = new Runnable() {
         @Override
