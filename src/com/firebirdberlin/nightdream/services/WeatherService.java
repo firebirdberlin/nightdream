@@ -9,7 +9,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class WeatherService {
-    private static String TAG = "WeatherService";
+    private static final String TAG = "WeatherService";
 
     public static void start(Context context) {
         DownloadWeatherService.start(context);
@@ -24,10 +24,10 @@ public class WeatherService {
         Location gpsLocation = settings.getLocation();
         float gpsDistance =
                 (weatherLocation != null && gpsLocation != null)
-                ? weatherLocation.distanceTo(gpsLocation) : -1.f;
+                        ? weatherLocation.distanceTo(gpsLocation) : -1.f;
 
         Log.d(TAG, String.format("Weather: data age %d => %b", age, age > maxAge));
-        if (settings.weatherCityID.isEmpty() ) {
+        if (settings.weatherCityID.isEmpty()) {
             Log.d(TAG, "GPS distance " + gpsDistance + " m ");
         }
 
