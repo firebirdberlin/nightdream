@@ -11,14 +11,20 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.work.Configuration;
+
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
-
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AlarmWifiService extends JobService {
-    private static String TAG = "AlarmWifiService";
+    private static final String TAG = "AlarmWifiService";
+
+    public AlarmWifiService() {
+        Configuration.Builder builder = new Configuration.Builder();
+        builder.setJobSchedulerJobIdRange(0, 1000);
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context, SimpleTime nextAlarmTime) {
