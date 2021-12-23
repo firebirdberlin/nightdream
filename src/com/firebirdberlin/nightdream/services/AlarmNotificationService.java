@@ -15,6 +15,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.work.Configuration;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
@@ -27,6 +28,11 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AlarmNotificationService extends JobService {
     private static final String TAG = "AlarmNotifService";
+
+    public AlarmNotificationService() {
+        Configuration.Builder builder = new Configuration.Builder();
+        builder.setJobSchedulerJobIdRange(1000, 2000);
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context, SimpleTime nextAlarmTime) {
