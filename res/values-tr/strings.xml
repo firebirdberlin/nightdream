@@ -17,25 +17,36 @@ Please preserve the xml tags and the utf8 encoding.
 
 <resources>
     <string name="about">Hakkında</string>
+    <string name="action_change">Değiştir</string>
     <string name="action_skip">Geç</string>
     <string name="action_snooze">Ertele</string>
     <string name="action_stop">Dur</string>
     <string name="activateDoNotDisturb">Rahatsız Etme</string>
+    <string name="activateDoNotDisturbAllowPriority">Öncelik ver</string>
+    <string name="activateDoNotDisturbSummary">Uygulama açıkken, rahatsız etme modunu aç</string>
     <string name="add_new_alarm">Yeni Alarm ekle</string>
     <string name="add_custom_alarm_tone">Farklı bir alarm sesi belirle</string>
     <string name="add_custom_font">Yeni yazı tipi ekle.</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Alarm sesini arttırarak çal</string>
+    <string name="alarmFadeInDurationSeconds">Yavaş açılma süresi</string>
+    <string name="alarmStartDate">Sonraki alarm açık</string>
     <string name="alarmStartsFrom">Başlangıç</string>
+    <string name="alarmUpcoming">Yaklaşan alarm</string>
     <string name="alarmVolume">Alarm ses seviyesi</string>
+    <string name="alarmVolumeReductionPercent">..ile sesi azalt</string>
     <string name="allow_screen_off_summary">Gece boyunca ekran kapalı</string>
     <string name="allow_screen_off">Ekranı kapat</string>
     <string name="always_on">Herzaman Açık</string>
+    <string name="alwaysOnBatteryLevel">Pil seviyesi üstünde</string>
+    <string name="alwaysOnStartWithLockedUI">Kullanıcı arayüzünü kilitle</string>
+    <string name="alwaysOnStartWithLockedUIDesc">Uygulamayı başlatırken otomatik olarak kullanıcı arayüzünü kilitle. Açmak için kilit tuşuna uzun bas.</string>
     <string name="ambient_noise">Ortam sesi algılama</string>
     <string name="ambient_noise_summary">Ortam sesi, gece modunun devreye girmesini önlesin mi?</string>
     <string name="appearance">Görünüm</string>
     <string name="app_name">Gece Saati</string>
     <string name="auto_brightness">Otomatik parlaklık</string>
+    <string name="autostartForNotificationsSummary">Yeni bildirimler gösterilince uygulamayı aç.</string>
     <string name="autostartForNotificationsTitle">Bildirimler</string>
     <string name="autostart_message_disabled">Otomatik başlama seçeneğinin çalışması için ekran koruyucu (hayal) devre dışı bırakılmalıdır.</string>
     <string name="autostart_timerange_label_end">Bitiş zamanı</string>
@@ -189,8 +200,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Ekran kilit özelliği için yönetici izni gerekmektedir. Uygulamayı kaldırmadan önce bu özelliği devre dışı bırakmanız gerekmektedir.</string>
     <string name="useDeviceLockExplanation">Uygulama aktifken cihazı kilitle. Uygulamayı kaldırabilmek için bu izni kaldırmanız gerekllidir</string>
     <string name="useDeviceLock">Cihazı kilitle</string>
+    <string name="weather">Hava</string>
     <string name="weather_calculation_time">Hava durumu hesaplama zamanı</string>
     <string name="weather_city_id_title">Bölge ara</string>
     <string name="weather_info_title">Bilgi</string>
-    <string name="weather">Hava</string>
 </resources>

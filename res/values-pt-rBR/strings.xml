@@ -50,7 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_start">Horário do início</string>
     <string name="background">Pano de fundo</string>
     <string name="background_auto_accent_color">seleção automática de cor</string>
-    <string name="background_auto_accent_summary">Seleção automática da cor de destaque </string>
+    <string name="background_auto_accent_summary">Seleção automática da cor de destaque</string>
     <string name="background_black">Preto</string>
     <string name="background_gradient">Gradiente</string>
     <string name="background_image">Imagem</string>
@@ -201,7 +201,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferências</string>
     <string name="prev">Anterior</string>
     <string name="preview">Exemplo</string>
-    <string name="product_description_weather">O upgrade inclui
+<string name="product_description_weather">O upgrade inclui
 \n- linha de informação meteorológica mostrada abaixo do relógio
 \n- previsão meteorológica de 5 dias
 \n- mais estilos de relógio</string>

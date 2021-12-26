@@ -62,6 +62,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_movein_right">derecha</string>
     <string name="background_movein_bottom">abajo</string>
     <string name="background_movein_left">izquierda</string>
+    <string name="background_image_filter">Filtro de imagen</string>
+    <string name="background_image_filter_none">Ninguno</string>
+    <string name="background_image_filter_grey">Gris</string>
+    <string name="background_image_filter_sepia">Sepia</string>
+    <string name="background_image_filter_invert">Invertido</string>
+    <string name="background_image_filter_contrast">Contraste</string>
+    <string name="background_image_filter_sketch">Bosquejo</string>
+    <string name="background_image_filter_blur">Desdibujar</string>
     <string name="background_auto_accent_color">Selección automática de color</string>
     <string name="background_auto_accent_summary">Seleccionar automáticamente un color de resalte adecuado</string>
     <string name="background_black">Negro</string>
@@ -71,6 +79,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">Imagen</string>
     <string name="background_image_select">Seleccionar una imagen</string>
     <string name="background_slideshow">Presentación de diapositivas</string>
+    <string name="background_transparent">Transparente</string>
     <string name="background_image_duration">Cambiar la imagen cada</string>
     <string name="seconds_60">60 segundos</string>
     <string name="seconds_30">30 segundos</string>
@@ -93,6 +102,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Brillo</string>
     <string name="brightness_night_mode">Brillo en modo nocturno</string>
     <string name="brightness_offset">Margen de brillo</string>
+    <string name="bug">Informar de un error</string>
+    <string name="bug_summary">Por favor, háganos saber si algo salió mal.</string>
     <string name="buy">Comprar</string>
     <string name="buy_upgrade_summary">Actualiza a la versión pro ahora.</string>
     <string name="category_handle_power">... y cuando está conectado a</string>
@@ -102,17 +113,20 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Color destacado</string>
     <string name="choose_secondary_color">Color del texto</string>
     <string name="clear">borrar</string>
+    <string name="clock">Reloj</string>
     <string name="clock_hands">Agujas del reloj</string>
     <string name="clock_layout_analog">Analógico</string>
     <string name="clock_layout_calendar">Reloj digital con calendario</string>
     <string name="clock_layout_digital">Digital</string>
     <string name="clock_layout_digital2">reloj digital con grandes iconos meteorológicos</string>
+    <string name="clock_layout_digital3">Reloj digital con previsión del tiempo.</string>
     <string name="clock_layout_elegant_analog">Relog analógico elegante</string>
     <string name="clock_layout_digit_analog">Reloj analógico con números</string>
     <string name="clock_layout_digital_flip">Voltear los dígitos del reloj</string>
     <string name="clock_layout">Tipo de reloj</string>
     <string name="clock_layout_modern_analog">Reloj analógico moderno</string>
     <string name="clock_layout_mirror_text">Texto espejo</string>
+    <string name="clockBackgroundTransparency">Transparencia de fondo del reloj.</string>
     <string name="colors">Colores</string>
     <string name="confirm_reset_question">¿Desea restablecer todos los ajustes?</string>
     <string name="confirm_reset_question_layout">¿Realmente deseas restablecer los valores por defecto?</string>
@@ -161,12 +175,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_disconnection_at_time_range_end">al final del intervalo de tiempo de inicio automático</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">cargador inalámbrico</string>
+    <string name="help">Ayuda y retroalimentación.</string>
     <string name="hide_background_image_in_night_mode">Ocultar</string>
     <string name="hide_background_image_in_night_mode_summary">Ocultar la imagen de fondo en modo noche</string>
     <string name="hour">h</string>
     <string name="inner_circle_radius">Radio del círculo interno</string>
     <string name="length">Longitud</string>
     <string name="location_time">Hora local</string>
+    <string name="mailing_list">Lista de correo público.</string>
     <string name="manage_permissions">Gestionar permisos</string>
     <string name="maxBrightness">Brillo máximo de pantalla</string>
     <string name="maxBrightnessBattery">Brillo máximo de pantalla (modo batería)</string>
@@ -195,6 +211,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Mensajes de la aplicación</string>
     <string name="notification_channel_desc_radio">Mostrar notificaciones durante la reproducción de radio vía web</string>
     <string name="notification_channel_desc_services">Notificar servicios en ejecución</string>
+    <string name="notification_show_preview_summary">Mostrar una vista previa de las notificaciones entrantes.</string>
+    <string name="notification_show_preview_title">Vista previa de notificación.</string>
     <string name="notification_show_mediastyle_summary">Mostrar controles del reproductor multimedia</string>
     <string name="notification_show_mediastyle_title">Controles Multimedia</string>
     <string name="notification_lowest_importance">Prioridad es mayor o igual que</string>
@@ -232,7 +250,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferencias</string>
     <string name="prev">anterior</string>
     <string name="preview">Vista previa</string>
-    <string name="product_description_weather">Una actualización a versión pro incluye:
+<string name="product_description_weather">Una actualización a versión pro incluye:
 \n- Una linea de clima bajo el reloj
 \n- pronóstico de clima para 5 días
 \n- Modos de reloj adicionales</string>
@@ -271,7 +289,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Te recomiendo esta aplicación de un reloj de noche</string>
     <string name="recommend">Recomienda la aplicación</string>
     <string name="export_preferences">Exportar información de la app</string>
+    <string name="rate">Calificar esta aplicación.</string>
+    <string name="rate_summary">Nos gustaría saber si te gusta nuestra aplicación</string>
     <string name="remaining">Restante</string>
+    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_now">La alarma sonará pronto</string>
+    <string name="remaining_alarm_time_start">La alarma sonará en</string>
     <string name="repeat">Repetir</string>
     <string name="reset_to_defaults">Reestablecer valores predeterminados</string>
     <string name="screenProtection">Protector de pantalla</string>
@@ -299,6 +322,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_apparent_temperature">Mostrar temperatura aparente</string>
     <string name="show_date">Mostrar fecha</string>
     <string name="show_divider">Mostrar línea divisoria</string>
+    <string name="showPollen">Encuesta de índice de riesgo</string>
+    <string name="showPollenSummary">Sólo disponible para ubicaciones alemanas</string>
     <string name="show_temperature">Mostrar temperatura</string>
     <string name="show_second_hand">mostrar segundero</string>
     <string name="show_seconds">Mostrar segundos</string>
@@ -311,6 +336,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="sleep_time_dialog_title">Tiempo de desconexión</string>
     <string name="snoozeTime">Tiempo de aplazamiento</string>
     <string name="snoozeAfter">Autoaplazar despues de</string>
+    <string name="snoozeCycles">Ciclos de repetición automática antes de la parada automática</string>
     <string name="speakTime">Son las</string>
     <string name="speakTimeSummary">Decir la hora actual en una pulsación larga de la pantalla</string>
     <string name="speakTimeTitle">Decir la hora actual</string>
@@ -320,6 +346,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">dentro del rango horario</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Entrar en modo de espera mientras se descarga</string>
     <string name="style">Estilo</string>
+    <string name="suggestions">Sugerencias</string>
+    <string name="suggestions_summary">Háganos saber si tiene alguna sugerencia para las próximas versiones</string>
     <string name="temperatureUnit">Unidad de temperatura</string>
     <string name="tick_style_hours">Estilo marcadores de hora</string>
     <string name="tick_style_minutes">Estilo marcadores de minuto</string>
