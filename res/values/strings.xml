@@ -76,6 +76,8 @@ OR
     <string name="background_exif">Show EXIF information</string>
     <string name="background_exif_summary">Show EXIF information for the current background image</string>
     <string name="background_gradient">Gradient</string>
+    <string name="background_gradient_start_color">Start color</string>
+    <string name="background_gradient_end_color">End color</string>
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
     <string name="background_slideshow">Slide show</string>
@@ -117,8 +119,6 @@ OR
     <string name="category_handle_power_autostart_time">Start within the time range</string>
     <string name="category_night_mode_display_management">Display management</string>
     <string name="choose_alarm_sound">Alarm tone</string>
-    <string name="choose_gradient_start">Start color</string>
-    <string name="choose_gradient_end">End color</string>
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
     <string name="clear">clear</string>

@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,8 +44,6 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
-import com.firebirdberlin.openweathermapapi.CityIDPreference;
-import com.firebirdberlin.openweathermapapi.CityIdDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.rarepebble.colorpicker.ColorPreference;
 
@@ -56,21 +55,20 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
     private final Handler handler = new Handler();
-
-    private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(), result -> {
-                if(result) {
-                    Log.e(TAG, "readeExternalStoragePermission: PERMISSION GRANTED");
-                    selectBackgroundImage();
-                } else {
-                    Log.e(TAG, "readeExternalStoragePermission: PERMISSION DENIED");
-                    Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
+    Snackbar snackbar;
+    String rootKey;
+    DaydreamSettingsObserver daydreamSettingsObserver = null;
+    Preference.OnPreferenceChangeListener recordAudioPrefChangeListener =
+            (preference, new_value) -> {
+                if (Boolean.parseBoolean(new_value.toString())) {
+                    this.recordAudioPermission.launch(Manifest.permission.RECORD_AUDIO);
                 }
-            });
-
+                return true;
+            };
+    private Settings settings = null;
     private final ActivityResultLauncher<String> recordAudioPermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), result -> {
-                if(result) {
+                if (result) {
                     Log.e(TAG, "recordAudioPermission: PERMISSION GRANTED");
                 } else {
                     Log.e(TAG, "recordAudioPermission: PERMISSION DENIED");
@@ -89,18 +87,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
                 }
             });
-    Snackbar snackbar;
-    String rootKey;
-    DaydreamSettingsObserver daydreamSettingsObserver = null;
-    Preference.OnPreferenceChangeListener recordAudioPrefChangeListener =
-            (preference, new_value) -> {
-                if (Boolean.parseBoolean(new_value.toString()))
-                {
-                    this.recordAudioPermission.launch(Manifest.permission.RECORD_AUDIO);
-                }
-                return true;
-            };
-    private Settings settings = null;
     private Context mContext = null;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
             preference -> {
@@ -210,6 +196,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     };
     private ActivityResultLauncher<Intent> activityResultLauncherLoadImage = null;
+    private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), result -> {
+                if (result) {
+                    Log.e(TAG, "readeExternalStoragePermission: PERMISSION GRANTED");
+                    selectBackgroundImage();
+                } else {
+                    Log.e(TAG, "readeExternalStoragePermission: PERMISSION DENIED");
+                    Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
+                }
+            });
     private ActivityResultLauncher<Intent> activityResultLauncherLoadDirectory = null;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -461,7 +457,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         Resources res = getResources();
         boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
-        if (! enabled) {
+        if (!enabled) {
             removePreference("startNotificationService");
             removePreference("autostartForNotifications");
         }
@@ -563,7 +559,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                 db.dropData();
                                 db.close();
                                 Settings.storeWeatherDataPurchase(
-                                        getContext(),
+                                        mContext,
                                         isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                                         isPurchased(BillingHelperActivity.ITEM_DONATION)
                                 );
@@ -629,7 +625,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void setupNotificationCategory() {
         Resources res = getResources();
         boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
-        if (! enabled) {
+        if (!enabled) {
             hidePreference("notifications");
         } else {
             showPreference("notifications");
@@ -654,7 +650,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         return;
                     }
                     if (Build.VERSION.SDK_INT < 19) {
-
                         Uri selectedImage = data.getData();
                         String picturePath = getRealPathFromURI(selectedImage);
                         if (picturePath != null) {
@@ -664,7 +659,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
                     } else {
                         Uri uri = data.getData();
-                        settings.setBackgroundImageURI(uri.toString());
+                        if (uri != null) {
+                            settings.setBackgroundImageURI(uri.toString());
+                        }
                     }
                 }
         );
@@ -681,8 +678,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     }
                     Uri uri = data.getData();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        getContext().getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        settings.setBackgroundImageDir(uri.getPath());
+                        if (uri != null) {
+                            mContext.getContentResolver().takePersistableUriPermission(
+                                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            );
+                            if (uri.getPath() != null) {
+                                settings.setBackgroundImageDir(uri.getPath());
+                            }
+                        }
                     }
                 }
         );
@@ -1095,13 +1098,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     @Override
     public void onDisplayPreferenceDialog(Preference preference) {
         if (preference instanceof ColorPreference) {
-            ((ColorPreference) preference).showDialog(this, 0);
-        } else
-        if (preference instanceof CityIDPreference) {
-            DialogFragment dialogFragment = CityIdDialogFragment.newInstance(preference.getKey());
-            dialogFragment.setTargetFragment(this, 0);
-            dialogFragment.show(getFragmentManager(), null);
-        } else super.onDisplayPreferenceDialog(preference);
+            ColorPreference cp = (ColorPreference) preference;
+            cp.showDialog(this, 0);
+        }
+        else super.onDisplayPreferenceDialog(preference);
     }
 
     private void setupDaydreamPreferences() {

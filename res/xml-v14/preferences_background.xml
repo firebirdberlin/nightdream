@@ -23,23 +23,25 @@
         app:title="@string/purchaseWeatherData" />
 
     <com.rarepebble.colorpicker.ColorPreference
-        app:iconSpaceReserved="false"
+        android:defaultValue="#000000"
         android:descendantFocusability="afterDescendants"
+        app:colorpicker_showHex="true"
+        app:iconSpaceReserved="false"
+        app:isPreferenceVisible="false"
         app:key="gradientStartColor"
         app:selectable="true"
-        app:title="@string/choose_gradient_start"
-        app:isPreferenceVisible="false"
-        android:defaultValue="#000000"
+        app:title="@string/background_gradient_start_color"
         />
 
     <com.rarepebble.colorpicker.ColorPreference
-        app:iconSpaceReserved="false"
+        android:defaultValue="#303030"
         android:descendantFocusability="afterDescendants"
+        app:colorpicker_showHex="true"
+        app:iconSpaceReserved="false"
+        app:isPreferenceVisible="false"
         app:key="gradientEndColor"
         app:selectable="true"
-        app:title="@string/choose_gradient_end"
-        app:isPreferenceVisible="false"
-        android:defaultValue="#303030"
+        app:title="@string/background_gradient_end_color"
         />
 
     <Preference
