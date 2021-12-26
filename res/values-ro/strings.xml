@@ -127,8 +127,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_regular">Roboto normal</string>
     <string name="typeface_roboto_thin">Roboto foarte subțire</string>
     <string name="typeface">Fonturi</string>
+    <string name="weather">Vremea</string>
     <string name="weather_calculation_time">Timpul de calcul al vremii</string>
     <string name="weather_city_id_title">Cauta Locatie</string>
     <string name="weather_info_title">Informatii</string>
-    <string name="weather">Vremea</string>
 </resources>

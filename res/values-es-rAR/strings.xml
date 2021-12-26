@@ -29,9 +29,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_font">Añadir nueva fuente</string>
     <string name="alarm">Alarma</string>
     <string name="alarmFadeIn">Volumen progresivo</string>
-    <string name="alarmUpcoming">Próxima alarma</string>
     <string name="alarmStartDate">Siguiente alarma en</string>
     <string name="alarmStartsFrom">Inicio alarma</string>
+    <string name="alarmUpcoming">Próxima alarma</string>
     <string name="alarmVolume">Volumen de la alarma</string>
     <string name="allow_screen_off_summary">Apagar la pantalla durante la noche.</string>
     <string name="allow_screen_off">Apagar pantalla</string>
@@ -203,10 +203,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Preferencias</string>
     <string name="prev">anterior</string>
     <string name="preview">Vista previa</string>
-<string name="product_description_weather">Una actualización a versión pro incluye:
+    <string name="product_description_weather">Una actualización a versión pro incluye:
 \n- Una linea de clima bajo el reloj
 \n- pronóstico de clima para 5 días
-\n- Modos de reloj adicionales </string>
+\n- Modos de reloj adicionales</string>
     <string name="product_name_actions">Paquete "siempre encendido"</string>
     <string name="product_name_donation">Donación</string>
     <string name="product_name_pro">Versión completa</string>
@@ -263,9 +263,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Mostrar una advertencia al inicio cuando está en batería.</string>
     <string name="showBatteryWarningTitle">Advertencia de la batería</string>
     <string name="showBatteryWarningMessage">Atención: ¡Ninguna fuente de alimentación está conectada!</string>
+    <string name="show_apparent_temperature">Mostrar temperatura aparente</string>
     <string name="show_date">Mostrar fecha</string>
     <string name="show_divider">Mostrar línea divisoria</string>
-    <string name="show_apparent_temperature">Mostrar temperatura aparente</string>
     <string name="show_temperature">Mostrar temperatura</string>
     <string name="show_weather">Mostrar clima local</string>
     <string name="show_wind_speed">Velocidad del viento</string>

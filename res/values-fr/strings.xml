@@ -102,6 +102,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Luminosité</string>
     <string name="brightness_night_mode">Luminosité en mode nuit</string>
     <string name="brightness_offset">Compensation de la luminosité</string>
+    <string name="bug">Rapporter un bug</string>
+    <string name="bug_summary">Nous monter un problème</string>
     <string name="buy">Acheter</string>
     <string name="buy_upgrade_summary">Passez à la version pro maintenant</string>
     <string name="category_handle_power">…et lorsque connecté à</string>
@@ -173,12 +175,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_disconnection_at_time_range_end">à la fin de la période de démarrage automatique</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">Chargeur sans fil</string>
+    <string name="help">Aide et rapport</string>
     <string name="hide_background_image_in_night_mode">Masquer</string>
     <string name="hide_background_image_in_night_mode_summary">Masquer l\'image d\'arrière-plan en mode nuit.</string>
     <string name="hour"> h</string>
     <string name="inner_circle_radius">Rayon cercle intérieur</string>
     <string name="length">Hauteur</string>
     <string name="location_time">Localisation déterminée à:</string>
+    <string name="mailing_list">Liste publique de mailing</string>
     <string name="manage_permissions">Gestion des permissions</string>
     <string name="maxBrightness">Luminosité maximale</string>
     <string name="maxBrightnessBattery">Luminosité maximale sur batterie</string>
@@ -207,6 +211,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_desc_devmsg">Messages à propos de l\'app</string>
     <string name="notification_channel_desc_radio">Notifications s\'affichant lorsqu\'une radio web joue</string>
     <string name="notification_channel_desc_services">Notification indiquant un service est actif</string>
+    <string name="notification_show_preview_summary">montrer un spperçu des notifications en. cours</string>
+    <string name="notification_show_preview_title">Apperçu des notifications</string>
     <string name="notification_show_mediastyle_summary">Afficher les commandes du lecteur multimédia</string>
     <string name="notification_show_mediastyle_title">Commandes multimédias</string>
     <string name="notification_lowest_importance">L\'importance est supérieure ou égale à</string>
@@ -284,7 +290,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Je voudrais vous recommander cette application d\'horloge nocturne.</string>
     <string name="recommend">Recommander l\'application</string>
     <string name="export_preferences">Exporter les informations de l\'application</string>
+    <string name="rate">Noter cette application</string>
+    <string name="rate_summary">Nous souhaiterions savoir si vous avez apprécié cette application</string>
     <string name="remaining">rest.</string>
+    <string name="remaining_alarm_time_end">Alarme temps restant</string>
     <string name="remaining_alarm_time_now">L\'alarme sonnera bientôt</string>
     <string name="remaining_alarm_time_start">L\'alarme sonnera dans</string>
     <string name="repeat">Répéter</string>
@@ -338,6 +347,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">Dans cette plage horaire</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Mode veille durant la décharge</string>
     <string name="style">Style</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="suggestions_summary">Faites nous connaître vos suggestions pour les futures versions</string>
     <string name="temperatureUnit">Unité - Température</string>
     <string name="tick_style_hours">Style marqueur heure</string>
     <string name="tick_style_minutes">Style marqueur minute</string>
