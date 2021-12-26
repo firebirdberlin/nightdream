@@ -121,11 +121,6 @@ public class NightDreamUI {
     private final mAudioManager AudioManage;
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = new UserInteractionObserver() {
-        public void notifyAction() {
-            resetAlarmClockHideDelay();
-        }
-    };
     private int screen_alpha_animation_duration = 3000;
     private int screen_transition_animation_duration = 10000;
     private int mode = 2;
@@ -212,6 +207,7 @@ public class NightDreamUI {
             }
         }
     };
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = () -> resetAlarmClockHideDelay();
     private float clockLayout_xDelta;
     private float clockLayout_yDelta;
     private int vibrantColor = 0;
@@ -649,7 +645,11 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_GRADIENT: {
                     Log.d(TAG, "BACKGROUND_GRADIENT");
 
-                    int[] colors = {settings.gradientStartColor,settings.gradientEndColor};
+                    int[] colors = {
+                            settings.gradientStartColor,
+                            settings.gradientEndColor,
+                            settings.gradientStartColor,
+                    };
                     bgshape = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors);
                     backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
                     break;

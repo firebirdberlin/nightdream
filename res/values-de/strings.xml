@@ -82,6 +82,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_exif">EXIF-Informationen anzeigen</string>
     <string name="background_exif_summary">Zeigt EXIF-Informationen des aktuellen Hintergrundbildes an.</string>
     <string name="background_gradient">Gradient</string>
+    <string name="background_gradient_start_color">Farbe 1</string>
+    <string name="background_gradient_end_color">Farbe 2</string>
     <string name="background_image">Bild</string>
     <string name="background_image_select">Bild auswählen</string>
     <string name="background_slideshow">Diashow</string>
@@ -117,8 +119,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
     <string name="category_night_mode_display_management">Display Management</string>
     <string name="choose_alarm_sound">Weckton</string>
-    <string name="choose_gradient_start">Start Farbe</string>
-    <string name="choose_gradient_end">Schluss Farbe</string>
     <string name="choose_primary_color">Akzentfarbe</string>
     <string name="choose_secondary_color">Textfarbe</string>
     <string name="clear">löschen</string>

@@ -106,8 +106,8 @@ public class ColorSelectionPreference extends Preference
             ColorPrefWidgetView button = (ColorPrefWidgetView) v;
 
             final ColorPickerView picker = new ColorPickerView(getContext());
-            picker.showHex(false);
             picker.showAlpha(false);
+            picker.showHex(true);
             picker.showPreview(true);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
