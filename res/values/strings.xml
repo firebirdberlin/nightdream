@@ -76,6 +76,8 @@ OR
     <string name="background_exif">Show EXIF information</string>
     <string name="background_exif_summary">Show EXIF information for the current background image</string>
     <string name="background_gradient">Gradient</string>
+    <string name="background_gradient_start_color">Start color</string>
+    <string name="background_gradient_end_color">End color</string>
     <string name="background_image">Image</string>
     <string name="background_image_select">Select an image</string>
     <string name="background_slideshow">Slide show</string>
