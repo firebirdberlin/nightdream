@@ -6,9 +6,11 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
@@ -61,7 +63,7 @@ public class ScreenWatcherService extends Service {
 
     public static void updateNotification(Context context, WeatherEntry weatherEntry, int temperatureUnit) {
         if (ScreenWatcherService.isRunning) {
-            if (weatherEntry != null ) {
+            if (weatherEntry != null) {
                 String title = String.format(
                         "%s | %s",
                         weatherEntry.formatTemperatureText(temperatureUnit),
@@ -159,10 +161,15 @@ public class ScreenWatcherService extends Service {
     }
 
     public static void stop(Context context) {
-        if ( !ScreenWatcherService.isRunning) {
+        if (!ScreenWatcherService.isRunning) {
             return;
         }
         Intent i = new Intent(context, ScreenWatcherService.class);
-        context.stopService(i);
+        try {
+            context.startService(i);
+        } catch (IllegalStateException ex) {
+            // ignored -> service not running, no not need to stop
+            // https://developer.android.com/about/versions/oreo/android-8.0-changes#back-all
+        }
     }
 }

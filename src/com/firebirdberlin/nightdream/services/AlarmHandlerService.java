@@ -69,7 +69,12 @@ public class AlarmHandlerService extends IntentService {
     public static void stop(Context context) {
         Intent i = new Intent(context, AlarmHandlerService.class);
         i.setAction(ACTION_STOP_ALARM);
-        context.startService(i);
+        try {
+            context.startService(i);
+        } catch (IllegalStateException ex) {
+            // ignored -> service not running, no not need to stop
+            // https://developer.android.com/about/versions/oreo/android-8.0-changes#back-all
+        }
     }
 
     public static void snooze(final Context context) {

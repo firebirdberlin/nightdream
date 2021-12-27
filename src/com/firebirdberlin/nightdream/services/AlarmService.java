@@ -97,7 +97,12 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     public static void stop(Context context) {
         if (!AlarmService.isRunning) return;
         Intent i = getStopIntent(context);
-        context.startService(i);
+        try {
+            context.startService(i);
+        } catch (IllegalStateException ex) {
+            // ignored -> service not running, no not need to stop
+            // https://developer.android.com/about/versions/oreo/android-8.0-changes#back-all
+        }
     }
 
     private static Intent getStopIntent(Context context) {
