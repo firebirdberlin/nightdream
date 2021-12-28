@@ -84,7 +84,7 @@ public class Settings {
     public boolean handle_power_ac = false;
     public boolean handle_power_usb = false;
     public boolean handle_power_wireless = false;
-    public boolean hideBackgroundImage = true;
+    public boolean hideBackgroundImage = false;
     public boolean muteRinger = false;
     public boolean persistentBatteryValueWhileCharging = true;
     public ScreenProtectionModes screenProtection = ScreenProtectionModes.MOVE;
@@ -429,7 +429,7 @@ public class Settings {
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_disconnection_at_time_range_end =
                 settings.getBoolean("handle_power_disconnection_at_time_range_end", true);
-        hideBackgroundImage = settings.getBoolean("hideBackgroundImage", true);
+        hideBackgroundImage = settings.getBoolean("hideBackgroundImage", false);
         scheduledAutoStartEnabled = settings.getBoolean("scheduledAutoStartEnabled", false);
         scheduledAutoStartChargerRequired = settings.getBoolean("scheduledAutoStartChargerRequired", true);
         bgpath = settings.getString("BackgroundImage", "");
