@@ -27,9 +27,7 @@ public class AlarmHandlerService extends IntentService {
     private static String ACTION_SKIP_ALARM = "com.firebirdberlin.nightdream.ACTION_SKIP_ALARM";
     private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
     private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
-    private static String ACTION_AUTOSNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_AUTOSNOOZE_ALARM";
     private Context context = null;
-    private Settings settings;
 
     public AlarmHandlerService() {
         super("AlarmHandlerService");
@@ -67,21 +65,21 @@ public class AlarmHandlerService extends IntentService {
     }
 
     public static void stop(Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_STOP_ALARM);
-        context.startService(i);
+        AlarmHandlerService.stopAlarm(context);
     }
 
     public static void snooze(final Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_SNOOZE_ALARM);
-        context.startService(i);
+        AlarmHandlerService.snoozeAlarm(context);
     }
 
     public static void autoSnooze(final Context context) {
-        Intent i = new Intent(context, AlarmHandlerService.class);
-        i.setAction(ACTION_AUTOSNOOZE_ALARM);
-        context.startService(i);
+        SimpleTime currentAlarm = getCurrentlyActiveAlarm();
+        if (currentAlarm != null
+                && currentAlarm.numAutoSnoozeCycles == Settings.getAutoSnoozeCycles(context)) {
+            stopAlarm(context);
+        } else {
+            snoozeAlarm(context, true);
+        }
     }
 
     public static void cancel(Context context) {
@@ -117,38 +115,11 @@ public class AlarmHandlerService extends IntentService {
         return (event != null) ? event.entry : null;
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        SimpleTime currentAlarm = getCurrentlyActiveAlarm();
-        context = this;
-        settings = new Settings(this);
-        Log.d(TAG, TAG + " started");
-        String action = intent.getAction();
-
-        if (ACTION_STOP_ALARM.equals(action)) {
-            stopAlarm();
-        } else if (ACTION_SKIP_ALARM.equals(action)) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                SimpleTime time = new SimpleTime(bundle);
-                SqliteIntentService.skipAlarm(context, time);
-            }
-        } else if (ACTION_SNOOZE_ALARM.equals(action)) {
-            snoozeAlarm();
-        } else if (ACTION_AUTOSNOOZE_ALARM.equals(action)) {
-            if (currentAlarm != null && currentAlarm.numAutoSnoozeCycles == settings.autoSnoozeCycles) {
-                stopAlarm();
-            } else {
-                snoozeAlarm(true);
-            }
-        }
+    private static void stopAlarm(Context context) {
+        stopAlarm(context, true);
     }
 
-    private void stopAlarm() {
-        stopAlarm(true);
-    }
-
-    private void stopAlarm(boolean reschedule) {
+    private static void stopAlarm(Context context, boolean reschedule) {
         boolean isRunning = alarmIsRunning();
         if (AlarmService.isRunning) {
             AlarmService.stop(context);
@@ -158,10 +129,11 @@ public class AlarmHandlerService extends IntentService {
             RadioStreamService.stop(context);
         }
 
-        AlarmHandlerService.cancel(this);
+        AlarmHandlerService.cancel(context);
 
         if (isRunning) {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
 
             Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
@@ -172,31 +144,52 @@ public class AlarmHandlerService extends IntentService {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmNotificationService.cancelNotification(this);
+            AlarmNotificationService.cancelNotification(context);
         }
 
         if (reschedule) {
-            SqliteIntentService.scheduleAlarm(this);
+            SqliteIntentService.scheduleAlarm(context);
         }
     }
 
-    private void snoozeAlarm() {
-        snoozeAlarm(false);
+    public static void snoozeAlarm(Context context) {
+        snoozeAlarm(context, false);
     }
 
-    private void snoozeAlarm(boolean isAutoSnooze) {
+    public static void snoozeAlarm(Context context, boolean isAutoSnooze) {
         SimpleTime currentAlarm = getCurrentlyActiveAlarm();
-        stopAlarm(false);
+        stopAlarm(context, false);
 
         Calendar now = Calendar.getInstance();
-        SimpleTime time = new SimpleTime(now.getTimeInMillis() + settings.snoozeTimeInMillis);
+        SimpleTime time = new SimpleTime(
+                now.getTimeInMillis() + Settings.getSnoozeTimeMillis(context)
+        );
         time.isActive = true;
         time.soundUri = (currentAlarm != null) ? currentAlarm.soundUri : null;
         time.radioStationIndex = (currentAlarm != null) ? currentAlarm.radioStationIndex : -1;
-        time.vibrate = (currentAlarm != null) ? currentAlarm.vibrate : false;
+        time.vibrate = currentAlarm != null && currentAlarm.vibrate;
         time.numAutoSnoozeCycles = (currentAlarm != null && isAutoSnooze)
                 ? currentAlarm.numAutoSnoozeCycles + 1
                 : 0;
         SqliteIntentService.snooze(context, time);
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        context = this;
+        Log.d(TAG, TAG + " started");
+        String action = intent.getAction();
+
+        if (ACTION_STOP_ALARM.equals(action)) {
+            stopAlarm(context);
+        } else if (ACTION_SKIP_ALARM.equals(action)) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                SimpleTime time = new SimpleTime(bundle);
+                SqliteIntentService.skipAlarm(context, time);
+            }
+        } else if (ACTION_SNOOZE_ALARM.equals(action)) {
+            snoozeAlarm(context);
+        }
     }
 }
