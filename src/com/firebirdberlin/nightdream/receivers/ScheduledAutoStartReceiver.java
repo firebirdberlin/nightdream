@@ -76,8 +76,8 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         Log.d(TAG, "schedule()");
         Intent intent = new Intent(ACTION_START_SCHEDULED);
         intent.setClass(context, ScheduledAutoStartReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, PENDING_INTENT_START_APP, intent, 0
+        PendingIntent pendingIntent = Utility.getImmutableBroadcast(
+                context, PENDING_INTENT_START_APP, intent
         );
 
         Settings settings = new Settings(context);

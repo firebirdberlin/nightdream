@@ -939,11 +939,10 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private PendingIntent getShutdownIntent() {
         Intent alarmIntent = new Intent(Config.ACTION_SHUT_DOWN);
-        return PendingIntent.getBroadcast(
+        return Utility.getImmutableBroadcast(
                 this,
                 PENDING_INTENT_STOP_APP,
-                alarmIntent,
-                0
+                alarmIntent
         );
     }
 

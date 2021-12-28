@@ -769,13 +769,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Intent notificationIntent = new Intent(this, NightDreamActivity.class);
         notificationIntent.setAction(Config.ACTION_SHOW_RADIO_PANEL);
 
-        PendingIntent contentIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            //https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability
-            contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        }
+        PendingIntent contentIntent = Utility.getImmutableActivity(this, 0, notificationIntent);
 
         if (mediaSession == null) {
             enableMediaSession();
@@ -877,7 +871,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Intent intent = new Intent(this, RadioStreamService.class);
         intent.setAction(intentAction);
 
-        PendingIntent pi = PendingIntent.getService(
+        PendingIntent pi = Utility.getImmutableService(
                 this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
         );
 

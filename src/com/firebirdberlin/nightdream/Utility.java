@@ -11,6 +11,7 @@ import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -96,6 +97,62 @@ public class Utility {
         this.mContext = context;
         getSystemBrightnessMode();
     }
+
+
+    static public PendingIntent getImmutableBroadcast(Context context, int requestCode, Intent intent, int flags) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                flags
+        );
+    }
+
+    static public PendingIntent getImmutableService(Context context, int requestCode, Intent intent, int flags) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getService(
+                context,
+                requestCode,
+                intent,
+                flags
+        );
+    }
+
+    static public PendingIntent getImmutableBroadcast(Context context, int requestCode, Intent intent) {
+        //https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability
+        int flag = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flag = PendingIntent.FLAG_IMMUTABLE;
+        }
+
+        return PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                flag
+        );
+    }
+
+    static public PendingIntent getImmutableActivity(Context context, int requestCode, Intent intent) {
+        //https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability
+        int flag = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flag = PendingIntent.FLAG_IMMUTABLE;
+        }
+
+        return PendingIntent.getActivity(
+                context,
+                requestCode,
+                intent,
+                flag
+        );
+    }
+
 
     static public boolean is24HourFormat(Context context) {
         return android.text.format.DateFormat.is24HourFormat(context);

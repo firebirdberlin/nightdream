@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.TimeRange;
 
 import java.util.Calendar;
@@ -55,12 +56,12 @@ public class NightModeReceiver extends BroadcastReceiver {
 
     private static PendingIntent getSwitchNightModeIntent(Context context) {
         Intent intent = new Intent(Config.ACTION_SWITCH_NIGHT_MODE);
-        return PendingIntent.getBroadcast(context, PENDING_INTENT_SWITCH_MODES, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return Utility.getImmutableBroadcast(context, PENDING_INTENT_SWITCH_MODES, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private static PendingIntent getSwitchNightModeIntentForCancel(Context context) {
         Intent intent = new Intent(Config.ACTION_SWITCH_NIGHT_MODE);
-        return PendingIntent.getBroadcast(context, PENDING_INTENT_SWITCH_MODES, intent, 0);
+        return Utility.getImmutableBroadcast(context, PENDING_INTENT_SWITCH_MODES, intent);
     }
 
     @SuppressWarnings("deprecation")

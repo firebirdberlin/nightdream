@@ -287,7 +287,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
             // click activates app
             Intent intent = new Intent(context, NightDreamActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            PendingIntent pendingIntent = Utility.getImmutableActivity(context, 0, intent);
             updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
 
             System.gc();
