@@ -1583,7 +1583,7 @@ public class NightDreamUI {
         final Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
-            PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+            PendingIntent pIntent = Utility.getImmutableActivity(mContext, 0, intent);
 
             // build notification
             NotificationCompat.Builder note =
