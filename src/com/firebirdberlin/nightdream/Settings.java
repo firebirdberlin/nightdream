@@ -239,6 +239,16 @@ public class Settings {
         return cities;
     }
 
+    public static long getSnoozeTimeMillis(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        return 60000L * preferences.getInt("snoozeTimeInMinutes", 5);
+    }
+
+    public static int getAutoSnoozeCycles(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
+        return preferences.getInt("autoSnoozeCycles", 20);
+    }
+
     public static void setDefaultAlarmTone(Context context, String uriString) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         SharedPreferences.Editor edit = preferences.edit();
