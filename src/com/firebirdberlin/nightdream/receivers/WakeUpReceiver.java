@@ -87,12 +87,12 @@ public class WakeUpReceiver extends BroadcastReceiver {
         // PendingIntent.FLAG_CANCEL_CURRENT seems to confuse AlarmManager.cancel() on certain
         // Android devices, e.g. HTC One m7, i.e. AlarmManager.getNextAlarmClock() still returns
         // already cancelled alarm times afterwards.
-        return PendingIntent.getBroadcast(context, 0, intent, flags);
+        return Utility.getImmutableBroadcast(context, 0, intent, flags);
     }
 
     private static PendingIntent getShowIntent(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
-        return PendingIntent.getActivity(context, 0, intent, 0);
+        return Utility.getImmutableBroadcast(context, 0, intent);
     }
 
     private static void setAlarm(Context context, SimpleTime nextAlarmEntry) {
@@ -155,7 +155,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             new NotificationCompat.WearableExtender().setHintHideIcon(true);
 
         Intent stopIntent = AlarmHandlerService.getStopIntent(context);
-        PendingIntent pStopIntent = PendingIntent.getService(
+        PendingIntent pStopIntent = Utility.getImmutableService(
                 context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
         NotificationCompat.Action stopAction = new NotificationCompat.Action.Builder(
@@ -163,7 +163,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         ).build();
 
         Intent snoozeIntent = AlarmHandlerService.getSnoozeIntent(context);
-        PendingIntent pSnoozeIntent = PendingIntent.getService(
+        PendingIntent pSnoozeIntent = Utility.getImmutableService(
                 context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
         NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(

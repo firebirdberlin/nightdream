@@ -99,8 +99,8 @@ public class ScreenWatcherService extends Service {
                                                   long when, int iconID) {
         Intent stopIntent = new Intent(context, StopServiceReceiver.class);
         stopIntent.setAction("ACTION_STOP_SERVICE");
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0, stopIntent, 0);
-        PendingIntent.getBroadcast(context, 0, stopIntent, 0);
+
+        PendingIntent stopPendingIntent = Utility.getImmutableBroadcast(context, 0, stopIntent);
 
         NotificationCompat.Builder noteBuilder =
                 Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_SERVICES)

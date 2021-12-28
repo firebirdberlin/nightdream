@@ -134,8 +134,9 @@ public class AlarmNotificationService extends JobService {
 
         String textActionSkip = context.getString(R.string.action_skip);
         Intent skipIntent = AlarmHandlerService.getSkipIntent(context, nextAlarmTime);
-        PendingIntent pSkipIntent = PendingIntent.getService(
-                context, 0, skipIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pSkipIntent = Utility.getImmutableService(
+                context, 0, skipIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
         NotificationCompat.Action skipAction = new NotificationCompat.Action.Builder(
                 0, textActionSkip, pSkipIntent
         ).build();

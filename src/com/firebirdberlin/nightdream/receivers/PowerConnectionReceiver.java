@@ -80,8 +80,9 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     static public void schedule(Context context) {
         Intent alarmIntent = new Intent(context, PowerConnectionReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, PENDING_INTENT_START_APP, alarmIntent, 0);
+        PendingIntent pendingIntent = Utility.getImmutableBroadcast(
+                context, PENDING_INTENT_START_APP, alarmIntent
+        );
 
         Settings settings = new Settings(context);
         if (settings.scheduledAutoStartEnabled) {
