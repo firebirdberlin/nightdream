@@ -142,7 +142,7 @@
 
     <CheckBoxPreference
         app:iconSpaceReserved="false"
-        app:defaultValue="true"
+        app:defaultValue="false"
         app:key="hideBackgroundImage"
         app:summary="@string/hide_background_image_in_night_mode_summary"
         app:title="@string/hide_background_image_in_night_mode"
