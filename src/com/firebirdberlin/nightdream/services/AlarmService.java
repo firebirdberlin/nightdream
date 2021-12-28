@@ -29,11 +29,12 @@ import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 
 import java.io.IOException;
 
-public class AlarmService extends Service implements MediaPlayer.OnErrorListener,
+public class AlarmService extends Service
+        implements MediaPlayer.OnErrorListener,
         MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnCompletionListener {
-    static public boolean isRunning = false;
     private static final String TAG = "NightDream.AlarmService";
+    static public boolean isRunning = false;
     final private Handler handler = new Handler();
     PowerManager.WakeLock wakelock;
     VibrationHandler vibrator = null;
@@ -44,9 +45,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     private MediaPlayer mMediaPlayer = null;
     private Settings settings = null;
     private float currentVolume = 0.f;
-    private int currentAlarmVolume = -1;
-    private Context context;
-    private SimpleTime alarmTime = null;
     private final Runnable fadeIn = new Runnable() {
         @Override
         public void run() {
@@ -60,13 +58,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             }
         }
     };
-    private final Runnable retry = new Runnable() {
-        @Override
-        public void run() {
-            AlarmPlay();
-            setTimerForFadeOut();
-        }
-    };
+    private int currentAlarmVolume = -1;
+    private Context context;
     private final Runnable fadeOut = new Runnable() {
         @Override
         public void run() {
@@ -82,6 +75,11 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
             }
         }
     };
+    private SimpleTime alarmTime = null;
+    private final Runnable retry = () -> {
+        AlarmPlay();
+        setTimerForFadeOut();
+    };
 
     public static void startAlarm(Context context, SimpleTime alarmTime) {
         if (AlarmService.isRunning) return;
@@ -96,15 +94,8 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
     public static void stop(Context context) {
         if (!AlarmService.isRunning) return;
-        Intent i = getStopIntent(context);
-        context.startService(i);
-    }
-
-    private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, AlarmService.class);
-        i.putExtra("stop alarm", true);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        return i;
+        context.stopService(i);
     }
 
     @SuppressLint("InvalidWakeLockTag")
@@ -128,7 +119,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy() called.");
-
+        stopAlarm();
         handler.removeCallbacks(fadeIn);
         isRunning = false;
 
@@ -145,7 +136,6 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
         Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         stopForeground(false); // bool: true = remove Notification
-        stopSelf();
     }
 
     private void setTimerForFadeOut() {
@@ -184,9 +174,7 @@ public class AlarmService extends Service implements MediaPlayer.OnErrorListener
 
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if (intent.hasExtra("stop alarm")) {
-                stopAlarm();
-            } else if (intent.hasExtra("start alarm")) {
+            if (intent.hasExtra("start alarm")) {
                 settings = new Settings(this);
                 alarmTime = new SimpleTime(intent.getExtras());
                 setVolume(settings.alarmVolume);
