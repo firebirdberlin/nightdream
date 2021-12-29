@@ -2,7 +2,9 @@ package com.firebirdberlin.nightdream.repositories;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.util.Log;
@@ -16,10 +18,10 @@ import com.firebirdberlin.nightdream.Settings;
 public class FlashlightProvider {
 
     private static final String TAG = FlashlightProvider.class.getSimpleName();
-    private CameraManager camManager;
-    private Context context;
+    private final CameraManager camManager;
+    private final Context context;
     private boolean isOn;
-    private String cameraId;
+    private final String cameraId;
 
     public FlashlightProvider(Context context) {
         this.context = context;
@@ -77,13 +79,21 @@ public class FlashlightProvider {
     }
 
     private String getCameraId() {
-        String camId = null;
         try {
-            camId = camManager.getCameraIdList()[0];
-        } catch (CameraAccessException | ArrayIndexOutOfBoundsException e) {
-            Log.e(TAG, e.toString());
+            String[] ids = camManager.getCameraIdList();
+            for (String id : ids) {
+                CameraCharacteristics c = camManager.getCameraCharacteristics(id);
+                Boolean hasFlash = c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+                Integer flashDirection = c.get(CameraCharacteristics.LENS_FACING);
+                if (hasFlash != null && hasFlash && flashDirection != null
+                        && flashDirection == CameraCharacteristics.LENS_FACING_BACK) {
+                    return id;
+                }
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
         }
-        return camId;
+        return null;
     }
 }
 
