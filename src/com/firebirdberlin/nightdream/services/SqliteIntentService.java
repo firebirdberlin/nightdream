@@ -1,12 +1,11 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-
-import android.util.Log;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.google.gson.Gson;
@@ -14,35 +13,29 @@ import com.google.gson.Gson;
 public class SqliteIntentService {
 
     private static final String TAG = "SqliteIntentService";
-    public static String ACTION_SAVE = "action_save";
-    public static String ACTION_SNOOZE = "action_snooze";
-    public static String ACTION_SKIP_ALARM = "action_skip_alarm";
-    public static String ACTION_SCHEDULE_ALARM = "action_schedule_alarm";
-    public static String ACTION_DELETE_ALARM = "action_delete_alarm";
-    public static String ACTION_BROADCAST_ALARM = "action_broadcast_alarm";
 
     static void saveTime(Context context, SimpleTime time) {
-        enqueueWork(context, time, ACTION_SAVE);
+        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SAVE);
     }
 
     static void snooze(Context context, SimpleTime time) {
-        enqueueWork(context, time, ACTION_SNOOZE);
+        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SNOOZE);
     }
 
     static void skipAlarm(Context context, SimpleTime time) {
-        enqueueWork(context, time, ACTION_SKIP_ALARM);
+        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SKIP_ALARM);
     }
 
     public static void deleteAlarm(Context context, SimpleTime time) {
-        enqueueWork(context, time, ACTION_DELETE_ALARM);
+        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_DELETE_ALARM);
     }
 
     public static void scheduleAlarm(Context context) {
-        enqueueWork(context, ACTION_SCHEDULE_ALARM);
+        enqueueWork(context, SqliteIntentServiceWorker.ACTION_SCHEDULE_ALARM);
     }
 
     public static void broadcastAlarm(Context context) {
-        enqueueWork(context, ACTION_BROADCAST_ALARM);
+        enqueueWork(context, SqliteIntentServiceWorker.ACTION_BROADCAST_ALARM);
     }
 
     static void enqueueWork(Context context, SimpleTime time, String action) {
@@ -59,9 +52,10 @@ public class SqliteIntentService {
                 .putString("time", jsonTime)
                 .build();
 
-        OneTimeWorkRequest sqliteWork = new OneTimeWorkRequest.Builder(SqliteIntentServiceWorker.class)
-                .setInputData(myData)
-                .build();
+        OneTimeWorkRequest sqliteWork =
+                new OneTimeWorkRequest.Builder(SqliteIntentServiceWorker.class)
+                        .setInputData(myData)
+                        .build();
         WorkManager.getInstance(context).enqueue(sqliteWork);
     }
 
@@ -72,9 +66,10 @@ public class SqliteIntentService {
                 .putString("action", action)
                 .build();
 
-        OneTimeWorkRequest mathWork = new OneTimeWorkRequest.Builder(SqliteIntentServiceWorker.class)
-                .setInputData(myData)
-                .build();
+        OneTimeWorkRequest mathWork =
+                new OneTimeWorkRequest.Builder(SqliteIntentServiceWorker.class)
+                        .setInputData(myData)
+                        .build();
         WorkManager.getInstance(context).enqueue(mathWork);
     }
 
