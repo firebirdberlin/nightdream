@@ -35,9 +35,8 @@ public class CustomDigitalFlipClock extends LinearLayout {
             '0', '1', '2', '3'};
     private static final char[] LOWHOURS12 = new char[]{'2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1'};
     private static final char[] SEXAGISIMAL = new char[]{'0', '1', '2', '3', '4', '5'};
-
+    private final Context context;
     TimeReceiver timeReceiver;
-    private Context context;
     private FormatChangeObserver mFormatChangeObserver;
     private Boolean customIs24Hour = null;
     private TabDigit mCharHighMinute;
@@ -108,7 +107,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
     }
 
     @Override
-    public void onAttachedToWindow(){
+    public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setTimeTick();
         mFormatChangeObserver = new FormatChangeObserver();
@@ -118,7 +117,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
     }
 
     @Override
-    public void onDetachedFromWindow(){
+    public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (timeReceiver != null) {
             try {
@@ -172,6 +171,15 @@ public class CustomDigitalFlipClock extends LinearLayout {
         invalidate();
     }
 
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        mCharLowMinute.sync();
+        mCharHighMinute.sync();
+        mCharLowHour.sync();
+        mCharHighHour.sync();
+    }
+
     class TimeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent arg1) {
@@ -203,15 +211,6 @@ public class CustomDigitalFlipClock extends LinearLayout {
             currentMinuteHigh = highMinute;
             currentMinuteLow = lowMinute;
         }
-    }
-
-    @Override
-    public void invalidate() {
-        super.invalidate();
-        mCharLowMinute.sync();
-        mCharHighMinute.sync();
-        mCharLowHour.sync();
-        mCharHighHour.sync();
     }
 
     private class FormatChangeObserver extends ContentObserver {

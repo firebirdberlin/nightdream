@@ -54,7 +54,7 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
         super.getView(position, convertView, parent);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View v = inflater.inflate(viewId, parent, false);
-        RadioButton button = (RadioButton) v.findViewById(R.id.text1);
+        RadioButton button = v.findViewById(R.id.text1);
         final FileUri item = getItem(position);
         String name = item.name;
         if (!"content".equals(item.uri.getScheme())) {
@@ -100,7 +100,7 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
             mediaPlayer.start();
 
         });
-        ImageView buttonDelete = (ImageView) v.findViewById(R.id.buttonDelete);
+        ImageView buttonDelete = v.findViewById(R.id.buttonDelete);
 
         buttonDelete.setVisibility(
                 "file".equals(item.uri.getScheme()) && !item.uri.toString().contains("android_asset")

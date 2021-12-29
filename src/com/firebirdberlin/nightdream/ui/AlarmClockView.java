@@ -91,6 +91,8 @@ public class AlarmClockView extends View {
     private int lastMinSinceDragStart = 0;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private onAlarmChangeListener listener;
+    private float lastHourX = -1;
+    private int lastHour = -1;
 
     public AlarmClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -274,8 +276,6 @@ public class AlarmClockView extends View {
         return false;
     }
 
-    private float lastHourX = -1;
-    private int lastHour = -1;
     private void XYtotime(float x, float y) {
         int w = getWidth() - 2 * touch_zone_radius;
         int h = Utility.getDisplaySize(ctx).y - 2 * touch_zone_radius;
@@ -289,7 +289,7 @@ public class AlarmClockView extends View {
         y *= -1.f;
 
         // separate hours from minutes
-        int separator = 1*touch_zone_radius;
+        int separator = 1 * touch_zone_radius;
 
         // adjust time in 5-minute intervals when dragging upwards, and 1-minute interval when dragging downwards.
         int roundTo = (movingDown) ? 1 : 5;
@@ -304,7 +304,7 @@ public class AlarmClockView extends View {
             int hours = (int) (x / w * 24);
             lastHour = (hours >= 24) ? 23 : hours;
         }
-        int mins = (int) (((y-separator) / (h-separator) * 60)) / roundTo * roundTo;
+        int mins = (int) (((y - separator) / (h - separator) * 60)) / roundTo * roundTo;
         if (movingDown) {
             // make sure time never increases while dragging downwards
             mins = Math.min(mins, lastMinSinceDragStart);
@@ -369,11 +369,11 @@ public class AlarmClockView extends View {
             paint.setColor(Color.WHITE);
             paint.setStrokeWidth(6.f);
             paint.setStrokeMiter(10.f);
-            paint.setPathEffect(new DashPathEffect(new float[] {20f,40f}, 0f));
+            paint.setPathEffect(new DashPathEffect(new float[]{20f, 40f}, 0f));
 
             canvas.drawLine(
                     0.f,
-                    -1.f*maxHeight,
+                    -1.f * maxHeight,
                     (float) w,
                     -1.f * maxHeight,
                     paint

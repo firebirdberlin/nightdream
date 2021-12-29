@@ -28,8 +28,7 @@ import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding
 import java.util.ArrayList;
 
 public class MediaControlLayout extends ViewModel {
-    private static String TAG = "MediaControlLayout";
-    private int color = -1543;
+    private static final String TAG = "MediaControlLayout";
     private final MutableLiveData<Drawable> smallIcon = new MediatorLiveData<>();
     private final MutableLiveData<Drawable> largeIcon = new MediatorLiveData<>();
     private final MutableLiveData<Integer> textColor = new MediatorLiveData<>();
@@ -39,8 +38,8 @@ public class MediaControlLayout extends ViewModel {
     private final MutableLiveData<String> text = new MediatorLiveData<>();
     private final MutableLiveData<ArrayList<Drawable>> actionImages = new MediatorLiveData<>();
     private final MutableLiveData<ArrayList<View.OnClickListener>> actionIntent = new MediatorLiveData<>();
-
-    private NotificationMediacontrolBinding mediacontrolBinding;
+    private final NotificationMediacontrolBinding mediacontrolBinding;
+    private int color = -1543;
 
     public MediaControlLayout(ConstraintLayout mediaStyleContainer) {
         LayoutInflater inflater = LayoutInflater.from(mediaStyleContainer.getContext());

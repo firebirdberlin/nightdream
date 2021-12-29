@@ -323,7 +323,7 @@ public class RadioStreamManualInputDialog {
     }
 
     private URL validateUrlInput(String urlString) {
-        if ( urlString == null || urlString.isEmpty() ) {
+        if (urlString == null || urlString.isEmpty()) {
             return null;
         }
         try {

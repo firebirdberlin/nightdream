@@ -25,7 +25,7 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 public class BatteryIconView extends View {
     private static final String TAG = "NightDream.BatteryIconView";
-    private static float VALUE_FULLY_CHARGED = 95.f;
+    private static final float VALUE_FULLY_CHARGED = 95.f;
 
     Context context;
     Settings settings;
@@ -67,21 +67,20 @@ public class BatteryIconView extends View {
     }
 
     @Override
-    public void onAttachedToWindow(){
+    public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setupBatteryReceiver();
     }
 
     @Override
-    public void onDetachedFromWindow(){
+    public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (batteryReceiver != null) {
             try {
                 context.unregisterReceiver(batteryReceiver);
             } catch (IllegalArgumentException e) {
                 // never mind battery receiver was not registered
-            }
-            finally {
+            } finally {
                 batteryReceiver = null;
             }
         }
@@ -108,10 +107,10 @@ public class BatteryIconView extends View {
         batteryIconHeight = (fm.bottom - fm.ascent); // (fm.top decreases upwards and is negative)
         batteryIconWidth = Utility.getNearestEvenIntValue((aspectRatio * batteryIconHeight));
 
-        batteryTextOffsetX =  batteryIconWidth + getPaddingLeft() + getPaddingRight();
+        batteryTextOffsetX = batteryIconWidth + getPaddingLeft() + getPaddingRight();
         batteryTextLayout.measure(widthMeasureSpec - (int) batteryIconWidth, heightMeasureSpec);
         final int measuredWidth = (int) (batteryTextLayout.getMeasuredWidth() + batteryTextOffsetX);
-        setMeasuredDimension(measuredWidth, batteryTextLayout.getMeasuredHeight()) ;
+        setMeasuredDimension(measuredWidth, batteryTextLayout.getMeasuredHeight());
     }
 
     @Override
@@ -132,7 +131,7 @@ public class BatteryIconView extends View {
             return false;
         }
 
-        if (! batteryValue.isCharging ) return false;
+        if (!batteryValue.isCharging) return false;
         return batteryValue.getPercentage() < VALUE_FULLY_CHARGED;
 
     }
@@ -164,7 +163,7 @@ public class BatteryIconView extends View {
         // draw positive pole
         final int poleDistance = (int) batteryIconWidth / 3;
         final float poleLeft = getPaddingLeft() + poleDistance;
-        final float poleRight = getPaddingLeft() + (int)batteryIconWidth - poleDistance;
+        final float poleRight = getPaddingLeft() + (int) batteryIconWidth - poleDistance;
         final float poleTop = iconTop - (0.1f * batteryIconHeight);
 
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -215,13 +214,13 @@ public class BatteryIconView extends View {
         String estimate_string = "";
 
         if (batteryValue.isCharging) {
-            if (percentage < VALUE_FULLY_CHARGED){
+            if (percentage < VALUE_FULLY_CHARGED) {
                 long est = batteryValue.getEstimateMillis(reference) / 1000; // estimated seconds
                 estimate_string = formatEstimate(est);
             }
 
         } else { // not charging
-            long est = batteryValue.getDischargingEstimateMillis(reference)/1000; // estimated seconds
+            long est = batteryValue.getDischargingEstimateMillis(reference) / 1000; // estimated seconds
             estimate_string = formatEstimate(est);
         }
 
@@ -233,15 +232,15 @@ public class BatteryIconView extends View {
     }
 
     private String formatEstimate(long est) {
-        if (est > 0){
+        if (est > 0) {
             long h = est / 3600;
-            long m  = ( est % 3600 ) / 60;
+            long m = (est % 3600) / 60;
             String hour = "";
             String min = "";
-            if ( h > 0L ) {
+            if (h > 0L) {
                 hour = String.format("%d%s ", h, context.getString(R.string.hour));
             }
-            if ( m > 0L ) {
+            if (m > 0L) {
                 min = String.format("%d%s ", m, context.getString(R.string.minute));
             }
 

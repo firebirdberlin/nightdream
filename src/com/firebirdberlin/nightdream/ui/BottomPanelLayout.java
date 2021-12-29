@@ -12,10 +12,9 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 public class BottomPanelLayout extends FrameLayout {
 
     public static String TAG = "BottomPanelLayout";
-
+    private final Context context;
     public boolean isVisible = true;
     Panel activePanel = Panel.ALARM_CLOCK;
-    private Context context;
     private AttributeSet attrs;
     private WebRadioLayout webRadioLayout = null;
     private int accentColor;

@@ -20,7 +20,6 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.databinding.PollenExposureBinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class PollenExposureLayout extends ViewModel {
@@ -28,7 +27,7 @@ public class PollenExposureLayout extends ViewModel {
     private final MutableLiveData<ArrayList<Drawable>> pollenImages = new MediatorLiveData<>();
     private final PollenExposureBinding pollenExposureBinding;
 
-    private int[] colorResId = new int[]{
+    private final int[] colorResId = new int[]{
             R.color.grey,
             R.color.material_light_green,
             R.color.material_yellow,

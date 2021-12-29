@@ -233,7 +233,8 @@ public class GifDecoder {
         readContents();
         try {
             in.close();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     /**
@@ -637,6 +638,7 @@ public class GifDecoder {
     private static class GifFrame {
         public Bitmap image;
         public int delay;
+
         public GifFrame(Bitmap im, int del) {
             image = im;
             delay = del;

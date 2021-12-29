@@ -3,19 +3,20 @@ package com.firebirdberlin.nightdream.ui;
 import android.content.Context;
 
 import com.firebirdberlin.nightdream.R;
+
 import java.util.Locale;
 
 public class RadioStreamDialogItem {
 
     private final String TAG = "RadioStreamDialogItem";
 
-    private Context context;
-    private String imageUrl;
-    private String countryCode;
-    private String name;
-    private long bitrate;
-    private boolean isOnline;
-    private boolean isCountrySelected;
+    private final Context context;
+    private final String imageUrl;
+    private final String countryCode;
+    private final String name;
+    private final long bitrate;
+    private final boolean isOnline;
+    private final boolean isCountrySelected;
 
     public RadioStreamDialogItem(Context context, String imageUrl, String countryCode, String name, long bitrate, boolean isOnline, boolean isCountrySelected) {
         this.context = context;
@@ -39,7 +40,7 @@ public class RadioStreamDialogItem {
         return this.name;
     }
 
-    public long getBitrate(){
+    public long getBitrate() {
         return this.bitrate;
     }
 
@@ -53,13 +54,13 @@ public class RadioStreamDialogItem {
 
     @Override
     public String toString() {
-           // String countryCode = (displayCountryCode) ? String.format("%s ", this.countryCode) : "";
-            String streamOffline =
-                    (this.isOnline)
-                            ? ""
-                            : String.format(" - %s", this.context.getResources().getString(R.string.radio_stream_offline));
-            return String.format(Locale.getDefault(), "%s %s (%d kbit/s) %s",
-                    this.countryCode, this.name, this.bitrate, streamOffline);
+        // String countryCode = (displayCountryCode) ? String.format("%s ", this.countryCode) : "";
+        String streamOffline =
+                (this.isOnline)
+                        ? ""
+                        : String.format(" - %s", this.context.getResources().getString(R.string.radio_stream_offline));
+        return String.format(Locale.getDefault(), "%s %s (%d kbit/s) %s",
+                this.countryCode, this.name, this.bitrate, streamOffline);
     }
 
 }

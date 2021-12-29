@@ -42,12 +42,12 @@ public class PollenExposureRequestTask extends AsyncTask<String, Void, PollenExp
         return pollen;
     }
 
-    public interface AsyncResponse {
-        void onRequestFinished(PollenExposure result);
-    }
-
     @Override
     protected void onPostExecute(PollenExposure result) {
         delegate.onRequestFinished(result);
+    }
+
+    public interface AsyncResponse {
+        void onRequestFinished(PollenExposure result);
     }
 }

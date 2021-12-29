@@ -62,8 +62,8 @@ public class SleepTimerDialogFragment extends AppCompatDialogFragment {
 
         // Warning: must use context of AlertDialog.Builder here so that the changed theme is applied by LayoutInflater in RadioStreamDialog!
         // (AlertDialog.Builder uses a ContextThemeWrapper internally to change the theme for this DialogFragment)
-        LayoutInflater inflater =  (LayoutInflater)
-                builder.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        LayoutInflater inflater = (LayoutInflater)
+                builder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 
         View view = inflater.inflate(R.layout.sleep_timer_dialog, null);
@@ -83,7 +83,7 @@ public class SleepTimerDialogFragment extends AppCompatDialogFragment {
                         String minuteText = minuteTextEdit.getText().toString();
                         if (!minuteText.isEmpty()) {
                             minutes += Integer.parseInt(minuteText);
-                            if (! sleepTimeisAlreadySet) {
+                            if (!sleepTimeisAlreadySet) {
                                 settings.setSleepTimeInMinutesDefaultValue(minutes);
                             }
                         }
@@ -131,6 +131,7 @@ public class SleepTimerDialogFragment extends AppCompatDialogFragment {
 
     public interface SleepTimerDialogListener {
         void onSleepTimeSelected(int minutes);
+
         void onSleepTimeDismissed();
     }
 }

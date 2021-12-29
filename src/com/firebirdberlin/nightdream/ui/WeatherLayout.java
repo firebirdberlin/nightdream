@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
-import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -19,8 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -66,6 +63,7 @@ public class WeatherLayout extends LinearLayout {
     private int iconHeight = -1;
     private String content = "icon|temperature|wind";
     private boolean widget = false;
+
     public WeatherLayout(Context context) {
         super(context);
         this.context = context;

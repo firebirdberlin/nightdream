@@ -30,15 +30,12 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class RadioStreamDialog
-        implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse
-{
+        implements StationRequestTask.AsyncResponse, CountryRequestTask.AsyncResponse {
 
     private final static String TAG = "RadioStreamDialog";
 
@@ -47,10 +44,10 @@ public class RadioStreamDialog
     // this dialog instance must not be used repeatedly, otherwise it wont reflect a changed station
     private final RadioStation persistedRadioStation;
     private final String preferredCountry;
-
+    private final RadioStreamManualInputDialog manualInputDialog = new RadioStreamManualInputDialog();
+    private final ArrayList<RadioStation> stations = new ArrayList<>();
+    private final ArrayList<RadioStreamDialogItem> stationItem = new ArrayList<>();
     private EditText queryText = null;
-    private ArrayList<RadioStation> stations = new ArrayList<>();
-    private ArrayList<RadioStreamDialogItem> stationItem = new ArrayList<>();
     private ListView stationListView;
     private Spinner countrySpinner;
     private TextView noResultsText;
@@ -58,8 +55,6 @@ public class RadioStreamDialog
     private ContentLoadingProgressBar spinner;
     private Button searchButton;
     private Map<String, String> countryNameToCodeMap = null;
-
-    private final RadioStreamManualInputDialog manualInputDialog = new RadioStreamManualInputDialog();
 
     public RadioStreamDialog(
             Context context, RadioStation persistedRadioStation, String preferredCountry

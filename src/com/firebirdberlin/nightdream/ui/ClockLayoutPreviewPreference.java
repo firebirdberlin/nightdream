@@ -36,7 +36,7 @@ import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ClockLayoutPreviewPreference extends Preference {
-    private static String TAG = "ClockLayoutPreviewPreference";
+    private static final String TAG = "ClockLayoutPreviewPreference";
     private static PreviewMode previewMode = PreviewMode.DAY;
     private ClockLayout clockLayout = null;
     private TextView textViewPurchaseHint = null;
@@ -44,7 +44,7 @@ public class ClockLayoutPreviewPreference extends Preference {
     private LinearLayout preferencesContainer = null;
     private ImageButton resetButton = null;
 
-    private Context context;
+    private final Context context;
 
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -74,7 +74,7 @@ public class ClockLayoutPreviewPreference extends Preference {
             ViewParent summaryParent = summary.getParent();
             if (summaryParent instanceof ViewGroup) {
                 final LayoutInflater layoutInflater =
-                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 View view = summaryParent2.findViewWithTag("custom");
                 if (view == null) {
@@ -139,8 +139,8 @@ public class ClockLayoutPreviewPreference extends Preference {
         Point size = Utility.getDisplaySize(getContext());
         Configuration config = context.getResources().getConfiguration();
         clockLayout.updateLayout(
-            size.x - preferenceView.getPaddingLeft() - preferenceView.getPaddingRight(),
-            config
+                size.x - preferenceView.getPaddingLeft() - preferenceView.getPaddingRight(),
+                config
         );
 
         clockLayout.requestLayout();
@@ -246,7 +246,7 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private WeatherEntry getWeatherEntry(Settings settings) {
         WeatherEntry entry = settings.weatherEntry;
-        if ( entry.timestamp ==  -1L) {
+        if (entry.timestamp == -1L) {
             entry.setFakeData();
         }
         return entry;
@@ -257,7 +257,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         Log.i(TAG, "purchasedWeather:" + purchasedWeatherData);
         int layoutID = settings.getClockLayoutID(true);
         if (layoutID == ClockLayout.LAYOUT_ID_CALENDAR
-                        && !purchased(BillingHelperActivity.ITEM_DONATION)) {
+                && !purchased(BillingHelperActivity.ITEM_DONATION)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.gift_for_donors));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
 

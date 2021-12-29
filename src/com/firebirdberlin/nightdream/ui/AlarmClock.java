@@ -19,9 +19,9 @@ import com.firebirdberlin.nightdream.Utility;
 
 
 public class AlarmClock extends RelativeLayout {
+    private final TextView alarmTimeTextView;
     protected AlarmClockView alarmClockView;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
-    private final TextView alarmTimeTextView;
 
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);

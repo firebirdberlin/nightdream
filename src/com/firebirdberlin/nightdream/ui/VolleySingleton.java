@@ -10,8 +10,8 @@ import com.android.volley.toolbox.Volley;
 public class VolleySingleton {
 
     private static VolleySingleton mInstance = null;
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
+    private final RequestQueue mRequestQueue;
+    private final ImageLoader mImageLoader;
 
     private VolleySingleton() {
         this.mRequestQueue = Volley.newRequestQueue(com.firebirdberlin.nightdream.NightDreamActivity.getAppContext());
