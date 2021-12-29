@@ -1,4 +1,4 @@
 <resources>
-    <bool name="use_NotificationListenerService">false</bool>
+    <bool name="use_NotificationListenerService">true</bool>
     <bool name="use_widget">true</bool>
 </resources>
