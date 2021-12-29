@@ -42,7 +42,7 @@ public class WeatherPreviewPreference extends Preference {
             ViewParent summaryParent = summary.getParent();
             if (summaryParent instanceof ViewGroup) {
                 final LayoutInflater layoutInflater =
-                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 layoutInflater.inflate(R.layout.weather_preview_preference, summaryParent2, true);
 
@@ -66,7 +66,7 @@ public class WeatherPreviewPreference extends Preference {
     }
 
     public String toDateTimeString(long timestamp) {
-        if ( timestamp > -1L ) {
+        if (timestamp > -1L) {
             Date date = new Date(timestamp);
             DateFormat df = DateFormat.getDateTimeInstance();
             return df.format(date);

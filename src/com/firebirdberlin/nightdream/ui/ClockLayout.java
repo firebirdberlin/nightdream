@@ -56,8 +56,8 @@ public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_DIGITAL3 = 8;
     private static final String TAG = "NightDream.ClockLayout";
     private final WeatherLayout[] weatherLayouts = {null, null, null};
-    private int layoutId = LAYOUT_ID_DIGITAL;
     private final Context context;
+    private int layoutId = LAYOUT_ID_DIGITAL;
     private AutoAdjustTextView clock = null;
     private MaterialCalendarView calendarView = null;
     private AutoAdjustTextView clock_ampm = null;

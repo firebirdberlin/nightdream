@@ -266,6 +266,6 @@ public class SidePanel extends FlexboxLayout {
     public void setPaddingLeft(int padding) {
         paddingLeft.getLayoutParams().width = padding;
         requestLayout();
-        post(()-> setX(isHidden() ? -getWidth() : 0));
+        post(() -> setX(isHidden() ? -getWidth() : 0));
     }
 }

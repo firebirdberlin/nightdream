@@ -121,40 +121,7 @@ public class NightDreamUI {
     private final mAudioManager AudioManage;
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
-    private int screen_alpha_animation_duration = 3000;
-    private int screen_transition_animation_duration = 10000;
-    private int mode = 2;
-    private boolean controlsVisible = false;
-    private Drawable bgshape = colorBlack;
-    private int activeBackgroundImage;
-    private ArrayList<File> files;
-    private Bitmap preloadBackgroundImage;
-    private File preloadBackgroundImageFile;
-    private LightSensorEventListener lightSensorEventListener = null;
-    private Settings settings;
-    OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            Log.d(TAG, "onScaleBegin");
-            return true;
-        }
-
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            Log.d(TAG, "onScale");
-            float s = detector.getScaleFactor();
-            clockLayoutContainer.applyScaleFactor(s);
-            return true;
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            Log.d(TAG, "onScaleEnd");
-            float s = clockLayout.getAbsScaleFactor();
-            Configuration config = getConfiguration();
-            settings.setScaleClock(s, config.orientation);
-        }
-    };
+    private final Settings settings;
     private final Runnable fadeClock = new Runnable() {
         @Override
         public void run() {
@@ -190,6 +157,37 @@ public class NightDreamUI {
             }
         }
     };
+    private final Window window;
+    private final float LIGHT_VALUE_BRIGHT = 40.0f;
+    private final float LIGHT_VALUE_DAYLIGHT = 300.0f;
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = () -> resetAlarmClockHideDelay();
+    OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            Log.d(TAG, "onScaleBegin");
+            return true;
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            Log.d(TAG, "onScale");
+            float s = detector.getScaleFactor();
+            clockLayoutContainer.applyScaleFactor(s);
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            Log.d(TAG, "onScaleEnd");
+            float s = clockLayout.getAbsScaleFactor();
+            Configuration config = getConfiguration();
+            settings.setScaleClock(s, config.orientation);
+        }
+    };
+    private int screen_alpha_animation_duration = 3000;
+    private int screen_transition_animation_duration = 10000;
+    private int mode = 2;
+    private boolean controlsVisible = false;
     private final Runnable hideAlarmClock = new Runnable() {
         @Override
         public void run() {
@@ -207,7 +205,29 @@ public class NightDreamUI {
             }
         }
     };
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = () -> resetAlarmClockHideDelay();
+    // move the clock randomly around
+    private final Runnable moveAround = new Runnable() {
+        @Override
+        public void run() {
+            Log.i(TAG, "moveAround.run()");
+            removeCallbacks(hideBrightnessLevel);
+            hideSystemUI();
+            setupScreenAnimation();
+
+            hideBatteryView(2000);
+            updateClockPosition();
+
+            updateWeatherData();
+
+            postDelayed(this, Utility.millisToTimeTick(20000));
+        }
+    };
+    private Drawable bgshape = colorBlack;
+    private int activeBackgroundImage;
+    private ArrayList<File> files;
+    private Bitmap preloadBackgroundImage;
+    private File preloadBackgroundImageFile;
+    private LightSensorEventListener lightSensorEventListener = null;
     private float clockLayout_xDelta;
     private float clockLayout_yDelta;
     private int vibrantColor = 0;
@@ -230,24 +250,6 @@ public class NightDreamUI {
         postBackgroundImageChange();
     };
     private SoundMeter soundmeter;
-    private Window window;
-    // move the clock randomly around
-    private final Runnable moveAround = new Runnable() {
-        @Override
-        public void run() {
-            Log.i(TAG, "moveAround.run()");
-            removeCallbacks(hideBrightnessLevel);
-            hideSystemUI();
-            setupScreenAnimation();
-
-            hideBatteryView(2000);
-            updateClockPosition();
-
-            updateWeatherData();
-
-            postDelayed(this, Utility.millisToTimeTick(20000));
-        }
-    };
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private boolean locked = false;
     private boolean zoomFinished = false;
@@ -278,8 +280,6 @@ public class NightDreamUI {
     };
     private float last_ambient = 4.0f;
     private float LIGHT_VALUE_DARK = 4.2f;
-    private float LIGHT_VALUE_BRIGHT = 40.0f;
-    private float LIGHT_VALUE_DAYLIGHT = 300.0f;
     private boolean blinkStateOn = false;
     private final Runnable blink = new Runnable() {
         public void run() {
@@ -339,7 +339,7 @@ public class NightDreamUI {
     public NightDreamUI(final Context context, Window window) {
         Log.d(TAG, "NightDreamUI()");
         mContext = context;
-
+        settings = new Settings(context);
         // right to left swipe
         // left to right swipe
         GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -499,7 +499,6 @@ public class NightDreamUI {
         menuIcon.setScaleX(.8f);
         menuIcon.setScaleY(.8f);
 
-        settings = new Settings(context);
         AudioManage = new mAudioManager(context);
 
         checkForReviewRequest();

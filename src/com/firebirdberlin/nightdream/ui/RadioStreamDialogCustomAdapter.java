@@ -1,9 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.firebirdberlin.nightdream.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.firebirdberlin.nightdream.R;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,12 +25,6 @@ public class RadioStreamDialogCustomAdapter extends ArrayAdapter<RadioStreamDial
         super(context, resourceId, items);
         this.context = context;
         mImageLoader = VolleySingleton.getInstance().getImageLoader();
-    }
-
-    private class ViewHolder {
-        NetworkImageView imageView;
-        TextView txtName;
-        TextView txtDesc;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -81,6 +75,12 @@ public class RadioStreamDialogCustomAdapter extends ArrayAdapter<RadioStreamDial
                 (item.getBitrate() == 0) ? "???" : String.format("%s ", item.getBitrate());
         return String.format(Locale.getDefault(), "(%s kbit/s) %s",
                 bitRate, streamOffline);
+    }
+
+    private class ViewHolder {
+        NetworkImageView imageView;
+        TextView txtName;
+        TextView txtDesc;
     }
 
 

@@ -8,14 +8,12 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -29,7 +27,7 @@ import androidx.annotation.RequiresApi;
 import com.firebirdberlin.nightdream.R;
 
 public class NotificationPreviewLayout extends LinearLayout {
-    private static String TAG = "NotificationPreviewLayout";
+    private static final String TAG = "NotificationPreviewLayout";
     final private Handler handler = new Handler();
     private View notificationPreview;
     private final Runnable fadePreview = new Runnable() {
@@ -45,7 +43,8 @@ public class NotificationPreviewLayout extends LinearLayout {
             animationSet.addAnimation(alpha);
             animationSet.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {}
+                public void onAnimationStart(Animation animation) {
+                }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
@@ -53,7 +52,8 @@ public class NotificationPreviewLayout extends LinearLayout {
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {
+                }
             });
             notificationPreview.startAnimation(animationSet);
         }
@@ -74,7 +74,7 @@ public class NotificationPreviewLayout extends LinearLayout {
         if (template != null && template.contains("MediaStyle")) {
             return;
         }
-        if(smallIcon == null) return;
+        if (smallIcon == null) return;
 
         // ignore own notifications
         String packageName = intent.getStringExtra("packageName");

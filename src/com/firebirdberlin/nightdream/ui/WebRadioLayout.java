@@ -45,9 +45,9 @@ public class WebRadioLayout extends RelativeLayout {
 
     public static String TAG = "WebRadioLayout";
     final private Handler handler = new Handler();
+    private final Context context;
     public boolean locked = false;
     FavoriteRadioStations stations;
-    private Context context;
     private TextView textView;
     private ImageView buttonSleepTimer;
     private ImageView volumeMutedIndicator;
@@ -155,7 +155,7 @@ public class WebRadioLayout extends RelativeLayout {
 
         for (int i = 0; i < maxNumButtons; i++) {
             int id = getResources().getIdentifier("web_radio_button" + (i + 1), "id", context.getPackageName());
-            Button btn = (Button) findViewById(id); // get the element
+            Button btn = findViewById(id); // get the element
             btn.setVisibility(View.GONE);
             btn.setOnLongClickListener(buttonOnLongClickListener);
             btn.setOnClickListener(buttonOnClickListener);

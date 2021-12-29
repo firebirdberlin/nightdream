@@ -6,8 +6,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.models.FileUri;
@@ -48,7 +49,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
         super.getView(position, convertView, parent);
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View v = inflater.inflate(viewId, parent, false);
-        RadioButton button = (RadioButton) v.findViewById(R.id.text1);
+        RadioButton button = v.findViewById(R.id.text1);
         final FileUri item = getItem(position);
 
         Typeface typeface = loadTypefaceForItem(item);
@@ -64,7 +65,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
                 notifyDataSetChanged();
             }
         });
-        ImageView buttonDelete = (ImageView) v.findViewById(R.id.buttonDelete);
+        ImageView buttonDelete = v.findViewById(R.id.buttonDelete);
 
         buttonDelete.setVisibility(
                 item != null && "file".equals(item.uri.getScheme()) &&
@@ -134,10 +135,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
         }
 
         FileUri item = getItem(selectedPosition);
-        if (item != null) {
-            return item;
-        }
-        return null;
+        return item;
     }
 
     public void setSelectedUri(Uri uri) {

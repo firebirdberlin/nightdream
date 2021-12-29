@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Dialog;
@@ -34,8 +36,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-
-import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
@@ -177,7 +177,7 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     private void initListView() {
         ArrayList<FileUri> sounds = getAlarmSounds();
 
-        final File file_list[] = listFiles();
+        final File[] file_list = listFiles();
         if (file_list != null && file_list.length > 0) {
             for (File file : file_list) {
                 sounds.add(new FileUri(file));

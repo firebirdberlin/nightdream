@@ -20,7 +20,7 @@ public class PollenForecastLayout extends ConstraintLayout {
     private Context context = null;
     private ImageView pollenImage = null;
     private TextView pollenText = null;
-    private TextView pollenStressLevel= null;
+    private TextView pollenStressLevel = null;
 
     public PollenForecastLayout(@NonNull Context context) {
         super(context);
@@ -36,7 +36,7 @@ public class PollenForecastLayout extends ConstraintLayout {
 
         pollenImage = findViewById(R.id.pollenImage);
         pollenText = findViewById(R.id.pollenText);
-        pollenStressLevel =  findViewById(R.id.pollenStressLevel);
+        pollenStressLevel = findViewById(R.id.pollenStressLevel);
     }
 
     public void setImage(Drawable image) {
@@ -50,7 +50,7 @@ public class PollenForecastLayout extends ConstraintLayout {
     public void setPollenStressLevel(int index) {
         int pollenStressId = 0;
         String pollenStress = "showPollenIndex" + index;
-        Log.d(TAG, "pollenkey: "+pollenStress);
+        Log.d(TAG, "pollenkey: " + pollenStress);
         Class resString = R.string.class;
         Field field = null;
         try {

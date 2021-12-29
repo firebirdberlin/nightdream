@@ -110,7 +110,8 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
         setupIcon();
     }
 
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
 
     public void onStopTrackingTouch(SeekBar seekBar) {
         notifyChanged();

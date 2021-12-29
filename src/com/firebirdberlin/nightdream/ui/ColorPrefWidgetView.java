@@ -1,7 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import java.lang.Math;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -28,7 +26,8 @@ public class ColorPrefWidgetView extends View {
         paint.setStrokeWidth(strokeWidth);
     }
 
-    @Override protected void onDraw(Canvas canvas) {
+    @Override
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         paint.setColor(0xffffffff);
@@ -39,11 +38,11 @@ public class ColorPrefWidgetView extends View {
         canvas.drawRect(strokeWidth, strokeWidth, rectSize - strokeWidth, rectSize - strokeWidth, paint);
     }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
-
     public int getColor() {
         return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

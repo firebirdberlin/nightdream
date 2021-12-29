@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Dialog;
@@ -38,15 +40,13 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     final static String TAG = "ManageFontsDialog";
     final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     protected File DIRECTORY = null;
 
-    String defaultFonts[];
+    String[] defaultFonts;
     ManageFontsDialogListener mListener;
     ListView listView;
     Button btnAddCustomFont;
@@ -115,8 +115,8 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View view = inflater.inflate(R.layout.manage_alarm_sounds_dialog, null);
-        listView = (ListView) view.findViewById(R.id.listView);
-        btnAddCustomFont = (Button) view.findViewById(R.id.addCustomAlarmTone);
+        listView = view.findViewById(R.id.listView);
+        btnAddCustomFont = view.findViewById(R.id.addCustomAlarmTone);
 
         String btnTxt = getActivity().getString(R.string.add_custom_font);
         if (!isPurchased) {
@@ -186,7 +186,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
@@ -208,7 +208,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         ArrayList<FileUri> staticFiles = getCustomFiles();
 
         Log.i(TAG, DIRECTORY.getAbsolutePath());
-        final File file_list[] = listFiles();
+        final File[] file_list = listFiles();
         if (file_list != null && file_list.length > 0) {
             for (File file : file_list) {
                 FileUri fileUri = new FileUri(file);
