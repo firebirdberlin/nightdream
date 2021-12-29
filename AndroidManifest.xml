@@ -70,7 +70,8 @@
         <receiver
             android:name=".AdminReceiver"
             android:description="@string/useDeviceLockExplanation"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:exported="false">
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
@@ -84,7 +85,8 @@
             android:name=".mNotificationListener"
             android:enabled="@bool/use_NotificationListenerService"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
@@ -108,15 +110,12 @@
         <service
             android:name=".services.AlarmHandlerService"
             android:enabled="true" />
-        <service
-            android:name=".services.DownloadWeatherService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <service
             android:name=".services.RadioStreamService"
             android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE">
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
@@ -178,7 +177,8 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:theme="@style/ActivityTheme">
+            android:theme="@style/ActivityTheme"
+            android:exported="true">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
 
@@ -190,26 +190,30 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver android:name="androidx.media.session.MediaButtonReceiver">
+        <receiver android:name="androidx.media.session.MediaButtonReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".receivers.StopServiceReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="ACTION_STOP_SERVICE" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".receivers.PowerConnectionReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receivers.ScheduledAutoStartReceiver">
+        <receiver android:name=".receivers.ScheduledAutoStartReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.firebirdberlin.nightdream.ACTION_START_SCHEDULED" />
             </intent-filter>
@@ -219,19 +223,22 @@
         </receiver>
         <receiver
             android:name=".receivers.ChargingStateChangeReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receivers.WakeUpReceiver">
+        <receiver android:name=".receivers.WakeUpReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.firebirdberlin.nightdream.WAKEUP" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".receivers.BootReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
@@ -243,7 +250,8 @@
         <receiver
             android:name=".widget.ClockWidgetProvider"
             android:enabled="@bool/use_widget"
-            android:icon="@drawable/widget_preview">
+            android:icon="@drawable/widget_preview"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
@@ -254,23 +262,20 @@
                 android:resource="@xml/clock_widget_info" />
         </receiver>
 
-        <service
-            android:name=".services.SqliteIntentService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <activity
             android:name=".WeatherForecastActivity"
             android:excludeFromRecents="true"
             android:label="@string/forecast"
             android:parentActivityName=".NightDreamActivity"
-            android:theme="@style/SecondaryActivityTheme"></activity>
+            android:theme="@style/SecondaryActivityTheme" />
         <activity
             android:name=".SetAlarmClockActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="@string/alarm"
             android:parentActivityName=".NightDreamActivity"
-            android:theme="@style/AlarmClockActivityTheme">
+            android:theme="@style/AlarmClockActivityTheme"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.SET_ALARM" />
 
