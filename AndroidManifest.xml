@@ -25,6 +25,12 @@
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.CATEGORY_LAUNCHER" />
+        </intent>
     </queries>
 
     <application
