@@ -41,10 +41,12 @@ public class SqliteIntentServiceWorker extends Worker {
 
         //Fetch arguments
         String action = getInputData().getString("action");
-        Log.d(TAG, "doWork() action: "+action);
+        Log.d(TAG, "doWork() action: " + action);
         Gson gson = new Gson();
-        SimpleTime time  = gson.fromJson(getInputData().getString("time"), SimpleTime.class);
-        Log.d(TAG, "doWork() time: "+time);
+        SimpleTime time = gson.fromJson(
+                getInputData().getString("time"), SimpleTime.class
+        );
+        Log.d(TAG, "doWork() time: " + time);
 
         if (action == null) {
             return Result.failure();
@@ -87,13 +89,11 @@ public class SqliteIntentServiceWorker extends Worker {
         DataSource db = new DataSource(getApplicationContext());
         db.open();
 
-        if (time != null) {
-            if (time.isRecurring()) {
-                // the next allowed alarm time is after the next alarm.
-                db.updateNextEventAfter(time.id, time.getMillis());
-            } else {
-                db.delete(time);
-            }
+        if (time.isRecurring()) {
+            // the next allowed alarm time is after the next alarm.
+            db.updateNextEventAfter(time.id, time.getMillis());
+        } else {
+            db.delete(time);
         }
         WakeUpReceiver.schedule(getApplicationContext(), db);
         db.close();
