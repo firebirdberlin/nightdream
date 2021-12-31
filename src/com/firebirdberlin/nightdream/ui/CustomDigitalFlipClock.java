@@ -181,6 +181,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
     public void setSecondaryColor(int color) {
         TextView colon = findViewById(R.id.colon);
         if (colon != null) {
+            colon.setText(":");
             colon.setTextColor(color);
         }
         invalidate();
