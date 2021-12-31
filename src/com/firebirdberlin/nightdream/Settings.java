@@ -739,7 +739,7 @@ public class Settings {
         if (preview) {
             return clockLayout;
         } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
-            return ClockLayout.LAYOUT_ID_CALENDAR;
+            return ClockLayout.LAYOUT_ID_DIGITAL;
         } else if (clockLayout >= 2 && !purchasedWeatherData) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
         }
