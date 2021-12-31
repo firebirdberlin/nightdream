@@ -15,7 +15,7 @@ import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
 
 public class AnimDigit extends ImageViewExtended {
     private static final String TAG = "AnimDigit";
-    private Paint mNumberPaint;
+    private Paint mNumberPaint = new Paint();
     private int number = -1;
 
     public AnimDigit(Context context) {
@@ -28,11 +28,6 @@ public class AnimDigit extends ImageViewExtended {
 
     public AnimDigit(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initPaints();
-    }
-
-    private void initPaints() {
-        mNumberPaint = new Paint();
         mNumberPaint.setAntiAlias(true);
         mNumberPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mNumberPaint.setColor(Color.BLUE);
@@ -46,10 +41,16 @@ public class AnimDigit extends ImageViewExtended {
         if (index >= 0 && index <= 9) {
             Resources res = getResources();
             int resourceId = res.getIdentifier(
-                    "vd_pathmorph_digits_" + index, "drawable", getContext().getPackageName());
-            Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), resourceId, null);
-            myDrawable.setColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP);
-            setImageDrawable(myDrawable);
+                    "vd_pathmorph_digits_" + index, "drawable",
+                    getContext().getPackageName()
+            );
+            Drawable drawable = ResourcesCompat.getDrawable(
+                    getResources(), resourceId, getContext().getTheme()
+            );
+            if (drawable != null) {
+                drawable.setColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP);
+                setImageDrawable(drawable);
+            }
         }
         invalidate();
     }
@@ -63,11 +64,18 @@ public class AnimDigit extends ImageViewExtended {
     public void start(int index) {
         Resources res = getResources();
         int resourceId = res.getIdentifier(
-                "avd_pathmorph_digits_" + number + "_to_" + index, "drawable", getContext().getPackageName());
+                "avd_pathmorph_digits_" + number + "_to_" + index, "drawable",
+                getContext().getPackageName()
+        );
         if (resourceId != 0) {
-            Drawable myDrawable = ResourcesCompat.getDrawable(getResources(), resourceId, null);
-            myDrawable.setColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP);
-            setImageDrawable(myDrawable);
+            Drawable drawable = ResourcesCompat.getDrawable(
+                    getResources(), resourceId,
+                    getContext().getTheme()
+            );
+            if (drawable != null) {
+                drawable.setColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP);
+                setImageDrawable(drawable);
+            }
             this.number = index;
             startDrawableAnimation();
         } else {

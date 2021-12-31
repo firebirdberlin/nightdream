@@ -1,22 +1,14 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
@@ -24,10 +16,9 @@ import com.firebirdberlin.nightdream.Settings;
 
 public class CustomAnimClockPreferencesLayout extends LinearLayout {
 
+    AppCompatActivity activity = null;
     private OnConfigChangedListener mListener = null;
     private Settings settings = null;
-    private boolean isPurchased = false;
-    AppCompatActivity activity = null;
 
     public CustomAnimClockPreferencesLayout(
             Context context, Settings settings, AppCompatActivity activity
@@ -53,18 +44,16 @@ public class CustomAnimClockPreferencesLayout extends LinearLayout {
 
         settings.setFontUri("file:///android_asset/fonts/roboto_thin.ttf", "Roboto Thin", 9);
 
+        boolean showSeconds =
+                settings.getShowSeconds(ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED);
         SwitchCompat switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
-        switchShowSeconds.setChecked(settings.getShowSeconds(ClockLayout.LAYOUT_ID_ANIM_DIGITAL));
+        switchShowSeconds.setChecked(showSeconds);
         switchShowSeconds.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            settings.setShowSeconds(isChecked, ClockLayout.LAYOUT_ID_ANIM_DIGITAL);
+            settings.setShowSeconds(isChecked, ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED);
             if (mListener != null) {
                 mListener.onConfigChanged();
             }
         });
-    }
-
-    public void setIsPurchased(boolean isPurchased) {
-        this.isPurchased = isPurchased;
     }
 
     public void setOnConfigChangedListener(OnConfigChangedListener listener) {
