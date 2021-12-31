@@ -45,7 +45,7 @@ public class DownloadWeatherService extends Worker {
         Settings settings = new Settings(getApplicationContext());
         if (!WeatherService.shallUpdateWeatherData(getApplicationContext(), settings)) {
             Log.d(TAG, "!shallUpdateWeatherData");
-            return Result.failure();
+            return Result.success();
         }
         if (!Utility.hasNetworkConnection(getApplicationContext())) {
             Log.d(TAG, "!hasNetworkConnection");
