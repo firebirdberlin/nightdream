@@ -739,7 +739,7 @@ public class Settings {
         if (preview) {
             return clockLayout;
         } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
-            return ClockLayout.LAYOUT_ID_CALENDAR;
+            return ClockLayout.LAYOUT_ID_DIGITAL;
         } else if (clockLayout >= 2 && !purchasedWeatherData) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
         }
@@ -922,10 +922,10 @@ public class Settings {
     }
 
     private String getKeyForClockLayout(String key, int clockLayoutId) {
-        if (clockLayoutId == ClockLayout.LAYOUT_ID_DIGITAL) {
+        if (clockLayoutId == ClockLayout.LAYOUT_ID_DIGITAL ) {
             return key;
         }
-        return String.format("%s:%d", key, clockLayoutId);
+        return String.format(java.util.Locale.getDefault(),"%s:%d", key, clockLayoutId);
     }
 
     public void setBrightnessOffset(float value) {
