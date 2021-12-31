@@ -54,7 +54,7 @@ public class ClockLayout extends LinearLayout {
     public static final int LAYOUT_ID_CALENDAR = 6;
     public static final int LAYOUT_ID_DIGITAL2 = 7;
     public static final int LAYOUT_ID_DIGITAL3 = 8;
-    public static final int LAYOUT_ID_ANIM_DIGITAL = 9;
+    public static final int LAYOUT_ID_DIGITAL_ANIMATED = 9;
     private static final String TAG = "NightDream.ClockLayout";
     private final WeatherLayout[] weatherLayouts = {null, null, null};
     private final Context context;
@@ -108,7 +108,7 @@ public class ClockLayout extends LinearLayout {
             child = inflater.inflate(R.layout.clock_layout_digital3, null);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             child = inflater.inflate(R.layout.clock_layout_digital_flip, null);
-        } else if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+        } else if (layoutId == LAYOUT_ID_DIGITAL_ANIMATED) {
             child = inflater.inflate(R.layout.clock_layout_anim, null);
         } else if (layoutId == LAYOUT_ID_CALENDAR) {
             child = inflater.inflate(R.layout.clock_layout_calendar, null);
@@ -232,7 +232,7 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setPrimaryColor(color);
         }
-        if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+        if (layoutId == LAYOUT_ID_DIGITAL_ANIMATED) {
             CustomDigitalAnimClock layout = findViewById(R.id.time_layout);
             layout.setPrimaryColor(color);
         }
@@ -438,7 +438,7 @@ public class ClockLayout extends LinearLayout {
             updateDigitalClockCalendar(displayInWidget, parentWidth, parentHeight, minFontSize);
         } else if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             updateDigitalFlipClock(parentWidth);
-        } else if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+        } else if (layoutId == LAYOUT_ID_DIGITAL_ANIMATED) {
             updateDigitalFlipClock(parentWidth);
         } else if (layoutId == LAYOUT_ID_ANALOG) {
             setupLayoutAnalog(parentWidth, parentHeight, config, displayInWidget);
@@ -907,7 +907,7 @@ public class ClockLayout extends LinearLayout {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
             layout.setCustomFormat(formatString);
         }
-        if (layoutId == LAYOUT_ID_ANIM_DIGITAL) {
+        if (layoutId == LAYOUT_ID_DIGITAL_ANIMATED) {
             CustomDigitalAnimClock layout = findViewById(R.id.time_layout);
             layout.setCustomIs24Hour(is24HourFormat);
             layout.setCustomFormat(formatString);

@@ -19,18 +19,16 @@ import android.widget.TextView;
 
 import com.firebirdberlin.nightdream.R;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CustomDigitalAnimClock extends LinearLayout {
 
     private static final String TAG = "CustomDigitalAnimClock";
-    private final Runnable update = () -> updateTextView();
-    private Handler handler;
-
     TimeReceiver timeReceiver;
-    private Context context;
+    String mFormat;
+    private Handler handler;
+    private final Context context;
     private FormatChangeObserver mFormatChangeObserver;
     private Boolean customIs24Hour = null;
     private AnimDigit mCharHighHour;
@@ -47,9 +45,7 @@ public class CustomDigitalAnimClock extends LinearLayout {
     private int currentMinuteLow = -1;
     private int currentSecondHigh = -1;
     private int currentSecondLow = -1;
-    String mFormat;
-    private String m12 = "h:mm aa";
-    private String m24 = "HH:mm";
+    private final Runnable update = this::updateTextView;
     private String mCustom = null;
 
     public CustomDigitalAnimClock(Context context) {
@@ -68,7 +64,7 @@ public class CustomDigitalAnimClock extends LinearLayout {
     }
 
     private void initLayout() {
-        Log.d(TAG,"initLayout()");
+        Log.d(TAG, "initLayout()");
 
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -185,9 +181,9 @@ public class CustomDigitalAnimClock extends LinearLayout {
         if (mCustom != null) {
             mFormat = mCustom;
         } else if (get24HourMode()) {
-            mFormat = m24;
+            mFormat = "HH:mm";
         } else {
-            mFormat = m12;
+            mFormat = "h:mm aa";
         }
     }
 
@@ -203,7 +199,8 @@ public class CustomDigitalAnimClock extends LinearLayout {
     }
 
     public void setSecondaryColor(int color) {
-        invalidate();
+        // colon.setTextColor(color);
+        // invalidate();
     }
 
     protected void updateTextView() {
@@ -249,10 +246,11 @@ public class CustomDigitalAnimClock extends LinearLayout {
         currentSecondHigh = highSecond;
         currentSecondLow = lowSecond;
 
-        if (mFormat != null && !(mFormat.contains("hh") || mFormat.contains("HH")) && (currentHourHigh == 0)) {
+        if (mFormat != null
+                && !(mFormat.contains("hh") || mFormat.contains("HH"))
+                && (currentHourHigh == 0)) {
             mCharHighHour.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             mCharHighHour.setVisibility(View.VISIBLE);
         }
 
@@ -276,14 +274,8 @@ public class CustomDigitalAnimClock extends LinearLayout {
     class TimeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent arg1) {
-            Log.d(TAG, "TimeReceiver");
             updateTextView();
         }
-    }
-
-    @Override
-    public void invalidate() {
-        super.invalidate();
     }
 
     private class FormatChangeObserver extends ContentObserver {

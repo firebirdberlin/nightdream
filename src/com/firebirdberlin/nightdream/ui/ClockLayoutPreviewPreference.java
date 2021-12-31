@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.animation.LayoutTransition;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -11,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +36,12 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 public class ClockLayoutPreviewPreference extends Preference {
     private static final String TAG = "ClockLayoutPreviewPreference";
     private static PreviewMode previewMode = PreviewMode.DAY;
+    private final Context context;
     private ClockLayout clockLayout = null;
     private TextView textViewPurchaseHint = null;
     private View preferenceView = null;
     private LinearLayout preferencesContainer = null;
     private ImageButton resetButton = null;
-
-    private final Context context;
 
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,11 +84,9 @@ public class ClockLayoutPreviewPreference extends Preference {
                 textViewPurchaseHint = summaryParent2.findViewById(R.id.textViewPurchaseHint);
                 preferencesContainer = summaryParent2.findViewById(R.id.preferencesContainer);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    LayoutTransition lt = new LayoutTransition();
-                    lt.disableTransitionType(LayoutTransition.CHANGING);
-                    previewContainer.setLayoutTransition(lt);
-                }
+                LayoutTransition lt = new LayoutTransition();
+                lt.disableTransitionType(LayoutTransition.CHANGING);
+                previewContainer.setLayoutTransition(lt);
             }
         }
         updateView();
@@ -193,10 +188,9 @@ public class ClockLayoutPreviewPreference extends Preference {
                 );
                 preferencesContainer.addView(prefs_calendar, lp);
                 break;
-            case ClockLayout.LAYOUT_ID_ANIM_DIGITAL:
+            case ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED:
                 CustomAnimClockPreferencesLayout prefs_anim =
                         new CustomAnimClockPreferencesLayout(context, settings, getActivity());
-                prefs_anim.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
                 prefs_anim.setOnConfigChangedListener(
                         new CustomAnimClockPreferencesLayout.OnConfigChangedListener() {
                             @Override
@@ -243,24 +237,19 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     private void setupResetButton(final int clockLayoutID) {
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = getContext();
-                Resources res = context.getResources();
-                new AlertDialog.Builder(context)
-                        .setTitle(res.getString(R.string.confirm_reset))
-                        .setMessage(res.getString(R.string.confirm_reset_question_layout))
-                        .setNegativeButton(android.R.string.no, null)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
-                                AnalogClockConfig config = new AnalogClockConfig(getContext(), preset);
-                                config.reset();
-                                updateView();
-                            }
-                        }).show();
-            }
+        resetButton.setOnClickListener(v -> {
+            Context context = getContext();
+            Resources res = context.getResources();
+            new AlertDialog.Builder(context)
+                    .setTitle(res.getString(R.string.confirm_reset))
+                    .setMessage(res.getString(R.string.confirm_reset_question_layout))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
+                        AnalogClockConfig config = new AnalogClockConfig(getContext(), preset);
+                        config.reset();
+                        updateView();
+                    }).show();
         });
 
     }
@@ -274,8 +263,6 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     private void setupPurchaseHint(Settings settings) {
-        boolean purchasedWeatherData = purchased(BillingHelperActivity.ITEM_WEATHER_DATA);
-        Log.i(TAG, "purchasedWeather:" + purchasedWeatherData);
         int layoutID = settings.getClockLayoutID(true);
         if (layoutID == ClockLayout.LAYOUT_ID_CALENDAR
                 && !purchased(BillingHelperActivity.ITEM_DONATION)) {
@@ -325,7 +312,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL3
                         && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_FLIP
                         && layoutID != ClockLayout.LAYOUT_ID_CALENDAR
-                        && layoutID != ClockLayout.LAYOUT_ID_ANIM_DIGITAL
+                        && layoutID != ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED
         );
     }
 
