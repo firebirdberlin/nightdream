@@ -896,7 +896,7 @@ public class ClockLayout extends LinearLayout {
         }
         if (layoutId == LAYOUT_ID_DIGITAL_FLIP) {
             CustomDigitalFlipClock layout = findViewById(R.id.time_layout);
-            layout.setCustomIs24Hour(is24HourFormat);
+            layout.setCustomFormat(formatString);
         }
     }
 
