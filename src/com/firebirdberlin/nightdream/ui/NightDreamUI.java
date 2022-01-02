@@ -733,7 +733,7 @@ public class NightDreamUI {
         if (!settings.showWeather) return;
         Log.i(TAG, "updateWeatherData() 2");
 
-        DownloadWeatherService.start(mContext);
+        DownloadWeatherService.start(mContext, settings);
 
         // handle outdated weather data
         WeatherEntry entry = settings.weatherEntry;

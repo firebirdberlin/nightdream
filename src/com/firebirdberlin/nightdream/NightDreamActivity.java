@@ -739,7 +739,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onLocationUpdated() {
-        DownloadWeatherService.start(this);
+        DownloadWeatherService.start(this, mySettings);
     }
 
     private void setupAlarmClockIcon() {
