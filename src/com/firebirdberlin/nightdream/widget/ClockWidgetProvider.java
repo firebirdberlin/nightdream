@@ -100,7 +100,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                 settings.setLocation(location);
             }
 
-            DownloadWeatherService.start(context);
+            DownloadWeatherService.start(context, settings);
         }
 
         // update weather date if not outdated
