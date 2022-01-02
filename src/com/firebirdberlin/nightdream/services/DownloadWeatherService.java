@@ -3,10 +3,16 @@ package com.firebirdberlin.nightdream.services;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
@@ -20,6 +26,7 @@ import com.firebirdberlin.openweathermapapi.MetNoApi;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.google.gson.Gson;
 
 public class DownloadWeatherService extends Worker {
     private static final String TAG = "DownloadWeatherService";
@@ -31,13 +38,41 @@ public class DownloadWeatherService extends Worker {
     }
 
     public static void start(Context context, Settings settings) {
+        start(context, settings, false);
+    }
+
+    public static void start(Context context, Settings settings, Boolean widget) {
         if (!shallUpdateWeatherData(context, settings)) {
             return;
         }
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
         OneTimeWorkRequest downloadWeatherWork = new OneTimeWorkRequest.Builder(
-                DownloadWeatherService.class
-        ).build();
+                DownloadWeatherService.class)
+                .addTag(TAG)
+                .setConstraints(constraints)
+                .build();
+
         WorkManager.getInstance(context).enqueue(downloadWeatherWork);
+
+        if(!widget) {
+            //Cannot invoke observe on a background thread -> handler.post
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWeatherWork.getId())
+                    .observe((LifecycleOwner) context, info -> {
+                        if (info != null && info.getState().isFinished()) {
+                            Log.d(TAG, "onPostExecute");
+                            Gson gson = new Gson();
+                            WeatherEntry entry = gson.fromJson(
+                                    info.getOutputData().getString("entry"), WeatherEntry.class);
+
+                            broadcastResult(context);
+                        }
+                    }));
+        }
     }
 
     public static boolean shallUpdateWeatherData(Context context, Settings settings) {
@@ -71,12 +106,8 @@ public class DownloadWeatherService extends Worker {
     @Override
     public Result doWork() {
         Log.d(TAG, "doWork()");
-
         Settings settings = new Settings(getApplicationContext());
-        if (!Utility.hasNetworkConnection(getApplicationContext())) {
-            Log.d(TAG, "!hasNetworkConnection");
-            return Result.failure();
-        }
+
         City city = settings.getCityForWeather();
         Location location = settings.getLocation();
         String cityID = settings.weatherCityID;
@@ -134,34 +165,30 @@ public class DownloadWeatherService extends Worker {
                 break;
         }
 
-        onPostExecute(entry);
 
-        return Result.success();
-    }
-
-    protected void onPostExecute(WeatherEntry entry) {
-        Log.d(TAG, "onPostExecute(WeatherEntry)");
-
-        if (entry == null) {
-            return;
-        }
-
-        if (entry.timestamp > WeatherEntry.INVALID) {
-            Settings settings = new Settings(getApplicationContext());
+        if ((entry != null)
+                && (entry.timestamp > WeatherEntry.INVALID)) {
             settings.setWeatherEntry(entry);
-            broadcastResult(settings, entry);
+            ScreenWatcherService.updateNotification(getApplicationContext(), entry, settings.temperatureUnit);
             Log.d(TAG, "Download finished.");
+
+            Gson gson = new Gson();
+            String jsonEntry = gson.toJson(entry);
+
+            Data myData = new Data.Builder()
+                    .putString("entry", jsonEntry)
+                    .build();
+
+            return Result.success(myData);
         } else {
             Log.w(TAG, "entry.timestamp is INVALID!");
+            return Result.failure();
         }
-
     }
 
-    private void broadcastResult(Settings settings, WeatherEntry entry) {
-        Log.d(TAG, "broadcastResult(Settings, WeatherEntry)");
+    private static void broadcastResult(Context context) {
+        Log.d(TAG, "broadcastResult()");
         Intent intent = new Intent(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-
-        ScreenWatcherService.updateNotification(getApplicationContext(), entry, settings.temperatureUnit);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

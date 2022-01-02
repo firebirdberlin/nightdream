@@ -60,6 +60,7 @@ public class ScreenWatcherService extends Service {
     }
 
     public static void updateNotification(Context context, WeatherEntry weatherEntry, int temperatureUnit) {
+        Log.d(TAG, "updateNotification()");
         if (ScreenWatcherService.isRunning) {
             if (weatherEntry != null ) {
                 String title = String.format(
