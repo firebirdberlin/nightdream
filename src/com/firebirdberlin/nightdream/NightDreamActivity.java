@@ -37,6 +37,10 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
 
@@ -55,6 +59,7 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.DownloadWeatherModel;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
@@ -66,6 +71,7 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.cast.framework.CastContext;
@@ -118,6 +124,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private CastSession mCastSession;
     private SessionManagerListener<CastSession> mSessionManagerListener;
     private Settings mySettings = null;
+    private DownloadWeatherModel model;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
@@ -158,15 +165,19 @@ public class NightDreamActivity extends BillingHelperActivity
         @Override
         public void onLocationChanged(final Location location) {
             if (location == null) return;
-            City city = new City();
-            city.lat = location.getLatitude();
-            city.lon = location.getLongitude();
-            city.name = "current";
-            Log.i(TAG, "current location: " + city.toString());
-            if (mySettings != null) {
-                mySettings.setLocation(location);
+
+            if ( (mySettings.getLocation().getLongitude() != location.getLongitude()) ||
+            (mySettings.getLocation().getLatitude() != location.getLatitude()) ) {
+                City city = new City();
+                city.lat = location.getLatitude();
+                city.lon = location.getLongitude();
+                city.name = "current";
+                Log.i(TAG, "current location: " + city.toString());
+                if (mySettings != null) {
+                    mySettings.setLocation(location);
+                }
+                onLocationUpdated();
             }
-            onLocationUpdated();
         }
 
         @Override
@@ -352,6 +363,15 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
+
+        model = new ViewModelProvider(this).get(DownloadWeatherModel.class);
+        model.loadDataFromWorker(this, this);
+
+        //observe data from model
+        model.getData().observe(this, weatherEntry -> {
+            Log.d(TAG, "onChanged weatherEntry: "+weatherEntry);
+            nightDreamUI.weatherDataUpdated(context);
+        });
 
         setupCastListener();
         mCastContext = CastContext.getSharedInstance(this);
@@ -739,6 +759,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onLocationUpdated() {
+        Log.d("DownloadWeatherService","onLocationUpdated()");
         DownloadWeatherService.start(this, mySettings);
     }
 
@@ -1022,7 +1043,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Location location = Utility.getLastKnownLocation(this);
         if (location != null) {
             mySettings.setLocation(location);
-            onLocationUpdated();
+           // onLocationUpdated();
         }
     }
 

@@ -63,10 +63,8 @@ import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
-import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
-import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
 
@@ -122,6 +120,7 @@ public class NightDreamUI {
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
     private final Settings settings;
+
     private final Runnable fadeClock = new Runnable() {
         @Override
         public void run() {
@@ -340,6 +339,7 @@ public class NightDreamUI {
         Log.d(TAG, "NightDreamUI()");
         mContext = context;
         settings = new Settings(context);
+
         // right to left swipe
         // left to right swipe
         GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -732,8 +732,6 @@ public class NightDreamUI {
     private void updateWeatherData() {
         if (!settings.showWeather) return;
         Log.i(TAG, "updateWeatherData() 2");
-
-        DownloadWeatherService.start(mContext, settings);
 
         // handle outdated weather data
         WeatherEntry entry = settings.weatherEntry;
@@ -1609,7 +1607,6 @@ public class NightDreamUI {
     private NightDreamBroadcastReceiver registerBroadcastReceiver() {
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
@@ -1696,17 +1693,19 @@ public class NightDreamUI {
         }
     }
 
+    public void weatherDataUpdated(Context context){
+        Log.d(TAG, "weatherDataUpdated");
+        settings.weatherEntry = settings.getWeatherEntry();
+        clockLayout.update(settings.weatherEntry, false);
+        updatePollenExposure(settings.weatherEntry);
+        ClockWidgetProvider.updateAllWidgets(context);
+    }
+
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
-                Log.v(TAG, "Weather data updated");
-                settings.weatherEntry = settings.getWeatherEntry();
-                clockLayout.update(settings.weatherEntry, false);
-                updatePollenExposure(settings.weatherEntry);
-                ClockWidgetProvider.updateAllWidgets(context);
-            } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
+            if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
                 showAlarmClock();
             } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
                 setupAlarmClock();
