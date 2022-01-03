@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebirdberlin.nightdream.R;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
     public static String TAG = "CustomRecyclerViewAdapter";
@@ -74,9 +71,6 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     public void removeNotification(int position, NotificationList oldNotificationList) {
         Log.d(TAG, "removeNotification");
         this.notificationList.remove(position);
-        //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
-        //notifyDataSetChanged();
-
         updateDataSet(oldNotificationList, this.notificationList);
     }
 
