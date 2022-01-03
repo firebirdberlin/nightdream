@@ -1039,18 +1039,19 @@ public class Utility {
         public String getCountryName() {
             if (address == null) return "";
             String countryName = address.getCountryName();
-            if (countryName == null) return "";
-            return countryName;
+            return (countryName == null) ? "" : countryName;
         }
 
         public String getCountryCode() {
             if (address == null) return "";
-            return address.getCountryCode();
+            String countryCode = address.getCountryCode();
+            return (countryCode == null) ? "" : countryCode;
         }
 
         public String getPostalCode() {
             if (address == null) return "";
-            return address.getPostalCode();
+            String postalCode = address.getPostalCode();
+            return (postalCode == null) ? "" : postalCode;
         }
     }
 }
