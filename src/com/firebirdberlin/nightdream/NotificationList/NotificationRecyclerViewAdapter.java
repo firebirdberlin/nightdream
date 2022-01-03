@@ -9,11 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.R;
@@ -68,11 +68,17 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         return new NotificationViewHolder(recyclerViewItem);
     }
 
-    public void removeNotification(int position) {
+    public void removeNotification(int position, NotificationList oldNotificationList) {
         Log.d(TAG, "removeNotification");
         this.notificationList.remove(position);
-        //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
-        notifyDataSetChanged();
+        updateDataSet(oldNotificationList, this.notificationList);
+    }
+
+    public void updateDataSet(NotificationList oldNotificationList, NotificationList newNotificationList) {
+        final NotificationDiffCallback diffCallback = new NotificationDiffCallback(oldNotificationList, newNotificationList);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        diffResult.dispatchUpdatesTo(this);
     }
 
     //Called by RecyclerView to display the data at the specified position.
