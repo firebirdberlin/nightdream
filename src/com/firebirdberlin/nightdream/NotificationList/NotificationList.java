@@ -15,6 +15,10 @@ public class NotificationList {
     public NotificationList() {
     }
 
+    public NotificationList(List<Notification> notifications) {
+        this.set(notifications);
+    }
+
     public List<Notification> get() {
         return this.notifications;
     }
@@ -56,6 +60,15 @@ public class NotificationList {
         notifications.clear();
     }
 
+
+    private void set(List<Notification> notifications) {
+        clear();
+        for (int index = 0; index < notifications.size(); index++) {
+            Notification n = notifications.get(index);
+            n.setChildId(index);
+            this.notifications.add(n);
+        }
+    }
 
     public void replace(List<Notification> notifications, String packageName) {
         clear();
