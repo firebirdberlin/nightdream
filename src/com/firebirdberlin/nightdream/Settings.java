@@ -857,6 +857,11 @@ public class Settings {
         return FontCache.get(mContext, path);
     }
 
+    public Typeface loadTypeface(int clockLayoutId) {
+        String path = getFontUri(clockLayoutId);
+        return FontCache.get(mContext, path);
+    }
+
     private String mapIntToTypefacePath(int typeface) {
         switch (typeface) {
             case 1:
