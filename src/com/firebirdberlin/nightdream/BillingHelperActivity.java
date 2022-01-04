@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -92,6 +93,7 @@ public abstract class BillingHelperActivity
     }
 
     public void showPurchaseDialog() {
+        final Context self = this;
         Log.i(TAG, "showPurchaseDialog()");
         if (isPurchased(ITEM_DONATION)) return;
         List<CharSequence> entries = new ArrayList<>();
@@ -128,7 +130,7 @@ public abstract class BillingHelperActivity
             values.add(PRODUCT_ID_DONATION);
         }
 
-        new AlertDialog.Builder(this, R.style.DialogTheme)
+        runOnUiThread(() -> new AlertDialog.Builder(this, R.style.DialogTheme)
                 .setTitle(getResources().getString(R.string.buy))
                 .setItems(
                         entries.toArray(new CharSequence[entries.size()]),
@@ -158,7 +160,8 @@ public abstract class BillingHelperActivity
                             }
                         })
                 .setNeutralButton(android.R.string.cancel, null)
-                .show();
+                .show()
+        );
     }
 
     private String getProductWithPrice(HashMap<String, String> prices, int resId, String sku) {
@@ -432,21 +435,24 @@ public abstract class BillingHelperActivity
 
 
     public void showThankYouDialog() {
-        //new AlertDialog.Builder(this, R.style.DialogTheme)
-        new AlertDialog.Builder(this)
+        final Context self = this ;
+        runOnUiThread(() -> new AlertDialog.Builder(self, R.style.DialogTheme)
                 .setTitle(getResources().getString(R.string.dialog_title_thank_you))
                 .setMessage(R.string.dialog_message_thank_you)
                 .setPositiveButton(android.R.string.ok, null)
-                .show();
+                .show()
+        );
+        Log.d(TAG, "showThankYouDialog()");
     }
 
     public void showPurchasePendingDialog() {
-        //new AlertDialog.Builder(this, R.style.DialogTheme)
-        new AlertDialog.Builder(this)
+        final Context self = this;
+        runOnUiThread(() -> new AlertDialog.Builder(self, R.style.DialogTheme)
                 .setTitle(getResources().getString(R.string.dialog_title_thank_you))
                 .setMessage(R.string.dialog_message_pending_purchase)
                 .setPositiveButton(android.R.string.ok, null)
-                .show();
+                .show()
+        );
     }
 
     SkuDetails getSkuDetails(String sku) {

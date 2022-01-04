@@ -70,8 +70,16 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     private static void updateClockLayoutSettings(
             Context context, int appWidgetId, ClockLayout clockLayout, Dimension widgetDimension
     ) {
+        SharedPreferences widgetPrefs = context.getSharedPreferences(
+                String.format(Locale.ENGLISH, "preferences_widget_%d", appWidgetId),
+                Context.MODE_PRIVATE
+        );
         Settings settings = new Settings(context);
         int clockLayoutId = settings.getClockLayoutID(false);
+        if (widgetPrefs.contains("clockLayout")) {
+            clockLayoutId = Integer.parseInt(widgetPrefs.getString("clockLayout", "0"));
+        }
+
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
 
@@ -83,13 +91,15 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         clockLayout.setBackgroundColor(Color.TRANSPARENT);
         clockLayout.setLayout(clockLayoutId);
-        clockLayout.setTypeface(settings.typeface);
+        clockLayout.setTypeface(settings.loadTypeface(clockLayoutId));
         clockLayout.setPrimaryColor(settings.clockColor, glowRadius, settings.clockColor, textureId, false);
         clockLayout.setSecondaryColor(settings.secondaryColor);
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
         clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
-        clockLayout.showDate(showDate && settings.showDate);
+        //clockLayout.showDate(showDate && settings.showDate);
+        clockLayout.showDate(showDate && widgetPrefs.getBoolean("showDate", true));
+
         clockLayout.setShowNotifications(false);
         clockLayout.showPollenExposure(false);
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
@@ -120,11 +130,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
 
         {   // draw background
-            SharedPreferences prefs = context.getSharedPreferences(
-                    String.format(Locale.ENGLISH, "preferences_widget_%d", appWidgetId),
-                    Context.MODE_PRIVATE
-            );
-            int transparency = 255 - prefs.getInt("clockBackgroundTransparency", 100);
+            int transparency = 255 - widgetPrefs.getInt("clockBackgroundTransparency", 100);
 
             GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(30);
