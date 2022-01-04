@@ -108,8 +108,8 @@ public class Settings {
     public float nightModeBrightness = 0.f;
     public float maxBrightness = 1.f;
     public float maxBrightnessBattery = 1.f;
-    public float location_lon = 0.f;
-    public float location_lat = 0.f;
+    public double location_lon = 0.d;
+    public double location_lat = 0.d;
     public long location_time = -1L;
     public String location_provider = LocationManager.NETWORK_PROVIDER;
     public float minIlluminance = 15.f; // lux
@@ -449,8 +449,8 @@ public class Settings {
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
         clockLayout = Integer.parseInt(settings.getString("clockLayout", "0"));
         dim_offset = settings.getFloat("dimOffset", dim_offset);
-        location_lat = settings.getFloat("location_lat", 0.f);
-        location_lon = settings.getFloat("location_lon", 0.f);
+        location_lat = getDouble("location_lat", 0.d);
+        location_lon = getDouble("location_lon", 0.d);
         location_time = settings.getLong("location_time", -1L);
         location_provider = settings.getString("location_provider", LocationManager.NETWORK_PROVIDER);
         minIlluminance = settings.getFloat("minIlluminance", 15.f);
@@ -1193,15 +1193,26 @@ public class Settings {
         return l;
     }
 
+    private double getDouble(final String key, final double defaultValue){
+        if ( !settings.contains(key))
+            return defaultValue;
+
+        try {
+            return Double.longBitsToDouble(settings.getLong(key, 0));
+        }catch (Exception ex){
+            return (double) settings.getFloat(key, 0.f);
+        }
+    }
+
     public void setLocation(Location location) {
         if (location == null) return;
-        location_lon = (float) location.getLongitude();
-        location_lat = (float) location.getLatitude();
+        location_lon = location.getLongitude();
+        location_lat = location.getLatitude();
         location_time = location.getTime();
         location_provider = location.getProvider();
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putFloat("location_lon", (float) location.getLongitude());
-        prefEditor.putFloat("location_lat", (float) location.getLatitude());
+        prefEditor.putLong("location_lon", Double.doubleToRawLongBits(location.getLongitude()));
+        prefEditor.putLong("location_lat", Double.doubleToRawLongBits(location.getLatitude()));
         prefEditor.putLong("location_time", location.getTime());
         prefEditor.putString("location_provider", location.getProvider());
         prefEditor.apply();
