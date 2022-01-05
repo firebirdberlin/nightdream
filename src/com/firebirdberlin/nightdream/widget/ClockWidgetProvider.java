@@ -78,6 +78,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         int clockLayoutId = settings.getClockLayoutID(false);
         if (widgetPrefs.contains("clockLayout")) {
             clockLayoutId = Integer.parseInt(widgetPrefs.getString("clockLayout", "0"));
+            clockLayoutId = settings.getValidatedClockLayoutID(clockLayoutId, false);
         }
 
         int glowRadius = settings.getGlowRadius(clockLayoutId);
