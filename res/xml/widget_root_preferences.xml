@@ -1,14 +1,43 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <de.firebirdberlin.preference.InlineSeekBarPreference
-    app:defaultValue="100"
-    app:iconSpaceReserved="false"
-    app:key="clockBackgroundTransparency"
-    app:title="@string/clockBackgroundTransparency"
-    seekbar:interval="1"
-    seekbar:max="255"
-    seekbar:min="0"
-    seekbar:unitsLeft=""
-    seekbar:unitsRight=""
-    xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
+        app:defaultValue="100"
+        app:iconSpaceReserved="false"
+        app:key="clockBackgroundTransparency"
+        app:title="@string/clockBackgroundTransparency"
+        seekbar:interval="1"
+        seekbar:max="255"
+        seekbar:min="0"
+        seekbar:unitsLeft=""
+        seekbar:unitsRight=""
+        xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseDesignPackage"
+        app:allowDividerAbove="true"
+        app:isPreferenceVisible="false"
+        app:title="@string/purchaseWeatherData" />
+
+    <PreferenceCategory
+        android:key="category_appearance"
+        app:iconSpaceReserved="false"
+        android:enabled="false"
+        android:title="@string/appearance">
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="0"
+            app:entries="@array/clockLayoutsWidget"
+            app:entryValues="@array/clockLayoutsWidgetValues"
+            app:key="clockLayout"
+            app:title="@string/clock_layout" />
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="showDate"
+            app:title="@string/show_date" />
+    </PreferenceCategory>
 </PreferenceScreen>
