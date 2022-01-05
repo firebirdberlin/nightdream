@@ -736,15 +736,19 @@ public class Settings {
     }
 
     public int getClockLayoutID(boolean preview) {
+        return getValidatedClockLayoutID(clockLayout, preview);
+    }
+
+    public int getValidatedClockLayoutID(int clockLayoutId, boolean preview) {
         if (preview) {
-            return clockLayout;
-        } else if (clockLayout == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
+            return clockLayoutId;
+        } else if (clockLayoutId == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
-        } else if (clockLayout >= 2 && !purchasedWeatherData) {
+        } else if (clockLayoutId >= 2 && !purchasedWeatherData) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
         }
 
-        return clockLayout;
+        return clockLayoutId;
     }
 
     public int getBackgroundMode() {
