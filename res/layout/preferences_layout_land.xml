@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/details"
@@ -13,7 +13,8 @@
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintVertical_bias="0"
+        android:name="com.firebirdberlin.nightdream.PreferencesFragment"/>
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -23,7 +24,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/right"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -32,6 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"/>
+        app:layout_constraintVertical_bias="0"
+        android:name="com.firebirdberlin.nightdream.PreferencesFragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
