@@ -26,9 +26,12 @@ public class ChargingStateChangeReceiver extends BroadcastReceiver {
             ctx.unregisterReceiver(receiver);
         }
     }
+    
     @Override
     public void onReceive(Context context, Intent intent) {
-        getAndSaveBatteryReference(context.getApplicationContext());
+        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
+                getAndSaveBatteryReference(context.getApplicationContext());
+        }
     }
 
     public static BatteryValue getAndSaveBatteryReference(Context context) {
