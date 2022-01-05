@@ -101,13 +101,16 @@ public class PreferencesActivity extends BillingHelperActivity
         Log.d(TAG, "onItemPurchased");
         super.onItemPurchased(sku);
         if (fragment != null) {
-            fragment.onPurchasesInitialized();
-            Settings.storeWeatherDataPurchase(
-                    this,
-                    isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
-                    isPurchased(BillingHelperActivity.ITEM_DONATION)
-            );
-            initFragment();
+            runOnUiThread(() -> {
+                fragment.onPurchasesInitialized();
+                Settings.storeWeatherDataPurchase(
+                        this,
+                        isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
+                        isPurchased(BillingHelperActivity.ITEM_DONATION)
+                );
+                initFragment();
+            }
+        );
         }
     }
 
