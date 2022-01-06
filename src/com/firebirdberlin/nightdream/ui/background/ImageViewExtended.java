@@ -14,6 +14,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -44,6 +46,7 @@ public class ImageViewExtended extends AppCompatImageView {
     private static final String TAG = "ImageViewExtended";
     private final Context context;
     private GifMovie gif = null;
+    private PDFMovie pdf = null;
     private Bitmap bitmapImage;
 
 
@@ -158,23 +161,41 @@ public class ImageViewExtended extends AppCompatImageView {
     public void setImage(Uri uri) {
         String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
 
-        if (extension.equals("gif")) {
-            try {
-                gif = new GifMovie(context.getContentResolver().openInputStream(uri));
-                setBitmap(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (gif != null) {
-                gif.setOneShot(false);
-                setImageDrawable(gif);
-                gif.setVisible(true, true);
-                gif.start();
-            } else {
-                setImageDrawable(new ColorDrawable(Color.BLACK));
-            }
-        } else {
-            setImageDrawable(loadBackgroundImage(uri));
+        switch (extension){
+            case "pdf":
+                Log.d(TAG, "pdf");
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                Handler handler = new Handler(Looper.getMainLooper());
+                executor.execute(() -> { //background thread
+                    pdf = new PDFMovie(context,getResources(),uri);
+                    handler.post(() -> { //like onPostExecute()
+                        setImageDrawable(pdf);
+                        this.post(() -> pdf.start());
+                    });
+                });
+            break;
+
+            case "gif":
+                Log.d(TAG, "gif");
+                try {
+                    gif = new GifMovie(context.getContentResolver().openInputStream(uri));
+                    setBitmap(uri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (gif != null) {
+                    gif.setOneShot(false);
+                    setImageDrawable(gif);
+                    gif.setVisible(true, true);
+                    gif.start();
+                } else {
+                    setImageDrawable(new ColorDrawable(Color.BLACK));
+                }
+                break;
+
+            default:
+                Log.d(TAG,"default");
+                setImageDrawable(loadBackgroundImage(uri));
         }
     }
 
