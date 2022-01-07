@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,9 @@ import android.widget.FrameLayout;
 
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BottomPanelLayout extends FrameLayout {
 
@@ -17,6 +21,7 @@ public class BottomPanelLayout extends FrameLayout {
     Panel activePanel = Panel.ALARM_CLOCK;
     private AttributeSet attrs;
     private WebRadioLayout webRadioLayout = null;
+    private Ticker tickerLayout = null;
     private int accentColor;
     private int textColor;
     private AlarmClock view = null;
@@ -124,6 +129,9 @@ public class BottomPanelLayout extends FrameLayout {
         if (webRadioLayout != null) {
             webRadioLayout.setCustomColor(accentColor, textColor);
         }
+        if (tickerLayout != null) {
+            tickerLayout.setCustomColor(accentColor, textColor);
+        }
     }
 
     public void setup() {
@@ -131,7 +139,9 @@ public class BottomPanelLayout extends FrameLayout {
             showAlarmView();
         } else if (activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
-        } else {
+        } else if (activePanel == Panel.TICKER) {
+            showTickerView();
+         }else {
             showAlarmView();
         }
         show();
@@ -159,6 +169,42 @@ public class BottomPanelLayout extends FrameLayout {
         webRadioLayout.setUserInteractionObserver(userInteractionObserver);
         addView(webRadioLayout);
         invalidate();
+    }
+
+    private void showTickerView() {
+
+        Log.i(TAG, "showTickerView");
+
+        if (tickerLayout != null) {
+            //tickerLayout.updateText();
+            invalidate();
+            return; // already visible
+        }
+        removeAllViews();
+        clearViews();
+
+        tickerLayout = new Ticker(context, attrs);
+        setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
+        addView(tickerLayout);
+        invalidate();
+
+        tickerLayout.addHeadline("test 1");
+        List<String> headlines = new ArrayList<String>();
+        headlines.add("Warum die Omikron-Welle Bremen so heftig trifft  -");
+        headlines.add("Liveblog: ++ Union für Feststellung epidemischer Lage ++  -");
+        headlines.add("Corona-Pandemie: Inzidenz wieder bei mehr als 300  -");
+        tickerLayout.addHeadline("test 2");
+        tickerLayout.setHeadlines(headlines);
+        tickerLayout.setListener(new Ticker.HeadlineClickListener() {
+            @Override
+            public void onClick(int index) {
+                // Index identifies the clicked headline in the list.
+                Log.d(TAG, "Ticker click: "+index);
+            }
+        });
+        tickerLayout.run();
+
+        Log.d(TAG, "ppt: "+tickerLayout.sizeHeadlines());
     }
 
     public boolean isWebRadioViewActive() {
@@ -205,6 +251,6 @@ public class BottomPanelLayout extends FrameLayout {
         setCustomColor(accentColor, textColor);
     }
 
-    public enum Panel {ALARM_CLOCK, WEB_RADIO}
+    public enum Panel {ALARM_CLOCK, WEB_RADIO, TICKER}
 }
 
