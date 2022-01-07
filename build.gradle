@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
     implementation "androidx.work:work-runtime:2.6.0"
+    implementation 'com.prof18.rssparser:rssparser:4.0.2'
 
 
     // https://developer.android.com/studio/build/multidex

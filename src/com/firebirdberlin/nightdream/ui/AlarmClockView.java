@@ -104,6 +104,7 @@ public class AlarmClockView extends View {
         cornerRight = new HotCorner(Position.RIGHT);
         cornerRight.setIconResource(getResources(), R.drawable.ic_no_alarm_clock);
         initColorFilters();
+
     }
 
     public void setPaddingHorizontal(int paddingHorizontal) {

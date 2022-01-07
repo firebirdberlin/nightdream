@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 
 public class AlarmClock extends RelativeLayout {
@@ -49,6 +50,8 @@ public class AlarmClock extends RelativeLayout {
 
         addView(alarmClockView, layoutAlarmClockView);
         addView(alarmTimeTextView, lp);
+
+        SqliteIntentService.broadcastAlarm(context);
     }
 
     public void setLocked(boolean on) {

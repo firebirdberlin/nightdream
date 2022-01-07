@@ -66,6 +66,7 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.SidePanel;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
+import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
@@ -120,6 +121,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private CastSession mCastSession;
     private SessionManagerListener<CastSession> mSessionManagerListener;
     private Settings mySettings = null;
+    private RSSViewModel rssViewModel;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
@@ -363,6 +365,32 @@ public class NightDreamActivity extends BillingHelperActivity
         mCastContext = CastContext.getSharedInstance(this);
         mCastSession = mCastContext.getSessionManager().getCurrentCastSession();
 
+        //Init RSS - Reader
+        rssViewModel = new ViewModelProvider(this).get(RSSViewModel.class);
+
+        if (mySettings.rssEnable) {
+            RSSViewModel.observe(this, channel -> {
+                if (channel != null) {
+                    bottomPanelLayout.setTickerArticles(channel.getArticles());
+                }
+            });
+
+            RSSViewModel.observeSpeed(this, speed -> {
+                Log.d(TAG,"change rss speed: "+speed);
+                bottomPanelLayout.setTickerSpeed(speed);
+            });
+
+            RSSViewModel.observeInterval(this, interval -> {
+                Log.d(TAG,"change rss interval: "+interval);
+                RSSViewModel.loadDataPeriodicFromWorker(this, this);
+            });
+
+            RSSViewModel.observeTextSize(this, textSize -> {
+                Log.d(TAG,"change rss textSize: "+textSize);
+                bottomPanelLayout.setTickerTextSize(textSize);
+            });
+        }
+
         // allow the app to be displayed above the keyguard
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
@@ -499,6 +527,13 @@ public class NightDreamActivity extends BillingHelperActivity
             // clear the action so that it won't be re-delivered.
             intent.setAction("");
             bottomPanelLayout.onResume();
+        }
+
+        if (mySettings.rssEnable) {
+            activePanel = BottomPanelLayout.Panel.TICKER;
+            if (rssViewModel.getData().getValue() != null) {
+                bottomPanelLayout.setTickerArticles(rssViewModel.getData().getValue().getArticles());
+            }
         }
 
         bottomPanelLayout.setActivePanel(activePanel);
@@ -738,6 +773,9 @@ public class NightDreamActivity extends BillingHelperActivity
                 mSessionManager.endCurrentSession(true);
             }
             RadioStreamService.isRunning = false;
+            if (mySettings.rssEnable) {
+                bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.TICKER);
+            }
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
         }
@@ -784,6 +822,17 @@ public class NightDreamActivity extends BillingHelperActivity
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL) {
             int new_mode = (mode == 0) ? 2 : 0;
             toggleNightMode(new_mode);
+
+            if (mySettings.rssEnable && !mySettings.rssEnableNight) {
+                switch (new_mode) {
+                    case 0:
+                        bottomPanelLayout.hideTicker();
+                        break;
+                    case 2:
+                        bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.TICKER);
+                        break;
+                }
+            }
         }
     }
 

@@ -327,6 +327,16 @@ OR
     <string name="remaining_alarm_time_start">This alarm will ring in&#160;</string>
     <string name="repeat">repeat</string>
     <string name="reset_to_defaults">Reset to defaults</string>
+    <string name="rss">RSS Reader</string>
+    <string name="rss_night">RSS Reader night</string>
+    <string name="rss_charset">RSS character encoding</string>
+    <string name="rss_enable_summary">Enable RSS Reader</string>
+    <string name="rss_enable_summary_night">Enable RSS Reader at night</string>
+    <string name="rss_tickerspeed">Ticker speed</string>
+    <string name="rss_timeset">Refresh RSS data (minutes)</string>
+    <string name="rss_url_error">Url not set</string>
+    <string name="rss_data_error">An error has occurred. No data available.</string>
+    <string name="rss_text_size">Text size</string>
     <string name="screenProtection">Screen burn protection</string>
     <string name="screenProtectionNone">None</string>
     <string name="screenProtectionMove">Move the clock around</string>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="rssCharsetModeValues">
+        <item>utf-8</item>
+        <item>ISO-8859-5</item>
+        <item>ISO-8859-6</item>
+        <item>ISO-8859-7</item>
+        <item>ISO-8859-8</item>
+        <item>ISO-8859-9</item>
+        <item>ISO-8859-11</item>
+        <item>ISO-8859-13</item>
+        <item>ISO-8859-15</item>
+    </string-array>
+
+    <string-array name="rssCharsetModes">
+        <item>UTF - 8</item>
+        <item>ISO 8859–5</item>
+        <item>ISO 8859–6</item>
+        <item>ISO 8859–7</item>
+        <item>ISO 8859–8</item>
+        <item>ISO 8859–9</item>
+        <item>ISO 8859–11</item>
+        <item>ISO 8859–13</item>
+        <item>ISO 8859–15</item>
+    </string-array>
+
+    <string-array name="rssIntervalValues">
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+    </string-array>
+
+    <string-array name="rssIntervalModes">
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+    </string-array>
+
+    <string-array name="rssTickerModeValues">
+        <item>15</item>
+        <item>10</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="rssTickerModes">
+        <item>slow</item>
+        <item>normal</item>
+        <item>fast</item>
+    </string-array>
+
+    <string-array name="rssTextSizeValues">
+        <item>0</item>
+        <item>2</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="rssTextSizeModes">
+        <item>big</item>
+        <item>normal</item>
+        <item>small</item>
+    </string-array>
+
+
+</resources>

@@ -1156,6 +1156,7 @@ public class NightDreamUI {
                 postBackgroundImageChange();
             }
         };
+        bottomPanelLayout.restartTicker();
 
         clockLayout.removeCallbacks(fixConfig);
         clockLayout.postDelayed(fixConfig, 200);

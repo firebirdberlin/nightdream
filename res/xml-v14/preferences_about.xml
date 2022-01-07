@@ -93,7 +93,7 @@
             app:enabled="true"
             app:key="credits"
             app:selectable="false"
-            app:title="Stefan Fruhner (2020)"
+            app:title="Stefan Fruhner (2022)"
             app:enableCopying="true"/>
 
         <Preference
@@ -293,6 +293,17 @@ vi - Phong Nguyen"/>
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://www.amcharts.com/free-animated-svg-weather-icons/"
+                />
+        </Preference>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_rss_parser"
+            app:summary="by prof18"
+            app:title="RSS Parser">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/prof18/RSS-Parser"
                 />
         </Preference>
 
