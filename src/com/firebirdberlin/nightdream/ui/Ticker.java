@@ -16,6 +16,12 @@ import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
+import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,14 +55,30 @@ public class Ticker extends FrameLayout {
     }
 
     private void init() {
-        // todo: register for a data source and initialize a listener
-        addHeadline("test 1");
-        List<String> headlines = new ArrayList<String>();
-        headlines.add("Warum die Omikron-Welle Bremen so heftig trifft  -");
-        headlines.add("Liveblog: ++ Union für Feststellung epidemischer Lage ++  -");
-        headlines.add("Corona-Pandemie: Inzidenz wieder bei mehr als 300  -");
-        addHeadline("test 2");
-        setHeadlines(headlines);
+        //ViewModels
+        RSSViewModel rssViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(RSSViewModel.class);
+        rssViewModel.loadDataFromWorker(context, (LifecycleOwner) context);
+
+        rssViewModel.getData().observe((LifecycleOwner) context, channel -> {
+            if (channel != null) {
+                if (channel.getTitle() != null) {
+                    Log.d(TAG, "rss title: "+channel.getTitle());
+                }
+                    List<String> headlines = new ArrayList<>();
+                    for (int i = 0; i < Math.min(channel.getArticles().size(), 5); i++) {
+                        String title = channel.getArticles().get(i).getTitle();
+                        String link = channel.getArticles().get(i).getLink();
+                        String time = channel.getArticles().get(i).getPubDate();
+                        Log.d(TAG, "rss Date: " + time);
+                        Log.d(TAG, "rss Title: " + title);
+                        Log.d(TAG, "rss Link: " + link);
+                        headlines.add(title);
+                    }
+                    setHeadlines(headlines);
+            }
+        });
+
+        addHeadline("");
         run();
     }
 
@@ -171,6 +193,13 @@ public class Ticker extends FrameLayout {
                     animationStart((TextView) v);
                 }
         );
+        tv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Index identifies the clicked headline in the list.
+                Log.d(TAG, "Ticker click: "+index);
+            }
+        });
         addView(tv);
     }
 
