@@ -37,7 +37,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
 
@@ -120,6 +119,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private CastSession mCastSession;
     private SessionManagerListener<CastSession> mSessionManagerListener;
     private Settings mySettings = null;
+
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
