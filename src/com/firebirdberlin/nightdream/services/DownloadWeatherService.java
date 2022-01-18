@@ -28,9 +28,7 @@ public class DownloadWeatherService extends Worker {
     private static final String TAG = "DownloadWeatherService";
     public static MutableLiveData<WeatherEntry> outputObservable = new MutableLiveData<>();
 
-    public DownloadWeatherService(
-            @NonNull Context context,
-            @NonNull WorkerParameters params) {
+    public DownloadWeatherService(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
 
@@ -40,21 +38,19 @@ public class DownloadWeatherService extends Worker {
             return;
         }
 
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
+        Constraints constraints =
+                new Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build();
 
-        OneTimeWorkRequest downloadWeatherWork = new OneTimeWorkRequest.Builder(
-                DownloadWeatherService.class)
-                .addTag(TAG)
-                .setConstraints(constraints)
-                .build();
+        OneTimeWorkRequest downloadWeatherWork =
+                new OneTimeWorkRequest.Builder(
+                        DownloadWeatherService.class)
+                        .addTag(TAG)
+                        .setConstraints(constraints)
+                        .build();
 
         WorkManager.getInstance(context).enqueue(downloadWeatherWork);
-    }
-
-    public void stopWorker(Context context) {
-        WorkManager.getInstance(context).cancelAllWorkByTag(TAG);
     }
 
     public static boolean shallUpdateWeatherData(Context context, Settings settings) {
@@ -82,6 +78,10 @@ public class DownloadWeatherService extends Worker {
 
         Log.d(TAG, "shallUpdateWeatherData = " + result);
         return result;
+    }
+
+    public void stopWorker(Context context) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(TAG);
     }
 
     @NonNull
