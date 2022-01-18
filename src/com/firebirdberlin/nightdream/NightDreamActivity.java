@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
 
@@ -55,6 +56,7 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.DownloadWeatherModel;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
@@ -158,15 +160,19 @@ public class NightDreamActivity extends BillingHelperActivity
         @Override
         public void onLocationChanged(final Location location) {
             if (location == null) return;
-            City city = new City();
-            city.lat = location.getLatitude();
-            city.lon = location.getLongitude();
-            city.name = "current";
-            Log.i(TAG, "current location: " + city.toString());
-            if (mySettings != null) {
-                mySettings.setLocation(location);
+
+            if ((mySettings.getLocation().getLongitude() != location.getLongitude()) ||
+                    (mySettings.getLocation().getLatitude() != location.getLatitude())) {
+                City city = new City();
+                city.lat = location.getLatitude();
+                city.lon = location.getLongitude();
+                city.name = "current";
+                Log.i(TAG, "current location: " + city.toString());
+                if (mySettings != null) {
+                    mySettings.setLocation(location);
+                }
+                onLocationUpdated();
             }
-            onLocationUpdated();
         }
 
         @Override
@@ -352,6 +358,11 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
+
+        DownloadWeatherModel.observe(this, weatherEntry -> {
+            Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
+            nightDreamUI.weatherDataUpdated(context);
+        });
 
         setupCastListener();
         mCastContext = CastContext.getSharedInstance(this);
@@ -739,6 +750,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void onLocationUpdated() {
+        Log.d("DownloadWeatherService", "onLocationUpdated()");
         DownloadWeatherService.start(this, mySettings);
     }
 
@@ -1022,7 +1034,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Location location = Utility.getLastKnownLocation(this);
         if (location != null) {
             mySettings.setLocation(location);
-            onLocationUpdated();
+            // onLocationUpdated();
         }
     }
 
