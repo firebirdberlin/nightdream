@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ public class PreferencesActivity extends BillingHelperActivity
     public static final String TAG = "PreferencesActivity";
     PreferencesFragment fragment = new PreferencesFragment();
     PreferencesFragment fragment2 = null;
+    Handler handler = new Handler();
     String rootKey = "";
 
     public static void start(Context context) {
@@ -28,16 +30,27 @@ public class PreferencesActivity extends BillingHelperActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(init);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setTheme(R.style.PreferencesTheme);
         initTitleBar();
-        initFragment();
+
+        handler.removeCallbacks(init);
+        handler.postDelayed(init, 500);
+
     }
+    private Runnable init = () -> initFragment();
 
     public void initFragment() {
         Log.i(TAG, "initFragment()");
+        handler.removeCallbacks(init);
         FragmentManager fm = getSupportFragmentManager();
 
         FragmentTransaction fT = fm.beginTransaction();
@@ -56,11 +69,15 @@ public class PreferencesActivity extends BillingHelperActivity
             Bundle data = new Bundle();
             data.putString("rootKey", rootKey);
             fragment.setArguments(data);
+            if (Utility.isEmpty(rootKey)) {
+                fT.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+            }
             fT.replace(R.id.main_frame, fragment);
         } else {
             setContentView(R.layout.preferences_layout_land);
 
             if (Utility.isEmpty(rootKey)) {
+                fT.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
                 rootKey = "autostart";
             }
             Bundle data = new Bundle();
@@ -78,7 +95,8 @@ public class PreferencesActivity extends BillingHelperActivity
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        initFragment();
+        handler.removeCallbacks(init);
+        handler.post(init);
     }
 
     @Override
@@ -93,7 +111,9 @@ public class PreferencesActivity extends BillingHelperActivity
                 isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                 isPurchased(BillingHelperActivity.ITEM_DONATION)
         );
-        initFragment();
+
+        handler.removeCallbacks(init);
+        handler.postDelayed(init, 200);
     }
 
     @Override
@@ -108,7 +128,8 @@ public class PreferencesActivity extends BillingHelperActivity
                         isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                         isPurchased(BillingHelperActivity.ITEM_DONATION)
                 );
-                initFragment();
+                handler.removeCallbacks(init);
+                handler.postDelayed(init, 200);
             }
         );
         }
@@ -172,18 +193,17 @@ public class PreferencesActivity extends BillingHelperActivity
         rootKey = pref.getKey();
 
         // Instantiate the new Fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
-        final Fragment fragment =
-                fragmentManager.getFragmentFactory().instantiate(
-                        this.getClassLoader(), pref.getFragment()
-                );
+        FragmentTransaction fT = fm.beginTransaction();
+        if (fragment != null) {
+            fT.remove(fragment);
+        }
+        fragment = new PreferencesFragment();
+        Bundle data = new Bundle();
+        data.putString("rootKey", rootKey);
+        fragment.setArguments(data);
 
-        Bundle args = new Bundle();
-        args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
-        fragment.setArguments(args);
-
-        FragmentTransaction fT = fragmentManager.beginTransaction();
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             fT.setCustomAnimations(R.anim.move_in_prefs_right, R.anim.move_out_prefs_left, R.anim.move_in_prefs_left, R.anim.move_out_prefs_right)
                     .replace(R.id.main_frame, fragment)
