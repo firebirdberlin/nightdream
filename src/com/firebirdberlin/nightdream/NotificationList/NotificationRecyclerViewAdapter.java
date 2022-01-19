@@ -172,11 +172,14 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                 break;
             }
         }
-
+        Log.d(TAG, notification.getApplicationName() + ": " + match);
         switch (match) {
             case "DecoratedCustomViewStyle":
                 try {
                     View bigCardView = notification.getBigCardView();
+                    if (bigCardView == null) {
+                        bigCardView = notification.getCardView();
+                    }
                     if (bigCardView != null) {
                         if (bigCardView.getParent() != null) {
                             ((ViewGroup) bigCardView.getParent()).removeView(bigCardView);

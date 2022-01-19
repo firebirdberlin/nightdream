@@ -108,27 +108,8 @@ public class Notification implements Parcelable {
         this.notificationKey = intent.getStringExtra("key");
         this.notificationTag = intent.getStringExtra("tag");
 
-        this.cardView = null;
-        try {
-            RemoteViews remoteView = intent.getParcelableExtra("contentView");
-            if (remoteView != null) {
-                FrameLayout container = new FrameLayout(context);
-                container.addView(remoteView.apply(context, container));
-                this.cardView = container;
-            }
-        } catch (SecurityException ignored) {
-        }
-
-        this.bigCardView = null;
-        try {
-            RemoteViews bigContentView = intent.getParcelableExtra("bigContentView");
-            if (bigContentView != null) {
-                FrameLayout container = new FrameLayout(context);
-                container.addView(bigContentView.apply(context, container));
-                this.bigCardView = container;
-            }
-        } catch (SecurityException ignored) {
-        }
+        this.cardView = getCard(context, intent, "contentView");
+        this.bigCardView = getCard(context, intent, "bigContentView");
 
         this.smallIconBitmap = intent.getParcelableExtra("smallIconBitmap");
         this.bitmapLargeIcon = intent.getParcelableExtra("largeIconBitmap");
@@ -140,6 +121,18 @@ public class Notification implements Parcelable {
         }
 
         childId = -1;
+    }
+
+    View getCard(Context context, Intent intent, String name) {
+        try {
+            RemoteViews remoteView = intent.getParcelableExtra(name);
+            if (remoteView != null) {
+                FrameLayout container = new FrameLayout(context);
+                container.addView(remoteView.apply(context, container));
+                return container;
+            }
+        } catch (SecurityException | RemoteViews.ActionException ignored) {}
+        return null;
     }
 
     <T> T getParcelable(Parcel in, ClassLoader classLoader) {
