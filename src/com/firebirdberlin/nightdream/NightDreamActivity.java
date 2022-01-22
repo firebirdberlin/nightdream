@@ -359,11 +359,6 @@ public class NightDreamActivity extends BillingHelperActivity
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
 
-        DownloadWeatherModel.observe(this, weatherEntry -> {
-            Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
-            nightDreamUI.weatherDataUpdated(context);
-        });
-
         setupCastListener();
         mCastContext = CastContext.getSharedInstance(this);
         mCastSession = mCastContext.getSessionManager().getCurrentCastSession();
@@ -511,15 +506,12 @@ public class NightDreamActivity extends BillingHelperActivity
         showToastIfNotCharging();
 
         final Context context = this;
-        clockLayoutContainer.post(new Runnable() {
-            @Override
-            public void run() {
-                // ask for active notifications
-                if (Build.VERSION.SDK_INT >= 18) {
-                    Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                    i.putExtra("command", "list");
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(i);
-                }
+        clockLayoutContainer.post(() -> {
+            // ask for active notifications
+            if (Build.VERSION.SDK_INT >= 18) {
+                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                i.putExtra("command", "list");
+                LocalBroadcastManager.getInstance(context).sendBroadcast(i);
             }
         });
 
@@ -534,6 +526,13 @@ public class NightDreamActivity extends BillingHelperActivity
                             LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
                     );
                 });
+            });
+        }
+
+        if (mySettings.showWeather) {
+            DownloadWeatherModel.observe(this, weatherEntry -> {
+                Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
+                nightDreamUI.weatherDataUpdated(context);
             });
         }
     }
