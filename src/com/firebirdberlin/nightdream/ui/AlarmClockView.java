@@ -61,6 +61,7 @@ public class AlarmClockView extends View {
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
     SimpleTime time = null;
+    SimpleTime currentlyActiveAlarm = null;
     GestureDetector mGestureDetector;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
     private boolean locked = false;
@@ -413,6 +414,10 @@ public class AlarmClockView extends View {
         return "";
     }
 
+    public SimpleTime getCurrentlyActiveAlarm(){
+        return currentlyActiveAlarm;
+    }
+
     private boolean alarmIsRunning() {
         return AlarmHandlerService.alarmIsRunning();
     }
@@ -694,6 +699,7 @@ public class AlarmClockView extends View {
                 SimpleTime time = null;
                 if (extras != null) {
                     time = new SimpleTime(extras);
+                    currentlyActiveAlarm = time;
                 }
                 updateTime(time);
             }
