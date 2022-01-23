@@ -629,10 +629,11 @@ public class NightDreamUI {
         preloadBackgroundImage = null;
         preloadBackgroundImageFile = null;
         exifLayoutContainer.setVisibility(View.GONE);
-
-        if (!Utility.isLowRamDevice(mContext)) {
+        if (Utility.isLowRamDevice(mContext)) {
+            bgshape = colorBlack;
+            backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
+        } else {
             switch (settings.getBackgroundMode()) {
-
                 case Settings.BACKGROUND_TRANSPARENT: {
                     Log.d(TAG, "BACKGROUND_TRANSPARENT");
                     bgshape = colorTransparent;
