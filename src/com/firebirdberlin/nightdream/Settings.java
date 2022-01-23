@@ -181,7 +181,7 @@ public class Settings {
     SharedPreferences settings;
     private boolean purchasedDonation = false;
     private boolean radioStreamActivateWiFi = false;
-    private int background_mode = 1;
+    private int background_mode = BACKGROUND_BLACK;
     private long nextAlwaysOnTime = 0L;
     private Context mContext;
     private boolean reactivate_screen_on_noise = false;
