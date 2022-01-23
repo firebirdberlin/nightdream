@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -10,15 +11,23 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.util.Log;
+import android.view.MotionEvent; 
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 
 public class AlarmClock extends RelativeLayout {
+    static String TAG = "AlarmClock";
     private final TextView alarmTimeTextView;
     protected AlarmClockView alarmClockView;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
@@ -34,9 +43,64 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView = new TextView(context);
         alarmTimeTextView.setEllipsize(TextUtils.TruncateAt.END);
         alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-        OnClickListener alarmTimeTextVieOnCLickListener = view -> SetAlarmClockActivity.start(getContext());
-        alarmTimeTextView.setOnClickListener(alarmTimeTextVieOnCLickListener);
+        OnClickListener alarmTimeTextViewOnCLickListener = view -> SetAlarmClockActivity.start(getContext());
+        //alarmTimeTextView.setOnClickListener(alarmTimeTextViewOnCLickListener);
+        alarmTimeTextView.setOnTouchListener(new OnTouchListener() {
+            float startX = 0;
+            float text_x = 0;
+            float max_move_seen = 0;
+            SimpleTime nextEventTime = AlarmHandlerService.getCurrentlyActiveAlarm();;
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int action = motionEvent.getAction();
+                float x = motionEvent.getX();
+                float X = motionEvent.getRawX();
+                float y = motionEvent.getY();
+                switch(action) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.d(TAG, "DOWN:" + x);
+                        startX = X;
+                        max_move_seen = 0;
+                        text_x = alarmTimeTextView.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float diff_x = X - startX;
+                        Log.d(TAG, "MOVE:" + x);
+                        if (diff_x > 0.) {
+                            alarmTimeTextView.setPadding((int) diff_x, 0, 0, 0);
+                            float alpha = diff_x / (0.5f * alarmTimeTextView.getWidth());
+                            alarmTimeTextView.setAlpha(1.f - alpha);
+                        }
+                        if (diff_x > max_move_seen) {
+                            max_move_seen = diff_x;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        Log.d(TAG, "UP:" + x);
+                        alarmTimeTextView.setAlpha(1.f);
+                        alarmTimeTextView.setPadding(0, 0, 0, 0);
+                        if (X - startX > 0.5*alarmTimeTextView.getWidth()) {
+                            //skip next alarm
+                            nextEventTime = alarmClockView.getCurrentlyActiveAlarm();
 
+                            Intent i = AlarmHandlerService.getSkipIntent(context,nextEventTime);
+                            getContext().startService(i);
+
+                            SqliteIntentService.scheduleAlarm(context);
+                        } else if (max_move_seen < 0.2f * alarmTimeTextView.getWidth()) {
+                            // treat as click
+                            SetAlarmClockActivity.start(getContext());
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        Log.d(TAG, "CANCEL:" + x);
+                        alarmTimeTextView.setAlpha(1.f);
+                        alarmTimeTextView.setPadding(0, 0, 0, 0);
+                        break;
+                }
+                return false;
+            }
+        });
         LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_VERTICAL);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
