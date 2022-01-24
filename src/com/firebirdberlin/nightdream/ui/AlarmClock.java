@@ -83,10 +83,12 @@ public class AlarmClock extends RelativeLayout {
                             //skip next alarm
                             nextEventTime = alarmClockView.getCurrentlyActiveAlarm();
 
-                            Intent i = AlarmHandlerService.getSkipIntent(context,nextEventTime);
-                            getContext().startService(i);
+                            if (nextEventTime != null) {
+                                Intent i = AlarmHandlerService.getSkipIntent(context,nextEventTime);
+                                getContext().startService(i);
 
-                            SqliteIntentService.scheduleAlarm(context);
+                                SqliteIntentService.scheduleAlarm(context);
+                            }
                         } else if (max_move_seen < 0.2f * alarmTimeTextView.getWidth()) {
                             // treat as click
                             SetAlarmClockActivity.start(getContext());
