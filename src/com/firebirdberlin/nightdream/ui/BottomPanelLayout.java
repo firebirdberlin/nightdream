@@ -17,6 +17,7 @@ public class BottomPanelLayout extends FrameLayout {
     Panel activePanel = Panel.ALARM_CLOCK;
     private AttributeSet attrs;
     private WebRadioLayout webRadioLayout = null;
+    private Ticker tickerLayout = null;
     private int accentColor;
     private int textColor;
     private AlarmClock view = null;
@@ -124,6 +125,9 @@ public class BottomPanelLayout extends FrameLayout {
         if (webRadioLayout != null) {
             webRadioLayout.setCustomColor(accentColor, textColor);
         }
+        if (tickerLayout != null) {
+            tickerLayout.setCustomColor(accentColor, textColor);
+        }
     }
 
     public void setup() {
@@ -131,8 +135,10 @@ public class BottomPanelLayout extends FrameLayout {
             showAlarmView();
         } else if (activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
+        } else if (activePanel == Panel.TICKER) {
+            showTickerView();
         } else {
-            showAlarmView();
+            showTickerView();
         }
         show();
         invalidate();
@@ -158,6 +164,25 @@ public class BottomPanelLayout extends FrameLayout {
         webRadioLayout.setCustomColor(accentColor, textColor);
         webRadioLayout.setUserInteractionObserver(userInteractionObserver);
         addView(webRadioLayout);
+        invalidate();
+    }
+
+    private void showTickerView() {
+
+        Log.i(TAG, "showTickerView");
+
+        if (tickerLayout != null) {
+            //tickerLayout.updateText();
+            invalidate();
+            return; // already visible
+        }
+        removeAllViews();
+        clearViews();
+
+        tickerLayout = new Ticker(context, attrs);
+        setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
+        tickerLayout.setCustomColor(accentColor, textColor);
+        addView(tickerLayout);
         invalidate();
     }
 
@@ -205,6 +230,6 @@ public class BottomPanelLayout extends FrameLayout {
         setCustomColor(accentColor, textColor);
     }
 
-    public enum Panel {ALARM_CLOCK, WEB_RADIO}
+    public enum Panel {ALARM_CLOCK, WEB_RADIO, TICKER}
 }
 
