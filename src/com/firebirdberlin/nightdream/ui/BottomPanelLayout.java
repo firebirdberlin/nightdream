@@ -138,7 +138,7 @@ public class BottomPanelLayout extends FrameLayout {
         } else if (activePanel == Panel.TICKER) {
             showTickerView();
         } else {
-            showTickerView();
+            showAlarmView();
         }
         show();
         invalidate();
