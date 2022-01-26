@@ -659,37 +659,23 @@ public class NightDreamUI {
                     Log.d(TAG, "BACKGROUND_IMAGE");
                     setImageScale();
 
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    Handler handler = new Handler(Looper.getMainLooper());
-
-                    executor.execute(() -> {
-                        //doinbackground if cachefile not exists first write to cachefile
-                        if (!backgroundImages[activeBackgroundImage].existCacheFile()) {
-                            backgroundImages[activeBackgroundImage].setImageDrawable(colorBlack);
-                            backgroundImages[activeBackgroundImage].bitmapUriToCache(Uri.parse(settings.backgroundImageURI));
-                        }
-
-                        handler.post(() -> {
-                            //like onPostExecute()
-                            int other = (activeBackgroundImage + 1) % 2;
-                            backgroundImages[activeBackgroundImage].setImage(
-                                    Uri.parse(settings.backgroundImageURI)
-                            );
-                            Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
-                            if (bitmap == null) {
-                                return;
-                            }
-                            setDominantColorFromBitmap(bitmap);
-                            if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                                backgroundImages[other].setImageBitmap(
-                                        Graphics.blur(bitmap)
-                                );
-                            } else {
-                                backgroundImages[other].setImageDrawable(colorBlack);
-                            }
-                            backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        });
-                    });
+                    int other = (activeBackgroundImage + 1) % 2;
+                    backgroundImages[activeBackgroundImage].setImage(
+                            Uri.parse(settings.backgroundImageURI)
+                    );
+                    Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
+                    if (bitmap == null) {
+                        return;
+                    }
+                    setDominantColorFromBitmap(bitmap);
+                    if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                        backgroundImages[other].setImageBitmap(
+                                Graphics.blur(bitmap)
+                        );
+                    } else {
+                        backgroundImages[other].setImageDrawable(colorBlack);
+                    }
+                    backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                     break;
                 }
@@ -707,6 +693,10 @@ public class NightDreamUI {
                         preloadBackgroundImage = null;
                         preloadBackgroundImageFile = null;
                         setupSlideshow();
+                    }
+
+                    if (settings.background_exif) {
+                        exifLayoutContainer.setVisibility(View.VISIBLE);
                     }
                     break;
 
@@ -1398,11 +1388,7 @@ public class NightDreamUI {
             restoreRingerMode();
             setColor();
             if (settings.hideBackgroundImage) {
-                backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
-                if (settings.background_exif && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
-                    exifLayoutContainer.setVisibility(View.VISIBLE);
-                }
-                postBackgroundImageChange();
+                initBackground();
             }
         }
 

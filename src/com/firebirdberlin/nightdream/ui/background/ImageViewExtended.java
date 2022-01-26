@@ -156,7 +156,9 @@ public class ImageViewExtended extends AppCompatImageView {
     }
 
     public void setImage(Uri uri) {
-        String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
+        String extension = MimeTypeMap.getFileExtensionFromUrl(
+                Uri.fromFile(new File(uri.getPath())).toString()
+        );
 
         if (extension.equals("gif")) {
             try {
