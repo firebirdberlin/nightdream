@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -9,9 +8,6 @@ import android.widget.FrameLayout;
 
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BottomPanelLayout extends FrameLayout {
 
@@ -141,8 +137,8 @@ public class BottomPanelLayout extends FrameLayout {
             showWebRadioView();
         } else if (activePanel == Panel.TICKER) {
             showTickerView();
-         }else {
-            showAlarmView();
+        } else {
+            showTickerView();
         }
         show();
         invalidate();
@@ -185,26 +181,9 @@ public class BottomPanelLayout extends FrameLayout {
 
         tickerLayout = new Ticker(context, attrs);
         setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
+        tickerLayout.setCustomColor(accentColor, textColor);
         addView(tickerLayout);
         invalidate();
-
-        tickerLayout.addHeadline("test 1");
-        List<String> headlines = new ArrayList<String>();
-        headlines.add("Warum die Omikron-Welle Bremen so heftig trifft  -");
-        headlines.add("Liveblog: ++ Union für Feststellung epidemischer Lage ++  -");
-        headlines.add("Corona-Pandemie: Inzidenz wieder bei mehr als 300  -");
-        tickerLayout.addHeadline("test 2");
-        tickerLayout.setHeadlines(headlines);
-        tickerLayout.setListener(new Ticker.HeadlineClickListener() {
-            @Override
-            public void onClick(int index) {
-                // Index identifies the clicked headline in the list.
-                Log.d(TAG, "Ticker click: "+index);
-            }
-        });
-        tickerLayout.run();
-
-        Log.d(TAG, "ppt: "+tickerLayout.sizeHeadlines());
     }
 
     public boolean isWebRadioViewActive() {
