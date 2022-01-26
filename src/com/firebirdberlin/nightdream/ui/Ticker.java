@@ -22,24 +22,18 @@ import java.util.List;
 import java.util.Set;
 
 //shows text scrolling from right to left
-public class Ticker extends FrameLayout implements View.OnClickListener {
+public class Ticker extends FrameLayout {
 
-    public static String TAG = "Ticker";
     private static final long animationSpeed = 10L;
+    public static String TAG = "Ticker";
     private final List<String> headlines = new ArrayList<>();
     private final Set<View> animatedViews = new HashSet<>();
-    private HeadlineClickListener clickListener;
     private int textSize = 72;
     private int spaceWidth = 36;
     private int textColor = Color.WHITE;
     private int accentColor = Color.WHITE;
-    private int index=-1;
+    private int index = -1;
     private Context context;
-
-    //notify when a headline is clicked.
-    public interface HeadlineClickListener {
-        void onClick(int index);
-    }
 
     //Constructor
     public Ticker(Context context, AttributeSet attrs) {
@@ -50,10 +44,24 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         background.setColor(Color.parseColor("#AA212121"));
         background.setCornerRadii(new float[]{30, 30, 30, 30, 0, 0, 0, 0});
         setBackground(background);
+
+        init();
+    }
+
+    private void init() {
+        // todo: register for a data source and initialize a listener
+        addHeadline("test 1");
+        List<String> headlines = new ArrayList<String>();
+        headlines.add("Warum die Omikron-Welle Bremen so heftig trifft  -");
+        headlines.add("Liveblog: ++ Union für Feststellung epidemischer Lage ++  -");
+        headlines.add("Corona-Pandemie: Inzidenz wieder bei mehr als 300  -");
+        addHeadline("test 2");
+        setHeadlines(headlines);
+        run();
     }
 
     //add set of headlines
-    public void setHeadlines(List<String> headlines) {
+    private void setHeadlines(List<String> headlines) {
         if (headlines != null && !headlines.isEmpty()) {
             this.headlines.addAll(headlines);
         }
@@ -76,11 +84,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         return headlines.size();
     }
 
-    //set listener
-    public void setListener(HeadlineClickListener listener) {
-        clickListener = listener;
-    }
-
     // set textColor
     public void setTextColor(int color) {
         this.textColor = color;
@@ -98,12 +101,12 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         updateChild();
     }
 
-    private void updateChild(){
+    private void updateChild() {
         //set all textcolor to all textviews
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View v = getChildAt(i);
-            if (v instanceof TextView){
+            if (v instanceof TextView) {
                 ((TextView) v).setTextColor(textColor);
                 ((TextView) v).setTextSize(TypedValue.COMPLEX_UNIT_PX, this.textSize);
             }
@@ -148,15 +151,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         }
     }
 
-    //onClick listener
-    @Override
-    public void onClick(View v) {
-        Object tag = v.getTag();
-        if (tag instanceof Integer && clickListener != null) {
-            clickListener.onClick((Integer)tag);
-        }
-    }
-
     private void launchNext() {
         index = (index + 1) % headlines.size();
 
@@ -166,22 +160,17 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         tv.setTextColor(this.textColor);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, this.textSize);
         tv.setText(headlines.get(index));
-        int padding = (int)this.textSize / 2;
+        int padding = this.textSize / 2;
         tv.setPadding(0, padding, 0, padding);
         tv.setSingleLine(true);
         tv.setTag(index);
-        tv.setOnClickListener(this);
-        tv.addOnLayoutChangeListener(new OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top,
-                                       int right, int bottom,
-                                       int oldLeft, int oldTop,
-                                       int oldRight, int oldBottom) {
-                // View's dimensions are available only after the layout pass.
-                // Now is the time to start animating it.
-                animationStart((TextView)v);
-            }
-        });
+        tv.addOnLayoutChangeListener(
+                (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                    // View's dimensions are available only after the layout pass.
+                    // Now is the time to start animating it.
+                    animationStart((TextView) v);
+                }
+        );
         addView(tv);
     }
 
@@ -205,16 +194,19 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
                         //add view to set
                         animatedViews.add(tv);
                     }
+
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         launchNext();
                         animationEnd(tv);
                     }
+
                     @Override
                     public void onAnimationCancel(Animator animation) {
                         //Remove view from set
                         animatedViews.remove(tv);
                     }
+
                     @Override
                     public void onAnimationRepeat(Animator animation) {
                     }
@@ -232,22 +224,24 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
                     @Override
                     public void onAnimationStart(Animator animation) {
                     }
+
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         //Remove view
                         removeView(tv);
                         animatedViews.remove(tv);
                     }
+
                     @Override
                     public void onAnimationCancel(Animator animation) {
                         //Remove view from set
                         animatedViews.remove(tv);
                     }
+
                     @Override
                     public void onAnimationRepeat(Animator animation) {
                     }
                 })
                 .start();
     }
-
 }
