@@ -56,6 +56,7 @@ public class AlarmClock extends RelativeLayout {
             float startX = 0;
             float max_move_seen = 0;
             long timestampDown = 0;
+            final float threshold = 0.25f;
             SimpleTime nextEventTime = AlarmHandlerService.getCurrentlyActiveAlarm();
 
             @Override
@@ -87,7 +88,7 @@ public class AlarmClock extends RelativeLayout {
                             float diff_x = rawX - startX;
                             if (diff_x > 0.) {
                                 alarmTimeTextView.setPadding((int) diff_x, 0, 0, 0);
-                                float alpha = diff_x / (0.5f * alarmTimeTextView.getWidth());
+                                float alpha = diff_x / (threshold * alarmTimeTextView.getWidth());
                                 alarmTimeTextView.setAlpha(1.f - alpha);
                             }
                             if (diff_x > max_move_seen) {
@@ -102,7 +103,7 @@ public class AlarmClock extends RelativeLayout {
                         alarmTimeTextView.setPadding(0, 0, 0, 0);
                         if (
                                 now - timestampDown > 500
-                                        && rawX - startX > 0.5 * alarmTimeTextView.getWidth()
+                                        && rawX - startX > threshold * alarmTimeTextView.getWidth()
                         ) {
                             //skip next alarm
                             nextEventTime = alarmClockView.getCurrentlyActiveAlarm();
