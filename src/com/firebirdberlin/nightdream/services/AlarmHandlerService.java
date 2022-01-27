@@ -152,6 +152,10 @@ public class AlarmHandlerService extends IntentService {
         }
     }
 
+    public static void skipAlarm(Context context, SimpleTime time) {
+        SqliteIntentService.skipAlarm(context, time);
+    }
+
     public static void snoozeAlarm(Context context) {
         snoozeAlarm(context, false);
     }
@@ -186,7 +190,7 @@ public class AlarmHandlerService extends IntentService {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 SimpleTime time = new SimpleTime(bundle);
-                SqliteIntentService.skipAlarm(context, time);
+                SqliteIntentServiceWorker.skipAlarm(context, time);
             }
         } else if (ACTION_SNOOZE_ALARM.equals(action)) {
             snoozeAlarm(context);

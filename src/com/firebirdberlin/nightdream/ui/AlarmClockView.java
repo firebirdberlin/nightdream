@@ -3,10 +3,7 @@ package com.firebirdberlin.nightdream.ui;
 import static android.text.format.DateFormat.getBestDateTimePattern;
 import static android.text.format.DateFormat.is24HourFormat;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,7 +19,6 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.util.AttributeSet;
@@ -32,9 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
@@ -61,7 +55,6 @@ public class AlarmClockView extends View {
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
     SimpleTime time = null;
-    SimpleTime currentlyActiveAlarm = null;
     GestureDetector mGestureDetector;
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new LocalSimpleOnGestureListener();
     private boolean locked = false;
@@ -90,7 +83,6 @@ public class AlarmClockView extends View {
     };
     private Float lastMoveEventY = null;
     private int lastMinSinceDragStart = 0;
-    private NightDreamBroadcastReceiver broadcastReceiver = null;
     private onAlarmChangeListener listener;
     private float lastHourX = -1;
     private int lastHour = -1;
@@ -131,37 +123,6 @@ public class AlarmClockView extends View {
     private void postAlarmTime() {
         if (listener != null) {
             listener.onAlarmChanged(getAlarmTimeFormatted());
-        }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        broadcastReceiver = registerBroadcastReceiver();
-        SqliteIntentService.broadcastAlarm(this.ctx);
-    }
-
-    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
-        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_ALARM_SET);
-        filter.addAction(Config.ACTION_ALARM_STOPPED);
-        filter.addAction(Config.ACTION_ALARM_DELETED);
-        LocalBroadcastManager.getInstance(ctx).registerReceiver(receiver, filter);
-        return receiver;
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        unregister(broadcastReceiver);
-    }
-
-    private void unregister(BroadcastReceiver receiver) {
-        try {
-            LocalBroadcastManager.getInstance(ctx).unregisterReceiver(receiver);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
         }
     }
 
@@ -414,10 +375,6 @@ public class AlarmClockView extends View {
         return "";
     }
 
-    public SimpleTime getCurrentlyActiveAlarm(){
-        return currentlyActiveAlarm;
-    }
-
     private boolean alarmIsRunning() {
         return AlarmHandlerService.alarmIsRunning();
     }
@@ -490,7 +447,7 @@ public class AlarmClockView extends View {
         this.time = null;
     }
 
-    private void updateTime(SimpleTime time) {
+    protected void updateTime(SimpleTime time) {
         this.time = time;
         postAlarmTime();
         invalidate();
@@ -684,25 +641,6 @@ public class AlarmClockView extends View {
                 canvas.drawBitmap(scaledIcon, center.x - radius4 - 5, center.y - radius4 - 5, paint);
             }
             paint.setColorFilter(filter);
-        }
-    }
-
-    class NightDreamBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Log.d(TAG, action + " received.");
-            if (Config.ACTION_ALARM_SET.equals(action) ||
-                    Config.ACTION_ALARM_STOPPED.equals(action) ||
-                    Config.ACTION_ALARM_DELETED.equals(action)) {
-                Bundle extras = intent.getExtras();
-                SimpleTime time = null;
-                if (extras != null) {
-                    time = new SimpleTime(extras);
-                    currentlyActiveAlarm = time;
-                }
-                updateTime(time);
-            }
         }
     }
 }

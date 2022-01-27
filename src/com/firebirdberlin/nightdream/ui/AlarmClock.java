@@ -1,14 +1,17 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -19,6 +22,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
@@ -34,6 +40,8 @@ public class AlarmClock extends RelativeLayout {
     protected AlarmClockView alarmClockView;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
     private boolean hasUserInteraction = false;
+    private SimpleTime currentlyActiveAlarm = null;
+    private NightDreamBroadcastReceiver broadcastReceiver = null;
 
     @SuppressLint("ClickableViewAccessibility")
     public AlarmClock(Context context, AttributeSet attrs) {
@@ -57,7 +65,6 @@ public class AlarmClock extends RelativeLayout {
             float max_move_seen = 0;
             long timestampDown = 0;
             final float threshold = 0.25f;
-            SimpleTime nextEventTime = AlarmHandlerService.getCurrentlyActiveAlarm();
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -106,12 +113,8 @@ public class AlarmClock extends RelativeLayout {
                                         && rawX - startX > threshold * alarmTimeTextView.getWidth()
                         ) {
                             //skip next alarm
-                            nextEventTime = alarmClockView.getCurrentlyActiveAlarm();
-                            if (nextEventTime != null) {
-                                Intent i = AlarmHandlerService.getSkipIntent(context, nextEventTime);
-                                getContext().startService(i);
-
-                                SqliteIntentService.scheduleAlarm(context);
+                            if (currentlyActiveAlarm != null) {
+                                SqliteIntentService.skipAlarm(context, currentlyActiveAlarm);
                             }
                         } else if (
                                 now - timestampDown < 300
@@ -144,6 +147,37 @@ public class AlarmClock extends RelativeLayout {
 
         addView(alarmClockView, layoutAlarmClockView);
         addView(alarmTimeTextView, lp);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        broadcastReceiver = registerBroadcastReceiver();
+        SqliteIntentService.broadcastAlarm(getContext());
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        unregister(broadcastReceiver);
+    }
+
+    private void unregister(BroadcastReceiver receiver) {
+        try {
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
+        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Config.ACTION_ALARM_SET);
+        filter.addAction(Config.ACTION_ALARM_STOPPED);
+        filter.addAction(Config.ACTION_ALARM_DELETED);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, filter);
+        return receiver;
     }
 
     public void setLocked(boolean on) {
@@ -204,5 +238,25 @@ public class AlarmClock extends RelativeLayout {
 
     public void setPaddingHorizontal(int paddingHorizontal) {
         alarmClockView.setPaddingHorizontal(paddingHorizontal);
+    }
+
+    class NightDreamBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d(TAG, action + " received.");
+            if (Config.ACTION_ALARM_SET.equals(action) ||
+                    Config.ACTION_ALARM_STOPPED.equals(action) ||
+                    Config.ACTION_ALARM_DELETED.equals(action)) {
+                currentlyActiveAlarm = null;
+                Bundle extras = intent.getExtras();
+                if (extras != null) {
+                    currentlyActiveAlarm = new SimpleTime(extras);
+                }
+                if (alarmClockView != null) {
+                    alarmClockView.updateTime(currentlyActiveAlarm);
+                }
+            }
+        }
     }
 }
