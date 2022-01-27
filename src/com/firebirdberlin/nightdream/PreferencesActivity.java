@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
@@ -41,12 +40,17 @@ public class PreferencesActivity extends BillingHelperActivity
         super.onCreate(savedInstanceState);
         setTheme(R.style.PreferencesTheme);
         initTitleBar();
-
-        handler.removeCallbacks(init);
-        handler.postDelayed(init, 500);
-
     }
-    private Runnable init = () -> initFragment();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        handler.removeCallbacks(init);
+        handler.postDelayed(init, 300);
+    }
+
+    private final Runnable init = () -> initFragment();
 
     public void initFragment() {
         Log.i(TAG, "initFragment()");
