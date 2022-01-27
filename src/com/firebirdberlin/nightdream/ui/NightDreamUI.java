@@ -688,7 +688,7 @@ public class NightDreamUI {
                         AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
                         runningTask.execute(preloadBackgroundImageFile);
                         parentLayout.postDelayed(initSlideshowBackground, 500);
-                        postBackgroundImageChange();
+                        handler.post(backgroundChange);
                     } else {
                         preloadBackgroundImage = null;
                         preloadBackgroundImageFile = null;
@@ -1388,6 +1388,7 @@ public class NightDreamUI {
             restoreRingerMode();
             setColor();
             if (settings.hideBackgroundImage) {
+                lastAnimationTime = 0L;
                 initBackground();
             }
         }
