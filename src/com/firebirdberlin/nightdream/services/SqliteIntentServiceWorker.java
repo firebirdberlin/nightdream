@@ -57,9 +57,9 @@ public class SqliteIntentServiceWorker extends Worker {
         } else if (ACTION_SNOOZE.equals(action)) {
             save(time);
         } else if (ACTION_SKIP_ALARM.equals(action)) {
-            skipAlarm(time);
+            skipAlarm(getApplicationContext(), time);
         } else if (ACTION_DELETE_ALARM.equals(action)) {
-            delete(time);
+            delete(getApplicationContext(), time);
         } else if (ACTION_SCHEDULE_ALARM.equals(action)) {
             schedule();
         } else if (ACTION_BROADCAST_ALARM.equals(action)) {
@@ -79,14 +79,14 @@ public class SqliteIntentServiceWorker extends Worker {
         db.close();
     }
 
-    private void skipAlarm(SimpleTime time) {
+    protected static void skipAlarm(Context context, SimpleTime time) {
         Log.d(TAG, "skipAlarm(time)");
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
                 || time == null) {
             return;
         }
-        AlarmNotificationService.cancelNotification(getApplicationContext());
-        DataSource db = new DataSource(getApplicationContext());
+        AlarmNotificationService.cancelNotification(context);
+        DataSource db = new DataSource(context);
         db.open();
 
         if (time.isRecurring()) {
@@ -95,7 +95,7 @@ public class SqliteIntentServiceWorker extends Worker {
         } else {
             db.delete(time);
         }
-        WakeUpReceiver.schedule(getApplicationContext(), db);
+        WakeUpReceiver.schedule(context, db);
         db.close();
     }
 
@@ -107,11 +107,11 @@ public class SqliteIntentServiceWorker extends Worker {
         db.close();
     }
 
-    private void delete(SimpleTime time) {
+    protected static void delete(Context context, SimpleTime time) {
         Log.d(TAG, "delete(time)");
         if (time != null && !time.isRecurring()) {
             // no alarm is currently active
-            DataSource db = new DataSource(getApplicationContext());
+            DataSource db = new DataSource(context);
             db.open();
             db.deleteOneTimeAlarm(time.id);
             db.close();

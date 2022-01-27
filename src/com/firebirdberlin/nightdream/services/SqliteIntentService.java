@@ -22,12 +22,14 @@ public class SqliteIntentService {
         enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SNOOZE);
     }
 
-    static void skipAlarm(Context context, SimpleTime time) {
-        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SKIP_ALARM);
+    public static void skipAlarm(Context context, SimpleTime time) {
+        SqliteIntentServiceWorker.skipAlarm(context, time);
+        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SKIP_ALARM);
     }
 
     public static void deleteAlarm(Context context, SimpleTime time) {
-        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_DELETE_ALARM);
+        SqliteIntentServiceWorker.delete(context, time);
+        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_DELETE_ALARM);
     }
 
     public static void scheduleAlarm(Context context) {
@@ -55,6 +57,8 @@ public class SqliteIntentService {
         OneTimeWorkRequest sqliteWork =
                 new OneTimeWorkRequest.Builder(SqliteIntentServiceWorker.class)
                         .setInputData(myData)
+                        // TODO enable with target level 31
+                        //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                         .build();
         WorkManager.getInstance(context).enqueue(sqliteWork);
     }
