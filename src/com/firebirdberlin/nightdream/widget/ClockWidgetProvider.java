@@ -1,5 +1,8 @@
 package com.firebirdberlin.nightdream.widget;
 
+import static android.text.format.DateFormat.getBestDateTimePattern;
+import static android.text.format.DateFormat.is24HourFormat;
+
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -18,19 +21,26 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -38,6 +48,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
+    private static String nextAlarmString ="";
 
     private static ViewInfo prepareSourceView(Context context, WidgetDimension dimension, int appWidgetId) {
 
@@ -65,6 +76,51 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         container.layout(0, 0, widthPixel, heightPixel);
 
         return new ViewInfo(container, widthPixel, heightPixel);
+    }
+
+    private static String getEmojiByUnicode(int unicode){
+        return new String(Character.toChars(unicode));
+    }
+
+    private static TextView getNextAlarm(Context context, Settings settings){
+        DataSource db = new DataSource(context);
+        db.open();
+        SimpleTime nextAlarm = db.getNextAlarmToSchedule();
+        db.close();
+
+        if (nextAlarm != null) {
+            nextAlarmString = getEmojiByUnicode(0x1F514) + " " + getTimeFormatted(context, nextAlarm.getCalendar());
+
+            TextView alarmTime = new TextView(context);
+            alarmTime.setTextColor(settings.secondaryColor);
+            alarmTime.setGravity(Gravity.END);
+            alarmTime.setText(nextAlarmString);
+            return alarmTime;
+        }
+        return null;
+    }
+
+
+    private static String getTimeFormatted(Context context, Calendar calendar) {
+        Calendar now_in_one_week = Calendar.getInstance();
+        now_in_one_week.add(Calendar.DAY_OF_MONTH, 7);
+        if (calendar.after(now_in_one_week)) {
+            return "";
+        }
+        String localPattern;
+        if (Build.VERSION.SDK_INT >= 18) {
+            if (is24HourFormat(context)) {
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
+            } else {
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
+            }
+        } else {
+            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
+        }
+
+        SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
+        return hourDateFormat.format(calendar.getTime());
     }
 
     private static void updateClockLayoutSettings(
@@ -128,6 +184,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             clockLayout.update(settings.weatherEntry, true);
         } else {
             clockLayout.clearWeather();
+        }
+
+        TextView alarmTime = getNextAlarm(context, settings);
+        if (alarmTime != null) {
+            clockLayout.addView(alarmTime, 0);
         }
 
         {   // draw background
@@ -389,4 +450,17 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             this.maxHeight = maxHeight;
         }
     }
+
+    @Override
+    public void onReceive(Context context, Intent intent){
+        super.onReceive(context, intent);
+        Log.d(TAG, "onreceive");
+        String ALARM_CLOCK_CHANGED = "android.app.action.NEXT_ALARM_CLOCK_CHANGED";
+        String action = intent.getAction();
+        if ((action != null) && (action.equals(ALARM_CLOCK_CHANGED))) {
+            Log.d(TAG, "Alarm changed");
+            updateAllWidgets(context);
+        }
+    }
+
 }
