@@ -274,4 +274,3 @@ public class Notification implements Parcelable {
         return notificationTag;
     }
 }
-
