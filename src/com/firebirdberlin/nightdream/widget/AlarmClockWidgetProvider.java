@@ -1,6 +1,10 @@
 package com.firebirdberlin.nightdream.widget;
 
+import static android.text.format.DateFormat.getBestDateTimePattern;
+import static android.text.format.DateFormat.is24HourFormat;
+
 import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -11,9 +15,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.firebirdberlin.nightdream.DataSource;
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
+import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class AlarmClockWidgetProvider extends AppWidgetProvider {
@@ -70,11 +85,49 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
             Context context, AppWidgetManager appWidgetManager, int appWidgetId
     ) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.alarm_clock_widget);
-        views.setTextViewText(R.id.alarm_clock_text_view, "text text");
+
+        DataSource db = new DataSource(context);
+        db.open();
+        SimpleTime next = db.getNextAlarmToSchedule();
+
+        String text = "no alarm set";
+        if (next != null) {
+            Calendar cal = next.getCalendar();
+            text = getTimeFormatted(context, cal);
+        }
+        views.setTextViewText(R.id.alarm_clock_text_view, text);
+        db.close();
+
+
+        Intent intent = new Intent(context, SetAlarmClockActivity.class);
+        PendingIntent pendingIntent = Utility.getImmutableActivity(context, 0, intent);
+        views.setOnClickPendingIntent(R.id.alarm_clock_text_view, pendingIntent);
 
         // Tell the AppWidgetManager to perform an update on the current app widget.
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
+    }
+
+    private String getTimeFormatted(Context context, Calendar calendar) {
+        Calendar now_in_one_week = Calendar.getInstance();
+        now_in_one_week.add(Calendar.DAY_OF_MONTH, 7);
+        if (calendar.after(now_in_one_week)) {
+            return "";
+        }
+        String localPattern;
+        if (Build.VERSION.SDK_INT >= 18) {
+            if (is24HourFormat(context)) {
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
+            } else {
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
+            }
+        } else {
+            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
+        }
+
+        SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
+        return hourDateFormat.format(calendar.getTime());
     }
 
     @Override
