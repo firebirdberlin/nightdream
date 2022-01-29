@@ -15,11 +15,13 @@ public class SqliteIntentService {
     private static final String TAG = "SqliteIntentService";
 
     static void saveTime(Context context, SimpleTime time) {
-        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SAVE);
+        SqliteIntentServiceWorker.save(context, time);
+        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SAVE);
     }
 
     static void snooze(Context context, SimpleTime time) {
-        enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SNOOZE);
+        SqliteIntentServiceWorker.save(context, time);
+        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SNOOZE);
     }
 
     public static void skipAlarm(Context context, SimpleTime time) {

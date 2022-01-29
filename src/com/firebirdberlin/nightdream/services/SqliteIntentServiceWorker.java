@@ -53,9 +53,9 @@ public class SqliteIntentServiceWorker extends Worker {
         }
 
         if (ACTION_SAVE.equals(action)) {
-            save(time);
+            save(getApplicationContext(), time);
         } else if (ACTION_SNOOZE.equals(action)) {
-            save(time);
+            save(getApplicationContext(), time);
         } else if (ACTION_SKIP_ALARM.equals(action)) {
             skipAlarm(getApplicationContext(), time);
         } else if (ACTION_DELETE_ALARM.equals(action)) {
@@ -70,12 +70,12 @@ public class SqliteIntentServiceWorker extends Worker {
         return Result.success();
     }
 
-    private void save(SimpleTime time) {
+    protected static void save(Context context, SimpleTime time) {
         Log.d(TAG, "save(time)");
-        DataSource db = new DataSource(getApplicationContext());
+        DataSource db = new DataSource(context);
         db.open();
         db.save(time);
-        WakeUpReceiver.schedule(getApplicationContext(), db);
+        WakeUpReceiver.schedule(context, db);
         db.close();
     }
 
