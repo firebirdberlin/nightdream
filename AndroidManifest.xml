@@ -108,10 +108,6 @@
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".services.AlarmHandlerService"
-            android:enabled="true" />
-
-        <service
             android:name=".services.RadioStreamService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE"
@@ -221,6 +217,19 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".services.AlarmHandlerService"
+            android:enabled="true"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM" />
+                <action android:name="com.firebirdberlin.nightdream.ACTION_STOP_ALARM" />
+                <action android:name="com.firebirdberlin.nightdream.ACTION_SKIP_ALARM" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".receivers.ChargingStateChangeReceiver"
             android:enabled="true"

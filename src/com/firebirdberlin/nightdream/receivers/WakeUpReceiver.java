@@ -155,7 +155,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             new NotificationCompat.WearableExtender().setHintHideIcon(true);
 
         Intent stopIntent = AlarmHandlerService.getStopIntent(context);
-        PendingIntent pStopIntent = Utility.getImmutableService(
+        PendingIntent pStopIntent = Utility.getImmutableBroadcast(
                 context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
         NotificationCompat.Action stopAction = new NotificationCompat.Action.Builder(
@@ -163,7 +163,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         ).build();
 
         Intent snoozeIntent = AlarmHandlerService.getSnoozeIntent(context);
-        PendingIntent pSnoozeIntent = Utility.getImmutableService(
+        PendingIntent pSnoozeIntent = Utility.getImmutableBroadcast(
                 context, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
         NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(

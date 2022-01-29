@@ -1,7 +1,9 @@
 package com.firebirdberlin.nightdream.services;
 
-import android.app.IntentService;
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -22,20 +24,12 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Calendar;
 
 
-public class AlarmHandlerService extends IntentService {
-    private static String TAG = "AlarmHandlerService";
-    private static String ACTION_SKIP_ALARM = "com.firebirdberlin.nightdream.ACTION_SKIP_ALARM";
-    private static String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
-    private static String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
-    private Context context = null;
+public class AlarmHandlerService extends BroadcastReceiver {
+    private static final String TAG = "AlarmHandlerService";
+    private static final String ACTION_SKIP_ALARM = "com.firebirdberlin.nightdream.ACTION_SKIP_ALARM";
+    private static final String ACTION_STOP_ALARM = "com.firebirdberlin.nightdream.ACTION_STOP_ALARM";
+    private static final String ACTION_SNOOZE_ALARM = "com.firebirdberlin.nightdream.ACTION_SNOOZE_ALARM";
 
-    public AlarmHandlerService() {
-        super("AlarmHandlerService");
-    }
-
-    public AlarmHandlerService(String name) {
-        super(name);
-    }
 
     public static boolean alarmIsRunning() {
         return (AlarmService.isRunning
@@ -51,7 +45,7 @@ public class AlarmHandlerService extends IntentService {
         int radioStationIndex = (alarmTime != null) ? alarmTime.radioStationIndex : -1;
         Log.d(TAG, "settings.radioStreamRequireWiFi: " + settings.radioStreamRequireWiFi);
         Log.d(TAG, "hasNetworkConnection: " + hasNetworkConnection);
-        Log.d(TAG, "radioStationIndex: " + alarmTime.radioStationIndex);
+        Log.d(TAG, "radioStationIndex: " + radioStationIndex);
         if (radioStationIndex > -1 && hasNetworkConnection) {
 
             RadioStreamService.start(context, alarmTime);
@@ -179,8 +173,7 @@ public class AlarmHandlerService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        context = this;
+    public void onReceive(Context context, Intent intent) {
         Log.d(TAG, TAG + " started");
         String action = intent.getAction();
 
