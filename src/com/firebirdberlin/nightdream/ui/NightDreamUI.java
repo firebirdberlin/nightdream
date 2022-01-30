@@ -584,6 +584,7 @@ public class NightDreamUI {
         mainFrame.post(this::configureSafeRect);
 
         settings.reload();
+        notificationStatusBar.removeAllViews();
         notificationStatusBar.setClickable(Settings.useNotificationStatusBar(mContext));
 
         vibrantColor = 0;

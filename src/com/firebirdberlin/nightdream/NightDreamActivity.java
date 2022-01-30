@@ -509,9 +509,11 @@ public class NightDreamActivity extends BillingHelperActivity
         clockLayoutContainer.post(() -> {
             // ask for active notifications
             if (Build.VERSION.SDK_INT >= 18) {
-                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                i.putExtra("command", "list");
-                LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+                if (Settings.showNotification(this)) {
+                    Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                    i.putExtra("command", "list");
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+                }
             }
         });
 
