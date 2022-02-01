@@ -4,10 +4,10 @@
     android:initialLayout="@layout/alarm_clock_widget"
     android:minHeight="50sp"
     android:minWidth="200sp"
-    android:previewImage="@drawable/widget_preview"
+    android:previewImage="@drawable/ic_alarm_clock"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="3600000"
     android:widgetCategory="home_screen"
+    android:configure="com.firebirdberlin.nightdream.AlarmClockWidgetPreferencesActivity"
     tools:targetApi="jelly_bean_mr1">
 </appwidget-provider>
 <!--
