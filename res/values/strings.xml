@@ -389,6 +389,7 @@ OR
     <string name="suggestions">Suggestions</string>
     <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>
     <string name="temperatureUnit">Temperature unit</string>
+    <string name="text_size">Text size</string>
     <string name="tick_style_hours">Hour tick style</string>
     <string name="tick_style_minutes">Minute tick style</string>
     <string name="tick_style_circle">Circle</string>

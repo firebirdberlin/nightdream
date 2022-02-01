@@ -390,6 +390,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="suggestions">Ideen</string>
     <string name="suggestions_summary">Ideen für kommende Versionen melden</string>
     <string name="temperatureUnit">Temperatureinheit</string>
+    <string name="text_size">Schriftgröße</string>
     <string name="tick_style_circle">Kreis</string>
     <string name="tick_style_dash">Strich</string>
     <string name="tick_style_hours">Stundenmarker</string>

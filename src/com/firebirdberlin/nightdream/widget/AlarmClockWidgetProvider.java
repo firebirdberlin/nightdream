@@ -106,10 +106,13 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
         SimpleTime next = db.getNextAlarmToSchedule();
         db.close();
 
-        String text = context.getResources().getString(R.string.no_alarm_set);
+        String text = "";
         if (next != null) {
             Calendar cal = next.getCalendar();
             text = getTimeFormatted(context, cal);
+        }
+        if (text.isEmpty()) {
+            text = context.getResources().getString(R.string.no_alarm_set);
         }
         views.setTextViewText(R.id.alarm_clock_text_view, text);
 
@@ -127,8 +130,9 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
                 Context.MODE_PRIVATE
         );
         int backgroundColor = widgetPrefs.getInt(
-                "backgroundColor", Color.parseColor("#AD000000")
+                "backgroundColor", Color.parseColor("#80000000")
         );
+        int textSize = widgetPrefs.getInt("textSize", 25);
         int foregroundColor = Utility.getContrastColor(backgroundColor);
         views.setInt(
                 R.id.alarm_clock_background, "setBackgroundColor", backgroundColor
@@ -137,7 +141,7 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
                 R.id.alarm_clock_text_view, "setTextColor", foregroundColor
         );
         views.setFloat(
-                R.id.alarm_clock_text_view, "setTextSize", 25
+                R.id.alarm_clock_text_view, "setTextSize", textSize
         );
 
         // Tell the AppWidgetManager to perform an update on the current app widget.
