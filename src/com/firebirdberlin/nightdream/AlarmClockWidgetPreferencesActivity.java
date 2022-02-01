@@ -61,28 +61,12 @@ public class AlarmClockWidgetPreferencesActivity extends BillingHelperActivity {
     @Override
     protected void onPurchasesInitialized() {
         Log.d(TAG, "onPurchasesInitialized()");
-        /*
-        runOnUiThread(() -> {
-                    fragment.togglePurchasePreferences(
-                            isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
-                    );
-                }
-        );
-         */
     }
 
     @Override
     protected void onItemPurchased(String sku) {
         super.onItemPurchased(sku);
         Log.d(TAG, "onItemPurchased( " + sku + ")");
-        /*
-        runOnUiThread(() -> {
-                    fragment.togglePurchasePreferences(
-                            isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
-                    );
-                }
-        );
-         */
     }
 
     private void updateWidget() {
@@ -160,22 +144,6 @@ public class AlarmClockWidgetPreferencesActivity extends BillingHelperActivity {
                 cp.showDialog(this, 0);
             }
             else super.onDisplayPreferenceDialog(preference);
-        }
-
-        private void showPreference(String key, boolean visible) {
-            Log.d(TAG, "showPreference(" + key + "," + visible + ")");
-            Preference preference = findPreference(key);
-            if (preference != null) {
-                preference.setVisible(visible);
-            }
-        }
-
-        private void enablePreference(String key, boolean visible) {
-            Log.d(TAG, "enablePreference(" + key + "," + visible + ")");
-            Preference preference = findPreference(key);
-            if (preference != null) {
-                preference.setEnabled(visible);
-            }
         }
     }
 }

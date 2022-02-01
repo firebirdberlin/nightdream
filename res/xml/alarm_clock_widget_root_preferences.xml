@@ -1,6 +1,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <de.firebirdberlin.preference.InlineSeekBarPreference
+        app:defaultValue="25"
+        app:iconSpaceReserved="false"
+        app:key="textSize"
+        app:title="@string/text_size"
+        seekbar:interval="1"
+        seekbar:max="60"
+        seekbar:min="15"
+        seekbar:unitsLeft=""
+        seekbar:unitsRight=""
+        xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
+
     <com.rarepebble.colorpicker.ColorPreference
         android:defaultValue="#DDC2C2C2"
         app:colorpicker_showHex="true"
