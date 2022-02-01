@@ -8,6 +8,7 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:configure="com.firebirdberlin.nightdream.AlarmClockWidgetPreferencesActivity"
+    android:widgetFeatures="reconfigurable"
     tools:targetApi="jelly_bean_mr1">
 </appwidget-provider>
 <!--

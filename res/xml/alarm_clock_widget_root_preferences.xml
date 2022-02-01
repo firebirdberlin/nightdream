@@ -1,0 +1,12 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:defaultValue="#DDC2C2C2"
+        app:colorpicker_showHex="true"
+        app:iconSpaceReserved="false"
+        app:key="backgroundColor"
+        app:selectable="true"
+        app:title="@string/background"
+        />
+</PreferenceScreen>

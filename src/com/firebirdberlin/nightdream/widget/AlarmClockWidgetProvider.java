@@ -10,12 +10,27 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import androidx.preference.PreferenceManager;
+
 import com.firebirdberlin.nightdream.DataSource;
+import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
@@ -89,19 +104,41 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
         DataSource db = new DataSource(context);
         db.open();
         SimpleTime next = db.getNextAlarmToSchedule();
+        db.close();
 
-        String text = "no alarm set";
+        String text = context.getResources().getString(R.string.no_alarm_set);
         if (next != null) {
             Calendar cal = next.getCalendar();
             text = getTimeFormatted(context, cal);
         }
         views.setTextViewText(R.id.alarm_clock_text_view, text);
-        db.close();
-
 
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
         PendingIntent pendingIntent = Utility.getImmutableActivity(context, 0, intent);
         views.setOnClickPendingIntent(R.id.alarm_clock_text_view, pendingIntent);
+        /*
+        PreferenceManager manager = getPreferenceManager();
+        manager.setSharedPreferencesName(
+                String.format(Locale.ENGLISH, "preferences_alarm_clock_widget_%d", appWidgetId)
+        );
+         */
+        SharedPreferences widgetPrefs = context.getSharedPreferences(
+                String.format(Locale.ENGLISH, "preferences_alarm_clock_widget_%d", appWidgetId),
+                Context.MODE_PRIVATE
+        );
+        int backgroundColor = widgetPrefs.getInt(
+                "backgroundColor", Color.parseColor("#AD000000")
+        );
+        int foregroundColor = Utility.getContrastColor(backgroundColor);
+        views.setInt(
+                R.id.alarm_clock_background, "setBackgroundColor", backgroundColor
+        );
+        views.setInt(
+                R.id.alarm_clock_text_view, "setTextColor", foregroundColor
+        );
+        views.setFloat(
+                R.id.alarm_clock_text_view, "setTextSize", 25
+        );
 
         // Tell the AppWidgetManager to perform an update on the current app widget.
         appWidgetManager.updateAppWidget(appWidgetId, views);
