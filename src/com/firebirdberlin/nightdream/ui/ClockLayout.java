@@ -297,7 +297,6 @@ public class ClockLayout extends LinearLayout {
         }
 
         Utility.colorizeView(calendarView, color, PorterDuff.Mode.MULTIPLY);
-        Utility.colorizeView(notificationLayout, color);
     }
 
     public void setTemperature(boolean on, boolean withApparentTemperature, int unit) {
@@ -409,17 +408,6 @@ public class ClockLayout extends LinearLayout {
     private void updateLayout(
             int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
     ) {
-        if (
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                        && notificationLayout != null
-        ) {
-            notificationLayout.setVisibility(
-                    mNotificationListener.running
-                            && showNotifications
-                            && !Settings.useNotificationStatusBar(context)
-                            ? VISIBLE : GONE
-            );
-        }
 
         final float minFontSize = 8.f; // in sp
         if (layoutId == LAYOUT_ID_DIGITAL) {

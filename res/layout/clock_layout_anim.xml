@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <!--
             time
@@ -82,10 +82,12 @@
         android:layout_weight="19">
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
+    <com.firebirdberlin.nightdream.ui.NotificationBar
+        android:id="@+id/notificationbar"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_marginTop="2dp"
-        layout="@layout/notification_bar"/>
+        android:layout_height="wrap_content"
+        app:justifyContent="space_evenly"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

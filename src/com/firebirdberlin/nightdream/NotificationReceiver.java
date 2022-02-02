@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -12,20 +11,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.firebirdberlin.nightdream.ui.NotificationPreviewLayout;
-import com.google.android.flexbox.FlexboxLayout;
+import com.firebirdberlin.nightdream.viewmodels.NotificationViewModel;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -79,14 +75,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.d(TAG, "showNotification: " + showNotification);
 
         if (!showNotification || "clear".equals(action)) {
-            removeViewsFrom(R.id.notificationstatusbar);
-            removeViewsFrom(R.id.notificationbar);
-            return;
-        }
-
-        int notificationResId = Settings.getNotificationContainerResourceId(context);
-        FlexboxLayout container = contentView.findViewById(notificationResId);
-        if (container == null) {
             return;
         }
 
@@ -94,16 +82,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (action != null) {
             switch (action) {
                 case "scan":
-                    removeViewsFrom(R.id.notificationstatusbar);
-                    removeViewsFrom(R.id.notificationbar);
                     List<NotificationApp> notificationApps = intent.getParcelableArrayListExtra("notificationApps");
                     if (notificationApps == null) break;
-                    for (Iterator<NotificationApp> iterator = notificationApps.iterator(); iterator.hasNext(); ) {
-                        NotificationApp app = iterator.next();
-                        Log.d(TAG, app.getName() + ": " + app.getIconId());
-                        Drawable icon = getIcon(context, app);
-                        addNotificationIcon(context, container, icon);
-                    }
+                    NotificationViewModel.setNotificationApp(notificationApps);
                     break;
                 case "added_media":
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -123,42 +104,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 default:
             }
         }
-    }
-
-    private Drawable getIcon(Context context, NotificationApp notificationApp) {
-        Bitmap bitmap = notificationApp.getSmallNotificationIcon();
-        Drawable icon = null;
-        if (bitmap != null) {
-            icon = new BitmapDrawable(context.getResources(), bitmap);
-        }
-        if (icon == null) {
-            icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
-        }
-        return icon;
-    }
-
-    private void removeViewsFrom(int redId) {
-        FlexboxLayout container = contentView.findViewById(redId);
-        if (container != null) container.removeAllViews();
-    }
-
-    private void addNotificationIcon(Context context, FlexboxLayout container, Drawable icon) {
-        ImageView image = new ImageView(context);
-        int padding = Utility.dpToPx(context, 5);
-        image.setPadding(padding, 0, 0, 0);
-        image.setImageDrawable(icon);
-        image.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
-                FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                FlexboxLayout.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams.setFlexShrink(0.25f);
-        layoutParams.setFlexGrow(0.f);
-        layoutParams.setHeight(Utility.dpToPx(context, 24.f));
-        layoutParams.setMaxWidth(Utility.dpToPx(context, 24.f));
-        layoutParams.setMaxHeight(Utility.dpToPx(context, 24.f));
-        image.setLayoutParams(layoutParams);
-        container.addView(image);
     }
 
     private Drawable getNotificationIcon(Context context, Intent intent) {

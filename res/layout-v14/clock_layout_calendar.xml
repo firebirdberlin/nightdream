@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <!--
@@ -108,10 +109,12 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        layout="@layout/notification_bar"
+    <com.firebirdberlin.nightdream.ui.NotificationBar
+        android:id="@+id/notificationbar"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_marginTop="2dp" />
+        android:layout_height="wrap_content"
+        app:justifyContent="space_evenly"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

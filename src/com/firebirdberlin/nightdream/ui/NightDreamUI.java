@@ -64,6 +64,7 @@ import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
+import com.firebirdberlin.nightdream.viewmodels.NotificationViewModel;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
@@ -99,7 +100,7 @@ public class NightDreamUI {
     private final ConstraintLayout exifLayoutContainer;
     private final ClockLayoutContainer clockLayoutContainer;
     private final ClockLayout clockLayout;
-    private final FlexboxLayout notificationStatusBar;
+    private final FlexboxLayout notificationBarContainer;
     private final SidePanel sidePanel;
     private final BottomPanelLayout bottomPanelLayout;
     private final ProgressBar brightnessProgress;
@@ -202,7 +203,7 @@ public class NightDreamUI {
 
             bottomPanelLayout.hide();
             if (mode == 0) {
-                setAlpha(notificationStatusBar, 0.f, 2000);
+                setAlpha(notificationBarContainer, 0.f, 2000);
             }
         }
     };
@@ -474,7 +475,7 @@ public class NightDreamUI {
         unlockHint = rootView.findViewById(R.id.unlockHint);
         menuIcon = rootView.findViewById(R.id.burger_icon);
         nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
-        notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
+        notificationBarContainer = rootView.findViewById(R.id.notificationstatusbar);
         parentLayout = rootView.findViewById(R.id.background_group);
         radioIcon = rootView.findViewById(R.id.radio_icon);
         sidePanel = rootView.findViewById(R.id.side_menu);
@@ -596,8 +597,6 @@ public class NightDreamUI {
         mainFrame.post(this::configureSafeRect);
 
         settings.reload();
-        notificationStatusBar.removeAllViews();
-        notificationStatusBar.setClickable(Settings.useNotificationStatusBar(mContext));
 
         vibrantColor = 0;
         vibrantColorDark = 0;
@@ -808,7 +807,8 @@ public class NightDreamUI {
             brightnessProgress.setProgressBackgroundTintList(
                     ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
         }
-        Utility.colorizeView(notificationStatusBar, textColor);
+
+        NotificationViewModel.setTextColor(textColor);
     }
 
     private void updateRadioIconColor() {
@@ -1301,11 +1301,11 @@ public class NightDreamUI {
         }
 
         if (mode == 0 && !controlsVisible) {
-            setAlpha(notificationStatusBar, 0.0f, millis);
+            setAlpha(notificationBarContainer, 0.0f, millis);
         } else {
             // increase minimum alpha value for the notification bar
             v = to_range(v, 0.6f, 1.f);
-            setAlpha(notificationStatusBar, v, millis);
+            setAlpha(notificationBarContainer, v, millis);
         }
 
         if (light_value + 0.2f < settings.minIlluminance) {
@@ -1538,7 +1538,7 @@ public class NightDreamUI {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
             setAlpha(unlockHint, 1.f, 250);
-            setAlpha(notificationStatusBar, 1.f, 250);
+            setAlpha(notificationBarContainer, 1.f, 250);
             setAlpha(batteryIconView, 1.f, 250);
             setAlpha(bottomPanelLayout, 1.f, 250);
             controlsVisible = true;

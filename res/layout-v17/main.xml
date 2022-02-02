@@ -107,14 +107,12 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"/>
 
-                    <com.google.android.flexbox.FlexboxLayout
+                    <com.firebirdberlin.nightdream.ui.NotificationBar
                         android:id="@+id/notificationstatusbar"
-                        android:layout_height="match_parent"
                         android:layout_width="wrap_content"
-                        android:onClick="onNotificationListClick"
-                        app:alignContent="flex_end"
-                        app:flexDirection="row"
-                        app:justifyContent="flex_end" />
+                        android:layout_height="match_parent"
+                        android:visibility="gone"/>
+
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
