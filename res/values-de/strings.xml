@@ -212,6 +212,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Endzeit</string>
     <string name="night_mode_timerange_label_start">Startzeit</string>
     <string name="night_mode_timerange_title">Nachtzeit</string>
+    <string name="no_alarm_set">kein Wecker</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
     <string name="notificationListenerService">Benachrichtigungsservice verwalten</string>
     <string name="showNotifications">Benachrichtigungen anzeigen</string>
@@ -389,6 +390,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="suggestions">Ideen</string>
     <string name="suggestions_summary">Ideen für kommende Versionen melden</string>
     <string name="temperatureUnit">Temperatureinheit</string>
+    <string name="text_size">Schriftgröße</string>
     <string name="tick_style_circle">Kreis</string>
     <string name="tick_style_dash">Strich</string>
     <string name="tick_style_hours">Stundenmarker</string>

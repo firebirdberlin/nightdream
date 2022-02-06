@@ -30,7 +30,7 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.widget_preferences_activity);
         if (savedInstanceState == null) {
-            fragment = new SettingsFragment(this, false, appWidgetId);
+            fragment = SettingsFragment.newInstance(appWidgetId, false);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.settings, fragment)
@@ -60,9 +60,14 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
     protected void onPurchasesInitialized() {
         Log.d(TAG, "onPurchasesInitialized()");
         runOnUiThread(() -> {
-                    fragment.togglePurchasePreferences(
+                    fragment = SettingsFragment.newInstance(appWidgetId,
                             isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
                     );
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.settings, fragment)
+                            .commit();
                 }
         );
     }
@@ -72,9 +77,14 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         super.onItemPurchased(sku);
         Log.d(TAG, "onItemPurchased( " + sku + ")");
         runOnUiThread(() -> {
-                    fragment.togglePurchasePreferences(
+                    fragment = SettingsFragment.newInstance(appWidgetId,
                             isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
                     );
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.settings, fragment)
+                            .commit();
                 }
         );
     }
@@ -104,21 +114,23 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
-        private final int appWidgetId;
-        private BillingHelperActivity activity;
         private Map<String, Object> backupValues = null;
         Preference.OnPreferenceClickListener purchasePreferenceClickListener =
                 preference -> {
                     Log.d(TAG, "showPurchaseDialog");
-                    activity.showPurchaseDialog();
+                    WidgetPreferencesActivity activity = (WidgetPreferencesActivity) getActivity();
+                    if (activity != null) {
+                        activity.showPurchaseDialog();
+                    }
                     return true;
                 };
-        public boolean is_purchased;
-
-        public SettingsFragment(BillingHelperActivity activity, boolean is_purchased, int appWidgetId) {
-            this.activity = activity;
-            this.is_purchased = is_purchased;
-            this.appWidgetId = appWidgetId;
+        public static SettingsFragment newInstance(int appWidgetId, boolean isPurchased) {
+            Bundle args = new Bundle();
+            args.putInt("appWidgetId", appWidgetId);
+            args.putBoolean("is_purchased", isPurchased);
+            SettingsFragment f = new SettingsFragment();
+            f.setArguments(args);
+            return f;
         }
 
         @Override
@@ -151,6 +163,11 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
+            int appWidgetId = 0;
+            if (getArguments() != null) {
+                appWidgetId = getArguments().getInt("appWidgetId", 0);
+            }
             PreferenceManager manager = getPreferenceManager();
             manager.setSharedPreferencesName(
                     String.format(Locale.ENGLISH, "preferences_widget_%d", appWidgetId)
@@ -160,20 +177,18 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
             setPreferencesFromResource(R.xml.widget_root_preferences, rootKey);
         }
 
-        private void togglePurchasePreferences(boolean is_purchased) {
-            this.is_purchased = is_purchased;
-            Log.d(TAG, "togglePurchasePreferences()");
-
-            showPreference("purchaseDesignPackage", !is_purchased);
-            enablePreference("category_appearance", is_purchased);
-        }
-
         private void initPurchasePreference(String key) {
             Log.d(TAG, "initPurchasePreference(" + key + ")");
             Preference purchasePreference = findPreference(key);
             if (purchasePreference != null) {
                 purchasePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
             }
+            boolean is_purchased = false;
+            if (getArguments() != null) {
+                is_purchased = getArguments().getBoolean("is_purchased", false);
+            }
+            showPreference("purchaseDesignPackage", !is_purchased);
+            enablePreference("category_appearance", is_purchased);
         }
 
         private void showPreference(String key, boolean visible) {
