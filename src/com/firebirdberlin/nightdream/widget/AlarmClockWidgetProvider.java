@@ -11,33 +11,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import androidx.preference.PreferenceManager;
-
 import com.firebirdberlin.nightdream.DataSource;
-import com.firebirdberlin.nightdream.Graphics;
-import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
-import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
-import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 
 import java.text.DateFormat;
@@ -48,7 +32,7 @@ import java.util.Locale;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class AlarmClockWidgetProvider extends AppWidgetProvider {
 
-    private static final String TAG = "WidgetProvider";
+    private static final String TAG = "AlarmClockWidget";
 
     public static void updateAllWidgets(Context context) {
         if (!Utility.isScreenOn(context)) {
@@ -119,12 +103,6 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
         PendingIntent pendingIntent = Utility.getImmutableActivity(context, 0, intent);
         views.setOnClickPendingIntent(R.id.alarm_clock_text_view, pendingIntent);
-        /*
-        PreferenceManager manager = getPreferenceManager();
-        manager.setSharedPreferencesName(
-                String.format(Locale.ENGLISH, "preferences_alarm_clock_widget_%d", appWidgetId)
-        );
-         */
         SharedPreferences widgetPrefs = context.getSharedPreferences(
                 String.format(Locale.ENGLISH, "preferences_alarm_clock_widget_%d", appWidgetId),
                 Context.MODE_PRIVATE
@@ -175,5 +153,4 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
         updateWidget(context, appWidgetManager, appWidgetId);
     }
-
 }

@@ -4,11 +4,14 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -63,7 +66,20 @@ public class WakeUpReceiver extends BroadcastReceiver {
             intent.putExtras(next.toBundle());
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        AlarmClockWidgetProvider.updateAllWidgets(context);
+        updateWidgets(context);
+    }
+
+    private static void updateWidgets(Context context) {
+        AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = widgetManager.getAppWidgetIds(
+                new ComponentName(context, AlarmClockWidgetProvider.class)
+        );
+        Intent updateIntent = new Intent(
+                AppWidgetManager.ACTION_APPWIDGET_UPDATE,
+                null, context, AlarmClockWidgetProvider.class
+        );
+        updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+        context.sendBroadcast(updateIntent);
     }
 
     public static void cancelAlarm(Context context) {
@@ -145,15 +161,15 @@ public class WakeUpReceiver extends BroadcastReceiver {
         String textActionStop = context.getString(R.string.action_stop);
 
         NotificationCompat.Builder note =
-            Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_ALARMS)
-                .setAutoCancel(true)
-                .setContentTitle(context.getString(R.string.alarm))
-                .setContentText(text)
-                .setSmallIcon(R.drawable.ic_audio)
-                .setPriority(NotificationCompat.PRIORITY_MAX);
+                Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_ALARMS)
+                        .setAutoCancel(true)
+                        .setContentTitle(context.getString(R.string.alarm))
+                        .setContentText(text)
+                        .setSmallIcon(R.drawable.ic_audio)
+                        .setPriority(NotificationCompat.PRIORITY_MAX);
 
         NotificationCompat.WearableExtender wearableExtender =
-            new NotificationCompat.WearableExtender().setHintHideIcon(true);
+                new NotificationCompat.WearableExtender().setHintHideIcon(true);
 
         Intent stopIntent = AlarmHandlerService.getStopIntent(context);
         PendingIntent pStopIntent = Utility.getImmutableBroadcast(
