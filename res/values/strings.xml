@@ -212,6 +212,7 @@ OR
     <string name="night_mode_timerange_label_end">End time</string>
     <string name="night_mode_timerange_label_start">Start time</string>
     <string name="night_mode_timerange_title">Night time</string>
+    <string name="no_alarm_set">no alarm set</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_channel_name_alarms">Alarms</string>
     <string name="notification_channel_name_devmsg">Messages</string>
@@ -388,6 +389,7 @@ OR
     <string name="suggestions">Suggestions</string>
     <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>
     <string name="temperatureUnit">Temperature unit</string>
+    <string name="text_size">Text size</string>
     <string name="tick_style_hours">Hour tick style</string>
     <string name="tick_style_minutes">Minute tick style</string>
     <string name="tick_style_circle">Circle</string>

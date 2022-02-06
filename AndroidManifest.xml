@@ -149,6 +149,15 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AlarmClockWidgetPreferencesActivity"
+            android:exported="false"
+            android:theme="@style/PreferencesTheme"
+            android:label="@string/preferences">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".NotificationListActivity"
@@ -269,6 +278,19 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/clock_widget_info" />
+        </receiver>
+        <receiver
+            android:name=".widget.AlarmClockWidgetProvider"
+            android:enabled="@bool/use_widget"
+            android:icon="@drawable/widget_preview"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/alarm_widget_info" />
         </receiver>
 
         <activity

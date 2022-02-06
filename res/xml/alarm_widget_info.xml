@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:initialLayout="@layout/alarm_clock_widget"
+    android:minHeight="50sp"
+    android:minWidth="200sp"
+    android:previewImage="@drawable/ic_alarm_clock_icon"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:configure="com.firebirdberlin.nightdream.AlarmClockWidgetPreferencesActivity"
+    tools:targetApi="jelly_bean_mr1">
+</appwidget-provider>
+<!--
+
+  correct height to use (for 1 row / block) is:
+   android:minHeight="40dp"
+
+  more params:
+  android:resizeMode="horizontal|vertical"
+   minResizeWidth
+   minResizeHeight
+-->

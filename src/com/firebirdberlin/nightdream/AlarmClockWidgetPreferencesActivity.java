@@ -13,12 +13,14 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import com.firebirdberlin.nightdream.widget.AlarmClockWidgetProvider;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
+import com.rarepebble.colorpicker.ColorPreference;
 
 import java.util.Locale;
 import java.util.Map;
 
-public class WidgetPreferencesActivity extends BillingHelperActivity {
+public class AlarmClockWidgetPreferencesActivity extends BillingHelperActivity {
     public static String TAG = "WidgetPreferencesActivity";
 
     public int appWidgetId = -1;
@@ -30,7 +32,7 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.widget_preferences_activity);
         if (savedInstanceState == null) {
-            fragment = SettingsFragment.newInstance(appWidgetId, false);
+            fragment = SettingsFragment.newInstance(appWidgetId);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.settings, fragment)
@@ -59,46 +61,24 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
     @Override
     protected void onPurchasesInitialized() {
         Log.d(TAG, "onPurchasesInitialized()");
-        runOnUiThread(() -> {
-                    fragment = SettingsFragment.newInstance(appWidgetId,
-                            isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
-                    );
-
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.settings, fragment)
-                            .commit();
-                }
-        );
     }
 
     @Override
     protected void onItemPurchased(String sku) {
         super.onItemPurchased(sku);
         Log.d(TAG, "onItemPurchased( " + sku + ")");
-        runOnUiThread(() -> {
-                    fragment = SettingsFragment.newInstance(appWidgetId,
-                            isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
-                    );
-
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.settings, fragment)
-                            .commit();
-                }
-        );
     }
 
     private void updateWidget() {
         int appWidgetId = getWidgetId();
-        RemoteViews views = new RemoteViews(getPackageName(), R.layout.clock_widget);
+        RemoteViews views = new RemoteViews(getPackageName(), R.layout.alarm_clock_widget);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
         Intent resultValue = new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(RESULT_OK, resultValue);
         finish();
-        ClockWidgetProvider.updateAllWidgets(this);
+        AlarmClockWidgetProvider.updateAllWidgets(this);
     }
 
     private int getWidgetId() {
@@ -115,29 +95,13 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         private Map<String, Object> backupValues = null;
-        Preference.OnPreferenceClickListener purchasePreferenceClickListener =
-                preference -> {
-                    Log.d(TAG, "showPurchaseDialog");
-                    WidgetPreferencesActivity activity = (WidgetPreferencesActivity) getActivity();
-                    if (activity != null) {
-                        activity.showPurchaseDialog();
-                    }
-                    return true;
-                };
-        public static SettingsFragment newInstance(int appWidgetId, boolean isPurchased) {
+
+        public static SettingsFragment newInstance(int appWidgetId) {
             Bundle args = new Bundle();
             args.putInt("appWidgetId", appWidgetId);
-            args.putBoolean("is_purchased", isPurchased);
             SettingsFragment f = new SettingsFragment();
             f.setArguments(args);
             return f;
-        }
-
-        @Override
-        public void onResume() {
-            Log.d(TAG, "onResume");
-            super.onResume();
-            initPurchasePreference("purchaseDesignPackage");
         }
 
         public void restoreValues() {
@@ -163,48 +127,23 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-
-            int appWidgetId = 0;
-            if (getArguments() != null) {
-                appWidgetId = getArguments().getInt("appWidgetId", 0);
-            }
+            int appWidgetId = getArguments().getInt("appWidgetId", -1);
             PreferenceManager manager = getPreferenceManager();
             manager.setSharedPreferencesName(
-                    String.format(Locale.ENGLISH, "preferences_widget_%d", appWidgetId)
+                    String.format(Locale.ENGLISH, "preferences_alarm_clock_widget_%d", appWidgetId)
             );
             SharedPreferences prefs = manager.getSharedPreferences();
             backupValues = (Map<String, Object>) prefs.getAll();
-            setPreferencesFromResource(R.xml.widget_root_preferences, rootKey);
+            setPreferencesFromResource(R.xml.alarm_clock_widget_root_preferences, rootKey);
         }
 
-        private void initPurchasePreference(String key) {
-            Log.d(TAG, "initPurchasePreference(" + key + ")");
-            Preference purchasePreference = findPreference(key);
-            if (purchasePreference != null) {
-                purchasePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        @Override
+        public void onDisplayPreferenceDialog(Preference preference) {
+            if (preference instanceof ColorPreference) {
+                ColorPreference cp = (ColorPreference) preference;
+                cp.showDialog(this, 0);
             }
-            boolean is_purchased = false;
-            if (getArguments() != null) {
-                is_purchased = getArguments().getBoolean("is_purchased", false);
-            }
-            showPreference("purchaseDesignPackage", !is_purchased);
-            enablePreference("category_appearance", is_purchased);
-        }
-
-        private void showPreference(String key, boolean visible) {
-            Log.d(TAG, "showPreference(" + key + "," + visible + ")");
-            Preference preference = findPreference(key);
-            if (preference != null) {
-                preference.setVisible(visible);
-            }
-        }
-
-        private void enablePreference(String key, boolean visible) {
-            Log.d(TAG, "enablePreference(" + key + "," + visible + ")");
-            Preference preference = findPreference(key);
-            if (preference != null) {
-                preference.setEnabled(visible);
-            }
+            else super.onDisplayPreferenceDialog(preference);
         }
     }
 }
