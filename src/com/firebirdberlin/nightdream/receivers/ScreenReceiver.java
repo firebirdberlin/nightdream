@@ -10,6 +10,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 
@@ -21,7 +23,6 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
-import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.util.Calendar;
 
@@ -29,13 +30,12 @@ public class ScreenReceiver extends BroadcastReceiver {
     private static final String TAG = "ScreenReceiver";
     private static boolean isScreenUp = false;
     private static boolean deviceIsCovered = false;
+    private static final Handler handler = new Handler();
+    private static Looper broadcastReceiverThreadLooper = null;
     private boolean proximitySensorChecked = false;
     private boolean gravitySensorChecked = false;
-    private static Handler handler = new Handler();
     private Context context = null;
-    private PowerManager.WakeLock wakeLock;
-
-    private Runnable checkAndActivateApp = new Runnable() {
+    private final Runnable checkAndActivateApp = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(checkAndActivateApp);
@@ -45,8 +45,15 @@ public class ScreenReceiver extends BroadcastReceiver {
             conditionallyActivateAlwaysOn(context, false);
         }
     };
+    private PowerManager.WakeLock wakeLock;
 
     public static ScreenReceiver register(Context ctx) {
+        HandlerThread broadcastReceiverThread = new HandlerThread(TAG);
+        broadcastReceiverThread.start();
+
+        broadcastReceiverThreadLooper = broadcastReceiverThread.getLooper();
+        Handler broadcastReceiverHandler = new Handler(broadcastReceiverThreadLooper);
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -54,19 +61,21 @@ public class ScreenReceiver extends BroadcastReceiver {
         filter.addAction(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
         ScreenReceiver receiver = new ScreenReceiver();
-        ctx.registerReceiver(receiver, filter);
+
+        ctx.registerReceiver(receiver, filter, null, broadcastReceiverHandler);
         return receiver;
     }
 
     public static void unregister(Context ctx, BroadcastReceiver receiver) {
         if (receiver != null) {
             ctx.unregisterReceiver(receiver);
+            broadcastReceiverThreadLooper.quit();
         }
     }
 
     private static void conditionallyActivateAlwaysOn(Context context, boolean turnScreenOn) {
         Settings settings = new Settings(context);
-        if ( shallActivateStandby(context, settings) ) {
+        if (shallActivateStandby(context, settings)) {
             NightDreamActivity.start(context, "start standby mode");
             if (turnScreenOn) {
                 Utility.turnScreenOn(context);
@@ -85,7 +94,7 @@ public class ScreenReceiver extends BroadcastReceiver {
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
 
-        if ( !battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
+        if (!battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
                 settings.alwaysOnBatteryLevel <= battery.reference.level &&
                 settings.isAlwaysOnAllowed() &&
                 !deviceIsCovered &&
@@ -98,10 +107,10 @@ public class ScreenReceiver extends BroadcastReceiver {
             Calendar start = new SimpleTime(settings.alwaysOnTimeRangeStartInMinutes).getCalendar();
             Calendar end = new SimpleTime(settings.alwaysOnTimeRangeEndInMinutes).getCalendar();
             boolean shall_auto_start = true;
-            if (end.before(start)){
-                shall_auto_start = ( now.after(start) || now.before(end) );
-            } else if (! start.equals(end)) {
-                shall_auto_start = ( now.after(start) && now.before(end) );
+            if (end.before(start)) {
+                shall_auto_start = (now.after(start) || now.before(end));
+            } else if (!start.equals(end)) {
+                shall_auto_start = (now.after(start) && now.before(end));
             }
             return shall_auto_start;
         }
@@ -121,21 +130,20 @@ public class ScreenReceiver extends BroadcastReceiver {
         SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-               if( sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-                   deviceIsCovered = (sensorEvent.values[0] == 0);
-                   proximitySensorChecked = true;
-               } else
-               if( sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
-                   float z = sensorEvent.values[2];
-                   isScreenUp = Math.abs(z) > 9.f;
-                   gravitySensorChecked = true;
-               }
-               if (gravitySensorChecked && proximitySensorChecked ) {
-                   handler.removeCallbacks(checkAndActivateApp);
-                   long delay = (Utility.isScreenLocked(context) ? 1000 : 5000);
-                   handler.postDelayed(checkAndActivateApp, delay);
-                   sensorMan.unregisterListener(this);
-               }
+                if (sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+                    deviceIsCovered = (sensorEvent.values[0] == 0);
+                    proximitySensorChecked = true;
+                } else if (sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
+                    float z = sensorEvent.values[2];
+                    isScreenUp = Math.abs(z) > 9.f;
+                    gravitySensorChecked = true;
+                }
+                if (gravitySensorChecked && proximitySensorChecked) {
+                    handler.removeCallbacks(checkAndActivateApp);
+                    long delay = (Utility.isScreenLocked(context) ? 1000 : 5000);
+                    handler.postDelayed(checkAndActivateApp, delay);
+                    sensorMan.unregisterListener(this);
+                }
             }
 
             @Override
@@ -152,6 +160,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive");
         handler.removeCallbacks(checkAndActivateApp);
         Settings settings = new Settings(context);
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
@@ -159,7 +168,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 
             isScreenUp = false;
             deviceIsCovered = false;
-            if ( wakeLock != null ) {
+            if (wakeLock != null) {
                 if (wakeLock.isHeld()) wakeLock.release();
                 wakeLock = null;
             }
