@@ -23,7 +23,6 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
-import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.util.Calendar;
 
@@ -31,16 +30,12 @@ public class ScreenReceiver extends BroadcastReceiver {
     private static final String TAG = "ScreenReceiver";
     private static boolean isScreenUp = false;
     private static boolean deviceIsCovered = false;
+    private static final Handler handler = new Handler();
+    private static Looper broadcastReceiverThreadLooper = null;
     private boolean proximitySensorChecked = false;
     private boolean gravitySensorChecked = false;
-    private static Handler handler = new Handler();
     private Context context = null;
-    private PowerManager.WakeLock wakeLock;
-    private static Handler broadcastReceiverHandler = null;
-    private static HandlerThread broadcastReceiverThread = null;
-    private static Looper broadcastReceiverThreadLooper = null;
-
-    private Runnable checkAndActivateApp = new Runnable() {
+    private final Runnable checkAndActivateApp = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(checkAndActivateApp);
@@ -50,13 +45,14 @@ public class ScreenReceiver extends BroadcastReceiver {
             conditionallyActivateAlwaysOn(context, false);
         }
     };
+    private PowerManager.WakeLock wakeLock;
 
     public static ScreenReceiver register(Context ctx) {
-        broadcastReceiverThread = new HandlerThread(TAG);
+        HandlerThread broadcastReceiverThread = new HandlerThread(TAG);
         broadcastReceiverThread.start();
 
         broadcastReceiverThreadLooper = broadcastReceiverThread.getLooper();
-        broadcastReceiverHandler = new Handler(broadcastReceiverThreadLooper);
+        Handler broadcastReceiverHandler = new Handler(broadcastReceiverThreadLooper);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
