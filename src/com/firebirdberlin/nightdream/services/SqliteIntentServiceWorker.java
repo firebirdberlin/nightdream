@@ -81,11 +81,14 @@ public class SqliteIntentServiceWorker extends Worker {
 
     protected static void skipAlarm(Context context, SimpleTime time) {
         Log.d(TAG, "skipAlarm(time)");
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
-                || time == null) {
+        if (time == null) {
             return;
         }
-        AlarmNotificationService.cancelNotification(context);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmNotificationService.cancelNotification(context);
+        }
+
         DataSource db = new DataSource(context);
         db.open();
 
