@@ -257,10 +257,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     private void showDatePicker(long timestamp, final Long entry_id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
-
         final Context context = this;
         long now = System.currentTimeMillis();
         final Calendar calendar = Calendar.getInstance();
