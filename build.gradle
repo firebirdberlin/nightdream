@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'com.android.tools.build:gradle:7.2.1'
     }
 }
 
@@ -71,8 +71,7 @@ def getApiKeyDarkSky() {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '29.0.2'
+    compileSdkVersion 32
 
     compileOptions {
         sourceCompatibility 1.8
@@ -126,7 +125,7 @@ android {
         minSdkVersion 17
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
-        targetSdkVersion 30
+        targetSdkVersion 32
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
