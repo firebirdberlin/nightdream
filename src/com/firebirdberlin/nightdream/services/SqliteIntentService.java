@@ -1,82 +1,106 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
+import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class SqliteIntentService {
 
     private static final String TAG = "SqliteIntentService";
 
     static void saveTime(Context context, SimpleTime time) {
-        SqliteIntentServiceWorker.save(context, time);
-        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SAVE);
+        Log.d(TAG, "save(time)");
+        DataSource db = new DataSource(context);
+        db.open();
+        db.save(time);
+        WakeUpReceiver.schedule(context, db);
+        db.close();
     }
 
     static void snooze(Context context, SimpleTime time) {
-        SqliteIntentServiceWorker.save(context, time);
-        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SNOOZE);
+        saveTime(context, time);
     }
 
     public static void skipAlarm(Context context, SimpleTime time) {
-        SqliteIntentServiceWorker.skipAlarm(context, time);
-        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_SKIP_ALARM);
-    }
-
-    public static void deleteAlarm(Context context, SimpleTime time) {
-        SqliteIntentServiceWorker.delete(context, time);
-        //enqueueWork(context, time, SqliteIntentServiceWorker.ACTION_DELETE_ALARM);
-    }
-
-    public static void scheduleAlarm(Context context) {
-        enqueueWork(context, SqliteIntentServiceWorker.ACTION_SCHEDULE_ALARM);
-    }
-
-    public static void broadcastAlarm(Context context) {
-        enqueueWork(context, SqliteIntentServiceWorker.ACTION_BROADCAST_ALARM);
-    }
-
-    static void enqueueWork(Context context, SimpleTime time, String action) {
-        Log.d(TAG, "enqueueWork(Context,SimpleTime, Action)");
+        Log.d(TAG, "skipAlarm(time)");
         if (time == null) {
             return;
         }
 
-        Gson gson = new Gson();
-        String jsonTime = gson.toJson(time);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmNotificationService.cancelNotification(context);
+        }
 
-        Data myData = new Data.Builder()
-                .putString("action", action)
-                .putString("time", jsonTime)
-                .build();
+        DataSource db = new DataSource(context);
+        db.open();
 
-        OneTimeWorkRequest sqliteWork =
-                new OneTimeWorkRequest.Builder(SqliteIntentServiceWorker.class)
-                        .setInputData(myData)
-                        // TODO enable with target level 31
-                        //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                        .build();
-        WorkManager.getInstance(context).enqueue(sqliteWork);
+        if (time.isRecurring()) {
+            // the next allowed alarm time is after the next alarm.
+            db.updateNextEventAfter(time.id, time.getMillis());
+        } else {
+            db.delete(time);
+        }
+        WakeUpReceiver.schedule(context, db);
+        db.close();
     }
 
-    static void enqueueWork(Context context, String action) {
-        Log.d(TAG, "enqueueWork(Context, Action)");
-
-        Data myData = new Data.Builder()
-                .putString("action", action)
-                .build();
-
-        OneTimeWorkRequest mathWork =
-                new OneTimeWorkRequest.Builder(SqliteIntentServiceWorker.class)
-                        .setInputData(myData)
-                        .build();
-        WorkManager.getInstance(context).enqueue(mathWork);
+    public static void deleteAlarm(Context context, SimpleTime time) {
+        Log.d(TAG, "delete(time)");
+        if (time != null && !time.isRecurring()) {
+            // no alarm is currently active
+            DataSource db = new DataSource(context);
+            db.open();
+            db.deleteOneTimeAlarm(time.id);
+            db.close();
+        }
     }
 
+    public static void scheduleAlarm(Context context) {
+        Log.d(TAG, "schedule()");
+        DataSource db = new DataSource(context);
+        db.open();
+        WakeUpReceiver.schedule(context, db);
+        db.close();
+    }
+
+    public static void broadcastAlarm(Context context) {
+        Log.d(TAG, "broadcastNextAlarm()");
+        SimpleTime next = getLastActivatedAlarmTime();
+        Intent intent = new Intent(Config.ACTION_ALARM_SET);
+        if (next != null) {
+            intent.putExtras(next.toBundle());
+        } else {
+            DataSource db = new DataSource(context);
+            db.open();
+            SimpleTime nextAlarm = db.getNextAlarmToSchedule();
+            if (nextAlarm != null) {
+                intent.putExtras(nextAlarm.toBundle());
+            }
+            db.close();
+        }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    static SimpleTime getLastActivatedAlarmTime() {
+        EventBus bus = EventBus.getDefault();
+        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
+        return (event != null) ? event.entry : null;
+    }
 }

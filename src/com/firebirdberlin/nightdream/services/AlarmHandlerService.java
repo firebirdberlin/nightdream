@@ -183,7 +183,7 @@ public class AlarmHandlerService extends BroadcastReceiver {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 SimpleTime time = new SimpleTime(bundle);
-                SqliteIntentServiceWorker.skipAlarm(context, time);
+                SqliteIntentService.skipAlarm(context, time);
             }
         } else if (ACTION_SNOOZE_ALARM.equals(action)) {
             snoozeAlarm(context);
