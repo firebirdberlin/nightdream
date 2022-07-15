@@ -44,9 +44,9 @@ import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.metadata.Metadata;
@@ -614,25 +614,9 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 }
 
                 @Override
-                public void onPlayerError(ExoPlaybackException error) {
-                    switch (error.type) {
-                        case ExoPlaybackException.TYPE_SOURCE:
-                            Log.e(TAG, "TYPE_SOURCE: " + error.getSourceException().getMessage());
-                            updateNotification(error.getMessage());
-                            break;
-                        case ExoPlaybackException.TYPE_RENDERER:
-                            Log.e(TAG, "TYPE_RENDERER: " + error.getRendererException().getMessage());
-                            updateNotification(error.getMessage());
-                            break;
-                        case ExoPlaybackException.TYPE_UNEXPECTED:
-                            Log.e(TAG, "TYPE_UNEXPECTED: " + error.getUnexpectedException().getMessage());
-                            updateNotification(error.getMessage());
-                            break;
-                        case ExoPlaybackException.TYPE_REMOTE:
-                            Log.e(TAG, "TYPE_REMOTE: " + error.getUnexpectedException().getMessage());
-                            updateNotification(error.getMessage());
-                            break;
-                    }
+                public void onPlayerError(PlaybackException error) {
+                    Log.e(TAG, "Exoplayer Error: " + error.getMessage());
+                    updateNotification(error.getMessage());
                     if (alarmIsRunning) {
                         Log.d(TAG, "stopself");
                         stopSelf();
