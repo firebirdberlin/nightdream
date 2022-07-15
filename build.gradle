@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-cast-framework:20.0.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'org.shredzone.commons:commons-suncalc:2.11'
-    implementation 'com.android.volley:volley:1.2.0'
+    implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.google.android.exoplayer:exoplayer:2.18.0'
     implementation 'com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
