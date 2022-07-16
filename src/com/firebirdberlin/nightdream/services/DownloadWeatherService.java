@@ -44,8 +44,7 @@ public class DownloadWeatherService extends Worker {
                         .build();
 
         OneTimeWorkRequest downloadWeatherWork =
-                new OneTimeWorkRequest.Builder(
-                        DownloadWeatherService.class)
+                new OneTimeWorkRequest.Builder(DownloadWeatherService.class)
                         .addTag(TAG)
                         .setConstraints(constraints)
                         .build();
