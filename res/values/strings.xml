@@ -408,6 +408,7 @@ OR
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Typeface</string>
     <string name="uninstall">Uninstall application</string>
+    <string name="unlockHint">Long press to unlock</string>
     <string name="upgrade_now">Upgrade now!</string>
     <string name="useAlarmSwipeGesture">Set alarm via swipe gesture</string>
     <string name="useAlarmSwipeGestureSummary">Allows to set a new alarm with a swipe from the lower left corner.</string>

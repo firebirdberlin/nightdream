@@ -88,6 +88,7 @@ public class NightDreamUI {
     private final Context mContext;
     private final FrameLayout mainFrame;
     private final LinearLayout topPanel;
+    private final LinearLayout unlockHint;
     private final AlarmClock alarmClock;
     private final ConstraintLayout parentLayout;
     private final ExifView exifView;
@@ -197,6 +198,7 @@ public class NightDreamUI {
             controlsVisible = false;
             hideBatteryView(2000);
             setAlpha(menuIcon, 0.f, 2000);
+            setAlpha(unlockHint, 0.f, 2000);
 
             bottomPanelLayout.hide();
             if (mode == 0) {
@@ -287,6 +289,7 @@ public class NightDreamUI {
                 blinkStateOn = !blinkStateOn;
                 float alpha = (blinkStateOn) ? 1.f : 0.5f;
                 setAlpha(menuIcon, alpha, 0);
+                setAlpha(unlockHint, alpha, 0);
                 handler.postDelayed(blink, 1000);
             } else {
                 blinkStateOn = false;
@@ -460,6 +463,7 @@ public class NightDreamUI {
 
         mainFrame = rootView.findViewById(R.id.main_frame);
         topPanel = rootView.findViewById(R.id.topPanel);
+        unlockHint = rootView.findViewById(R.id.unlockHint);
         menuIcon = rootView.findViewById(R.id.burger_icon);
         nightModeIcon = rootView.findViewById(R.id.night_mode_icon);
         notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
@@ -1285,6 +1289,7 @@ public class NightDreamUI {
             setAlpha(bottomPanelLayout, v, millis);
             v = to_range(v, 0.6f, 1.f);
             setAlpha(menuIcon, v, millis);
+            setAlpha(unlockHint, v, millis);
         }
 
         if (batteryViewShallBeVisible()) {
@@ -1470,6 +1475,7 @@ public class NightDreamUI {
             }
             blinkStateOn = false;
             setAlpha(menuIcon, 1.f, 0);
+            setAlpha(unlockHint, 1.f, 0);
         }
     }
 
@@ -1511,6 +1517,16 @@ public class NightDreamUI {
         showAlarmClock();
         int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
         menuIcon.setImageDrawable(ContextCompat.getDrawable(mContext, resId));
+        menuIcon.post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        unlockHint.setVisibility(locked ? View.VISIBLE : View.GONE);
+                        unlockHint.setY(menuIcon.getHeight());
+                        unlockHint.setX(menuIcon.getWidth());
+                    }
+                }
+        );
         if (AlarmHandlerService.alarmIsRunning()) {
             blinkIfLocked();
         }
@@ -1520,6 +1536,7 @@ public class NightDreamUI {
         if (locked) {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
+            setAlpha(unlockHint, 1.f, 250);
             setAlpha(notificationStatusBar, 1.f, 250);
             setAlpha(batteryIconView, 1.f, 250);
             setAlpha(bottomPanelLayout, 1.f, 250);

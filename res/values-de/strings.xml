@@ -409,6 +409,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_regular">Roboto Regular</string>
     <string name="typeface_roboto_thin">Roboto Thin</string>
     <string name="uninstall">Anwendung deinstallieren</string>
+    <string name="unlockHint">Lange Drücken zum Entsperren</string>
     <string name="upgrade_now">Jetzt kaufen!</string>
     <string name="useAlarmSwipeGesture">Alarm stellen via Wischgeste</string>
     <string name="useAlarmSwipeGestureSummary">Einmalige Weckzeiten können schnell per Wischen aus der unteren linken Ecke eingestellt werden.</string>
