@@ -71,9 +71,20 @@
             android:clickable="true"
             android:contentDescription="@string/flashlight"
             android:focusable="true"
-            android:onClick="onTorchClick"
+            android:onClick="onBulbClick"
             android:padding="5dp"
             app:srcCompat="@drawable/ic_lightbulb" />
+
+        <ImageView
+            android:id="@+id/flashlight_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/flashlight"
+            android:focusable="true"
+            android:onClick="onTorchClick"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_torch" />
 
         <ImageView
             android:id="@+id/radio_icon"
