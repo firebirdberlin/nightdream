@@ -38,18 +38,19 @@ public class AvmAhaRequestTask {
     private static int CONNECT_TIMEOUT = 10000;
     private static int READ_TIMEOUT = 10000;
 
-    private static String AIN = "11630 0145542";
-    private static String AIN_BULB = "13077 0044328-1";
     private final AsyncResponse delegate;
 
     private static String session_id = null;
     private static AvmCredentials credentials = null;
     private List<AvmAhaDevice> deviceList = new ArrayList<AvmAhaDevice>();
 
+    private String errorMessage = null;
+
     public interface AsyncResponse {
         void onAhaRequestFinished();
         void onAhaDeviceListReceived(List<AvmAhaDevice> deviceList);
         void onAhaDeviceStateChanged(AvmAhaDevice device);
+        void onAhaConnectionError(String message);
     }
 
     public AvmAhaRequestTask(AsyncResponse listener, AvmCredentials credentials) {
@@ -63,8 +64,12 @@ public class AvmAhaRequestTask {
         executor.execute(() -> { //background thread
             if (!sessionIsValid()) login();
             List<AvmAhaDevice> devices = getDeviceList();
-            handler.post(() -> { //like onPostExecute()
-                delegate.onAhaDeviceListReceived(devices);
+            handler.post(() -> { // main thread
+                if (errorMessage != null) {
+                    delegate.onAhaConnectionError(errorMessage);
+                } else {
+                    delegate.onAhaDeviceListReceived(devices);
+                }
             });
         });
     }
@@ -123,6 +128,7 @@ public class AvmAhaRequestTask {
 
         this.session_id = response.get("SID");
         if (session_id == null || "0000000000000000".equals(session_id)) {
+            errorMessage = "Authentication error";
             return false;
         }
         return true;
@@ -144,7 +150,6 @@ public class AvmAhaRequestTask {
 
         HashMap<String, String> params = new HashMap();
         params.put("sid", session_id);
-        params.put("ain", AIN);
         params.put("switchcmd", "getdevicelistinfos");
 
         URL url = getUrl("webservices/homeautoswitch.lua", params);
@@ -255,12 +260,16 @@ public class AvmAhaRequestTask {
             }
             urlConnection.disconnect();
         } catch (SocketTimeoutException e) {
+            errorMessage = e.toString();
             Log.e(TAG, "Http Timeout");
         } catch (UnknownHostException e) {
+            errorMessage = e.toString();
             Log.e(TAG, "Unknown host");
         } catch (ConnectException e) {
+            errorMessage = e.toString();
             Log.e(TAG, "Connect exception");
         } catch (Exception e) {
+            errorMessage = e.toString();
             Log.e(TAG, Log.getStackTraceString(e), e);
             e.printStackTrace();
         }

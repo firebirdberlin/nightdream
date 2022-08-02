@@ -821,6 +821,8 @@ public class NightDreamActivity extends BillingHelperActivity
          */
     }
 
+    public void onAhaConnectionError(String message) {
+    }
     public void onAhaRequestFinished() {
         Log.d(TAG, "onAhaRequestFinished");
     }

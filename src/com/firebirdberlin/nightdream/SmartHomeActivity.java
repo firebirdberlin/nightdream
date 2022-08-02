@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -127,7 +128,6 @@ public class SmartHomeActivity
         Log.d(TAG, "onAhaRequestFinished");
     }
     public void onAhaDeviceListReceived(List<AvmAhaDevice> deviceList) {
-        scrollView.removeAllViews();
         if (deviceList == null) {
             return;
         }
@@ -141,8 +141,10 @@ public class SmartHomeActivity
             if (layout == null) {
                 layout = new SmartHomeDeviceLayout(this, device);
                 layoutHashMap.put(device.ain, layout);
+                scrollView.addView(layout);
+            } else {
+                layout.update(device);
             }
-            scrollView.addView(layout);
         }
         scrollView.invalidate();
     }
@@ -159,5 +161,8 @@ public class SmartHomeActivity
         if (layout != null) {
             layout.update(device);
         }
+    }
+    public void onAhaConnectionError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }
