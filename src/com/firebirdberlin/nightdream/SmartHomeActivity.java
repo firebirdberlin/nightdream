@@ -16,22 +16,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-
-import com.firebirdberlin.nightdream.ui.SmartHomeDeviceLayout;
-
-import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
-import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
-import com.firebirdberlin.AvmAhaApi.models.AvmCredentials;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import com.firebirdberlin.nightdream.ui.SmartHomeDeviceLayout;
+import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
+import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
+import com.firebirdberlin.AvmAhaApi.models.AvmCredentials;
 
 public class SmartHomeActivity
         extends BillingHelperActivity
@@ -46,6 +46,7 @@ public class SmartHomeActivity
     final int MENU_ITEM_PREFERENCES = 3000;
     private final HashMap<String, SmartHomeDeviceLayout> layoutHashMap = new HashMap<>();
     private LinearLayout scrollView = null;
+    private Snackbar snackbar;
     private List<AvmAhaDevice> entries = null;
     private Settings settings = null;
     AvmCredentials credentials = null;
@@ -151,7 +152,16 @@ public class SmartHomeActivity
 
     public void onDeviceStateChangeRequest(AvmAhaDevice device, String newState) {
         Log.d(TAG, "onDeviceStateChangeRequest " + device.toString());
-        new AvmAhaRequestTask(this, credentials).setSimpleOnOff(device, newState);
+        if (isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+            new AvmAhaRequestTask(this, credentials).setSimpleOnOff(device, newState);
+        } else {
+            // reset the switch state to the current device state
+            SmartHomeDeviceLayout layout = layoutHashMap.get(device.ain);
+            if (layout != null) {
+                layout.update(device);
+            }
+            showPurchaseDialog();
+        }
     }
 
     public void onAhaDeviceStateChanged(AvmAhaDevice device) {
@@ -164,5 +174,53 @@ public class SmartHomeActivity
     }
     public void onAhaConnectionError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    protected void onPurchasesInitialized() {
+        super.onPurchasesInitialized();
+        conditionallyShowSnackBar();
+    }
+
+    @Override
+    protected void onItemPurchased(String sku) {
+        super.onItemPurchased(sku);
+        conditionallyShowSnackBar();
+    }
+
+    private void conditionallyShowSnackBar() {
+        if (!isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+            View view = findViewById(android.R.id.content);
+            snackbar = Snackbar.make(
+                    view, R.string.smart_home_purchase_request, Snackbar.LENGTH_INDEFINITE
+            );
+            int color = Utility.getRandomMaterialColor(this);
+            int textColor = Utility.getContrastColor(color);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(color);
+            snackbar.setActionTextColor(textColor);
+
+            TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+            tv.setTextColor(textColor);
+
+            snackbar.setAction(android.R.string.ok, new RequestPurchaseListener());
+            snackbar.show();
+        } else {
+            dismissSnackBar();
+        }
+    }
+
+    public class RequestPurchaseListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showPurchaseDialog();
+        }
+    }
+    void dismissSnackBar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
     }
 }

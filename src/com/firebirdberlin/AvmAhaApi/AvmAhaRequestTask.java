@@ -221,6 +221,9 @@ public class AvmAhaRequestTask {
 
     private URL getUrl(String endpoint, HashMap<String, String> params) {
 
+        if (credentials == null || credentials.host == null || credentials.host.isEmpty() ) {
+            return null;
+        }
         String[] separated = endpoint.split("/");
 
         Uri.Builder builder = Uri.parse(credentials.host).buildUpon();
@@ -245,6 +248,9 @@ public class AvmAhaRequestTask {
     }
 
     private InputStream request(URL url) {
+        if (url == null) {
+            return null;
+        }
         Log.d(TAG, "request(" + url.toString() + ")");
         String responseText = "";
         try {
