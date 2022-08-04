@@ -194,6 +194,10 @@ public class Settings {
         reload();
     }
 
+    public String getString(String key) {
+        return settings.getString(key, null);
+    }
+
     private static FavoriteRadioStations getFavoriteRadioStations(SharedPreferences preferences) {
         String json = preferences.getString(FAVORITE_RADIO_STATIONS_KEY, null);
         if (json != null) {

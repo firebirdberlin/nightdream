@@ -277,7 +277,7 @@ OR
     \n- a weather forecast
     \n- more clock faces
     </string>
-    <string name="product_name_actions">Always On package</string>
+    <string name="product_name_actions">Abilities package</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Full version</string>
     <string name="product_name_weather">Weather and design package</string>
@@ -374,6 +374,13 @@ OR
     <string name="slideshow_center_animated">animated</string>
     <string name="slideshow_style">Style</string>
     <string name="sleep_time_dialog_title">Sleep timer</string>
+    <string name="smart_home">Smart home</string>
+    <string name="smart_home_avm">AVM Fritz!Box</string>
+    <string name="smart_home_avm_host">Host</string>
+    <string name="smart_home_avm_host_summary">Address of your Fritz!Box, e.g. http://fritz.box</string>
+    <string name="smart_home_avm_username">Username</string>
+    <string name="smart_home_avm_password">Password</string>
+    <string name="smart_home_purchase_request">Operate your devices with the Abilities package.</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="snoozeAfter">Auto snooze after</string>
     <string name="snoozeCycles">Auto snooze cycles before auto stop</string>

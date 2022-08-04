@@ -135,6 +135,12 @@
             android:parentActivityName=".SetAlarmClockActivity"
             android:theme="@style/PreferencesTheme" />
         <activity
+            android:name=".SmartHomePreferenceActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:excludeFromRecents="true"
+            android:parentActivityName=".SmartHomeActivity"
+            android:theme="@style/PreferencesTheme" />
+        <activity
             android:name=".WeatherPreferenceActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:excludeFromRecents="true"
@@ -319,6 +325,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SmartHomeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:label="@string/smart_home"
+            android:parentActivityName=".NightDreamActivity"
+            android:theme="@style/AlarmClockActivityTheme"
+            android:exported="false"/>
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"

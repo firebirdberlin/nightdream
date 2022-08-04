@@ -41,6 +41,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
 
+import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
+import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
+import com.firebirdberlin.AvmAhaApi.models.AvmCredentials;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
@@ -89,6 +92,7 @@ public class NightDreamActivity extends BillingHelperActivity
         implements View.OnTouchListener,
         NightModeReceiver.Event,
         LocationUpdateReceiver.AsyncResponse,
+        AvmAhaRequestTask.AsyncResponse,
         SleepTimerDialogFragment.SleepTimerDialogListener {
     private static final int PENDING_INTENT_STOP_APP = 1;
     private static final int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
@@ -800,6 +804,33 @@ public class NightDreamActivity extends BillingHelperActivity
 
         flash.toggleFlashlight();
         setupFlashlight();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onBulbClick(View v) {
+        if (flash == null) return;
+
+        SmartHomeActivity.start(this);
+        /*
+        AvmCredentials credentials = new AvmCredentials(
+                mySettings.getString("smart_home_avm_host"),
+                mySettings.getString("smart_home_avm_username"),
+                mySettings.getString("smart_home_avm_password")
+        );
+        new AvmAhaRequestTask(this, credentials).execute(AvmAhaRequestTask.TASK_LIST_DEVICES);
+         */
+    }
+
+    public void onAhaConnectionError(String message) {
+    }
+    public void onAhaRequestFinished() {
+        Log.d(TAG, "onAhaRequestFinished");
+    }
+    public void onAhaDeviceListReceived(List<AvmAhaDevice> deviceList) {
+        Log.d(TAG, "onAhaDeviceListReceived");
+    }
+    public void onAhaDeviceStateChanged(AvmAhaDevice device) {
+        Log.d(TAG, "onAhaDeviceStateChanged");
     }
 
     @Override

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_add_new_alarm"
+        android:animateLayoutChanges="false"
+        android:animationCache="false"
+        android:clipToPadding="true"
+        android:fillViewport="true"
+        android:visibility="visible"
+        tools:context="com.firebirdberlin.nightdream.SmartHomeActivity">
+
+        <LinearLayout
+            android:animateLayoutChanges="true"
+            android:animationCache="true"
+            android:elevation="0dp"
+            android:id="@+id/scroll_view"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="12dp"
+            android:paddingEnd="6dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:paddingStart="6dp"
+            android:paddingTop="12dp" />
+
+    </ScrollView>
+
+</FrameLayout>
