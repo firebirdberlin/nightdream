@@ -214,7 +214,7 @@ public class SidePanel extends FlexboxLayout {
     }
 
     public void setTorchIconActive(boolean on) {
-        ImageView torchIcon = findViewById(R.id.torch_icon);
+        ImageView torchIcon = findViewById(R.id.flashlight_icon);
         if (on) {
             setIconActive(torchIcon);
         } else {
@@ -223,7 +223,7 @@ public class SidePanel extends FlexboxLayout {
     }
 
     public void setTorchIconVisibility(boolean visible) {
-        ImageView torchIcon = findViewById(R.id.torch_icon);
+        ImageView torchIcon = findViewById(R.id.flashlight_icon);
         if (visible) {
             torchIcon.setVisibility(VISIBLE);
         } else {

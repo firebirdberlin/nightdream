@@ -375,6 +375,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="slideshow_center_crop">Bild beschneiden</string>
     <string name="slideshow_center_inside">Ränder einfügen</string>
     <string name="slideshow_style">Stil</string>
+    <string name="smart_home">Smart home</string>
+    <string name="smart_home_avm">AVM Fritz!Box</string>
+    <string name="smart_home_avm_host">Host</string>
+    <string name="smart_home_avm_host_summary">Addresse der Fritz!Box, z.B. http://fritz.box</string>
+    <string name="smart_home_avm_username">Username</string>
+    <string name="smart_home_avm_password">Passwort</string>
+    <string name="smart_home_purchase_request">Geräte schalten mit dem Paket "Zusatzfunktionen"</string>
     <string name="snoozeTime">Schlummerzeit</string>
     <string name="snoozeAfter">Automatisch schlummern nach</string>
     <string name="snoozeCycles">Maximale Wiederholungen der Schlummerfunktion vor Auto-Stopp</string>

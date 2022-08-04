@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:key="smart_home"
+    app:title="@string/smart_home">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preferences_category"
+        app:key="cat_avmfritz"
+        app:title="@string/smart_home_avm">
+
+
+        <EditTextPreference
+            android:defaultValue="http://fritz.box"
+            android:key="smart_home_avm_host"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/smart_home_avm_host_summary"
+            android:title="@string/smart_home_avm_host"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="smart_home_avm_username"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/smart_home_avm_username"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textPassword"
+            android:key="smart_home_avm_password"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/smart_home_avm_password"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true"
+            />
+
+
+    </PreferenceCategory>
+</PreferenceScreen>
