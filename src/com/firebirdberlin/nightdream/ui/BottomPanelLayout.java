@@ -93,6 +93,9 @@ public class BottomPanelLayout extends FrameLayout {
         if (showAlarmsPersistently) {
             showAlarmViewIfNoRadioIsPlaying();
         } else {
+            if (tickerLayout != null) {
+                tickerLayout.pause();
+            }
             isVisible = false;
             setClickable(false);
             setAlpha(this, 0.f, 2000);
@@ -139,6 +142,7 @@ public class BottomPanelLayout extends FrameLayout {
             showTickerView();
         } else {
             showAlarmView();
+            //showTickerView();
         }
         show();
         invalidate();
@@ -168,20 +172,18 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private void showTickerView() {
-
         Log.i(TAG, "showTickerView");
 
-        if (tickerLayout != null) {
-            //tickerLayout.updateText();
-            invalidate();
-            return; // already visible
-        }
         removeAllViews();
         clearViews();
 
-        tickerLayout = new Ticker(context, attrs);
-        setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
-        tickerLayout.setCustomColor(accentColor, textColor);
+        if (tickerLayout != null) {
+            tickerLayout.resume();
+        } else {
+            tickerLayout = new Ticker(context, attrs);
+            setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
+            tickerLayout.setCustomColor(accentColor, textColor);
+        }
         addView(tickerLayout);
         invalidate();
     }
