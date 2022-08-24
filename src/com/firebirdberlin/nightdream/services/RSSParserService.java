@@ -5,10 +5,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -24,30 +20,8 @@ public class RSSParserService extends Worker {
     private String urlString = "https://www.tagesschau.de/xml/rss2/";
     public static MutableLiveData<Channel> articleListLive = new MutableLiveData<>();
 
-    public RSSParserService(
-            @NonNull Context context,
-            @NonNull WorkerParameters params) {
+    public RSSParserService(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
-    }
-
-    public static void start(Context context) {
-        Log.d(TAG, "start");
-
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
-
-        OneTimeWorkRequest rssParserWork = new OneTimeWorkRequest.Builder(
-                RSSParserService.class)
-                .addTag(TAG)
-                .setConstraints(constraints)
-                .build();
-
-        WorkManager.getInstance(context).enqueue(rssParserWork);
-    }
-
-    public void stopWorker(Context context) {
-        WorkManager.getInstance(context).cancelAllWorkByTag(TAG);
     }
 
     @NonNull
@@ -69,10 +43,13 @@ public class RSSParserService extends Worker {
                 articleListLive.postValue(channel);
             }
 
-            //what to do in case of error
             @Override
             public void onError(@NonNull Exception e) {
-                articleListLive.postValue(new Channel(null, null, null, null, null, null, new ArrayList<Article>(),null));
+                articleListLive.postValue(
+                        new Channel(
+                                null, null, null, null, null, null, new ArrayList<Article>(), null
+                        )
+                );
                 e.printStackTrace();
                 Log.d(TAG, "An error has occurred. Please try again");
             }
