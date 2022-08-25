@@ -16,6 +16,13 @@ import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
+import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
+import com.firebirdberlin.nightdream.Utility;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,12 +35,15 @@ public class Ticker extends FrameLayout {
     public static String TAG = "Ticker";
     private final List<String> headlines = new ArrayList<>();
     private final Set<View> animatedViews = new HashSet<>();
+    private final Set<Animator> animators = new HashSet<>();
     private int textSize = 72;
     private int spaceWidth = 36;
     private int textColor = Color.WHITE;
     private int accentColor = Color.WHITE;
     private int index = -1;
     private Context context;
+    private Animator animator = null;
+    private RSSViewModel rssViewModel = null;
 
     //Constructor
     public Ticker(Context context, AttributeSet attrs) {
@@ -49,14 +59,29 @@ public class Ticker extends FrameLayout {
     }
 
     private void init() {
-        // todo: register for a data source and initialize a listener
-        addHeadline("test 1");
-        List<String> headlines = new ArrayList<String>();
-        headlines.add("Warum die Omikron-Welle Bremen so heftig trifft  -");
-        headlines.add("Liveblog: ++ Union für Feststellung epidemischer Lage ++  -");
-        headlines.add("Corona-Pandemie: Inzidenz wieder bei mehr als 300  -");
-        addHeadline("test 2");
-        setHeadlines(headlines);
+        rssViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(RSSViewModel.class);
+        rssViewModel.loadDataFromWorker(context, (LifecycleOwner) context);
+
+        rssViewModel.getData().observe((LifecycleOwner) context, channel -> {
+            if (channel != null) {
+                if (channel.getTitle() != null) {
+                    Log.d(TAG, "rss title: " + channel.getTitle());
+                }
+                List<String> headlines = new ArrayList<>();
+                for (int i = 0; i < Math.min(channel.getArticles().size(), 5); i++) {
+                    String title = channel.getArticles().get(i).getTitle();
+                    String link = channel.getArticles().get(i).getLink();
+                    String time = channel.getArticles().get(i).getPubDate();
+                    Log.d(TAG, "rss Date: " + time);
+                    Log.d(TAG, "rss Title: " + title);
+                    Log.d(TAG, "rss Link: " + link);
+                    headlines.add(title);
+                }
+                setHeadlines(headlines);
+            }
+        });
+
+        addHeadline("");
         run();
     }
 
@@ -89,19 +114,15 @@ public class Ticker extends FrameLayout {
         this.textColor = color;
     }
 
-    public void setBackColor(int color) {
-        setBackgroundColor(color);
-    }
-
     //set textColor, accentColor and default Background
     public void setCustomColor(int accentColor, int textColor) {
         this.accentColor = accentColor;
         this.textColor = textColor;
 
-        updateChild();
+        updateChildren();
     }
 
-    private void updateChild() {
+    private void updateChildren() {
         //set all textcolor to all textviews
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -120,7 +141,7 @@ public class Ticker extends FrameLayout {
     //set Textsize
     public void setTextSize(int textSize) {
         this.textSize = textSize;
-        updateChild();
+        updateChildren();
     }
 
     //start scrolling headlines
@@ -130,6 +151,21 @@ public class Ticker extends FrameLayout {
             return;
         }
         launchNext();
+    }
+
+    public void pause() {
+        Log.d(TAG, "pause()");
+        for (Animator animator: animators) {
+            animator.pause();
+        }
+        rssViewModel.stopWorker();
+    }
+    public void resume() {
+        Log.d(TAG, "resume()");
+        for (Animator animator: animators) {
+            animator.resume();
+        }
+        rssViewModel.loadDataFromWorker(context, (LifecycleOwner) context);
     }
 
     @Override
@@ -152,14 +188,24 @@ public class Ticker extends FrameLayout {
     }
 
     private void launchNext() {
-        index = (index + 1) % headlines.size();
+        String headline = "";
+        int count = 0;
+        while (headline.isEmpty() && count < headlines.size()) {
+            index = (index + 1) % headlines.size();
+            headline = headlines.get(index).trim();
+            count++;
+        }
 
-        //make TextView
+        //if (headline.isEmpty()) return;
+
+        Log.d(TAG, "headline: '" + headline + "'");
         TextView tv = new TextView(getContext());
         tv.setGravity(Gravity.CENTER_VERTICAL);
         tv.setTextColor(this.textColor);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, this.textSize);
-        tv.setText(headlines.get(index));
+        if (!headline.isEmpty()) {
+            tv.setText(String.format("+++ %s", headline));
+        }
         int padding = this.textSize / 2;
         tv.setPadding(0, padding, 0, padding);
         tv.setSingleLine(true);
@@ -171,6 +217,13 @@ public class Ticker extends FrameLayout {
                     animationStart((TextView) v);
                 }
         );
+        tv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Index identifies the clicked headline in the list.
+                Log.d(TAG, "Ticker click: " + index);
+            }
+        });
         addView(tv);
     }
 
@@ -180,7 +233,7 @@ public class Ticker extends FrameLayout {
             return;
         }
 
-        //view off screen.
+        //move view out off screen.
         tv.setTranslationX(getWidth());
 
         int distance = tv.getWidth() + spaceWidth;
@@ -191,27 +244,30 @@ public class Ticker extends FrameLayout {
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
+                        Log.d(TAG, "start animation");
                         //add view to set
+                        animator = animation;
+                        animators.add(animation);
                         animatedViews.add(tv);
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        Log.d(TAG, "end animation");
+                        animator = null;
                         launchNext();
+                        animators.remove(animation);
                         animationEnd(tv);
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-                        //Remove view from set
                         animatedViews.remove(tv);
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                })
-                .start();
+                    public void onAnimationRepeat(Animator animation) {}
+                }).start();
     }
 
     private void animationEnd(final TextView tv) {
@@ -223,18 +279,18 @@ public class Ticker extends FrameLayout {
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
+                        animators.add(animation);
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        //Remove view
                         removeView(tv);
+                        animators.remove(animation);
                         animatedViews.remove(tv);
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-                        //Remove view from set
                         animatedViews.remove(tv);
                     }
 
