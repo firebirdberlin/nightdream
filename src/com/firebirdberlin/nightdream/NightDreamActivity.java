@@ -838,7 +838,7 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        //Check if ConfigurationChanged 
+        //Check if ConfigurationChanged
         int diff = newConfig.diff(prevConfig);
         if ((nightDreamUI != null) && (diff != 0)) {
             nightDreamUI.onConfigurationChanged(newConfig);
