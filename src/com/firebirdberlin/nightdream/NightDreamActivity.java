@@ -125,6 +125,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private CastSession mCastSession;
     private SessionManagerListener<CastSession> mSessionManagerListener;
     private Settings mySettings = null;
+    private Configuration prevConfig;
 
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -444,6 +445,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
+        prevConfig = new Configuration(getResources().getConfiguration());
 
         mCastContext.getSessionManager().addSessionManagerListener(
                 mSessionManagerListener, CastSession.class
@@ -845,9 +847,11 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (nightDreamUI != null) {
+        int diff = newConfig.diff(prevConfig);
+        if ((nightDreamUI != null) && (diff != 0)) {
             nightDreamUI.onConfigurationChanged(newConfig);
         }
+        prevConfig = new Configuration(newConfig);
     }
 
     private void setMode(int new_mode) {

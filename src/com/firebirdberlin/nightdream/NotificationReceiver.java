@@ -190,7 +190,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.i(TAG, "template = " + template);
 
         Drawable notificationMessageSmallIcon = getNotificationIcon(context, intent);
-        View clockLayout = contentView.findViewById(R.id.clockLayout);
 
         ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
 
@@ -212,6 +211,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             mediaControlLayoutBinding.invalidateAll();
         }
 
+        View clockLayout = contentView.findViewById(R.id.clockLayout);
         clockLayout.postDelayed(
                 () -> activity.onConfigurationChanged(activity.getResources().getConfiguration()),
                 500

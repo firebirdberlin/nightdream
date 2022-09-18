@@ -296,6 +296,7 @@ public class NightDreamUI {
             }
         }
     };
+
     public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
@@ -303,6 +304,14 @@ public class NightDreamUI {
             setupClockLayout();
             setColor();
             updateWeatherData();
+
+            //Update Notifications in Clocklayout for Android 11+
+            if (android.os.Build.VERSION.SDK_INT>=11) {
+                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                i.putExtra("command", "list");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+            }
+
             controlsVisible = true;
 
             brightnessProgress.setVisibility(View.INVISIBLE);
@@ -310,7 +319,6 @@ public class NightDreamUI {
             showAlarmClock();
 
             clockLayout.postDelayed(zoomIn, 500);
-
         }
     };
     private boolean shallMoveClock = false;
