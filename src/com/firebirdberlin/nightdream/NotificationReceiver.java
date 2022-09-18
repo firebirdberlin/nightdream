@@ -212,10 +212,13 @@ public class NotificationReceiver extends BroadcastReceiver {
             mediaControlLayoutBinding.invalidateAll();
         }
 
+        //Why do we do this?
+        /*
         clockLayout.postDelayed(
                 () -> activity.onConfigurationChanged(activity.getResources().getConfiguration()),
                 500
         );
+         */
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
