@@ -98,7 +98,9 @@ public class NightDreamActivity extends BillingHelperActivity
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
-    private static int mode = 2;
+    private static final int MODE_NIGHT = 0;
+    private static final int MODE_DAY = 2;
+    private static int mode = MODE_DAY;
     private static Context context = null;
     final private Handler handler = new Handler();
     private final Runnable finishApp = () -> finish();
@@ -466,7 +468,8 @@ public class NightDreamActivity extends BillingHelperActivity
         broadcastReceiver = registerBroadcastReceiver();
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
-        nReceiver.setColor((mode == 0) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
+        nReceiver.setColor((mode == MODE_NIGHT) ?
+                mySettings.secondaryColorNight : mySettings.secondaryColor);
         Intent intent = getIntent();
 
         String action = intent.getAction();
@@ -502,9 +505,9 @@ public class NightDreamActivity extends BillingHelperActivity
             activePanel = BottomPanelLayout.Panel.WEB_RADIO;
             // clear the action so that it won't be re-delivered.
             intent.setAction("");
-            bottomPanelLayout.onResume();
         }
 
+        bottomPanelLayout.setRssEnabled(mySettings.rssEnabled);
         bottomPanelLayout.setActivePanel(activePanel);
         triggerAlwaysOnTimeout();
         showToastIfNotCharging();
@@ -624,7 +627,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (mySettings.activateDoNotDisturb) {
             AudioManage.activateDnDMode(false, mySettings.activateDoNotDisturbAllowPriority);
         }
-        if (mySettings.allow_screen_off && mode == 0
+        if (mySettings.allow_screen_off && mode == MODE_NIGHT
                 && screenWasOn && !Utility.isScreenOn(this)) { // screen off in night mode
             startBackgroundListener();
         } else {
@@ -786,16 +789,22 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onNightModeClick(View v) {
         if (lightSensor == null
                 || mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_MANUAL) {
-            int new_mode = (mode == 0) ? 2 : 0;
+            int new_mode = (mode == MODE_NIGHT) ? MODE_DAY : MODE_NIGHT;
             toggleNightMode(new_mode);
         }
     }
 
     private void toggleNightMode(int new_mode) {
         if (lightSensor == null) {
-            last_ambient = (new_mode == 2) ? 400.f : mySettings.minIlluminance;
+            last_ambient = (new_mode == MODE_DAY) ? 400.f : mySettings.minIlluminance;
         }
         setMode(new_mode);
+    }
+
+    private void onChangeNightMode(int new_mode) {
+        if (new_mode == MODE_NIGHT) {
+            triggerAlwaysOnTimeout();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -845,8 +854,11 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI.setMode(new_mode, last_ambient);
 
         setKeepScreenOn(shallKeepScreenOn(new_mode)); // allow the screen to go off
-        if (mode != 0 && new_mode == 0) {
-            triggerAlwaysOnTimeout();
+        if (
+                (mode != MODE_NIGHT && new_mode == MODE_NIGHT)
+                        || (mode == MODE_NIGHT && new_mode != MODE_NIGHT)
+        ){
+            onChangeNightMode(new_mode);
         }
         mode = new_mode;
     }
