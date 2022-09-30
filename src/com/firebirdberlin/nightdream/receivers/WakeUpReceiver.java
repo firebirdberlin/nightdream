@@ -28,6 +28,7 @@ import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
 import com.firebirdberlin.nightdream.services.AlarmWifiService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
+import com.firebirdberlin.nightdream.viewmodels.AlarmClockViewModel;
 import com.firebirdberlin.nightdream.widget.AlarmClockWidgetProvider;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,6 +67,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             intent.putExtras(next.toBundle());
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        AlarmClockViewModel.setNextAlarm(next);
         updateWidgets(context);
     }
 

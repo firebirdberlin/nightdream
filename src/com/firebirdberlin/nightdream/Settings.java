@@ -138,6 +138,12 @@ public class Settings {
     public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int secondaryColorNight;
+    public String rssURL="";
+    public String rssCharSet="";
+    public int rssIntervalMode;
+    public boolean rssEnabled = false;
+    public long rssTickerSpeed=10L;
+    public float rssTextSize;
     public int gradientStartColor;
     public int gradientEndColor;
     public int sensitivity = 1;
@@ -439,6 +445,12 @@ public class Settings {
         background_exif = settings.getBoolean("backgroundEXIF", false);
         fade_clock = settings.getBoolean("fadeClock", false);
         background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
+        rssURL = settings.getString("rssURL", "");
+        rssCharSet = settings.getString("rssCharSetMode", "utf-8");
+        rssEnabled = settings.getBoolean("enableRSS", false);
+        rssIntervalMode = Integer.parseInt(settings.getString("rssIntervalMode", "60"));
+        rssTickerSpeed = Long.parseLong(settings.getString("rssTickerSpeed", "10"));
+        rssTextSize = Float.parseFloat(settings.getString("rssTextSizeMode", "0"));
         handle_power = settings.getBoolean("handle_power", false);
         handle_power_disconnection = settings.getBoolean("handle_power_disconnection", false);
         handle_power_disconnection_at_time_range_end =
