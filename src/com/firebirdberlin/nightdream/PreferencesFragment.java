@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -43,6 +44,7 @@ import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
+import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.google.android.material.snackbar.Snackbar;
 import com.rarepebble.colorpicker.ColorPreference;
@@ -111,6 +113,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
 
                     }
+                    settings = new Settings(mContext);
 
                     switch (key) {
                         case "brightness_offset":
@@ -164,6 +167,28 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             break;
                         case "activateDoNotDisturb":
                             setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");
+                            break;
+                        case "enableRSS":
+                            if (settings.rssEnabled) {
+                                RSSViewModel.loadDataPeriodicFromWorker(mContext, (LifecycleOwner) mContext);
+                            } else {
+                                RSSViewModel.stopWorker();
+                            }
+                            break;
+                        case "rssURL":
+                        case "rssCharSetMode":
+                            if (settings.rssEnabled) {
+                                RSSViewModel.refreshDataFromWorker(mContext);
+                            }
+                            break;
+                        case "rssIntervalMode":
+                            RSSViewModel.setIntervalMode(settings.rssIntervalMode);
+                            break;
+                        case "rssTickerSpeed":
+                            RSSViewModel.setTickerSpeed(settings.rssTickerSpeed);
+                            break;
+                        case "rssTextSizeMode":
+                            RSSViewModel.setTextSize(settings.rssTextSize);
                             break;
                     }
 
@@ -360,6 +385,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 case "background":
                     setPreferencesFromResource(R.xml.preferences_background, rootKey);
                     break;
+                case "rss":
+                    setPreferencesFromResource(R.xml.preferences_rss, rootKey);
+                    break;
                 case "brightness":
                     setPreferencesFromResource(R.xml.preferences_brightness, rootKey);
                     break;
@@ -438,6 +466,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Log.d(TAG, "onResume");
         super.onResume();
         init();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        prefs.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
     }
 
     @Override
@@ -1100,8 +1135,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (preference instanceof ColorPreference) {
             ColorPreference cp = (ColorPreference) preference;
             cp.showDialog(this, 0);
-        }
-        else super.onDisplayPreferenceDialog(preference);
+        } else super.onDisplayPreferenceDialog(preference);
     }
 
     private void setupDaydreamPreferences() {

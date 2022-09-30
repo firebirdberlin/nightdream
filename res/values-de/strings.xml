@@ -329,6 +329,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining_alarm_time_start">Dieser Wecker klingelt in&#160;</string>
     <string name="repeat">wiederholen</string>
     <string name="reset_to_defaults">Einstellungen zurücksetzen</string>
+    <string name="rss">RSS Ticker</string>
+    <string name="rss_charset">Zeichenkodierung</string>
+    <string name="rss_enable_summary">Ticker aktivieren</string>
+    <string name="rss_tickerspeed">Geschwindigkeit des Tickers</string>
+    <string name="rss_timeset">Aktualisierungsinterval (Minuten)</string>
+    <string name="rss_url_error">Url nicht angegeben</string>
+    <string name="rss_data_error">Ein Fehler ist aufgetreten. Keine Daten verfügbar.</string>
+    <string name="rss_text_size">Textgröße</string>
     <string name="screenProtection">Bildschirmschutz</string>
     <string name="screenProtectionNone">Aus</string>
     <string name="screenProtectionMove">Uhr bewegen</string>

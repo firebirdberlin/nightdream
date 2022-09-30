@@ -1,0 +1,66 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:key="rss"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/rss">
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="enableRSS"
+        app:summary="@string/rss_enable_summary"
+        app:title="@string/rss"
+        app:isPreferenceVisible="true"
+        />
+
+    <EditTextPreference
+        app:dependency="enableRSS"
+        app:dialogTitle="RSS - URL"
+        app:iconSpaceReserved="false"
+        app:isPreferenceVisible="true"
+        app:key="rssURL"
+        app:title="RSS - URL"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        app:defaultValue="utf-8"
+        app:dependency="enableRSS"
+        app:entries="@array/rssCharsetModes"
+        app:entryValues="@array/rssCharsetModeValues"
+        app:iconSpaceReserved="false"
+        app:isPreferenceVisible="false"
+        app:key="rssCharSetMode"
+        app:title="@string/rss_charset"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        app:defaultValue="0"
+        app:dependency="enableRSS"
+        app:entries="@array/rssTextSizeModes"
+        app:entryValues="@array/rssTextSizeValues"
+        app:iconSpaceReserved="false"
+        app:key="rssTextSizeMode"
+        app:title="@string/rss_text_size"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        app:defaultValue="60"
+        app:dependency="enableRSS"
+        app:entries="@array/rssIntervalValues"
+        app:entryValues="@array/rssIntervalModes"
+        app:iconSpaceReserved="false"
+        app:key="rssIntervalMode"
+        app:title="@string/rss_timeset"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        app:defaultValue="10"
+        app:dependency="enableRSS"
+        app:entries="@array/rssTickerModes"
+        app:entryValues="@array/rssTickerModeValues"
+        app:iconSpaceReserved="false"
+        app:key="rssTickerSpeed"
+        app:title="@string/rss_tickerspeed"
+        app:useSimpleSummaryProvider="true"/>
+
+</PreferenceScreen>

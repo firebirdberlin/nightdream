@@ -291,11 +291,13 @@ public class SimpleTime {
         }
     }
 
+    public long getRemainingMillis() {
+        return getMillis() - System.currentTimeMillis();
+    }
+
     public String getRemainingTimeString(Context context) {
         String returnString;
-        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(
-                getMillis() - System.currentTimeMillis()
-        );
+        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(getRemainingMillis());
         int days = (int) TimeUnit.MINUTES.toDays(diffMinutes);
         int hours = (int) (TimeUnit.MINUTES.toHours(diffMinutes) % TimeUnit.DAYS.toHours(1));
         int minutes = (int) (diffMinutes % TimeUnit.HOURS.toMinutes(1));

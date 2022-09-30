@@ -128,7 +128,7 @@ public class AlarmService extends Service
         }
     }
 
-    public void stopAlarm() {
+    private void stopAlarm() {
         handler.removeCallbacks(fadeOut);
         handler.removeCallbacks(fadeIn);
         AlarmStop();
