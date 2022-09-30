@@ -34,6 +34,12 @@
         app:title="@string/background"/>
 
     <Preference
+        app:icon="@drawable/ic_rss"
+        app:key="rss"
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+        app:title="@string/rss"/>
+
+    <Preference
         app:icon="@drawable/ic_brightness"
         app:key="brightness"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"

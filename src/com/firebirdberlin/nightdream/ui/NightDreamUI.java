@@ -605,7 +605,7 @@ public class NightDreamUI {
         postFadeAnimation();
 
         initBackground();
-        initBottomPanelLayout();
+        setupAlarmClock();
         setupScreenAnimation();
         lockUI(this.locked);
 
@@ -617,14 +617,6 @@ public class NightDreamUI {
         } else {
             soundmeter = null;
         }
-    }
-
-    private void initBottomPanelLayout() {
-        bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
-        bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
-        bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
-        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
-        bottomPanelLayout.setup();
     }
 
     private void initBackground() {
