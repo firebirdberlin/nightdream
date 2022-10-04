@@ -61,13 +61,7 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
                 prefAttribution.setSummary("https://openweathermap.org");
                 break;
             }
-            case "1": {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://darksky.net/poweredby/"));
-                prefAttribution.setIntent(intent);
-                prefAttribution.setTitle("Powered by Dark Sky");
-                prefAttribution.setSummary("https://darksky.net/poweredby/");
-                break;
-            }
+            case "1": // DarkSky reaches end of service at March 31st
             case "2": {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://brightsky.dev/"));
                 prefAttribution.setIntent(intent);

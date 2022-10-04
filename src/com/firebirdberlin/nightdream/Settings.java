@@ -393,7 +393,6 @@ public class Settings {
             default:
                 return WeatherProvider.OPEN_WEATHER_MAP;
             case "1":
-                return WeatherProvider.DARK_SKY;
             case "2":
                 return WeatherProvider.BRIGHT_SKY;
             case "3":
