@@ -60,18 +60,18 @@ public class Notification implements Parcelable {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected Notification(Parcel in) {
-        bigPicture = getParcelable(in, Bitmap.class.getClassLoader());
+        bigPicture = (Bitmap) getParcelable(in, Bitmap.class.getClassLoader());
         time = in.readString();
         postTimestamp = in.readLong();
         applicationName = in.readString();
         text = in.readString();
         textBig = in.readString();
         summaryText = in.readString();
-        bitmapLargeIcon = getParcelable(in, Bitmap.class.getClassLoader());
+        bitmapLargeIcon = (Bitmap) getParcelable(in, Bitmap.class.getClassLoader());
         title = in.readString();
         titleBig = in.readString();
         template = in.readString();
-        pendingIntent = getParcelable(in, PendingIntent.class.getClassLoader());
+        pendingIntent = (PendingIntent) getParcelable(in, PendingIntent.class.getClassLoader());
         actions = in.createTypedArray(android.app.Notification.Action.CREATOR);
         packageName = in.readString();
         isClearable = in.readByte() != 0;
@@ -135,7 +135,7 @@ public class Notification implements Parcelable {
         return null;
     }
 
-    <T> T getParcelable(Parcel in, ClassLoader classLoader) {
+    Parcelable getParcelable(Parcel in, ClassLoader classLoader) {
         try {
             return in.readParcelable(classLoader);
         } catch (ClassCastException ignored) {
