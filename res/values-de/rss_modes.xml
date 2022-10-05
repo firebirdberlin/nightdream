@@ -45,9 +45,9 @@
     </string-array>
 
     <string-array name="rssTickerModes">
-        <item>slow</item>
+        <item>langsam</item>
         <item>normal</item>
-        <item>fast</item>
+        <item>schnell</item>
     </string-array>
 
     <string-array name="rssTextSizeValues">
@@ -57,9 +57,9 @@
     </string-array>
 
     <string-array name="rssTextSizeModes">
-        <item>large</item>
+        <item>groß</item>
         <item>normal</item>
-        <item>small</item>
+        <item>klein</item>
     </string-array>
 
 

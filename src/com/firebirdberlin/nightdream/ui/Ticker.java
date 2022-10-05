@@ -11,7 +11,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.widget.TextViewCompat;
 
-import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.prof.rssparser.Article;
 
@@ -45,7 +42,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     private int accentColor = Color.WHITE;
     private int index = -1;
     private Context context;
-    private float textSize;
+    private float textSize = 28.f;
 
     public Ticker(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -56,9 +53,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         background.setCornerRadii(new float[]{30, 30, 30, 30, 0, 0, 0, 0});
         setBackground(background);
 
-        Settings settings = new Settings(context);
-        animationSpeed = settings.rssTickerSpeed;
-        textSize = settings.rssTextSize;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT
         );
@@ -81,10 +75,10 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         });
 
         RSSViewModel.observeTextSize(context, textSize -> {
-            Log.d(TAG,"change rss textSize: "+textSize);
-            setTickerTextSize(textSize);
+            Log.d(TAG,"change rss textSize: "+ textSize);
+            this.textSize = textSize;
+            restart();
         });
-        //headlines.add("");
     }
 
     public void setHeadlines(List<Article> articles) {
@@ -149,14 +143,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         Log.d(TAG, "setTickerSpeed(): " + speed);
         if (animationSpeed != speed) {
             animationSpeed = speed;
-        }
-    }
-
-    public void setTickerTextSize(float textSize) {
-        Log.d(TAG, "setTickerTextSize(): " + textSize);
-        if (this.textSize != textSize) {
-            this.textSize = textSize;
-            restart();
         }
     }
 
@@ -226,22 +212,16 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         //make TextView
         TextView tv = new TextView(getContext());
         tv.setGravity(Gravity.CENTER_VERTICAL);
-        TextViewCompat.setAutoSizeTextTypeWithDefaults(tv, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-        if (textSize > 0) {
-            float textSize = tv.getTextSize();
-            if (textSize < 30) textSize= textSize * 1.5f; //must be for different display resolutions
-            TextViewCompat.setAutoSizeTextTypeWithDefaults(tv, TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE);
-            tv.setTextSize(textSize / this.textSize);
-        }
+        tv.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        tv.setOnClickListener(this);
+        tv.setSingleLine(true);
+        tv.setTag(index);
         tv.setTextColor(this.textColor);
+        tv.setTextSize(this.textSize);
+        tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         if (!headline.isEmpty()) {
             tv.setText(headline);
         }
-        tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        tv.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        tv.setSingleLine(true);
-        tv.setTag(index);
-        tv.setOnClickListener(this);
         tv.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top,
