@@ -51,13 +51,13 @@
     </string-array>
 
     <string-array name="rssTextSizeValues">
-        <item>0</item>
-        <item>2</item>
-        <item>4</item>
+        <item>28</item>
+        <item>20</item>
+        <item>12</item>
     </string-array>
 
     <string-array name="rssTextSizeModes">
-        <item>big</item>
+        <item>large</item>
         <item>normal</item>
         <item>small</item>
     </string-array>
