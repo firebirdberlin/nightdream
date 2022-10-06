@@ -116,7 +116,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
-
+        boolean showAlarm = widgetPrefs.getBoolean("showAlarm", false);
         boolean showWeather = widgetDimension.height >= 130 && widgetDimension.width >= 130;
         boolean showDate = widgetDimension.height >= 130 && widgetDimension.width >= 130;
         if (clockLayoutId == ClockLayout.LAYOUT_ID_DIGITAL3) {
@@ -163,7 +163,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
 
         TextView alarmTime = getNextAlarm(context, settings);
-        if (alarmTime != null) {
+        if (showAlarm && alarmTime != null) {
             clockLayout.addView(alarmTime, 0);
         }
 
