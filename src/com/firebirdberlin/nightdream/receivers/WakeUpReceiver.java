@@ -30,6 +30,7 @@ import com.firebirdberlin.nightdream.services.AlarmWifiService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.viewmodels.AlarmClockViewModel;
 import com.firebirdberlin.nightdream.widget.AlarmClockWidgetProvider;
+import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -73,6 +74,17 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
     private static void updateWidgets(Context context) {
         AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+
+        int[] clockWidgetIds = widgetManager.getAppWidgetIds(
+                new ComponentName(context, ClockWidgetProvider.class)
+        );
+        Intent clockWidgetUpdateIntent = new Intent(
+                AppWidgetManager.ACTION_APPWIDGET_UPDATE,
+                null, context, ClockWidgetProvider.class
+        );
+        clockWidgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, clockWidgetIds);
+        context.sendBroadcast(clockWidgetUpdateIntent);
+
         int[] appWidgetIds = widgetManager.getAppWidgetIds(
                 new ComponentName(context, AlarmClockWidgetProvider.class)
         );
