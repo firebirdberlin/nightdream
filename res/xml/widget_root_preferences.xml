@@ -39,5 +39,10 @@
             app:defaultValue="true"
             app:key="showDate"
             app:title="@string/show_date" />
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="showAlarm"
+            app:title="@string/show_alarm" />
     </PreferenceCategory>
 </PreferenceScreen>

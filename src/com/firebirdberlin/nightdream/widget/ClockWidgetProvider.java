@@ -18,15 +18,20 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
@@ -38,6 +43,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
+    private static String nextAlarmString ="";
 
     private static ViewInfo prepareSourceView(Context context, WidgetDimension dimension, int appWidgetId) {
 
@@ -67,6 +73,33 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return new ViewInfo(container, widthPixel, heightPixel);
     }
 
+    private static String getEmojiByUnicode(int unicode){
+        return new String(Character.toChars(unicode));
+    }
+
+    private static TextView getNextAlarm(Context context, Settings settings){
+        DataSource db = new DataSource(context);
+        db.open();
+        SimpleTime nextAlarm = db.getNextAlarmToSchedule();
+        db.close();
+
+        if (nextAlarm != null) {
+            nextAlarmString = String.format(
+                    "%s %s",
+                    getEmojiByUnicode(0x1F514),
+                    Utility.getTimeFormatted(context, nextAlarm.getCalendar())
+            );
+
+            TextView alarmTime = new TextView(context);
+            alarmTime.setTextColor(settings.secondaryColor);
+            alarmTime.setGravity(Gravity.END);
+            alarmTime.setText(nextAlarmString);
+            return alarmTime;
+        }
+        return null;
+    }
+
+
     private static void updateClockLayoutSettings(
             Context context, int appWidgetId, ClockLayout clockLayout, Dimension widgetDimension
     ) {
@@ -83,7 +116,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
-
+        boolean showAlarm = widgetPrefs.getBoolean("showAlarm", false);
         boolean showWeather = widgetDimension.height >= 130 && widgetDimension.width >= 130;
         boolean showDate = widgetDimension.height >= 130 && widgetDimension.width >= 130;
         if (clockLayoutId == ClockLayout.LAYOUT_ID_DIGITAL3) {
@@ -98,7 +131,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
         clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
-        //clockLayout.showDate(showDate && settings.showDate);
         clockLayout.showDate(showDate && widgetPrefs.getBoolean("showDate", true));
 
         clockLayout.setShowNotifications(false);
@@ -128,6 +160,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             clockLayout.update(settings.weatherEntry, true);
         } else {
             clockLayout.clearWeather();
+        }
+
+        TextView alarmTime = getNextAlarm(context, settings);
+        if (showAlarm && alarmTime != null) {
+            clockLayout.addView(alarmTime, 0);
         }
 
         {   // draw background
@@ -223,7 +260,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         ScreenWatcherService.conditionallyStart(context);
 
         for (int widgetId : appWidgetIds) {
-            // API 16 and up only
             Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
 
             WidgetDimension w = widgetDimensionFromBundle(bundle);

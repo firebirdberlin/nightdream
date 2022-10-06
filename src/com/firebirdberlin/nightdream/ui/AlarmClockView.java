@@ -1,8 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-import static android.text.format.DateFormat.is24HourFormat;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -28,7 +25,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
@@ -37,10 +33,7 @@ import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 
 public class AlarmClockView extends View {
@@ -365,12 +358,12 @@ public class AlarmClockView extends View {
             if (current != null) {
                 Calendar cal = current.getTodaysAlarmTIme();
                 if (cal != null) {
-                    return getTimeFormatted(cal);
+                    return Utility.getTimeFormatted(ctx, cal);
                 }
             }
         }
         if ((userChangesAlarmTime || isAlarmSet()) && time != null) {
-            return getTimeFormatted(time.getCalendar());
+            return Utility.getTimeFormatted(ctx, time.getCalendar());
         }
         return "";
     }
@@ -385,28 +378,6 @@ public class AlarmClockView extends View {
         if (alarmIsRunning()) {
             handler.postDelayed(blink, 1000);
         }
-    }
-
-    private String getTimeFormatted(Calendar calendar) {
-        Calendar now_in_one_week = Calendar.getInstance();
-        now_in_one_week.add(Calendar.DAY_OF_MONTH, 7);
-        if (calendar.after(now_in_one_week)) {
-            return "";
-        }
-        String localPattern;
-        if (Build.VERSION.SDK_INT >= 18) {
-            if (is24HourFormat(ctx)) {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
-            } else {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
-            }
-        } else {
-            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
-        }
-
-        SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
-        return hourDateFormat.format(calendar.getTime());
     }
 
     public boolean isAlarmSet() {

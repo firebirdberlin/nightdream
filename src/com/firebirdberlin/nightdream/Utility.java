@@ -2,6 +2,8 @@ package com.firebirdberlin.nightdream;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.POWER_SERVICE;
+import static android.text.format.DateFormat.getBestDateTimePattern;
+import static android.text.format.DateFormat.is24HourFormat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -73,6 +75,7 @@ import java.io.FileDescriptor;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -156,6 +159,28 @@ public class Utility {
 
     static public boolean is24HourFormat(Context context) {
         return android.text.format.DateFormat.is24HourFormat(context);
+    }
+
+    static public String getTimeFormatted(Context context, Calendar calendar) {
+        Calendar now_in_one_week = Calendar.getInstance();
+        now_in_one_week.add(Calendar.DAY_OF_MONTH, 7);
+        if (calendar.after(now_in_one_week)) {
+            return "";
+        }
+        String localPattern;
+        if (Build.VERSION.SDK_INT >= 18) {
+            if (is24HourFormat(context)) {
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
+            } else {
+                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
+            }
+        } else {
+            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
+        }
+
+        SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
+        return hourDateFormat.format(calendar.getTime());
     }
 
     static public String formatTime(String format, Calendar calendar) {
