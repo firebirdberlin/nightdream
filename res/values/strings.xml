@@ -359,6 +359,7 @@ OR
     <string name="showBatteryWarningTitle">Battery warning</string>
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
     <string name="show_apparent_temperature">include apparent temperature</string>
+    <string name="show_alarm">Show alarms</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
     <string name="showPollen">Pollen risk index</string>
