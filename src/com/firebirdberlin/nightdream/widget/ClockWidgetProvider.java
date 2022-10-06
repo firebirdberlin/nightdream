@@ -1,8 +1,5 @@
 package com.firebirdberlin.nightdream.widget;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-import static android.text.format.DateFormat.is24HourFormat;
-
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -27,6 +24,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -38,9 +36,6 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -89,7 +84,11 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         db.close();
 
         if (nextAlarm != null) {
-            nextAlarmString = getEmojiByUnicode(0x1F514) + " " + getTimeFormatted(context, nextAlarm.getCalendar());
+            nextAlarmString = String.format(
+                    "%s %s",
+                    getEmojiByUnicode(0x1F514),
+                    Utility.getTimeFormatted(context, nextAlarm.getCalendar())
+            );
 
             TextView alarmTime = new TextView(context);
             alarmTime.setTextColor(settings.secondaryColor);
@@ -100,28 +99,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return null;
     }
 
-
-    private static String getTimeFormatted(Context context, Calendar calendar) {
-        Calendar now_in_one_week = Calendar.getInstance();
-        now_in_one_week.add(Calendar.DAY_OF_MONTH, 7);
-        if (calendar.after(now_in_one_week)) {
-            return "";
-        }
-        String localPattern;
-        if (Build.VERSION.SDK_INT >= 18) {
-            if (is24HourFormat(context)) {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
-            } else {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
-            }
-        } else {
-            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
-        }
-
-        SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
-        return hourDateFormat.format(calendar.getTime());
-    }
 
     private static void updateClockLayoutSettings(
             Context context, int appWidgetId, ClockLayout clockLayout, Dimension widgetDimension
@@ -154,7 +131,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.setDateFormat(settings.dateFormat);
         clockLayout.setTimeFormat(settings.getTimeFormat(), settings.is24HourFormat());
         clockLayout.setShowDivider(settings.getShowDivider(clockLayoutId));
-        //clockLayout.showDate(showDate && settings.showDate);
         clockLayout.showDate(showDate && widgetPrefs.getBoolean("showDate", true));
 
         clockLayout.setShowNotifications(false);
@@ -284,7 +260,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         ScreenWatcherService.conditionallyStart(context);
 
         for (int widgetId : appWidgetIds) {
-            // API 16 and up only
             Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
 
             WidgetDimension w = widgetDimensionFromBundle(bundle);
@@ -450,17 +425,4 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             this.maxHeight = maxHeight;
         }
     }
-
-    @Override
-    public void onReceive(Context context, Intent intent){
-        super.onReceive(context, intent);
-        Log.d(TAG, "onreceive");
-        String ALARM_CLOCK_CHANGED = "android.app.action.NEXT_ALARM_CLOCK_CHANGED";
-        String action = intent.getAction();
-        if ((action != null) && (action.equals(ALARM_CLOCK_CHANGED))) {
-            Log.d(TAG, "Alarm changed");
-            updateAllWidgets(context);
-        }
-    }
-
 }
