@@ -1,8 +1,5 @@
 package com.firebirdberlin.nightdream.widget;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-import static android.text.format.DateFormat.is24HourFormat;
-
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -24,8 +21,6 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -93,7 +88,7 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
         String text = "";
         if (next != null) {
             Calendar cal = next.getCalendar();
-            text = getTimeFormatted(context, cal);
+            text = Utility.getTimeFormatted(context, cal);
         }
         if (text.isEmpty()) {
             text = context.getResources().getString(R.string.no_alarm_set);
@@ -125,28 +120,6 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
         // Tell the AppWidgetManager to perform an update on the current app widget.
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
-    }
-
-    private String getTimeFormatted(Context context, Calendar calendar) {
-        Calendar now_in_one_week = Calendar.getInstance();
-        now_in_one_week.add(Calendar.DAY_OF_MONTH, 7);
-        if (calendar.after(now_in_one_week)) {
-            return "";
-        }
-        String localPattern;
-        if (Build.VERSION.SDK_INT >= 18) {
-            if (is24HourFormat(context)) {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
-            } else {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
-            }
-        } else {
-            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
-        }
-
-        SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
-        return hourDateFormat.format(calendar.getTime());
     }
 
     @Override

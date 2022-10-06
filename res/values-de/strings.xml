@@ -371,6 +371,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showPollenNoData">Keine Daten für dieses Gebiet verfügbar. Der Pollenflug-Gefahrenindex ist nur für Deutschland verfügbar.</string>
     <string name="showPollenSummary">Datenquelle: Deutscher Wetterdienst</string>
     <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
+    <string name="show_alarm">Wecker anzeigen</string>
     <string name="show_date">Datum anzeigen</string>
     <string name="show_divider">Trennlinie anzeigen</string>
     <string name="show_second_hand">Sekundenzeiger anzeigen</string>
