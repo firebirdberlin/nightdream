@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream;
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.POWER_SERVICE;
 import static android.text.format.DateFormat.getBestDateTimePattern;
-import static android.text.format.DateFormat.is24HourFormat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -35,6 +34,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -47,7 +47,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings.System;
-import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -781,11 +780,9 @@ public class Utility {
         }
     }
 
-    public static boolean isInCall(Context context) {
-        TelephonyManager telephone = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        int callState = telephone.getCallState();
-        return (callState == TelephonyManager.CALL_STATE_RINGING ||
-                callState == TelephonyManager.CALL_STATE_OFFHOOK);
+    public static boolean isInCall(Context context){
+        AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        return manager.getMode() == AudioManager.MODE_IN_CALL;
     }
 
     public static void logIntent(String TAG, String msg, Intent data) {
