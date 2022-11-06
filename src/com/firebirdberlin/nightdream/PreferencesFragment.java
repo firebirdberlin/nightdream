@@ -790,10 +790,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             String msg = getString(R.string.background_image_select);
             Intent chooserIntent = Intent.createChooser(getIntent, msg);
             activityResultLauncherLoadImage.launch(chooserIntent);
-        } else {
+        } else if (Build.VERSION.SDK_INT < 21) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("image/*");
+            activityResultLauncherLoadImage.launch(intent);
+        } else {
+            String[] mimeTypes =
+                    {"image/*", "application/pdf"};
+
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
             activityResultLauncherLoadImage.launch(intent);
         }
     }
