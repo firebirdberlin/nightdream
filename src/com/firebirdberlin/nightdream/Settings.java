@@ -52,6 +52,7 @@ public class Settings {
     public final static int BACKGROUND_IMAGE = 3;
     public final static int BACKGROUND_SLIDESHOW = 4;
     public final static int BACKGROUND_TRANSPARENT = 5;
+    public final static int BACKGROUND_STREAM = 6;
     public final static int SLIDESHOW_STYLE_CROPPED = 1;
     public final static int SLIDESHOW_STYLE_CENTER = 2;
     public final static int SLIDESHOW_STYLE_ANIMATED = 3;
@@ -132,6 +133,8 @@ public class Settings {
     public int weather_icon = 1;
     public int background_filter = 1;
     public boolean background_mode_auto_color = false;
+    public String streamURL="";
+    public boolean streamFullscreen = false;
     public int clockColor;
     public int clockColorNight;
     public int nightModeActivationMode;
@@ -444,6 +447,8 @@ public class Settings {
         background_exif = settings.getBoolean("backgroundEXIF", false);
         fade_clock = settings.getBoolean("fadeClock", false);
         background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
+        streamURL = settings.getString("streamURL", "");
+        streamFullscreen = settings.getBoolean("streamFullScreen", false);
         rssURL = settings.getString("rssURL", "");
         rssCharSet = settings.getString("rssCharSetMode", "utf-8");
         rssEnabled = settings.getBoolean("enableRSS", false);

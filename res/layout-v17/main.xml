@@ -35,6 +35,19 @@
                 android:contentDescription="Background Image"
                 tools:ignore="HardcodedText"/>
 
+            <com.google.android.exoplayer2.ui.StyledPlayerView
+                android:id="@+id/background_videostream"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:foregroundGravity="center"
+                android:contentDescription="Background Videostream"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:use_controller="false"
+                tools:ignore="HardcodedText"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

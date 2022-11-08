@@ -913,6 +913,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
 
+        on = "6".equals(selection);
+        showPreference("streamURL", on);
+        showPreference("streamInfo", on);
+        showPreference("streamFullScreen", on);
+
         on = Utility.equalsAny(selection, "3", "4");
         showPreference("autoAccentColor", on);
         showPreference("slideshowStyle", on);

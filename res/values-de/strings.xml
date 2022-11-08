@@ -87,6 +87,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">Bild</string>
     <string name="background_image_select">Bild auswählen</string>
     <string name="background_slideshow">Diashow</string>
+    <string name="background_stream">Stream</string>
     <string name="background_transparent">Transparent</string>
     <string name="background_image_duration">Hintergrundbild wechselt alle:</string>
     <string name="seconds_60">60 Sekunden</string>
