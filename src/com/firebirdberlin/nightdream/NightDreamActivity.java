@@ -519,7 +519,8 @@ public class NightDreamActivity extends BillingHelperActivity
             if (Build.VERSION.SDK_INT >= 18 && Settings.showNotification(this)) {
                 Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
                 i.putExtra("command", "list");
-                LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+                //LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+                context.sendBroadcast(i);
             }
         });
 

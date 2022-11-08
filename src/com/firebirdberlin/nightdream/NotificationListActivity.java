@@ -110,7 +110,8 @@ public class NotificationListActivity extends AppCompatActivity {
         if (id == R.id.menuItem_delete_all) {
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command", "clearall");
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+            //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+            this.sendBroadcast(i);
         }
 
         return super.onOptionsItemSelected(item);
