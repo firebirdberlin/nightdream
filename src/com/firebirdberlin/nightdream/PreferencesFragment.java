@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,7 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
@@ -40,6 +38,7 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
@@ -938,8 +937,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void setupNightModePreferences(SharedPreferences prefs) {
         int nightModeActivationMode = Integer.parseInt(prefs.getString("nightModeActivationMode", "1"));
         Log.i(TAG, "setupNightModePreferences " + nightModeActivationMode);
-        enablePreference("nightmode_timerange",
-                nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED);
+        enablePreference(
+                "nightmode_timerange",
+                nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED
+        );
+        if (!Config.USE_RECORD_AUDIO) {
+            showPreference("reactivate_screen_on_noise", false);
+            showPreference("NoiseSensitivity", false);
+            showPreference("ambientNoiseDetection", false);
+        }
+
     }
 
     private void initUseDeviceLockPreference() {
