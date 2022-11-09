@@ -1181,7 +1181,7 @@ public class Settings {
     }
 
     public boolean useAmbientNoiseDetection() {
-        return ambientNoiseDetection && hasPermission(Manifest.permission.RECORD_AUDIO);
+        return Config.USE_RECORD_AUDIO && ambientNoiseDetection && hasPermission(Manifest.permission.RECORD_AUDIO);
     }
 
     public void setUseAmbientNoiseDetection(boolean on) {
@@ -1192,7 +1192,7 @@ public class Settings {
     }
 
     public boolean reactivateScreenOnNoise() {
-        return reactivate_screen_on_noise && hasPermission(Manifest.permission.RECORD_AUDIO);
+        return Config.USE_RECORD_AUDIO && reactivate_screen_on_noise && hasPermission(Manifest.permission.RECORD_AUDIO);
     }
 
     public void setReactivateScreenOnNoise(boolean on) {
