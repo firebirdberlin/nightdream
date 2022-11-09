@@ -98,6 +98,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    if (sharedPreferences == null || key == null) return;
                     if (isAdded() && "clock".equals(rootKey)) {
                         View v = getView();
                         if (v != null) {
