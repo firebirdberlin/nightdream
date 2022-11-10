@@ -307,6 +307,17 @@ vi - Phong Nguyen"/>
                 />
         </Preference>
 
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_hue_api"
+            app:summary="by ZeroOne3010"
+            app:title="Hue Api">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/ZeroOne3010/yetanotherhueapi"
+                />
+        </Preference>
+
     </PreferenceCategory>
 
     <PreferenceCategory

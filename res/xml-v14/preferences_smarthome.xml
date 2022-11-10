@@ -10,7 +10,6 @@
         app:key="cat_avmfritz"
         app:title="@string/smart_home_avm">
 
-
         <EditTextPreference
             android:defaultValue="http://fritz.box"
             android:key="smart_home_avm_host"
@@ -42,7 +41,29 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true"
             />
+    </PreferenceCategory>
 
+    <PreferenceCategory
+        app:iconSpaceReserved="true"
+        app:layout="@layout/preferences_category"
+        app:key="cat_hue"
+        app:title="Hue">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="switchHue"
+            app:summary=""
+            app:title="Hue Bridge"
+            app:icon="@drawable/ic_hue_bridge_connect"/>
+
+        <com.firebirdberlin.nightdream.ui.HueConnectPreference
+            app:iconSpaceReserved="false"
+            app:enabled="false"
+            android:key="connectHue"
+            android:title="Connect to Hue"
+            android:summary="not connected"
+            />
 
     </PreferenceCategory>
 </PreferenceScreen>
