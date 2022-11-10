@@ -48,7 +48,6 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaLoadRequestData;
@@ -87,7 +86,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
     CastSession castSession;
-    private SimpleExoPlayer exoPlayer = null;
+    private ExoPlayer exoPlayer = null;
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
@@ -541,7 +540,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         if (exoPlayer == null) {
             Log.d(TAG, "init exoPlayer");
 
-            exoPlayer = new SimpleExoPlayer.Builder(getApplicationContext()).build();
+            exoPlayer = new ExoPlayer.Builder(getApplicationContext()).build();
             exoPlayer.setMediaItem(MediaItem.fromUri(streamURL));
             exoPlayer.prepare();
 
