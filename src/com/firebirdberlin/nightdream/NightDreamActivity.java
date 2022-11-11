@@ -440,6 +440,88 @@ public class NightDreamActivity extends BillingHelperActivity
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus){
+        Log.d(TAG,"onWindowFocusChanged()");
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus){
+            setupAlarmClockIcon();
+            nightDreamUI.onResume();
+            Intent intent = getIntent();
+
+            String action = intent.getAction();
+            if (Config.ACTION_STOP_BACKGROUND_SERVICE.equals(action)) {
+                showStopBackgroundServicesDialog();
+                intent.setAction(null);
+            } else if ("start standby mode".equals(action)) {
+                if (mySettings.alwaysOnStartWithLockedUI) {
+                    nightDreamUI.setLocked(true);
+                }
+                setMode(mode);
+            } else if ("start night mode".equals(action)) {
+                last_ambient = mySettings.minIlluminance;
+                setMode(0);
+                if (lightSensor == null) {
+                    handler.postDelayed(setScreenOff, 20000);
+                }
+            } else {
+                setMode(mode);
+            }
+
+            if (AlarmHandlerService.alarmIsRunning()) {
+                nightDreamUI.showAlarmClock();
+                // TODO optionally enable the Flashlight
+            }
+
+            setupNightMode();
+            setupFlashlight();
+            setupRadioStreamUI();
+
+            BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
+            if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
+                activePanel = BottomPanelLayout.Panel.WEB_RADIO;
+                // clear the action so that it won't be re-delivered.
+                intent.setAction("");
+            }
+
+            bottomPanelLayout.setRssEnabled(mySettings.rssEnabled);
+            bottomPanelLayout.setActivePanel(activePanel);
+            triggerAlwaysOnTimeout();
+            showToastIfNotCharging();
+
+            final Context context = this;
+            clockLayoutContainer.post(() -> {
+                if (Build.VERSION.SDK_INT >= 18 && Settings.showNotification(this)) {
+                    Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                    i.putExtra("command", "list");
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+                }
+            });
+
+            if (mySettings.getWeatherAutoLocationEnabled()
+                    && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                Handler handler = new Handler(Looper.getMainLooper());
+                executor.execute(() -> { //background thread
+                    getLastKnownLocation();
+                    handler.post(() -> { //like onPostExecute()
+                        locationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
+                        );
+                    });
+                });
+            }
+
+            if (mySettings.showWeather) {
+                DownloadWeatherModel.observe(this, weatherEntry -> {
+                    Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
+                    nightDreamUI.weatherDataUpdated(context);
+                });
+            }
+
+        }
+    }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
@@ -463,8 +545,6 @@ public class NightDreamActivity extends BillingHelperActivity
         ScreenWatcherService.conditionallyStart(this, mySettings);
 
         scheduleShutdown();
-        setupAlarmClockIcon();
-        nightDreamUI.onResume();
         nReceiver = registerNotificationReceiver();
         nightModeReceiver = NightModeReceiver.register(this, this);
         broadcastReceiver = registerBroadcastReceiver();
@@ -472,77 +552,6 @@ public class NightDreamActivity extends BillingHelperActivity
         locationReceiver = LocationUpdateReceiver.register(this, this);
         nReceiver.setColor((mode == MODE_NIGHT) ?
                 mySettings.secondaryColorNight : mySettings.secondaryColor);
-        Intent intent = getIntent();
-
-        String action = intent.getAction();
-        if (Config.ACTION_STOP_BACKGROUND_SERVICE.equals(action)) {
-            showStopBackgroundServicesDialog();
-            intent.setAction(null);
-        } else if ("start standby mode".equals(action)) {
-            if (mySettings.alwaysOnStartWithLockedUI) {
-                nightDreamUI.setLocked(true);
-            }
-            setMode(mode);
-        } else if ("start night mode".equals(action)) {
-            last_ambient = mySettings.minIlluminance;
-            setMode(0);
-            if (lightSensor == null) {
-                handler.postDelayed(setScreenOff, 20000);
-            }
-        } else {
-            setMode(mode);
-        }
-
-        if (AlarmHandlerService.alarmIsRunning()) {
-            nightDreamUI.showAlarmClock();
-            // TODO optionally enable the Flashlight
-        }
-
-        setupNightMode();
-        setupFlashlight();
-        setupRadioStreamUI();
-
-        BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
-        if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
-            activePanel = BottomPanelLayout.Panel.WEB_RADIO;
-            // clear the action so that it won't be re-delivered.
-            intent.setAction("");
-        }
-
-        bottomPanelLayout.setRssEnabled(mySettings.rssEnabled);
-        bottomPanelLayout.setActivePanel(activePanel);
-        triggerAlwaysOnTimeout();
-        showToastIfNotCharging();
-
-        final Context context = this;
-        clockLayoutContainer.post(() -> {
-            if (Build.VERSION.SDK_INT >= 18 && Settings.showNotification(this)) {
-                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                i.putExtra("command", "list");
-                LocalBroadcastManager.getInstance(context).sendBroadcast(i);
-            }
-        });
-
-        if (mySettings.getWeatherAutoLocationEnabled()
-                && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            Handler handler = new Handler(Looper.getMainLooper());
-            executor.execute(() -> { //background thread
-                getLastKnownLocation();
-                handler.post(() -> { //like onPostExecute()
-                    locationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
-                    );
-                });
-            });
-        }
-
-        if (mySettings.showWeather) {
-            DownloadWeatherModel.observe(this, weatherEntry -> {
-                Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
-                nightDreamUI.weatherDataUpdated(context);
-            });
-        }
     }
 
     private void setExcludeFromRecents() {
