@@ -44,6 +44,7 @@ import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
+import com.firebirdberlin.nightdream.viewmodels.NotificationViewModel;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.google.android.material.snackbar.Snackbar;
 import com.rarepebble.colorpicker.ColorPreference;
@@ -164,6 +165,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             break;
                         case "Night.muteRinger":
                             setupNotificationAccessPermission(sharedPreferences, "Night.muteRinger");
+                            break;
+                        case "showNotification":
+                            NotificationViewModel.setShowNotification(Settings.showNotification(mContext));
+                            break;
+                        case "showNotificationsInStatusBar":
+                            NotificationViewModel.setNotificationContainerResourceId(Settings.getNotificationContainerResourceId(mContext));
                             break;
                         case "activateDoNotDisturb":
                             setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");

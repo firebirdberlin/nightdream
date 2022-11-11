@@ -142,10 +142,12 @@
         android:layout_height="wrap_content">
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        layout="@layout/notification_bar"
+    <com.firebirdberlin.nightdream.ui.NotificationBar
+        android:id="@+id/notificationbar"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_marginTop="2dp" />
+        android:layout_height="wrap_content"
+        app:justifyContent="space_evenly"
+        android:visibility="gone"
+        />
 
 </LinearLayout>
