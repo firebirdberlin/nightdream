@@ -90,6 +90,8 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private Settings settings = null;
     private SimpleTime alarmTime = null;
     private float currentVolume = 0.f;
+    private int currentStreamVolume = -1;
+    private HttpStatusCheckTask statusCheckTask = null;
     private final Runnable fadeOut = new Runnable() {
         @Override
         public void run() {
@@ -107,6 +109,8 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             }
         }
     };
+    private PlaylistRequestTask resolveStreamUrlTask = null;
+    private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
     private final Runnable startSleep = new Runnable() {
         @Override
         public void run() {
@@ -120,45 +124,11 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             handler.post(fadeOut);
         }
     };
-    private int currentStreamVolume = -1;
-    private HttpStatusCheckTask statusCheckTask = null;
-    private PlaylistRequestTask resolveStreamUrlTask = null;
-    private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
     private VibrationHandler vibrator = null;
     private Intent intent;
     private PlaybackStateCompat.Builder stateBuilder;
     private com.google.android.exoplayer2.MediaMetadata mediaMetaData = null;
     private Bitmap iconRadio;
-    private final Runnable fadeIn = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(fadeIn);
-            if (exoPlayer == null) return;
-            if (currentVolume == 0.0) {
-                updateNotification(getResources().getString(R.string.radio_playing));
-            }
-            currentVolume += 0.01;
-            if (currentVolume <= maxVolumePercent / 100.) {
-                //Log.i(TAG, "volume: " + currentVolume);
-                exoPlayer.setVolume(currentVolume);
-                handler.postDelayed(fadeIn, fadeInDelay);
-            } else {
-                if (mediaMetaData != null && mediaMetaData.title != null) {
-                    updateNotification(mediaMetaData.title.toString());
-                }
-            }
-        }
-    };
-    private final Runnable timeout = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(timeout);
-            handler.removeCallbacks(fadeIn);
-            handler.removeCallbacks(fadeOut);
-            handler.removeCallbacks(startSleep);
-            handler.post(fadeOut);
-        }
-    };
 
     public static void start(Context context, SimpleTime alarmTime) {
         Log.d(TAG, "start()");
@@ -214,6 +184,27 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         context.stopService(i);
     }
 
+    private final Runnable fadeIn = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(fadeIn);
+            if (exoPlayer == null) return;
+            if (currentVolume == 0.0) {
+                updateNotification(getResources().getString(R.string.radio_playing));
+            }
+            currentVolume += 0.01;
+            if (currentVolume <= maxVolumePercent / 100.) {
+                //Log.i(TAG, "volume: " + currentVolume);
+                exoPlayer.setVolume(currentVolume);
+                handler.postDelayed(fadeIn, fadeInDelay);
+            } else {
+                if (mediaMetaData != null && mediaMetaData.title != null) {
+                    updateNotification(mediaMetaData.title.toString());
+                }
+            }
+        }
+    };
+
     private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, RadioStreamService.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -224,6 +215,17 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         long now = System.currentTimeMillis();
         return (sleepTimeInMillis > now);
     }
+
+    private final Runnable timeout = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeIn);
+            handler.removeCallbacks(fadeOut);
+            handler.removeCallbacks(startSleep);
+            handler.post(fadeOut);
+        }
+    };
 
     public static void loadRemoteMediaListener(CastSession castSession) {
         Log.d(TAG, "loadRemoteMediaListener()");
