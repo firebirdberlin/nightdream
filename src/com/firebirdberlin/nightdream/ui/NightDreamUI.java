@@ -610,10 +610,18 @@ public class NightDreamUI {
         lastAnimationTime = 0L;
         setScreenOrientation(settings.screenOrientation);
 
-        clockLayoutContainer.post(initClockLayout);
-        postFadeAnimation();
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(() -> { //background thread
+            clockLayoutContainer.post(initClockLayout);
+            handler.post(() -> { //like onPostExecute()
+                postFadeAnimation();
+            });
+        });
 
         initBackground();
+
         setupAlarmClock();
         setupScreenAnimation();
         lockUI(this.locked);
@@ -621,6 +629,7 @@ public class NightDreamUI {
         Utility.registerEventBus(this);
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
+
         if (settings.useAmbientNoiseDetection()) {
             soundmeter = new SoundMeter(mContext);
         } else {
