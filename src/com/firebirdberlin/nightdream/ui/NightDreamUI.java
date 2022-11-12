@@ -306,7 +306,7 @@ public class NightDreamUI {
             updateWeatherData();
 
             //Update Notifications in Clocklayout for Android 11+
-            if (android.os.Build.VERSION.SDK_INT>=11) {
+            if (android.os.Build.VERSION.SDK_INT>=30) {
                 Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
                 i.putExtra("command", "list");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
@@ -591,6 +591,7 @@ public class NightDreamUI {
     }
 
     public void onResume() {
+
         Log.d(TAG, "onResume()");
         hideSystemUI();
         mainFrame.post(this::configureSafeRect);
@@ -610,22 +611,34 @@ public class NightDreamUI {
         lastAnimationTime = 0L;
         setScreenOrientation(settings.screenOrientation);
 
-        clockLayoutContainer.post(initClockLayout);
-        postFadeAnimation();
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(() -> { //background thread
+            clockLayoutContainer.post(initClockLayout);
+            handler.post(() -> { //like onPostExecute()
+                postFadeAnimation();
+            });
+        });
 
         initBackground();
+
         setupAlarmClock();
         setupScreenAnimation();
         lockUI(this.locked);
 
+
         Utility.registerEventBus(this);
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
+
+
         if (settings.useAmbientNoiseDetection()) {
             soundmeter = new SoundMeter(mContext);
         } else {
             soundmeter = null;
         }
+
     }
 
     private void initBackground() {

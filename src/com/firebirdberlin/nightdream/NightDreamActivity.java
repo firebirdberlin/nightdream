@@ -42,7 +42,6 @@ import androidx.multidex.MultiDex;
 
 import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
 import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
-import com.firebirdberlin.AvmAhaApi.models.AvmCredentials;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
@@ -70,6 +69,7 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.cast.framework.CastContext;
@@ -86,6 +86,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NightDreamActivity extends BillingHelperActivity
         implements View.OnTouchListener,
@@ -513,9 +514,14 @@ public class NightDreamActivity extends BillingHelperActivity
             }
 
             if (mySettings.showWeather) {
+                AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<WeatherEntry>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
-                    nightDreamUI.weatherDataUpdated(context);
+                    if (weatherEntry != oldWeatherEntry.get()) {
+                        Log.d(TAG, "onChanged inside weatherEntry: " + oldWeatherEntry);
+                        oldWeatherEntry.set(weatherEntry);
+                        nightDreamUI.weatherDataUpdated(context);
+                    }
                 });
             }
 
