@@ -553,6 +553,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         } else if ("about".equals(rootKey)) {
 
+            Preference tinytimetracker = findPreference("tinytimetracker");
+            if (tinytimetracker != null){
+                tinytimetracker.setOnPreferenceClickListener(preference -> {
+                    Uri marketUri = Uri.parse("market://details?id=com.firebirdberlin.tinytimetracker");
+                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
+                    startActivity(Intent.createChooser(marketIntent, "dialogTitle"));
+                    return true;
+                });
+            }
+
             Preference recommendApp = findPreference("recommendApp");
             if (recommendApp != null) {
                 recommendApp.setOnPreferenceClickListener(preference -> {

@@ -75,12 +75,10 @@
         android:layout="@layout/preferences_category"
         app:title="@string/other_apps">
         <Preference
+            android:key="tinytimetracker"
             app:iconSpaceReserved="false"
             app:summary="@string/other_apps_tinytimetracker_summary"
             app:title="@string/other_apps_tinytimetracker">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="market://details?id=com.firebirdberlin.tinytimetracker"/>
         </Preference>
     </PreferenceCategory>
 
