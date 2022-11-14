@@ -3,12 +3,17 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -291,14 +296,18 @@ public class RadioStreamDialog
             }
         }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryList);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, countryList){
+        };
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
         }
-
+        GradientDrawable border = new GradientDrawable();
+        border.setColor(Color.parseColor("#F2212121"));
+        countrySpinner.setPopupBackgroundDrawable(border);
     }
 
     public void clearLastSearchResult() {
