@@ -121,7 +121,7 @@ public class NightDreamUI {
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
     private final Settings settings;
-
+    private final Window window;
     private final Runnable fadeClock = new Runnable() {
         @Override
         public void run() {
@@ -157,10 +157,8 @@ public class NightDreamUI {
             }
         }
     };
-    private final Window window;
     private final float LIGHT_VALUE_BRIGHT = 40.0f;
     private final float LIGHT_VALUE_DAYLIGHT = 300.0f;
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = () -> resetAlarmClockHideDelay();
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -185,27 +183,10 @@ public class NightDreamUI {
         }
     };
     private int screen_alpha_animation_duration = 3000;
+    private final UserInteractionObserver bottomPanelUserInteractionObserver = () -> resetAlarmClockHideDelay();
     private int screen_transition_animation_duration = 10000;
     private int mode = 2;
     private boolean controlsVisible = false;
-    private final Runnable hideAlarmClock = new Runnable() {
-        @Override
-        public void run() {
-            if (alarmClock.isInteractive() || AlarmHandlerService.alarmIsRunning()) {
-                handler.postDelayed(hideAlarmClock, 20000);
-                return;
-            }
-            controlsVisible = false;
-            hideBatteryView(2000);
-            setAlpha(menuIcon, 0.f, 2000);
-            setAlpha(unlockHint, 0.f, 2000);
-
-            bottomPanelLayout.hide();
-            if (mode == 0) {
-                setAlpha(notificationStatusBar, 0.f, 2000);
-            }
-        }
-    };
     // move the clock randomly around
     private final Runnable moveAround = new Runnable() {
         @Override
@@ -225,6 +206,24 @@ public class NightDreamUI {
     };
     private Drawable bgshape = colorBlack;
     private int activeBackgroundImage;
+    private final Runnable hideAlarmClock = new Runnable() {
+        @Override
+        public void run() {
+            if (alarmClock.isInteractive() || AlarmHandlerService.alarmIsRunning()) {
+                handler.postDelayed(hideAlarmClock, 20000);
+                return;
+            }
+            controlsVisible = false;
+            hideBatteryView(2000);
+            setAlpha(menuIcon, 0.f, 2000);
+            setAlpha(unlockHint, 0.f, 2000);
+
+            bottomPanelLayout.hide();
+            if (mode == 0) {
+                setAlpha(notificationStatusBar, 0.f, 2000);
+            }
+        }
+    };
     private ArrayList<File> files;
     private Bitmap preloadBackgroundImage;
     private File preloadBackgroundImageFile;
@@ -234,6 +233,10 @@ public class NightDreamUI {
     private int vibrantColor = 0;
     private int vibrantColorDark = 0;
     private long lastAnimationTime = 0L;
+    private SoundMeter soundmeter;
+    private NightDreamBroadcastReceiver broadcastReceiver = null;
+    private boolean locked = false;
+    private boolean zoomFinished = false;
     public Runnable initSlideshowBackground = new Runnable() {
         @Override
         public void run() {
@@ -246,81 +249,13 @@ public class NightDreamUI {
             }
         }
     };
+    private float last_ambient = 4.0f;
     private final Runnable backgroundChange = () -> {
         setupSlideshow();
         postBackgroundImageChange();
     };
-    private SoundMeter soundmeter;
-    private NightDreamBroadcastReceiver broadcastReceiver = null;
-    private boolean locked = false;
-    private boolean zoomFinished = false;
-    private final Runnable zoomIn = new Runnable() {
-        @Override
-        public void run() {
-            removeCallbacks(zoomIn);
-            clockLayout.setVisibility(View.INVISIBLE);
-            Configuration config = getConfiguration();
-            clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
-
-            float s = getScaleFactor(config);
-            // set the right scaling and position
-            clockLayout.setScaleFactor(s, false);
-            setClockPosition(config);
-            // prepare zoom in
-            if (!zoomFinished) {
-                clockLayout.setScaleFactor(0.1f, false);
-            }
-            // finally zoom in
-            clockLayout.setVisibility(View.VISIBLE);
-            clockLayout.setScaleFactor(s, true);
-
-            Utility.turnScreenOn(mContext);
-            Utility.hideSystemUI(mContext);
-            zoomFinished = true;
-        }
-    };
-    private float last_ambient = 4.0f;
     private float LIGHT_VALUE_DARK = 4.2f;
     private boolean blinkStateOn = false;
-    private final Runnable blink = new Runnable() {
-        public void run() {
-            handler.removeCallbacks(blink);
-            if (AlarmHandlerService.alarmIsRunning()) {
-                blinkStateOn = !blinkStateOn;
-                float alpha = (blinkStateOn) ? 1.f : 0.5f;
-                setAlpha(menuIcon, alpha, 0);
-                setAlpha(unlockHint, alpha, 0);
-                handler.postDelayed(blink, 1000);
-            } else {
-                blinkStateOn = false;
-            }
-        }
-    };
-
-    public Runnable initClockLayout = new Runnable() {
-        @Override
-        public void run() {
-            clockLayout.setVisibility(View.INVISIBLE);
-            setupClockLayout();
-            setColor();
-            updateWeatherData();
-
-            //Update Notifications in Clocklayout for Android 11+
-            if (android.os.Build.VERSION.SDK_INT>=11) {
-                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                i.putExtra("command", "list");
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
-            }
-
-            controlsVisible = true;
-
-            brightnessProgress.setVisibility(View.INVISIBLE);
-
-            showAlarmClock();
-
-            clockLayout.postDelayed(zoomIn, 500);
-        }
-    };
     private boolean shallMoveClock = false;
     View.OnTouchListener onTouchListenerClockLayout = new View.OnTouchListener() {
         @Override
@@ -344,7 +279,6 @@ public class NightDreamUI {
             return false;
         }
     };
-
     @SuppressLint("ClickableViewAccessibility")
     public NightDreamUI(final Context context, Window window) {
         Log.d(TAG, "NightDreamUI()");
@@ -517,6 +451,32 @@ public class NightDreamUI {
         clockLayoutContainer.setClockLayout(clockLayout);
     }
 
+    private final Runnable zoomIn = new Runnable() {
+        @Override
+        public void run() {
+            removeCallbacks(zoomIn);
+            clockLayout.setVisibility(View.INVISIBLE);
+            Configuration config = getConfiguration();
+            clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
+
+            float s = getScaleFactor(config);
+            // set the right scaling and position
+            clockLayout.setScaleFactor(s, false);
+            setClockPosition(config);
+            // prepare zoom in
+            if (!zoomFinished) {
+                clockLayout.setScaleFactor(0.1f, false);
+            }
+            // finally zoom in
+            clockLayout.setVisibility(View.VISIBLE);
+            clockLayout.setScaleFactor(s, true);
+
+            Utility.turnScreenOn(mContext);
+            Utility.hideSystemUI(mContext);
+            zoomFinished = true;
+        }
+    };
+
     private void configureSafeRect() {
         Point displaySize = Utility.getDisplaySize(mContext);
         Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
@@ -555,6 +515,20 @@ public class NightDreamUI {
         Drawable bg = ContextCompat.getDrawable(mContext, R.drawable.border);
         clockLayout.setupBackground(bg);
     }
+    private final Runnable blink = new Runnable() {
+        public void run() {
+            handler.removeCallbacks(blink);
+            if (AlarmHandlerService.alarmIsRunning()) {
+                blinkStateOn = !blinkStateOn;
+                float alpha = (blinkStateOn) ? 1.f : 0.5f;
+                setAlpha(menuIcon, alpha, 0);
+                setAlpha(unlockHint, alpha, 0);
+                handler.postDelayed(blink, 1000);
+            } else {
+                blinkStateOn = false;
+            }
+        }
+    };
 
     private void disableMoveClock() {
         Configuration config = getConfiguration();
@@ -563,6 +537,28 @@ public class NightDreamUI {
         clockLayout.setupBackground(null);
 
     }
+    public Runnable initClockLayout = new Runnable() {
+        @Override
+        public void run() {
+            clockLayout.setVisibility(View.INVISIBLE);
+            setupClockLayout();
+            setColor();
+            updateWeatherData();
+
+            //Update Notifications in Clocklayout
+            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+            i.putExtra("command", "list");
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+
+            controlsVisible = true;
+
+            brightnessProgress.setVisibility(View.INVISIBLE);
+
+            showAlarmClock();
+
+            clockLayout.postDelayed(zoomIn, 500);
+        }
+    };
 
     public boolean isLocked() {
         return locked;
@@ -1687,6 +1683,14 @@ public class NightDreamUI {
         });
     }
 
+    public void weatherDataUpdated(Context context) {
+        Log.d(TAG, "weatherDataUpdated");
+        settings.weatherEntry = settings.getWeatherEntry();
+        clockLayout.update(settings.weatherEntry, false);
+        updatePollenExposure(settings.weatherEntry);
+        ClockWidgetProvider.updateAllWidgets(context);
+    }
+
     private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
 
         @Override
@@ -1706,14 +1710,6 @@ public class NightDreamUI {
         protected void onPostExecute(Bitmap result) {
             preloadBackgroundImage = result;
         }
-    }
-
-    public void weatherDataUpdated(Context context){
-        Log.d(TAG, "weatherDataUpdated");
-        settings.weatherEntry = settings.getWeatherEntry();
-        clockLayout.update(settings.weatherEntry, false);
-        updatePollenExposure(settings.weatherEntry);
-        ClockWidgetProvider.updateAllWidgets(context);
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
