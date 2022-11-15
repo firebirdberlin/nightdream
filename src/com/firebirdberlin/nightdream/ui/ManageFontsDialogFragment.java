@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.ui;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     final static String TAG = "ManageFontsDialog";
     final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
@@ -177,7 +175,8 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
                         }
                     }
                 });
-        return builder.create();
+
+        return Utility.createDialogTheme(builder.create());
     }
 
     private boolean hasPermission(String permission) {
@@ -247,11 +246,6 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
                 list.add(getFileUri(name, R.string.typeface_roboto_regular));
             }
         }
-//        list.add(getFileUri("roboto_regular.ttf", R.string.typeface_roboto_regular));
-//        list.add(getFileUri("roboto_light.ttf", R.string.typeface_roboto_light));
-//        list.add(getFileUri("roboto_thin.ttf", R.string.typeface_roboto_thin));
-//        list.add(getFileUri("7segment.ttf", R.string.typeface_7_segment));
-//        list.add(getFileUri("dancingscript_regular.ttf", R.string.typeface_dancing_script));
         return list;
     }
 
@@ -276,9 +270,6 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
                 returnCursor.moveToFirst();
 
                 String fileName = returnCursor.getString(nameIndex);
-//                String mimeType = contentResolver.getType(uri);
-//                int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-//                long fileSize = returnCursor.getLong(sizeIndex);
                 returnCursor.close();
 
                 if (extensionIs(fileName, ".zip")) {
