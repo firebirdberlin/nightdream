@@ -3,10 +3,11 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -82,12 +83,7 @@ public class RadioStreamDialog
         noResultsText = v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
         Button directInputHintText = v.findViewById(R.id.direct_input_hint);
-        directInputHintText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showManualInputDialog(radioStreamDialogListener);
-            }
-        });
+        directInputHintText.setOnClickListener(view -> showManualInputDialog(radioStreamDialogListener));
 
         noDataConnectionText = v.findViewById(R.id.no_data_connection);
         noDataConnectionText.setVisibility(View.GONE);
@@ -95,42 +91,36 @@ public class RadioStreamDialog
             // For German and English display this text in parentheses, otherwise the default
             // message_no_data_connection is displayed
             try {
-                noDataConnectionText.setText(String.format("(%s)",
-                        context.getResources().getString(R.string.message_no_data_connection)));
+                noDataConnectionText.setText(
+                        String.format("(%s)",
+                        context.getResources().getString(R.string.message_no_data_connection))
+                );
             } catch (Resources.NotFoundException e) {
                 e.printStackTrace();
             }
         }
 
-        queryText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+        queryText.setOnEditorActionListener((v1, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-                    startSearch();
+                startSearch();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
+            return false;
         });
 
         RadioStreamDialogCustomAdapter stationListViewAdapter = new RadioStreamDialogCustomAdapter(context, android.R.layout.simple_list_item_1, stationItem);
         stationListView.setAdapter(stationListViewAdapter);
-        stationListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RadioStation station = stations.get(position);
-                radioStreamDialogListener.onRadioStreamSelected(station);
+        stationListView.setOnItemClickListener((parent, view, position, id) -> {
+            RadioStation station = stations.get(position);
+            radioStreamDialogListener.onRadioStreamSelected(station);
 
-            }
         });
 
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                //Log.i(TAG, "country changed");
-                startSearch();
             }
 
             @Override
@@ -140,13 +130,7 @@ public class RadioStreamDialog
         });
         searchButton = (v.findViewById(R.id.start_search));
         searchButton.setEnabled(false);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                startSearch();
-            }
-        });
+        searchButton.setOnClickListener(v12 -> startSearch());
 
         queryText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -291,14 +275,18 @@ public class RadioStreamDialog
             }
         }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryList);
-
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(
+                context, android.R.layout.simple_spinner_item, countryList
+        );
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         countrySpinner.setAdapter(dataAdapter);
         if (selectedItemIndex > -1) {
             countrySpinner.setSelection(selectedItemIndex);
         }
-
+        GradientDrawable border = new GradientDrawable();
+        border.setColor(Color.parseColor("#F2212121"));
+        countrySpinner.setPopupBackgroundDrawable(border);
     }
 
     public void clearLastSearchResult() {
