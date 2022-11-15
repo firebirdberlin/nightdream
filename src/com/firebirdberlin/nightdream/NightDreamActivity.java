@@ -197,21 +197,13 @@ public class NightDreamActivity extends BillingHelperActivity
 
         }
     };
-    private final Runnable checkKeepScreenOn = new Runnable() {
-        @Override
-        public void run() {
-            setKeepScreenOn(shallKeepScreenOn(mode));
-        }
-    };
-    private final Runnable alwaysOnTimeout = new Runnable() {
-        @Override
-        public void run() {
-            if (Utility.isCharging(context) && mode > 0) return;
+    private final Runnable checkKeepScreenOn = () -> setKeepScreenOn(shallKeepScreenOn(mode));
+    private final Runnable alwaysOnTimeout = () -> {
+        if (Utility.isCharging(context) && mode > 0) return;
 
-            mySettings.updateNextAlwaysOnTime();
-            setKeepScreenOn(shallKeepScreenOn(mode));
-            triggerAlwaysOnTimeout();
-        }
+        mySettings.updateNextAlwaysOnTime();
+        setKeepScreenOn(shallKeepScreenOn(mode));
+        triggerAlwaysOnTimeout();
     };
     private boolean isChargingWireless = false;
     private DevicePolicyManager mgr = null;
@@ -445,7 +437,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG,"onWindowFocusChanged()");
         super.onWindowFocusChanged(hasFocus);
         if(hasFocus){
-            setupAlarmClockIcon();
             nightDreamUI.onResume();
             Intent intent = getIntent();
 
@@ -476,6 +467,7 @@ public class NightDreamActivity extends BillingHelperActivity
             setupNightMode();
             setupFlashlight();
             setupRadioStreamUI();
+            setupAlarmClockIcon();
 
             BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
             if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
@@ -992,6 +984,14 @@ public class NightDreamActivity extends BillingHelperActivity
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+
+        if (Build.VERSION.SDK_INT >= 27) {
+            setTurnScreenOn(true);
+            setShowWhenLocked(true);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         }
     }
 
