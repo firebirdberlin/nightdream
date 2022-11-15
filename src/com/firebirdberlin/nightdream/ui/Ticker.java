@@ -192,7 +192,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         Object tag = v.getTag();
         if (tag instanceof Integer && context != null) {
             String url = urls.get(index);
-            if ((url != null) && (!urls.isEmpty())) {
+            if ((url != null) && (!url.isEmpty())) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW);
                 browserIntent.setData(Uri.parse(url));
                 context.startActivity(browserIntent);
