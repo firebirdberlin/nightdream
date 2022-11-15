@@ -471,7 +471,7 @@ public class NightDreamUI {
             clockLayout.setVisibility(View.VISIBLE);
             clockLayout.setScaleFactor(s, true);
 
-            Utility.turnScreenOn(mContext);
+           // Utility.turnScreenOn(mContext);
             Utility.hideSystemUI(mContext);
             zoomFinished = true;
         }

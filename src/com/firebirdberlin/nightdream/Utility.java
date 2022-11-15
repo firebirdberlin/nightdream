@@ -781,8 +781,11 @@ public class Utility {
     }
 
     public static boolean isInCall(Context context){
-        AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        return manager.getMode() == AudioManager.MODE_IN_CALL;
+        if (context.checkCallingOrSelfPermission("android.permission.MODIFY_AUDIO_SETTINGS") == PackageManager.PERMISSION_GRANTED){
+            AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            return manager.getMode() == AudioManager.MODE_IN_CALL;
+        }
+        return false;
     }
 
     public static void logIntent(String TAG, String msg, Intent data) {
