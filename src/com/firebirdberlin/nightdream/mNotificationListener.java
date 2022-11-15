@@ -297,6 +297,9 @@ public class mNotificationListener extends NotificationListenerService {
 
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
         final Context context = this;
+        if (sbn == null){
+            return null;
+        }
         Notification notification = sbn.getNotification();
         if (notification == null) {
             return null;
