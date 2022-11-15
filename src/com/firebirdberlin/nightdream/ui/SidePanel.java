@@ -128,6 +128,7 @@ public class SidePanel extends FlexboxLayout {
 
     public void openMenu() {
         Log.d(TAG, "openMenu(): " + menuIsOpen);
+        setVisibility(VISIBLE);
         if (!menuIsOpen) {
             ObjectAnimator animation;
             animation = ObjectAnimator.ofFloat(
