@@ -30,7 +30,6 @@
             android:textSize="20sp"
             android:translationX="0sp"
             android:translationY="0sp"
-            custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="h:mm"
             custom:format24Hr="HH:mm" />
 
@@ -46,7 +45,6 @@
             android:singleLine="true"
             android:textColor="#C2C2C2"
             android:textSize="20sp"
-            custom:fontPath="fonts/roboto_thin.ttf"
             custom:format12Hr="a"
             custom:format24Hr="" />
     </LinearLayout>
@@ -71,10 +69,8 @@
         android:singleLine="true"
         android:text="Sun, 30. October 2016"
         android:textColor="#C2C2C2"
-        android:textStyle="bold"
         android:visibility="gone"
         custom:capitalize="true"
-        custom:fontPath="fonts/roboto_light.ttf"
         custom:format12Hr="dd. MMMM yyyy"
         custom:format24Hr="dd. MMMM yyyy" />
 

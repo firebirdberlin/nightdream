@@ -925,13 +925,13 @@ public class Settings {
 
     public String getFontUri(int clockLayoutId) {
         String key = getKeyForClockLayout("fontUri", clockLayoutId);
-        String def = "file:///android_asset/fonts/dseg14classic.ttf";
+        String def = "fonts/dseg14classic.ttf";
         if ("fontUri:6".equals(key)) {
-            def = "file:///android_asset/fonts/roboto_thin.ttf";
+            def = "fonts/roboto_thin.ttf";
         }
         String fontUri = settings.getString(key, def);
         if ("file:///android_asset/fonts/7segment.ttf".equals(fontUri)) {
-            return "file:///android_asset/fonts/7_segment_digital.ttf";
+            return "fonts/7_segment_digital.ttf";
         }
         return fontUri;
     }
