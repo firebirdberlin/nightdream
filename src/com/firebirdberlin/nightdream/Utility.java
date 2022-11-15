@@ -8,6 +8,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -421,6 +422,14 @@ public class Utility {
     public static int getHeightOfView(View contentview) {
         contentview.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         return contentview.getMeasuredHeight();
+    }
+
+    public static Dialog createDialogTheme(Dialog dialogTheme) {
+        Window window = dialogTheme.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(R.drawable.border_dialog);
+        }
+        return dialogTheme;
     }
 
     public static boolean isCharging(Context context) {

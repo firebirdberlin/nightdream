@@ -2,8 +2,6 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 public class RadioStreamDialogFragment extends AppCompatDialogFragment {
@@ -48,7 +47,6 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
                                   String preferredCountry,
                                   RadioStreamDialogListener listener) {
 
-
         RadioStreamDialogFragment dialogFragment = RadioStreamDialogFragment.newInstance(
                 listener, radioStation, stationIndex, preferredCountry
         );
@@ -56,11 +54,11 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
 
         // edit the window flags in order to show the soft keyboard when the device is locked
         parentActivity.getSupportFragmentManager().executePendingTransactions();
-        Dialog dialog = dialogFragment.getDialog();
-        if (dialog != null) {
+        if (dialogFragment.getDialog() != null) {
+            Dialog dialog = Utility.createDialogTheme(dialogFragment.getDialog());
             Window window = dialog.getWindow();
             if (window != null) {
-                window.setBackgroundDrawableResource(R.drawable.border_radio_stream_dialog);
+                window.setBackgroundDrawableResource(R.drawable.border_dialog);
                 window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
                 window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
                 window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
