@@ -2,6 +2,8 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -58,6 +60,7 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
         if (dialog != null) {
             Window window = dialog.getWindow();
             if (window != null) {
+                window.setBackgroundDrawableResource(R.drawable.border_radio_stream_dialog);
                 window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
                 window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
                 window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
