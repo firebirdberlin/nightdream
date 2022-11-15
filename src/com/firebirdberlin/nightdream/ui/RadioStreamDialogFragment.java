@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
 public class RadioStreamDialogFragment extends AppCompatDialogFragment {
@@ -46,7 +47,6 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
                                   String preferredCountry,
                                   RadioStreamDialogListener listener) {
 
-
         RadioStreamDialogFragment dialogFragment = RadioStreamDialogFragment.newInstance(
                 listener, radioStation, stationIndex, preferredCountry
         );
@@ -54,8 +54,8 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
 
         // edit the window flags in order to show the soft keyboard when the device is locked
         parentActivity.getSupportFragmentManager().executePendingTransactions();
-        Dialog dialog = dialogFragment.getDialog();
-        if (dialog != null) {
+        if (dialogFragment.getDialog() != null) {
+            Dialog dialog = Utility.createDialogTheme(dialogFragment.getDialog());
             Window window = dialog.getWindow();
             if (window != null) {
                 window.setBackgroundDrawableResource(R.drawable.border_dialog);
