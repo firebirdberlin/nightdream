@@ -9,10 +9,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+
+import java.util.List;
 
 public class PreferencesActivity extends BillingHelperActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
@@ -52,23 +55,31 @@ public class PreferencesActivity extends BillingHelperActivity
 
     private final Runnable init = () -> initFragment();
 
+    private void removeFragment(Fragment removeFragment) {
+        Log.d(TAG, "removeFragment()");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.isStateSaved()) {
+            Log.d(TAG, "removeFragment() isStateSaved");
+            if (removeFragment != null) {
+                Log.d(TAG, "removeFragment() removed");
+                fragmentManager.beginTransaction().remove(removeFragment).commitAllowingStateLoss();
+            }
+        }
+    }
+
     public void initFragment() {
         Log.i(TAG, "initFragment()");
         handler.removeCallbacks(init);
         FragmentManager fm = getSupportFragmentManager();
 
         FragmentTransaction fT = fm.beginTransaction();
-        if (fragment != null) {
-            fT.remove(fragment);
-        }
+        removeFragment(fragment);
         fragment = new PreferencesFragment();
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             setContentView(R.layout.preferences_layout);
-            if (fragment2 != null) {
-                fT.remove(fragment2);
-                fragment2 = null;
-            }
+            removeFragment(fragment2);
+            fragment2 = null;
 
             Bundle data = new Bundle();
             data.putString("rootKey", rootKey);
@@ -200,9 +211,8 @@ public class PreferencesActivity extends BillingHelperActivity
         FragmentManager fm = getSupportFragmentManager();
 
         FragmentTransaction fT = fm.beginTransaction();
-        if (fragment != null) {
-            fT.remove(fragment);
-        }
+        removeFragment(fragment);
+
         fragment = new PreferencesFragment();
         Bundle data = new Bundle();
         data.putString("rootKey", rootKey);

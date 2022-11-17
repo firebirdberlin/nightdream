@@ -992,6 +992,7 @@ public class NightDreamActivity extends BillingHelperActivity
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
         if (Build.VERSION.SDK_INT >= 27) {
             setTurnScreenOn(true);
             setShowWhenLocked(true);
