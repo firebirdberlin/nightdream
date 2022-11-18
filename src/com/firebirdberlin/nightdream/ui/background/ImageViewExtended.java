@@ -5,11 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimatedImageDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,7 +25,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -156,24 +157,40 @@ public class ImageViewExtended extends AppCompatImageView {
     }
 
     public void setImage(Uri uri) {
-        String extension = MimeTypeMap.getFileExtensionFromUrl(
-                Uri.fromFile(new File(uri.getPath())).toString()
-        );
+        Log.d(TAG, "setImage(uri)");
+        String mimeType = context.getContentResolver().getType(uri);
 
-        if (extension.equals("gif")) {
-            try {
-                gif = new GifMovie(context.getContentResolver().openInputStream(uri));
-                setBitmap(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (gif != null) {
-                gif.setOneShot(false);
-                setImageDrawable(gif);
-                gif.setVisible(true, true);
-                gif.start();
+        Log.d(TAG, "mimeType: " + mimeType);
+        if (mimeType != null && mimeType.equals("image/gif")) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                Log.d(TAG, "gif android 12+");
+
+                ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
+                try {
+                    Drawable image = ImageDecoder.decodeDrawable(source);
+                    setImageDrawable(image);
+                    if (image instanceof AnimatedImageDrawable) {
+                        ((AnimatedImageDrawable) image).start();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             } else {
-                setImageDrawable(new ColorDrawable(Color.BLACK));
+                try {
+                    gif = new GifMovie(context.getContentResolver().openInputStream(uri));
+                    setBitmap(uri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (gif != null) {
+                    gif.setOneShot(false);
+                    setImageDrawable(gif);
+                    gif.setVisible(true, true);
+                    gif.start();
+                } else {
+                    setImageDrawable(new ColorDrawable(Color.BLACK));
+                }
             }
         } else {
             setImageDrawable(loadBackgroundImage(uri));
@@ -190,10 +207,28 @@ public class ImageViewExtended extends AppCompatImageView {
                 return cached;
             }
 
-            Bitmap bgimage = loadBackgroundBitmap(uri);
-            bgimage = rescaleBackgroundImage(bgimage);
-            writeBackgroundImageToCache(bgimage);
+            Bitmap bgimage;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                ImageDecoder.OnHeaderDecodedListener listener = new ImageDecoder.OnHeaderDecodedListener() {
+                    @Override
+                    public void onHeaderDecoded(@NonNull ImageDecoder decoder, @NonNull ImageDecoder.ImageInfo info, @NonNull ImageDecoder.Source source) {
+                        decoder.setMutableRequired(true);
+                    }
+                };
+                ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
+                bgimage = ImageDecoder.decodeBitmap(source, listener);
+                int rotation = Utility.getCameraPhotoOrientation(context, uri);
+                if (rotation != 0) {
+                    bgimage = Utility.rotateBitmap(bgimage, rotation);
+                }
+            } else {
+                bgimage = loadBackgroundBitmap(uri);
+            }
+
             if (bgimage != null) {
+                bgimage = rescaleBackgroundImage(bgimage);
+                writeBackgroundImageToCache(bgimage);
                 setBitmap(bgimage);
                 return new BitmapDrawable(context.getResources(), bgimage);
             }
@@ -204,6 +239,7 @@ public class ImageViewExtended extends AppCompatImageView {
             ).show();
         } catch (Exception ex) {
             ex.printStackTrace();
+            Log.e(TAG, ex.toString());
         }
         return new ColorDrawable(Color.BLACK);
     }

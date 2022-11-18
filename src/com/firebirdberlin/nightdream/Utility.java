@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -870,6 +871,17 @@ public class Utility {
     public static int getCameraPhotoOrientation(FileDescriptor fileDescriptor) {
         try {
             ExifInterface exif = new ExifInterface(fileDescriptor);
+            return getCameraPhotoOrientation(exif);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static int getCameraPhotoOrientation(Context context, Uri  fileDescriptor) {
+        Log.d(TAG, "getCameraPhotoOrientation(Context context, Uri  fileDescriptor)");
+        try {
+            ExifInterface exif = new ExifInterface(context.getContentResolver().openInputStream(fileDescriptor));
             return getCameraPhotoOrientation(exif);
         } catch (IOException e) {
             e.printStackTrace();
