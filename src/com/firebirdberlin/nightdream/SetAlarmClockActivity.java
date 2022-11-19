@@ -111,7 +111,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         Utility.logIntent(TAG, "onResume()", intent);
         if (AlarmClock.ACTION_SET_ALARM.equals(intent.getAction())) {
             intent.setAction(""); // clear that intent
-
             saveAlarmEntryFromIntent(intent);
         }
     }
@@ -172,16 +171,25 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     public void onClickAddNewAlarm(View view) {
+        Log.d(TAG, "onClickAddNewAlarm()");
+
+        //Todo - Do we still need this check? Check also included in ManageAlarmSoundsDialogFragment
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                requestPermissions(
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-                );
+                Log.d(TAG, "onClickAddNewAlarm() permission READ_EXTERNAL_STORAGE: " + hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE));
+                    //Show permissions dialog
+                    Log.d(TAG, "onClickAddNewAlarm() Show the permissions dialog");
+                    requestPermissions(
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+                    );
                 return;
             }
         }
+        newAlarm(view);
+    }
 
+    public void newAlarm(View view) {
         Calendar now = Calendar.getInstance();
         int hour = now.get(Calendar.HOUR_OF_DAY);
         int min;
@@ -253,6 +261,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 hour, min, Utility.is24HourFormat(context));
         // fix broken dialog appearance on some devices
         mTimePicker.setTitle(null);
+        mTimePicker.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
         mTimePicker.show();
     }
 
@@ -377,9 +386,13 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     ) {
         if (PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE == requestCode) {
             if (grantResults.length > 0) {
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    onClickAddNewAlarm(scrollView);
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "onRequestPermissionsResult() grantResults: PERMISSION_GRANTED");
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Log.d(TAG, "onRequestPermissionsResult() grantResults: PERMISSION_DENIED");
+                    //Toast.makeText(this, "Can't continue without the required permissions", Toast.LENGTH_LONG).show();
                 }
+                newAlarm(scrollView);
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
