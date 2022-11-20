@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
@@ -16,8 +17,10 @@ public class StopServiceReceiver extends BroadcastReceiver {
         if (action == null) return;
         Log.i("StopServiceReceiver", action + " received!");
 
-        Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        context.sendBroadcast(it);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            context.sendBroadcast(it);
+        }
 
         NightDreamActivity.start(context, Config.ACTION_STOP_BACKGROUND_SERVICE);
     }
