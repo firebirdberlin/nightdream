@@ -234,7 +234,6 @@ public class Utility {
     }
 
     public static boolean isDaydreamEnabled(final Context c) {
-        if (Build.VERSION.SDK_INT < 17) return false;
         return 1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1);
     }
 
@@ -265,7 +264,6 @@ public class Utility {
     }
 
     public static boolean isConfiguredAsDaydream(final Context c) {
-        if (Build.VERSION.SDK_INT < 17) return false;
         if (1 == android.provider.Settings.Secure.getInt(c.getContentResolver(), SCREENSAVER_ENABLED, -1)) {
             String classname = getSelectedDaydreamClassName(c);
             Log.i(TAG, "Daydream is active " + classname);
