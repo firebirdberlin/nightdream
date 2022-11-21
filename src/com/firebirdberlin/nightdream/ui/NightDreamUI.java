@@ -758,7 +758,7 @@ public class NightDreamUI {
         int layoutId = settings.getClockLayoutID(false);
         clockLayout.setLayout(layoutId);
         clockLayout.setBackgroundTransparency(settings.clockBackgroundTransparency);
-        clockLayout.setTypeface(settings.typeface);
+        clockLayout.setTypeface(settings.loadTypeface());
         clockLayout.setDateFormat(settings.dateFormat);
         String timeFormat = settings.getTimeFormat(layoutId);
         clockLayout.setTimeFormat(timeFormat, settings.is24HourFormat());
@@ -790,7 +790,9 @@ public class NightDreamUI {
         int textColor = getSecondaryColor();
 
         batteryIconView.setColor(textColor);
+        batteryIconView.setVisibility(View.VISIBLE);
         menuIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+        menuIcon.setVisibility(isLocked() ? View.GONE : View.VISIBLE);
 
         // colorize icons in the side panel
         sidePanel.setAccentColor(accentColor);
