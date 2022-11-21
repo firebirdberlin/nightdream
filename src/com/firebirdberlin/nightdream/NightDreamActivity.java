@@ -127,6 +127,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private SessionManagerListener<CastSession> mSessionManagerListener;
     private Settings mySettings = null;
     private Configuration prevConfig;
+    private long startTime = System.currentTimeMillis();
 
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -282,6 +283,8 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void setupCastListener() {
+        mCastContext = CastContext.getSharedInstance(this);
+        mCastSession = mCastContext.getSessionManager().getCurrentCastSession();
         mSessionManagerListener = new SessionManagerListener<CastSession>() {
 
             @Override
@@ -360,11 +363,6 @@ public class NightDreamActivity extends BillingHelperActivity
         mySettings = new Settings(this);
 
         setupCastListener();
-        mCastContext = CastContext.getSharedInstance(this);
-        mCastSession = mCastContext.getSessionManager().getCurrentCastSession();
-
-        // allow the app to be displayed above the keyguard
-        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
         setKeepScreenOn(true);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
@@ -527,9 +525,11 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onResume()");
         prevConfig = new Configuration(getResources().getConfiguration());
 
-        mCastContext.getSessionManager().addSessionManagerListener(
-                mSessionManagerListener, CastSession.class
-        );
+        if (mCastContext != null) {
+            mCastContext.getSessionManager().addSessionManagerListener(
+                    mSessionManagerListener, CastSession.class
+            );
+        }
 
         isRunning = true;
         resumeTime = System.currentTimeMillis();
@@ -550,6 +550,8 @@ public class NightDreamActivity extends BillingHelperActivity
         locationReceiver = LocationUpdateReceiver.register(this, this);
         nReceiver.setColor((mode == MODE_NIGHT) ?
                 mySettings.secondaryColorNight : mySettings.secondaryColor);
+        long now = System.currentTimeMillis();
+        Log.i(TAG, "startup took: " + (now - startTime) + " ms");
     }
 
     private void setExcludeFromRecents() {
@@ -993,6 +995,8 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+
         if (Build.VERSION.SDK_INT >= 27) {
             setTurnScreenOn(true);
             setShowWhenLocked(true);

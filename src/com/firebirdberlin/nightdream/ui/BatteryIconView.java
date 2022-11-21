@@ -24,14 +24,13 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
 
 public class BatteryIconView extends View {
-    private static final String TAG = "NightDream.BatteryIconView";
+    private static final String TAG = "BatteryIconView";
     private static final float VALUE_FULLY_CHARGED = 95.f;
 
     Context context;
     Settings settings;
     Paint paint = new Paint();
-    int customcolor = Color.GREEN;
-    int customSecondaryColor = Color.parseColor("#C2C2C2");
+    int customColor = Color.WHITE;
     float batteryTextOffsetX;
     float batteryIconHeight;
     float batteryIconWidth;
@@ -50,13 +49,11 @@ public class BatteryIconView extends View {
 
     private void init(Context context, AttributeSet attrs) {
         this.context = context;
-        colorFilter = new LightingColorFilter(customcolor, 1);
 
         //init text view layout
         batteryTextLayout = new LinearLayout(context); //delegates attributes to text subview
         batteryTextView = new TextView(context, attrs);
         batteryTextView.setPadding(0, 0, 0, 0); // no padding for sub view
-        batteryTextView.setTextColor(customcolor);
         batteryTextView.setLayoutParams(
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -92,9 +89,9 @@ public class BatteryIconView extends View {
     }
 
     public void setColor(int color) {
-        customcolor = color;
-        colorFilter = new LightingColorFilter(customcolor, 1);
-        batteryTextView.setTextColor(customcolor);
+        customColor = color;
+        colorFilter = new LightingColorFilter(customColor, 1);
+        batteryTextView.setTextColor(customColor);
         invalidate();
     }
 
@@ -116,7 +113,7 @@ public class BatteryIconView extends View {
     @Override
     public void onDraw(Canvas canvas) {
 
-        if (batteryValue == null) {
+        if (batteryValue == null || getVisibility() != View.VISIBLE) {
             return;
         }
 

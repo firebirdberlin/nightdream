@@ -169,7 +169,6 @@ public class Settings {
     public String AlarmToneUri = "";
     public String AlarmToneName = "";
     public String backgroundImageURI = "";
-    public Typeface typeface;
     public String dateFormat;
     public String timeFormat;
     public WeatherEntry weatherEntry;
@@ -530,7 +529,6 @@ public class Settings {
         NOISE_AMPLITUDE_SLEEP *= sensitivity;
         NOISE_AMPLITUDE_WAKE *= sensitivity;
 
-        typeface = loadTypeface();
         weatherEntry = getWeatherEntry();
 
         HashSet<String> defaultOptions = new HashSet<>();
@@ -857,7 +855,7 @@ public class Settings {
         return ((SimpleDateFormat) formatter).toLocalizedPattern();
     }
 
-    private Typeface loadTypeface() {
+    public Typeface loadTypeface() {
         final String ASSET_PATH = "file:///android_asset/";
         if (settings.contains("typeface")) {
 
