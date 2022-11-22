@@ -700,11 +700,20 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         if (picturePath != null) {
                             settings.setBackgroundImage(picturePath);
                         } else {
-                            Toast.makeText(getActivity(), "Could not locate image !", Toast.LENGTH_LONG).show();
+                            Toast.makeText(
+                                    getActivity(),
+                                    "Could not locate image!", Toast.LENGTH_LONG
+                            ).show();
                         }
                     } else {
                         Uri uri = data.getData();
                         if (uri != null) {
+                            mContext.grantUriPermission(
+                                    mContext.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            );
+                            mContext.getContentResolver().takePersistableUriPermission(
+                                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            );
                             settings.setBackgroundImageURI(uri.toString());
                         }
                     }
@@ -724,6 +733,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     Uri uri = data.getData();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if (uri != null) {
+                            mContext.grantUriPermission(
+                                    mContext.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            );
                             mContext.getContentResolver().takePersistableUriPermission(
                                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
                             );
