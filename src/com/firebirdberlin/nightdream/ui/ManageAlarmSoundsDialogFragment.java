@@ -42,9 +42,7 @@ import java.util.ArrayList;
 
 public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     final static String TAG = "ManageAlarmSoundsDialog";
-    final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private File DIRECTORY = null;
-    // Use this instance of the interface to deliver action events
     private ManageAlarmSoundsDialogListener mListener;
     private ListView listView;
     private AlarmToneAdapter arrayAdapter;
@@ -61,7 +59,11 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
                 } else {
                     // Permission is denied, feature is unavailable
                     Log.d(TAG, "ActivityResultLauncher already been shown and permission is denied");
-                    Toast.makeText(context, "Can't set custom alarm tone without required permission.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                            context,
+                            context.getString(R.string.permission_request_storage),
+                            Toast.LENGTH_LONG
+                    ).show();
                 }
             });
 
