@@ -44,6 +44,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -90,13 +91,13 @@ public class NightDreamUI {
     private final LinearLayout topPanel;
     private final LinearLayout unlockHint;
     private final AlarmClock alarmClock;
-    private final ConstraintLayout parentLayout;
+    private final RelativeLayout parentLayout;
     private final ExifView exifView;
     private final ImageViewExtended[] backgroundImages = new ImageViewExtended[2];
     private final ImageView menuIcon;
     private final ImageView nightModeIcon;
     private final ImageView radioIcon;
-    private final ConstraintLayout exifLayoutContainer;
+    private final FrameLayout exifLayoutContainer;
     private final ClockLayoutContainer clockLayoutContainer;
     private final ClockLayout clockLayout;
     private final FlexboxLayout notificationStatusBar;

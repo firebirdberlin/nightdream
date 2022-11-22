@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
@@ -127,7 +126,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private SessionManagerListener<CastSession> mSessionManagerListener;
     private Settings mySettings = null;
     private Configuration prevConfig;
-    private long startTime = System.currentTimeMillis();
+    private final long startTime = System.currentTimeMillis();
 
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
@@ -211,13 +210,10 @@ public class NightDreamActivity extends BillingHelperActivity
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
     private GestureDetector mGestureDetector = null;
-    private Runnable lockDevice = new Runnable() {
-        @Override
-        public void run() {
-            if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
-                mgr.lockNow();
-                Utility.turnScreenOn(context);
-            }
+    private Runnable lockDevice = () -> {
+        if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
+            mgr.lockNow();
+            Utility.turnScreenOn(context);
         }
     };
     private LocationManager locationManager = null;
@@ -284,9 +280,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void setupCastListener() {
         mCastContext = CastContext.getSharedInstance(this);
-        mCastSession = mCastContext.getSessionManager().getCurrentCastSession();
         mSessionManagerListener = new SessionManagerListener<CastSession>() {
-
             @Override
             public void onSessionEnded(CastSession session, int error) {
                 onApplicationDisconnected();
@@ -345,51 +339,63 @@ public class NightDreamActivity extends BillingHelperActivity
                 }
             }
         };
+        mCastContext.getSessionManager().addSessionManagerListener(
+                mSessionManagerListener, CastSession.class
+        );
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate() starts: " + (System.currentTimeMillis() - startTime) + " ms");
         MultiDex.install(this);
         context = this;
 
         setContentView(R.layout.main);
+        Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
 
-        Log.i(TAG, "onCreate()");
         Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= 27) {
+            window.addFlags(
+                    WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+            );
+        } else {
+            window.addFlags(
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                            WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+            );
+        }
 
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
-
         setupCastListener();
 
         setKeepScreenOn(true);
-        bottomPanelLayout = findViewById(R.id.bottomPanel);
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
-        ImageView background_image = findViewById(R.id.background_view);
-        background_image.setOnTouchListener(this);
-        mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        cn = new ComponentName(this, AdminReceiver.class);
-        mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
+        bottomPanelLayout = findViewById(R.id.bottomPanel);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
         sidePanel = findViewById(R.id.side_menu);
 
+        ImageView background_image = findViewById(R.id.background_view);
+        background_image.setOnTouchListener(this);
+
+        mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        cn = new ComponentName(this, AdminReceiver.class);
+        mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> { //background thread
-            initTextToSpeech();
-        });
+        executor.execute(this::initTextToSpeech);
+        Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
     void initTextToSpeech() {
-        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status != TextToSpeech.ERROR && textToSpeech != null) {
-                    textToSpeech.setLanguage(Locale.getDefault());
-                } else {
-                    textToSpeech = null;
-                }
+        textToSpeech = new TextToSpeech(context, status -> {
+            if (status != TextToSpeech.ERROR && textToSpeech != null) {
+                textToSpeech.setLanguage(Locale.getDefault());
+            } else {
+                textToSpeech = null;
             }
         });
     }
@@ -429,6 +435,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         Utility.createNotificationChannels(this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Log.i(TAG, "onStart took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
     @Override
@@ -518,18 +525,11 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume()");
         prevConfig = new Configuration(getResources().getConfiguration());
-
-        if (mCastContext != null) {
-            mCastContext.getSessionManager().addSessionManagerListener(
-                    mSessionManagerListener, CastSession.class
-            );
-        }
 
         isRunning = true;
         resumeTime = System.currentTimeMillis();
@@ -548,10 +548,8 @@ public class NightDreamActivity extends BillingHelperActivity
         broadcastReceiver = registerBroadcastReceiver();
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
-        nReceiver.setColor((mode == MODE_NIGHT) ?
-                mySettings.secondaryColorNight : mySettings.secondaryColor);
-        long now = System.currentTimeMillis();
-        Log.i(TAG, "startup took: " + (now - startTime) + " ms");
+        nReceiver.setColor((mode == MODE_NIGHT) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
+        Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
     private void setExcludeFromRecents() {
@@ -992,17 +990,6 @@ public class NightDreamActivity extends BillingHelperActivity
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-
-        if (Build.VERSION.SDK_INT >= 27) {
-            setTurnScreenOn(true);
-            setShowWhenLocked(true);
-        } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         }
     }
 
