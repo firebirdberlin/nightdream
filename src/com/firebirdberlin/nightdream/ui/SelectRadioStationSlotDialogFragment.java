@@ -51,7 +51,9 @@ public class SelectRadioStationSlotDialogFragment extends AppCompatDialogFragmen
                         mListener.onStationSlotSelected(which, stationsSeq[which].toString());
                     }
                 });
-        return builder.create();
+        Dialog dialog = (Dialog) builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
+        return dialog;
     }
 
     public void setRadioStations(FavoriteRadioStations radioStations) {
