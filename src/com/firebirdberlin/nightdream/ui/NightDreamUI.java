@@ -674,20 +674,18 @@ public class NightDreamUI {
                     backgroundImages[activeBackgroundImage].setImage(
                             Uri.parse(settings.backgroundImageURI)
                     );
+
                     Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
-                    if (bitmap == null) {
-                        return;
-                    }
-                    setDominantColorFromBitmap(bitmap);
-                    if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                        backgroundImages[other].setImageBitmap(
-                                Graphics.blur(bitmap)
-                        );
-                    } else {
-                        backgroundImages[other].setImageDrawable(colorBlack);
+                    backgroundImages[other].setImageDrawable(colorBlack);
+                    if (bitmap != null) {
+                        setDominantColorFromBitmap(bitmap);
+                        if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                            backgroundImages[other].setImageBitmap(
+                                    Graphics.blur(bitmap)
+                            );
+                        }
                     }
                     backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
-
                     break;
                 }
 
