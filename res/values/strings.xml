@@ -258,6 +258,7 @@ OR
     <string name="outer_circle_width">Outer circle width</string>
     <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
+    <string name="permission_request_storage">The permission for storage access was not granted.</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
     <string name="pollen_hazelnut">Hazelnut</string>

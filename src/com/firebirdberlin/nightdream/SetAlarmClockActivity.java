@@ -55,7 +55,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private FavoriteRadioStations radioStations = null;
-    private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 333;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -172,20 +171,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     public void onClickAddNewAlarm(View view) {
         Log.d(TAG, "onClickAddNewAlarm()");
-
-        //Todo - Do we still need this check? Check also included in ManageAlarmSoundsDialogFragment
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Log.d(TAG, "onClickAddNewAlarm() permission READ_EXTERNAL_STORAGE: " + hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE));
-                    //Show permissions dialog
-                    Log.d(TAG, "onClickAddNewAlarm() Show the permissions dialog");
-                    requestPermissions(
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-                    );
-                return;
-            }
-        }
         newAlarm(view);
     }
 
@@ -377,25 +362,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         update(entry.id);
         if (intent.getBooleanExtra(AlarmClock.EXTRA_SKIP_UI, false)) {
             new Handler().postDelayed(this::finish, 3000);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults
-    ) {
-        if (PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE == requestCode) {
-            if (grantResults.length > 0) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "onRequestPermissionsResult() grantResults: PERMISSION_GRANTED");
-                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Log.d(TAG, "onRequestPermissionsResult() grantResults: PERMISSION_DENIED");
-                    //Toast.makeText(this, "Can't continue without the required permissions", Toast.LENGTH_LONG).show();
-                }
-                newAlarm(scrollView);
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
