@@ -55,7 +55,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private FavoriteRadioStations radioStations = null;
-    private final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 333;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -111,7 +110,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         Utility.logIntent(TAG, "onResume()", intent);
         if (AlarmClock.ACTION_SET_ALARM.equals(intent.getAction())) {
             intent.setAction(""); // clear that intent
-
             saveAlarmEntryFromIntent(intent);
         }
     }
@@ -172,16 +170,11 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     public void onClickAddNewAlarm(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                requestPermissions(
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-                );
-                return;
-            }
-        }
+        Log.d(TAG, "onClickAddNewAlarm()");
+        newAlarm(view);
+    }
 
+    public void newAlarm(View view) {
         Calendar now = Calendar.getInstance();
         int hour = now.get(Calendar.HOUR_OF_DAY);
         int min;
@@ -253,6 +246,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 hour, min, Utility.is24HourFormat(context));
         // fix broken dialog appearance on some devices
         mTimePicker.setTitle(null);
+        mTimePicker.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
         mTimePicker.show();
     }
 
@@ -368,21 +362,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         update(entry.id);
         if (intent.getBooleanExtra(AlarmClock.EXTRA_SKIP_UI, false)) {
             new Handler().postDelayed(this::finish, 3000);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults
-    ) {
-        if (PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE == requestCode) {
-            if (grantResults.length > 0) {
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    onClickAddNewAlarm(scrollView);
-                }
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

@@ -3,7 +3,6 @@ package com.firebirdberlin.nightdream.ui;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -16,11 +15,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -37,18 +40,32 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     final static String TAG = "ManageAlarmSoundsDialog";
-    final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private File DIRECTORY = null;
-    // Use this instance of the interface to deliver action events
     private ManageAlarmSoundsDialogListener mListener;
     private ListView listView;
     private AlarmToneAdapter arrayAdapter;
     private Uri selectedUri;
     private boolean isPurchased = false;
     private Context context;
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Permission is granted
+                    Log.d(TAG, "ActivityResultLauncher Permission granted");
+                    selectCustomTone();
+                } else {
+                    // Permission is denied, feature is unavailable
+                    Log.d(TAG, "ActivityResultLauncher already been shown and permission is denied");
+                    Toast.makeText(
+                            context,
+                            context.getString(R.string.permission_request_storage),
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            });
 
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
         FileChannel inChannel = src.getChannel();
@@ -115,8 +132,9 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
                 }
 
                 if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    requestPermissionLauncher.launch(
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    );
                     return;
                 }
                 selectCustomTone();
@@ -150,21 +168,14 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
                         }
                     }
                 });
-        return builder.create();
+        Dialog dialog = (Dialog) builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
+        return dialog;
     }
 
     private boolean hasPermission(String permission) {
         return Build.VERSION.SDK_INT < 23 ||
                 (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectCustomTone();
-            }
-        }
     }
 
     private void selectCustomTone() {
