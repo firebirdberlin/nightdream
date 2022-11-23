@@ -35,7 +35,9 @@ public class RSSViewModel extends ViewModel {
 
     public static void stopWorker() {
         Log.d(TAG, "stopWorker");
-        WorkManager.getInstance(weakContext.get()).cancelAllWorkByTag(TAG);
+        if (weakContext.get() != null) {
+            WorkManager.getInstance(weakContext.get()).cancelAllWorkByTag(TAG);
+        }
     }
 
     public static void setTickerSpeed(Long speed) {
