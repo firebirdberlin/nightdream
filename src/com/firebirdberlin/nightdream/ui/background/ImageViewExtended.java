@@ -159,15 +159,13 @@ public class ImageViewExtended extends AppCompatImageView {
     public void setImage(Uri uri) {
         Log.d(TAG, "setImage(uri)");
         String mimeType = context.getContentResolver().getType(uri);
-
-        Log.d(TAG, "mimeType: " + mimeType);
-        if (mimeType != null && mimeType.equals("image/gif")) {
+        Log.d(TAG, "mimeType: " + ((mimeType != null) ? mimeType : "null"));
+        if ("image/gif".equals(mimeType)) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                Log.d(TAG, "gif android 12+");
-
-                ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
                 try {
-                    Drawable image = ImageDecoder.decodeDrawable(source);
+                    Drawable image = ImageDecoder.decodeDrawable(
+                            ImageDecoder.createSource(context.getContentResolver(), uri)
+                    );
                     setImageDrawable(image);
                     if (image instanceof AnimatedImageDrawable) {
                         ((AnimatedImageDrawable) image).start();
@@ -175,7 +173,6 @@ public class ImageViewExtended extends AppCompatImageView {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             } else {
                 try {
                     gif = new GifMovie(context.getContentResolver().openInputStream(uri));
@@ -208,17 +205,11 @@ public class ImageViewExtended extends AppCompatImageView {
             }
 
             Bitmap bgimage;
-
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                ImageDecoder.OnHeaderDecodedListener listener = new ImageDecoder.OnHeaderDecodedListener() {
-                    @Override
-                    public void onHeaderDecoded(@NonNull ImageDecoder decoder, @NonNull ImageDecoder.ImageInfo info, @NonNull ImageDecoder.Source source) {
-                        decoder.setMutableRequired(true);
-                    }
-                };
-                ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
-                bgimage = ImageDecoder.decodeBitmap(source, listener);
-
+                bgimage = ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(context.getContentResolver(), uri),
+                        (decoder, info, source1) -> decoder.setMutableRequired(true)
+                );
             } else {
                 bgimage = loadBackgroundBitmap(uri);
             }
@@ -236,7 +227,6 @@ public class ImageViewExtended extends AppCompatImageView {
             ).show();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.e(TAG, ex.toString());
         }
         return new ColorDrawable(Color.BLACK);
     }
