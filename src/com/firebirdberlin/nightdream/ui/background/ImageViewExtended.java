@@ -5,11 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimatedImageDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,7 +25,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -156,24 +157,37 @@ public class ImageViewExtended extends AppCompatImageView {
     }
 
     public void setImage(Uri uri) {
-        String extension = MimeTypeMap.getFileExtensionFromUrl(
-                Uri.fromFile(new File(uri.getPath())).toString()
-        );
-
-        if (extension.equals("gif")) {
-            try {
-                gif = new GifMovie(context.getContentResolver().openInputStream(uri));
-                setBitmap(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (gif != null) {
-                gif.setOneShot(false);
-                setImageDrawable(gif);
-                gif.setVisible(true, true);
-                gif.start();
+        Log.d(TAG, "setImage(uri)");
+        String mimeType = context.getContentResolver().getType(uri);
+        Log.d(TAG, "mimeType: " + ((mimeType != null) ? mimeType : "null"));
+        if ("image/gif".equals(mimeType)) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                try {
+                    Drawable image = ImageDecoder.decodeDrawable(
+                            ImageDecoder.createSource(context.getContentResolver(), uri)
+                    );
+                    setImageDrawable(image);
+                    if (image instanceof AnimatedImageDrawable) {
+                        ((AnimatedImageDrawable) image).start();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                setImageDrawable(new ColorDrawable(Color.BLACK));
+                try {
+                    gif = new GifMovie(context.getContentResolver().openInputStream(uri));
+                    setBitmap(uri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (gif != null) {
+                    gif.setOneShot(false);
+                    setImageDrawable(gif);
+                    gif.setVisible(true, true);
+                    gif.start();
+                } else {
+                    setImageDrawable(new ColorDrawable(Color.BLACK));
+                }
             }
         } else {
             setImageDrawable(loadBackgroundImage(uri));
@@ -190,10 +204,19 @@ public class ImageViewExtended extends AppCompatImageView {
                 return cached;
             }
 
-            Bitmap bgimage = loadBackgroundBitmap(uri);
-            bgimage = rescaleBackgroundImage(bgimage);
-            writeBackgroundImageToCache(bgimage);
+            Bitmap bgimage;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                bgimage = ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(context.getContentResolver(), uri),
+                        (decoder, info, source1) -> decoder.setMutableRequired(true)
+                );
+            } else {
+                bgimage = loadBackgroundBitmap(uri);
+            }
+
             if (bgimage != null) {
+                bgimage = rescaleBackgroundImage(bgimage);
+                writeBackgroundImageToCache(bgimage);
                 setBitmap(bgimage);
                 return new BitmapDrawable(context.getResources(), bgimage);
             }
