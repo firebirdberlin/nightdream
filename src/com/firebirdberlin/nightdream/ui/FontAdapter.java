@@ -27,6 +27,7 @@ import java.util.List;
 
 
 class FontAdapter extends ArrayAdapter<FileUri> {
+    public static final String TAG = "FontAdapter";
     private Context context = null;
     private int viewId = -1;
     private int selectedPosition = -1;
@@ -42,36 +43,62 @@ class FontAdapter extends ArrayAdapter<FileUri> {
         this.listener = listener;
     }
 
+    // class for holding the cached view
+    static class ViewHolder {
+        RadioButton button;
+        ImageView buttonDelete;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        Log.d(TAG, "getView()");
         super.getView(position, convertView, parent);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View v = inflater.inflate(viewId, parent, false);
-        RadioButton button = v.findViewById(R.id.text1);
+
+        // holder of the views
+        ViewHolder viewHolder;
+
         final FileUri item = getItem(position);
 
+        if (convertView == null) {
+            Log.d(TAG, "getView() convertView == null");
+            // create the container ViewHolder
+            viewHolder = new ViewHolder();
+
+            // inflate the views from layout for the new row
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            convertView = inflater.inflate(viewId, parent, false);
+            viewHolder.button = convertView.findViewById(R.id.text1);
+            viewHolder.buttonDelete = convertView.findViewById(R.id.buttonDelete);
+            // save the viewHolder to be reused later.
+            convertView.setTag(viewHolder);
+        }else {
+            // there is already ViewHolder, reuse it.
+            Log.d(TAG, "getView() convertView");
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
         Typeface typeface = loadTypefaceForItem(item);
-        button.setTypeface(typeface);
-        button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        button.setText(item != null ? item.name : "");
-        button.setChecked(position == selectedPosition);
-        button.setTag(position);
-        button.setOnClickListener(new View.OnClickListener() {
+        viewHolder.button.setTypeface(typeface);
+        viewHolder.button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        viewHolder.button.setText(item != null ? item.name : "");
+        viewHolder.button.setChecked(position == selectedPosition);
+        viewHolder.button.setTag(position);
+        viewHolder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectedPosition = (Integer) view.getTag();
                 notifyDataSetChanged();
             }
         });
-        ImageView buttonDelete = v.findViewById(R.id.buttonDelete);
 
-        buttonDelete.setVisibility(
+
+        viewHolder.buttonDelete.setVisibility(
                 item != null && "file".equals(item.uri.getScheme()) &&
                         !item.uri.toString().contains("android_asset")
                         ? View.VISIBLE : View.GONE);
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
+        viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("DIALOG", "delete clicked");
@@ -86,13 +113,11 @@ class FontAdapter extends ArrayAdapter<FileUri> {
                 remove(item);
                 notifyDataSetChanged();
                 setSelectedUri(selected.uri);
-
             }
-
         });
 
         // click effect
-        buttonDelete.setOnTouchListener(new View.OnTouchListener() {
+        viewHolder.buttonDelete.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -117,7 +142,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
             }
         });
 
-        return v;
+        return convertView;
     }
 
 
@@ -134,8 +159,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
             return null;
         }
 
-        FileUri item = getItem(selectedPosition);
-        return item;
+        return getItem(selectedPosition);
     }
 
     public void setSelectedUri(Uri uri) {
