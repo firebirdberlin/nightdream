@@ -518,6 +518,8 @@ public class AlarmClockView extends View {
 
         void setRadius(int radius) {
             if (radius == this.radius) return;
+            if (radius < 100) radius = 100;
+
             this.radius = radius;
             this.radius2 = (int) (0.93 * radius);
             this.radius3 = (int) (0.86 * radius);
