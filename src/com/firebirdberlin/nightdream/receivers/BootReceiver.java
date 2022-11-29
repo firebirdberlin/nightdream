@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.services.CheckPowerConnectionJob;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
@@ -18,6 +19,8 @@ public class BootReceiver extends BroadcastReceiver {
         Utility.createNotificationChannels(context);
         PowerConnectionReceiver.schedule(context);
         ScheduledAutoStartReceiver.schedule(context);
+        CheckPowerConnectionJob.schedule(context);
+
         Settings settings = new Settings(context);
 
         SqliteIntentService.scheduleAlarm(context);
