@@ -30,21 +30,9 @@ public class ScreenReceiver extends BroadcastReceiver {
     private static final String TAG = "ScreenReceiver";
     private static boolean isScreenUp = false;
     private static boolean deviceIsCovered = false;
-    private static final Handler handler = new Handler();
+    static boolean gravitySensorChecked = false;
+    static boolean proximitySensorChecked = false;
     private static Looper broadcastReceiverThreadLooper = null;
-    private boolean proximitySensorChecked = false;
-    private boolean gravitySensorChecked = false;
-    private Context context = null;
-    private final Runnable checkAndActivateApp = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(checkAndActivateApp);
-            if (Utility.isScreenOn(context)) {
-                return;
-            }
-            conditionallyActivateAlwaysOn(context, false);
-        }
-    };
     private PowerManager.WakeLock wakeLock;
 
     public static ScreenReceiver register(Context ctx) {
@@ -73,13 +61,34 @@ public class ScreenReceiver extends BroadcastReceiver {
         }
     }
 
+    private static void checkSensorDataAndActivate(Context context) {
+        boolean waitingForSensors = getSensorData(context);
+        while (waitingForSensors && (!proximitySensorChecked || !gravitySensorChecked)) {
+            try {
+                Log.d(TAG, "waiting for sensor data (" + proximitySensorChecked + "," + gravitySensorChecked + ")");
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+        Log.d(TAG, "finished waiting for sensor data (" + proximitySensorChecked + "," + gravitySensorChecked + ")");
+        if (Utility.isScreenOn(context)) {
+            return;
+        }
+        conditionallyActivateAlwaysOn(context, false);
+    }
+
     private static void conditionallyActivateAlwaysOn(Context context, boolean turnScreenOn) {
         Settings settings = new Settings(context);
         if (shallActivateStandby(context, settings)) {
+            Log.i(TAG, "Activating standby mode");
             NightDreamActivity.start(context, "start standby mode");
             if (turnScreenOn) {
                 Utility.turnScreenOn(context);
             }
+        } else {
+            Log.i(TAG, "Not activating standby mode");
         }
         settings.deleteNextAlwaysOnTime();
     }
@@ -90,16 +99,22 @@ public class ScreenReceiver extends BroadcastReceiver {
         if (NightModeListener.running) return false;
 
         BatteryStats battery = new BatteryStats(context);
-        if (battery.reference.isCharging && settings.handle_power && settings.isAlwaysOnAllowed()) {
+        if (settings.handle_power && battery.reference.isCharging && settings.isAlwaysOnAllowed()) {
+            Log.i(TAG, "autostart allowed");
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
 
-        if (!battery.reference.isCharging && settings.standbyEnabledWhileDisconnected &&
-                settings.alwaysOnBatteryLevel <= battery.reference.level &&
-                settings.isAlwaysOnAllowed() &&
-                !deviceIsCovered &&
-                !Utility.isInCall(context) &&
-                (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)) {
+        if (settings.standbyEnabledWhileDisconnected
+                && (
+                battery.reference.isCharging
+                        || settings.alwaysOnBatteryLevel <= battery.reference.level
+                )
+                && settings.isAlwaysOnAllowed()
+                && !deviceIsCovered
+                && !Utility.isInCall(context)
+                && (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)
+        ) {
+            Log.i(TAG, "standby allowed");
 
             Calendar now = Calendar.getInstance();
             if (!settings.alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
@@ -118,31 +133,43 @@ public class ScreenReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private void getGravity(final Context context) {
+    private static boolean getSensorData(final Context context) {
+        Log.i(TAG, "getSensorData()");
         gravitySensorChecked = false;
         proximitySensorChecked = false;
+
+        final HandlerThread broadcastReceiverThread = new HandlerThread(TAG);
+        broadcastReceiverThread.start();
+        Looper sensorListenerThreadLooper = broadcastReceiverThread.getLooper();
+        Handler sensorListenerHandler = new Handler(sensorListenerThreadLooper);
         final SensorManager sensorMan = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        if (sensorMan == null) return;
+        if (sensorMan == null) {
+            return false;
+        }
 
         Sensor sensor = sensorMan.getDefaultSensor(Sensor.TYPE_GRAVITY);
         Sensor proximitySensor = sensorMan.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if (sensor == null || proximitySensor == null) return;
+        if (sensor == null || proximitySensor == null) {
+            return false;
+        }
         SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
                 if (sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
                     deviceIsCovered = (sensorEvent.values[0] == 0);
+                    Log.i(TAG, "deviceIsCovered = " + deviceIsCovered);
                     proximitySensorChecked = true;
                 } else if (sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
                     float z = sensorEvent.values[2];
                     isScreenUp = Math.abs(z) > 9.f;
+                    Log.i(TAG, "isScreenUp = " + isScreenUp);
                     gravitySensorChecked = true;
                 }
                 if (gravitySensorChecked && proximitySensorChecked) {
-                    handler.removeCallbacks(checkAndActivateApp);
-                    long delay = (Utility.isScreenLocked(context) ? 1000 : 5000);
-                    handler.postDelayed(checkAndActivateApp, delay);
                     sensorMan.unregisterListener(this);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        broadcastReceiverThread.quitSafely();
+                    }
                 }
             }
 
@@ -152,20 +179,20 @@ public class ScreenReceiver extends BroadcastReceiver {
             }
         };
         try {
-            sensorMan.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_GAME);
-            sensorMan.registerListener(eventListener, proximitySensor, SensorManager.SENSOR_DELAY_GAME);
+            sensorMan.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_GAME, sensorListenerHandler);
+            sensorMan.registerListener(eventListener, proximitySensor, SensorManager.SENSOR_DELAY_GAME, sensorListenerHandler);
         } catch (IllegalStateException ignored) {
+            return false;
         }
+        return true;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive");
-        handler.removeCallbacks(checkAndActivateApp);
+        String action = intent.getAction();
+        Log.d(TAG, "onReceive " + ((action != null) ? action : "null"));
         Settings settings = new Settings(context);
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-            this.context = context;
-
             isScreenUp = false;
             deviceIsCovered = false;
             if (wakeLock != null) {
@@ -178,9 +205,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                     "nightdream:SCREEN_OFF_WAKE_LOCK"
             );
             wakeLock.acquire(20000);
-            getGravity(context);
-            long delay = (Utility.isScreenLocked(context) ? 6000 : 6000);
-            handler.postDelayed(checkAndActivateApp, delay);
+            checkSensorDataAndActivate(context);
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             deviceIsCovered = false;
             isScreenUp = false;
