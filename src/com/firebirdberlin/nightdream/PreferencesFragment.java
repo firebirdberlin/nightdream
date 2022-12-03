@@ -38,7 +38,6 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
-import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
@@ -987,7 +986,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
         if (!isAdded()) return;
-        boolean on = isAutostartActivated(sharedPreferences) || ClockWidgetProvider.hasWidgets(getContext());
+        boolean on = isAutostartActivated(sharedPreferences);
         int newState = on ?
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;

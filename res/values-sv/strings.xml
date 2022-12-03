@@ -86,7 +86,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="seconds_15">15:e sekund</string>
     <string name="backgroundServiceDialogTitle">Avsluta bakgrundstjänst</string>
     <string name="backgroundServiceDialogMessage">Avslutad bakgrundstjänst deaktiverar också funktion för autostart, standby samt batterivisning. Widget kommer inte att uppdateras efter detta. Fortsätt?</string>
-    <string name="backgroundServiceDialogMessageWidget">Kan ej avsluta bakgrundstjänst medan en Widget är aktiv. Vänligen stäng Widget och försök igen.</string>
     <string name="backgroundServiceNotificationText">Bakgrundstjänst är aktiv.</string>
     <string name="backgroundServiceNotificationTextLocation">Platsinformation uppdateras.</string>
     <string name="backgroundServiceNotificationTextNightMode">Nattlägestjänst är aktiv.</string>
