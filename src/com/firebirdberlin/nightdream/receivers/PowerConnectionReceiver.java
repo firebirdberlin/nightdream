@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,6 +17,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
+import com.firebirdberlin.nightdream.NightModeListener;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.BatteryValue;
@@ -32,21 +32,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     private static String TAG = "NightDream.PowerConnectionReceiver";
     private static int PENDING_INTENT_START_APP = 0;
 
-    public static PowerConnectionReceiver register(Context ctx) {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_POWER_CONNECTED);
-        filter.addAction(Intent.ACTION_MY_PACKAGE_REPLACED);
-        PowerConnectionReceiver receiver = new PowerConnectionReceiver();
-        ctx.registerReceiver(receiver, filter);
-        return receiver;
-    }
-
-    public static void unregister(Context ctx, BroadcastReceiver receiver) {
-        if (receiver != null) {
-            ctx.unregisterReceiver(receiver);
-        }
-    }
-
     public static boolean shallAutostart(@NonNull Context context, @NonNull Settings settings) {
         if (context == null || settings == null || !settings.handle_power) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
@@ -55,7 +40,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         Calendar now = new GregorianCalendar();
         Log.d(TAG, "autostart ?");
         if (!settings.autostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
-        Log.d(TAG, "autostart : YES");
         Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
         Calendar end = new SimpleTime(settings.autostartTimeRangeEndInMinutes).getCalendar();
         boolean shall_auto_start = true;
@@ -70,12 +54,15 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         BatteryValue batteryValue = battery.reference;
         DockState dockState = battery.getDockState();
 
-        return (settings.handle_power_ac && batteryValue.isChargingAC) ||
+        boolean result = (settings.handle_power_ac && batteryValue.isChargingAC) ||
                 (settings.handle_power_usb && batteryValue.isChargingUSB) ||
                 (settings.handle_power_wireless && batteryValue.isChargingWireless) ||
                 (settings.handle_power_desk && dockState.isDockedDesk) ||
                 (settings.handle_power_car && dockState.isDockedCar);
-
+        if (result) {
+            Log.d(TAG, "autostart : YES");
+        }
+        return result;
     }
 
     static public void schedule(Context context) {

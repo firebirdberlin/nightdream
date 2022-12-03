@@ -56,6 +56,7 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.CheckPowerConnectionJob;
 import com.firebirdberlin.nightdream.services.DownloadWeatherModel;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
@@ -355,18 +356,15 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
 
         Window window = getWindow();
-        if (Build.VERSION.SDK_INT >= 27) {
-            window.addFlags(
-                    WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-            );
+        if (Build.VERSION.SDK_INT > 27) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
         } else {
             window.addFlags(
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                            WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                            | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                            | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
             );
         }
-
         nightDreamUI = new NightDreamUI(this, window);
         AudioManage = new mAudioManager(this);
         mySettings = new Settings(this);
@@ -443,48 +441,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG,"onWindowFocusChanged()");
         super.onWindowFocusChanged(hasFocus);
         if(hasFocus){
-            nightDreamUI.onResume();
-            Intent intent = getIntent();
-
-            String action = intent.getAction();
-            if (Config.ACTION_STOP_BACKGROUND_SERVICE.equals(action)) {
-                showStopBackgroundServicesDialog();
-                intent.setAction(null);
-            } else if ("start standby mode".equals(action)) {
-                if (mySettings.alwaysOnStartWithLockedUI) {
-                    nightDreamUI.setLocked(true);
-                }
-                setMode(mode);
-            } else if ("start night mode".equals(action)) {
-                last_ambient = mySettings.minIlluminance;
-                setMode(0);
-                if (lightSensor == null) {
-                    handler.postDelayed(setScreenOff, 20000);
-                }
-            } else {
-                setMode(mode);
-            }
-
-            if (AlarmHandlerService.alarmIsRunning()) {
-                nightDreamUI.showAlarmClock();
-                // TODO optionally enable the Flashlight
-            }
-
-            setupNightMode();
-            setupFlashlight();
-            setupRadioStreamUI();
-            setupAlarmClockIcon();
-
-            BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
-            if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
-                activePanel = BottomPanelLayout.Panel.WEB_RADIO;
-                // clear the action so that it won't be re-delivered.
-                intent.setAction("");
-            }
-
-            bottomPanelLayout.setRssEnabled(mySettings.rssEnabled);
-            bottomPanelLayout.setActivePanel(activePanel);
-            triggerAlwaysOnTimeout();
             showToastIfNotCharging();
 
             final Context context = this;
@@ -528,6 +484,7 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     public void onResume() {
         super.onResume();
+        CheckPowerConnectionJob.cancel(context);
         Log.i(TAG, "onResume()");
         prevConfig = new Configuration(getResources().getConfiguration());
 
@@ -535,6 +492,51 @@ public class NightDreamActivity extends BillingHelperActivity
         resumeTime = System.currentTimeMillis();
         screenWasOn = false;
         setKeepScreenOn(true);
+
+        nightDreamUI.onResume();
+        Intent intent = getIntent();
+
+        String action = intent.getAction();
+        if (Config.ACTION_STOP_BACKGROUND_SERVICE.equals(action)) {
+            showStopBackgroundServicesDialog();
+            intent.setAction(null);
+        } else if ("start standby mode".equals(action)) {
+            if (mySettings.alwaysOnStartWithLockedUI) {
+                nightDreamUI.setLocked(true);
+            }
+            setMode(mode);
+        } else if ("start night mode".equals(action)) {
+            last_ambient = mySettings.minIlluminance;
+            setMode(0);
+            if (lightSensor == null) {
+                handler.postDelayed(setScreenOff, 20000);
+            }
+            Utility.turnScreenOn(context);
+        } else {
+            setMode(mode);
+        }
+
+        if (AlarmHandlerService.alarmIsRunning()) {
+            nightDreamUI.showAlarmClock();
+            // TODO optionally enable the Flashlight
+        }
+
+        setupNightMode();
+        setupFlashlight();
+        setupRadioStreamUI();
+        setupAlarmClockIcon();
+
+        BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
+        if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
+            activePanel = BottomPanelLayout.Panel.WEB_RADIO;
+            // clear the action so that it won't be re-delivered.
+            intent.setAction("");
+        }
+
+        bottomPanelLayout.setRssEnabled(mySettings.rssEnabled);
+        bottomPanelLayout.setActivePanel(activePanel);
+        triggerAlwaysOnTimeout();
+
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
         if (mySettings.activateDoNotDisturb) {
@@ -624,6 +626,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         PowerConnectionReceiver.schedule(this);
         ScheduledAutoStartReceiver.schedule(this);
+        CheckPowerConnectionJob.schedule(context);
         cancelShutdown();
         NightModeReceiver.cancel(this);
         unregister(nightModeReceiver);
@@ -637,7 +640,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
         if (mySettings.allow_screen_off && mode == MODE_NIGHT
                 && screenWasOn && !Utility.isScreenOn(this)) { // screen off in night mode
-            startBackgroundListener();
+            startNightModeListener();
         } else {
             nightDreamUI.restoreRingerMode();
         }
@@ -885,16 +888,15 @@ public class NightDreamActivity extends BillingHelperActivity
         return new Intent(this, NightModeListener.class);
     }
 
-    private void startBackgroundListener() {
-        Log.d(TAG, "startBackgroundListener");
+    private void startNightModeListener() {
+        Log.d(TAG, "startNightModeListener");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
-                Log.d(TAG, "try binding startBackgroundListener");
-                context.bindService(getForegroundIntent(), connection,
-                        Context.BIND_AUTO_CREATE);
+                Log.d(TAG, "try binding NightModeListener");
+                context.bindService(getForegroundIntent(), connection, Context.BIND_AUTO_CREATE);
             } catch (RuntimeException ignored) {
-                Log.d(TAG, "error binding startBackgroundListener");
+                Log.d(TAG, "error binding NightModeListener");
                 Intent i = new Intent(this, NightModeListener.class);
                 Utility.startForegroundService(this, i);
             }

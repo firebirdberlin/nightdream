@@ -16,7 +16,6 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
-import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.receivers.StopServiceReceiver;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -27,7 +26,6 @@ public class ScreenWatcherService extends Service {
 
     public static boolean isRunning = false;
     private ScreenReceiver mReceiver;
-    private PowerConnectionReceiver powerConnectionReceiver;
     private ChargingStateChangeReceiver chargingStateChangeReceiver;
 
     @Override
@@ -45,7 +43,6 @@ public class ScreenWatcherService extends Service {
         ChargingStateChangeReceiver.getAndSaveBatteryReference(this);
 
         mReceiver = ScreenReceiver.register(this);
-        powerConnectionReceiver = PowerConnectionReceiver.register(this);
         chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
     }
 
@@ -129,7 +126,6 @@ public class ScreenWatcherService extends Service {
         Log.i(TAG, "ScreenWatcherService destroyed.");
         isRunning = false;
         ScreenReceiver.unregister(this, mReceiver);
-        PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
         ChargingStateChangeReceiver.unregister(this, chargingStateChangeReceiver);
         removeBatteryReference();
     }
