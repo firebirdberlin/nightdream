@@ -77,7 +77,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="seconds_15">15 сек.</string>
     <string name="backgroundServiceDialogTitle">Прекращение работы в фоне</string>
     <string name="backgroundServiceDialogMessage">Прекращение работы в фоне  приведет к отключению автозапуска и режима ожидания. Продолжить?</string>
-    <string name="backgroundServiceDialogMessageWidget">Остановить фоновую службу невозможно, если виджет активен. Пожалуйста, удалите виджет и попробуйте снова.</string>
     <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
     <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
     <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
@@ -231,7 +230,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Предпочтения</string>
     <string name="prev">Предыдущее</string>
     <string name="preview">Предосмотр</string>
-<string name="product_description_weather">Обновление включает:\n\n- строка состояния погоды отображается под часами;\n- прогноз погоды на 5 дней;\n- больше циферблатов;</string>
+<string name="product_description_weather">Обновление включает:
+\n
+\n- строка состояния погоды отображается под часами;
+\n- прогноз погоды на 5 дней;
+\n- больше циферблатов;</string>
     <string name="product_name_actions">Всегда Включено</string>
     <string name="product_name_donation">Пожертвование</string>
     <string name="product_name_pro">Полная версия</string>

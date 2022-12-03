@@ -52,8 +52,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_end">Endzeit</string>
     <string name="autostart_timerange_label_start">Startzeit</string>
     <string name="background">Hintergrund</string>
-    <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart, Standby-Modus und die Vorhersage der Akkuladezeit ausgeschaltet. Widgets können nicht mehr aktualisiert werden. Fortfahren ?</string>
-    <string name="backgroundServiceDialogMessageWidget">Der Hintergrundservice kann nicht beendet werden solange ein Widget aktiviert ist. Bitte entfernden Sie das Widget und versuchen Sie es noch einmal.</string>
+    <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart, Standby-Modus und die Vorhersage der Akkuladezeit ausgeschaltet. Fortfahren?</string>
     <string name="backgroundServiceDialogTitle">Hintergrundservice beenden</string>
     <string name="backgroundServiceNotificationText">Der Hintergrundservice ist aktiv.</string>
     <string name="backgroundServiceNotificationTextLocation">Der Standort wird bestimmt.</string>

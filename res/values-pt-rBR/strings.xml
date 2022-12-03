@@ -58,7 +58,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_slideshow">apresentação</string>
     <string name="backgroundServiceDialogTitle">Parar atividade em segundo plano</string>
     <string name="backgroundServiceDialogMessage">Parar atividade em segundo plano irá desabilitar o início automático e o modo em espera, bem como a previsão de bateria. Continuar mesmo assim?</string>
-    <string name="backgroundServiceDialogMessageWidget">Não é possível parar o serviço em segundo plano enquanto um widget está ativo. Remova os widgets e tente novamente.</string>
     <string name="backgroundServiceNotificationText">Atividade em segundo plano ativa</string>
     <string name="backgroundServiceNotificationTextLocation">Atualização de localização em andamento</string>
     <string name="backgroundServiceNotificationTextNightMode">Modo noturno ativo</string>

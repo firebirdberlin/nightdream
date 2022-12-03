@@ -86,7 +86,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="seconds_15">15 segundos</string>
     <string name="backgroundServiceDialogTitle">Detener servicio en segundo plano</string>
     <string name="backgroundServiceDialogMessage">La detención del servicio en segundo plano deshabilitará el inicio automático y el modo de espera, así como la predicción de la batería. ¿Proceder?</string>
-    <string name="backgroundServiceDialogMessageWidget">No es posible detener el servicio en segundo plano mientras está activo el widget. Retire los widgets y pruebe de nuevo.</string>
     <string name="backgroundServiceNotificationText">El servicio se está ejecutando en segundo plano.</string>
     <string name="backgroundServiceNotificationTextLocation">Actualizando ubicación.</string>
     <string name="backgroundServiceNotificationTextNightMode">Modo noche activo.</string>
