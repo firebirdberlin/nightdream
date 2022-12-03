@@ -355,10 +355,8 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
 
         Window window = getWindow();
-        if (Build.VERSION.SDK_INT >= 27) {
-            window.addFlags(
-                    WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-            );
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
         } else {
             window.addFlags(
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
