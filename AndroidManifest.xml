@@ -277,10 +277,12 @@
             android:name=".widget.ClockWidgetProvider"
             android:enabled="@bool/use_widget"
             android:icon="@drawable/widget_preview"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
             </intent-filter>
 
             <meta-data

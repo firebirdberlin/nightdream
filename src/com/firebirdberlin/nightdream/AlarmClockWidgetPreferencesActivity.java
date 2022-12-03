@@ -14,7 +14,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import com.firebirdberlin.nightdream.widget.AlarmClockWidgetProvider;
-import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.rarepebble.colorpicker.ColorPreference;
 
 import java.util.Locale;

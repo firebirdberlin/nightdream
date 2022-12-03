@@ -86,7 +86,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="seconds_15">15 seconden</string>
     <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
     <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterijvoorspelling. Doorgaan?</string>
-    <string name="backgroundServiceDialogMessageWidget">Achtergrondservice kan niet worden gestopt als een widget actief is. Verwijder de widget en probeer opnieuw.</string>
     <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>

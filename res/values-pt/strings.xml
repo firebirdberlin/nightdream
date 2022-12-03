@@ -86,7 +86,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="seconds_15">15 segundos</string>
     <string name="backgroundServiceDialogTitle">Parar serviço em segundo plano</string>
     <string name="backgroundServiceDialogMessage">Para o serviço em segundo plano irá desativar o arranque automático e o modo de espera, bem como a percentagem da bateria. Widgets não vão ser atualizados novamente. Continuar?</string>
-    <string name="backgroundServiceDialogMessageWidget">Não é possível parar o serviço em segundo plano enquanto está um Widget ativado. Por favor remova o Widget e tente novamente.</string>
     <string name="backgroundServiceNotificationText">Serviço em segundo plano está em execução.</string>
     <string name="backgroundServiceNotificationTextLocation">A atualização da localização está em andamento.</string>
     <string name="backgroundServiceNotificationTextNightMode">O serviço de modo noturno está em execução.</string>

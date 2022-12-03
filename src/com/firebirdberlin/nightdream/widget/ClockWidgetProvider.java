@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.widget;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -24,7 +25,9 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-import com.firebirdberlin.nightdream.Config;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+
 import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -36,6 +39,7 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -44,6 +48,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "WidgetProvider";
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
     private static String nextAlarmString ="";
+    private AlarmManager mAlarmManager;
+    private static final int RC_UPDATE = 0x13;
 
     private static ViewInfo prepareSourceView(Context context, WidgetDimension dimension, int appWidgetId) {
 
@@ -243,7 +249,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         // called when first widget instance is put to home screen
         super.onEnabled(context);
         Log.i(TAG, "onEnabled");
-        ScreenWatcherService.conditionallyStart(context);
+        scheduleUpdateClock(context, AppWidgetManager.getInstance(context).getAppWidgetIds(getComponentName(context)));
     }
 
     @Override
@@ -251,13 +257,26 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         // when last instance was removed
         super.onDisabled(context);
         Log.i(TAG, "onDisabled");
-        ScreenWatcherService.conditionallyStart(context);
+        PendingIntent pendingIntent = getUpdateIntent(context, null);
+        mAlarmManager.cancel(pendingIntent);
+    }
+
+    PendingIntent getUpdateIntent(Context context, int[] widgetIds) {
+        Intent intent = new Intent(context, ClockWidgetProvider.class).setAction(
+                AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        );
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
+        return Utility.getImmutableBroadcast(context, RC_UPDATE, intent);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.d(TAG, "onUpdate");
-        ScreenWatcherService.conditionallyStart(context);
+        Log.d(TAG, "onUpdate()");
+
+        if (appWidgetIds == null) {
+            appWidgetIds = appWidgetManager.getAppWidgetIds(getComponentName(context));
+        }
+        scheduleUpdateClock(context, appWidgetIds);
 
         for (int widgetId : appWidgetIds) {
             Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
@@ -274,6 +293,26 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         final PrepareBitmapTask task = new PrepareBitmapTask(appWidgetManager, appWidgetId, dimension);
         task.execute(context);
+    }
+
+    private void scheduleUpdateClock(Context context, int[] widgetIds) {
+        Log.d(TAG, "scheduleUpdateClock()");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.add(Calendar.MINUTE, 1);
+
+        long millis = calendar.getTimeInMillis();
+        PendingIntent pendingIntent = getUpdateIntent(context, widgetIds);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mAlarmManager.setExact(AlarmManager.RTC, millis, pendingIntent);
+        } else {
+            mAlarmManager.set(AlarmManager.RTC, millis, pendingIntent);
+        }
+    }
+
+    private static ComponentName getComponentName(Context context) {
+        return new ComponentName(context.getPackageName(), ClockWidgetProvider.class.getName());
     }
 
     @Override
@@ -425,4 +464,16 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             this.maxHeight = maxHeight;
         }
     }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d(TAG,"onReceive(): "+intent.getAction());
+
+        mAlarmManager = ContextCompat.getSystemService(context, AlarmManager.class);
+        if (Intent.ACTION_TIME_CHANGED.equals(intent.getAction()))
+            onUpdate(context, AppWidgetManager.getInstance(context), null);
+        else
+            super.onReceive(context, intent);
+    }
+
 }

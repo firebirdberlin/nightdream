@@ -61,7 +61,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_slideshow">Pokaz slajdów</string>
     <string name="backgroundServiceDialogTitle">Zatrzymaj usługę w tle</string>
     <string name="backgroundServiceDialogMessage">Zatrzymanie usługi w tle wyłączy autouruchamianie oraz tryb uśpienia jak i wykrywanie ładowania baterii. Kontynuować?</string>
-    <string name="backgroundServiceDialogMessageWidget">Nie można zatrzymać usługi w tle, jeśli aktywny jest Widget. Proszę usuń Widgety i spróbuj ponownie.</string>
     <string name="backgroundServiceNotificationText">Usługa działa w tle</string>
     <string name="backgroundServiceNotificationTextLocation">Aktualizacja lokalizacji w trakcie</string>
     <string name="backgroundServiceNotificationTextNightMode">Tryb nocny jest aktywny</string>
