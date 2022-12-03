@@ -45,9 +45,6 @@ public class ScreenReceiver extends BroadcastReceiver {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_TIME_TICK);
-        filter.addAction(Intent.ACTION_TIME_CHANGED);
-        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
         ScreenReceiver receiver = new ScreenReceiver();
 
         ctx.registerReceiver(receiver, filter, null, broadcastReceiverHandler);
@@ -210,16 +207,6 @@ public class ScreenReceiver extends BroadcastReceiver {
             deviceIsCovered = false;
             isScreenUp = false;
             settings.deleteNextAlwaysOnTime();
-        }
-
-        switch (intent.getAction()) {
-            case Intent.ACTION_SCREEN_ON:
-            case Intent.ACTION_TIMEZONE_CHANGED:
-            case Intent.ACTION_TIME_CHANGED:
-            case Intent.ACTION_TIME_TICK:
-                ClockWidgetProvider.updateAllWidgets(context);
-                ScreenWatcherService.updateNotification(context, settings);
-                break;
         }
     }
 
