@@ -261,6 +261,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     static public void start(Context context, String action) {
         // todo do not start with an active call
+        Utility.turnScreenOn(context);
         Intent intent = getDefaultIntent(context);
         intent.setAction(action);
         context.startActivity(intent);
