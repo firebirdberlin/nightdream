@@ -86,7 +86,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="seconds_15">15 secondes</string>
     <string name="backgroundServiceDialogTitle">Arrêter le service d\'arrière-plan</string>
     <string name="backgroundServiceDialogMessage">L\'arrêt du service d\'arrière-plan désactive les modes de démarrage automatique et de veille, ainsi que la prédiction de la batterie. Procéder?</string>
-    <string name="backgroundServiceDialogMessageWidget">Impossible d\'arrêter le service d\'arrière-plan lorsqu\'un widget est actif. Veuillez supprimer les widgets et réessayer.</string>
     <string name="backgroundServiceNotificationText">Service d\'arrière plan en cours</string>
     <string name="backgroundServiceNotificationTextLocation">Le service de localisation est en cours</string>
     <string name="backgroundServiceNotificationTextNightMode">Mode nuit activé</string>

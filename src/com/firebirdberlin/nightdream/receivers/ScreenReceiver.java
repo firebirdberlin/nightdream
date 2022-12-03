@@ -21,8 +21,6 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
-import com.firebirdberlin.nightdream.services.ScreenWatcherService;
-import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 import java.util.Calendar;
 

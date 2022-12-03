@@ -59,7 +59,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_slideshow">Slide show</string>
     <string name="backgroundServiceDialogTitle">Stop baggrundstjeneste</string>
     <string name="backgroundServiceDialogMessage"> Hvis du stopper baggrundstjenesten, deaktiveres autostart og standbytilstand samt batteri-forudsigelse. Widgets kan ikke opdateres mere. Fortsæt?</string>
-    <string name="backgroundServiceDialogMessageWidget">Kan ikke stoppe baggrundstjenesten, mens en widget er aktiv. Fjern widgets og prøv igen</string>
     <string name="backgroundServiceNotificationText">Baggrundstjeneste kører</string>
     <string name="backgroundServiceNotificationTextLocation">Lokations opdatering igang</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service kører</string>

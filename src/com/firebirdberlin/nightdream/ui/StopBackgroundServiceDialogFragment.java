@@ -11,36 +11,25 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
-import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
 public class StopBackgroundServiceDialogFragment extends AppCompatDialogFragment{
-    private boolean hasWidgets = false;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //return super.onCreateDialog(savedInstanceState);
 
         String message = getString(R.string.backgroundServiceDialogMessage);
-        hasWidgets = (ClockWidgetProvider.hasWidgets(getActivity().getApplicationContext()));
-        if (hasWidgets) {
-            message = getString(R.string.backgroundServiceDialogMessageWidget);
-        }
-
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
         builder.setTitle(R.string.backgroundServiceDialogTitle)
                 .setMessage(message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Settings settings = new Settings(getActivity());
-                        settings.disableSettingsNeedingBackgroundService();
-                        ScreenWatcherService.stop(getActivity());
-                    }
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    Settings settings = new Settings(getActivity());
+                    settings.disableSettingsNeedingBackgroundService();
+                    ScreenWatcherService.stop(getActivity());
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
+                    // User cancelled the dialog
                 });
         return builder.create();
     }
@@ -48,7 +37,7 @@ public class StopBackgroundServiceDialogFragment extends AppCompatDialogFragment
     @Override
     public void onStart() {
         super.onStart();
-        setOkButtonEnabled(!hasWidgets);
+        setOkButtonEnabled(true);
     }
 
     private void setOkButtonEnabled(boolean enabled) {

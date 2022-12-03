@@ -54,7 +54,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">Velg bilde</string>
     <string name="backgroundServiceDialogTitle">Stopp bakgrunnstjeneste</string>
     <string name="backgroundServiceDialogMessage">Stopping av bakgrunnstjenesten vil stoppe autostart/standby-modus, samt batteriprediksjon. Widgets vil heller ikke bli oppdatert. Fortsette?</string>
-    <string name="backgroundServiceDialogMessageWidget">Kan ikke oppdatere bakgrunnstjeneste når widgets er aktive. Fjern widget\'en og prøv på nytt.</string>
     <string name="backgroundServiceNotificationText">Bakgrunnstjeneste kjører.</string>
     <string name="backgroundServiceNotificationTextLocation">Plassering under oppdatering.</string>
     <string name="backgroundServiceNotificationTextNightMode">Nattmodustjeneste kjører.</string>
