@@ -249,12 +249,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         // called when first widget instance is put to home screen
         super.onEnabled(context);
         Log.i(TAG, "onEnabled");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ScreenWatcherService.stop(context);
-            scheduleUpdateClock(context, AppWidgetManager.getInstance(context).getAppWidgetIds(getComponentName(context)));
-        } else {
-            ScreenWatcherService.conditionallyStart(context);
-        }
+        scheduleUpdateClock(context, AppWidgetManager.getInstance(context).getAppWidgetIds(getComponentName(context)));
     }
 
     @Override
@@ -262,29 +257,26 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         // when last instance was removed
         super.onDisabled(context);
         Log.i(TAG, "onDisabled");
+        PendingIntent pendingIntent = getUpdateIntent(context, null);
+        mAlarmManager.cancel(pendingIntent);
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent(context, ClockWidgetProvider.class)
-                    .setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            mAlarmManager.cancel(PendingIntent.getBroadcast(context, RC_UPDATE,intent, PendingIntent.FLAG_IMMUTABLE));
-        }else {
-            ScreenWatcherService.conditionallyStart(context);
-        }
+    PendingIntent getUpdateIntent(Context context, int[] widgetIds) {
+        Intent intent = new Intent(context, ClockWidgetProvider.class).setAction(
+                AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        );
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
+        return Utility.getImmutableBroadcast(context, RC_UPDATE, intent);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate()");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ScreenWatcherService.stop(context);
-            if (appWidgetIds == null) {
-                appWidgetIds = appWidgetManager.getAppWidgetIds(getComponentName(context));
-            }
-            scheduleUpdateClock(context, appWidgetIds);
-        } else {
-            ScreenWatcherService.conditionallyStart(context);
+        if (appWidgetIds == null) {
+            appWidgetIds = appWidgetManager.getAppWidgetIds(getComponentName(context));
         }
+        scheduleUpdateClock(context, appWidgetIds);
 
         for (int widgetId : appWidgetIds) {
             Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
@@ -303,7 +295,6 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         task.execute(context);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void scheduleUpdateClock(Context context, int[] widgetIds) {
         Log.d(TAG, "scheduleUpdateClock()");
 
@@ -311,11 +302,13 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         calendar.set(Calendar.SECOND, 0);
         calendar.add(Calendar.MINUTE, 1);
 
-        Intent intent = new Intent(context, ClockWidgetProvider.class)
-                .setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
-
-        mAlarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), PendingIntent.getBroadcast(context, RC_UPDATE, intent, PendingIntent.FLAG_IMMUTABLE));
+        long millis = calendar.getTimeInMillis();
+        PendingIntent pendingIntent = getUpdateIntent(context, widgetIds);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mAlarmManager.setExact(AlarmManager.RTC, millis, pendingIntent);
+        } else {
+            mAlarmManager.set(AlarmManager.RTC, millis, pendingIntent);
+        }
     }
 
     private static ComponentName getComponentName(Context context) {
