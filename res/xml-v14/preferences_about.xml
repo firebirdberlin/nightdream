@@ -305,6 +305,17 @@ vi - Phong Nguyen"/>
                 />
         </Preference>
 
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_color_picker"
+            app:summary="by martin-stone"
+            app:title="HSV-Alpha Color Picker">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/martin-stone/hsv-alpha-color-picker-android"
+                />
+        </Preference>
+
     </PreferenceCategory>
 
     <PreferenceCategory
