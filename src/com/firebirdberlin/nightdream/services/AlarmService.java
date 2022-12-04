@@ -134,8 +134,6 @@ public class AlarmService extends Service
         handler.removeCallbacks(fadeIn);
         AlarmStop();
         restoreVolume();
-        Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         stopForeground(false); // bool: true = remove Notification
     }
 
