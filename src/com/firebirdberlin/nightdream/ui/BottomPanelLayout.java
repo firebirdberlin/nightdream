@@ -216,7 +216,7 @@ public class BottomPanelLayout extends FrameLayout {
         Log.d(TAG, "setup()");
         if (AlarmHandlerService.alarmIsRunning()) {
             showAlarmView();
-        } else if (activePanel == Panel.WEB_RADIO) {
+        } else if (RadioStreamService.isRunning || activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
         } else if (activePanel == Panel.TICKER) {
             showTickerView();
