@@ -12,7 +12,6 @@ public class Config {
     public final static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
     public final static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
     public final static String ACTION_ALARM_SET = "com.firebirdberlin.nightdream.ALARM_SET";
-    public final static String ACTION_ALARM_STOPPED = "com.firebirdberlin.nightdream.ALARM_STOPPED";
     public final static String ACTION_ALARM_DELETED = "com.firebirdberlin.nightdream.ALARM_DELETED";
     public final static String ACTION_SWITCH_NIGHT_MODE = "com.firebirdberlin.nightdream.ACTION_SWITCH_NIGHT_MODE";
     public final static int NOTIFICATION_ID_DISMISS_ALARMS = 1338;

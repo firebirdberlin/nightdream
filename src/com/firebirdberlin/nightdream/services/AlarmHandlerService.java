@@ -129,9 +129,6 @@ public class AlarmHandlerService extends BroadcastReceiver {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
-
-            Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         } else {
             Intent intent = new Intent(Config.ACTION_ALARM_DELETED);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
