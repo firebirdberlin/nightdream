@@ -261,6 +261,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     static public void start(Context context, String action) {
         // todo do not start with an active call
+        Utility.turnScreenOn(context);
         Intent intent = getDefaultIntent(context);
         intent.setAction(action);
         context.startActivity(intent);
@@ -463,25 +464,11 @@ public class NightDreamActivity extends BillingHelperActivity
                 setMode(mode);
             }
 
-            if (AlarmHandlerService.alarmIsRunning()) {
-                nightDreamUI.showAlarmClock();
-                // TODO optionally enable the Flashlight
-            }
-
             setupNightMode();
             setupFlashlight();
             setupRadioStreamUI();
             setupAlarmClockIcon();
 
-            BottomPanelLayout.Panel activePanel = BottomPanelLayout.Panel.ALARM_CLOCK;
-            if (intent.getAction() != null && Config.ACTION_SHOW_RADIO_PANEL.equals(intent.getAction())) {
-                activePanel = BottomPanelLayout.Panel.WEB_RADIO;
-                // clear the action so that it won't be re-delivered.
-                intent.setAction("");
-            }
-
-            bottomPanelLayout.setRssEnabled(mySettings.rssEnabled);
-            bottomPanelLayout.setActivePanel(activePanel);
             triggerAlwaysOnTimeout();
             showToastIfNotCharging();
 
@@ -547,6 +534,11 @@ public class NightDreamActivity extends BillingHelperActivity
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
         nReceiver.setColor((mode == MODE_NIGHT) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
+
+        if (AlarmHandlerService.alarmIsRunning()) {
+            nightDreamUI.showAlarmClock();
+            // TODO optionally enable the Flashlight
+        }
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 

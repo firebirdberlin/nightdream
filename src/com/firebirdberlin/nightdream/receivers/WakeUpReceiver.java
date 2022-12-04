@@ -156,7 +156,6 @@ public class WakeUpReceiver extends BroadcastReceiver {
         AlarmHandlerService.start(context);
 
         buildNotification(context);
-        NightDreamActivity.start(context);
     }
 
     private void deleteCurrentlyActiveAlarm(Context context, Intent intent) {

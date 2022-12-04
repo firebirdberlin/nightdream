@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -175,6 +176,7 @@ public class AlarmService extends Service
         Bundle extras = intent.getExtras();
         if (extras != null) {
             if (intent.hasExtra("start alarm")) {
+                isRunning = true;
                 settings = new Settings(this);
                 alarmTime = new SimpleTime(intent.getExtras());
                 setVolume(settings.alarmVolume);
@@ -185,6 +187,7 @@ public class AlarmService extends Service
 
                 AlarmPlay();
                 setTimerForFadeOut();
+                NightDreamActivity.start(this);
             }
         }
 
@@ -258,7 +261,6 @@ public class AlarmService extends Service
     public void AlarmPlay() {
         AlarmStop();
         Log.i(TAG, "AlarmPlay()");
-        isRunning = true;
         startTime = System.currentTimeMillis();
         mMediaPlayer = new MediaPlayer();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
