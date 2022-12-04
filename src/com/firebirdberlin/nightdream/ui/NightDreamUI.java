@@ -1096,10 +1096,10 @@ public class NightDreamUI {
     private void setupAlarmClock() {
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
+        bottomPanelLayout.setRssEnabled(settings.rssEnabled);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
         bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
         bottomPanelLayout.setup();
-        bottomPanelLayout.show();
     }
 
     public void reconfigure() {

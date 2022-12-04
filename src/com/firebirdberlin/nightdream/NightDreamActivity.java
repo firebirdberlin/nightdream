@@ -464,11 +464,6 @@ public class NightDreamActivity extends BillingHelperActivity
                 setMode(mode);
             }
 
-            if (AlarmHandlerService.alarmIsRunning()) {
-                nightDreamUI.showAlarmClock();
-                // TODO optionally enable the Flashlight
-            }
-
             setupNightMode();
             setupFlashlight();
             setupRadioStreamUI();
@@ -481,7 +476,6 @@ public class NightDreamActivity extends BillingHelperActivity
                 intent.setAction("");
             }
 
-            bottomPanelLayout.setRssEnabled(mySettings.rssEnabled);
             bottomPanelLayout.setActivePanel(activePanel);
             triggerAlwaysOnTimeout();
             showToastIfNotCharging();
@@ -548,6 +542,11 @@ public class NightDreamActivity extends BillingHelperActivity
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
         nReceiver.setColor((mode == MODE_NIGHT) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
+
+        if (AlarmHandlerService.alarmIsRunning()) {
+            nightDreamUI.showAlarmClock();
+            // TODO optionally enable the Flashlight
+        }
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
