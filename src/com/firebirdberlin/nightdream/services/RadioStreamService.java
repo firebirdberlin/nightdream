@@ -319,6 +319,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         checkStreamAndStart(radioStationIndex);
                         // stop the alarm automatically after playing for two hours
                         handler.postDelayed(timeout, 60000 * 120);
+                        NightDreamActivity.start(this);
                     }
                     break;
                 case ACTION_START_STREAM:
@@ -752,8 +753,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
 
         Intent notificationIntent = new Intent(this, NightDreamActivity.class);
-        notificationIntent.setAction(Config.ACTION_SHOW_RADIO_PANEL);
-
         PendingIntent contentIntent = Utility.getImmutableActivity(this, 0, notificationIntent);
 
         if (mediaSession == null) {
