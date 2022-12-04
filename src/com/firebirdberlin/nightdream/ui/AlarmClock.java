@@ -174,7 +174,6 @@ public class AlarmClock extends RelativeLayout {
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_ALARM_SET);
-        filter.addAction(Config.ACTION_ALARM_STOPPED);
         filter.addAction(Config.ACTION_ALARM_DELETED);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, filter);
         return receiver;
@@ -246,7 +245,6 @@ public class AlarmClock extends RelativeLayout {
             String action = intent.getAction();
             Log.d(TAG, action + " received.");
             if (Config.ACTION_ALARM_SET.equals(action) ||
-                    Config.ACTION_ALARM_STOPPED.equals(action) ||
                     Config.ACTION_ALARM_DELETED.equals(action)) {
                 currentlyActiveAlarm = null;
                 Bundle extras = intent.getExtras();

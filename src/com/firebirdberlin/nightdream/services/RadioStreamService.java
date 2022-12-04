@@ -477,9 +477,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
 
         if (streamingMode == StreamingMode.ALARM) {
-            Intent intent = new Intent(Config.ACTION_ALARM_STOPPED);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
             restoreAlarmVolume();
         }
         stopRemoteMedia();

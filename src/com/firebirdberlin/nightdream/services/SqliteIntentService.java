@@ -26,7 +26,8 @@ public class SqliteIntentService {
         Log.d(TAG, "save(time)");
         DataSource db = new DataSource(context);
         db.open();
-        db.save(time);
+        db.save(time, false);
+
         WakeUpReceiver.schedule(context, db);
         db.close();
     }
