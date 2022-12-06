@@ -60,6 +60,7 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherModel;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -506,8 +507,8 @@ public class NightDreamActivity extends BillingHelperActivity
                     }
                 });
             }
-
         }
+        SqliteIntentService.scheduleAlarm(this);
     }
 
     @Override

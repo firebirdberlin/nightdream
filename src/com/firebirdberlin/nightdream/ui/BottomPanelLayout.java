@@ -82,7 +82,7 @@ public class BottomPanelLayout extends FrameLayout {
         AlarmClockViewModel.observeNextAlarm(context, nextAlarm -> {
             nextAlarmTime = nextAlarm;
             if (nextAlarm != null) {
-                Log.d(TAG, "next alarm: " + nextAlarm.toString());
+                Log.d(TAG, "next alarm: " + nextAlarm);
 
                 if (nextAlarmTime.getRemainingMillis() > 60 * 60000) {
                     // hide the ticker one hour before the next alarm
@@ -163,9 +163,10 @@ public class BottomPanelLayout extends FrameLayout {
 
     public void hide() {
         Log.d(TAG, "hide()");
-        if (tickerLayout == null) {
+        if (tickerLayout == null && mayHideAlarm()) {
             handler.post(hidePanel);
         } else {
+            // the ticker is active. It should remain visible.
             handler.postDelayed(hidePanel, 60 * 60000);
         }
     }
@@ -181,11 +182,12 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private void setAlpha(View v, float alpha, int millis) {
+        Log.d(TAG, "setAlpha()");
         if (v == null) return;
 
         float oldValue = v.getAlpha();
         if (alpha != oldValue) {
-            v.animate().setDuration(millis).alpha(alpha);
+            v.animate().setDuration(millis).alpha(alpha).start();
         }
     }
 
@@ -218,8 +220,6 @@ public class BottomPanelLayout extends FrameLayout {
             showAlarmView();
         } else if (RadioStreamService.isRunning || activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
-        } else if (activePanel == Panel.TICKER) {
-            showTickerView();
         } else {
             if (shallShowTicker()) {
                 showTickerView();
@@ -232,13 +232,14 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private boolean shallShowTicker() {
-        return (
-                rssEnabled && (
-                        (nextAlarmTime == null) ||
-                                (nextAlarmTime.getRemainingMillis() > 60 * 60000)
-                )
-        );
+        return rssEnabled && mayHideAlarm();
     }
+
+    private boolean mayHideAlarm() {
+        Log.i(TAG, "mayHIdeAlarm() -> nextAlarmTIme: " + nextAlarmTime);
+        return nextAlarmTime == null || nextAlarmTime.getRemainingMillis() > 60 * 60000;
+    }
+
     private void clearViews() {
         webRadioLayout = null;
     }
@@ -264,7 +265,7 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private void showTickerView() {
-        Log.d(TAG, "showTickerView");
+        Log.d(TAG, "showTickerView()");
 
         removeAllViews();
         if (tickerLayout != null) {
