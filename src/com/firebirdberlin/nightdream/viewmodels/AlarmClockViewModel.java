@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream.viewmodels;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
@@ -13,18 +12,13 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
-import java.lang.ref.WeakReference;
 
 public class AlarmClockViewModel extends ViewModel {
-    private static final String TAG = "AlarmClockViewModel";
-    private static WeakReference<Context> weakContext;
-
     private static final MutableLiveData<SimpleTime> nextAlarm = new MutableLiveData<>();
 
     public static void setNextAlarm(SimpleTime time) {
         nextAlarm.setValue(time);
     }
-
 
     private MutableLiveData<SimpleTime> getNextAlarm() {
         return nextAlarm;

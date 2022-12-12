@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
 
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.DockState;
 
@@ -32,7 +33,7 @@ public class BatteryStats {
         reference = getBatteryValue();
     }
 
-    public BatteryValue getBatteryValue() {
+    private BatteryValue getBatteryValue() {
         Intent batteryIntent = receivedBatteryIntent;
         if (batteryIntent == null) {
             try {
@@ -55,6 +56,7 @@ public class BatteryStats {
         value.isChargingAC = isChargingAC(chargingMethod);
         value.isChargingUSB = isChargingUSB(chargingMethod);
         value.isChargingWireless = isChargingWireless(chargingMethod);
+        value.isAirplaneModeOn = Utility.isAirplaneModeOn(mContext);
         return value;
     }
 
