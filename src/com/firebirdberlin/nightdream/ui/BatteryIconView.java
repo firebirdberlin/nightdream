@@ -21,6 +21,8 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
+import com.firebirdberlin.nightdream.viewmodels.BatteryReferenceViewModel;
+import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 
 
 public class BatteryIconView extends View {
@@ -39,12 +41,17 @@ public class BatteryIconView extends View {
     BatteryReceiver batteryReceiver = null;
     LinearLayout batteryTextLayout;
     TextView batteryTextView;
+    BatteryValue reference = null;
 
     public BatteryIconView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         settings = new Settings(context);
         init(context, attrs);
+
+        BatteryReferenceViewModel.observe(context, reference -> {
+            this.reference = reference;
+        });
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -201,7 +208,6 @@ public class BatteryIconView extends View {
     }
 
     private void updateBatteryViewText() {
-        BatteryValue reference = settings.loadBatteryReference();
         float percentage = batteryValue.getPercentage();
 
         String percentage_string = "";
@@ -210,15 +216,16 @@ public class BatteryIconView extends View {
         }
         String estimate_string = "";
 
-        if (batteryValue.isCharging) {
-            if (percentage < VALUE_FULLY_CHARGED) {
-                long est = batteryValue.getEstimateMillis(reference) / 1000; // estimated seconds
+        if (reference != null && batteryValue != null) {
+            if (batteryValue.isCharging) {
+                if (percentage < VALUE_FULLY_CHARGED) {
+                    long est = batteryValue.getEstimateMillis(reference) / 1000; // estimated seconds
+                    estimate_string = formatEstimate(est);
+                }
+            } else { // not charging
+                long est = batteryValue.getDischargingEstimateMillis(reference) / 1000; // estimated seconds
                 estimate_string = formatEstimate(est);
             }
-
-        } else { // not charging
-            long est = batteryValue.getDischargingEstimateMillis(reference) / 1000; // estimated seconds
-            estimate_string = formatEstimate(est);
         }
 
         batteryTextView.setText(String.format("%s%s", percentage_string, estimate_string));
@@ -249,10 +256,8 @@ public class BatteryIconView extends View {
     class BatteryReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            BatteryStats batteryStats = new BatteryStats(context, intent);
-            batteryValue = batteryStats.getBatteryValue();
-
+            batteryValue = new BatteryStats(context, intent).reference;
+            BatteryReferenceViewModel.updateIfNecessary(context, batteryValue);
             updateBatteryViewText();
         }
     }

@@ -15,7 +15,6 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.receivers.ChargingStateChangeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.receivers.StopServiceReceiver;
@@ -28,7 +27,6 @@ public class ScreenWatcherService extends Service {
     public static boolean isRunning = false;
     private ScreenReceiver mReceiver;
     private PowerConnectionReceiver powerConnectionReceiver;
-    private ChargingStateChangeReceiver chargingStateChangeReceiver;
 
     @Override
     public void onCreate() {
@@ -42,11 +40,8 @@ public class ScreenWatcherService extends Service {
 
         startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
 
-        ChargingStateChangeReceiver.getAndSaveBatteryReference(this);
-
         mReceiver = ScreenReceiver.register(this);
         powerConnectionReceiver = PowerConnectionReceiver.register(this);
-        chargingStateChangeReceiver = ChargingStateChangeReceiver.register(this);
     }
 
     public static void updateNotification(Context context, Settings settings) {
@@ -113,11 +108,6 @@ public class ScreenWatcherService extends Service {
         return noteBuilder.build();
     }
 
-    private void removeBatteryReference() {
-        Settings settings = new Settings(this);
-        settings.removeBatteryReference();
-    }
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -130,8 +120,6 @@ public class ScreenWatcherService extends Service {
         isRunning = false;
         ScreenReceiver.unregister(this, mReceiver);
         PowerConnectionReceiver.unregister(this, powerConnectionReceiver);
-        ChargingStateChangeReceiver.unregister(this, chargingStateChangeReceiver);
-        removeBatteryReference();
     }
 
 
