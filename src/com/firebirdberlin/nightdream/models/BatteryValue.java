@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream.models;
 
+import com.google.gson.Gson;
+
 public class BatteryValue {
     public static int BATTERY_PLUGGED_AC = 1;
     public static int BATTERY_PLUGGED_USB = 2;
@@ -15,6 +17,7 @@ public class BatteryValue {
     public boolean isChargingAC = false;
     public boolean isChargingUSB = false;
     public boolean isChargingWireless = false;
+    public boolean isAirplaneModeOn = false;
 
     public BatteryValue(int level) {
         this.level = level;
@@ -42,7 +45,7 @@ public class BatteryValue {
         int dL = level - reference.level;
         long dt = System.currentTimeMillis() - reference.time;
 
-        if ((dL == 0) || (dt == 0.)) return 0;
+        if (dt < 60000.) return 0;
         //double scale = dL/dt * te + L0
         // te = (scale - L0) * dt /dL
         return (long) ( (scale - level) * ((double) dt / (double) dL));
@@ -56,9 +59,21 @@ public class BatteryValue {
 
         int dL = level - reference.level;
         long dt = System.currentTimeMillis() - reference.time;
-        if ((dL == 0) || (dt == 0.)) return 0;
+        if (dt < 60000.) return 0;
         //double scale = dL/dt * te + L0
         // te = (scale - L0) * dt /dL
         return (long) ((-level) * ((double) dt / (double) dL));
+    }
+
+    public String toString() { return toJson();}
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static BatteryValue fromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, BatteryValue.class);
     }
 }

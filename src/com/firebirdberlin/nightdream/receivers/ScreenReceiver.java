@@ -207,5 +207,4 @@ public class ScreenReceiver extends BroadcastReceiver {
             settings.deleteNextAlwaysOnTime();
         }
     }
-
 }
