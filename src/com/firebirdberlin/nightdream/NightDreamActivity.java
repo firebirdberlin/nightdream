@@ -56,6 +56,7 @@ import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.CheckChargingStateJob;
 import com.firebirdberlin.nightdream.services.DownloadWeatherModel;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
@@ -67,6 +68,7 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.SidePanel;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
+import com.firebirdberlin.nightdream.viewmodels.BatteryReferenceViewModel;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -507,8 +509,8 @@ public class NightDreamActivity extends BillingHelperActivity
                     }
                 });
             }
+            SqliteIntentService.scheduleAlarm(this);
         }
-        SqliteIntentService.scheduleAlarm(this);
     }
 
     @Override
@@ -635,6 +637,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
+        CheckChargingStateJob.schedule(this);
         isRunning = false;
     }
 
@@ -1104,6 +1107,10 @@ public class NightDreamActivity extends BillingHelperActivity
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "onReceive() -> ");
             if (intent == null) return;
+
+            BatteryStats stats = new BatteryStats(context);
+            BatteryReferenceViewModel.updateIfNecessary(context, stats.reference);
+
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
             if (Config.ACTION_SHUT_DOWN.equals(action)) {
@@ -1128,7 +1135,6 @@ public class NightDreamActivity extends BillingHelperActivity
                 handler.removeCallbacks(finishApp);
                 handler.removeCallbacks(alwaysOnTimeout);
                 nightDreamUI.onPowerConnected();
-                BatteryStats stats = new BatteryStats(context);
                 isChargingWireless = stats.reference.isChargingWireless;
             }
         }

@@ -804,40 +804,6 @@ public class Settings {
         return timeFormat.startsWith("H");
     }
 
-    public BatteryValue loadBatteryReference() {
-        long time = settings.getLong("batteryReferenceTime", 0L);
-        int level = settings.getInt("batteryReferenceMethod", -1);
-        int scale = settings.getInt("batteryReferenceScale", -1);
-        int chargingMethod = settings.getInt("batteryReferenceChargingMethod", -1);
-        int status = settings.getInt("batteryReferenceStatus", -1);
-        BatteryValue bv = new BatteryValue(level, scale, status, chargingMethod);
-        bv.time = time;
-        return bv;
-    }
-
-    public void saveBatteryReference(BatteryValue bv) {
-        if (bv == null) {
-            return;
-        }
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("batteryReferenceTime", bv.time);
-        prefEditor.putInt("batteryReferenceMethod", bv.level);
-        prefEditor.putInt("batteryReferenceScale", bv.scale);
-        prefEditor.putInt("batteryReferenceChargingMethod", bv.chargingMethod);
-        prefEditor.putInt("batteryReferenceStatus", bv.status);
-        prefEditor.apply();
-    }
-
-    public void removeBatteryReference() {
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.remove("batteryReferenceTime");
-        prefEditor.remove("batteryReferenceMethod");
-        prefEditor.remove("batteryReferenceScale");
-        prefEditor.remove("batteryReferenceChargingMethod");
-        prefEditor.remove("batteryReferenceStatus");
-        prefEditor.apply();
-    }
-
     public void disableSettingsNeedingBackgroundService() {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putBoolean("handle_power", false);
@@ -1368,8 +1334,21 @@ public class Settings {
         persistFavoriteRadioStation(null, stationIndex);
     }
 
+    public static BatteryValue loadBatteryReference(Context context) {
+        SharedPreferences settings = getDefaultSharedPreferences(context);
+        String json = settings.getString("batteryReference", "");
+        return BatteryValue.fromJson(json);
+    }
 
-
+    public static void saveBatteryReference(Context context, BatteryValue bv) {
+        if (bv == null) {
+            return;
+        }
+        SharedPreferences settings = getDefaultSharedPreferences(context);
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString("batteryReference", bv.toJson());
+        prefEditor.apply();
+    }
 
     public boolean getShallRadioStreamActivateWiFi() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29) {

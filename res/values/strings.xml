@@ -87,7 +87,7 @@ OR
     <string name="seconds_30">30 seconds</string>
     <string name="seconds_15">15 seconds</string>
     <string name="backgroundServiceDialogTitle">Stop background service</string>
-    <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode as well as the battery prediction. Proceed?</string>
+    <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode. Proceed?</string>
     <string name="backgroundServiceNotificationText">Background service is running.</string>
     <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
