@@ -50,7 +50,12 @@ public class BatteryReferenceViewModel extends ViewModel {
     }
 
     public static BatteryValue getValue() {
-        return batteryValue.getValue();
+        if (batteryValue == null){
+            return null;
+        }
+        else {
+            return batteryValue.getValue();
+        }
     }
 
     public static void observe(Context context, @NonNull Observer<BatteryValue> observer) {
