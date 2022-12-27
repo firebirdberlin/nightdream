@@ -445,6 +445,8 @@ public class NightDreamUI {
 
         menuIcon.setScaleX(.8f);
         menuIcon.setScaleY(.8f);
+        menuIcon.setVisibility(View.VISIBLE);
+        setAlpha(menuIcon, 1, 0);
 
         AudioManage = new mAudioManager(context);
 
@@ -791,7 +793,6 @@ public class NightDreamUI {
         batteryIconView.setColor(textColor);
         batteryIconView.setVisibility(View.VISIBLE);
         menuIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
-        menuIcon.setVisibility(isLocked() ? View.GONE : View.VISIBLE);
 
         // colorize icons in the side panel
         sidePanel.setAccentColor(accentColor);
@@ -1525,13 +1526,10 @@ public class NightDreamUI {
         int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
         menuIcon.setImageDrawable(ContextCompat.getDrawable(mContext, resId));
         menuIcon.post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        unlockHint.setVisibility(locked ? View.VISIBLE : View.GONE);
-                        unlockHint.setY(menuIcon.getHeight());
-                        unlockHint.setX(menuIcon.getWidth());
-                    }
+                () -> {
+                    unlockHint.setVisibility(locked ? View.VISIBLE : View.GONE);
+                    unlockHint.setY(menuIcon.getHeight());
+                    unlockHint.setX(menuIcon.getWidth());
                 }
         );
         if (AlarmHandlerService.alarmIsRunning()) {
