@@ -58,7 +58,8 @@ public class ScreenReceiver extends BroadcastReceiver {
 
     private static void checkSensorDataAndActivate(Context context) {
         boolean waitingForSensors = getSensorData(context);
-        while (waitingForSensors && (!proximitySensorChecked || !gravitySensorChecked)) {
+        long startTime = System.currentTimeMillis();
+        while (((System.currentTimeMillis()-startTime)<2000) && (waitingForSensors && (!proximitySensorChecked || !gravitySensorChecked))) {
             try {
                 Log.d(TAG, "waiting for sensor data (" + proximitySensorChecked + "," + gravitySensorChecked + ")");
                 Thread.sleep(50);
@@ -77,25 +78,26 @@ public class ScreenReceiver extends BroadcastReceiver {
     private static void conditionallyActivateAlwaysOn(Context context, boolean turnScreenOn) {
         Settings settings = new Settings(context);
         if (shallActivateStandby(context, settings)) {
-            Log.i(TAG, "Activating standby mode");
+            Log.i(TAG, "conditionallyActivateAlwaysOn(): Activating standby mode");
             NightDreamActivity.start(context, "start standby mode");
             if (turnScreenOn) {
                 Utility.turnScreenOn(context);
             }
         } else {
-            Log.i(TAG, "Not activating standby mode");
+            Log.i(TAG, "conditionallyActivateAlwaysOn(): Not activating standby mode");
         }
         settings.deleteNextAlwaysOnTime();
     }
 
     public static boolean shallActivateStandby(final Context context, Settings settings) {
+        Log.i(TAG, "shallActivateStandby()");
         if (Utility.isConfiguredAsDaydream(context)) return false;
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
         if (NightModeListener.running) return false;
 
         BatteryStats battery = new BatteryStats(context);
         if (settings.handle_power && battery.reference.isCharging && settings.isAlwaysOnAllowed()) {
-            Log.i(TAG, "autostart allowed");
+            Log.i(TAG, "shallActivateStandby() autostart allowed");
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
 
@@ -109,7 +111,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                 && !Utility.isInCall(context)
                 && (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)
         ) {
-            Log.i(TAG, "standby allowed");
+            Log.i(TAG, "shallActivateStandby() standby allowed");
 
             Calendar now = Calendar.getInstance();
             if (!settings.alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
@@ -125,6 +127,7 @@ public class ScreenReceiver extends BroadcastReceiver {
             return shall_auto_start;
         }
 
+        Log.i(TAG, "shallActivateStandby() standby not allowed");
         return false;
     }
 
@@ -144,9 +147,14 @@ public class ScreenReceiver extends BroadcastReceiver {
 
         Sensor sensor = sensorMan.getDefaultSensor(Sensor.TYPE_GRAVITY);
         Sensor proximitySensor = sensorMan.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if (sensor == null || proximitySensor == null) {
+
+        if (sensor == null || proximitySensor == null || (!sensor.isWakeUpSensor() && !proximitySensor.isWakeUpSensor())) {
             return false;
         }
+
+        Log.i(TAG, "TYPE_GRAVITY isWakeUpSensor = " + sensor.isWakeUpSensor());
+        Log.i(TAG, "TYPE_PROXIMITY isWakeUpSensor = " + proximitySensor.isWakeUpSensor());
+
         SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {

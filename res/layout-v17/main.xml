@@ -77,7 +77,7 @@
                     android:layout_weight="0"
                     android:alpha="0.0"
                     android:clickable="true"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:contentDescription="@string/preferences"
                     android:focusable="true"
                     app:srcCompat="@drawable/ic_menu" />
