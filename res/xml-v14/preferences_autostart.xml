@@ -4,12 +4,17 @@
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:title="@string/handle_power">
 
+    <com.firebirdberlin.nightdream.ui.IgnoreOverlayPermission
+        app:icon="@drawable/ic_expert"
+        app:key="startOverlay"
+        app:title="@string/permission_request_autostart_title"
+        app:summary="@string/permission_request_autostart"/>
+
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="false"
         app:key="handle_power"
         app:title="@string/handle_power" />
-
 
     <com.firebirdberlin.nightdream.WeekDaySelectionPreference
         app:key="autostartWeekdays"
@@ -41,6 +46,12 @@
             app:defaultValue="@array/optionsPowerSourceDefault"
             app:iconSpaceReserved="false"/>
 
+    <com.firebirdberlin.nightdream.ui.IgnoreBatteryOptimizationPreference
+        app:icon="@drawable/ic_expert"
+        app:key="startBatteryOptimization"
+        app:isPreferenceVisible="false"
+        app:title="@string/ignoreBatteryOptimization"
+        app:summary="@string/ignoreBatteryOptimization_summary"/>
 
     <PreferenceCategory
         app:iconSpaceReserved="false"

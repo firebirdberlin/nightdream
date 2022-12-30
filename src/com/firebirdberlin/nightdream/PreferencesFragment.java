@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -197,6 +198,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     ClockWidgetProvider.updateAllWidgets(mContext);
                 }
             };
+
     private final Runnable runnableNotificationAccessChanged = new Runnable() {
         @Override
         public void run() {
@@ -219,6 +221,30 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
     };
+
+    private final Runnable runnableOverlayAccessChanged = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(runnableOverlayAccessChanged);
+            if (Build.VERSION.SDK_INT < 23 || !"autostart".equals(rootKey) || !isAdded()) {
+                return;
+            }
+            Log.i(TAG, "Runnable runnableOverlayAccessChanged called");
+            Preference preference = findPreference("handle_power");
+
+            if (preference != null) {
+                if (!hasCanDrawOverlaysPermission()) {
+                    preference.setSummary(getString(R.string.showOverlayAccessNotGranted));
+                    preference.setEnabled(false);
+                } else {
+                    preference.setSummary(getString(R.string.showOverlayAccessGranted));
+                    preference.setEnabled(true);
+                }
+                handler.postDelayed(runnableOverlayAccessChanged, 2000);
+            }
+        }
+    };
+
     private ActivityResultLauncher<Intent> activityResultLauncherLoadImage = null;
     private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), result -> {
@@ -377,6 +403,22 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             switch (rootKey) {
                 case "autostart":
                     setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
+
+                    Preference handlePowerPreference = findPreference("handle_power");
+
+                    if (handlePowerPreference != null) {
+                        if (handlePowerPreference.getSharedPreferences().getBoolean("handle_power",false) && isIgnoreBatteryOptimization() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
+                            showPreference("startBatteryOptimization");
+                        } else {
+                            hidePreference("startBatteryOptimization");
+                        }
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            handler.post(runnableOverlayAccessChanged);
+                        } else {
+                            hidePreference("startOverlay");
+                        }
+
+                    }
                     break;
                 case "clock":
                     setPreferencesFromResource(R.xml.preferences_clock, rootKey);
@@ -626,7 +668,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 
         if (rootKey == null || "autostart".equals(rootKey)) {
-            conditionallyShowSnackBar(null);
+            //conditionallyShowSnackBar(null);
         }
 
         if (isAdded() && Utility.isEmpty(rootKey)) {
@@ -985,6 +1027,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
+        Log.d(TAG, "setupStandByService()");
         if (!isAdded()) return;
         boolean on = isAutostartActivated(sharedPreferences);
         int newState = on ?
@@ -1005,7 +1048,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (on) {
             ScreenWatcherService.start(mContext);
         }
-        conditionallyShowSnackBar(sharedPreferences);
+
+        if (on && isIgnoreBatteryOptimization() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
+            showPreference("startBatteryOptimization");
+        }
+        else {
+            if  (!on && isIgnoreBatteryOptimization() && (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R)) {
+                hidePreference("startBatteryOptimization");
+            }
+        }
+
+        //conditionallyShowSnackBar(sharedPreferences);
     }
 
     private boolean isAutostartActivated(SharedPreferences sharedPreferences) {
@@ -1022,6 +1075,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private boolean hasCanDrawOverlaysPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             return (android.provider.Settings.canDrawOverlays(mContext));
+        }
+        return true;
+    }
+
+    private boolean isIgnoreBatteryOptimization() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            PowerManager ownPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            return (ownPowerManager.isIgnoringBatteryOptimizations(mContext.getPackageName()));
         }
         return true;
     }
