@@ -36,6 +36,9 @@ public class BatteryReferenceViewModel extends ViewModel {
 
     public static void set(Context context, BatteryValue value) {
         Log.i(TAG, "setting " + (value != null ? value.toString() : "null"));
+        if (batteryValue == null) {
+            batteryValue = new MutableLiveData<>();
+        }
         batteryValue.postValue(value);
         Settings.saveBatteryReference(context, value);
     }
