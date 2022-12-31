@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
@@ -97,8 +98,8 @@ public class ClockLayout extends LinearLayout {
             removeAllViews();
         }
         dateInvisibilityMethod = (layoutId == LAYOUT_ID_DIGITAL2) ? INVISIBLE : GONE;
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ContextThemeWrapper ctxThemeWrapper = new ContextThemeWrapper(context, R.style.ActivityTheme);
+        LayoutInflater inflater  = LayoutInflater.from(ctxThemeWrapper);
         View child;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
