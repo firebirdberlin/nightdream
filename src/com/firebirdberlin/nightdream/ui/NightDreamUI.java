@@ -373,7 +373,7 @@ public class NightDreamUI {
                         float dx = -2.f * (distanceX / size.x);
                         float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
                         value += dx;
-                        value = to_range(value, -1.f, 1.f);
+                        value = to_range(value, -0.6f, 1.f);
 
                         setAlpha(brightnessProgress, 1.f, 0);
 
