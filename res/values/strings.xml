@@ -91,6 +91,7 @@ OR
     <string name="backgroundServiceNotificationText">Background service is running.</string>
     <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
+    <string name="battery">Battery</string>
     <string name="batteryTimeoutDescription">on battery timeout</string>
     <string name="batteryTimeoutNever">never</string>
     <string name="batteryTimeout1min">1 min</string>
@@ -336,6 +337,7 @@ OR
     <string name="rss_url_error">Url not set</string>
     <string name="rss_data_error">An error occurred. No data available.</string>
     <string name="rss_text_size">Text size</string>
+    <string name="screen">Screen</string>
     <string name="screenProtection">Screen burn protection</string>
     <string name="screenProtectionNone">None</string>
     <string name="screenProtectionMove">Move the clock around</string>
@@ -355,6 +357,7 @@ OR
     <string name="set_alarm">set alarm</string>
     <string name="showAlarmsPersistently">Show persistently</string>
     <string name="showAlarmsPersistentlySummary">Show the next alarm time persistently on the screen.</string>
+    <string name="showBattery">Show battery</string>
     <string name="showBatteryWarningSummary">Show a warning at startup when on battery.</string>
     <string name="showBatteryWarningTitle">Battery warning</string>
     <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>

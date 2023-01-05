@@ -181,6 +181,7 @@ public class Settings {
     public boolean purchasedWeatherData = false;
     public int clockLayout;
     boolean autostartForNotifications = true;
+    public boolean showBattery = true;
     boolean showBatteryWarning = true;
     int batteryTimeout = 5;
     SharedPreferences settings;
@@ -494,6 +495,7 @@ public class Settings {
         scaleClockLandscape = settings.getFloat("scaleClockLandscape", -1.f);
         sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
 
+        showBattery = settings.getBoolean("showBattery", true);
         showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);

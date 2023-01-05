@@ -12,46 +12,69 @@
         app:summary="@string/doubleTapToFinishSummary"
         app:title="@string/doubleTapToFinishTitle" />
 
-    <ListPreference
+    <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:defaultValue="1"
-        app:title="@string/screenProtection"
-        app:entries="@array/screenProtectionMode"
-        app:entryValues="@array/screenProtectionModeValues"
-        app:key="screenProtection"
-        app:useSimpleSummaryProvider="true"/>
+        app:layout="@layout/preferences_category"
+        app:allowDividerBelow="true"
+        app:title="@string/screen">
+    >
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="1"
+            app:title="@string/screenProtection"
+            app:entries="@array/screenProtectionMode"
+            app:entryValues="@array/screenProtectionModeValues"
+            app:key="screenProtection"
+            app:useSimpleSummaryProvider="true"/>
 
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="true"
-        app:key="persistentBatteryValueWhileCharging"
-        app:summary="@string/persistent_battery_value_while_charging_summary"
-        app:title="@string/persistent_battery_value_while_charging" />
+        <ListPreference
+            app:iconSpaceReserved="false"
+            app:defaultValue="-1"
+            app:entries="@array/screenOrientation"
+            app:entryValues="@array/screenOrientationValues"
+            app:useSimpleSummaryProvider="true"
+            app:key="screenOrientation"
+            app:title="@string/screenOrientation" />
 
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="true"
-        app:key="showBatteryWarning"
-        app:summary="@string/showBatteryWarningSummary"
-        app:title="@string/showBatteryWarningTitle" />
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="false"
+            app:key="clockLayoutMirrorText"
+            app:title="@string/clock_layout_mirror_text" />
 
-    <ListPreference
+    </PreferenceCategory>
+    <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:defaultValue="-1"
-        app:entries="@array/screenOrientation"
-        app:entryValues="@array/screenOrientationValues"
-        app:useSimpleSummaryProvider="true"
-        app:key="screenOrientation"
-        app:title="@string/screenOrientation" />
+        app:layout="@layout/preferences_category"
+        app:allowDividerBelow="true"
+        app:title="@string/battery">
+        >
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="showBattery"
+            app:title="@string/showBattery" />
 
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="false"
-        app:key="clockLayoutMirrorText"
-        app:title="@string/clock_layout_mirror_text" />
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:dependency="showBattery"
+            app:key="persistentBatteryValueWhileCharging"
+            app:summary="@string/persistent_battery_value_while_charging_summary"
+            app:title="@string/persistent_battery_value_while_charging" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:allowDividerBelow="true"
+            app:defaultValue="true"
+            app:key="showBatteryWarning"
+            app:summary="@string/showBatteryWarningSummary"
+            app:title="@string/showBatteryWarningTitle" />
+    </PreferenceCategory>
 
     <Preference
         app:iconSpaceReserved="false"
+        app:allowDividerAbove="true"
         app:icon="@drawable/ic_googleplay"
         app:key="purchaseActions2"
         app:isPreferenceVisible="false"
@@ -59,6 +82,7 @@
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
+        app:allowDividerAbove="true"
         app:defaultValue="false"
         app:key="speakTime"
         app:summary="@string/speakTimeSummary"
