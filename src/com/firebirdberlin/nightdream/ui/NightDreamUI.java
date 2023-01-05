@@ -1446,6 +1446,9 @@ public class NightDreamUI {
     }
 
     private boolean batteryViewShallBeVisible() {
+        if (!settings.showBattery) {
+            return false;
+        }
         return (
                 controlsVisible ||
                         (settings.persistentBatteryValueWhileCharging && batteryIconView.shallBeVisible())
