@@ -19,6 +19,8 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.util.LruCache;
+import android.util.Patterns;
+import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -372,36 +374,43 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         RequestQueue requestQueue;
         ImageLoader imageLoader;
 
-        requestQueue = Volley.newRequestQueue(this);
-        imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+        Log.d(TAG,"loadRadioFavIcon() favIcon: "+radioStation.favIcon);
+        Log.d(TAG,"loadRadioFavIcon() URLUtil: "+ URLUtil.isValidUrl(radioStation.favIcon));
+        Log.d(TAG,"loadRadioFavIcon() WEB_URL: "+ Patterns.WEB_URL.matcher(radioStation.favIcon).matches());
 
-            private final LruCache<String, Bitmap> lruCache = new LruCache<>(10);
+        if (URLUtil.isValidUrl(radioStation.favIcon) && Patterns.WEB_URL.matcher(radioStation.favIcon).matches()) {
 
-            public Bitmap getBitmap(String url) {
-                return lruCache.get(url);
-            }
+            requestQueue = Volley.newRequestQueue(this);
+            imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
 
-            @Override
-            public void putBitmap(String url, Bitmap bitmap) {
-                lruCache.put(url, bitmap);
-            }
-        });
+                private final LruCache<String, Bitmap> lruCache = new LruCache<>(10);
 
-        imageLoader.get(radioStation.favIcon, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                iconRadio = imageContainer.getBitmap();
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                if (volleyError.getMessage() != null) {
-                    Log.e(TAG, volleyError.getMessage());
-                } else {
-                    Log.e(TAG, "volleyError.getMessage() = null");
+                public Bitmap getBitmap(String url) {
+                    return lruCache.get(url);
                 }
-            }
-        }).getBitmap();
+
+                @Override
+                public void putBitmap(String url, Bitmap bitmap) {
+                    lruCache.put(url, bitmap);
+                }
+            });
+
+            imageLoader.get(radioStation.favIcon, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                    iconRadio = imageContainer.getBitmap();
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    if (volleyError.getMessage() != null) {
+                        Log.e(TAG, volleyError.getMessage());
+                    } else {
+                        Log.e(TAG, "volleyError.getMessage() = null");
+                    }
+                }
+            }).getBitmap();
+        }
     }
 
     private void checkStreamAndStart(int radioStationIndex) {
