@@ -19,8 +19,11 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.util.LruCache;
+import android.util.Patterns;
+import android.webkit.URLUtil;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -92,6 +95,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private float currentVolume = 0.f;
     private int currentStreamVolume = -1;
     private HttpStatusCheckTask statusCheckTask = null;
+    private PlaylistRequestTask resolveStreamUrlTask = null;
     private final Runnable fadeOut = new Runnable() {
         @Override
         public void run() {
@@ -109,8 +113,9 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             }
         }
     };
-    private PlaylistRequestTask resolveStreamUrlTask = null;
     private BecomingNoisyReceiver myNoisyAudioStreamReceiver;
+    private VibrationHandler vibrator = null;
+    private Intent intent;
     private final Runnable startSleep = new Runnable() {
         @Override
         public void run() {
@@ -124,8 +129,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             handler.post(fadeOut);
         }
     };
-    private VibrationHandler vibrator = null;
-    private Intent intent;
     private PlaybackStateCompat.Builder stateBuilder;
     private com.google.android.exoplayer2.MediaMetadata mediaMetaData = null;
     private Bitmap iconRadio;
@@ -184,6 +187,23 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         context.stopService(i);
     }
 
+    private static Intent getStopIntent(Context context) {
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return i;
+    }
+
+    public static boolean isSleepTimeSet() {
+        long now = System.currentTimeMillis();
+        return (sleepTimeInMillis > now);
+    }
+
+    public static void loadRemoteMediaListener(CastSession castSession) {
+        Log.d(TAG, "loadRemoteMediaListener()");
+
+        mRadioStreamService.castSession = castSession;
+        mRadioStreamService.loadRemoteMedia();
+    }
     private final Runnable fadeIn = new Runnable() {
         @Override
         public void run() {
@@ -204,35 +224,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             }
         }
     };
-
-    private static Intent getStopIntent(Context context) {
-        Intent i = new Intent(context, RadioStreamService.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        return i;
-    }
-
-    public static boolean isSleepTimeSet() {
-        long now = System.currentTimeMillis();
-        return (sleepTimeInMillis > now);
-    }
-
-    private final Runnable timeout = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(timeout);
-            handler.removeCallbacks(fadeIn);
-            handler.removeCallbacks(fadeOut);
-            handler.removeCallbacks(startSleep);
-            handler.post(fadeOut);
-        }
-    };
-
-    public static void loadRemoteMediaListener(CastSession castSession) {
-        Log.d(TAG, "loadRemoteMediaListener()");
-
-        mRadioStreamService.castSession = castSession;
-        mRadioStreamService.loadRemoteMedia();
-    }
 
     @Override
     public void onCreate() {
@@ -268,13 +259,22 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     public IBinder onBind(Intent intent) {
         return null;
     }
+    private final Runnable timeout = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(timeout);
+            handler.removeCallbacks(fadeIn);
+            handler.removeCallbacks(fadeOut);
+            handler.removeCallbacks(startSleep);
+            handler.post(fadeOut);
+        }
+    };
 
     private void enableMediaSession() {
         Log.d(TAG, "enableMediaSession()");
 
         mediaSession = new MediaSessionCompat(getBaseContext(), getBaseContext().getPackageName());
         mediaSession.setCallback(new sessionCallback());
-        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mediaSession.setMediaButtonReceiver(null);
         mediaSession.setActive(true);
 
@@ -372,36 +372,46 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         RequestQueue requestQueue;
         ImageLoader imageLoader;
 
-        requestQueue = Volley.newRequestQueue(this);
-        imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+        Log.d(TAG, "loadRadioFavIcon() favIcon: " + radioStation.favIcon);
+        Log.d(TAG, "loadRadioFavIcon() URLUtil: " + URLUtil.isValidUrl(radioStation.favIcon));
+        Log.d(TAG, "loadRadioFavIcon() WEB_URL: " + Patterns.WEB_URL.matcher(radioStation.favIcon).matches());
 
-            private final LruCache<String, Bitmap> lruCache = new LruCache<>(10);
+        if (
+                URLUtil.isValidUrl(radioStation.favIcon)
+                        && Patterns.WEB_URL.matcher(radioStation.favIcon).matches()
+        ) {
 
-            public Bitmap getBitmap(String url) {
-                return lruCache.get(url);
-            }
+            requestQueue = Volley.newRequestQueue(this);
+            imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
 
-            @Override
-            public void putBitmap(String url, Bitmap bitmap) {
-                lruCache.put(url, bitmap);
-            }
-        });
+                private final LruCache<String, Bitmap> lruCache = new LruCache<>(10);
 
-        imageLoader.get(radioStation.favIcon, new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                iconRadio = imageContainer.getBitmap();
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                if (volleyError.getMessage() != null) {
-                    Log.e(TAG, volleyError.getMessage());
-                } else {
-                    Log.e(TAG, "volleyError.getMessage() = null");
+                public Bitmap getBitmap(String url) {
+                    return lruCache.get(url);
                 }
-            }
-        }).getBitmap();
+
+                @Override
+                public void putBitmap(String url, Bitmap bitmap) {
+                    lruCache.put(url, bitmap);
+                }
+            });
+
+            imageLoader.get(radioStation.favIcon, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                    iconRadio = imageContainer.getBitmap();
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    if (volleyError.getMessage() != null) {
+                        Log.e(TAG, volleyError.getMessage());
+                    } else {
+                        Log.e(TAG, "volleyError.getMessage() = null");
+                    }
+                }
+            });
+        }
     }
 
     private void checkStreamAndStart(int radioStationIndex) {
@@ -613,7 +623,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 }
 
                 @Override
-                public void onPlayerError(PlaybackException error) {
+                public void onPlayerError(@NonNull PlaybackException error) {
                     Log.e(TAG, "Exoplayer Error: " + error.getMessage());
                     updateNotification(error.getMessage());
                     if (alarmIsRunning) {
@@ -625,12 +635,12 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 }
 
                 @Override
-                public void onMetadata(Metadata metadata) {
-                    Log.i(TAG, "onMetaData:" + metadata.toString());
+                public void onMetadata(@NonNull Metadata metadata) {
+                    Log.i(TAG, "onMetaData:" + metadata);
                 }
 
                 @Override
-                public void onMediaMetadataChanged(com.google.android.exoplayer2.MediaMetadata metadata) {
+                public void onMediaMetadataChanged(@NonNull com.google.android.exoplayer2.MediaMetadata metadata) {
                     Log.i(TAG, "onMediaMetadataChanged:" + metadata.title);
                     mediaMetaData = metadata;
                     if (metadata.title != null) {
@@ -804,7 +814,18 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     }
 
     private NotificationCompat.Action notificationStopAction() {
-        return notificationAction(R.drawable.exo_icon_stop, ACTION_STOP, getString(R.string.action_stop));
+        Intent intent = new Intent(this, RadioStreamService.class);
+        intent.setAction(RadioStreamService.ACTION_STOP);
+
+        PendingIntent pi = Utility.getImmutableService(
+                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        return new NotificationCompat.Action.Builder(
+                R.drawable.exo_icon_stop,
+                getString(R.string.action_stop),
+                pi
+        ).build();
     }
 
     private NotificationCompat.Action notificationPlayPauseAction() {
@@ -846,17 +867,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                 )
         );
-    }
-
-    private NotificationCompat.Action notificationAction(int res, String intentAction, String text) {
-        Intent intent = new Intent(this, RadioStreamService.class);
-        intent.setAction(intentAction);
-
-        PendingIntent pi = Utility.getImmutableService(
-                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-        return new NotificationCompat.Action.Builder(res, text, pi).build();
     }
 
     private String currentRadioStationName(Intent intent) {
@@ -975,4 +985,12 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             skipToNextStation();
         }
     }
+
+
+
+
+
+
+
+
 }
