@@ -226,10 +226,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), result -> {
                 if (result) {
-                    Log.e(TAG, "readeExternalStoragePermission: PERMISSION GRANTED");
+                    Log.d(TAG, "readExternalStoragePermission: PERMISSION GRANTED");
                     selectBackgroundImage();
                 } else {
-                    Log.e(TAG, "readeExternalStoragePermission: PERMISSION DENIED");
+                    Log.d(TAG, "readExternalStoragePermission: PERMISSION DENIED");
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
                 }
             });

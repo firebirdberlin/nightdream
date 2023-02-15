@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,15 +14,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import java.util.List;
-
 public class PreferencesActivity extends BillingHelperActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     public static final String TAG = "PreferencesActivity";
     PreferencesFragment fragment = new PreferencesFragment();
     PreferencesFragment fragment2 = null;
-    Handler handler = new Handler();
     String rootKey = "";
 
     public static void start(Context context) {
@@ -34,7 +30,20 @@ public class PreferencesActivity extends BillingHelperActivity
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(init);
+        Log.d(TAG, "onPause()");
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        Log.d(TAG, "onResumeFragments()");
+        initFragment();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.d(TAG, "onPostResume()");
     }
 
     @Override
@@ -49,11 +58,7 @@ public class PreferencesActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-        handler.removeCallbacks(init);
-        handler.postDelayed(init, 300);
     }
-
-    private final Runnable init = () -> initFragment();
 
     private void removeFragment(Fragment removeFragment) {
         Log.d(TAG, "removeFragment()");
@@ -62,14 +67,13 @@ public class PreferencesActivity extends BillingHelperActivity
             Log.d(TAG, "removeFragment() isStateSaved");
             if (removeFragment != null) {
                 Log.d(TAG, "removeFragment() removed");
-                fragmentManager.beginTransaction().remove(removeFragment).commitAllowingStateLoss();
+                fragmentManager.beginTransaction().remove(removeFragment).commit();
             }
         }
     }
 
     public void initFragment() {
         Log.i(TAG, "initFragment()");
-        handler.removeCallbacks(init);
         FragmentManager fm = getSupportFragmentManager();
 
         FragmentTransaction fT = fm.beginTransaction();
@@ -103,15 +107,16 @@ public class PreferencesActivity extends BillingHelperActivity
             fT.replace(R.id.right, fragment);
             fT.replace(R.id.details, fragment2);
         }
+        Log.d(TAG, "Fragment Transaction Commit");
         fT.commit();
         fm.executePendingTransactions();
     }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        Log.d(TAG, "onConfigurationChanged()");
         super.onConfigurationChanged(newConfig);
-        handler.removeCallbacks(init);
-        handler.post(init);
+        initFragment();
     }
 
     @Override
@@ -126,9 +131,6 @@ public class PreferencesActivity extends BillingHelperActivity
                 isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                 isPurchased(BillingHelperActivity.ITEM_DONATION)
         );
-
-        handler.removeCallbacks(init);
-        handler.postDelayed(init, 200);
     }
 
     @Override
@@ -143,8 +145,6 @@ public class PreferencesActivity extends BillingHelperActivity
                         isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
                         isPurchased(BillingHelperActivity.ITEM_DONATION)
                 );
-                handler.removeCallbacks(init);
-                handler.postDelayed(init, 200);
             }
         );
         }
@@ -198,6 +198,23 @@ public class PreferencesActivity extends BillingHelperActivity
         onBackPressed();
         return true;
     }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        Log.d(TAG, "onSaveInstanceState()");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        Log.d(TAG, "onRestoreInstanceState");
+    }
+
 
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
