@@ -241,7 +241,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">långt tryck</string>
     <string name="outer_circle_radius">Cirkelns yttre diameter</string>
     <string name="outer_circle_width">Cirkelns yttre bredd</string>
-    <string name="permission_request_autostart">Rättighet för visning ovanpå (autostart) är inte beviljad. Vänligen bevilja denna rättighet!</string>
+    <string name="permission_request_overlays">Rättighet för visning ovanpå (autostart) är inte beviljad. Vänligen bevilja denna rättighet!</string>
     <string name="permission_request_location_mode">Nuvarande inställning för platsåtkomst tillåter inte platssökning.</string>
     <string name="persistent_battery_value_while_charging">Batteristatus i procent</string>
     <string name="persistent_battery_value_while_charging_summary">Visa alltid batteriets status under laddning</string>

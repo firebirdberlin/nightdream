@@ -189,7 +189,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Langt press</string>
     <string name="outer_circle_radius">Ytre sirkelradius</string>
     <string name="outer_circle_width">Ytre sirkelradius</string>
-    <string name="permission_request_autostart">Autostart ikke tillatt. Vennligs gi programmet tillatelse.</string>
+    <string name="permission_request_overlays">Autostart ikke tillatt. Vennligs gi programmet tillatelse.</string>
     <string name="persistent_battery_value_while_charging">Permanent batteristatus</string>
     <string name="persistent_battery_value_while_charging_summary">Vis batteristatus permanent under lading</string>
     <string name="power_source">Strømkilde</string>

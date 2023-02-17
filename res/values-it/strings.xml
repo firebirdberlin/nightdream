@@ -241,7 +241,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">premere a lungo</string>
     <string name="outer_circle_radius">Raggio cerchio esterno</string>
     <string name="outer_circle_width">Larghezza cerchio esterno</string>
-    <string name="permission_request_autostart">L\'autorizzazione per la visualizzazione di overlay (avvio automatico) non è concessa. Per favore, concedi questo permesso!</string>
+    <string name="permission_request_overlays">L\'autorizzazione per la visualizzazione di overlay (avvio automatico) non è concessa. Per favore, concedi questo permesso!</string>
     <string name="permission_request_location_mode">Il tipo di localizzazione attivo non permette di identificare la località corrente</string>
     <string name="persistent_battery_value_while_charging">Livello batteria persistente</string>
     <string name="persistent_battery_value_while_charging_summary">Mostra lo stato della batteria durante il caricamento</string>

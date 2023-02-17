@@ -194,7 +194,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">langt tryk</string>
     <string name="outer_circle_radius">Ydre cirkel radius</string>
     <string name="outer_circle_width">Ydre cirkel bredde</string>
-    <string name="permission_request_autostart"> Tilladelsen til at vise overlays (autostart) er ikke tildelt. Giv denne tilladelse!</string>
+    <string name="permission_request_overlays"> Tilladelsen til at vise overlays (autostart) er ikke tildelt. Giv denne tilladelse!</string>
     <string name="permission_request_location_mode">Den aktuelle lokationstilstand tillader ikke scanning på den aktuelle lokation..</string>
     <string name="persistent_battery_value_while_charging">Vis altid batteristatus</string>
     <string name="persistent_battery_value_while_charging_summary">Vis altid batteristatus under opladning</string>

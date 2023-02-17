@@ -222,29 +222,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     };
 
-    private final Runnable runnableOverlayAccessChanged = new Runnable() {
-        @Override
-        public void run() {
-            handler.removeCallbacks(runnableOverlayAccessChanged);
-            if (Build.VERSION.SDK_INT < 23 || !"autostart".equals(rootKey) || !isAdded()) {
-                return;
-            }
-            Log.i(TAG, "Runnable runnableOverlayAccessChanged called");
-            Preference preference = findPreference("handle_power");
-
-            if (preference != null) {
-                if (!hasCanDrawOverlaysPermission()) {
-                    preference.setSummary(getString(R.string.showOverlayAccessNotGranted));
-                    preference.setEnabled(false);
-                } else {
-                    preference.setSummary(getString(R.string.showOverlayAccessGranted));
-                    preference.setEnabled(true);
-                }
-                handler.postDelayed(runnableOverlayAccessChanged, 2000);
-            }
-        }
-    };
-
     private ActivityResultLauncher<Intent> activityResultLauncherLoadImage = null;
     private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), result -> {
@@ -404,20 +381,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 case "autostart":
                     setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
 
-                    Preference handlePowerPreference = findPreference("handle_power");
-
-                    if (handlePowerPreference != null) {
-                        if (handlePowerPreference.getSharedPreferences().getBoolean("handle_power",false) && isIgnoreBatteryOptimization() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
-                            showPreference("startBatteryOptimization");
-                        } else {
-                            hidePreference("startBatteryOptimization");
-                        }
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            handler.post(runnableOverlayAccessChanged);
-                        } else {
-                            hidePreference("startOverlay");
-                        }
-
+                    if (! isIgnoringBatteryOptimization()) {
+                        showPreference("startBatteryOptimization");
+                    } else {
+                        hidePreference("startBatteryOptimization");
                     }
                     break;
                 case "clock":
@@ -668,7 +635,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 
         if (rootKey == null || "autostart".equals(rootKey)) {
-            //conditionallyShowSnackBar(null);
+            conditionallyShowSnackBar();
         }
 
         if (isAdded() && Utility.isEmpty(rootKey)) {
@@ -1048,17 +1015,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (on) {
             ScreenWatcherService.start(mContext);
         }
-
-        if (on && isIgnoreBatteryOptimization() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
-            showPreference("startBatteryOptimization");
-        }
-        else {
-            if  (!on && isIgnoreBatteryOptimization() && (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R)) {
-                hidePreference("startBatteryOptimization");
-            }
-        }
-
-        //conditionallyShowSnackBar(sharedPreferences);
+        conditionallyShowSnackBar();
     }
 
     private boolean isAutostartActivated(SharedPreferences sharedPreferences) {
@@ -1072,25 +1029,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         );
     }
 
-    private boolean hasCanDrawOverlaysPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return (android.provider.Settings.canDrawOverlays(mContext));
-        }
-        return true;
-    }
-
-    private boolean isIgnoreBatteryOptimization() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            PowerManager ownPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-            return (ownPowerManager.isIgnoringBatteryOptimizations(mContext.getPackageName()));
-        }
-        return true;
-    }
-
-    private void requestCanDrawOverlaysPermission() {
+    private boolean isIgnoringBatteryOptimization() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+            PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            return (powerManager.isIgnoringBatteryOptimizations(mContext.getPackageName()));
         }
+
+        return true;
     }
 
     private void setupNotificationAccessPermission(SharedPreferences sharedPreferences, String preferenceKey) {
@@ -1247,13 +1192,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         pref.setSummary(summary);
     }
 
-    private void conditionallyShowSnackBar(SharedPreferences settings) {
-        if (settings == null) {
-            settings = mContext.getSharedPreferences(PREFS_KEY, 0);
-        }
-        if (isAutostartActivated(settings) && !hasCanDrawOverlaysPermission()) {
+    private void conditionallyShowSnackBar() {
+        if (!Utility.hasPermissionCanDrawOverlays(mContext)) {
             View view = getActivity().findViewById(android.R.id.content);
-            snackbar = Snackbar.make(view, R.string.permission_request_autostart, Snackbar.LENGTH_INDEFINITE);
+            snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
             int color = Utility.getRandomMaterialColor(mContext);
             int textColor = Utility.getContrastColor(color);
             View snackbarView = snackbar.getView();
@@ -1330,7 +1272,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         @Override
         public void onClick(View v) {
             if (isAdded()) {
-                requestCanDrawOverlaysPermission();
+                Utility.requestPermissionCanDrawOverlays(mContext);
             }
         }
     }
