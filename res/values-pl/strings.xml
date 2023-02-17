@@ -198,7 +198,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">długie przyciśnięcie</string>
     <string name="outer_circle_radius">Promień zewnętrznego koła</string>
     <string name="outer_circle_width">Szerokość zewnętrznego koła</string>
-    <string name="permission_request_autostart">Nie przyznano uprawnień na pokazywanie nakładek (autostart). Proszę przyznaj uprawnienie!</string>
+    <string name="permission_request_overlays">Nie przyznano uprawnień na pokazywanie nakładek (autostart). Proszę przyznaj uprawnienie!</string>
     <string name="permission_request_location_mode">Włączony tryb lokalizacji nie pozwala na wykrywanie bieżącej pozycji.</string>
     <string name="persistent_battery_value_while_charging">Status baterii</string>
     <string name="persistent_battery_value_while_charging_summary">Pokazuj status baterii cały czas podczas ładowania</string>

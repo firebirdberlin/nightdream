@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.os.HandlerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
@@ -62,6 +63,7 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
+import com.firebirdberlin.nightdream.ui.AskForOverlayPermissionDialogFragment;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -542,6 +544,16 @@ public class NightDreamActivity extends BillingHelperActivity
             nightDreamUI.showAlarmClock();
             // TODO optionally enable the Flashlight
         }
+
+        if (!Utility.hasPermissionCanDrawOverlays(this)) {
+            Context context = this;
+            handler.postDelayed((Runnable) () -> {
+                if (!Utility.hasPermissionCanDrawOverlays(context)) {
+                    showRequestPermissionDrawOverlaysDialog();
+                }
+            }, 2000);
+        }
+
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
@@ -568,6 +580,12 @@ public class NightDreamActivity extends BillingHelperActivity
         FragmentManager fm = getSupportFragmentManager();
         StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
         dialog.show(fm, "sleep_timer");
+    }
+
+    private void showRequestPermissionDrawOverlaysDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
+        dialog.show(fm, "ask for overlay permission");
     }
 
     public void onSwitchNightMode() {

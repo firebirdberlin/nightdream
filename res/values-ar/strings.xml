@@ -187,7 +187,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">ضغطة مطولة</string>
     <string name="outer_circle_radius">نصف القطر الخارجي للدائرة</string>
     <string name="outer_circle_width">العرض الخارجي للدائرة</string>
-    <string name="permission_request_autostart">لم يتم منح إذن لإظهار التراكبات (التشغيل التلقائي).  يرجى منح هذا الإذن!</string>
+    <string name="permission_request_overlays">لم يتم منح إذن لإظهار التراكبات (التشغيل التلقائي).  يرجى منح هذا الإذن!</string>
     <string name="persistent_battery_value_while_charging">حالات البطارية المستمرة</string>
     <string name="persistent_battery_value_while_charging_summary">إظهار حالة البطارية بشكل دائم أثناء الشحن</string>
     <string name="preferences">تفضيلات</string>

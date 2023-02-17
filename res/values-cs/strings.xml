@@ -186,7 +186,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">dlouhý stisk</string>
     <string name="outer_circle_radius">Poloměr vnějšího kruhu</string>
     <string name="outer_circle_width">Tloušťka vnějšího kruhu</string>
-    <string name="permission_request_autostart">Oprávnění k zobrazování překryvů nebylo uděleno. Prosím o povolení.</string>
+    <string name="permission_request_overlays">Oprávnění k zobrazování překryvů nebylo uděleno. Prosím o povolení.</string>
     <string name="persistent_battery_value_while_charging">Trvalý stav baterie</string>
     <string name="persistent_battery_value_while_charging_summary">Neustále zobrazovat stav baterie během nabíjení.</string>
     <string name="preview">Náhled</string>
