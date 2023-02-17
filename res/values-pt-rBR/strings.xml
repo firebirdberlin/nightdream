@@ -193,7 +193,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Pressione longamente</string>
     <string name="outer_circle_radius">Tamanho do círculo externo</string>
     <string name="outer_circle_width">Expessura do círculo externo</string>
-    <string name="permission_request_autostart">A permissão para mostrar sobreposições (inicialização automática) não é concedida. Conceda esta permissão!</string>
+    <string name="permission_request_overlays">A permissão para mostrar sobreposições (inicialização automática) não é concedida. Conceda esta permissão!</string>
     <string name="persistent_battery_value_while_charging">Status de bateria persistente</string>
     <string name="persistent_battery_value_while_charging_summary">Mostre o status da bateria permanentemente enquanto recarrega</string>
     <string name="power_source">Fonte de energia</string>

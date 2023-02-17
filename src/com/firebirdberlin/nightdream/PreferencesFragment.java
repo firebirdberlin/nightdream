@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -197,6 +198,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     ClockWidgetProvider.updateAllWidgets(mContext);
                 }
             };
+
     private final Runnable runnableNotificationAccessChanged = new Runnable() {
         @Override
         public void run() {
@@ -219,6 +221,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
     };
+
     private ActivityResultLauncher<Intent> activityResultLauncherLoadImage = null;
     private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), result -> {
@@ -377,6 +380,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             switch (rootKey) {
                 case "autostart":
                     setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
+
+                    if (! isIgnoringBatteryOptimization()) {
+                        showPreference("startBatteryOptimization");
+                    } else {
+                        hidePreference("startBatteryOptimization");
+                    }
                     break;
                 case "clock":
                     setPreferencesFromResource(R.xml.preferences_clock, rootKey);
@@ -626,7 +635,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
 
         if (rootKey == null || "autostart".equals(rootKey)) {
-            conditionallyShowSnackBar(null);
+            conditionallyShowSnackBar();
         }
 
         if (isAdded() && Utility.isEmpty(rootKey)) {
@@ -985,6 +994,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupStandByService(SharedPreferences sharedPreferences) {
+        Log.d(TAG, "setupStandByService()");
         if (!isAdded()) return;
         boolean on = isAutostartActivated(sharedPreferences);
         int newState = on ?
@@ -1005,7 +1015,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (on) {
             ScreenWatcherService.start(mContext);
         }
-        conditionallyShowSnackBar(sharedPreferences);
+        conditionallyShowSnackBar();
     }
 
     private boolean isAutostartActivated(SharedPreferences sharedPreferences) {
@@ -1019,17 +1029,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         );
     }
 
-    private boolean hasCanDrawOverlaysPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            return (android.provider.Settings.canDrawOverlays(mContext));
-        }
-        return true;
-    }
-
-    private void requestCanDrawOverlaysPermission() {
+    private boolean isIgnoringBatteryOptimization() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+            PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+            return (powerManager.isIgnoringBatteryOptimizations(mContext.getPackageName()));
         }
+
+        return true;
     }
 
     private void setupNotificationAccessPermission(SharedPreferences sharedPreferences, String preferenceKey) {
@@ -1186,13 +1192,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         pref.setSummary(summary);
     }
 
-    private void conditionallyShowSnackBar(SharedPreferences settings) {
-        if (settings == null) {
-            settings = mContext.getSharedPreferences(PREFS_KEY, 0);
-        }
-        if (isAutostartActivated(settings) && !hasCanDrawOverlaysPermission()) {
+    private void conditionallyShowSnackBar() {
+        if (!Utility.hasPermissionCanDrawOverlays(mContext)) {
             View view = getActivity().findViewById(android.R.id.content);
-            snackbar = Snackbar.make(view, R.string.permission_request_autostart, Snackbar.LENGTH_INDEFINITE);
+            snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
             int color = Utility.getRandomMaterialColor(mContext);
             int textColor = Utility.getContrastColor(color);
             View snackbarView = snackbar.getView();
@@ -1269,7 +1272,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         @Override
         public void onClick(View v) {
             if (isAdded()) {
-                requestCanDrawOverlaysPermission();
+                Utility.requestPermissionCanDrawOverlays(mContext);
             }
         }
     }

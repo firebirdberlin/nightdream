@@ -241,7 +241,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Appui long</string>
     <string name="outer_circle_radius">Rayon cercle extérieur</string>
     <string name="outer_circle_width">Épaisseur cercle extérieur</string>
-    <string name="permission_request_autostart">L\'autorisation d\'afficher les superpositions (démarrage automatique) n\'est pas accordée. Veuillez accorder cette permission!</string>
+    <string name="permission_request_overlays">L\'autorisation d\'afficher les superpositions (démarrage automatique) n\'est pas accordée. Veuillez accorder cette permission!</string>
     <string name="permission_request_location_mode">Le mode de localisation actuellement activé ne permet pas de déterminer l\'emplacement actuel.</string>
     <string name="persistent_battery_value_while_charging">État de la batterie en permanence</string>
     <string name="persistent_battery_value_while_charging_summary">Afficher l\'état de la batterie en permanence lors de la charge.</string>

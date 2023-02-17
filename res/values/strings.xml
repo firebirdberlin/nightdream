@@ -189,6 +189,8 @@ OR
     <string name="hide_background_image_in_night_mode">Hide</string>
     <string name="hide_background_image_in_night_mode_summary">Hide the background image in night mode.</string>
     <string name="hour">h</string>
+    <string name="ignoreBatteryOptimisation">Battery optimisation</string>
+    <string name="ignoreBatteryOptimisation_summary">It is recommended to exclude the app from battery optimisations.</string>
     <string name="inner_circle_radius">Inner circle radius</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
@@ -256,7 +258,8 @@ OR
     <string name="options_stop_alarms_long_press">long press</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
-    <string name="permission_request_autostart">The permission for showing overlays (autostart) is not granted. Please grant this permission!</string>
+    <string name="permission_request">Permission request</string>
+    <string name="permission_request_overlays">The permission for showing over all apps is not granted. Please grant this permission now!</string>
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
     <string name="permission_request_storage">The permission for storage access was not granted.</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>

@@ -241,7 +241,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Pressione e segure</string>
     <string name="outer_circle_radius">Raio do círculo externo</string>
     <string name="outer_circle_width">Largura do círculo externo</string>
-    <string name="permission_request_autostart">A permissão para mostrar sobreposições (início automático) não é garantida. Pro favor conceda esta premissão!</string>
+    <string name="permission_request_overlays">A permissão para mostrar sobreposições (início automático) não é garantida. Pro favor conceda esta premissão!</string>
     <string name="permission_request_location_mode">O modo de localização atualmente ligado, não premite detetar a sua localização.</string>
     <string name="persistent_battery_value_while_charging">Estado da berteria persistente</string>
     <string name="persistent_battery_value_while_charging_summary">Mostre o estado da bateria permanentemente enquanto recarrega</string>
