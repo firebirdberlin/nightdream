@@ -971,6 +971,20 @@ public class Utility {
         return true;
     }
 
+    public static boolean hasPermissionCanDrawOverlays(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return (android.provider.Settings.canDrawOverlays(context));
+        }
+        return true;
+    }
+    public static void requestPermissionCanDrawOverlays(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        }
+    }
+
     @SuppressLint("MissingPermission")
     public static Location getLastKnownLocation(Context context) {
         if (!hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)) {

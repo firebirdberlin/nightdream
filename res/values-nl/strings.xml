@@ -241,7 +241,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Lang drukken</string>
     <string name="outer_circle_radius">Straal van buitenste cirkel</string>
     <string name="outer_circle_width">Diameter van buitenste cirkel</string>
-    <string name="permission_request_autostart">De machtiging om overlays the tonen (autostart) is niet verleend. Verleen deze machtiging a.u.b.</string>
+    <string name="permission_request_overlays">De machtiging om overlays the tonen (autostart) is niet verleend. Verleen deze machtiging a.u.b.</string>
     <string name="permission_request_location_mode">de locatiemode laat scannen naar de huidige locatie niet toe</string>
     <string name="persistent_battery_value_while_charging">Permanente batterijstatus</string>
     <string name="persistent_battery_value_while_charging_summary">Batterijstatus permanent tonen tijdens het opladen.</string>

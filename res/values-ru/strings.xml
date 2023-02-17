@@ -222,7 +222,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Долгое нажатие</string>
     <string name="outer_circle_radius">Радиус внешнего круга</string>
     <string name="outer_circle_width">Ширина внешнего круга</string>
-    <string name="permission_request_autostart">Разрешение на отображение оверлеев (автозапуск) не предоставлено. Пожалуйста, предоставьте это разрешение!</string>
+    <string name="permission_request_overlays">Разрешение на отображение оверлеев (автозапуск) не предоставлено. Пожалуйста, предоставьте это разрешение!</string>
     <string name="permission_request_location_mode">Включенный в данный момент режим определения местоположения не позволяет сканировать текущее местоположение.</string>
     <string name="persistent_battery_value_while_charging">Всегда отображать заряд</string>
     <string name="persistent_battery_value_while_charging_summary">Показывать статус батареи во время зарядки</string>

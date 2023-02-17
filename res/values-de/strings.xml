@@ -187,6 +187,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="hide_background_image_in_night_mode">Ausblenden</string>
     <string name="hide_background_image_in_night_mode_summary">Das Hintergrundbild soll im Nachtmodus ausgeblendet werden.</string>
     <string name="hour">h</string>
+    <string name="ignoreBatteryOptimisation">Akkuoptimierung</string>
+    <string name="ignoreBatteryOptimisation_summary">Es wird empfohlen, die App von der Akkuoptimierung auszuschließen.</string>
     <string name="inner_circle_radius">Radius des inneren Kreises</string>
     <string name="length">Länge</string>
     <string name="location_time">Zeit der letzten Standortbestimmung</string>
@@ -250,7 +252,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
     <string name="outer_circle_radius">Radius des äußeren Kreises</string>
     <string name="outer_circle_width">Dicke des äußeren Kreises</string>
-    <string name="permission_request_autostart">Bitte geben Sie die Berechtigung für den Autostart (Über anderen Apps einblenden).</string>
+    <string name="permission_request_overlays">Bitte geben Sie die Berechtigung "Über anderen Apps einblenden".</string>
     <string name="permission_request_location_mode">Die Standortbestimmung ist zur Zeit deaktiviert.</string>
     <string name="permission_request_storage">Berechtigung für Medien wurde nicht erteilt.</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
