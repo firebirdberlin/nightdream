@@ -49,6 +49,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.rarepebble.colorpicker.ColorPreference;
 
 import java.io.File;
+import java.util.Vector;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
@@ -56,6 +57,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
     private final Handler handler = new Handler();
+    private Vector<AlertDialog> dialogs = new Vector<>();
     Snackbar snackbar;
     String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
@@ -264,6 +266,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onDetach() {
         super.onDetach();
         dismissSnackBar();
+        closeAlertDialogs();
     }
 
     @Override
@@ -420,12 +423,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                 showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessNotGranted));
                                 showNotificationPreference.setEnabled(false);
 
-                                new android.app.AlertDialog.Builder(mContext)
-                                        .setTitle(getString(R.string.showNotificationsAccessNotGranted))
+                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                                builder.setTitle(getString(R.string.showNotificationsAccessNotGranted))
                                         .setMessage(getString(R.string.showNotificationsAlertText))
                                         .setPositiveButton(android.R.string.yes, null)
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .show();
+                                        .setIcon(android.R.drawable.ic_dialog_alert);
+                                AlertDialog alertdialog = builder.create();
+                                dialogs.add(alertdialog);
+                                alertdialog.show();
                             } else {
                                 showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessGranted));
                                 showNotificationPreference.setEnabled(true);
@@ -599,8 +604,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             if (resetToDefaults != null) {
 
                 resetToDefaults.setOnPreferenceClickListener(preference -> {
-                    new AlertDialog.Builder(mContext)
-                            .setTitle(getResources().getString(R.string.confirm_reset))
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle(getResources().getString(R.string.confirm_reset))
                             .setMessage(getResources().getString(R.string.confirm_reset_question))
                             .setNegativeButton(android.R.string.no, null)
                             .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
@@ -618,7 +623,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                 );
                                 PreferencesActivity activity = ((PreferencesActivity) mContext);
                                 activity.initFragment();
-                            }).show();
+                            });
+
+                    AlertDialog alertdialog = builder.create();
+                    dialogs.add(alertdialog);
+                    alertdialog.show();
 
                     return true;
                 });
@@ -1253,6 +1262,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             snackbar.dismiss();
             snackbar = null;
         }
+    }
+
+    public void closeAlertDialogs() {
+        for (AlertDialog dialog : dialogs)
+            if ((dialog != null) && dialog.isShowing()) {
+                dialog.dismiss();
+            }
     }
 
     private class DaydreamSettingsObserver extends ContentObserver {
