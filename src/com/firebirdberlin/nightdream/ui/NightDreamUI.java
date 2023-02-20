@@ -401,6 +401,7 @@ public class NightDreamUI {
         bottomPanelLayout = rootView.findViewById(R.id.bottomPanel);
         brightnessProgress = rootView.findViewById(R.id.brightness_progress);
         clockLayout = rootView.findViewById(R.id.clockLayout);
+        clockLayout.setVisibility(View.INVISIBLE); //set invisible on first start
         clockLayoutContainer = rootView.findViewById(R.id.clockLayoutContainer);
         exifLayoutContainer = rootView.findViewById(R.id.containerExifView);
 
@@ -457,6 +458,7 @@ public class NightDreamUI {
     private final Runnable zoomIn = new Runnable() {
         @Override
         public void run() {
+            Log.d(TAG,"zoomIn");
             removeCallbacks(zoomIn);
             clockLayout.setVisibility(View.INVISIBLE);
             Configuration config = getConfiguration();
@@ -543,7 +545,6 @@ public class NightDreamUI {
     public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
-            clockLayout.setVisibility(View.INVISIBLE);
             setupClockLayout();
             setColor();
             updateWeatherData();
@@ -559,7 +560,10 @@ public class NightDreamUI {
 
             showAlarmClock();
 
-            clockLayout.postDelayed(zoomIn, 500);
+            //call only on first start
+            if (!zoomFinished) {
+                clockLayout.postDelayed(zoomIn, 500);
+            }
         }
     };
 
