@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.KeyguardManager;
@@ -35,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.os.HandlerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
@@ -391,6 +391,16 @@ public class NightDreamActivity extends BillingHelperActivity
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(this::initTextToSpeech);
+
+        if (!Utility.hasPermissionCanDrawOverlays(this)) {
+            Context context = this;
+            handler.postDelayed((Runnable) () -> {
+                if (!Utility.hasPermissionCanDrawOverlays(context)) {
+                    showRequestPermissionDrawOverlaysDialog();
+                }
+            }, 2000);
+        }
+
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
@@ -442,11 +452,12 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onStart took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
+    @SuppressLint("MissingPermission")
     @Override
-    public void onWindowFocusChanged(boolean hasFocus){
-        Log.d(TAG,"onWindowFocusChanged()");
+    public void onWindowFocusChanged(boolean hasFocus) {
+        Log.d(TAG, "onWindowFocusChanged()");
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus){
+        if (hasFocus) {
             nightDreamUI.onResume();
             Intent intent = getIntent();
 
@@ -486,16 +497,17 @@ public class NightDreamActivity extends BillingHelperActivity
                 }
             });
 
-            if (mySettings.getWeatherAutoLocationEnabled()
-                    && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            if (mySettings.getWeatherAutoLocationEnabled() && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 Handler handler = new Handler(Looper.getMainLooper());
-                executor.execute(() -> { //background thread
+                executor.execute(() -> {
                     getLastKnownLocation();
-                    handler.post(() -> { //like onPostExecute()
-                        locationManager.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
-                        );
+                    handler.post(() -> {
+                        if (hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                            locationManager.requestLocationUpdates(
+                                    LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
+                            );
+                        }
                     });
                 });
             }
@@ -543,15 +555,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (AlarmHandlerService.alarmIsRunning()) {
             nightDreamUI.showAlarmClock();
             // TODO optionally enable the Flashlight
-        }
-
-        if (!Utility.hasPermissionCanDrawOverlays(this)) {
-            Context context = this;
-            handler.postDelayed((Runnable) () -> {
-                if (!Utility.hasPermissionCanDrawOverlays(context)) {
-                    showRequestPermissionDrawOverlaysDialog();
-                }
-            }, 2000);
         }
 
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -652,7 +655,7 @@ public class NightDreamActivity extends BillingHelperActivity
         } else {
             nightDreamUI.restoreRingerMode();
         }
-        if (locationManager != null && locationListener != null) {
+        if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
         CheckChargingStateJob.schedule(this);
