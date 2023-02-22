@@ -40,6 +40,15 @@ public class StopBackgroundServiceDialogFragment extends AppCompatDialogFragment
         setOkButtonEnabled(true);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        AlertDialog dialog = (AlertDialog) getDialog();
+        if ((dialog != null) && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
     private void setOkButtonEnabled(boolean enabled) {
         AlertDialog dialog = (AlertDialog) getDialog();
         if (dialog == null) {
