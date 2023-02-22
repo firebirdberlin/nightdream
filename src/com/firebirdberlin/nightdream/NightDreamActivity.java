@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.location.Location;
@@ -35,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.core.os.HandlerCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -391,6 +393,16 @@ public class NightDreamActivity extends BillingHelperActivity
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(this::initTextToSpeech);
+
+        if (!Utility.hasPermissionCanDrawOverlays(this)) {
+            Context context = this;
+            handler.postDelayed((Runnable) () -> {
+                if (!Utility.hasPermissionCanDrawOverlays(context)) {
+                    showRequestPermissionDrawOverlaysDialog();
+                }
+            }, 2000);
+        }
+
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
@@ -443,10 +455,10 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus){
-        Log.d(TAG,"onWindowFocusChanged()");
+    public void onWindowFocusChanged(boolean hasFocus) {
+        Log.d(TAG, "onWindowFocusChanged()");
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus){
+        if (hasFocus) {
             nightDreamUI.onResume();
             Intent intent = getIntent();
 
@@ -493,9 +505,11 @@ public class NightDreamActivity extends BillingHelperActivity
                 executor.execute(() -> { //background thread
                     getLastKnownLocation();
                     handler.post(() -> { //like onPostExecute()
-                        locationManager.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
-                        );
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            locationManager.requestLocationUpdates(
+                                    LocationManager.NETWORK_PROVIDER, 15 * 60000, 10000, locationListener
+                            );
+                        }
                     });
                 });
             }
@@ -543,15 +557,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (AlarmHandlerService.alarmIsRunning()) {
             nightDreamUI.showAlarmClock();
             // TODO optionally enable the Flashlight
-        }
-
-        if (!Utility.hasPermissionCanDrawOverlays(this)) {
-            Context context = this;
-            handler.postDelayed((Runnable) () -> {
-                if (!Utility.hasPermissionCanDrawOverlays(context)) {
-                    showRequestPermissionDrawOverlaysDialog();
-                }
-            }, 2000);
         }
 
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");

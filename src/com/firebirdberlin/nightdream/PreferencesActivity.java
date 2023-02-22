@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.firebirdberlin.nightdream.ui.AskForOverlayPermissionDialogFragment;
+
 public class PreferencesActivity extends BillingHelperActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
@@ -21,6 +24,7 @@ public class PreferencesActivity extends BillingHelperActivity
     PreferencesFragment fragment = new PreferencesFragment();
     PreferencesFragment fragment2 = null;
     String rootKey = "";
+    final private Handler handler = new Handler();
 
     public static void start(Context context) {
         Intent intent = new Intent(context, PreferencesActivity.class);
@@ -52,6 +56,20 @@ public class PreferencesActivity extends BillingHelperActivity
         super.onCreate(savedInstanceState);
         setTheme(R.style.PreferencesTheme);
         initTitleBar();
+        if (!Utility.hasPermissionCanDrawOverlays(this)) {
+            Context context = this;
+            handler.postDelayed((Runnable) () -> {
+                if (!Utility.hasPermissionCanDrawOverlays(context)) {
+                    showRequestPermissionDrawOverlaysDialog();
+                }
+            }, 2000);
+        }
+    }
+
+    private void showRequestPermissionDrawOverlaysDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
+        dialog.show(fm, "ask for overlay permission");
     }
 
     @Override
