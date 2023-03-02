@@ -865,12 +865,19 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "onConfigurationChanged()");
         int diff = newConfig.diff(prevConfig);
         if ((nightDreamUI != null) && (diff != 0)) {
             nightDreamUI.onConfigurationChanged(newConfig);
         }
         prevConfig = new Configuration(newConfig);
     }
+
+    public void mediaControlChanged() {
+        Log.d(TAG, "mediaControlChanged()");
+        nightDreamUI.onConfigurationChanged(this.getResources().getConfiguration());
+    }
+
 
     private void setMode(int new_mode) {
         nightDreamUI.setMode(new_mode, last_ambient);
