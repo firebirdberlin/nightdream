@@ -461,8 +461,9 @@ public class NightDreamActivity extends BillingHelperActivity
                 AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
-                    if (weatherEntry != oldWeatherEntry.get()) {
-                        Log.d(TAG, "onChanged inside weatherEntry: " + oldWeatherEntry);
+                    if (weatherEntry != null && (oldWeatherEntry.get() == null || !weatherEntry.toString().equals(oldWeatherEntry.get().toString()))) {
+                        Log.d(TAG, "onChanged inside weatherEntryNew: " + weatherEntry);
+                        Log.d(TAG, "onChanged inside weatherEntryOld: " + oldWeatherEntry.get());
                         oldWeatherEntry.set(weatherEntry);
                         nightDreamUI.weatherDataUpdated(context);
                     }
