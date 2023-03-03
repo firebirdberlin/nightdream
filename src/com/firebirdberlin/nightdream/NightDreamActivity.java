@@ -88,6 +88,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
@@ -504,8 +505,9 @@ public class NightDreamActivity extends BillingHelperActivity
                 AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<WeatherEntry>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
-                    if (weatherEntry != oldWeatherEntry.get()) {
-                        Log.d(TAG, "onChanged inside weatherEntry: " + oldWeatherEntry);
+                    if (weatherEntry != null && (oldWeatherEntry.get() == null || !weatherEntry.toString().equals(oldWeatherEntry.get().toString()))) {
+                        Log.d(TAG, "onChanged inside weatherEntryNew: " + weatherEntry);
+                        Log.d(TAG, "onChanged inside weatherEntryOld: " + oldWeatherEntry.get());
                         oldWeatherEntry.set(weatherEntry);
                         nightDreamUI.weatherDataUpdated(context);
                     }
