@@ -91,6 +91,11 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
         if (Build.VERSION.SDK_INT >= 19) {
+            if ( Build.VERSION.SDK_INT >= 31 && !alarmManager.canScheduleExactAlarms())
+            {
+               // context.startActivity(new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
+                return;
+            }
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);

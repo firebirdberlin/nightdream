@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
-    private static String TAG = "NightDream.PowerConnectionReceiver";
+    private static final String TAG = "NightDream:PwrConnecRvr";
     private static int PENDING_INTENT_START_APP = 0;
 
     public static PowerConnectionReceiver register(Context ctx) {
@@ -79,6 +79,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     }
 
     static public void schedule(Context context) {
+        Log.d(TAG, "ppt schedule()");
         Intent alarmIntent = new Intent(context, PowerConnectionReceiver.class);
         PendingIntent pendingIntent = Utility.getImmutableBroadcast(
                 context, PENDING_INTENT_START_APP, alarmIntent
@@ -86,7 +87,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
         Settings settings = new Settings(context);
         if (settings.scheduledAutoStartEnabled) {
-            // The autostart feature is replaced by a new version which has a seperate setting
+            // The autostart feature is replaced by a new version which has a separate setting
             // in the preferences. Thus, the old autostart is deactivated when the new one is
             // active.
             return;
@@ -96,6 +97,12 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
         if (Build.VERSION.SDK_INT >= 19) {
+            if ( Build.VERSION.SDK_INT >= 31 && !alarmManager.canScheduleExactAlarms())
+            {
+               // context.startActivity(new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
+                return;
+            }
+
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
