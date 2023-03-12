@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.prof.rssparser.Article;
 
@@ -52,6 +53,10 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         background.setColor(Color.parseColor("#AA212121"));
         background.setCornerRadii(new float[]{30, 30, 30, 30, 0, 0, 0, 0});
         setBackground(background);
+
+        Settings settings = new Settings(context);
+        animationSpeed = settings.rssTickerSpeed;
+        textSize = settings.rssTextSize;
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT
