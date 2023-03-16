@@ -318,6 +318,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_require_wifi">WLAN Verbindung benötigt</string>
     <string name="radio_stream_require_wifi_desc">Falls aktiviert, wird der Radiowecker nur mit einer WLAN-Verbindung gestartet.</string>
     <string name="radio_stream_search">Suchen</string>
+    <string name="radio_stream_unreachable_server">Der Server ist nicht erreichbar.</string>
     <string name="radio_stream_unreachable_url">Der Sender ist nicht erreichbar.</string>
     <string name="rate">Bewertung abgeben</string>
     <string name="rate_summary">Über eine Bewertung der App würden wir uns freuen.</string>

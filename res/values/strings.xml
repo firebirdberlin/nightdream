@@ -316,6 +316,7 @@ OR
     <string name="radio_stream_require_wifi">require WiFi connection</string>
     <string name="radio_stream_require_wifi_desc">If on, alarms will play web radio streams only with an established WiFi connection.</string>
     <string name="radio_stream_search">Search</string>
+    <string name="radio_stream_unreachable_server">The Server is not reachable.</string>
     <string name="radio_stream_unreachable_url">The URL is not reachable.</string>
     <string name="reactivate_on_ambient_light_value">Illuminance threshold</string>
     <string name="reactivate_on_ambient_light_value_summary">The screen is reactivated if the threshold value of illuminance is exceeded.</string>
