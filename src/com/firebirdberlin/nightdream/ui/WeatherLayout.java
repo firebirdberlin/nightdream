@@ -40,8 +40,8 @@ public class WeatherLayout extends LinearLayout {
     private TextView iconText = null;
     private ImageView iconImage = null;
     private TextView iconWind = null;
-    private TextView temperatureText = null;
-    private TextView locationText = null;
+    private AutoAdjustTextView temperatureText = null;
+    private AutoAdjustTextView locationText = null;
     private TextView windText = null;
     private LinearLayout container = null;
     private boolean showApparentTemperature = false;
@@ -299,8 +299,21 @@ public class WeatherLayout extends LinearLayout {
                 }
             }
 
-            temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
-            locationText.setText(entry.cityName);
+            if (temperatureText != null) {
+                temperatureText.setMaxWidth(maxWidth-maxHeight-15); //-15 for padding
+                float textSize = (float) Utility.pixelsToDp(context, maxFontSizePx);
+                temperatureText.setMaxFontSizesInSp(10.f, textSize);
+                temperatureText.setText(entry.cityName);
+                temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
+            }
+
+            if (locationText != null) {
+                locationText.setMaxWidth(maxWidth);
+                float textSize = (float) Utility.pixelsToDp(context, maxFontSizePx);
+                locationText.setMaxFontSizesInSp(10.f, textSize);
+                locationText.setText(entry.cityName);
+            }
+
             iconWind.setText("F");
             iconWindDirection.setDirection(entry.windDirection);
             windText.setText(entry.formatWindText(speedUnit));
@@ -327,13 +340,16 @@ public class WeatherLayout extends LinearLayout {
         iconText.setTextSize(unit, iconSizeFactor * size);
         iconWind.setTextSize(unit, iconSizeFactor * size);
         windText.setTextSize(unit, size);
-        temperatureText.setTextSize(unit, size);
-        locationText.setTextSize(unit, size);
+ //       temperatureText.setTextSize(unit, size);
+//        locationText.setTextSize(unit, size);
         iconImage.getLayoutParams().height = temperatureText.getHeight();
         iconImage.getLayoutParams().width = temperatureText.getHeight();
 
         iconImage.getLayoutParams().height = getIconHeight();
         iconImage.getLayoutParams().width = getIconHeight();
+
+        iconImage.getLayoutParams().height = maxHeight;
+        iconImage.getLayoutParams().width = maxHeight;
 
         invalidate();
     }
