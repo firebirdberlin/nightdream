@@ -234,6 +234,7 @@ public class NightDreamUI {
     private int vibrantColor = 0;
     private int vibrantColorDark = 0;
     private long lastAnimationTime = 0L;
+    private long lastTouchTime = 0L;
     private SoundMeter soundmeter;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private boolean locked = false;
@@ -1293,7 +1294,8 @@ public class NightDreamUI {
         setBrightness(brightness);
 
         //if ( showcaseView == null && !AlarmHandlerService.alarmIsRunning()) {
-        if (!AlarmHandlerService.alarmIsRunning()) {
+        long now = System.currentTimeMillis();
+        if (!AlarmHandlerService.alarmIsRunning() || now > lastTouchTime + 1000) {
             setAlpha(clockLayout, v, millis);
         }
 
@@ -1337,7 +1339,8 @@ public class NightDreamUI {
         if (settings.autoBrightness) {
             minBrightness = Math.min(minBrightness, 0.1f);
         }
-        if (AlarmHandlerService.alarmIsRunning()) return 0.5f;
+        long now = System.currentTimeMillis();
+        if (AlarmHandlerService.alarmIsRunning() && now > lastTouchTime + 1000 ) return 0.5f;
         return minBrightness;
     }
 
@@ -1545,6 +1548,8 @@ public class NightDreamUI {
     }
 
     public boolean onTouch(View view, MotionEvent e) {
+        lastTouchTime = System.currentTimeMillis();
+
         if (locked) {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
@@ -1559,16 +1564,16 @@ public class NightDreamUI {
             if (AlarmHandlerService.alarmIsRunning()) {
                 alarmClock.snooze();
             }
-
-            return true;
+        } else {
+            mGestureDetector.onTouchEvent(e);
+            if (mScaleDetector != null) {
+                mScaleDetector.onTouchEvent(e);
+            }
+            if (shallMoveClock) {
+                onTouchListenerClockLayout.onTouch(view, e);
+            }
         }
-        mGestureDetector.onTouchEvent(e);
-        if (mScaleDetector != null) {
-            mScaleDetector.onTouchEvent(e);
-        }
-        if (shallMoveClock) {
-            onTouchListenerClockLayout.onTouch(view, e);
-        }
+        dimScreen(0, last_ambient, settings.dim_offset);
         return true;
     }
 
