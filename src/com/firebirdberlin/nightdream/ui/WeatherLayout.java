@@ -323,7 +323,9 @@ public class WeatherLayout extends LinearLayout {
         }
     }
 
-    public void setTextSize(int unit, int size) {
+    public void setTextSizePx(int size) {
+        int unit = TypedValue.COMPLEX_UNIT_PX;
+
         iconText.setTextSize(unit, iconSizeFactor * size);
         iconWind.setTextSize(unit, iconSizeFactor * size);
         windText.setTextSize(unit, size);
@@ -358,9 +360,9 @@ public class WeatherLayout extends LinearLayout {
         if (maxWidth == -1) return;
         if (maxFontSizePx == -1 || minFontSizePx == -1) return;
         for (int size = minFontSizePx; size <= maxFontSizePx; size++) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            setTextSizePx(size);
             if (measureText() > maxWidth || (maxHeight > 0 && measureTextHeight() > maxHeight)) {
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 1);
+                setTextSizePx(size - 1);
                 break;
             }
         }
