@@ -519,9 +519,10 @@ public class ClockLayout extends LinearLayout {
             layout.setIconSizeFactor(weatherIconSizeFactor);
             if (dateTextSize > 0) {
                 layout.setTypeface(date.getTypeface());
-                layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, dateTextSize);
+                layout.setTextSizePx(dateTextSize);
             } else {
-                layout.setTextSize(TypedValue.COMPLEX_UNIT_SP, (int) maxFontSize);
+                int sizePx = Utility.spToPx(context, maxFontSize);
+                layout.setTextSizePx(sizePx);
             }
             if (iconHeight < 0) {
                 iconHeight = layout.getIconHeight();
@@ -633,7 +634,7 @@ public class ClockLayout extends LinearLayout {
                     layout.setMaxWidth((int) (0.9 * parentWidth));
                     layout.setMaxFontSizesInSp(6.f, 20.f);
                 } else {
-                    layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) fontSize);
+                    layout.setTextSizePx((int) fontSize);
                 }
                 layout.update();
                 layout.invalidate();
@@ -671,7 +672,7 @@ public class ClockLayout extends LinearLayout {
                     layout.setMaxWidth((int) (0.9 * parentWidth));
                     layout.setMaxFontSizesInSp(6.f, 16.f);
                 } else {
-                    layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) fontSize);
+                    layout.setTextSizePx((int) fontSize);
                 }
                 layout.update();
                 layout.invalidate();
@@ -705,7 +706,7 @@ public class ClockLayout extends LinearLayout {
                         layout.setMaxWidth((int) (sizeFactor * parentWidth));
                         layout.setMaxFontSizesInSp(6.f, 20.f);
                     } else {
-                        layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) fontSize);
+                        layout.setTextSizePx((int) fontSize);
                     }
                     layout.update();
                     layout.invalidate(); // must invalidate to get correct getHeightOfView below
@@ -843,7 +844,7 @@ public class ClockLayout extends LinearLayout {
                     layout.setMaxWidth(widgetSize / 3 * 2);
                     layout.setMaxFontSizesInSp(minFontSize, maxFontSize);
                 } else {
-                    layout.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) fontSize);
+                    layout.setTextSizePx((int) fontSize);
                 }
                 layout.update();
                 layout.invalidate();
