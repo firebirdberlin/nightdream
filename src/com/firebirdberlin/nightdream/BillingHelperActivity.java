@@ -1,7 +1,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -21,13 +20,10 @@ import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
-import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
-import com.android.billingclient.api.SkuDetailsResponseListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,25 +72,28 @@ public abstract class BillingHelperActivity
         if (purchases != null) {
             switch (sku) {
                 case ITEM_DONATION:
-                    return purchases.get(ITEM_DONATION);
+                    return Boolean.TRUE.equals(purchases.get(ITEM_DONATION));
                 case ITEM_PRO:
-                    return (purchases.get(ITEM_DONATION) || purchases.get(ITEM_PRO));
+                    return (Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
+                            || Boolean.TRUE.equals(purchases.get(ITEM_PRO)));
                 case ITEM_WEATHER_DATA:
-                    return (purchases.get(ITEM_DONATION) || purchases.get(ITEM_PRO) ||
-                            purchases.get(ITEM_WEATHER_DATA));
+                    return (Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
+                            || Boolean.TRUE.equals(purchases.get(ITEM_PRO))
+                            || Boolean.TRUE.equals(purchases.get(ITEM_WEATHER_DATA)));
                 case ITEM_WEB_RADIO:
-                    return (purchases.get(ITEM_DONATION) || purchases.get(ITEM_PRO) ||
-                            purchases.get(ITEM_WEB_RADIO));
+                    return (Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
+                            || Boolean.TRUE.equals(purchases.get(ITEM_PRO))
+                            || Boolean.TRUE.equals(purchases.get(ITEM_WEB_RADIO)));
                 case ITEM_ACTIONS:
-                    return (purchases.get(ITEM_DONATION) || purchases.get(ITEM_PRO) ||
-                            purchases.get(ITEM_ACTIONS));
+                    return (Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
+                            || Boolean.TRUE.equals(purchases.get(ITEM_PRO))
+                            || Boolean.TRUE.equals(purchases.get(ITEM_ACTIONS)));
             }
         }
         return false;
     }
 
     public void showPurchaseDialog() {
-        final Context self = this;
         Log.i(TAG, "showPurchaseDialog()");
         if (isPurchased(ITEM_DONATION)) return;
         List<CharSequence> entries = new ArrayList<>();
@@ -134,30 +133,26 @@ public abstract class BillingHelperActivity
         runOnUiThread(() -> new AlertDialog.Builder(this, R.style.DialogTheme)
                 .setTitle(getResources().getString(R.string.buy))
                 .setItems(
-                        entries.toArray(new CharSequence[entries.size()]),
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int which) {
-                                Log.i(TAG, String.format("selected %d", which));
-                                int selected = values.get(which);
-                                switch (selected) {
-                                    case PRODUCT_ID_WEATHER_DATA:
-                                        launchBillingFlow(ITEM_WEATHER_DATA);
-                                        break;
-                                    case PRODUCT_ID_WEB_RADIO:
-                                        launchBillingFlow(ITEM_WEB_RADIO);
-                                        break;
-                                    case PRODUCT_ID_ACTIONS:
-                                        launchBillingFlow(ITEM_ACTIONS);
-                                        break;
-                                    case PRODUCT_ID_DONATION:
-                                        launchBillingFlow(ITEM_DONATION);
-                                        break;
-                                    case PRODUCT_ID_PRO:
-                                        launchBillingFlow(ITEM_PRO);
-                                        break;
-                                }
+                        entries.toArray(new CharSequence[0]),
+                        (dialogInterface, which) -> {
+                            Log.i(TAG, String.format("selected %d", which));
+                            int selected = values.get(which);
+                            switch (selected) {
+                                case PRODUCT_ID_WEATHER_DATA:
+                                    launchBillingFlow(ITEM_WEATHER_DATA);
+                                    break;
+                                case PRODUCT_ID_WEB_RADIO:
+                                    launchBillingFlow(ITEM_WEB_RADIO);
+                                    break;
+                                case PRODUCT_ID_ACTIONS:
+                                    launchBillingFlow(ITEM_ACTIONS);
+                                    break;
+                                case PRODUCT_ID_DONATION:
+                                    launchBillingFlow(ITEM_DONATION);
+                                    break;
+                                case PRODUCT_ID_PRO:
+                                    launchBillingFlow(ITEM_PRO);
+                                    break;
                             }
                         })
                 .setNeutralButton(android.R.string.cancel, null)
@@ -317,7 +312,7 @@ public abstract class BillingHelperActivity
 
         mBillingClient.startConnection(new BillingClientStateListener() {
             @Override
-            public void onBillingSetupFinished(BillingResult billingResult) {
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 Log.i(TAG, "onBillingSetupFinished");
                 try {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
@@ -341,36 +336,33 @@ public abstract class BillingHelperActivity
     }
 
     void queryPurchases() {
-        mBillingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, new PurchasesResponseListener() {
-            @Override
-            public void onQueryPurchasesResponse(@NonNull BillingResult result, @NonNull List<Purchase> purchaseList) {
-                int responseCode = result.getResponseCode();
-                if (responseCode != BillingClient.BillingResponseCode.OK) {
-                    return;
-                }
-                for (String sku : fullSkuList) {
-                    purchases.put(sku, false);
-                }
-                for (Purchase purchase: purchaseList) {
-                    ArrayList<String> skus = purchase.getSkus();
-                    for (String sku : skus) {
-                        int state = purchase.getPurchaseState();
-                        boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
-                        purchases.put(sku, purchased);
-                        Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
-                        // ATTENTION only activate temporarily
-                        // consumePurchase(purchase);
-                    }
-                }
-
-                // store in the cache
-                for (String sku : fullSkuList) {
-                    boolean isPurchased = purchases.get(sku);
-                    setPurchased(sku, isPurchased);
-                }
-
-                onPurchasesInitialized();
+        mBillingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, (result, purchaseList) -> {
+            int responseCode = result.getResponseCode();
+            if (responseCode != BillingClient.BillingResponseCode.OK) {
+                return;
             }
+            for (String sku : fullSkuList) {
+                purchases.put(sku, false);
+            }
+            for (Purchase purchase: purchaseList) {
+                ArrayList<String> skus = purchase.getSkus();
+                for (String sku : skus) {
+                    int state = purchase.getPurchaseState();
+                    boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
+                    purchases.put(sku, purchased);
+                    Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
+                    // ATTENTION only activate temporarily
+                    // consumePurchase(purchase);
+                }
+            }
+
+            // store in the cache
+            for (String sku : fullSkuList) {
+                boolean isPurchased = Boolean.TRUE.equals(purchases.get(sku));
+                setPurchased(sku, isPurchased);
+            }
+
+            onPurchasesInitialized();
         });
     }
 
@@ -378,19 +370,15 @@ public abstract class BillingHelperActivity
         SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
         params.setSkusList(fullSkuList).setType(BillingClient.SkuType.INAPP);
         mBillingClient.querySkuDetailsAsync(params.build(),
-                new SkuDetailsResponseListener() {
-                    @Override
-                    public void onSkuDetailsResponse(BillingResult result,
-                                                     List<SkuDetails> skuDetailsList) {
-                        if (result.getResponseCode() == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
-                            skuDetails = skuDetailsList;
-                            prices.clear();
-                            for (SkuDetails skuDetails : skuDetailsList) {
-                                String sku = skuDetails.getSku();
-                                String price = skuDetails.getPrice();
-                                Log.i(TAG, String.format("price %s = %s", sku, price));
-                                prices.put(sku, price);
-                            }
+                (result, skuDetailsList) -> {
+                    if (result.getResponseCode() == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
+                        skuDetails = skuDetailsList;
+                        prices.clear();
+                        for (SkuDetails skuDetails : skuDetailsList) {
+                            String sku = skuDetails.getSku();
+                            String price = skuDetails.getPrice();
+                            Log.i(TAG, String.format("price %s = %s", sku, price));
+                            prices.put(sku, price);
                         }
                     }
                 });
@@ -400,16 +388,13 @@ public abstract class BillingHelperActivity
         final ArrayList<String> skus = purchase.getSkus();
         String token = purchase.getPurchaseToken();
         ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(token).build();
-        mBillingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
-            @Override
-            public void onConsumeResponse(BillingResult billingResult, String purchaseToken) {
-                Log.d(TAG, "onConsumeResponse: " + billingResult.getDebugMessage());
-                int response = billingResult.getResponseCode();
-                if (response == BillingClient.BillingResponseCode.OK) {
-                    for (String sku : skus) {
-                        purchases.put(sku, false);
-                        onItemConsumed(sku);
-                    }
+        mBillingClient.consumeAsync(consumeParams, (billingResult, purchaseToken) -> {
+            Log.d(TAG, "onConsumeResponse: " + billingResult.getDebugMessage());
+            int response = billingResult.getResponseCode();
+            if (response == BillingClient.BillingResponseCode.OK) {
+                for (String sku : skus) {
+                    purchases.put(sku, false);
+                    onItemConsumed(sku);
                 }
             }
         });
