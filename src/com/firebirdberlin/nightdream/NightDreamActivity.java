@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -108,7 +109,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private static int mode = MODE_DAY;
     private static Context context = null;
     final private Handler handler = new Handler();
-    private final Runnable finishApp = () -> finish();
+    private final Runnable finishApp = this::finish;
     public CastContext mCastContext;
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
@@ -180,7 +181,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 city.lat = location.getLatitude();
                 city.lon = location.getLongitude();
                 city.name = "current";
-                Log.i(TAG, "current location: " + city.toString());
+                Log.i(TAG, "current location: " + city);
                 if (mySettings != null) {
                     mySettings.setLocation(location);
                 }
@@ -215,7 +216,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
     private GestureDetector mGestureDetector = null;
-    private Runnable lockDevice = () -> {
+    private final Runnable lockDevice = () -> {
         if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
             mgr.lockNow();
             Utility.turnScreenOn(context);
@@ -223,7 +224,7 @@ public class NightDreamActivity extends BillingHelperActivity
     };
     private LocationManager locationManager = null;
     private FlashlightProvider flash = null;
-    private Runnable setScreenOff = new Runnable() {
+    private final Runnable setScreenOff = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(setScreenOff);
@@ -232,7 +233,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     };
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private ServiceConnection connection = new ServiceConnection() {
+    private final ServiceConnection connection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -288,44 +289,44 @@ public class NightDreamActivity extends BillingHelperActivity
         mCastContext = CastContext.getSharedInstance(this);
         mSessionManagerListener = new SessionManagerListener<CastSession>() {
             @Override
-            public void onSessionEnded(CastSession session, int error) {
+            public void onSessionEnded(@NonNull CastSession session, int error) {
                 onApplicationDisconnected();
             }
 
             @Override
-            public void onSessionResumed(CastSession session, boolean wasSuspended) {
+            public void onSessionResumed(@NonNull CastSession session, boolean wasSuspended) {
                 onApplicationConnected(session);
             }
 
             @Override
-            public void onSessionResumeFailed(CastSession session, int error) {
+            public void onSessionResumeFailed(@NonNull CastSession session, int error) {
                 onApplicationDisconnected();
             }
 
             @Override
-            public void onSessionStarted(CastSession session, String sessionId) {
+            public void onSessionStarted(@NonNull CastSession session, @NonNull String sessionId) {
                 onApplicationConnected(session);
             }
 
             @Override
-            public void onSessionStartFailed(CastSession session, int error) {
+            public void onSessionStartFailed(@NonNull CastSession session, int error) {
                 onApplicationDisconnected();
             }
 
             @Override
-            public void onSessionStarting(CastSession session) {
+            public void onSessionStarting(@NonNull CastSession session) {
             }
 
             @Override
-            public void onSessionEnding(CastSession session) {
+            public void onSessionEnding(@NonNull CastSession session) {
             }
 
             @Override
-            public void onSessionResuming(CastSession session, String sessionId) {
+            public void onSessionResuming(@NonNull CastSession session, @NonNull String sessionId) {
             }
 
             @Override
-            public void onSessionSuspended(CastSession session, int reason) {
+            public void onSessionSuspended(@NonNull CastSession session, int reason) {
             }
 
             private void onApplicationConnected(CastSession castSession) {
@@ -394,7 +395,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         if (!Utility.hasPermissionCanDrawOverlays(this)) {
             Context context = this;
-            handler.postDelayed((Runnable) () -> {
+            handler.postDelayed(() -> {
                 if (!Utility.hasPermissionCanDrawOverlays(context)) {
                     showRequestPermissionDrawOverlaysDialog();
                 }
@@ -513,7 +514,7 @@ public class NightDreamActivity extends BillingHelperActivity
             }
 
             if (mySettings.showWeather) {
-                AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<WeatherEntry>();
+                AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
                     if (weatherEntry != oldWeatherEntry.get()) {
@@ -866,7 +867,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         int diff = newConfig.diff(prevConfig);
         if ((nightDreamUI != null) && (diff != 0)) {
@@ -1083,7 +1084,7 @@ public class NightDreamActivity extends BillingHelperActivity
         handler.removeCallbacks(alwaysOnTimeout);
         boolean isCharging = Utility.isCharging(this);
         if ((!isCharging && mySettings.batteryTimeout > 0) || (isCharging && mode == 0)) {
-            handler.postDelayed(alwaysOnTimeout, 60000 * mySettings.batteryTimeout);
+            handler.postDelayed(alwaysOnTimeout, 60000L * mySettings.batteryTimeout);
         }
     }
 
