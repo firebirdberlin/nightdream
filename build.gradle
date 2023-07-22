@@ -30,7 +30,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'com.android.billingclient:billing:4.0.0'
+    implementation 'com.android.billingclient:billing:6.0.1'
     implementation 'androidx.fragment:fragment:1.5.0'
 
     // implementation 'uk.co.samuelwall:material-tap-target-prompt:3.0.0'
