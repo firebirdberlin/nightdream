@@ -9,13 +9,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.android.billingclient.api.AcknowledgePurchaseParams;
-import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -23,6 +23,7 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
@@ -340,34 +341,37 @@ public abstract class BillingHelperActivity
     }
 
     void queryPurchases() {
-        Purchase.PurchasesResult result = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
-        int responseCode = result.getResponseCode();
-        if (responseCode != BillingClient.BillingResponseCode.OK) {
-            return;
-        }
+        mBillingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, new PurchasesResponseListener() {
+            @Override
+            public void onQueryPurchasesResponse(@NonNull BillingResult result, @NonNull List<Purchase> purchaseList) {
+                int responseCode = result.getResponseCode();
+                if (responseCode != BillingClient.BillingResponseCode.OK) {
+                    return;
+                }
+                for (String sku : fullSkuList) {
+                    purchases.put(sku, false);
+                }
+                for (Purchase purchase: purchaseList) {
+                    ArrayList<String> skus = purchase.getSkus();
+                    for (String sku : skus) {
+                        int state = purchase.getPurchaseState();
+                        boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
+                        purchases.put(sku, purchased);
+                        Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
+                        // ATTENTION only activate temporarily
+                        // consumePurchase(purchase);
+                    }
+                }
 
-        for (String sku : fullSkuList) {
-            purchases.put(sku, false);
-        }
-        for (Purchase purchase : result.getPurchasesList()) {
-            ArrayList<String> skus = purchase.getSkus();
-            for (String sku : skus) {
-                int state = purchase.getPurchaseState();
-                boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
-                purchases.put(sku, purchased);
-                Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
-                // ATTENTION only activate temporarily
-                // consumeItem(sku);
+                // store in the cache
+                for (String sku : fullSkuList) {
+                    boolean isPurchased = purchases.get(sku);
+                    setPurchased(sku, isPurchased);
+                }
+
+                onPurchasesInitialized();
             }
-        }
-
-        // store in the cache
-        for (String sku : fullSkuList) {
-            boolean isPurchased = purchases.get(sku);
-            setPurchased(sku, isPurchased);
-        }
-
-        onPurchasesInitialized();
+        });
     }
 
     void querySkuDetails() {
@@ -390,28 +394,6 @@ public abstract class BillingHelperActivity
                         }
                     }
                 });
-    }
-
-    void consumeItem(String sku) {
-        List<String> skuList = new ArrayList<>();
-        skuList.add(sku);
-        Purchase.PurchasesResult result = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
-        int responseCode = result.getResponseCode();
-        if (responseCode != BillingClient.BillingResponseCode.OK) {
-            return;
-        }
-
-        purchases.put(sku, false);
-        for (Purchase purchase : result.getPurchasesList()) {
-            // ATTENTION only activate temporarily
-            ArrayList<String> skus = purchase.getSkus();
-            for (String s : skus) {
-                if (sku.equals(s)) {
-                    consumePurchase(purchase);
-                    break;
-                }
-            }
-        }
     }
 
     void consumePurchase(Purchase purchase) {
