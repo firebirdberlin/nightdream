@@ -20,10 +20,12 @@ import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchasesParams;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +47,13 @@ public abstract class BillingHelperActivity
     private static final int PRODUCT_ID_DONATION = 2;
     private static final int PRODUCT_ID_PRO = 3;
     private static final int PRODUCT_ID_ACTIONS = 4;
+    static ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(
+            buildProduct(ITEM_DONATION),
+            buildProduct(ITEM_PRO),
+            buildProduct(ITEM_ACTIONS),
+            buildProduct(ITEM_WEB_RADIO),
+            buildProduct(ITEM_WEATHER_DATA)
+    );
     static List<String> fullSkuList = new ArrayList<>(
             Arrays.asList(
                     ITEM_DONATION, ITEM_PRO, ITEM_WEATHER_DATA,
@@ -53,9 +62,16 @@ public abstract class BillingHelperActivity
     );
     Map<String, Boolean> purchases = getDefaultPurchaseMap();
     HashMap<String, String> prices = new HashMap<>();
-    List<SkuDetails> skuDetails;
+    List<ProductDetails> productDetails;
     SharedPreferences preferences;
     private BillingClient mBillingClient;
+
+    static QueryProductDetailsParams.Product buildProduct(String sku) {
+        return QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(sku)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build();
+    }
 
     static HashMap<String, Boolean> getDefaultPurchaseMap() {
         HashMap<String, Boolean> def = new HashMap<>();
@@ -216,13 +232,22 @@ public abstract class BillingHelperActivity
     }
 
     public void launchBillingFlow(String sku) {
-        SkuDetails details = getSkuDetails(sku);
-        if (details != null) {
-            BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-                    .setSkuDetails(details)
-                    .build();
-            mBillingClient.launchBillingFlow(this, flowParams);
-        }
+        ProductDetails details = getProductDetails(sku);
+        if (details == null) return;
+        // Set the parameters for the offer that will be presented
+        // in the billing flow creating separate productDetailsParamsList variable
+        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
+                ImmutableList.of(
+                        BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(details).build()
+                                //.setOfferToken(offerToken).build()
+                );
+
+        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(productDetailsParamsList)
+                .build();
+
+        // Launch the billing flow
+        mBillingClient.launchBillingFlow(this, billingFlowParams);
     }
 
     protected void onPurchasesInitialized() {
@@ -283,7 +308,7 @@ public abstract class BillingHelperActivity
                     if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
                         return;
                     }
-                    ArrayList<String> skus = purchase.getSkus();
+                    List<String> skus = purchase.getProducts();
                     int state = purchase.getPurchaseState();
                     boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
                     for (String sku : skus) {
@@ -336,56 +361,66 @@ public abstract class BillingHelperActivity
     }
 
     void queryPurchases() {
-        mBillingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, (result, purchaseList) -> {
-            int responseCode = result.getResponseCode();
-            if (responseCode != BillingClient.BillingResponseCode.OK) {
-                return;
-            }
-            for (String sku : fullSkuList) {
-                purchases.put(sku, false);
-            }
-            for (Purchase purchase: purchaseList) {
-                ArrayList<String> skus = purchase.getSkus();
-                for (String sku : skus) {
-                    int state = purchase.getPurchaseState();
-                    boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
-                    purchases.put(sku, purchased);
-                    Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
-                    // ATTENTION only activate temporarily
-                    // consumePurchase(purchase);
-                }
-            }
-
-            // store in the cache
-            for (String sku : fullSkuList) {
-                boolean isPurchased = Boolean.TRUE.equals(purchases.get(sku));
-                setPurchased(sku, isPurchased);
-            }
-
-            onPurchasesInitialized();
-        });
-    }
-
-    void querySkuDetails() {
-        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-        params.setSkusList(fullSkuList).setType(BillingClient.SkuType.INAPP);
-        mBillingClient.querySkuDetailsAsync(params.build(),
-                (result, skuDetailsList) -> {
-                    if (result.getResponseCode() == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
-                        skuDetails = skuDetailsList;
-                        prices.clear();
-                        for (SkuDetails skuDetails : skuDetailsList) {
-                            String sku = skuDetails.getSku();
-                            String price = skuDetails.getPrice();
-                            Log.i(TAG, String.format("price %s = %s", sku, price));
-                            prices.put(sku, price);
+        mBillingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
+                (result, purchaseList) -> {
+                    int responseCode = result.getResponseCode();
+                    if (responseCode != BillingClient.BillingResponseCode.OK) {
+                        return;
+                    }
+                    for (String sku : fullSkuList) {
+                        purchases.put(sku, false);
+                    }
+                    for (Purchase purchase: purchaseList) {
+                        List<String> skus = purchase.getProducts();
+                        for (String sku : skus) {
+                            int state = purchase.getPurchaseState();
+                            boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
+                            purchases.put(sku, purchased);
+                            Log.i(TAG, String.format("purchased %s = %s", sku, purchased));
+                            // ATTENTION only activate temporarily
+                            // consumePurchase(purchase);
                         }
                     }
+
+                    // store in the cache
+                    for (String sku : fullSkuList) {
+                        boolean isPurchased = Boolean.TRUE.equals(purchases.get(sku));
+                        setPurchased(sku, isPurchased);
+                    }
+
+                    onPurchasesInitialized();
                 });
     }
 
+
+    void querySkuDetails() {
+        QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        mBillingClient.queryProductDetailsAsync(
+                params,
+                (result, productDetailsList) -> {
+                    if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        this.productDetails = productDetailsList;
+                        prices.clear();
+                        for (ProductDetails details : productDetailsList) {
+                            String sku = details.getProductId();
+                            ProductDetails.OneTimePurchaseOfferDetails oneTimePurchaseOfferDetails = details.getOneTimePurchaseOfferDetails();
+                            if (oneTimePurchaseOfferDetails != null) {
+                                String price = oneTimePurchaseOfferDetails.getFormattedPrice();
+                                Log.i(TAG, String.format("price %s = %s", sku, price));
+                                prices.put(sku, price);
+                            }
+                        }
+                    }
+                }
+        );
+    }
+
     void consumePurchase(Purchase purchase) {
-        final ArrayList<String> skus = purchase.getSkus();
+        final List<String> skus = purchase.getProducts();
         String token = purchase.getPurchaseToken();
         ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(token).build();
         mBillingClient.consumeAsync(consumeParams, (billingResult, purchaseToken) -> {
@@ -422,10 +457,10 @@ public abstract class BillingHelperActivity
         );
     }
 
-    SkuDetails getSkuDetails(String sku) {
-        if (this.skuDetails != null) {
-            for (SkuDetails details : skuDetails) {
-                if (sku.equals(details.getSku())) {
+    ProductDetails getProductDetails(String sku) {
+        if (this.productDetails != null) {
+            for (ProductDetails details : productDetails) {
+                if (sku.equals(details.getProductId())) {
                     return details;
                 }
             }
