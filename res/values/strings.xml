@@ -241,6 +241,8 @@ OR
     <string name="notificationsInStatusBarTitle">Status bar</string>
     <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
     <string name="notificationListenerService">Notification listener service</string>
+    <string name="notifyForUpcomingAlarmsSummary">Notify for upcoming alarms</string>
+    <string name="notifyForUpcomingAlarmsTitle">Notify ahead</string>
     <string name="showNotifications">Show notifications</string>
     <string name="showNotificationsAccessGranted">Access granted</string>
     <string name="showNotificationsAccessNotGranted">Access not granted!</string>
@@ -259,6 +261,7 @@ OR
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
     <string name="permission_request">Permission request</string>
+    <string name="permission_request_post_notifications">Please grant the permission to post notifications.</string>
     <string name="permission_request_overlays">The permission for showing over all apps is not granted. Please grant this permission now!</string>
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
     <string name="permission_request_storage">The permission for storage access was not granted.</string>

@@ -15,12 +15,9 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
     Settings settings = null;
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
-                @Override
-                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    if ("weatherProvider".equals(key)) {
-                        setupWeatherProviderPreference();
-                    }
+            (sharedPreferences, key) -> {
+                if ("weatherProvider".equals(key)) {
+                    setupWeatherProviderPreference();
                 }
             };
 

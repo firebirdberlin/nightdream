@@ -114,6 +114,21 @@
             android:defaultValue="@array/optionsStopAlarmsValuesDefault"
             app:iconSpaceReserved="false"/>
 
+        <SwitchPreferenceCompat
+            android:summary="@string/notifyForUpcomingAlarmsSummary"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="notifyForUpcomingAlarms"
+            app:title="@string/notifyForUpcomingAlarmsTitle" />
+
+        <Preference
+            android:summary="@string/permission_request_post_notifications"
+            app:isPreferenceVisible="false"
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_about"
+            app:allowDividerBelow="true"
+            app:key="permission_request_post_notifications"
+            app:title="@string/permission_request" />
     </PreferenceCategory>
 
 
@@ -131,7 +146,7 @@
 
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:key="radioStreamRequireWiFi"
             app:summary="@string/radio_stream_require_wifi_desc"
             app:title="@string/radio_stream_require_wifi" />

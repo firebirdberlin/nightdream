@@ -86,6 +86,7 @@ public class Settings {
     public boolean handle_power_wireless = false;
     public boolean hideBackgroundImage = false;
     public boolean muteRinger = false;
+    public boolean notifyForUpcomingAlarms = false;
     public boolean persistentBatteryValueWhileCharging = true;
     public ScreenProtectionModes screenProtection = ScreenProtectionModes.MOVE;
     public boolean showDate = true;
@@ -101,7 +102,7 @@ public class Settings {
     public boolean showAlarmsPersistently = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
-    public boolean radioStreamRequireWiFi = true;
+    public boolean radioStreamRequireWiFi = false;
     public boolean scheduledAutoStartEnabled = false;
     public boolean scheduledAutoStartChargerRequired = true;
     public float dim_offset = 0.8f;
@@ -266,6 +267,14 @@ public class Settings {
         edit.apply();
     }
 
+    public static boolean shallNotifyForUpcomingAlarms(Context context) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        if (preferences == null) {
+            return false;
+        }
+        return preferences.getBoolean("notifyForUpcomingAlarms", false);
+    }
+
     public static void setDefaultAlarmRadioStation(Context context, int stationIndex) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         SharedPreferences.Editor edit = preferences.edit();
@@ -415,6 +424,7 @@ public class Settings {
         alarmVolume = settings.getInt("alarmVolume", 3);
         alarmVolumeReductionPercent = settings.getInt("alarmVolumeReductionPercent", 0);
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
+        notifyForUpcomingAlarms = settings.getBoolean("notifyForUpcomingAlarms", false);
         alarmFadeInDurationSeconds = settings.getInt("alarmFadeInDurationSeconds", 10);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autostartForNotifications = settings.getBoolean("autostartForNotifications", false);

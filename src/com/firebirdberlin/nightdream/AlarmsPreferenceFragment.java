@@ -1,13 +1,20 @@
 package com.firebirdberlin.nightdream;
 
+import android.Manifest;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
 
 
 public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
@@ -16,12 +23,11 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
     Settings settings = null;
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
-                @Override
-                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            (sharedPreferences, key) -> {
+                if ("notifyForUpcomingAlarms".equals(key)) {
+                    setupNotificationPermissionPreference();
                 }
             };
-
 
 
     @Override
@@ -41,13 +47,45 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
         setupAlarmClockPreferences();
+        setupNotificationPermissionPreference();
     }
 
     private void setupAlarmClockPreferences() {
         boolean on = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29);
         showPreference("radioStreamActivateWiFi", on);
     }
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Permission is granted. Continue the action or workflow in your
+                    // app.
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // feature requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                }
+            });
 
+    private void setupNotificationPermissionPreference() {
+        Preference preference = findPreference("permission_request_post_notifications");
+        SwitchPreferenceCompat toggle = (SwitchPreferenceCompat) findPreference("notifyForUpcomingAlarms");
+        Context context = getContext();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            boolean isSet = Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS);
+            preference.setVisible( !isSet && toggle.isChecked() );
+            preference.setOnPreferenceClickListener(preference1 -> {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                return false;
+            });
+        } else {
+            preference.setVisible(false);
+        }
+
+
+    }
     private void showPreference(String key, boolean visible) {
         Preference preference = findPreference(key);
         if (preference != null) {
