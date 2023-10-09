@@ -582,14 +582,18 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void showStopBackgroundServicesDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
-        dialog.show(fm, "sleep_timer");
+        if (!fm.isDestroyed()) {
+            StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
+            dialog.show(fm, "sleep_timer");
+        }
     }
 
     private void showRequestPermissionDrawOverlaysDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
-        dialog.show(fm, "ask for overlay permission");
+        if (!fm.isDestroyed()) {
+            AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
+            dialog.show(fm, "ask for overlay permission");
+        }
     }
 
     public void onSwitchNightMode() {
@@ -639,7 +643,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         PowerConnectionReceiver.schedule(this);
         ScheduledAutoStartReceiver.schedule(this);
-        cancelShutdown();
         NightModeReceiver.cancel(this);
         unregister(nightModeReceiver);
         unregister(powerSupplyReceiver);
@@ -730,7 +733,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG, "registerShutdownReceiver()");
         PowerSupplyReceiver receiver = new PowerSupplyReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_SHUT_DOWN);
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         registerReceiver(receiver, filter);
         return receiver;
@@ -1017,19 +1019,8 @@ public class NightDreamActivity extends BillingHelperActivity
         //now getIntent() should always return the last received intent
     }
 
-    private PendingIntent getShutdownIntent() {
-        Intent alarmIntent = new Intent(Config.ACTION_SHUT_DOWN);
-        return Utility.getImmutableBroadcast(
-                this,
-                PENDING_INTENT_STOP_APP,
-                alarmIntent
-        );
-    }
-
     private void scheduleShutdown() {
         if (mySettings == null) return;
-
-        cancelShutdown();
 
         Calendar calendar = null;
         if (PowerConnectionReceiver.shallAutostart(this, mySettings)
@@ -1039,7 +1030,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)
-                && mySettings.scheduledAutoStartTimeRangeEndInMinutes != mySettings.scheduledAutoStartTimeRangeEndInMinutes) {
+                && mySettings.scheduledAutoStartTimeRangeStartInMinutes != mySettings.scheduledAutoStartTimeRangeEndInMinutes) {
             SimpleTime simpleEndTime = new SimpleTime(mySettings.scheduledAutoStartTimeRangeEndInMinutes);
             Calendar calendar2 = simpleEndTime.getCalendar();
             if (calendar == null) {
@@ -1053,31 +1044,10 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void scheduleShutdown(Calendar calendar) {
+        Log.i(TAG, "scheduleShutdown(" + calendar + ")");
         if (calendar == null) return;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager == null) {
-            return;
-        }
-        PendingIntent pendingIntent = getShutdownIntent();
-        alarmManager.cancel(pendingIntent);
-        if (Build.VERSION.SDK_INT >= 19) {
-            try {
-                alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-            } catch (SecurityException ignored) {
-            }
-        } else {
-            deprecatedSetAlarm(alarmManager, calendar, pendingIntent);
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void deprecatedSetAlarm(AlarmManager alarmManager, Calendar calendar, PendingIntent pendingIntent) {
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-    }
-
-    private void cancelShutdown() {
-        PendingIntent pendingIntent = getShutdownIntent();
-        pendingIntent.cancel();
+        long deltaMillis = calendar.getTimeInMillis() - System.currentTimeMillis();
+        handler.postDelayed(finishApp, deltaMillis);
     }
 
     private void triggerAlwaysOnTimeout() {
@@ -1135,13 +1105,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
-            if (Config.ACTION_SHUT_DOWN.equals(action)) {
-                // this receiver is needed to shutdown the app at the end of the autostart time range
-                if (mySettings.handle_power_disconnection_at_time_range_end &&
-                        !Utility.isConfiguredAsDaydream(context)) {
-                    finish();
-                }
-            } else if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
+            if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
                 nightDreamUI.onPowerDisconnected();
                 if (mySettings.handle_power_disconnection) {
                     handler.removeCallbacks(finishApp);
