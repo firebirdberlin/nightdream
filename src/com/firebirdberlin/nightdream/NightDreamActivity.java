@@ -3,9 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.app.KeyguardManager;
-import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -50,7 +48,6 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
-import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScheduledAutoStartReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
@@ -95,7 +92,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class NightDreamActivity extends BillingHelperActivity
         implements View.OnTouchListener,
-        NightModeReceiver.Event,
         LocationUpdateReceiver.AsyncResponse,
         AvmAhaRequestTask.AsyncResponse,
         SleepTimerDialogFragment.SleepTimerDialogListener {
@@ -110,6 +106,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private static Context context = null;
     final private Handler handler = new Handler();
     private final Runnable finishApp = this::finish;
+    private final Runnable runnableSetupNightMode = this::setupNightMode;
     public CastContext mCastContext;
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
@@ -123,7 +120,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
     private LocationUpdateReceiver locationReceiver = null;
-    private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
@@ -547,7 +543,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         scheduleShutdown();
         nReceiver = registerNotificationReceiver();
-        nightModeReceiver = NightModeReceiver.register(this, this);
         broadcastReceiver = registerBroadcastReceiver();
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
@@ -596,10 +591,6 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
-    public void onSwitchNightMode() {
-        setupNightMode();
-    }
-
     void setupNightMode() {
         if (mySettings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_SCHEDULED) return;
 
@@ -609,7 +600,10 @@ public class NightDreamActivity extends BillingHelperActivity
         TimeRange timerange = new TimeRange(start, end);
         int new_mode = (timerange.inRange()) ? 0 : 2;
         toggleNightMode(new_mode);
-        NightModeReceiver.schedule(this, timerange);
+
+        Calendar time = timerange.getNextEvent();
+        long delta = time.getTimeInMillis() - System.currentTimeMillis();
+        handler.postDelayed(runnableSetupNightMode, delta);
     }
 
     void setupRadioStreamUI() {
@@ -637,14 +631,13 @@ public class NightDreamActivity extends BillingHelperActivity
         nightDreamUI.onPause();
 
         handler.removeCallbacks(finishApp);
+        handler.removeCallbacks(runnableSetupNightMode);
         handler.removeCallbacks(lockDevice);
         handler.removeCallbacks(alwaysOnTimeout);
         handler.removeCallbacks(checkKeepScreenOn);
 
         PowerConnectionReceiver.schedule(this);
         ScheduledAutoStartReceiver.schedule(this);
-        NightModeReceiver.cancel(this);
-        unregister(nightModeReceiver);
         unregister(powerSupplyReceiver);
         unregisterLocalReceiver(nReceiver);
         unregisterLocalReceiver(broadcastReceiver);
@@ -703,7 +696,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (textToSpeech != null) {
             textToSpeech.shutdown();
         }
-        nightModeReceiver = null;
         broadcastReceiver = null;
         powerSupplyReceiver = null;
         nReceiver = null;
