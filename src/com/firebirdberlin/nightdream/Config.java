@@ -12,7 +12,6 @@ public class Config {
     public final static String ACTION_RADIO_STREAM_STOPPED = "com.firebirdberlin.nightdream.action_radio_stream_stopped";
     public final static String ACTION_RADIO_STREAM_READY_FOR_PLAYBACK = "com.firebirdberlin.nightdream.action_radio_stream_ready_for_playback";
     public final static String ACTION_RADIO_STREAM_METADATA_UPDATED = "com.firebirdberlin.nightdream.action_radio_stream_metadata_updated";
-    public final static String ACTION_SHUT_DOWN = "com.firebirdberlin.nightdream.SHUTDOWN";
     public final static String ACTION_NOTIFICATION_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_LISTENER";
     public final static String ACTION_NOTIFICATION_APPS_LISTENER = "com.firebirdberlin.nightdream.NOTIFICATION_APPS_LISTENER";
     public final static String ACTION_ALARM_SET = "com.firebirdberlin.nightdream.ALARM_SET";
