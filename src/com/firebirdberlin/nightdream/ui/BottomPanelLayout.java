@@ -25,6 +25,7 @@ public class BottomPanelLayout extends FrameLayout {
     private WebRadioLayout webRadioLayout = null;
     private boolean locked = false;
     private boolean rssEnabled = false;
+    private boolean notifyForUpcomingAlarms = false;
     private boolean showAlarmsPersistently = true;
     private final Context context;
     private View self;
@@ -161,6 +162,10 @@ public class BottomPanelLayout extends FrameLayout {
         rssEnabled = enabled;
     }
 
+    public void setNotifyForUpComingAlarms(boolean enabled) {
+       notifyForUpcomingAlarms = enabled;
+    }
+
     public void hide() {
         Log.d(TAG, "hide()");
         if (tickerLayout == null && mayHideAlarm()) {
@@ -237,7 +242,11 @@ public class BottomPanelLayout extends FrameLayout {
 
     private boolean mayHideAlarm() {
         Log.i(TAG, "mayHIdeAlarm() -> nextAlarmTIme: " + nextAlarmTime);
-        return nextAlarmTime == null || nextAlarmTime.getRemainingMillis() > 60 * 60000;
+        return (
+                nextAlarmTime == null
+                        || !notifyForUpcomingAlarms
+                        || nextAlarmTime.getRemainingMillis() > 60 * 60000
+        );
     }
 
     private void clearViews() {

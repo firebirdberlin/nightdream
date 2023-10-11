@@ -1103,6 +1103,7 @@ public class NightDreamUI {
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
         bottomPanelLayout.setRssEnabled(settings.rssEnabled);
+        bottomPanelLayout.setNotifyForUpComingAlarms(settings.notifyForUpcomingAlarms);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
         bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
         bottomPanelLayout.setup();
@@ -1588,7 +1589,6 @@ public class NightDreamUI {
 
         Calendar twenty_days_ago = Calendar.getInstance();
         int hour = twenty_days_ago.get(Calendar.HOUR_OF_DAY);
-
         twenty_days_ago.add(Calendar.DATE, -20);
 
         if (install_time.before(twenty_days_ago) && hour >= 18) {
@@ -1598,7 +1598,9 @@ public class NightDreamUI {
     }
 
     private void sendReviewRequest() {
-
+        if (!settings.hasPermission(Manifest.permission.POST_NOTIFICATIONS)) {
+            return;
+        }
         final Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {

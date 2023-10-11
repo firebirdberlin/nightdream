@@ -3,9 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.app.KeyguardManager;
-import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -35,6 +33,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -49,7 +48,6 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
-import com.firebirdberlin.nightdream.receivers.NightModeReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScheduledAutoStartReceiver;
 import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
@@ -94,7 +92,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class NightDreamActivity extends BillingHelperActivity
         implements View.OnTouchListener,
-        NightModeReceiver.Event,
         LocationUpdateReceiver.AsyncResponse,
         AvmAhaRequestTask.AsyncResponse,
         SleepTimerDialogFragment.SleepTimerDialogListener {
@@ -108,7 +105,8 @@ public class NightDreamActivity extends BillingHelperActivity
     private static int mode = MODE_DAY;
     private static Context context = null;
     final private Handler handler = new Handler();
-    private final Runnable finishApp = () -> finish();
+    private final Runnable finishApp = this::finish;
+    private final Runnable runnableSetupNightMode = this::setupNightMode;
     public CastContext mCastContext;
     protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
@@ -122,7 +120,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
     private LocationUpdateReceiver locationReceiver = null;
-    private NightModeReceiver nightModeReceiver = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
@@ -180,7 +177,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 city.lat = location.getLatitude();
                 city.lon = location.getLongitude();
                 city.name = "current";
-                Log.i(TAG, "current location: " + city.toString());
+                Log.i(TAG, "current location: " + city);
                 if (mySettings != null) {
                     mySettings.setLocation(location);
                 }
@@ -211,11 +208,20 @@ public class NightDreamActivity extends BillingHelperActivity
         setKeepScreenOn(shallKeepScreenOn(mode));
         triggerAlwaysOnTimeout();
     };
+    private final Runnable showRequestOverlayPermissionsDialog = () -> {
+        if (isRunning && !Utility.hasPermissionCanDrawOverlays(context)) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (!fm.isDestroyed()) {
+                AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
+                dialog.show(fm, "ask for overlay permission");
+            }
+        }
+    };
     private boolean isChargingWireless = false;
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
     private GestureDetector mGestureDetector = null;
-    private Runnable lockDevice = () -> {
+    private final Runnable lockDevice = () -> {
         if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
             mgr.lockNow();
             Utility.turnScreenOn(context);
@@ -223,7 +229,7 @@ public class NightDreamActivity extends BillingHelperActivity
     };
     private LocationManager locationManager = null;
     private FlashlightProvider flash = null;
-    private Runnable setScreenOff = new Runnable() {
+    private final Runnable setScreenOff = new Runnable() {
         @Override
         public void run() {
             handler.removeCallbacks(setScreenOff);
@@ -232,7 +238,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     };
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private ServiceConnection connection = new ServiceConnection() {
+    private final ServiceConnection connection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -288,44 +294,44 @@ public class NightDreamActivity extends BillingHelperActivity
         mCastContext = CastContext.getSharedInstance(this);
         mSessionManagerListener = new SessionManagerListener<CastSession>() {
             @Override
-            public void onSessionEnded(CastSession session, int error) {
+            public void onSessionEnded(@NonNull CastSession session, int error) {
                 onApplicationDisconnected();
             }
 
             @Override
-            public void onSessionResumed(CastSession session, boolean wasSuspended) {
+            public void onSessionResumed(@NonNull CastSession session, boolean wasSuspended) {
                 onApplicationConnected(session);
             }
 
             @Override
-            public void onSessionResumeFailed(CastSession session, int error) {
+            public void onSessionResumeFailed(@NonNull CastSession session, int error) {
                 onApplicationDisconnected();
             }
 
             @Override
-            public void onSessionStarted(CastSession session, String sessionId) {
+            public void onSessionStarted(@NonNull CastSession session, @NonNull String sessionId) {
                 onApplicationConnected(session);
             }
 
             @Override
-            public void onSessionStartFailed(CastSession session, int error) {
+            public void onSessionStartFailed(@NonNull CastSession session, int error) {
                 onApplicationDisconnected();
             }
 
             @Override
-            public void onSessionStarting(CastSession session) {
+            public void onSessionStarting(@NonNull CastSession session) {
             }
 
             @Override
-            public void onSessionEnding(CastSession session) {
+            public void onSessionEnding(@NonNull CastSession session) {
             }
 
             @Override
-            public void onSessionResuming(CastSession session, String sessionId) {
+            public void onSessionResuming(@NonNull CastSession session, @NonNull String sessionId) {
             }
 
             @Override
-            public void onSessionSuspended(CastSession session, int reason) {
+            public void onSessionSuspended(@NonNull CastSession session, int reason) {
             }
 
             private void onApplicationConnected(CastSession castSession) {
@@ -393,12 +399,7 @@ public class NightDreamActivity extends BillingHelperActivity
         executor.execute(this::initTextToSpeech);
 
         if (!Utility.hasPermissionCanDrawOverlays(this)) {
-            Context context = this;
-            handler.postDelayed((Runnable) () -> {
-                if (!Utility.hasPermissionCanDrawOverlays(context)) {
-                    showRequestPermissionDrawOverlaysDialog();
-                }
-            }, 2000);
+            handler.postDelayed(showRequestOverlayPermissionsDialog, 2000);
         }
 
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -513,7 +514,7 @@ public class NightDreamActivity extends BillingHelperActivity
             }
 
             if (mySettings.showWeather) {
-                AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<WeatherEntry>();
+                AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
                     if (weatherEntry != oldWeatherEntry.get()) {
@@ -546,7 +547,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         scheduleShutdown();
         nReceiver = registerNotificationReceiver();
-        nightModeReceiver = NightModeReceiver.register(this, this);
         broadcastReceiver = registerBroadcastReceiver();
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
@@ -581,18 +581,10 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void showStopBackgroundServicesDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
-        dialog.show(fm, "sleep_timer");
-    }
-
-    private void showRequestPermissionDrawOverlaysDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
-        dialog.show(fm, "ask for overlay permission");
-    }
-
-    public void onSwitchNightMode() {
-        setupNightMode();
+        if (!fm.isDestroyed()) {
+            StopBackgroundServiceDialogFragment dialog = new StopBackgroundServiceDialogFragment();
+            dialog.show(fm, "sleep_timer");
+        }
     }
 
     void setupNightMode() {
@@ -604,7 +596,10 @@ public class NightDreamActivity extends BillingHelperActivity
         TimeRange timerange = new TimeRange(start, end);
         int new_mode = (timerange.inRange()) ? 0 : 2;
         toggleNightMode(new_mode);
-        NightModeReceiver.schedule(this, timerange);
+
+        Calendar time = timerange.getNextEvent();
+        long delta = time.getTimeInMillis() - System.currentTimeMillis();
+        handler.postDelayed(runnableSetupNightMode, delta);
     }
 
     void setupRadioStreamUI() {
@@ -631,16 +626,15 @@ public class NightDreamActivity extends BillingHelperActivity
 
         nightDreamUI.onPause();
 
+        handler.removeCallbacks(showRequestOverlayPermissionsDialog);
         handler.removeCallbacks(finishApp);
+        handler.removeCallbacks(runnableSetupNightMode);
         handler.removeCallbacks(lockDevice);
         handler.removeCallbacks(alwaysOnTimeout);
         handler.removeCallbacks(checkKeepScreenOn);
 
         PowerConnectionReceiver.schedule(this);
         ScheduledAutoStartReceiver.schedule(this);
-        cancelShutdown();
-        NightModeReceiver.cancel(this);
-        unregister(nightModeReceiver);
         unregister(powerSupplyReceiver);
         unregisterLocalReceiver(nReceiver);
         unregisterLocalReceiver(broadcastReceiver);
@@ -699,7 +693,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (textToSpeech != null) {
             textToSpeech.shutdown();
         }
-        nightModeReceiver = null;
         broadcastReceiver = null;
         powerSupplyReceiver = null;
         nReceiver = null;
@@ -729,7 +722,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG, "registerShutdownReceiver()");
         PowerSupplyReceiver receiver = new PowerSupplyReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_SHUT_DOWN);
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         registerReceiver(receiver, filter);
         return receiver;
@@ -866,7 +858,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         int diff = newConfig.diff(prevConfig);
         if ((nightDreamUI != null) && (diff != 0)) {
@@ -1016,19 +1008,8 @@ public class NightDreamActivity extends BillingHelperActivity
         //now getIntent() should always return the last received intent
     }
 
-    private PendingIntent getShutdownIntent() {
-        Intent alarmIntent = new Intent(Config.ACTION_SHUT_DOWN);
-        return Utility.getImmutableBroadcast(
-                this,
-                PENDING_INTENT_STOP_APP,
-                alarmIntent
-        );
-    }
-
     private void scheduleShutdown() {
         if (mySettings == null) return;
-
-        cancelShutdown();
 
         Calendar calendar = null;
         if (PowerConnectionReceiver.shallAutostart(this, mySettings)
@@ -1038,7 +1019,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)
-                && mySettings.scheduledAutoStartTimeRangeEndInMinutes != mySettings.scheduledAutoStartTimeRangeEndInMinutes) {
+                && mySettings.scheduledAutoStartTimeRangeStartInMinutes != mySettings.scheduledAutoStartTimeRangeEndInMinutes) {
             SimpleTime simpleEndTime = new SimpleTime(mySettings.scheduledAutoStartTimeRangeEndInMinutes);
             Calendar calendar2 = simpleEndTime.getCalendar();
             if (calendar == null) {
@@ -1052,38 +1033,17 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void scheduleShutdown(Calendar calendar) {
+        Log.i(TAG, "scheduleShutdown(" + calendar + ")");
         if (calendar == null) return;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager == null) {
-            return;
-        }
-        PendingIntent pendingIntent = getShutdownIntent();
-        alarmManager.cancel(pendingIntent);
-        if (Build.VERSION.SDK_INT >= 19) {
-            try {
-                alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-            } catch (SecurityException ignored) {
-            }
-        } else {
-            deprecatedSetAlarm(alarmManager, calendar, pendingIntent);
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void deprecatedSetAlarm(AlarmManager alarmManager, Calendar calendar, PendingIntent pendingIntent) {
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-    }
-
-    private void cancelShutdown() {
-        PendingIntent pendingIntent = getShutdownIntent();
-        pendingIntent.cancel();
+        long deltaMillis = calendar.getTimeInMillis() - System.currentTimeMillis();
+        handler.postDelayed(finishApp, deltaMillis);
     }
 
     private void triggerAlwaysOnTimeout() {
         handler.removeCallbacks(alwaysOnTimeout);
         boolean isCharging = Utility.isCharging(this);
         if ((!isCharging && mySettings.batteryTimeout > 0) || (isCharging && mode == 0)) {
-            handler.postDelayed(alwaysOnTimeout, 60000 * mySettings.batteryTimeout);
+            handler.postDelayed(alwaysOnTimeout, 60000L * mySettings.batteryTimeout);
         }
     }
 
@@ -1134,13 +1094,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
-            if (Config.ACTION_SHUT_DOWN.equals(action)) {
-                // this receiver is needed to shutdown the app at the end of the autostart time range
-                if (mySettings.handle_power_disconnection_at_time_range_end &&
-                        !Utility.isConfiguredAsDaydream(context)) {
-                    finish();
-                }
-            } else if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
+            if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
                 nightDreamUI.onPowerDisconnected();
                 if (mySettings.handle_power_disconnection) {
                     handler.removeCallbacks(finishApp);
