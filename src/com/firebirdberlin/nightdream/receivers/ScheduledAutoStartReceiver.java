@@ -84,8 +84,6 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         SimpleTime startTime = new SimpleTime(settings.scheduledAutoStartTimeRangeStartInMinutes);
         Calendar start = startTime.getCalendar();
 
-        //Calendar start = Calendar.getInstance();
-        //start.add(Calendar.SECOND, 10);
         Log.d(TAG, startTime.toString());
         Log.d(TAG, start.toString());
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

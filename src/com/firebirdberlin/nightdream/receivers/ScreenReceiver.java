@@ -141,10 +141,6 @@ public class ScreenReceiver extends BroadcastReceiver {
         gravitySensorChecked = false;
         proximitySensorChecked = false;
 
-        final HandlerThread broadcastReceiverThread = new HandlerThread(TAG);
-        broadcastReceiverThread.start();
-        Looper sensorListenerThreadLooper = broadcastReceiverThread.getLooper();
-        Handler sensorListenerHandler = new Handler(sensorListenerThreadLooper);
         final SensorManager sensorMan = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         if (sensorMan == null) {
             return false;
@@ -157,9 +153,15 @@ public class ScreenReceiver extends BroadcastReceiver {
             return false;
         }
 
+        final HandlerThread broadcastReceiverThread = new HandlerThread(TAG);
+        broadcastReceiverThread.start();
+        Looper sensorListenerThreadLooper = broadcastReceiverThread.getLooper();
+        Handler sensorListenerHandler = new Handler(sensorListenerThreadLooper);
+        final long startTime = System.currentTimeMillis();
         SensorEventListener eventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
+                long now = System.currentTimeMillis();
                 if (sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
                     deviceIsCovered = (sensorEvent.values[0] == 0);
                     Log.i(TAG, "deviceIsCovered = " + deviceIsCovered);
@@ -170,7 +172,12 @@ public class ScreenReceiver extends BroadcastReceiver {
                     Log.i(TAG, "isScreenUp = " + isScreenUp);
                     gravitySensorChecked = true;
                 }
-                if (gravitySensorChecked && proximitySensorChecked) {
+
+                if (
+                        (gravitySensorChecked && proximitySensorChecked)
+                                || (now - startTime > 4000)
+                ) {
+                    Log.i(TAG, "unregisterListener");
                     sensorMan.unregisterListener(this);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                         broadcastReceiverThread.quitSafely();
