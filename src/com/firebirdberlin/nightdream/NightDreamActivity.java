@@ -208,6 +208,15 @@ public class NightDreamActivity extends BillingHelperActivity
         setKeepScreenOn(shallKeepScreenOn(mode));
         triggerAlwaysOnTimeout();
     };
+    private final Runnable showRequestOverlayPermissionsDialog = () -> {
+        if (isRunning && !Utility.hasPermissionCanDrawOverlays(context)) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (!fm.isDestroyed()) {
+                AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
+                dialog.show(fm, "ask for overlay permission");
+            }
+        }
+    };
     private boolean isChargingWireless = false;
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
@@ -390,12 +399,7 @@ public class NightDreamActivity extends BillingHelperActivity
         executor.execute(this::initTextToSpeech);
 
         if (!Utility.hasPermissionCanDrawOverlays(this)) {
-            Context context = this;
-            handler.postDelayed(() -> {
-                if (!Utility.hasPermissionCanDrawOverlays(context)) {
-                    showRequestPermissionDrawOverlaysDialog();
-                }
-            }, 2000);
+            handler.postDelayed(showRequestOverlayPermissionsDialog, 2000);
         }
 
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -583,14 +587,6 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
-    private void showRequestPermissionDrawOverlaysDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (!fm.isDestroyed()) {
-            AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
-            dialog.show(fm, "ask for overlay permission");
-        }
-    }
-
     void setupNightMode() {
         if (mySettings.nightModeActivationMode != Settings.NIGHT_MODE_ACTIVATION_SCHEDULED) return;
 
@@ -630,6 +626,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         nightDreamUI.onPause();
 
+        handler.removeCallbacks(showRequestOverlayPermissionsDialog);
         handler.removeCallbacks(finishApp);
         handler.removeCallbacks(runnableSetupNightMode);
         handler.removeCallbacks(lockDevice);
