@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream.services;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -36,7 +37,11 @@ public class AlarmNotificationService extends JobService {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context, SimpleTime nextAlarmTime) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
+                        || ! Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                        || ! Settings.shallNotifyForUpcomingAlarms(context)
+        ) {
             return;
         }
 
@@ -99,7 +104,10 @@ public class AlarmNotificationService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob");
-
+        if (!Utility.hasPermission(this, Manifest.permission.POST_NOTIFICATIONS)) {
+            Log.d(TAG, "No permission to post notifications");
+            return false;
+        }
         DataSource db = new DataSource(this);
         db.open();
         SimpleTime next = db.getNextAlarmToSchedule();
