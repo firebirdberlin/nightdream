@@ -1,0 +1,16 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:key="design"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/design">
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="1"
+        app:entries="@array/sidepanelModes"
+        app:entryValues="@array/sidepanelModeValues"
+        app:key="sidepanelMode"
+        app:title="@string/sidePanelMode"
+        app:useSimpleSummaryProvider="true"/>
+
+</PreferenceScreen>

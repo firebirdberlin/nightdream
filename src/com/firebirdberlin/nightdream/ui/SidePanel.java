@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -15,13 +16,15 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.google.android.flexbox.FlexboxLayout;
 
-public class SidePanel extends FlexboxLayout {
+public class SidePanel extends BlurringView {
     private static final String TAG = "SidePanel";
     private final int transparentColor = getResources().getColor(android.R.color.transparent);
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -30,6 +33,9 @@ public class SidePanel extends FlexboxLayout {
     private int mAnimationDuration = 250;
     private boolean menuIsOpen = false;
     private boolean mLockedCLick;
+    private int sidepanelMode = 0;
+    private Settings settings;
+
     private final Runnable hideSideMenu = new Runnable() {
         @Override
         public void run() {
@@ -70,6 +76,7 @@ public class SidePanel extends FlexboxLayout {
 
     private void init(Context context, AttributeSet attrs) {
         Log.d(TAG, "init");
+        settings = new Settings(context);
 
         mAnimationInterpolator = new AccelerateDecelerateInterpolator();
         mIconColor = transparentColor;
@@ -92,6 +99,8 @@ public class SidePanel extends FlexboxLayout {
         super.onAttachedToWindow();
 
         paddingLeft = findViewById(R.id.padding_left);
+        setCornerRadius(20);
+        setRoundedCorner(false, true, false, true);
 
         setX(getWidth());
         menuIsOpen = false;
@@ -112,6 +121,7 @@ public class SidePanel extends FlexboxLayout {
         } else {
             openMenu();
         }
+
     }
 
     public void closeMenu() {
@@ -134,6 +144,10 @@ public class SidePanel extends FlexboxLayout {
             animation = ObjectAnimator.ofFloat(
                     this, "translationX", -this.getWidth(), 0
             );
+
+            if (sidepanelMode == 3) {
+                startBlur();
+            }
             startMenuAnimation(animation);
             handler.postDelayed(hideSideMenu, 20000);
         }
@@ -153,6 +167,9 @@ public class SidePanel extends FlexboxLayout {
             public void onAnimationEnd(Animator animation) {
                 menuIsOpen = !menuIsOpen;
                 mLockedCLick = false;
+                if (!menuIsOpen) {
+                    pauseBlur();
+                }
             }
 
             @Override
@@ -202,11 +219,47 @@ public class SidePanel extends FlexboxLayout {
     //sets color to icons
     private void colorizeIcons() {
         Log.d(TAG, "colorizeIcons()");
-        for (int i = 0; i < getChildCount(); i++) {
-            View view = getChildAt(i);
-            if (view instanceof ImageView) {
-                ((ImageView) view).setColorFilter(mIconColor, PorterDuff.Mode.SRC_ATOP);
+
+        View view = getChildAt(1);
+        if (view instanceof FlexboxLayout) {
+            for (int i = 0; i < ((FlexboxLayout) view).getChildCount(); i++) {
+                View childView = ((FlexboxLayout) view).getChildAt(i);
+                if (childView instanceof ImageView) {
+                    ((ImageView) childView).setColorFilter(mIconColor, PorterDuff.Mode.SRC_ATOP);
+                    if (sidepanelMode == 2){
+                        childView.setBackground(AppCompatResources.getDrawable(getContext(), R.drawable.style_sidepanel_button));
+                    }
+                    else {
+                        childView.setBackground(null);
+                    }
+                }
             }
+        }
+    }
+
+    public void setStyle(int style) {
+        Log.d(TAG, "setStyle");
+
+        if (sidepanelMode != style) {
+            sidepanelMode = style;
+            pauseBlur();
+            switch (sidepanelMode) {
+                case 1:
+                    setBackground(AppCompatResources.getDrawable(getContext(), R.drawable.sidepanel));
+                    break;
+                case 2:
+                    setBackground(null);
+                    setBackgroundColor(Color.TRANSPARENT);
+                    break;
+                case 3:
+                    setBackground(null);
+                    setBackgroundColor(Color.TRANSPARENT);
+                    if (menuIsOpen) {
+                        startBlur();
+                    }
+                    break;
+            }
+            colorizeIcons();
         }
     }
 
@@ -265,6 +318,7 @@ public class SidePanel extends FlexboxLayout {
     }
 
     public void setPaddingLeft(int padding) {
+        Log.d(TAG, "setPaddingLeft: " + padding);
         paddingLeft.getLayoutParams().width = padding;
         requestLayout();
         post(() -> setX(isHidden() ? -getWidth() : 0));

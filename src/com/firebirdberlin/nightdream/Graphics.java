@@ -10,6 +10,8 @@ import android.graphics.Paint;
 
 import com.google.android.renderscript.Toolkit;
 
+import com.google.android.renderscript.Toolkit;
+
 public class Graphics {
 
     public static Bitmap blur(Bitmap bitmap) {
