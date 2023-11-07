@@ -282,9 +282,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Stringa di ricerca</string>
     <string name="radio_stream_search">Cerca</string>
     <string name="radio_stream_unreachable_url">l\'URL non è raggiungibile</string>
-    <string name="reactivate_on_ambient_light_value">Soglia luminosità</string>
-    <string name="reactivate_on_ambient_light_value_summary">lo schermo viene riattivato se la soglia di luminosità  viene superata</string>
-    <string name="reactivate_screen_on_noise">Attiva al rumore ambientale</string>
     <string name="recommend_app_desc">Scegli un\'app per condividere i tuoi consigli</string>
     <string name="recommend_app_subject">Vorrei raccomandati questo orologio notturno</string>
     <string name="recommend">App raccomandata</string>

@@ -136,7 +136,6 @@ public class Settings {
     public int clockColor;
     public int clockColorNight;
     public int nightModeActivationMode;
-    public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int secondaryColorNight;
     public String rssURL="";
@@ -492,7 +491,6 @@ public class Settings {
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         if (Utility.isEmulator()) purchasedWeatherData = true;
         purchasedDonation = settings.getBoolean("purchasedDonation", false);
-        reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";

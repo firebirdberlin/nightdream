@@ -663,8 +663,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (Utility.getLightSensor(mContext) == null) {
             Log.d(TAG, "no light sensor");
 
-            removePreference("reactivate_on_ambient_light_value");
-
             ListPreference nightModePref = findPreference("nightModeActivationMode");
             if (nightModePref != null) {
                 nightModePref.setEntries(

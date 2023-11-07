@@ -151,9 +151,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Iskalni niz</string>
     <string name="radio_stream_search">Išči</string>
     <string name="radio_stream_unreachable_url">Internetni naslov ni dosegljiv</string>
-    <string name="reactivate_on_ambient_light_value">Osvetljenost</string>
-    <string name="reactivate_on_ambient_light_value_summary">Ponovni vklop ekrana če je presezena stopnja osvetlitve</string>
-    <string name="reactivate_screen_on_noise">Prebudi se ob zvoku iz ozadja</string>
     <string name="recommend_app_desc">Izberi aplikacijo za delitev priporocila</string>
     <string name="recommend_app_subject">Priporocil bi vam aplikacijo nocne ure</string>
     <string name="recommend">Priporočena aplikacija</string>

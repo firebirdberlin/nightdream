@@ -237,35 +237,6 @@ public class NightDreamActivity extends BillingHelperActivity
             setMode(new_mode);
         }
     };
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private final ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            NightModeListener.LocalBinder binder = (NightModeListener.LocalBinder) service;
-            NightModeListener myService = binder.getService();
-            context.startForegroundService(getForegroundIntent());
-
-            myService.startForeground();
-            context.unbindService(this);
-        }
-
-        @Override
-        public void onBindingDied(ComponentName name) {
-            Log.d(TAG, "Binding has dead.");
-        }
-
-        @Override
-        public void onNullBinding(ComponentName name) {
-            Log.d(TAG, "Bind was null.");
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "Service is disconnected..");
-        }
-    };
-
     static public void start(Context context) {
         NightDreamActivity.start(context, null);
     }
@@ -643,12 +614,14 @@ public class NightDreamActivity extends BillingHelperActivity
         if (mySettings.activateDoNotDisturb) {
             AudioManage.activateDnDMode(false, mySettings.activateDoNotDisturbAllowPriority);
         }
-        if (mySettings.allow_screen_off && mode == MODE_NIGHT
-                && screenWasOn && !Utility.isScreenOn(this)) { // screen off in night mode
-            startBackgroundListener();
-        } else {
+
+        if (!mySettings.allow_screen_off
+                || mode != MODE_NIGHT
+                || !screenWasOn
+                || Utility.isScreenOn(this)) {
             nightDreamUI.restoreRingerMode();
         }
+
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
@@ -886,29 +859,6 @@ public class NightDreamActivity extends BillingHelperActivity
             return false;
         }
         return keyguardManager.inKeyguardRestrictedInputMode();
-    }
-
-    private Intent getForegroundIntent() {
-        return new Intent(this, NightModeListener.class);
-    }
-
-    private void startBackgroundListener() {
-        Log.d(TAG, "startBackgroundListener");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                Log.d(TAG, "try binding startBackgroundListener");
-                context.bindService(getForegroundIntent(), connection,
-                        Context.BIND_AUTO_CREATE);
-            } catch (RuntimeException ignored) {
-                Log.d(TAG, "error binding startBackgroundListener");
-                Intent i = new Intent(this, NightModeListener.class);
-                Utility.startForegroundService(this, i);
-            }
-        } else {
-            Intent i = new Intent(this, NightModeListener.class);
-            Utility.startForegroundService(this, i);
-        }
     }
 
     private boolean shallKeepScreenOn(int mode) {
