@@ -1,0 +1,6 @@
+Check Standby mode with Night mode screen off
+Services -> android:foregroundServiceType="mediaPlayback"
+Alarms -> ask for permission to show overlays
+Scheduled Autostart -> sunset, sunrise
+
+

@@ -11,10 +11,13 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!--https://developer.android.com/about/versions/14/changes/schedule-exact-alarms-->
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
@@ -122,7 +125,10 @@
         </service>
         <service
             android:name=".services.ScreenWatcherService"
-            android:enabled="true" />
+            android:foregroundServiceType="systemExempted"
+            android:enabled="true" >
+
+        </service>
 
         <activity
             android:name=".PreferencesActivity"

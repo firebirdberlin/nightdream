@@ -143,7 +143,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             String selection = sharedPreferences.getString("backgroundMode", "1");
                             if (isAdded() && ("3".equals(selection) || "4".equals(selection))) {
                                 settings.clearBackgroundImageCache();
-                                checkReadExternalStoragePermission();
+                                checkPermissionReadImages();
                             }
 
                             setupBackgroundImageControls(sharedPreferences);
@@ -784,16 +784,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void checkPermissionAndSelectBackgroundImage() {
-        if (doesNotHavePermissionReadExternalStorage()) {
-            this.readExternalStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissionReadImages()) {
+            String p = getPermissionReadImages();
+            this.readExternalStoragePermission.launch(p);
             return;
         }
         selectBackgroundImage();
     }
 
     private void checkPermissionAndSelectDirectoryBackgroundImage() {
-        if (doesNotHavePermissionReadExternalStorage()) {
-            this.readExternalStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissionReadImages()) {
+            String p = getPermissionReadImages();
+            this.readExternalStoragePermission.launch(p);
             return;
         }
         selectDirectoryBackgroundImage();
@@ -813,9 +815,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private void checkReadExternalStoragePermission() {
-        if (doesNotHavePermissionReadExternalStorage()) {
-            this.readExternalStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+    private void checkPermissionReadImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissionReadImages()) {
+            String p = getPermissionReadImages();
+            this.readExternalStoragePermission.launch(p);
         }
     }
 
@@ -835,8 +838,22 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private boolean doesNotHavePermissionReadExternalStorage() {
-        return Build.VERSION.SDK_INT >= 23 && (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED);
+    private boolean hasPermissionReadImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String p = getPermissionReadImages();
+            if (p == null) return true;
+            return getActivity().checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+    private String getPermissionReadImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
+        return null;
     }
 
     private void recommendApp() {

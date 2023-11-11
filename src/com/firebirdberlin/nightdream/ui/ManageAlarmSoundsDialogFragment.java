@@ -131,10 +131,12 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
                     }
                 }
 
-                if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    requestPermissionLauncher.launch(
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    );
+                String permission =
+                        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                                ? Manifest.permission.READ_MEDIA_AUDIO
+                                : Manifest.permission.READ_EXTERNAL_STORAGE;
+                if (!hasPermission(permission)) {
+                    requestPermissionLauncher.launch(permission);
                     return;
                 }
                 selectCustomTone();
