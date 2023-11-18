@@ -129,9 +129,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream">Radio streamovi</string>
     <string name="radio_stream_no_search_results">Nema rezultata pretraživanja.</string>
     <string name="radio_stream_query_hint">Niz za pretraživanje</string>
-    <string name="reactivate_on_ambient_light_value">Prag osvjetljenja</string>
-    <string name="reactivate_on_ambient_light_value_summary">Zaslon će se aktivirati ako se prijeđe zadani prag osvjetljenja.</string>
-    <string name="reactivate_screen_on_noise">probudi se na pozadinsku buku</string>
     <string name="recommend_app_desc">Odaberite aplikaciju kako biste dodijelili preporuku.</string>
     <string name="recommend_app_subject">Želim preporučiti ovu aplikaciju noćnog sata.</string>
     <string name="recommend">Preporuči aplikaciju</string>

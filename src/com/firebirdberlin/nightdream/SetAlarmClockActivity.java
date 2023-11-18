@@ -1,12 +1,10 @@
 package com.firebirdberlin.nightdream;
 
-import android.Manifest;
 import android.animation.LayoutTransition;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;

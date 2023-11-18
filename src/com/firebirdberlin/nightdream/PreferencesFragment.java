@@ -61,35 +61,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     Snackbar snackbar;
     String rootKey;
     DaydreamSettingsObserver daydreamSettingsObserver = null;
-    Preference.OnPreferenceChangeListener recordAudioPrefChangeListener =
-            (preference, new_value) -> {
-                if (Boolean.parseBoolean(new_value.toString())) {
-                    this.recordAudioPermission.launch(Manifest.permission.RECORD_AUDIO);
-                }
-                return true;
-            };
     private Settings settings = null;
-    private final ActivityResultLauncher<String> recordAudioPermission = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(), result -> {
-                if (result) {
-                    Log.e(TAG, "recordAudioPermission: PERMISSION GRANTED");
-                } else {
-                    Log.e(TAG, "recordAudioPermission: PERMISSION DENIED");
-                    this.settings.setReactivateScreenOnNoise(false);
-                    this.settings.setUseAmbientNoiseDetection(false);
-
-                    SwitchPreferenceCompat prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
-                    CheckBoxPreference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
-                    if (prefAmbientNoiseDetection != null) {
-                        prefAmbientNoiseDetection.setChecked(false);
-                    }
-                    if (prefAmbientNoiseReactivation != null) {
-                        prefAmbientNoiseReactivation.setChecked(false);
-                    }
-                    Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
-
-                }
-            });
     private Context mContext = null;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
             preference -> {
@@ -143,7 +115,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             String selection = sharedPreferences.getString("backgroundMode", "1");
                             if (isAdded() && ("3".equals(selection) || "4".equals(selection))) {
                                 settings.clearBackgroundImageCache();
-                                checkReadExternalStoragePermission();
+                                checkPermissionReadImages();
                             }
 
                             setupBackgroundImageControls(sharedPreferences);
@@ -352,7 +324,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("purchaseActions", !isPurchasedActions);
         showPreference("purchaseActions2", !isPurchasedActions);
         showPreference("purchaseActions3", !isPurchasedActions);
-        showPreference("purchaseActions4", !isPurchasedActions);
     }
 
     private void showPurchaseDialog() {
@@ -459,7 +430,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("purchaseActions");
         initPurchasePreference("purchaseActions2");
         initPurchasePreference("purchaseActions3");
-        initPurchasePreference("purchaseActions4");
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseDesignPackage");
         initPurchasePreference("purchaseDesignPackageBackground");
@@ -550,16 +520,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         } else if ("nightmode".equals(rootKey)) {
             setupLightSensorPreferences();
             setupNightModePreferences(prefs);
-            Preference prefAmbientNoiseDetection = findPreference("ambientNoiseDetection");
-            Preference prefAmbientNoiseReactivation = findPreference("reactivate_screen_on_noise");
 
-            if (prefAmbientNoiseDetection != null) {
-                prefAmbientNoiseDetection.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
-            }
-            if (prefAmbientNoiseReactivation != null) {
-                prefAmbientNoiseReactivation.setOnPreferenceChangeListener(recordAudioPrefChangeListener);
-            }
-        } else if ("notifications".equals(rootKey)) {
+       } else if ("notifications".equals(rootKey)) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 hidePreference("showMediaStyleNotification");
             }
@@ -662,8 +624,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void setupLightSensorPreferences() {
         if (Utility.getLightSensor(mContext) == null) {
             Log.d(TAG, "no light sensor");
-
-            removePreference("reactivate_on_ambient_light_value");
 
             ListPreference nightModePref = findPreference("nightModeActivationMode");
             if (nightModePref != null) {
@@ -786,16 +746,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void checkPermissionAndSelectBackgroundImage() {
-        if (doesNotHavePermissionReadExternalStorage()) {
-            this.readExternalStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (!settings.hasPermissionReadImages()) {
+            String p = getPermissionReadImages();
+            this.readExternalStoragePermission.launch(p);
             return;
         }
         selectBackgroundImage();
     }
 
     private void checkPermissionAndSelectDirectoryBackgroundImage() {
-        if (doesNotHavePermissionReadExternalStorage()) {
-            this.readExternalStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (!settings.hasPermissionReadImages()) {
+            Log.w(TAG, "permission denied");
+            String p = getPermissionReadImages();
+            this.readExternalStoragePermission.launch(p);
             return;
         }
         selectDirectoryBackgroundImage();
@@ -815,9 +778,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private void checkReadExternalStoragePermission() {
-        if (doesNotHavePermissionReadExternalStorage()) {
-            this.readExternalStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+    private void checkPermissionReadImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissionReadImages()) {
+            String p = getPermissionReadImages();
+            this.readExternalStoragePermission.launch(p);
         }
     }
 
@@ -837,8 +801,22 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private boolean doesNotHavePermissionReadExternalStorage() {
-        return Build.VERSION.SDK_INT >= 23 && (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED);
+    private boolean hasPermissionReadImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String p = getPermissionReadImages();
+            if (p == null) return true;
+            return getActivity().checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+    private String getPermissionReadImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
+        return null;
     }
 
     private void recommendApp() {
@@ -981,12 +959,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 "nightmode_timerange",
                 nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_SCHEDULED
         );
-        if (!Config.USE_RECORD_AUDIO) {
-            showPreference("reactivate_screen_on_noise", false);
-            showPreference("NoiseSensitivity", false);
-            showPreference("ambientNoiseDetection", false);
-        }
-
     }
 
     private void initUseDeviceLockPreference() {

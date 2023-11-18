@@ -235,7 +235,6 @@ public class NightDreamUI {
     private int vibrantColorDark = 0;
     private long lastAnimationTime = 0L;
     private long lastTouchTime = 0L;
-    private SoundMeter soundmeter;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
     private boolean locked = false;
     private boolean zoomFinished = false;
@@ -633,12 +632,6 @@ public class NightDreamUI {
         Utility.registerEventBus(this);
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
-
-        if (settings.useAmbientNoiseDetection()) {
-            soundmeter = new SoundMeter(mContext);
-        } else {
-            soundmeter = null;
-        }
     }
 
     private void initBackground() {
@@ -853,8 +846,8 @@ public class NightDreamUI {
     }
 
     private Drawable loadBackgroundSlideshowImage() {
-        Log.d(TAG, "loadBackgroundSlideshowImage");
-        if (!settings.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        Log.d(TAG, "loadBackgroundSlideshowImage()");
+        if (!settings.hasPermissionReadImages()) {
             return new ColorDrawable(Color.BLACK);
         }
 
@@ -1015,13 +1008,23 @@ public class NightDreamUI {
     }
 
     private void loadBackgroundImageFiles() {
-        if (!settings.hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+        Log.d(TAG, "loadBackgroundImageFiles()");
+        if (!settings.hasPermissionReadImages()) {
+            Log.w(TAG, "loadBackgroundImageFiles() -> permission denied");
             return;
         }
-        Log.d(TAG, "loadBackgroundImageFiles()");
         File path = settings.getBackgroundImageDir();
-        files = Utility.listFiles(path, ".png");
-        files.addAll(Utility.listFiles(path, ".jpg"));
+        Log.d(TAG, "path:" + path);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            files = Utility.listFiles(path, null);
+        } else {
+            files = Utility.listFiles(path, ".png");
+            files.addAll(Utility.listFiles(path, ".jpg"));
+            files.addAll(Utility.listFiles(path, ".jpeg"));
+        }
+
+        Log.d(TAG, "success:" + files.toString());
     }
 
     private Bitmap loadImageFromPath(File file) {
@@ -1130,11 +1133,6 @@ public class NightDreamUI {
         removeCallbacks(fadeClock);
         removeCallbacks(backgroundChange);
         removeCallbacks(zoomIn);
-        if (soundmeter != null) {
-            soundmeter.stopMeasurement();
-            soundmeter = null;
-        }
-
     }
 
     public void onDestroy() {
@@ -1378,11 +1376,9 @@ public class NightDreamUI {
         Utility.hideSystemUI(window);
     }
 
-    public int determineScreenMode(float light_value, boolean isNoisy) {
-
-        Log.d(TAG, "Sound is noisy " + isNoisy);
+    public int determineScreenMode(float light_value) {
         LIGHT_VALUE_DARK = settings.minIlluminance + 1.f;
-        if (light_value <= LIGHT_VALUE_DARK && !isNoisy) {
+        if (light_value <= LIGHT_VALUE_DARK) {
             return 0;
         } else if (light_value < LIGHT_VALUE_BRIGHT / 2.f) { // night shift, desk light on
             return 1;
@@ -1419,16 +1415,6 @@ public class NightDreamUI {
             dim_offset += 0.1f;
         }
         dimScreen(screen_alpha_animation_duration, light_value, dim_offset);
-
-        if (soundmeter != null) {
-            if (new_mode == 0 && !soundmeter.isRunning()) {
-                soundmeter.startMeasurement(3000);
-            } else if (new_mode == 1 && !soundmeter.isRunning()) {
-                soundmeter.startMeasurement(30000);
-            } else if (new_mode > 1) {
-                soundmeter.stopMeasurement();
-            }
-        }
     }
 
     private void setAlpha(View v, float alpha, int millis) {

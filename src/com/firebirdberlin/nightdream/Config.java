@@ -5,7 +5,6 @@ public class Config {
     public final static boolean LOGGING = false;
     public final static boolean PRO = true;
 
-    public final static boolean USE_RECORD_AUDIO = false;
     public final static double NOISE_AMPLITUDE_WAKE  = 250.;
     public final static double NOISE_AMPLITUDE_SLEEP = 2.f * NOISE_AMPLITUDE_WAKE;
     public final static String ACTION_RADIO_STREAM_STARTED = "com.firebirdberlin.nightdream.action_radio_stream_started";

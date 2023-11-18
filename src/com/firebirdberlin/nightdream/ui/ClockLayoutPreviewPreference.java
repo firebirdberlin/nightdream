@@ -271,7 +271,7 @@ public class ClockLayoutPreviewPreference extends Preference {
 
         } else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
                 && !purchased(BillingHelperActivity.ITEM_WEATHER_DATA)) {
-            textViewPurchaseHint.setText(getContext().getString(R.string.product_name_weather));
+            textViewPurchaseHint.setText(getContext().getString(R.string.product_name_pro));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
 
         } else {

@@ -111,7 +111,7 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
         Button addCustomAlarmTone = view.findViewById(R.id.addCustomAlarmTone);
         String btnTxt = getActivity().getString(R.string.add_custom_alarm_tone);
         if (!isPurchased) {
-            String productName = getActivity().getString(R.string.product_name_webradio);
+            String productName = getActivity().getString(R.string.product_name_pro);
             btnTxt += "\n (" + productName + ")";
             int color = Utility.getRandomMaterialColor(context);
             int textColor = Utility.getContrastColor(color);
@@ -119,26 +119,25 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
             addCustomAlarmTone.setTextColor(textColor);
         }
         addCustomAlarmTone.setText(btnTxt);
-        addCustomAlarmTone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        addCustomAlarmTone.setOnClickListener(view1 -> {
 
-                if (!isPurchased) {
-                    if (mListener != null) {
-                        mListener.onPurchaseRequested();
-                        dismiss();
-                        return;
-                    }
-                }
-
-                if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    requestPermissionLauncher.launch(
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    );
+            if (!isPurchased) {
+                if (mListener != null) {
+                    mListener.onPurchaseRequested();
+                    dismiss();
                     return;
                 }
-                selectCustomTone();
             }
+
+            String permission =
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                            ? Manifest.permission.READ_MEDIA_AUDIO
+                            : Manifest.permission.READ_EXTERNAL_STORAGE;
+            if (!hasPermission(permission)) {
+                requestPermissionLauncher.launch(permission);
+                return;
+            }
+            selectCustomTone();
         });
 
         initListView();

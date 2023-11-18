@@ -118,7 +118,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
 
         String btnTxt = getActivity().getString(R.string.add_custom_font);
         if (!isPurchased) {
-            String productName = getActivity().getString(R.string.product_name_weather);
+            String productName = getActivity().getString(R.string.product_name_pro);
             btnTxt += "\n (" + productName + ")";
             Context context = getContext();
             if (context != null) {
@@ -142,7 +142,8 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
                     }
                 }
 
-                if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                        && !hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
                     return;
@@ -219,16 +220,13 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         arrayAdapter =
                 new FontAdapter(getActivity(), R.layout.list_item_alarm_tone, staticFiles);
         arrayAdapter.setSelectedUri(selectedUri);
-        arrayAdapter.setOnDeleteRequestListener(new FontAdapter.OnDeleteRequestListener() {
-            @Override
-            public void onDeleteRequested(FileUri file) {
-                if (file == null || file.uri == null) {
-                    return;
-                }
-                File f = new File(file.uri.getPath());
-                if (f.exists()) {
-                    f.delete();
-                }
+        arrayAdapter.setOnDeleteRequestListener(file -> {
+            if (file == null || file.uri == null) {
+                return;
+            }
+            File f = new File(file.uri.getPath());
+            if (f.exists()) {
+                f.delete();
             }
         });
         listView.setAdapter(arrayAdapter);

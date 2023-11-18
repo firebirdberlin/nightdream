@@ -16,7 +16,6 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
-import com.firebirdberlin.nightdream.NightModeListener;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -98,7 +97,6 @@ public class ScreenReceiver extends BroadcastReceiver {
         Log.i(TAG, "shallActivateStandby()");
         if (Utility.isConfiguredAsDaydream(context)) return false;
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
-        if (NightModeListener.running) return false;
 
         BatteryStats battery = new BatteryStats(context);
         if (settings.handle_power && battery.reference.isCharging && settings.isAlwaysOnAllowed()) {

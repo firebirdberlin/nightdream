@@ -125,9 +125,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Λέξη προς αναζήτηση</string>
     <string name="radio_stream_search">Αναζήτηση</string>
     <string name="radio_stream_unreachable_url">Το URL δεν είναι σωστό</string>
-    <string name="reactivate_on_ambient_light_value">Όριο φωτεινότητας</string>
-    <string name="reactivate_on_ambient_light_value_summary">Η οθόνη ενεργοποιήτε αν το όριο φωτεινότητας επιτευχθεί</string>
-    <string name="reactivate_screen_on_noise">Ενεργοποίηση οθόνης στο όριο φωτεινότητας</string>
     <string name="recommend_app_desc">Επιλογη εφαρμογής για κοινοποίηση</string>
     <string name="recommend_app_subject">Θα ήθελα να σου προτείνω αυτη την εφαρμογή, νυχτερινό ρολόι</string>
     <string name="recommend">Συνιστώμενη εφαρμογή</string>
