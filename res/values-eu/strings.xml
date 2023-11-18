@@ -124,9 +124,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="radio_stream_query_hint">Search string</string>
 <string name="radio_stream_search">Bilatu</string>
 <string name="radio_stream_unreachable_url">URLa ezin da kargatu</string>
-<string name="reactivate_on_ambient_light_value">Argitasunaren atalase-maila</string>
-<string name="reactivate_on_ambient_light_value_summary">Pantaila piztu egingo da argitasunaren atalase-maila gainditzen denean</string>
-<string name="reactivate_screen_on_noise">Inguruan zarata dagoenean pantaila piztu</string>
 <string name="recommend_app_desc">Zure gomendio zabaltzeko app bat aukeratu</string>
 <string name="recommend_app_subject">Gaueko erlojuko app hau zuri gomendatu nahi dizut</string>
 <string name="recommend">Gomendatutako appa-a</string>

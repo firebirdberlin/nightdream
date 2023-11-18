@@ -235,9 +235,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Søgestreng</string>
     <string name="radio_stream_search">Søg</string>
     <string name="radio_stream_unreachable_url">URL giver intet resultat</string>
-    <string name="reactivate_on_ambient_light_value">Belysnings tærskel</string>
-    <string name="reactivate_on_ambient_light_value_summary">Skærmen aktiveres hvis belysnings tærsklen er overskredet</string>
-    <string name="reactivate_screen_on_noise">Vågn ved omgivende støj</string>
     <string name="recommend_app_desc">Vælg en app for at dele din anbefaling</string>
     <string name="recommend_app_subject">Jeg vil gerne anbefale denne Night Clock app </string>
     <string name="recommend">Anbefal app</string>

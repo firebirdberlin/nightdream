@@ -121,9 +121,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Chuỗi tìm kiếm</string>
     <string name="radio_stream_search">Tìm kiếm</string>
     <string name="radio_stream_unreachable_url">URL không thể truy cập.</string>
-    <string name="reactivate_on_ambient_light_value">Ngưỡng chiếu sáng</string>
-    <string name="reactivate_on_ambient_light_value_summary">Màn hình được kích hoạt lại nếu vượt quá ngưỡng chiếu sáng.</string>
-    <string name="reactivate_screen_on_noise">Kích hoạt bởi tiếng ồn</string>
     <string name="recommend_app_desc">Chọn ứng dụng để chia sẻ đề xuất của bạn.</string>
     <string name="recommend_app_subject">Tôi muốn giới thiệu ứng dụng đồng hồ ban đêm này cho bạn.</string>
     <string name="recommend">Đề xuất ứng dụng</string>

@@ -100,8 +100,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_no_search_results">نتیجه ای برای جستجو وجود نداشت.</string>
     <string name="radio_stream_offline">افلاین</string>
     <string name="radio_stream_search">جستوجو</string>
-    <string name="reactivate_on_ambient_light_value_summary">اگر مقدار آستانه نور خورشید بیش از حد باشد، صفحه نمایش دوباره فعال می شود</string>
-    <string name="reactivate_screen_on_noise">بیدار شدن در سر و صدا محیط</string>
     <string name="recommend_app_desc">یک برنامه را انتخاب کنید تا پیشنهاد شما را به اشتراک بگذارید</string>
     <string name="recommend_app_subject">من می خواهم این برنامه ساعت شبانه را به شما توصیه کنم.</string>
     <string name="recommend">پیشنهاد برنامه</string>

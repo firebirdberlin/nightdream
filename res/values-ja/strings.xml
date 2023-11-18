@@ -161,9 +161,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_offline">オフライン</string>
     <string name="radio_stream_query_hint">検索文字列</string>
     <string name="radio_stream_search">ラジオ局の検索</string>
-    <string name="reactivate_on_ambient_light_value">照度しきい値</string>
-    <string name="reactivate_on_ambient_light_value_summary">照度しきい値を超えると画面が再起動されます</string>
-    <string name="reactivate_screen_on_noise">周囲音で画面表示</string>
     <string name="recommend_app_desc">おすすめを共有するアプリを選択する</string>
     <string name="recommend_app_subject">私はあなたにこの夜の時計のアプリをお勧めしたいと思います</string>
     <string name="recommend">アプリを薦める</string>

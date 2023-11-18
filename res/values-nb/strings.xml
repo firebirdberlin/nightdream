@@ -224,9 +224,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Søkestreng</string>
     <string name="radio_stream_search">Søk</string>
     <string name="radio_stream_unreachable_url">URL ble ikke funnet</string>
-    <string name="reactivate_on_ambient_light_value">Illuminansegrense</string>
-    <string name="reactivate_on_ambient_light_value_summary">Skjermen blir reaktivert hvis illuminansegrensen blir overskredet</string>
-    <string name="reactivate_screen_on_noise">Aktiver ved lyd</string>
     <string name="recommend_app_desc">Velg dn app for å dele din anbefaling for</string>
     <string name="recommend_app_subject">Jeg vil anbefale NightClock</string>
     <string name="recommend">Anbefal appen</string>

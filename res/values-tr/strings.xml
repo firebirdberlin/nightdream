@@ -156,9 +156,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Arama kriteri</string>
     <string name="radio_stream_search">Ara</string>
     <string name="radio_stream_unreachable_url">Adrese ulaşılamıyor</string>
-    <string name="reactivate_on_ambient_light_value">Ortam aydınlık eşiği</string>
-    <string name="reactivate_on_ambient_light_value_summary">Ortam aydınlığı belirtilen eşiği geçince ekran tekrar devreye girer</string>
-    <string name="reactivate_screen_on_noise">Ortam sesiyle devreye gir</string>
     <string name="recommend_app_desc">Önerileriniz için bir uygulama seçin</string>
     <string name="recommend_app_subject">Bu "gece saati" uygulamasını sana önermek istiyorum</string>
     <string name="recommend">Arkadaşına öner</string>

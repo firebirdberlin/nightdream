@@ -263,9 +263,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Строка поиска</string>
     <string name="radio_stream_search">Поиск</string>
     <string name="radio_stream_unreachable_url">URL недоступен</string>
-    <string name="reactivate_on_ambient_light_value">Предел освещения</string>
-    <string name="reactivate_on_ambient_light_value_summary">Включить экран, если превышен предел освещения</string>
-    <string name="reactivate_screen_on_noise">Включать при шуме</string>
     <string name="recommend_app_desc">Выберите приложение чтобы поделиться рекомендациями</string>
     <string name="recommend_app_subject">Я хочу порекомендовать Вам это приложение-часы</string>
     <string name="recommend">Рекомендовать приложение</string>
