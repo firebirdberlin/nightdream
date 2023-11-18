@@ -136,7 +136,6 @@ public class Settings {
     public int clockColor;
     public int clockColorNight;
     public int nightModeActivationMode;
-    public int reactivate_on_ambient_light_value = 30; // lux
     public int secondaryColor;
     public int secondaryColorNight;
     public String rssURL="";
@@ -492,7 +491,6 @@ public class Settings {
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         if (Utility.isEmulator()) purchasedWeatherData = true;
         purchasedDonation = settings.getBoolean("purchasedDonation", false);
-        reactivate_on_ambient_light_value = settings.getInt("reactivate_on_ambient_light_value", reactivate_on_ambient_light_value);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
@@ -1156,28 +1154,6 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public boolean useAmbientNoiseDetection() {
-        return Config.USE_RECORD_AUDIO && ambientNoiseDetection && hasPermission(Manifest.permission.RECORD_AUDIO);
-    }
-
-    public void setUseAmbientNoiseDetection(boolean on) {
-        ambientNoiseDetection = on;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putBoolean("ambientNoiseDetection", on);
-        prefEditor.apply();
-    }
-
-    public boolean reactivateScreenOnNoise() {
-        return Config.USE_RECORD_AUDIO && reactivate_screen_on_noise && hasPermission(Manifest.permission.RECORD_AUDIO);
-    }
-
-    public void setReactivateScreenOnNoise(boolean on) {
-        reactivate_screen_on_noise = on;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putBoolean("reactivate_screen_on_noise", on);
-        prefEditor.apply();
-    }
-
     public void setFetchWeatherData(boolean on) {
         showWeather = on;
         SharedPreferences.Editor prefEditor = settings.edit();
@@ -1299,16 +1275,21 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public String backgroundImagePath() {
-        if (hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            return bgpath;
-        }
-        return "";
+    public boolean hasPermission(String permission) {
+        return (
+            ContextCompat.checkSelfPermission(mContext, permission) == PackageManager.PERMISSION_GRANTED
+        );
     }
 
-    public boolean hasPermission(String permission) {
-        return (ContextCompat.checkSelfPermission(mContext, permission)
-                == PackageManager.PERMISSION_GRANTED);
+    public boolean hasPermissionReadImages() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        String permission =
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                        ? Manifest.permission.READ_MEDIA_IMAGES
+                        : Manifest.permission.READ_EXTERNAL_STORAGE;
+        return (hasPermission(permission));
     }
 
     public RadioStation getFavoriteRadioStation(int radioStationIndex) {

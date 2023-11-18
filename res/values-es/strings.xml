@@ -281,9 +281,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Cadena de búsqueda</string>
     <string name="radio_stream_search">Buscar</string>
     <string name="radio_stream_unreachable_url">La URL no está disponible.</string>
-    <string name="reactivate_on_ambient_light_value">Límite de iluminación</string>
-    <string name="reactivate_on_ambient_light_value_summary">La pantalla se activa si el límite de la iluminación es superior.</string>
-    <string name="reactivate_screen_on_noise">Despertar en ambiente ruidoso</string>
     <string name="recommend_app_desc">Elige una aplicación para recomendarnos.</string>
     <string name="recommend_app_subject">Te recomiendo esta aplicación de un reloj de noche</string>
     <string name="recommend">Recomienda la aplicación</string>

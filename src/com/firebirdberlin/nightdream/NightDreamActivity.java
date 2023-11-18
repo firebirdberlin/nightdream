@@ -233,39 +233,10 @@ public class NightDreamActivity extends BillingHelperActivity
         @Override
         public void run() {
             handler.removeCallbacks(setScreenOff);
-            int new_mode = nightDreamUI.determineScreenMode(last_ambient, isNoisy());
+            int new_mode = nightDreamUI.determineScreenMode(last_ambient);
             setMode(new_mode);
         }
     };
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private final ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            NightModeListener.LocalBinder binder = (NightModeListener.LocalBinder) service;
-            NightModeListener myService = binder.getService();
-            context.startForegroundService(getForegroundIntent());
-
-            myService.startForeground();
-            context.unbindService(this);
-        }
-
-        @Override
-        public void onBindingDied(ComponentName name) {
-            Log.d(TAG, "Binding has dead.");
-        }
-
-        @Override
-        public void onNullBinding(ComponentName name) {
-            Log.d(TAG, "Bind was null.");
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "Service is disconnected..");
-        }
-    };
-
     static public void start(Context context) {
         NightDreamActivity.start(context, null);
     }
@@ -643,12 +614,14 @@ public class NightDreamActivity extends BillingHelperActivity
         if (mySettings.activateDoNotDisturb) {
             AudioManage.activateDnDMode(false, mySettings.activateDoNotDisturbAllowPriority);
         }
-        if (mySettings.allow_screen_off && mode == MODE_NIGHT
-                && screenWasOn && !Utility.isScreenOn(this)) { // screen off in night mode
-            startBackgroundListener();
-        } else {
+
+        if (!mySettings.allow_screen_off
+                || mode != MODE_NIGHT
+                || !screenWasOn
+                || Utility.isScreenOn(this)) {
             nightDreamUI.restoreRingerMode();
         }
+
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
@@ -723,6 +696,7 @@ public class NightDreamActivity extends BillingHelperActivity
         PowerSupplyReceiver receiver = new PowerSupplyReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        filter.addAction(Intent.ACTION_POWER_CONNECTED);
         registerReceiver(receiver, filter);
         return receiver;
     }
@@ -888,29 +862,6 @@ public class NightDreamActivity extends BillingHelperActivity
         return keyguardManager.inKeyguardRestrictedInputMode();
     }
 
-    private Intent getForegroundIntent() {
-        return new Intent(this, NightModeListener.class);
-    }
-
-    private void startBackgroundListener() {
-        Log.d(TAG, "startBackgroundListener");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            try {
-                Log.d(TAG, "try binding startBackgroundListener");
-                context.bindService(getForegroundIntent(), connection,
-                        Context.BIND_AUTO_CREATE);
-            } catch (RuntimeException ignored) {
-                Log.d(TAG, "error binding startBackgroundListener");
-                Intent i = new Intent(this, NightModeListener.class);
-                Utility.startForegroundService(this, i);
-            }
-        } else {
-            Intent i = new Intent(this, NightModeListener.class);
-            Utility.startForegroundService(this, i);
-        }
-    }
-
     private boolean shallKeepScreenOn(int mode) {
         screenWasOn = screenWasOn || Utility.isScreenOn(this);
         boolean isCharging = Utility.isCharging(this);
@@ -977,17 +928,9 @@ public class NightDreamActivity extends BillingHelperActivity
         handleBrightnessChange();
     }
 
-    boolean isNoisy() {
-        if (!mySettings.useAmbientNoiseDetection()) {
-            return false;
-        }
-        long now = System.currentTimeMillis();
-        return (now - lastNoiseTime < MINIMUM_APP_RUN_TIME_MILLIS);
-    }
-
     private void handleBrightnessChange() {
         if (mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC) {
-            int new_mode = nightDreamUI.determineScreenMode(last_ambient, isNoisy());
+            int new_mode = nightDreamUI.determineScreenMode(last_ambient);
             setMode(new_mode);
         }
     }
@@ -1034,6 +977,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void scheduleShutdown(Calendar calendar) {
         Log.i(TAG, "scheduleShutdown(" + calendar + ")");
+        handler.removeCallbacks(finishApp);
         if (calendar == null) return;
         long deltaMillis = calendar.getTimeInMillis() - System.currentTimeMillis();
         handler.postDelayed(finishApp, deltaMillis);
@@ -1095,6 +1039,7 @@ public class NightDreamActivity extends BillingHelperActivity
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
             if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
+                scheduleShutdown();
                 nightDreamUI.onPowerDisconnected();
                 if (mySettings.handle_power_disconnection) {
                     handler.removeCallbacks(finishApp);
@@ -1107,6 +1052,7 @@ public class NightDreamActivity extends BillingHelperActivity
                     triggerAlwaysOnTimeout();
                 }
             } else if (Intent.ACTION_POWER_CONNECTED.equals(action)) {
+                scheduleShutdown();
                 handler.removeCallbacks(finishApp);
                 handler.removeCallbacks(alwaysOnTimeout);
                 nightDreamUI.onPowerConnected();

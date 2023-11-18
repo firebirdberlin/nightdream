@@ -124,9 +124,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">搜尋字組</string>
     <string name="radio_stream_search">搜尋</string>
     <string name="radio_stream_unreachable_url">URL不可用。</string>
-    <string name="reactivate_on_ambient_light_value">照明度臨界值</string>
-    <string name="reactivate_on_ambient_light_value_summary">當超過臨界值時，螢幕將會重新啟動。</string>
-    <string name="reactivate_screen_on_noise">以環境雜訊喚醒</string>
     <string name="recommend_app_desc">選擇應用程式以分享</string>
     <string name="recommend_app_subject">推薦這個小夜鐘給你吧。</string>
     <string name="recommend">推薦給別人</string>

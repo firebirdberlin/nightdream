@@ -282,9 +282,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Söksträng</string>
     <string name="radio_stream_search">Sök</string>
     <string name="radio_stream_unreachable_url">URL ej nåbar</string>
-    <string name="reactivate_on_ambient_light_value">Belysningsgräns</string>
-    <string name="reactivate_on_ambient_light_value_summary">Skärmen återaktiveras om belysningsgränsen överskrids.</string>
-    <string name="reactivate_screen_on_noise">Väck vid bakgrundsljud.</string>
     <string name="recommend_app_desc">Välj app för att dela din rekommendation.</string>
     <string name="recommend_app_subject">Jag rekommenderar den här nattklocksappen till dig.</string>
     <string name="recommend">Rekommendera app</string>

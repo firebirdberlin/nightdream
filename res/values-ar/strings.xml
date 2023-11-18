@@ -221,9 +221,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">دالة البحث</string>
     <string name="radio_stream_search">بحث</string>
     <string name="radio_stream_unreachable_url">الرابط لا يمكن الوصول إليه</string>
-    <string name="reactivate_on_ambient_light_value">درجة الإحساس بالضوء</string>
-    <string name="reactivate_on_ambient_light_value_summary">إعادة تفعيل الشاشة عند تعدي درجة الإحساس بالضوء</string>
-    <string name="reactivate_screen_on_noise">الاستيقاظ مع الضوضاء المحيطة</string>
     <string name="recommend_app_desc">إختر تطبيق لمشاركة توصيتك</string>
     <string name="recommend_app_subject">أحب أن أوصيك بتطبيق الساعة الليلية هذا</string>
     <string name="recommend">توصية بالتطبيق</string>

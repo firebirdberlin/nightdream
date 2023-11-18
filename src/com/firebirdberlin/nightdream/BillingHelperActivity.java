@@ -126,19 +126,22 @@ public abstract class BillingHelperActivity
             values.add(PRODUCT_ID_PRO);
         }
 
-        if (!purchased_weather_data) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_weather, ITEM_WEATHER_DATA));
-            values.add(PRODUCT_ID_WEATHER_DATA);
-        }
+        // Stop selling packages and only offer packages in case one of the packages has already been purchased
+        if (!purchased_pro && (purchased_weather_data || purchased_web_radio || purchased_actions)) {
+            if (!purchased_weather_data) {
+                entries.add(getProductWithPrice(prices, R.string.product_name_weather, ITEM_WEATHER_DATA));
+                values.add(PRODUCT_ID_WEATHER_DATA);
+            }
 
-        if (!purchased_web_radio) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_webradio, ITEM_WEB_RADIO));
-            values.add(PRODUCT_ID_WEB_RADIO);
-        }
+            if (!purchased_web_radio) {
+                entries.add(getProductWithPrice(prices, R.string.product_name_webradio, ITEM_WEB_RADIO));
+                values.add(PRODUCT_ID_WEB_RADIO);
+            }
 
-        if (!purchased_actions) {
-            entries.add(getProductWithPrice(prices, R.string.product_name_actions, ITEM_ACTIONS));
-            values.add(PRODUCT_ID_ACTIONS);
+            if (!purchased_actions) {
+                entries.add(getProductWithPrice(prices, R.string.product_name_actions, ITEM_ACTIONS));
+                values.add(PRODUCT_ID_ACTIONS);
+            }
         }
 
         if (!purchased_donation) {

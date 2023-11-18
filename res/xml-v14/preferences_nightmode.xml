@@ -35,13 +35,6 @@
         app:key="Night.muteRinger"
         app:title="@string/mute_ringer" />
 
-    <Preference
-        app:iconSpaceReserved="false"
-        app:icon="@drawable/ic_googleplay"
-        app:key="purchaseActions4"
-        app:isPreferenceVisible="false"
-        app:title="@string/purchaseActions" />
-
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:layout="@layout/preferences_category"
@@ -54,45 +47,5 @@
             app:key="allow_screen_off"
             app:summary="@string/allow_screen_off_summary"
             app:title="@string/allow_screen_off" />
-
-        <SwitchPreferenceCompat
-            app:defaultValue="false"
-            app:iconSpaceReserved="false"
-            app:key="ambientNoiseDetection"
-            app:summary="@string/ambient_noise_summary"
-            app:title="@string/ambient_noise" />
-
-        <de.firebirdberlin.preference.InlineSeekBarPreference
-            app:iconSpaceReserved="false"
-            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-            app:defaultValue="20"
-            app:dependency="allow_screen_off"
-            app:key="reactivate_on_ambient_light_value"
-            app:summary="@string/reactivate_on_ambient_light_value_summary"
-            app:title="@string/reactivate_on_ambient_light_value"
-            seekbar:interval="1"
-            seekbar:max="30"
-            seekbar:min="5"
-            seekbar:unitsLeft=""
-            seekbar:unitsRight="lux"/>
-
-        <CheckBoxPreference
-            app:iconSpaceReserved="false"
-            app:defaultValue="false"
-            app:dependency="allow_screen_off"
-            app:key="reactivate_screen_on_noise"
-            app:title="@string/reactivate_screen_on_noise" />
-
-        <de.firebirdberlin.preference.InlineSeekBarPreference
-            app:iconSpaceReserved="false"
-            xmlns:seekbar="http://schemas.android.com/apk/lib/android"
-            app:defaultValue="5"
-            app:key="NoiseSensitivity"
-            app:title="@string/noise_sensitivity"
-            seekbar:interval="1"
-            seekbar:max="10"
-            seekbar:min="0"
-            seekbar:unitsLeft=""
-            seekbar:unitsRight=""/>
     </PreferenceCategory>
 </PreferenceScreen>

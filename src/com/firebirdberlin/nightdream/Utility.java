@@ -836,15 +836,12 @@ public class Utility {
     }
 
     public static ArrayList<File> listFiles(File path, final String fileEnding) {
-        FileFilter fileFilter = new FileFilter() {
-            @Override
-            public boolean accept(File path) {
-                if (path.isDirectory() && !path.getName().startsWith(".")) return true;
-                if (fileEnding != null) {
-                    return path.isFile() && path.getName().toLowerCase().endsWith(fileEnding);
-                } else {
-                    return path.isFile();
-                }
+        FileFilter fileFilter = path1 -> {
+            if (path1.isDirectory() && !path1.getName().startsWith(".")) return true;
+            if (fileEnding != null) {
+                return path1.isFile() && path1.getName().toLowerCase().endsWith(fileEnding);
+            } else {
+                return path1.isFile();
             }
         };
         Stack<File> dirs = new Stack<>();
