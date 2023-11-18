@@ -126,9 +126,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Vyhľadať text</string>
     <string name="radio_stream_search">Hľadaj</string>
     <string name="radio_stream_unreachable_url">Adresa URL nie je dostupná.</string>
-    <string name="reactivate_on_ambient_light_value">Prah osvetlenia</string>
-    <string name="reactivate_on_ambient_light_value_summary">Obrazovka je obnovená ak osvetlenie presiahne nastavenú hodnotu.</string>
-    <string name="reactivate_screen_on_noise">Obnoviť pri detekcii zvukov v okolí</string>
     <string name="recommend_app_desc">Vyberte aplikáciu pre zdieľanie vášho odporúčania</string>
     <string name="recommend_app_subject">Rád by som vám odporučil túto aplikáciu pre zobrazenie hodín v noci.</string>
     <string name="recommend">Odporučiť aplikáciu</string>
