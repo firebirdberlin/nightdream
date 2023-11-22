@@ -406,6 +406,7 @@ public class AlarmClockView extends View {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         time.isActive = true;
+        time.name = getResources().getString(R.string.alarm);
         AlarmHandlerService.set(ctx, time);
     }
 

@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream;
 
 import android.animation.LayoutTransition;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -9,10 +10,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.AlarmClock;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -208,6 +213,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                     boolean isNew = (entry_id == null);
                     if (isNew) {
                         entry = new SimpleTime();
+                        entry.name = getResources().getString(R.string.alarm);
                         entry.soundUri = Settings.getDefaultAlarmTone(context);
                         entry.radioStationIndex = Settings.getDefaultRadioStation(context);
                     } else {
@@ -292,6 +298,35 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             AlarmNotificationService.cancelNotification(this);
         }
         WakeUpReceiver.schedule(this, db);
+    }
+
+    public void onNameClicked(View view) {
+        SimpleTime entry = (SimpleTime) view.getTag();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.alarmName));
+        final EditText input = new EditText(this);
+        input.setText(entry.name);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int px = Utility.dpToPx(this, 20);
+        params.leftMargin = px;
+        params.rightMargin = px;
+        input.setLayoutParams(params);
+        FrameLayout container = new FrameLayout(this);
+        container.addView(input);
+        builder.setView(container);
+
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            entry.name = input.getText().toString().trim();
+            db.save(entry);
+            update();
+        });
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            //dialog.cancel();
+        });
+
+        builder.show();
+        //showTimePicker(entry.hour, entry.min, true, entry.id);
     }
 
     public void onTimeClicked(View view) {

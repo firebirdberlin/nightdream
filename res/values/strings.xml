@@ -28,6 +28,7 @@ OR
     <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="alarm">Alarm</string>
+    <string name="alarmName">Name of the alarm</string>
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmFadeInDurationSeconds">fade in duration</string>
     <string name="alarmStartDate">Next alarm on</string>
@@ -389,7 +390,7 @@ OR
     <string name="slideshow_center_animated">animated</string>
     <string name="slideshow_style">Style</string>
     <string name="sleep_time_dialog_title">Sleep timer</string>
-    <string name="smart_home">Smart home</string>
+    <string name="smart_home">Smart Home</string>
     <string name="smart_home_avm">AVM Fritz!Box</string>
     <string name="smart_home_avm_host">Host</string>
     <string name="smart_home_avm_host_summary">Address of your Fritz!Box, e.g. http://fritz.box</string>
