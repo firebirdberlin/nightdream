@@ -8,7 +8,7 @@
     android:animateLayoutChanges="false"
     android:orientation="vertical"
     android:paddingBottom="6dp"
-    tools:targetApi="honeycomb">
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainLayout"
@@ -17,7 +17,26 @@
         android:animateLayoutChanges="false"
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="2dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/alarm"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/button_down"
+            app:layout_constraintStart_toEndOf="@+id/enabled"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/timeView"
@@ -25,15 +44,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
             android:fontFamily="sans-serif"
             android:text="09:00"
             android:textAppearance="@android:style/TextAppearance.Large"
             android:textSize="40sp"
-            app:layout_constraintEnd_toStartOf="@+id/button_down"
-            app:layout_constraintStart_toEndOf="@+id/enabled"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/textViewName"
+            app:layout_constraintStart_toStartOf="@id/textViewName"
+            app:layout_constraintTop_toBottomOf="@id/textViewName"
             tools:ignore="HardcodedText" />
+
 
         <TextView
             android:id="@+id/textViewWhen"
@@ -43,7 +62,7 @@
             android:layout_weight="15"
             android:gravity="center_vertical"
             android:lineSpacingExtra="2dp"
-            android:lines="2"
+            android:lines="1"
             android:maxLines="2"
             android:text="@string/today"
             android:textAppearance="@android:style/TextAppearance.Small"
@@ -82,8 +101,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/textViewWhen"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/enabled"
-            tools:targetApi="ice_cream_sandwich" />
+            app:layout_constraintTop_toBottomOf="@id/enabled" />
 
         <ImageView
             android:id="@+id/button_down"
@@ -91,6 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
+            android:contentDescription="more options"
             android:paddingStart="5dp"
             android:paddingTop="0dp"
             android:paddingEnd="0dp"
@@ -101,8 +120,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_expand"
-            android:contentDescription="more options"
-            tools:ignore="HardcodedText"/>
+            tools:ignore="HardcodedText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

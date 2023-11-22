@@ -160,6 +160,7 @@ public class AlarmHandlerService extends BroadcastReceiver {
                 now.getTimeInMillis() + Settings.getSnoozeTimeMillis(context)
         );
         time.isActive = true;
+        time.name = "S N O O Z E";
         time.soundUri = (currentAlarm != null) ? currentAlarm.soundUri : null;
         time.radioStationIndex = (currentAlarm != null) ? currentAlarm.radioStationIndex : -1;
         time.vibrate = currentAlarm != null && currentAlarm.vibrate;
