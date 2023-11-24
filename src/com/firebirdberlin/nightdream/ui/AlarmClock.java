@@ -53,7 +53,11 @@ public class AlarmClock extends RelativeLayout {
         LayoutParams layoutAlarmClockView = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
         alarmTimeTextView = new TextView(context);
-        alarmTimeTextView.setEllipsize(TextUtils.TruncateAt.END);
+        alarmTimeTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        alarmTimeTextView.setMarqueeRepeatLimit(-1);
+        alarmTimeTextView.setHorizontallyScrolling(true);
+        alarmTimeTextView.setSingleLine();
+
         alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
         alarmTimeTextView.setOnTouchListener(new OnTouchListener() {
             final Handler handler = new Handler();
@@ -142,6 +146,8 @@ public class AlarmClock extends RelativeLayout {
         alarmClockView.setOnAlarmChangedListener(alarmString -> {
             alarmTimeTextView.setText(alarmString);
             alarmTimeTextView.setVisibility(alarmString.isEmpty() ? GONE : VISIBLE);
+            alarmTimeTextView.setSelected(true);
+
             alarmTimeTextView.invalidate();
         });
 
@@ -237,6 +243,7 @@ public class AlarmClock extends RelativeLayout {
 
     public void setPaddingHorizontal(int paddingHorizontal) {
         alarmClockView.setPaddingHorizontal(paddingHorizontal);
+        alarmTimeTextView.setMaxWidth(getWidth() - 2 * alarmClockView.touch_zone_radius);
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
