@@ -356,9 +356,13 @@ public class AlarmClockView extends View {
         if (alarmIsRunning()) {
             SimpleTime current = AlarmHandlerService.getCurrentlyActiveAlarm();
             if (current != null) {
-                Calendar cal = current.getTodaysAlarmTIme();
-                if (cal != null) {
-                    return Utility.getTimeFormatted(ctx, cal);
+                if (Utility.isEmpty(current.name)) {
+                    Calendar cal = current.getTodaysAlarmTIme();
+                    if (cal != null) {
+                        return Utility.getTimeFormatted(ctx, cal);
+                    }
+                } else {
+                    return current.name;
                 }
             }
         }
