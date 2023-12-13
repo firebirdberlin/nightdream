@@ -288,7 +288,7 @@ public class BottomPanelLayout extends FrameLayout {
         setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
         addView(tickerLayout);
         invalidate();
-        tickerLayout.run();
+        tickerLayout.run(false);
     }
 
     public boolean isWebRadioViewActive() {
