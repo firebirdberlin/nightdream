@@ -1094,4 +1094,15 @@ public class Utility {
             return (postalCode == null) ? "" : postalCode;
         }
     }
+    public static boolean areSystemAnimationsEnabled(Context context) {
+        float duration = android.provider.Settings.Global.getFloat(
+                context.getContentResolver(),
+                android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1
+        );
+        float transition = android.provider.Settings.Global.getFloat(
+                context.getContentResolver(),
+                android.provider.Settings.Global.TRANSITION_ANIMATION_SCALE, 1
+        );
+        return (duration != 0 && transition != 0);
+    }
 }

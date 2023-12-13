@@ -25,7 +25,7 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 public class RSSViewModel extends ViewModel {
-    private static final String TAG = "RSSViewModel";
+    private static final String TAG = "TickerViewModel";
     private static WeakReference<Context> weakContext;
 
     private static final MutableLiveData<Channel> myLiveData = new MutableLiveData<>();
@@ -85,7 +85,9 @@ public class RSSViewModel extends ViewModel {
                         .setConstraints(constraints)
                         .build();
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.REPLACE, downloadRSSWork);
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                TAG, ExistingPeriodicWorkPolicy.REPLACE, downloadRSSWork
+        );
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadRSSWork.getId())
                 .observe((LifecycleOwner) context, info -> {
@@ -105,7 +107,7 @@ public class RSSViewModel extends ViewModel {
         return myLiveData;
     }
 
-    private MutableLiveData<Long> getDataSpeed() {
+    private MutableLiveData<Long> getTickerSpeed() {
         return tickerAnimationSpeed;
     }
 
@@ -125,7 +127,7 @@ public class RSSViewModel extends ViewModel {
 
     public static void observeSpeed(Context context, @NonNull Observer<Long> observer) {
         RSSViewModel model = new ViewModelProvider((ViewModelStoreOwner) context).get(RSSViewModel.class);
-        model.getDataSpeed().observe((LifecycleOwner) context, observer);
+        model.getTickerSpeed().observe((LifecycleOwner) context, observer);
     }
 
     public static void observeInterval(Context context, @NonNull Observer<Integer> observer) {
