@@ -425,13 +425,16 @@ public class AlarmClockView extends View {
 
     protected void updateTime(SimpleTime time) {
         this.time = time;
-        postAlarmTime();
-        invalidate();
-        if (time == null) {
-            Log.w(TAG, "no next alarm");
-        } else {
-            Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
-        }
+        post(() -> {
+            postAlarmTime();
+            invalidate();
+            if (time == null) {
+                Log.w(TAG, "no next alarm");
+            } else {
+                Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
+            }
+            requestLayout();
+        });
     }
 
     void toast(final CharSequence text) {

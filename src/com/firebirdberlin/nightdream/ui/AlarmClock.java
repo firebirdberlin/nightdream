@@ -144,10 +144,10 @@ public class AlarmClock extends RelativeLayout {
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         alarmClockView.setOnAlarmChangedListener(alarmString -> {
+            Log.i(TAG, "onAlarmChanged() alarmString: " + alarmString);
             alarmTimeTextView.setText(alarmString);
             alarmTimeTextView.setVisibility(alarmString.isEmpty() ? GONE : VISIBLE);
             alarmTimeTextView.setSelected(true);
-
             alarmTimeTextView.invalidate();
         });
 
