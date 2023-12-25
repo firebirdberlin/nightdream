@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.ui;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -251,6 +250,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     private void clearViews() {
         webRadioLayout = null;
+        tickerLayout = null;
     }
 
     private void showWebRadioView() {

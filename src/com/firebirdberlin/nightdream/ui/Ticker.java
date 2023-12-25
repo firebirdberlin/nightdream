@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebirdberlin.nightdream.Utility;
@@ -44,7 +45,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     private int textColor = Color.WHITE;
     private int accentColor = Color.WHITE;
     private int index = -1;
-    private Context context;
+    private final Context context;
     private float textSize = 28.f;
     private boolean running = false;
     final private Handler handler = new Handler();
@@ -92,7 +93,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
             this.headlines.clear();
             this.urls.clear();
             this.headlines.addAll(headlines);
-            this.urls.addAll(urls);
+            //this.urls.addAll(urls);
             Log.d(TAG, "setHeadlines(List<String> headlines)");
             for (int i = 0; i < Math.min(articles.size(), 10); i++) {
                 String title = articles.get(i).getTitle();
@@ -136,7 +137,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     }
 
     private void updateChildren() {
-        //set all textcolor to all textviews
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View v = getChildAt(i);
@@ -290,23 +290,20 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         //move view out off screen.
         tv.setTranslationX(getWidth());
         int distance = (int) tv.getPaint().measureText(tv.getText().toString());
-        Log.i(TAG, "speed: " + distance + " " + animationSpeed
-                + " = " + distance * animationSpeed + " width " + getWidth()
-        );
         tv.animate()
                 .translationXBy(-distance)
                 .setDuration(distance * animationSpeed)
                 .setInterpolator(new LinearInterpolator())
                 .setListener(new Animator.AnimatorListener() {
                     @Override
-                    public void onAnimationStart(Animator animation) {
+                    public void onAnimationStart(@NonNull Animator animation) {
                         Log.d(TAG, "start animation");
                         animators.add(animation);
                         animatedViews.add(tv);
                     }
 
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEnd(@NonNull Animator animation) {
                         animators.remove(animation);
                         if (tv.getParent() != null) {
                             animationEnd(tv);
@@ -315,13 +312,13 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onAnimationCancel(Animator animation) {
+                    public void onAnimationCancel(@NonNull Animator animation) {
                         animators.remove(animation);
                         animatedViews.remove(tv);
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {
+                    public void onAnimationRepeat(@NonNull Animator animation) {
                     }
                 }).start();
     }
@@ -334,12 +331,12 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
                 .setInterpolator(new LinearInterpolator())
                 .setListener(new Animator.AnimatorListener() {
                     @Override
-                    public void onAnimationStart(Animator animation) {
+                    public void onAnimationStart(@NonNull Animator animation) {
                         animators.add(animation);
                     }
 
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEnd(@NonNull Animator animation) {
                         //Remove view
                         removeView(tv);
                         animators.remove(animation);
@@ -347,14 +344,14 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onAnimationCancel(Animator animation) {
+                    public void onAnimationCancel(@NonNull Animator animation) {
                         //Remove view from set
                         animatedViews.remove(tv);
                         animators.remove(animation);
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {
+                    public void onAnimationRepeat(@NonNull Animator animation) {
                     }
                 })
                 .start();
