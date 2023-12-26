@@ -356,9 +356,13 @@ public class AlarmClockView extends View {
         if (alarmIsRunning()) {
             SimpleTime current = AlarmHandlerService.getCurrentlyActiveAlarm();
             if (current != null) {
-                Calendar cal = current.getTodaysAlarmTIme();
-                if (cal != null) {
-                    return Utility.getTimeFormatted(ctx, cal);
+                if (Utility.isEmpty(current.name)) {
+                    Calendar cal = current.getTodaysAlarmTIme();
+                    if (cal != null) {
+                        return Utility.getTimeFormatted(ctx, cal);
+                    }
+                } else {
+                    return current.name;
                 }
             }
         }
@@ -406,6 +410,7 @@ public class AlarmClockView extends View {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         time.isActive = true;
+        time.name = getResources().getString(R.string.alarm);
         AlarmHandlerService.set(ctx, time);
     }
 
@@ -420,13 +425,16 @@ public class AlarmClockView extends View {
 
     protected void updateTime(SimpleTime time) {
         this.time = time;
-        postAlarmTime();
-        invalidate();
-        if (time == null) {
-            Log.w(TAG, "no next alarm");
-        } else {
-            Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
-        }
+        post(() -> {
+            postAlarmTime();
+            invalidate();
+            if (time == null) {
+                Log.w(TAG, "no next alarm");
+            } else {
+                Log.w(TAG, String.format("next Alarm %02d:%02d", time.hour, time.min));
+            }
+            requestLayout();
+        });
     }
 
     void toast(final CharSequence text) {

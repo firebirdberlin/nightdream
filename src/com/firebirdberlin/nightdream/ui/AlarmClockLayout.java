@@ -66,6 +66,7 @@ public class AlarmClockLayout extends LinearLayout {
                     ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                 }
             };
+    private TextView nameView = null;
     private TextView timeView = null;
     private TextView textViewSound = null;
     private TextView textViewRadio = null;
@@ -116,6 +117,7 @@ public class AlarmClockLayout extends LinearLayout {
         this.radioStations = radioStations;
         init();
         imageViewDelete.setTag(entry);
+        nameView.setTag(entry);
         timeView.setTag(entry);
         textViewWhen.setTag(entry);
     }
@@ -152,6 +154,7 @@ public class AlarmClockLayout extends LinearLayout {
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         addView(child, lp);
         mainLayout = findViewById(R.id.mainLayout);
+        nameView = findViewById(R.id.textViewName);
         timeView = findViewById(R.id.timeView);
         textViewSound = findViewById(R.id.textViewSound);
         textViewRadio = findViewById(R.id.textViewRadio);
@@ -217,6 +220,7 @@ public class AlarmClockLayout extends LinearLayout {
         };
         toggleActive.setOnCheckedChangeListener(checkedChangeListener);
         switchActive.setOnCheckedChangeListener(checkedChangeListener);
+        nameView.setOnClickListener(((SetAlarmClockActivity) context)::onNameClicked);
         timeView.setOnClickListener(((SetAlarmClockActivity) context)::onTimeClicked);
         textViewWhen.setOnClickListener(((SetAlarmClockActivity) context)::onDateClicked);
 
@@ -305,6 +309,7 @@ public class AlarmClockLayout extends LinearLayout {
 
     public void update() {
         if (alarmClockEntry != null) {
+            nameView.setText(alarmClockEntry.name);
             long now = System.currentTimeMillis();
             Calendar time = alarmClockEntry.getCalendar();
             String text = Utility.formatTime(timeFormat, time);

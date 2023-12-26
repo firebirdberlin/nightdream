@@ -15,7 +15,7 @@ import org.json.JSONException;
 public class SQLiteDBHelper extends SQLiteOpenHelper {
     Context context;
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "sqlite.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + AlarmEntry.TABLE_NAME + " (" +
@@ -29,7 +29,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                     AlarmEntry.COLUMN_NEXT_EVENT_AFTER + " INTEGER DEFAULT NULL, " +
                     AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1, " +
                     AlarmEntry.COLUMN_VIBRATE + " INTEGER DEFAULT 0, " +
-                    AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0" +
+                    AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0," +
+                    AlarmEntry.COLUMN_NAME + " text" +
                     ")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + AlarmEntry.TABLE_NAME;
@@ -76,6 +77,10 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
         if (newVersion >= 7 && oldVersion < 7) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0");
+        }
+
+        if (newVersion >= 8 && oldVersion < 8) {
+            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NAME + " text");
         }
     }
 
@@ -146,6 +151,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NEXT_EVENT_AFTER = "nextEventAfter";
         public static final String COLUMN_RADIO_STATION_INDEX = "radioStationIndex";
         public static final String COLUMN_NUM_AUTO_SNOOZE_CYCLES = "numAutoSnoozeCycles";
+        public static final String COLUMN_NAME = "name";
         public static final String COLUMN_VIBRATE = "vibrate";
     }
 }

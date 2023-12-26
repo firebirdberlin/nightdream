@@ -35,17 +35,10 @@
         app:key="Night.muteRinger"
         app:title="@string/mute_ringer" />
 
-    <PreferenceCategory
+    <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
-        app:key="category_night_mode_display_management"
-        app:title="@string/category_night_mode_display_management">
-
-        <SwitchPreferenceCompat
-            app:iconSpaceReserved="false"
-            app:defaultValue="false"
-            app:key="allow_screen_off"
-            app:summary="@string/allow_screen_off_summary"
-            app:title="@string/allow_screen_off" />
-    </PreferenceCategory>
+        app:defaultValue="false"
+        app:key="allow_screen_off"
+        app:summary="@string/allow_screen_off_summary"
+        app:title="@string/allow_screen_off" />
 </PreferenceScreen>

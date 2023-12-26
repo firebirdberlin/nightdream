@@ -42,9 +42,14 @@ public class AlarmNotificationService extends JobService {
                         || ! Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS)
                         || ! Settings.shallNotifyForUpcomingAlarms(context)
         ) {
+
+
+            Log.i(TAG, "scheduleJob() -> notification allowed: " + Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS));
+            Log.i(TAG, "scheduleJob() -> enabled: " + Settings.shallNotifyForUpcomingAlarms(context));
             return;
         }
 
+        Log.i(TAG, "scheduleJob()");
         ComponentName serviceComponent = new ComponentName(
                 context.getPackageName(), AlarmNotificationService.class.getName()
         );
@@ -63,7 +68,6 @@ public class AlarmNotificationService extends JobService {
         }
         builder.setMinimumLatency(minLatency);
         builder.setOverrideDeadline(minLatency + 1000);
-
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler == null) {
