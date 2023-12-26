@@ -9,6 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,8 +21,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.prof.rssparser.Article;
 
@@ -41,8 +45,10 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     private int textColor = Color.WHITE;
     private int accentColor = Color.WHITE;
     private int index = -1;
-    private Context context;
+    private final Context context;
     private float textSize = 28.f;
+    private boolean running = false;
+    final private Handler handler = new Handler();
 
     public Ticker(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -75,18 +81,19 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         });
 
         RSSViewModel.observeTextSize(context, textSize -> {
-            Log.d(TAG,"change rss textSize: "+ textSize);
+            Log.i(TAG,"change rss textSize: "+ textSize);
             this.textSize = textSize;
             restart();
         });
     }
 
     public void setHeadlines(List<Article> articles) {
+        Log.i(TAG, "setHeadlines()");
         if (articles != null && !articles.isEmpty()) {
             this.headlines.clear();
             this.urls.clear();
             this.headlines.addAll(headlines);
-            this.urls.addAll(urls);
+            //this.urls.addAll(urls);
             Log.d(TAG, "setHeadlines(List<String> headlines)");
             for (int i = 0; i < Math.min(articles.size(), 10); i++) {
                 String title = articles.get(i).getTitle();
@@ -122,14 +129,14 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     }
 
     public void restart() {
+        Log.i(TAG, "restart()");
         removeAllViewsInLayout();
         requestLayout();
         invalidate();
-        run();
+        run(true);
     }
 
     private void updateChildren() {
-        //set all textcolor to all textviews
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View v = getChildAt(i);
@@ -147,12 +154,21 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     }
 
     //start scrolling headlines
-    public void run() {
+    public void run(boolean restart) {
         if (headlines.isEmpty()) {
             Log.d(TAG, "No headlines set");
             return;
         }
-        launchNext();
+        if (!this.running || restart) {
+            this.running = true;
+            launchNext();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        handler.removeCallbacksAndMessages(null);
     }
 
     public void pause() {
@@ -163,8 +179,12 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     }
     public void resume() {
         Log.d(TAG, "resume()");
-        for (Animator animator: animators) {
-            animator.resume();
+        if(Utility.areSystemAnimationsEnabled(context) ) {
+            for (Animator animator: animators) {
+                animator.resume();
+            }
+        } else {
+            launchNext();
         }
     }
 
@@ -201,41 +221,66 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     }
 
     private void launchNext() {
+        Log.i(TAG, "launchNext()");
+        boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
         String headline = "";
         int count = 0;
         while (headline.isEmpty() && count < headlines.size()) {
             index = (index + 1) % headlines.size();
-            headline = " +++ " + headlines.get(index).trim();
+            headline = headlines.get(index).trim();
+            if (animationsEnabled) {
+                headline = " +++ " + headline;
+            }
             count++;
         }
 
         //make TextView
         TextView tv = new TextView(getContext());
-        tv.setGravity(Gravity.CENTER_VERTICAL);
+        if (animationsEnabled) {
+            tv.setGravity(Gravity.CENTER_VERTICAL);
+            tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        } else {
+            tv.setGravity(Gravity.CENTER);
+            tv.setSelected(true);
+            tv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            tv.setMarqueeRepeatLimit(101);
+            tv.setHorizontallyScrolling(true);
+        }
         tv.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         tv.setOnClickListener(this);
         tv.setSingleLine(true);
         tv.setTag(index);
         tv.setTextColor(this.textColor);
         tv.setTextSize(this.textSize);
-        tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         if (!headline.isEmpty()) {
             tv.setText(headline);
         }
-        tv.addOnLayoutChangeListener(new OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top,
-                                       int right, int bottom,
-                                       int oldLeft, int oldTop,
-                                       int oldRight, int oldBottom) {
+        if( Utility.areSystemAnimationsEnabled(context) ) {
+            removeNonAnimatedViews();
+            tv.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                 // View's dimensions are available only after the layout pass.
                 // Now is the time to start animating it.
+                Log.i(TAG, "addOnLayoutChangeListener");
                 animationStart((TextView) v);
-            }
-        });
+            });
+        } else {
+            removeAllViews();
+            requestLayout();
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(this::launchNext, 10000);
+        }
         addView(tv);
     }
 
+    void removeNonAnimatedViews() {
+        for (int i=0; i < getChildCount(); i++) {
+           View view = getChildAt(i) ;
+            if (! animatedViews.contains(view)) {
+                removeView(view);
+            }
+        }
+
+    }
     private void animationStart(final TextView tv) {
 
         if (animatedViews.contains(tv)) {
@@ -244,40 +289,38 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
 
         //move view out off screen.
         tv.setTranslationX(getWidth());
-
-        int distance = (int) tv.getPaint().measureText(tv.getText(), 0, tv.getText().length());
+        int distance = (int) tv.getPaint().measureText(tv.getText().toString());
         tv.animate()
                 .translationXBy(-distance)
                 .setDuration(distance * animationSpeed)
                 .setInterpolator(new LinearInterpolator())
                 .setListener(new Animator.AnimatorListener() {
                     @Override
-                    public void onAnimationStart(Animator animation) {
+                    public void onAnimationStart(@NonNull Animator animation) {
                         Log.d(TAG, "start animation");
                         animators.add(animation);
                         animatedViews.add(tv);
                     }
 
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEnd(@NonNull Animator animation) {
                         animators.remove(animation);
                         if (tv.getParent() != null) {
-                            launchNext();
                             animationEnd(tv);
+                            launchNext();
                         }
                     }
 
                     @Override
-                    public void onAnimationCancel(Animator animation) {
+                    public void onAnimationCancel(@NonNull Animator animation) {
                         animators.remove(animation);
                         animatedViews.remove(tv);
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {
+                    public void onAnimationRepeat(@NonNull Animator animation) {
                     }
-                })
-                .start();
+                }).start();
     }
 
     private void animationEnd(final TextView tv) {
@@ -288,12 +331,12 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
                 .setInterpolator(new LinearInterpolator())
                 .setListener(new Animator.AnimatorListener() {
                     @Override
-                    public void onAnimationStart(Animator animation) {
+                    public void onAnimationStart(@NonNull Animator animation) {
                         animators.add(animation);
                     }
 
                     @Override
-                    public void onAnimationEnd(Animator animation) {
+                    public void onAnimationEnd(@NonNull Animator animation) {
                         //Remove view
                         removeView(tv);
                         animators.remove(animation);
@@ -301,14 +344,14 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onAnimationCancel(Animator animation) {
+                    public void onAnimationCancel(@NonNull Animator animation) {
                         //Remove view from set
                         animatedViews.remove(tv);
                         animators.remove(animation);
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {
+                    public void onAnimationRepeat(@NonNull Animator animation) {
                     }
                 })
                 .start();

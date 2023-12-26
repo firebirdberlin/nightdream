@@ -267,8 +267,9 @@ public class Settings {
     }
 
     public static boolean shallNotifyForUpcomingAlarms(Context context) {
-        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
         if (preferences == null) {
+            Log.i(TAG, "preferences is NULL");
             return false;
         }
         return preferences.getBoolean("notifyForUpcomingAlarms", false);
