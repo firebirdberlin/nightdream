@@ -1,13 +1,10 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.content.Context;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.work.OneTimeWorkRequest;
+import androidx.work.Configuration;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
@@ -32,7 +29,21 @@ public class CheckChargingStateJob extends Worker {
                         30, TimeUnit.MINUTES
                 ).addTag(TAG).build();
 
+        if(!isInitialized()){
+            WorkManager.initialize(context, new Configuration.Builder().build());
+        }
+
         WorkManager.getInstance(context).enqueue(request);
+    }
+
+    /**
+     * Provides a way to check if {@link WorkManager} is initialized in this process.
+     * https://android-review.googlesource.com/c/platform/frameworks/support/+/1941186
+     * ToDo use Workmanager.isInitialized with Ver 2.8.0
+     */
+    @SuppressWarnings("deprecation")
+    private static boolean isInitialized(){
+        return WorkManager.getInstance() != null;
     }
 
    public static void cancel(Context context) {
