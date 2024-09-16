@@ -93,9 +93,10 @@ public class BottomPanelLayout extends FrameLayout {
                 }
             } else {
                 Log.d(TAG, "no next alarm");
-            }
-            if (tickerLayout != null && shallShowTicker()) {
-                showTickerView();
+                if (tickerLayout != null && shallShowTicker()) {
+                    Log.d(TAG, "init() -> showTickerView()");
+                    showTickerView();
+                }
             }
         });
     }
@@ -170,14 +171,19 @@ public class BottomPanelLayout extends FrameLayout {
         if (tickerLayout == null && mayHideAlarm()) {
             handler.post(hidePanel);
         } else {
-            // the ticker is active. It should remain visible.
-            handler.postDelayed(hidePanel, 60 * 60000);
+            Log.d(TAG, "hide() activePanel: "+activePanel);
+            if (rssEnabled && (nextAlarmTime == null || mayHideAlarm())) {
+                isVisible = false;
+                setClickable(false);
+                setAlpha(this, 0.f, 2000);
+            }
         }
     }
 
     private void showAlarmViewIfNoRadioIsPlaying() {
         Log.d(TAG, "showAlarmViewIfNoRadioIsPlaying");
-        if (RadioStreamService.isRunning) return;
+        if ((RadioStreamService.isRunning)
+                || (activePanel == Panel.TICKER)) return;
 
         removeAllViews();
         clearViews();
@@ -191,7 +197,33 @@ public class BottomPanelLayout extends FrameLayout {
 
         float oldValue = v.getAlpha();
         if (alpha != oldValue) {
-            v.animate().setDuration(millis).alpha(alpha).start();
+            v.animate()
+                    .setDuration(millis)
+                    .alpha(alpha)
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            Log.d(TAG, "setAlpha() onAnimationEnd");
+                            if (rssEnabled) {
+                                Log.d(TAG, "setAlpha() showTicker after animation end");
+                                showTickerView();
+                                v.setAlpha(1.f);
+                                handler.postDelayed(hidePanel, 60 * 60000);
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+                        }
+                    }).start();
         }
     }
 
@@ -225,11 +257,12 @@ public class BottomPanelLayout extends FrameLayout {
         } else if (RadioStreamService.isRunning || activePanel == Panel.WEB_RADIO) {
             showWebRadioView();
         } else {
-            if (shallShowTicker()) {
+            if (shallShowTicker() && (nextAlarmTime == null || nextAlarmTime.getRemainingMillis() < 60 * 60000)) {
                 showTickerView();
             } else {
-                showAlarmView();
-            }
+                Log.d(TAG, "setup() nextAlarmTime: "+nextAlarmTime);
+                    showAlarmView();
+           }
         }
         show();
         invalidate();
