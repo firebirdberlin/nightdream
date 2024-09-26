@@ -213,7 +213,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         View clockLayout = contentView.findViewById(R.id.clockLayout);
         clockLayout.postDelayed(
-                () -> activity.onConfigurationChanged(activity.getResources().getConfiguration()),
+                () -> activity.mediaControlChanged(),
                 500
         );
     }
