@@ -149,7 +149,7 @@ public class Settings {
     public int sensitivity = 1;
     public int temperatureUnit = WeatherEntry.CELSIUS;
     public int speedUnit = WeatherEntry.METERS_PER_SECOND;
-    public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
     public int alwaysOnBatteryLevel = 0;
     public int alwaysOnTimeRangeStartInMinutes = -1;
     public int alwaysOnTimeRangeEndInMinutes = -1;
