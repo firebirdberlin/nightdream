@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -1362,7 +1363,11 @@ public class NightDreamUI {
     }
 
     private void setScreenOrientation(int orientation) {
-        ((AppCompatActivity) mContext).setRequestedOrientation(orientation);
+        if (orientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            ((AppCompatActivity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        } else {
+            ((AppCompatActivity) mContext).setRequestedOrientation(orientation);
+        }
     }
 
     private void fadeSoftButtons() {
