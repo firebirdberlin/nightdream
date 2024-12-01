@@ -41,7 +41,9 @@ public class RadioBrowserApi {
     private static int CONNECT_TIMEOUT = 10000;
 
     private static String getRandomServer() {
+        Log.d(TAG, "getRandomServer()");
         List<String> servers = new ArrayList<>();
+
         try {
             // add all round robin servers one by one to select them separately
             InetAddress[] list = InetAddress.getAllByName("all.api.radio-browser.info");
@@ -51,7 +53,13 @@ public class RadioBrowserApi {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        return servers.get(new Random().nextInt(servers.size()));
+
+        if (servers.size() > 0) {
+            return servers.get(new Random().nextInt(servers.size()));
+        }
+        else {
+            return "";
+        }
     }
 
     public static List<RadioStation> fetchStations(String queryString, String countryCode) {
@@ -144,6 +152,7 @@ public class RadioBrowserApi {
     }
 
     private static Uri.Builder getPathBuilder(String endpoint) {
+        Log.d(TAG, "getPathBuilder()");
         String server = getRandomServer();
         Log.d(TAG, server);
         return Uri.parse("https://" + server).buildUpon()
