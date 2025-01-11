@@ -669,24 +669,27 @@ public class NightDreamUI {
 
                 case Settings.BACKGROUND_IMAGE: {
                     Log.d(TAG, "BACKGROUND_IMAGE");
-                    setImageScale();
+                    loadBackgroundImageFiles();
+                    if (files != null && !files.isEmpty()) {
+                        setImageScale();
 
-                    int other = (activeBackgroundImage + 1) % 2;
-                    backgroundImages[activeBackgroundImage].setImage(
-                            Uri.parse(settings.backgroundImageURI)
-                    );
+                        int other = (activeBackgroundImage + 1) % 2;
+                        backgroundImages[activeBackgroundImage].setImage(
+                                Uri.fromFile(files.get(0))
+                        );
 
-                    Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
-                    backgroundImages[other].setImageDrawable(colorBlack);
-                    if (bitmap != null) {
-                        setDominantColorFromBitmap(bitmap);
-                        if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                            backgroundImages[other].setImageBitmap(
-                                    Graphics.blur(bitmap)
-                            );
+                        Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
+                        backgroundImages[other].setImageDrawable(colorBlack);
+                        if (bitmap != null) {
+                            setDominantColorFromBitmap(bitmap);
+                            if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
+                                backgroundImages[other].setImageBitmap(
+                                        Graphics.blur(bitmap)
+                                );
+                            }
                         }
+                        backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
                     }
-                    backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
                     break;
                 }
 
@@ -1009,13 +1012,7 @@ public class NightDreamUI {
     }
 
     private void loadBackgroundImageFiles() {
-
-        Log.d(TAG, "loadBackgroundImageFiles()");
-        if (!settings.hasPermissionReadImages()) {
-            Log.w(TAG, "loadBackgroundImageFiles() -> permission denied");
-            return;
-        }
-        File path = settings.getBackgroundImageDir();
+        File path = new File(mContext.getFilesDir() + "/backgroundImages");
         Log.d(TAG, "path:" + path);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             files = Utility.listFiles(path, null);

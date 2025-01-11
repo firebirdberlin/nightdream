@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -13,7 +12,6 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -28,11 +26,11 @@ import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -193,10 +191,12 @@ public class Settings {
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
+    private final Gson gson = new Gson();
 
     public Settings(Context context) {
         this.mContext = context;
         settings = context.getSharedPreferences(PREFS_KEY, 0);
+
         reload();
     }
 
@@ -974,49 +974,6 @@ public class Settings {
         return new SimpleTime(nextAlarmTimeMinutes).getCalendar();
     }
 
-    public void setBackgroundImage(String uri) {
-        clearBackgroundImageCache();
-        bgpath = uri;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putString("BackgroundImage", uri);
-        prefEditor.apply();
-    }
-
-    public File getBackgroundImageDir() {
-        String dir = settings.getString("backgroundImageDir", "");
-        if (dir.equals("")) {
-            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        } else {
-            return new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dir);
-        }
-    }
-
-    public void setBackgroundImageDir(String uri) {
-        clearBackgroundImageCache();
-        String dir = "";
-        try {
-            String[] path = uri.split(":");
-            dir = path[1];
-        } catch (IndexOutOfBoundsException ignore) {
-        }
-        settings.edit().putString("backgroundImageDir", dir).apply();
-    }
-
-    public void setBackgroundImageURI(String uri) {
-        clearBackgroundImageCache();
-        backgroundImageURI = uri;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putString("backgroundImageURI", uri);
-        prefEditor.apply();
-    }
-
-    public void clearBackgroundImageCache() {
-        File cacheFile = new File(mContext.getCacheDir(), Config.backgroundImageCacheFilename);
-        if (cacheFile.exists()) {
-            cacheFile.delete();
-        }
-    }
-
     public void setLastReviewRequestTime(long reviewRequestTime) {
         lastReviewRequestTime = reviewRequestTime;
         SharedPreferences.Editor prefEditor = settings.edit();
@@ -1283,14 +1240,7 @@ public class Settings {
     }
 
     public boolean hasPermissionReadImages() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        String permission =
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                        ? Manifest.permission.READ_MEDIA_IMAGES
-                        : Manifest.permission.READ_EXTERNAL_STORAGE;
-        return (hasPermission(permission));
+        return true;
     }
 
     public RadioStation getFavoriteRadioStation(int radioStationIndex) {

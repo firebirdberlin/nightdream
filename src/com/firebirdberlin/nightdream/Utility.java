@@ -73,8 +73,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -101,6 +104,38 @@ public class Utility {
         getSystemBrightnessMode();
     }
 
+    public static void prepareDirectory(File directory) {
+        deleteDirectory(directory);
+        directory.mkdirs();
+    }
+
+    public static void deleteDirectory(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles()) {
+                Utility.deleteDirectory(child);
+            }
+        fileOrDirectory.delete();
+    }
+
+    public static boolean copyToDirectory(Context context, Uri srcUri, File directory, String name) {
+        InputStream inputStream;
+        try {
+            inputStream = context.getContentResolver().openInputStream(srcUri);
+            File file = new File(directory, name);
+            OutputStream outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+            return true;
+        } catch (IOException e) {
+            //throw new RuntimeException(e);
+            return false;
+        }
+    }
 
     static public PendingIntent getImmutableBroadcast(Context context, int requestCode, Intent intent, int flags) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
