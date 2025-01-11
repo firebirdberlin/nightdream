@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
@@ -11,13 +10,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.provider.DocumentsContract;
+import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -25,13 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -112,12 +109,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             settings.setNightModeBrightness(value1 / 100.f);
                             break;
                         case "backgroundMode":
-                            String selection = sharedPreferences.getString("backgroundMode", "1");
-                            if (isAdded() && ("3".equals(selection) || "4".equals(selection))) {
-                                settings.clearBackgroundImageCache();
-                                checkPermissionReadImages();
-                            }
-
                             setupBackgroundImageControls(sharedPreferences);
                             break;
                         case "clockLayout":
@@ -196,20 +187,59 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     };
 
-    private ActivityResultLauncher<Intent> activityResultLauncherLoadImage = null;
     private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), result -> {
                 if (result) {
                     Log.d(TAG, "readExternalStoragePermission: PERMISSION GRANTED");
-                    selectBackgroundImage();
                 } else {
                     Log.d(TAG, "readExternalStoragePermission: PERMISSION DENIED");
                     Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
                 }
             });
-    private ActivityResultLauncher<Intent> activityResultLauncherLoadDirectory = null;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                // Callback is invoked after the user selects a media item or closes the
+                // photo picker.
+                if (uri != null) {
+                    Log.d("PhotoPicker", "Selected URI: " + uri);
+                    File directory = new File(mContext.getFilesDir() + "/backgroundImages");
+                    Utility.prepareDirectory(directory);
+                    Utility.copyToDirectory(mContext, uri, directory, "image_0.jpg");
+                } else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+            });
+
+    // Registers a photo picker activity launcher in multi-select mode.
+    // In this example, the app lets the user select up to 5 media files.
+    ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
+            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(getMaxNumImages()), uris -> {
+                // Callback is invoked after the user selects media items or closes the
+                // photo picker.
+                if (!uris.isEmpty()) {
+                    Log.d("PhotoPicker", "Number of items selected: " + uris.size());
+                    File directory = new File(mContext.getFilesDir() + "/backgroundImages");
+                    Utility.prepareDirectory(directory);
+                    int count = 0;
+                    for (Uri uri: uris) {
+                        count += 1;
+                        String name = "image_" + count + ".jpg";
+                        Utility.copyToDirectory(mContext, uri, directory, name);
+                    }
+                } else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+            });
+
+    int getMaxNumImages() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
+            return MediaStore.getPickImagesMaxLimit();
+        }
+        return 100;
+    }
+
     boolean isNotificationAccessDenied() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             NotificationManager n = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -224,8 +254,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         mContext = activity;
-        activityResultLauncherLoadImage = registerActivityResultLoadImage();
-        activityResultLauncherLoadDirectory = registerActivityResultLoadDirectory();
     }
 
     @Override
@@ -500,14 +528,20 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Preference chooseImage = findPreference("chooseBackgroundImage");
             if (chooseImage != null) {
                 chooseImage.setOnPreferenceClickListener(preference -> {
-                    checkPermissionAndSelectBackgroundImage();
+                    pickMedia.launch(
+                            new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build()
+                    );
                     return true;
                 });
             }
             Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
             if (chooseDirectory != null) {
                 chooseDirectory.setOnPreferenceClickListener(preference -> {
-                    checkPermissionAndSelectDirectoryBackgroundImage();
+                    pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build());
                     return true;
                 });
             }
@@ -520,11 +554,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         } else if ("nightmode".equals(rootKey)) {
             setupLightSensorPreferences();
             setupNightModePreferences(prefs);
-
-       } else if ("notifications".equals(rootKey)) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                hidePreference("showMediaStyleNotification");
-            }
 
         } else if ("about".equals(rootKey)) {
 
@@ -662,163 +691,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    ActivityResultLauncher<Intent> registerActivityResultLoadImage() {
-        return registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    int resultCode = result.getResultCode();
-                    Intent data = result.getData();
-                    if (resultCode != Activity.RESULT_OK || data == null) {
-                        return;
-                    }
-                    if (Build.VERSION.SDK_INT < 19) {
-                        Uri selectedImage = data.getData();
-                        String picturePath = getRealPathFromURI(selectedImage);
-                        if (picturePath != null) {
-                            settings.setBackgroundImage(picturePath);
-                        } else {
-                            Toast.makeText(
-                                    getActivity(),
-                                    "Could not locate image!", Toast.LENGTH_LONG
-                            ).show();
-                        }
-                    } else {
-                        Uri uri = data.getData();
-                        if (uri != null) {
-                            mContext.grantUriPermission(
-                                    mContext.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            );
-                            mContext.getContentResolver().takePersistableUriPermission(
-                                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            );
-                            settings.setBackgroundImageURI(uri.toString());
-                        }
-                    }
-                }
-        );
-    }
-
-    ActivityResultLauncher<Intent> registerActivityResultLoadDirectory() {
-        return registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    int resultCode = result.getResultCode();
-                    Intent data = result.getData();
-                    if (resultCode != Activity.RESULT_OK || data == null) {
-                        return;
-                    }
-                    Uri uri = data.getData();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (uri != null) {
-                            mContext.grantUriPermission(
-                                    mContext.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            );
-                            mContext.getContentResolver().takePersistableUriPermission(
-                                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            );
-                            if (uri.getPath() != null) {
-                                settings.setBackgroundImageDir(uri.getPath());
-                            }
-                        }
-                    }
-                }
-        );
-    }
-
-    public String getRealPathFromURI(Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index;
-            if (cursor != null) {
-                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                return cursor.getString(column_index);
-            }
-
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return null;
-    }
-
-    private void checkPermissionAndSelectBackgroundImage() {
-        if (!settings.hasPermissionReadImages()) {
-            String p = getPermissionReadImages();
-            this.readExternalStoragePermission.launch(p);
-            return;
-        }
-        selectBackgroundImage();
-    }
-
-    private void checkPermissionAndSelectDirectoryBackgroundImage() {
-        if (!settings.hasPermissionReadImages()) {
-            Log.w(TAG, "permission denied");
-            String p = getPermissionReadImages();
-            this.readExternalStoragePermission.launch(p);
-            return;
-        }
-        selectDirectoryBackgroundImage();
-    }
-
-    private void selectDirectoryBackgroundImage() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                File dir = settings.getBackgroundImageDir();
-                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(dir).toString());
-            }
-            activityResultLauncherLoadDirectory.launch(Intent.createChooser(intent, "Choose directory"));
-        }
-    }
-
-    private void checkPermissionReadImages() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !hasPermissionReadImages()) {
-            String p = getPermissionReadImages();
-            this.readExternalStoragePermission.launch(p);
-        }
-    }
-
-    private void selectBackgroundImage() {
-        if (Build.VERSION.SDK_INT < 19) {
-            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            getIntent.setType("image/*");
-
-            String msg = getString(R.string.background_image_select);
-            Intent chooserIntent = Intent.createChooser(getIntent, msg);
-            activityResultLauncherLoadImage.launch(chooserIntent);
-        } else {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("image/*");
-            activityResultLauncherLoadImage.launch(intent);
-        }
-    }
-
-    private boolean hasPermissionReadImages() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String p = getPermissionReadImages();
-            if (p == null) return true;
-            return getActivity().checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED;
-        }
-        return true;
-    }
-    private String getPermissionReadImages() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return Manifest.permission.READ_MEDIA_IMAGES;
-        }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return Manifest.permission.READ_EXTERNAL_STORAGE;
-        }
-        return null;
-    }
-
     private void recommendApp() {
         String body = "https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream";
         String subject = getResources().getString(R.string.recommend_app_subject);
@@ -907,7 +779,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void setupBackgroundImageControls(SharedPreferences prefs) {
         String selection = prefs.getString("backgroundMode", "1");
-
         showPreference("chooseBackgroundImage", "3".equals(selection));
 
         boolean on = "2".equals(selection);
@@ -924,10 +795,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("backgroundEXIF", on);
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             showPreference("chooseDirectoryBackgroundImage", on);
-            Preference preference = findPreference("chooseDirectoryBackgroundImage");
-            if (preference != null) {
-                preference.setSummary(settings.getBackgroundImageDir().toString());
-            }
         }
 
         on = Utility.equalsAny(selection, "3", "4");
