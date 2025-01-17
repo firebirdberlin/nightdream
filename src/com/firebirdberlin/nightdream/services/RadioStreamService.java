@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
@@ -209,18 +210,12 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         public void run() {
             handler.removeCallbacks(fadeIn);
             if (exoPlayer == null) return;
-            if (currentVolume == 0.0) {
-                updateNotification(getResources().getString(R.string.radio_playing));
-            }
-            currentVolume += 0.01;
+
+            currentVolume += 0.01f;
             if (currentVolume <= maxVolumePercent / 100.) {
                 //Log.i(TAG, "volume: " + currentVolume);
                 exoPlayer.setVolume(currentVolume);
                 handler.postDelayed(fadeIn, fadeInDelay);
-            } else {
-                if (mediaMetaData != null && mediaMetaData.title != null) {
-                    updateNotification(mediaMetaData.title.toString());
-                }
             }
         }
     };
@@ -279,6 +274,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         mediaSession.setActive(true);
 
         stateBuilder = new PlaybackStateCompat.Builder()
+                .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.f)
                 .setActions(
                         PlaybackStateCompat.ACTION_PLAY
                                 | PlaybackStateCompat.ACTION_PAUSE
@@ -558,39 +554,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 @Override
                 public void onPlaybackStateChanged(@Player.State int state) {
                     Log.d(TAG, "onPlaybackStateChanged() state: " + state);
-
-                    switch (state) {
-                        case ExoPlayer.STATE_READY:
-                            Log.d(TAG, "The player is able to immediately play from its current position.");
-
-                            Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-                            intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-                            currentVolume = 0.f;
-                            handler.postDelayed(fadeIn, muteDelayInMillis);
-                            updateNotification(getResources().getString(R.string.radio_muting));
-
-                            if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
-                                vibrator.startVibration();
-                            }
-                            break;
-                        case ExoPlayer.STATE_ENDED:
-                            Log.d(TAG, "The player finished playing all media");
-                            stateBuilder.setState(
-                                    PlaybackStateCompat.STATE_STOPPED,
-                                    exoPlayer.getCurrentPosition(),
-                                    1f
-                            );
-                            handler.removeCallbacks(fadeIn);
-                            break;
-                        case Player.STATE_BUFFERING:
-                            updateNotification(getResources().getString(R.string.radio_connecting));
-                            break;
-                        case Player.STATE_IDLE:
-                            break;
-                    }
-
-                    mediaSession.setPlaybackState(stateBuilder.build());
+                    handleStateChange(state);
                 }
 
                 @Override
@@ -659,6 +623,44 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             enableMediaSession();
             exoPlayer.play();
         }
+    }
+
+    private void handleStateChange(int state) {
+
+        Log.d(TAG, "state:" + state);
+        switch (state) {
+            case ExoPlayer.STATE_READY:
+                Log.d(TAG, "The player is able to immediately play from its current position.");
+
+                Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
+                intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                currentVolume = 0.f;
+                handler.postDelayed(fadeIn, muteDelayInMillis);
+                updateNotification(getResources().getString(R.string.radio_muting));
+
+                if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
+                    vibrator.startVibration();
+                }
+
+                break;
+            case ExoPlayer.STATE_ENDED:
+                Log.d(TAG, "The player finished playing all media");
+                stateBuilder.setState(
+                        PlaybackStateCompat.STATE_STOPPED,
+                        exoPlayer.getCurrentPosition(),
+                        1f
+                );
+                handler.removeCallbacks(fadeIn);
+                break;
+            case Player.STATE_BUFFERING:
+                updateNotification(getResources().getString(R.string.radio_connecting));
+                break;
+            case Player.STATE_IDLE:
+                break;
+        }
+
+        mediaSession.setPlaybackState(stateBuilder.build());
     }
 
     private MediaInfo getRemoteMediaData() {
@@ -777,9 +779,11 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 .setSmallIcon(R.drawable.ic_radio)
                 .setLargeIcon(iconRadio)
                 .setTicker(title)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                .setStyle(
+                        new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1, 2, 3)
-                        .setMediaSession(mediaSession.getSessionToken()))
+                        .setMediaSession(mediaSession.getSessionToken())
+                )
                 .setContentText(title)
                 .setWhen(System.currentTimeMillis())
                 .setUsesChronometer(true);
@@ -962,6 +966,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             Log.d(TAG, "onPlay");
             if (exoPlayer != null) {
                 exoPlayer.setPlayWhenReady(true);
+                handleStateChange(exoPlayer.getPlaybackState());
             }
         }
 
@@ -970,6 +975,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             Log.d(TAG, "onPause: ");
             if (exoPlayer != null) {
                 exoPlayer.setPlayWhenReady(false);
+                handleStateChange(exoPlayer.getPlaybackState());
             }
         }
 
