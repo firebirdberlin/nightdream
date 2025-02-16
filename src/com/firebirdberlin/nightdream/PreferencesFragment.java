@@ -634,7 +634,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
 
 
-        if (rootKey == null || "autostart".equals(rootKey)) {
+        if (Utility.isEmpty(rootKey) || "autostart".equals(rootKey)) {
             conditionallyShowSnackBar();
         }
 
@@ -1041,6 +1041,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void conditionallyShowSnackBar() {
+        Log.i(TAG, "conditionallyShowSnackBar");
         if (!Utility.hasPermissionCanDrawOverlays(mContext)) {
             View view = getActivity().findViewById(android.R.id.content);
             snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
@@ -1123,7 +1124,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     public class CanDrawOverlaysPermissionListener implements View.OnClickListener {
-
         @Override
         public void onClick(View v) {
             if (isAdded()) {
