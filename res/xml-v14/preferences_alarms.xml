@@ -51,6 +51,12 @@
         app:title="@string/action_snooze"
         app:iconSpaceReserved="false">
 
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:defaultValue="false"
+            android:key="snoozeUsingVolumeButtons"
+            android:title="@string/snoozeUsingVolumeButtons" />
+
         <de.firebirdberlin.preference.InlineSeekBarPreference
             app:iconSpaceReserved="false"
             xmlns:seekbar="http://schemas.android.com/apk/lib/android"
