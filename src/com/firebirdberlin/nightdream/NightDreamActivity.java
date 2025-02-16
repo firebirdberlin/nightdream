@@ -24,6 +24,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -79,6 +81,7 @@ import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -207,15 +210,6 @@ public class NightDreamActivity extends BillingHelperActivity
         mySettings.updateNextAlwaysOnTime();
         setKeepScreenOn(shallKeepScreenOn(mode));
         triggerAlwaysOnTimeout();
-    };
-    private final Runnable showRequestOverlayPermissionsDialog = () -> {
-        if (isRunning && !Utility.hasPermissionCanDrawOverlays(context)) {
-            FragmentManager fm = getSupportFragmentManager();
-            if (!fm.isDestroyed()) {
-                AskForOverlayPermissionDialogFragment dialog = new AskForOverlayPermissionDialogFragment();
-                dialog.show(fm, "ask for overlay permission");
-            }
-        }
     };
     private boolean isChargingWireless = false;
     private DevicePolicyManager mgr = null;
@@ -369,11 +363,52 @@ public class NightDreamActivity extends BillingHelperActivity
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(this::initTextToSpeech);
 
-        if (!Utility.hasPermissionCanDrawOverlays(this)) {
-            handler.postDelayed(showRequestOverlayPermissionsDialog, 2000);
-        }
-
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
+    }
+
+    Snackbar snackbar = null;
+
+    private class CanDrawOverlaysPermissionListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Utility.requestPermissionCanDrawOverlays(context);
+            dismissSnackBar();
+        }
+    }
+    private void conditionallyShowSnackBar() {
+        Log.i(TAG, "conditionallyShowSnackBar");
+        if (!Utility.hasPermissionCanDrawOverlays(context)) {
+            View view = findViewById(android.R.id.content);
+            snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
+            int color = Utility.getRandomMaterialColor(context);
+            int textColor = Utility.getContrastColor(color);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(color);
+            snackbar.setActionTextColor(textColor);
+
+            TextView tv = snackbarView.findViewById(R.id.snackbar_text);
+            tv.setTextColor(textColor);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                tv.setAutoSizeTextTypeUniformWithConfiguration(
+                        10, // minTextSize
+                        20, // maxTextSize
+                        2,  // autoSizeStepGranularity
+                        TypedValue.COMPLEX_UNIT_SP // unit
+                );
+            }
+
+            snackbar.setAction(android.R.string.ok, new CanDrawOverlaysPermissionListener());
+            snackbar.show();
+        } else {
+            dismissSnackBar();
+        }
+    }
+
+    void dismissSnackBar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
     }
 
     void initTextToSpeech() {
@@ -543,6 +578,7 @@ public class NightDreamActivity extends BillingHelperActivity
             // TODO optionally enable the Flashlight
         }
 
+        conditionallyShowSnackBar();
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
@@ -612,7 +648,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         nightDreamUI.onPause();
 
-        handler.removeCallbacks(showRequestOverlayPermissionsDialog);
         handler.removeCallbacks(finishApp);
         handler.removeCallbacks(runnableSetupNightMode);
         handler.removeCallbacks(lockDevice);
